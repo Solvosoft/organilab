@@ -77,7 +77,7 @@ class EditUserForm(forms.ModelForm, GTForm):
     address = forms.CharField(widget=djgenwidgets.Textarea, label=_("Address"))
     workplace = forms.ModelMultipleChoiceField(
         widget=djgenwidgets.SelectMultiple,
-        queryset=OrganizationStructure.objects.all(),
+        queryset=OrganizationStructure.objects.filter(approval_status=OrganizationStructure.APPROVED),
         label=_("Workplace"),
     )
 

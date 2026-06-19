@@ -16,6 +16,8 @@ def load_initialdata(
     if app_config.__class__.__name__ == "LaboratoryConfig":
         print("Load initial data")
         call_command("loaddata", "initial_data.json")
+        import io
+        call_command("sqlsequencereset", "djgentelella", stdout=io.StringIO())
 
 
 class OrganilabTestConfig(AppConfig):

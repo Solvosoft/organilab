@@ -1,0 +1,167 @@
+================================================================================
+USUARIOS CON ROL: Administrativo superior
+================================================================================
+Filtro: ninguno (todos)
+Total usuarios unicos: 38
+Total organizaciones: 10
+
+--------------------------------------------------------------------------------
+Organizacion : UNA
+pk=1  nivel=0  padre=ninguno
+Usuarios     : 4
+
+  #    Username                                 Email                                    Superuser
+  ---  ---------------------------------------- ---------------------------------------- ---------
+  1    daniela.guerrero.mayorga@est.una.ac.cr   daniela.guerrero.mayorga@est.una.ac.cr   No
+  2    maikol.rojas.garcia@est.una.ac.cr        maikol.rojas.garcia@est.una.ac.cr        No
+  3    solvoadmin                               sitio@solvosoft.com                      Si
+  4    wendy.umana.herrera                      wendy.umana.herrera@una.cr               Si
+
+--------------------------------------------------------------------------------
+Organizacion : Módulo de Gestión de Residuos
+pk=33  nivel=1  padre=UNA
+Usuarios     : 8
+
+  #    Username                                 Email                                    Superuser
+  ---  ---------------------------------------- ---------------------------------------- ---------
+  1    Ligiasolis                               ligia.solis.torres@una.cr                No
+  2    Ligiasolistorres                         lsoli@una.cr                             No
+  3    dbarcer                                  david.barrantes.cerdas@una.ac.cr         No
+  4    german                                   gedzar@gmail.com                         No
+  5    luis.benavides.melendez@est.una.ac.cr    luis.benavides.melendez@est.una.ac.cr    No
+  6    maria.amey.monge@est.una.ac.cr           maria.amey.monge@est.una.ac.cr           No
+  7    solvoadmin                               sitio@solvosoft.com                      Si
+  8    wendy.umana.herrera                      wendy.umana.herrera@una.cr               Si
+
+--------------------------------------------------------------------------------
+Organizacion : LAFIT
+pk=25  nivel=2  padre=Escuela de Química
+Usuarios     : 6
+
+  #    Username                                 Email                                    Superuser
+  ---  ---------------------------------------- ---------------------------------------- ---------
+  1    german                                   gedzar@gmail.com                         No
+  2    pamela.viquez.araya@una.ac.cr            pamela.viquez.araya@una.ac.cr            No
+  3    roy.perez.salazar@una.ac.cr              roy.perez.salazar@una.ac.cr              No
+  4    solvoadmin                               sitio@solvosoft.com                      Si
+  5    victor.alvarez.valverde@una.ac.cr                                                 No
+  6    wendy.umana.herrera                      wendy.umana.herrera@una.cr               Si
+
+--------------------------------------------------------------------------------
+Organizacion : LAPRONEB
+pk=23  nivel=2  padre=Escuela de Química
+Usuarios     : 8
+
+  #    Username                                 Email                                    Superuser
+  ---  ---------------------------------------- ---------------------------------------- ---------
+  1    TatianaV                                 tatiana.vargas.gonzalez@est.una.ac.cr    No
+  2    german                                   gedzar@gmail.com                         No
+  3    germanprueba                             gedzar@gmail.com                         No
+  4    pamela.viquez.araya@una.ac.cr            pamela.viquez.araya@una.ac.cr            No
+  5    roy.perez.salazar@una.ac.cr              roy.perez.salazar@una.ac.cr              No
+  6    sergio.alvarez.mcinerney@una.cr          sergio.alvarez.mcinerney@una.cr          No
+  7    solvoadmin                               sitio@solvosoft.com                      Si
+  8    wendy.umana.herrera                      wendy.umana.herrera@una.cr               Si
+
+--------------------------------------------------------------------------------
+Organizacion : LIB
+pk=24  nivel=2  padre=Escuela de Química
+Usuarios     : 15
+
+  #    Username                                 Email                                    Superuser
+  ---  ---------------------------------------- ---------------------------------------- ---------
+  1    Francis                                  ana.carballo.arce@una.ac.cr              No
+  2    LuisRo                                   luis.villegas.penaranda@una.cr           No
+  3    alanis.rodriguez.avila@est.una.ac.cr     alanis.rodriguez.avila@est.una.ac.cr     No
+  4    angel.calderon.alvarado@est.una.ac.cr    angel.calderon.alvarado@est.una.ac.cr    No
+  5    evans.alpizar.montoya@est.una.ac.cr      evans.alpizar.montoya@est.una.ac.cr      No
+  6    german                                   gedzar@gmail.com                         No
+  7    kerlyn.jimenez.araya@est.una.ac.cr       kerlyn.jimenez.araya@est.una.ac.cr       No
+  8    nicole.otieno.munoz@est.una.ac.cr        nicole.otieno.munoz@est.una.ac.cr        No
+  9    pamela.viquez.araya@una.ac.cr            pamela.viquez.araya@una.ac.cr            No
+  10   raul.garro.alvarez@una.cr                raul.garro.alvarez@una.cr                No
+  11   roy.perez.salazar@una.ac.cr              roy.perez.salazar@una.ac.cr              No
+  12   sergio.alvarez.mcinerney@una.cr          sergio.alvarez.mcinerney@una.cr          No
+  13   solvoadmin                               sitio@solvosoft.com                      Si
+  14   wendy.umana.herrera                      wendy.umana.herrera@una.cr               Si
+  15   yohana.alfaro.urena@una.cr               yohana.alfaro.urena@una.cr               No
+
+--------------------------------------------------------------------------------
+Organizacion : Laboratorio de Bacteriologia EMV-UNA
+pk=31  nivel=2  padre=Escuela de Medicina Veterinaria
+Usuarios     : 5
+
+  #    Username                                 Email                                    Superuser
+  ---  ---------------------------------------- ---------------------------------------- ---------
+  1    Laboratorio                              bacteriologia.emv@una.cr                 No
+  2    elias.barquero.calvo@una.cr              elias.barquero.calvo@una.cr              No
+  3    solvoadmin                               sitio@solvosoft.com                      Si
+  4    wendy.umana.herrera                      wendy.umana.herrera@una.cr               Si
+  5    xindy.viquez.rodriguez@una.cr            xindy.viquez.rodriguez@una.cr            No
+
+--------------------------------------------------------------------------------
+Organizacion : Laboratorios de Docencia Universidad Nacional
+pk=14  nivel=2  padre=Escuela de Química
+Usuarios     : 10
+
+  #    Username                                 Email                                    Superuser
+  ---  ---------------------------------------- ---------------------------------------- ---------
+  1    Joseph.vargas.ocampo@est.una.ac.cr       Joseph.vargas.ocampo@est.una.ac.cr       No
+  2    Ligiasolis                               ligia.solis.torres@una.cr                No
+  3    Ligiasolistorres                         lsoli@una.cr                             No
+  4    dbarcer                                  david.barrantes.cerdas@una.ac.cr         No
+  5    edwin.salas.gonzalez@una.ac.cr           edwin.salas.gonzalez@una.ac.cr           No
+  6    gea.bonilla.duran@una.cr                 gea.bonilla.duran@una.cr                 No
+  7    german                                   gedzar@gmail.com                         No
+  8    luis.benavides.melendez@est.una.ac.cr    luis.benavides.melendez@est.una.ac.cr    No
+  9    solvoadmin                               sitio@solvosoft.com                      Si
+  10   wendy.umana.herrera                      wendy.umana.herrera@una.cr               Si
+
+--------------------------------------------------------------------------------
+Organizacion : STEM LAB QUIMICA
+pk=16  nivel=2  padre=Escuela de Química
+Usuarios     : 10
+
+  #    Username                                 Email                                    Superuser
+  ---  ---------------------------------------- ---------------------------------------- ---------
+  1    Alemago                                  alexandra.marin.gonzalez@est.una.ac.cr   No
+  2    Gea.Bonilla                              gea.bonilla.duran@una.ac.cr              No
+  3    JoseVV                                   jose.villarreal.valenciano@una.cr        No
+  4    Ligiasolis                               ligia.solis.torres@una.cr                No
+  5    Ligiasolistorres                         lsoli@una.cr                             No
+  6    edwin.salas.gonzalez@una.ac.cr           edwin.salas.gonzalez@una.ac.cr           No
+  7    gea.bonilla.duran@una.cr                 gea.bonilla.duran@una.cr                 No
+  8    german                                   gedzar@gmail.com                         No
+  9    solvoadmin                               sitio@solvosoft.com                      Si
+  10   wendy.umana.herrera                      wendy.umana.herrera@una.cr               Si
+
+--------------------------------------------------------------------------------
+Organizacion : Laboratorio de  Servicios
+pk=32  nivel=4  padre=Escuela de Química
+Usuarios     : 4
+
+  #    Username                                 Email                                    Superuser
+  ---  ---------------------------------------- ---------------------------------------- ---------
+  1    lasa.eq@gmail.com                                                                 No
+  2    ryan.molina@ucr.ac.cr                    rymowe@gmail.com                         No
+  3    solvoadmin                               sitio@solvosoft.com                      Si
+  4    wendy.umana.herrera                      wendy.umana.herrera@una.cr               Si
+
+--------------------------------------------------------------------------------
+Organizacion : Laboratorio de Análisis y Servicios Químicos (LASEQ)
+pk=15  nivel=4  padre=Escuela de Química
+Usuarios     : 9
+
+  #    Username                                 Email                                    Superuser
+  ---  ---------------------------------------- ---------------------------------------- ---------
+  1    Gea.Bonilla                              gea.bonilla.duran@una.ac.cr              No
+  2    JoelR                                    joel.ramirez.alfaro@una.cr               No
+  3    KarinaH                                  karina.hernandez.ugalde@una.cr           No
+  4    Ligiasolis                               ligia.solis.torres@una.cr                No
+  5    Ligiasolistorres                         lsoli@una.cr                             No
+  6    gea.bonilla.duran@una.cr                 gea.bonilla.duran@una.cr                 No
+  7    german                                   gedzar@gmail.com                         No
+  8    solvoadmin                               sitio@solvosoft.com                      Si
+  9    wendy.umana.herrera                      wendy.umana.herrera@una.cr               Si
+
+================================================================================

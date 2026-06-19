@@ -154,7 +154,7 @@ class AddProfileDigitalSignatureForm(GTForm):
 
 class LaboratoryOfOrganizationForm(GTForm):
     laboratories = forms.ModelMultipleChoiceField(
-        queryset=Laboratory.objects.all(),
+        queryset=Laboratory.objects.filter(approval_status=Laboratory.APPROVED),
         widget=AutocompleteSelect(
             "laborgbase", attrs={"data-s2filter-organization": ".nodeorg:checked"}
         ),
@@ -175,7 +175,7 @@ class OrganizationForViewsetForm(forms.Form):
 
 
 class LaboratoryAndOrganizationForm(OrganizationForViewsetForm):
-    laboratory = forms.ModelChoiceField(queryset=Laboratory.objects.all())
+    laboratory = forms.ModelChoiceField(queryset=Laboratory.objects.filter(approval_status=Laboratory.APPROVED))
 
 
 class ProfileListForm(GTForm):
@@ -193,7 +193,7 @@ class ProfileListForm(GTForm):
         label=_("User"),
     )
     addlaboratories = forms.ModelMultipleChoiceField(
-        queryset=Laboratory.objects.all(),
+        queryset=Laboratory.objects.filter(approval_status=Laboratory.APPROVED),
         widget=AutocompleteSelectMultiple(
             "laborgbase",
             attrs={
@@ -222,7 +222,7 @@ class OrganizationActions(GTForm):
         widget=genwidgets.Select, choices=ACTIONS, label=_("Actions")
     )
     action_organization = forms.ModelChoiceField(
-        queryset=OrganizationStructure.objects.all(), widget=genwidgets.HiddenInput
+        queryset=OrganizationStructure.objects.filter(approval_status=OrganizationStructure.APPROVED), widget=genwidgets.HiddenInput
     )
     name = forms.CharField(widget=genwidgets.TextInput, required=True, label=_("Name"))
 
@@ -259,13 +259,13 @@ class OrganizationActionsClone(GTForm):
         widget=genwidgets.Select, choices=ACTIONS, label=_("Actions")
     )
     action_organization = forms.ModelChoiceField(
-        queryset=OrganizationStructure.objects.all(), widget=genwidgets.HiddenInput
+        queryset=OrganizationStructure.objects.filter(approval_status=OrganizationStructure.APPROVED), widget=genwidgets.HiddenInput
     )
 
 
 class ContentypeForm(GTForm, forms.Form):
     organization = forms.IntegerField()
-    contentyperelobj = forms.ModelMultipleChoiceField(queryset=Laboratory.objects.all())
+    contentyperelobj = forms.ModelMultipleChoiceField(queryset=Laboratory.objects.filter(approval_status=Laboratory.APPROVED))
 
 
 class ProfileGroupForm(GTForm):
@@ -293,7 +293,7 @@ class ProfileGroupForm(GTForm):
 
 class OrgTreeForm(GTForm):
     organization = forms.ModelChoiceField(
-        queryset=OrganizationStructure.objects.all(),
+        queryset=OrganizationStructure.objects.filter(approval_status=OrganizationStructure.APPROVED),
         widget=AutocompleteSelect("orgtree"),
         label=_("Organization"),
     )
@@ -310,7 +310,7 @@ class SearchObjByOrgForm(GTForm):
 
 
 class SearchShelfObjectViewsetForm(forms.Form):
-    organization = forms.ModelChoiceField(queryset=OrganizationStructure.objects.all())
+    organization = forms.ModelChoiceField(queryset=OrganizationStructure.objects.filter(approval_status=OrganizationStructure.APPROVED))
     object = forms.ModelChoiceField(queryset=Object.objects.all())
 
 
@@ -332,7 +332,7 @@ class RolListForm(GTForm, forms.Form):
         label=_("Filter by roles"),
     )
     organization = forms.ModelChoiceField(
-        queryset=OrganizationStructure.objects.all().order_by("pk"),
+        queryset=OrganizationStructure.objects.filter(approval_status=OrganizationStructure.APPROVED).order_by("pk"),
         widget=genwidgets.Select,
         label=_("Filter by organization"),
     )

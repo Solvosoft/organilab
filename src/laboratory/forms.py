@@ -23,6 +23,7 @@ from derb.models import CustomForm as DerbCustomForm
 from laboratory import utils
 from laboratory.models import (
     OrganizationStructure,
+    Laboratory,
     CommentInform,
     Catalog,
     InformScheduler,
@@ -315,7 +316,7 @@ class TransferObjectForm(GTForm):
     )
     laboratory = forms.ModelChoiceField(
         widget=genwidgets.Select,
-        queryset=Laboratory.objects.all(),
+        queryset=Laboratory.objects.filter(approval_status=Laboratory.APPROVED),
         label=_("Laboratory"),
         required=True,
     )
@@ -535,7 +536,7 @@ class AddOrganizationForm(GTForm, forms.ModelForm):
 
 class RelOrganizationForm(GTForm):
     contentyperelobj = forms.ModelMultipleChoiceField(
-        queryset=Laboratory.objects.all(),
+        queryset=Laboratory.objects.filter(approval_status=Laboratory.APPROVED),
         widget=AutocompleteSelectMultiple(
             url="relorgbase",
             attrs={"data-s2filter-organization": "#relorg_organization"},
@@ -797,13 +798,13 @@ class PasswordCodeForm(PasswordChangeForm):
 
 
 class ShelfObjectOptions(GTForm, forms.Form):
-    lab = forms.ModelChoiceField(queryset=Laboratory.objects.all(), required=True)
+    lab = forms.ModelChoiceField(queryset=Laboratory.objects.filter(approval_status=Laboratory.APPROVED), required=True)
     options = forms.IntegerField(required=True)
     shelf_object = forms.IntegerField(required=True)
 
 
 class ShelfObjectListForm(GTForm, forms.Form):
-    lab = forms.ModelChoiceField(queryset=Laboratory.objects.all(), required=True)
+    lab = forms.ModelChoiceField(queryset=Laboratory.objects.filter(approval_status=Laboratory.APPROVED), required=True)
     id = forms.IntegerField(required=True)
 
 

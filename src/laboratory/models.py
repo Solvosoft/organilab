@@ -1085,12 +1085,12 @@ class OrganizationStructureManager(models.Manager):
         ) | Q(users=user)
         if org_pk:
             organizations = (
-                OrganizationStructure.objects.filter(pk=org_pk)
+                OrganizationStructure.objects.filter(pk=org_pk, approval_status=OrganizationStructure.APPROVED)
                 .filter(qparams)
                 .distinct()
             )
         else:
-            organizations = OrganizationStructure.objects.filter(qparams).distinct()
+            organizations = OrganizationStructure.objects.filter(qparams, approval_status=OrganizationStructure.APPROVED).distinct()
 
         pks = []
         for org in organizations:
@@ -1107,7 +1107,7 @@ class OrganizationStructureManager(models.Manager):
                     )
                 )
         if pks:
-            return OrganizationStructure.objects.filter(pk__in=pks)
+            return OrganizationStructure.objects.filter(pk__in=pks, approval_status=OrganizationStructure.APPROVED)
         return OrganizationStructure.objects.none()
 
     def get_user_organizations(self, user, org_pk):
@@ -1152,9 +1152,9 @@ class OrganizationStructureManager(models.Manager):
         if not base_org_ids:
             return OrganizationStructure.objects.none()
 
-        organizations = OrganizationStructure.objects.filter(pk__in=base_org_ids)
+        organizations = OrganizationStructure.objects.filter(pk__in=base_org_ids, approval_status=OrganizationStructure.APPROVED)
 
-        pks = set(base_org_ids)
+        pks = set(organizations.values_list("pk", flat=True))
 
         for org in organizations:
             if org.pk in orgs_with_permissions:
@@ -1162,9 +1162,9 @@ class OrganizationStructureManager(models.Manager):
                     org.parent.enable_child_organizations if org.parent else False
                 )
                 if descendants and enable_child == False:
-                    descendant_pks = org.descendants(include_self=False).values_list(
-                        "pk", flat=True
-                    )
+                    descendant_pks = org.descendants(include_self=False).filter(
+                        approval_status=OrganizationStructure.APPROVED
+                    ).values_list("pk", flat=True)
                     pks.update(descendant_pks)
 
             # if ancestors:
@@ -1200,7 +1200,7 @@ class OrganizationStructureManager(models.Manager):
             #             pks.append(parent.pk)
 
         if pks:
-            return OrganizationStructure.objects.filter(pk__in=pks)
+            return OrganizationStructure.objects.filter(pk__in=pks, approval_status=OrganizationStructure.APPROVED)
 
         return OrganizationStructure.objects.none()
 
@@ -1256,6 +1256,21 @@ class OrganizationStructure(TreeNode):
     objects = TreeQuerySet.as_manager()
     os_manager = OrganizationStructureManager()
     enable_child_organizations = models.BooleanField(default=False)
+
+    PENDING = 0
+    APPROVED = 1
+    APPROVAL_STATUS = (
+        (PENDING, _("Pending approval")),
+        (APPROVED, _("Approved")),
+    )
+    approval_status = models.SmallIntegerField(
+        _("Approval status"), choices=APPROVAL_STATUS, default=PENDING
+    )
+    approved_by = models.ForeignKey(
+        User, null=True, blank=True, on_delete=models.SET_NULL,
+        related_name="approved_organizations"
+    )
+    approved_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         ordering = ["position"]
@@ -1359,6 +1374,7 @@ class OrganizationStructure(TreeNode):
                 organization_id__in=org_ids,
                 content_type=lab_content_type,
                 organization__active=True,
+                organization__approval_status=OrganizationStructure.APPROVED,
             )
             .values_list("object_id", flat=True)
             .distinct()
@@ -1483,6 +1499,21 @@ class Laboratory(BaseCreationObj):
         related_name="workplace",
         verbose_name=_("Workplace"),
     )
+
+    PENDING = 0
+    APPROVED = 1
+    APPROVAL_STATUS = (
+        (PENDING, _("Pending approval")),
+        (APPROVED, _("Approved")),
+    )
+    approval_status = models.SmallIntegerField(
+        _("Approval status"), choices=APPROVAL_STATUS, default=PENDING
+    )
+    approved_by = models.ForeignKey(
+        User, null=True, blank=True, on_delete=models.SET_NULL,
+        related_name="approved_laboratories"
+    )
+    approved_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         verbose_name = _("Laboratory")

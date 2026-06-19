@@ -1,6 +1,6 @@
 from django.db.models import Q
 
-from laboratory.models import OrganizationStructure
+from laboratory.models import OrganizationStructure, Laboratory
 
 
 def getLevelClass(level):
@@ -22,7 +22,7 @@ def getLevelClass(level):
 
 def getNodeInformation(node):
     users = []
-    labs = node.laboratory_set.all()
+    labs = node.laboratory_set.filter(approval_status=Laboratory.APPROVED)
     users += list(node.users.all())
 
     return {"node": node, "users": users, "labs": labs}
@@ -32,6 +32,7 @@ def get_descendants_by_org(pks, node, extras, user, parents):
     pks.append(node.pk)
     descendants = (
         node.descendants()
+        .filter(approval_status=OrganizationStructure.APPROVED)
         .filter(**extras)
         .filter(Q(users=user) | Q(pk__in=parents))
         .distinct()

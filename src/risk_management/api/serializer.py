@@ -47,7 +47,7 @@ class AddRegentSerializer(serializers.ModelSerializer):
                 pk__in=get_users_from_organization(root.root.pk)
             )
             fields["laboratories"].queryset = Laboratory.objects.filter(
-                organization=root.root
+                organization=root.root, approval_status=Laboratory.APPROVED
             )
 
         return fields
@@ -74,7 +74,7 @@ class UpdateRegentSerializer(serializers.ModelSerializer):
         fields = super().get_fields(*args, **kwargs)
         organization = self.context.get("org_pk", None)
         fields["laboratories"].queryset = Laboratory.objects.filter(
-            organization__pk=organization
+            organization__pk=organization, approval_status=Laboratory.APPROVED
         )
 
         return fields
@@ -261,7 +261,7 @@ class ActionIncidentReportSerializer(serializers.ModelSerializer):
     laboratories = serializers.PrimaryKeyRelatedField(
         many=True,
         required=False,
-        queryset=Laboratory.objects.all(),
+        queryset=Laboratory.objects.filter(approval_status=Laboratory.APPROVED),
         allow_null=False,
         allow_empty=False,
     )
@@ -286,7 +286,7 @@ class ActionIncidentReportSerializer(serializers.ModelSerializer):
                 pk__in=risk.buildings.values_list("pk", flat=True)
             )
         fields["laboratories"].queryset = Laboratory.objects.filter(
-            pk__in=get_users_from_organization(organization)
+            pk__in=get_users_from_organization(organization), approval_status=Laboratory.APPROVED
         )
 
         return fields

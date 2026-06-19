@@ -39,6 +39,7 @@ class SearchDisposalObject(ListView):
         labs = Laboratory.objects.filter(
             organization__in=org_pks,
             laboratoryroom__furniture__shelf__shelfobject__marked_as_discard=True,
+            approval_status=Laboratory.APPROVED,
         ).distinct()
 
         return labs

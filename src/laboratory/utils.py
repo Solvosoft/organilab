@@ -67,7 +67,8 @@ def get_user_laboratories(user, q=None):
 
 def filter_laboratorist_profile_student(user, user_org, q=None):
     queryset = Laboratory.objects.filter(
-        Q(profile__user=user.pk) | Q(organization__in=user_org)
+        Q(profile__user=user.pk) | Q(organization__in=user_org),
+        approval_status=Laboratory.APPROVED,
     ).distinct()
     if q is not None:
         queryset = queryset.filter(name__icontains=q)
@@ -78,7 +79,8 @@ def filter_laboratorist_profile(user, user_org=None):
     if user_org is None:
         user_org = OrganizationStructure.os_manager.filter_user(user)
     return Laboratory.objects.filter(
-        Q(profile__user=user.pk) | Q(organization__in=user_org)
+        Q(profile__user=user.pk) | Q(organization__in=user_org),
+        approval_status=Laboratory.APPROVED,
     ).distinct()
 
 
@@ -196,7 +198,7 @@ def get_laboratories_from_organization(rootpk, user):
             content_type__app_label="laboratory",
             content_type__model="laboratory",
         ).values_list("object_id", flat=True)
-        return Laboratory.objects.filter(pk__in=pp).values_list("pk", flat=True)
+        return Laboratory.objects.filter(pk__in=pp, approval_status=Laboratory.APPROVED).values_list("pk", flat=True)
 
 
 def get_cas(object, default=None):
@@ -450,7 +452,8 @@ def get_laboratories_from_organization_profile(rootpk, user):
             .values_list("pk", flat=True)
         )
         return Laboratory.objects.filter(
-            organization__in=desendants, profile__user__pk=user
+            organization__in=desendants, profile__user__pk=user,
+            approval_status=Laboratory.APPROVED,
         ).distinct()
 
     return Laboratory.objects.none()
@@ -718,3 +721,75 @@ def get_lab_ids(organization, profile):
         org_lab_ids = organization.get_my_laboratories
         lab_ids = [lab_id for lab_id in lab_ids if lab_id in org_lab_ids]
     return lab_ids
+
+
+def _get_root_org_pks():
+    """Return PKs of all root organizations (no parent = system level)."""
+    from laboratory.models import OrganizationStructure
+    return list(OrganizationStructure.objects.filter(parent=None).values_list("pk", flat=True))
+
+
+def user_is_administrativo_superior(user):
+    """True if user has Administrativo superior role in any root organization."""
+    root_pks = _get_root_org_pks()
+    return ProfilePermission.objects.filter(
+        profile=user.profile,
+        content_type__app_label="laboratory",
+        content_type__model="organizationstructure",
+        object_id__in=root_pks,
+        rol__name="Administrativo superior",
+    ).exists()
+
+
+def notify_pending_approval(instance, request, auto_approved=False):
+    import logging
+    from async_notifications.utils import send_email_from_template
+    from django.contrib.contenttypes.models import ContentType
+    from django.urls import reverse
+    from report.utils import create_notification
+    from django.utils.translation import gettext as _
+    from laboratory.models import OrganizationStructure
+
+    logger = logging.getLogger(__name__)
+    creator = request.user
+
+    if auto_approved:
+        action_url = request.build_absolute_uri(
+            reverse("auth_and_perms:organizationManager")
+        )
+        template_code = "Auto approved creation"
+        notification_msg = _("%(creator)s created %(name)s (auto-approved)") % {
+            "creator": str(creator), "name": instance.name
+        }
+    else:
+        action_url = request.build_absolute_uri(reverse("laboratory:approvals"))
+        template_code = "Pending approval"
+        notification_msg = _("%(creator)s created %(name)s and it requires approval") % {
+            "creator": str(creator), "name": instance.name
+        }
+
+    org_ct = ContentType.objects.get_for_model(OrganizationStructure)
+    root_pks = _get_root_org_pks()
+    admins = User.objects.filter(
+        profile__profilepermission__content_type=org_ct,
+        profile__profilepermission__object_id__in=root_pks,
+        profile__profilepermission__rol__name="Administrativo superior",
+    ).exclude(pk=creator.pk).distinct()
+
+    for admin in admins:
+        try:
+            create_notification(admin, notification_msg, action_url)
+        except Exception:
+            logger.exception("Error creating notification for user %s", admin.pk)
+        if admin.email:
+            try:
+                send_email_from_template(
+                    template_code,
+                    admin.email,
+                    context={"obj": instance, "url": action_url, "creator": creator},
+                    enqueued=False,
+                    user=None,
+                    upfile=None,
+                )
+            except Exception:
+                logger.exception("Error sending email to %s", admin.email)

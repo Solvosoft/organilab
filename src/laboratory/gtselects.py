@@ -870,7 +870,8 @@ class RiskLaboratorylLookup(BaseSelect2View):
                 OrganizationStructure, pk=self.organization
             )
             queryset = Laboratory.objects.filter(
-                pk__in=organization.get_my_laboratories
+                pk__in=organization.get_my_laboratories,
+                approval_status=Laboratory.APPROVED,
             )
         else:
             queryset = queryset.none()

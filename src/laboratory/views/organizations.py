@@ -15,6 +15,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
+from django.utils.timezone import now as timezone_now
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import DeleteView, CreateView, UpdateView, FormView
 from djgentelella.forms.forms import GTForm
@@ -38,7 +39,7 @@ from laboratory.models import (
 )
 from .djgeneric import ListView
 from ..forms import AddOrganizationForm, ChangeOrganizationParentForm
-from ..utils import organilab_logentry
+from ..utils import organilab_logentry, notify_pending_approval, user_is_administrativo_superior
 
 
 class OrganizationSelectableForm(GTForm, forms.Form):
@@ -55,7 +56,7 @@ class OrganizationSelectableForm(GTForm, forms.Form):
             self.fields["filter_organization"].queryset = organizations.distinct()
         elif self.user.is_superuser:
             self.fields["filter_organization"].queryset = (
-                OrganizationStructure.objects.all()
+                OrganizationStructure.objects.filter(approval_status=OrganizationStructure.APPROVED)
             )
 
 
@@ -86,7 +87,8 @@ class OrganizationReportView(ListView):
                         include_self=True
                     )
                     labs = Laboratory.objects.filter(
-                        organization__in=organizations_child
+                        organization__in=organizations_child,
+                        approval_status=Laboratory.APPROVED,
                     )
                 else:
                     labs = Laboratory.objects.none()
@@ -98,13 +100,14 @@ class OrganizationReportView(ListView):
                 )
                 if organizations_child:  # show organizations laboratories
                     labs = Laboratory.objects.filter(
-                        organization__in=organizations_child
+                        organization__in=organizations_child,
+                        approval_status=Laboratory.APPROVED,
                     )
                 else:  # show only assign laboratory
                     labs = (
                         Profile.objects.filter(user=self.user)
                         .first()
-                        .laboratories.all()
+                        .laboratories.filter(approval_status=Laboratory.APPROVED)
                     )
         #  when have nothing assign
         else:
@@ -115,10 +118,11 @@ class OrganizationReportView(ListView):
                         include_self=True
                     )
                     labs = Laboratory.objects.filter(
-                        organization__in=organizations_child
+                        organization__in=organizations_child,
+                        approval_status=Laboratory.APPROVED,
                     )
                 else:
-                    labs = Laboratory.objects.all()
+                    labs = Laboratory.objects.filter(approval_status=Laboratory.APPROVED)
             # Dont show if have nothing
             else:
                 labs = Laboratory.objects.none()
@@ -189,15 +193,23 @@ class OrganizationCreateView(CreateView):
         response = super().form_valid(form)
         if self.object.parent:
             self.object.position = self.object.parent.last_child_position + 1
-            self.object.save()
+        is_superior = user_is_administrativo_superior(self.request.user)
+        if is_superior:
+            self.object.approval_status = OrganizationStructure.APPROVED
+            self.object.approved_by = self.request.user
+            self.object.approved_at = timezone_now()
+        else:
+            self.object.approval_status = OrganizationStructure.PENDING
+        self.object.save()
         set_rol_administrator_on_org(self.request.user.profile, self.object)
         organilab_logentry(
             self.request.user,
             self.object,
             ADDITION,
             "organization structure",
-            changed_data=["organization", "users"],
+            changed_data=["organization", "users", "approval_status"],
         )
+        notify_pending_approval(self.object, self.request, auto_approved=is_superior)
         return response
 
 
@@ -254,12 +266,16 @@ class OrganizationActionsFormview(FormView):
         )
 
     def clone_organization(self, form):
+        is_superior = user_is_administrativo_superior(self.request.user)
         newinstance = OrganizationStructure.objects.create(
             name=self.org.name + "-clone",
             position=self.org.position,
             level=self.org.level,
             active=True,
             parent=self.org.parent,
+            approval_status=OrganizationStructure.APPROVED if is_superior else OrganizationStructure.PENDING,
+            approved_by=self.request.user if is_superior else None,
+            approved_at=timezone_now() if is_superior else None,
         )
         newinstance.users.add(self.request.user)
         organilab_logentry(
@@ -267,8 +283,9 @@ class OrganizationActionsFormview(FormView):
             newinstance,
             ADDITION,
             "clone organization structure",
-            changed_data=["name", "position", "level", "active", "parent", "users"],
+            changed_data=["name", "position", "level", "active", "parent", "users", "approval_status"],
         )
+        notify_pending_approval(newinstance, self.request, auto_approved=is_superior)
 
         for orgrel in OrganizationStructureRelations.objects.filter(
             organization=self.org

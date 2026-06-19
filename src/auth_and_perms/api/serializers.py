@@ -54,14 +54,14 @@ class ProfileAssociateOrganizationSerializer(serializers.Serializer):
         many=False, queryset=User.objects.all(), required=True
     )
     organization = serializers.PrimaryKeyRelatedField(
-        many=False, queryset=OrganizationStructure.objects.all(), required=True
+        many=False, queryset=OrganizationStructure.objects.filter(approval_status=OrganizationStructure.APPROVED), required=True
     )
     laboratory = serializers.PrimaryKeyRelatedField(
-        many=False, queryset=Laboratory.objects.all(), required=False
+        many=False, queryset=Laboratory.objects.filter(approval_status=Laboratory.APPROVED), required=False
     )
     addlaboratories = serializers.PrimaryKeyRelatedField(
         many=True,
-        queryset=Laboratory.objects.using(settings.READONLY_DATABASE).all(),
+        queryset=Laboratory.objects.using(settings.READONLY_DATABASE).filter(approval_status=Laboratory.APPROVED),
         required=False,
     )
 
@@ -79,7 +79,7 @@ class AuthenticateDataRequestNotifySerializer(serializers.Serializer):
 
 class ContentTypeObjectToPermissionManager(serializers.Serializer):
     org = serializers.PrimaryKeyRelatedField(
-        queryset=OrganizationStructure.objects.all()
+        queryset=OrganizationStructure.objects.filter(approval_status=OrganizationStructure.APPROVED)
     )
     appname = serializers.CharField()
     model = serializers.CharField()
@@ -266,7 +266,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 class ExternalUserSerializer(serializers.ModelSerializer):
     organization = serializers.PrimaryKeyRelatedField(
-        queryset=OrganizationStructure.objects.all()
+        queryset=OrganizationStructure.objects.filter(approval_status=OrganizationStructure.APPROVED)
     )
 
     def validate_email(self, value):
@@ -296,7 +296,7 @@ class ExternalUserSerializer(serializers.ModelSerializer):
 
 class AddExternalUserSerializer(serializers.ModelSerializer):
     organization = serializers.PrimaryKeyRelatedField(
-        queryset=OrganizationStructure.objects.all(), required=True
+        queryset=OrganizationStructure.objects.filter(approval_status=OrganizationStructure.APPROVED), required=True
     )
     pk = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=True)
 
@@ -340,14 +340,14 @@ class DeleteUserFromContenttypeSerializer(serializers.Serializer):
     model = serializers.CharField()
     object_id = serializers.IntegerField()
     organization = serializers.PrimaryKeyRelatedField(
-        many=False, queryset=OrganizationStructure.objects.all()
+        many=False, queryset=OrganizationStructure.objects.filter(approval_status=OrganizationStructure.APPROVED)
     )
     disable_user = serializers.BooleanField(default=False)
 
 
 class UserAccessOrgLabValidateSerializer(serializers.Serializer):
     laboratory = serializers.PrimaryKeyRelatedField(
-        queryset=Laboratory.objects.using(settings.READONLY_DATABASE)
+        queryset=Laboratory.objects.using(settings.READONLY_DATABASE).filter(approval_status=Laboratory.APPROVED)
     )
     organization = serializers.PrimaryKeyRelatedField(
         queryset=OrganizationStructure.objects.using(settings.READONLY_DATABASE)
@@ -384,7 +384,7 @@ class UserAccessOrgLabValidateSerializer(serializers.Serializer):
 
 class ValidateUserAccessOrgLabSerializer(UserAccessOrgLabValidateSerializer):
     laboratory = serializers.PrimaryKeyRelatedField(
-        queryset=Laboratory.objects.using(settings.READONLY_DATABASE)
+        queryset=Laboratory.objects.using(settings.READONLY_DATABASE).filter(approval_status=Laboratory.APPROVED)
     )
     organization = serializers.PrimaryKeyRelatedField(
         queryset=OrganizationStructure.objects.using(settings.READONLY_DATABASE)
@@ -591,7 +591,7 @@ class ValidateSearchShelfObjectSerializer(ValidateOrganizationSerializer):
 
 class ValidateLabOrgObjectSerializer(serializers.Serializer):
     laboratory = serializers.PrimaryKeyRelatedField(
-        queryset=Laboratory.objects.using(settings.READONLY_DATABASE)
+        queryset=Laboratory.objects.using(settings.READONLY_DATABASE).filter(approval_status=Laboratory.APPROVED)
     )
     organization = serializers.PrimaryKeyRelatedField(
         queryset=OrganizationStructure.objects.using(settings.READONLY_DATABASE)
@@ -649,7 +649,7 @@ class ListUserSerializer(serializers.ModelSerializer):
             content_type__model="laboratory",
         ).values_list("object_id", flat=True)
         labs = list(
-            set(Laboratory.objects.filter(pk__in=labs).values_list("name", "id"))
+            set(Laboratory.objects.filter(pk__in=labs, approval_status=Laboratory.APPROVED).values_list("name", "id"))
         )
 
         buttons = "<ul class='list-group'>"
@@ -740,7 +740,7 @@ class OrganizationLaboratorySerializer(serializers.ModelSerializer):
             content_type__model="laboratory",
         ).values_list("object_id", flat=True)
         labs = list(
-            set(Laboratory.objects.filter(pk__in=labs).values_list("name", "id"))
+            set(Laboratory.objects.filter(pk__in=labs, approval_status=Laboratory.APPROVED).values_list("name", "id"))
         )
 
         buttons = "<ul class='list-group'>"

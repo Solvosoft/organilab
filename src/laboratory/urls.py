@@ -58,6 +58,8 @@ from laboratory.api.views import (
     ObjectViewSet,
     ShelObjectReactiveViewset,
     ShelfObjectHcodeViewset,
+    OrgApprovalViewset,
+    LabApprovalViewset,
 )
 from laboratory.functions import return_laboratory_of_shelf_id
 from laboratory.protocol.views import (
@@ -97,6 +99,7 @@ from laboratory.views.organizations import (
     OrganizationUpdateView,
     OrganizationActionsFormview,
 )
+from laboratory.views.approvals import approvals_view
 from laboratory.views.provider import provider_view
 
 objviews = ObjectView()
@@ -301,7 +304,14 @@ organization_urls = [
     path("profile/info/<int:org_pk>/<int:pk>", get_profile, name="profile_detail"),
     path("logentry/<int:org_pk>", get_logentry_from_organization, name="logentry_list"),
     path("reports/<int:org_pk>/", reports.report_index, name="reports"),
+    path("organization/manage/approvals/", approvals_view, name="approvals"),
 ]
+
+approvals_org_router = DefaultRouter()
+approvals_org_router.register("api/approvals/orgs", OrgApprovalViewset, basename="api-org-approval")
+
+approvals_lab_router = DefaultRouter()
+approvals_lab_router.register("api/approvals/labs", LabApprovalViewset, basename="api-lab-approval")
 
 objectfeature_router = DefaultRouter()
 objectfeature_router.register(
@@ -580,6 +590,7 @@ shelfobject_hcode_router.register(
     basename="api-shelfobject-hcode",
 )
 """MULTILAB"""
+urlpatterns += approvals_org_router.urls + approvals_lab_router.urls
 urlpatterns += organization_urls + [
     path("<int:org_pk>/", include(organization_urls_org_pk)),
     path("inform_manager/<int:org_pk>/", include(informs_period_urls)),
