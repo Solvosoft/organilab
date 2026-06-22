@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
     permission_required(
-        "reservations_management.add_reservations", raise_exception=True
+        "reservations_management.view_reservations", raise_exception=True
     ),
     name="dispatch",
 )
