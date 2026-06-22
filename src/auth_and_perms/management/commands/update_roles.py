@@ -796,6 +796,10 @@ def update_tecnico_laboratorio():
             "laboratory.change_commentinform",
             "laboratory.view_catalog",
             "reservations_management.delete_reservations",
+            "risk_management.view_buildings",
+            "risk_management.view_structure",
+            "risk_management.view_regent",
+            "risk_management.view_workday",
         ],
     )
 
@@ -847,7 +851,6 @@ def update_tecnico_laboratorio():
             "risk_management.change_riskzone",
             "risk_management.delete_riskzone",
             "risk_management.add_zonetype",
-            "risk_management.view_regent",
             "sga.add_dangerindication",
             "sga.change_dangerindication",
             "sga.delete_dangerindication",
@@ -874,6 +877,27 @@ def update_tecnico_laboratorio():
             "sga.add_warningword",
             "sga.change_warningword",
             "sga.delete_warningword",
+            "sga.change_dangerindication",
+            "sga.delete_dangerindication",
+            "sga.delete_prudenceadvice",
+            "sga.delete_dangerprudence",
+            "sga.change_dangersubstance",
+            "sga.delete_dangersubstance",
+            "sga.change_dangersubstancecategory",
+            "sga.delete_dangersubstancecategory",
+            "sga.delete_hcodecategory",
+            "sga.delete_pictogram",
+            "sga.delete_warningword",
+            "sga.delete_warningclass",
+            "sga.add_recipientsize",
+            "sga.change_recipientsize",
+            "sga.delete_recipientsize",
+            "sga.view_recipientsize",
+            "sga.change_templatesga",
+            "sga.view_builderinformation",
+            "sga.view_substance",
+            "sga.change_substance",
+            "auth_and_perms.institution_can_access",
         ],
     )
 
@@ -953,3 +977,4 @@ class Command(BaseCommand):
         update_depositante_residuos()
         update_solo_lectura()
         update_regente()
+        update_tecnico_laboratorio()
