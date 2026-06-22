@@ -541,6 +541,7 @@ def update_tesista_modulo_desechos():
             "laboratory.change_shelfobject",
             "laboratory.view_shelf",
             "laboratory.view_catalog",
+            "risk_management.view_riskzone",
         ],
     )
 
