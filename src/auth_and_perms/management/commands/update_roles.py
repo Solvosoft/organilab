@@ -661,10 +661,23 @@ def update_tesista_modulo_desechos():
 
 
 def update_tecnico_laboratorio():
-    rol = Rol.objects.filter(name="Tecnico Laboratorio").first()
+    rol = Rol.objects.filter(name="Técnico de Laboratorio").first()
     if not rol:
         print("WARNING: Rol 'Tecnico Laboratorio' not found, skipping.")
         return
+
+    add_permissions(
+        rol,
+        [
+            "laboratory.add_commentinform",
+            "laboratory.view_commentinform",
+            "laboratory.delete_commentinform",
+            "laboratory.change_commentinform",
+            "laboratory.view_catalog",
+            "reservations_management.delete_reservations",
+        ],
+    )
+
     remove_permissions(
         rol,
         [
@@ -707,11 +720,13 @@ def update_tecnico_laboratorio():
             "msds.change_msdsobject",
             "msds.delete_msdsobject",
             "risk_management.change_incidentreport",
+            "risk_management.add_incidentreport",
             "risk_management.delete_incidentreport",
             "risk_management.add_riskzone",
             "risk_management.change_riskzone",
             "risk_management.delete_riskzone",
             "risk_management.add_zonetype",
+            "risk_management.view_regent",
             "sga.add_dangerindication",
             "sga.change_dangerindication",
             "sga.delete_dangerindication",

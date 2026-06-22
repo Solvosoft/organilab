@@ -20,7 +20,7 @@
 				<h2>{% trans 'Pending Reservations' %}</h2>
 			</div>
 			<div class="d-flex gap-2">
-				{% if perms.reservations_management.delete_reservedproducts %}
+				{% if perms.reservations_management.delete_reservations %}
 				<input data-bs-toggle="modal"
 											data-bs-target="#delete_all_obj_reservation_modal"
 											type="button"
@@ -29,7 +29,7 @@
 											class="btn btn-danger"
 											id="cancel_all_products_btn">
 				{% endif %}
-				{% if perms.reservations_management.add_reservedproducts %}
+				{% if perms.reservations_management.add_reservations %}
 				<input id="reserve_btn"
 											class="btn btn-success"
 											type="button"
@@ -67,7 +67,7 @@
 							<td>
 								{% if obj.status == 3 %}
 
-								{% if perms.reservations_management.delete_reservedproducts %}
+								{% if perms.reservations_management.delete_reservations %}
 									<button class="btn btn-danger" data-bs-toggle="modal"
 																	data-bs-target="#delete_selected_obj_reservation_modal"
 																	aria-label="{% trans 'Remove' %}" type="button" onclick="init_remove_reservation({{ obj.id }})">
