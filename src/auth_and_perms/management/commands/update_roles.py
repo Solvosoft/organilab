@@ -880,6 +880,32 @@ def update_sga():
     )
 
 
+def update_regente():
+    rol = Rol.objects.filter(name="Regente").first()
+    if not rol:
+        print("WARNING: Rol 'Regente' not found, skipping.")
+        return
+    add_permissions(
+        rol,
+        [
+            "auth.view_user",
+            "risk_management.view_workday",
+            "laboratory.view_provider",
+            "laboratory.view_protocol",
+        ],
+    )
+    remove_permissions(
+        rol,
+        [
+            "laboratory.view_baseunitvalues",
+            "laboratory.view_blockedlistnotification",
+            "laboratory.view_clinventory",
+            "msds.view_organilabnode",
+            "sga.view_builderinformation",
+        ],
+    )
+
+
 class Command(BaseCommand):
     help = "Update rol permissions by segment — idempotent, safe to re-run"
 
@@ -894,3 +920,4 @@ class Command(BaseCommand):
         update_tesista_modulo_desechos()
         update_depositante_residuos()
         update_solo_lectura()
+        update_regente()

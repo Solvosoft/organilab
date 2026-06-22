@@ -17,12 +17,12 @@
 
 		<div class="btn-toolbar justify-content-between" aria-label="Control button">
 			<div class="btn-group" role="group">
-				{% if perms.laboratory.add_provider %}
+				{% if perms.laboratory.view_provider %}
 					<a target="_blank" class="btn btn-outline-primary"
 								href="{% url 'laboratory:provider_view' org_pk=org_pk lab_pk=lab_pk %}">{% trans 'Provider' %}</a>
 				{% endif %}
 
-				{% if perms.laboratory.add_objectfeatures %}
+				{% if perms.laboratory.view_objectfeatures %}
 					<a target="_blank" class="btn btn-outline-primary"
 								href="{% url 'laboratory:objectfeatures_view' org_pk=org_pk lab_pk=lab_pk %}">{% trans 'Object features' %}</a>
 				{% endif %}
