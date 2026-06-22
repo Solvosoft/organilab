@@ -571,6 +571,7 @@ class ShelfObject(models.Model):
         ordering = ["pk", "object__name"]
         permissions = [
             ("can_view_contract", "Can view contract"),
+            ("can_view_process_condition", "Can view process condition"),
         ]
 
     def __str__(self):
