@@ -93,15 +93,10 @@ class ListZone(ListView):
 
         org_pk = self.kwargs["org_pk"]
 
-        x = ""
-        i = 0
+        x = f"?org_pk={org_pk}"
         for key in self.request.GET:
             for data in self.request.GET.getlist(key):
-                if i > 0:
-                    x += f"&{key}={data}"
-                else:
-                    x += f"?{key}={data}"
-                i += 1
+                x += f"&{key}={data}"
 
         context["eslochart"] = reverse("eslochart-detail", kwargs={"pk": org_pk}) + x
         for object in context["object_list"]:
@@ -408,43 +403,39 @@ class ZoneDashboard(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(ZoneDashboard, self).get_context_data()
-        context["org_pk"] = self.kwargs["org_pk"]
-        x = ""
-        i = 0
+        org_pk = self.kwargs["org_pk"]
+        context["org_pk"] = org_pk
+        x = f"?org_pk={org_pk}"
         for key in self.request.GET:
             for data in self.request.GET.getlist(key):
-                if i > 0:
-                    x += f"&{key}={data}"
-                else:
-                    x += f"?{key}={data}"
-                i += 1
+                x += f"&{key}={data}"
         urls = {
             "dangerindicationchart": reverse(
-                "dangerindicationchart-detail", kwargs={"pk": self.kwargs["org_pk"]}
+                "dangerindicationchart-detail", kwargs={"pk": org_pk}
             )
             + x,
             "whiteorganchart": reverse(
-                "whiteorganchart-detail", kwargs={"pk": self.kwargs["org_pk"]}
+                "whiteorganchart-detail", kwargs={"pk": org_pk}
             )
             + x,
             "precursortypechart": reverse(
-                "precursortypechart-detail", kwargs={"pk": self.kwargs["org_pk"]}
+                "precursortypechart-detail", kwargs={"pk": org_pk}
             )
             + x,
             "storageclasschart": reverse(
-                "storageclasschart-detail", kwargs={"pk": self.kwargs["org_pk"]}
+                "storageclasschart-detail", kwargs={"pk": org_pk}
             )
             + x,
             "uecodechart": reverse(
-                "uecodechart-detail", kwargs={"pk": self.kwargs["org_pk"]}
+                "uecodechart-detail", kwargs={"pk": org_pk}
             )
             + x,
             "nfpachart": reverse(
-                "nfpachart-detail", kwargs={"pk": self.kwargs["org_pk"]}
+                "nfpachart-detail", kwargs={"pk": org_pk}
             )
             + x,
             "substancetonschart": reverse(
-                "substancetonschart-detail", kwargs={"pk": self.kwargs["org_pk"]}
+                "substancetonschart-detail", kwargs={"pk": org_pk}
             )
             + x,
         }

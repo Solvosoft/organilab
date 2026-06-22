@@ -367,7 +367,6 @@ def update_lectura_agregado_sustancias():
             "blog.view_entry",
             "djreservation.add_reservation",
             "laboratory.delete_protocol",
-            "djreservation.add_reservation",
             "reservations_management.add_reservations",
             "reservations_management.change_reservations",
             "reservations_management.change_reservedproducts",
@@ -536,6 +535,16 @@ def update_tesista_modulo_desechos():
         print("WARNING: Rol 'Tesista Modulo de Sechos' not found, skipping.")
         return
 
+    add_permissions(
+        rol,
+        [
+            "laboratory.change_shelfobject",
+            "laboratory.view_shelf",
+            "laboratory.view_catalog",
+            "risk_management.view_riskzone",
+        ],
+    )
+
     remove_permissions(
         rol,
         [
@@ -551,7 +560,6 @@ def update_tesista_modulo_desechos():
             "laboratory.add_laboratoryroom",
             "laboratory.change_laboratoryroom",
             "laboratory.delete_laboratoryroom",
-            "laboratory.change_shelfobject",
             "laboratory.delete_shelfobject",
             "laboratory.add_object",
             "laboratory.change_object",
@@ -672,6 +680,30 @@ def update_tesista_modulo_desechos():
             "auth_and_perms.add_rol",
             "auth_and_perms.change_rol",
             "auth.add_user",
+            "blog.add_entry",
+            "blog.change_entry",
+            "blog.view_entry",
+            "blog.delete_entry",
+            "blog.add_category",
+            "djgentelella.can_manage_permissions",
+            "academic.add_commentprocedurestep",
+            "academic.delete_procedure",
+            "academic.delete_procedureobservations",
+            "academic.delete_procedurerequiredobject",
+            "academic.change_procedurestep",
+            "academic.change_commentprocedurestep",
+            "academic.add_myprocedure",
+            "academic.add_procedure",
+            "academic.delete_procedurestep",
+            "academic.add_procedurestep",
+            "academic.add_procedurerequiredobject",
+            "academic.add_procedureobservations",
+            "academic.change_procedure",
+            "academic.change_myprocedure",
+            "academic.delete_commentprocedurestep",
+            "laboratory.view_organizationstructure",
+            "laboratory.view_report",
+            "djreservation.add_reservation",
         ],
     )
 
