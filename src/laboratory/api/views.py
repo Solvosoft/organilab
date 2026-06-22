@@ -98,6 +98,9 @@ logger = logging.getLogger("organilab")
 
 
 class ApiReservedProductsCRUD(APIView):
+    authentication_classes = [SessionAuthentication, BaseAuthentication]
+    permission_classes = [IsAuthenticated]
+
     def get_object(self, pk):
         try:
             return ReservedProducts.objects.get(pk=pk)
@@ -105,6 +108,8 @@ class ApiReservedProductsCRUD(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
     def post(self, request):
+        if not request.user.has_perm("reservations_management.add_reservedproducts"):
+            return Response(status=status.HTTP_403_FORBIDDEN)
         serializer = ReservedProductsSerializer(data=request.data)
 
         if serializer.is_valid():
@@ -117,11 +122,15 @@ class ApiReservedProductsCRUD(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request, pk):
+        if not request.user.has_perm("reservations_management.view_reservedproducts"):
+            return Response(status=status.HTTP_403_FORBIDDEN)
         solicitud = self.get_object(pk)
         serializer = ReservedProductsSerializer(solicitud)
         return Response(serializer.data)
 
     def put(self, request, pk):
+        if not request.user.has_perm("reservations_management.change_reservedproducts"):
+            return Response(status=status.HTTP_403_FORBIDDEN)
         solicitud = self.get_object(pk)
         serializer = ReservedProductsSerializerUpdate(solicitud, data=request.data)
         if serializer.is_valid():
@@ -130,13 +139,20 @@ class ApiReservedProductsCRUD(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk):
+        if not request.user.has_perm("reservations_management.delete_reservedproducts"):
+            return Response(status=status.HTTP_403_FORBIDDEN)
         solicitud = self.get_object(pk)
         solicitud.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class ApiReservationCRUD(APIView):
+    authentication_classes = [SessionAuthentication, BaseAuthentication]
+    permission_classes = [IsAuthenticated]
+
     def post(self, request):
+        if not request.user.has_perm("reservations_management.add_reservations"):
+            return Response(status=status.HTTP_403_FORBIDDEN)
         serializer = ReservationSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
