@@ -20,7 +20,7 @@ from .models import Reservations, ReservedProducts, ACCEPTED, DENIED, BORROWED, 
 class ReservationsListView(PermissionRequiredMixin, ListView):
     model = Reservations
     paginate_by = 10
-    permission_required = "laboratory.add_objectfeatures"
+    permission_required = "reservations_management.view_reservations"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
