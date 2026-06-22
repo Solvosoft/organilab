@@ -146,7 +146,6 @@ def update_creador_laboratorios():
             "laboratory.change_shelf",
             "laboratory.change_furniture",
             "laboratory.view_equipmentcharacteristics",
-            "laboratory.view_instrumentalfamily",
             "laboratory.view_equipmenttype",
             "laboratory.add_shelf",
             "laboratory.view_catalog",
@@ -352,6 +351,23 @@ def update_lectura_agregado_sustancias():
             "sga.view_label",
             "laboratory.view_registeruserqr",
             "reservations_management.view_reservations",
+            "academic.change_commentprocedurestep",
+            "academic.add_procedureobservations",
+            "academic.add_procedurerequiredobject",
+            "academic.add_procedurestep",
+            "academic.change_procedurestep",
+            "blog.add_entry",
+            "blog.change_entry",
+            "blog.view_entry",
+            "djreservation.add_reservation",
+            "laboratory.delete_protocol",
+            "djreservation.add_reservation",
+            "reservations_management.add_reservations",
+            "reservations_management.change_reservations",
+            "reservations_management.change_reservedproducts",
+            "reservations_management.add_reservedproducts",
+            "reservations_management.add_reservations",
+
         ],
     )
     remove_permissions(
@@ -717,6 +733,9 @@ def update_solo_lectura():
             "laboratory.view_organizationstructurerelations",
             "laboratory.add_registeruserqr",
             "auth_and_perms.view_profilepermission",
+            "blog.add_entry",
+            "blog.change_entry",
+            "blog.view_entry",
         ],
     )
 
