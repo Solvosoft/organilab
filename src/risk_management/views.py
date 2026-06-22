@@ -93,15 +93,10 @@ class ListZone(ListView):
 
         org_pk = self.kwargs["org_pk"]
 
-        x = ""
-        i = 0
+        x = f"?org_pk={org_pk}"
         for key in self.request.GET:
             for data in self.request.GET.getlist(key):
-                if i > 0:
-                    x += f"&{key}={data}"
-                else:
-                    x += f"?{key}={data}"
-                i += 1
+                x += f"&{key}={data}"
 
         context["eslochart"] = reverse("eslochart-detail", kwargs={"pk": org_pk}) + x
         for object in context["object_list"]:
