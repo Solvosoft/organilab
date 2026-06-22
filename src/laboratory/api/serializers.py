@@ -1275,7 +1275,7 @@ class ReactiveSerializer(serializers.ModelSerializer):
             "update": ["laboratory.change_object", "laboratory.view_object"],
             "destroy": ["laboratory.delete_object", "laboratory.view_object"],
             "detail": ["laboratory.view_object"],
-            "add_limits": ["laboratory.add_object", "laboratory.view_object"],
+            "add_limits": ["laboratory.add_reactivelimit"],
             "get_reactive_limits": ["laboratory.view_object"],
         }
         return get_actions_by_perms(user, action_list)

@@ -956,7 +956,7 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
         "detail": ["laboratory.view_object"],
         "retrieve": ["laboratory.view_object"],
         "destroy": ["laboratory.delete_object", "laboratory.view_object"],
-        "add_limits": ["laboratory.add_object", "laboratory.view_object"],
+        "add_limits": ["laboratory.add_reactivelimit"],
         "get_reactive_limits": ["laboratory.view_object"],
     }
 
