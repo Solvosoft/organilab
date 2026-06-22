@@ -43,7 +43,7 @@ class ManageReservationView(PermissionRequiredMixin, UpdateView):
     template_name = "reservations_management/manage_reservation.html"
     form_class = ReservationActionForm
     model = Reservations
-    permission_required = "laboratory.add_objectfeatures"
+    permission_required = "reservations_management.change_reservations"
 
     def get_success_url(self):
         return reverse(
@@ -94,7 +94,7 @@ class ManageReservationView(PermissionRequiredMixin, UpdateView):
 class ProductActionView(PermissionRequiredMixin, View):
     """Accept or deny an individual ReservedProduct."""
     http_method_names = ['post']
-    permission_required = "laboratory.add_objectfeatures"
+    permission_required = "reservations_management.change_reservedproducts"
 
     def get_product(self):
         return get_object_or_404(
@@ -128,7 +128,7 @@ class ProductActionView(PermissionRequiredMixin, View):
 
 class ReturnProductView(PermissionRequiredMixin, View):
     http_method_names = ['post']
-    permission_required = "laboratory.add_objectfeatures"
+    permission_required = "reservations_management.change_reservedproducts"
 
     def get_product(self):
         return get_object_or_404(
@@ -190,7 +190,7 @@ class ReturnProductView(PermissionRequiredMixin, View):
 
 class CloseReservationView(PermissionRequiredMixin, View):
     http_method_names = ['post']
-    permission_required = "laboratory.add_objectfeatures"
+    permission_required = "reservations_management.change_reservations"
 
     def post(self, request, *args, **kwargs):
         reservation = get_object_or_404(Reservations, pk=kwargs['pk'])
