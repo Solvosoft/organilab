@@ -62,6 +62,8 @@ ADD_PERMISSIONS = [
     "risk_management.view_riskzone",
     "risk_management.view_regent",
     "risk_management.view_workday",  # jornada laboral
+    "reservations_management.view_reservations",
+    "laboratory.view_informscheduler",
 ]
 
 
