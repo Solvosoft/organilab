@@ -13,7 +13,7 @@
 		</li>
 	{% endif %}
 {% endif %}
-{% if org_pk %}
+{% if org_pk and perms.laboratory.view_laboratory %}
 	<li>
 		<a href="{% url 'laboratory:mylabs' org_pk %}" title="{% trans 'My laboratories' %}">
 			<strong>{% trans 'My laboratories' %}</strong>
