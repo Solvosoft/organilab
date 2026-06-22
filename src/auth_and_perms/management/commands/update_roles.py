@@ -660,14 +660,98 @@ def update_tesista_modulo_desechos():
     )
 
 
+def update_tecnico_laboratorio():
+    rol = Rol.objects.filter(name="Tecnico Laboratorio").first()
+    if not rol:
+        print("WARNING: Rol 'Tecnico Laboratorio' not found, skipping.")
+        return
+    remove_permissions(
+        rol,
+        [
+            "auth.add_user",
+            "auth_and_perms.add_profile",
+            "auth_and_perms.add_profilepermission",
+            "auth_and_perms.change_profilepermission",
+            "auth_and_perms.delete_profilepermission",
+            "auth_and_perms.change_rol",
+            "auth_and_perms.add_rol",
+            "auth_and_perms.view_profilepermission",
+            "auth_and_perms.view_rol",
+            "derb.delete_customform",
+            "djgentelella.can_manage_permissions",
+            "laboratory.add_clinventory",
+            "laboratory.change_clinventory",
+            "laboratory.delete_clinventory",
+            "laboratory.view_clinventory",
+            "laboratory.change_laboratory",
+            "laboratory.delete_laboratory",
+            "laboratory.add_laboratory",
+            "laboratory.add_informscheduler",
+            "laboratory.do_report",
+            "laboratory.view_report",
+            "laboratory.delete_laboratoryroom",
+            "laboratory.change_object",
+            "laboratory.delete_object",
+            "laboratory.change_objectfeatures",
+            "laboratory.delete_objectfeatures",
+            "laboratory.add_organizationstructure",
+            "laboratory.change_organizationstructure",
+            "laboratory.delete_organizationstructure",
+            "laboratory.view_organizationstructure",
+            "laboratory.add_organizationstructurerelations",
+            "laboratory.delete_registeruserqr",
+            "laboratory.change_registeruserqr",
+            "laboratory.delete_shelf",
+            "laboratory.delete_sustancecharacteristics",
+            "msds.add_msdsobject",
+            "msds.change_msdsobject",
+            "msds.delete_msdsobject",
+            "risk_management.change_incidentreport",
+            "risk_management.delete_incidentreport",
+            "risk_management.add_riskzone",
+            "risk_management.change_riskzone",
+            "risk_management.delete_riskzone",
+            "risk_management.add_zonetype",
+            "sga.add_dangerindication",
+            "sga.change_dangerindication",
+            "sga.delete_dangerindication",
+            "sga.add_displaylabel",
+            "sga.change_displaylabel",
+            "sga.delete_displaylabel",
+            "sga.add_label",
+            "sga.add_prudenceadvice",
+            "sga.change_prudenceadvice",
+            "sga.delete_prudenceadvice",
+            "sga.add_recipientsize",
+            "sga.change_recipientsize",
+            "sga.delete_recipientsize",
+            "sga.change_securityleaf",
+            "sga.add_substance",
+            "sga.change_substance",
+            "sga.delete_substance",
+            "sga.add_substancecharacteristics",
+            "sga.change_substancecharacteristics",
+            "sga.add_substanceobservation",
+            "sga.change_substanceobservation",
+            "sga.delete_substanceobservation",
+            "sga.add_templatesga",
+            "sga.add_warningword",
+            "sga.change_warningword",
+            "sga.delete_warningword",
+        ],
+    )
+
+
 class Command(BaseCommand):
     help = "Update rol permissions by segment — idempotent, safe to re-run"
 
     def handle(self, *args, **options):
-        update_estudiante()
-        update_administrador_laboratorio()
-        update_asistente_laboratorio()
-        update_profesor()
-        update_lectura_agregado_sustancias()
-        update_creador_laboratorios()
-        update_tesista_modulo_desechos()
+        # update_estudiante()
+        # update_administrador_laboratorio()
+        # update_asistente_laboratorio()
+        # update_profesor()
+        # update_lectura_agregado_sustancias()
+        # update_creador_laboratorios()
+        # update_tesista_modulo_desechos()
+        # update_depositante_residuos()
+        update_tecnico_laboratorio()
