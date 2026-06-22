@@ -9,24 +9,28 @@
     </span>
     </a>
     <ul class="nav child_menu">
-
+						{% if perms.sga.add_sustancecharacteristics %}
         <li>
             <a href="{% url 'sga:create_sustance' org_pk=org_pk %}">
                 {% trans 'Create Substances' %}
             </a>
         </li>
-
+					{% endif %}
+					{% if perms.sga.view_substance %}
         <li>
             <a href="{% url 'sga:get_substance' org_pk=org_pk %}">
                 {% trans 'My Substances' %}
             </a>
         </li>
+					{% endif %}
 
+					{% if perms.sga.change_substance %}
         <li>
             <a href="{% url 'sga:approved_substance' org_pk=org_pk %}">
                 {% trans 'Check of Substances' %}
             </a>
         </li>
+					{% endif %}
 
     </ul>
 

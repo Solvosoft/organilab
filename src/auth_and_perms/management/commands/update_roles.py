@@ -757,6 +757,40 @@ def update_tecnico_laboratorio():
     )
 
 
+def update_sga():
+    rol = Rol.objects.filter(name="SGA").first()
+    if not rol:
+        print("WARNING: Rol 'SGA' not found, skipping.")
+        return
+
+    remove_permissions(
+        rol,
+        [
+            "sga.change_dangerindication",
+            "sga.delete_dangerindication",
+            "sga.delete_prudenceadvice",
+            "sga.delete_dangerprudence",
+            "sga.change_dangersubstance",
+            "sga.delete_dangersubstance",
+            "sga.change_dangersubstancecategory",
+            "sga.delete_dangersubstancecategory",
+            "sga.delete_hcodecategory",
+            "sga.delete_pictogram",
+            "sga.delete_warningword",
+            "sga.delete_warningclass",
+            "sga.add_recipientsize",
+            "sga.change_recipientsize",
+            "sga.delete_recipientsize",
+            "sga.view_recipientsize",
+            "sga.change_templatesga",
+            "sga.view_builderinformation",
+            "sga.view_substance",
+            "sga.change_substance",
+            "auth_and_perms.institution_can_access",
+        ],
+    )
+
+
 class Command(BaseCommand):
     help = "Update rol permissions by segment — idempotent, safe to re-run"
 
@@ -769,4 +803,5 @@ class Command(BaseCommand):
         # update_creador_laboratorios()
         # update_tesista_modulo_desechos()
         # update_depositante_residuos()
-        update_tecnico_laboratorio()
+        # update_tecnico_laboratorio()
+        update_sga()
