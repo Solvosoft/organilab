@@ -357,6 +357,22 @@ def update_lectura_agregado_sustancias():
             "sga.view_label",
             "laboratory.view_registeruserqr",
             "reservations_management.view_reservations",
+            "academic.change_commentprocedurestep",
+            "academic.add_procedureobservations",
+            "academic.add_procedurerequiredobject",
+            "academic.add_procedurestep",
+            "academic.change_procedurestep",
+            "blog.add_entry",
+            "blog.change_entry",
+            "blog.view_entry",
+            "djreservation.add_reservation",
+            "laboratory.delete_protocol",
+            "djreservation.add_reservation",
+            "reservations_management.add_reservations",
+            "reservations_management.change_reservations",
+            "reservations_management.change_reservedproducts",
+            "reservations_management.add_reservedproducts",
+            "reservations_management.add_reservations",
         ],
     )
     remove_permissions(
@@ -660,6 +676,79 @@ def update_tesista_modulo_desechos():
     )
 
 
+def update_solo_lectura():
+    rol = Rol.objects.filter(name="Solo Lectura").first()
+    if not rol:
+        print("WARNING: Rol 'Solo Lectura' not found, skipping.")
+        return
+
+    add_permissions(
+        rol,
+        [
+            "laboratory.view_laboratoryroom",
+            "laboratory.view_shelf",
+            "laboratory.view_furniture",
+            "laboratory.view_provider",
+            "academic.view_procedure",
+            "laboratory.view_inform",
+            "risk_management.view_buildings",
+            "laboratory.view_sustancecharacteristics",
+            "risk_management.view_structure",
+            "laboratory.view_object",
+            "laboratory.view_laboratoryprocess",
+            "laboratory.view_shelfobjectobservation",
+            "risk_management.view_riskzone",
+            "risk_management.view_regent",
+            "risk_management.view_workday",
+            "reservations_management.view_reservations",
+        ],
+    )
+
+    remove_permissions(
+        rol,
+        [
+            "laboratory.change_object",
+            "laboratory.add_catalog",
+            "laboratory.change_catalog",
+            "laboratory.change_equipmenttype",
+            "laboratory.change_objectfeatures",
+            "laboratory.view_registeruserqr",
+            "sga.add_dangerindication",
+            "sga.add_warningword",
+            "risk_management.add_incidentreport",
+            "derb.add_customform",
+            "academic.add_commentprocedurestep",
+            "academic.change_commentprocedurestep",
+            "academic.delete_commentprocedurestep",
+            "academic.change_myprocedure",
+            "blog.change_entry",
+            "djreservation.add_reservation",
+            "laboratory.add_registeruserqr",
+            "laboratory.change_furniture",
+            "laboratory.change_laboratory",
+            "laboratory.change_laboratoryroom",
+            "laboratory.change_shelf",
+            "laboratory.change_shelfobjectlog",
+            "reservations_management.add_reservations",
+            "reservations_management.add_reservedproducts",
+            "reservations_management.change_reservations",
+            "risk_management.add_zonetype",
+            "risk_management.change_incidentreport",
+            "sga.add_substanceobservation",
+            "sga.change_recipientsize",
+            "laboratory.do_report",
+            "laboratory.view_report",
+            "laboratory.view_organizationstructure",
+            "laboratory.view_organizationstructurerelations",
+            "laboratory.add_registeruserqr",
+            "auth_and_perms.view_profilepermission",
+            "blog.add_entry",
+            "blog.change_entry",
+            "blog.view_entry",
+        ],
+    )
+
+
 def update_tecnico_laboratorio():
     rol = Rol.objects.filter(name="Técnico de Laboratorio").first()
     if not rol:
@@ -795,13 +884,13 @@ class Command(BaseCommand):
     help = "Update rol permissions by segment — idempotent, safe to re-run"
 
     def handle(self, *args, **options):
-        # update_estudiante()
-        # update_administrador_laboratorio()
-        # update_asistente_laboratorio()
-        # update_profesor()
-        # update_lectura_agregado_sustancias()
-        # update_creador_laboratorios()
-        # update_tesista_modulo_desechos()
-        # update_depositante_residuos()
-        # update_tecnico_laboratorio()
         update_sga()
+        update_estudiante()
+        update_administrador_laboratorio()
+        update_asistente_laboratorio()
+        update_profesor()
+        update_lectura_agregado_sustancias()
+        update_creador_laboratorios()
+        update_tesista_modulo_desechos()
+        update_depositante_residuos()
+        update_solo_lectura()
