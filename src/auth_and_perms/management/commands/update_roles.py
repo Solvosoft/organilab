@@ -15,7 +15,6 @@ def add_permissions(rol, perms):
         else:
             print(f"WARNING: permission '{perm_str}' not found, skipping.")
 
-
 def remove_permissions(rol, perms):
     for perm_str in perms:
         app_label, codename = perm_str.split(".")
@@ -24,7 +23,6 @@ def remove_permissions(rol, perms):
         ).first()
         if perm:
             rol.permissions.remove(perm)
-
 
 def update_estudiante():
     rol = Rol.objects.filter(name="Estudiante").first()
@@ -40,7 +38,6 @@ def update_estudiante():
             "laboratory.view_provider",
         ],
     )
-
 
 def update_depositante_residuos():
     rol = Rol.objects.filter(name="Depositante de residuos").first()
@@ -135,7 +132,6 @@ def update_depositante_residuos():
         ],
     )
 
-
 def update_creador_laboratorios():
     rol = Rol.objects.filter(name="Creador de laboratorio").first()
     if not rol:
@@ -150,6 +146,7 @@ def update_creador_laboratorios():
             "laboratory.change_shelf",
             "laboratory.change_furniture",
             "laboratory.view_equipmentcharacteristics",
+            "laboratory.view_instrumentalfamily",
             "laboratory.view_equipmenttype",
             "laboratory.add_shelf",
             "laboratory.view_catalog",
@@ -180,7 +177,6 @@ def update_creador_laboratorios():
             "laboratory.change_objectfeatures",
         ],
     )
-
 
 def update_administrador_laboratorio():
     rol = Rol.objects.filter(name="Administrador de Laboratorio").first()
@@ -221,7 +217,6 @@ def update_administrador_laboratorio():
             "msds.change_msdsobject",
         ],
     )
-
 
 def update_lectura_agregado_sustancias():
     rol = Rol.objects.filter(name="Lectura y agregado de sustancias").first()
@@ -395,7 +390,6 @@ def update_lectura_agregado_sustancias():
         ],
     )
 
-
 def update_asistente_laboratorio():
     rol = Rol.objects.filter(name="Asistente de laboratorio").first()
     if not rol:
@@ -463,7 +457,6 @@ def update_asistente_laboratorio():
         ],
     )
 
-
 def update_profesor():
     rol = Rol.objects.filter(name="Profesor").first()
     if not rol:
@@ -512,7 +505,6 @@ def update_profesor():
             "academic.view_procedure",
         ],
     )
-
 
 def update_tesista_modulo_desechos():
     rol = Rol.objects.filter(name="Tesista modulo desechos").first()
@@ -659,6 +651,74 @@ def update_tesista_modulo_desechos():
         ],
     )
 
+def update_solo_lectura():
+    rol = Rol.objects.filter(name="Solo Lectura").first()
+    if not rol:
+        print("WARNING: Rol 'Solo Lectura' not found, skipping.")
+        return
+
+    add_permissions(
+        rol,
+        [
+            "laboratory.view_laboratoryroom",
+            "laboratory.view_shelf",
+            "laboratory.view_furniture",
+            "laboratory.view_provider",
+            "academic.view_procedure",
+            "laboratory.view_inform",
+            "risk_management.view_buildings",
+            "laboratory.view_sustancecharacteristics",
+            "risk_management.view_structure",
+            "laboratory.view_object",
+            "laboratory.view_laboratoryprocess",
+            "laboratory.view_shelfobjectobservation",
+            "risk_management.view_riskzone",
+            "risk_management.view_regent",
+            "risk_management.view_workday",
+            "reservations_management.view_reservations",
+        ],
+    )
+
+    remove_permissions(
+        rol,
+        [
+            "laboratory.change_object",
+            "laboratory.add_catalog",
+            "laboratory.change_catalog",
+            "laboratory.change_equipmenttype",
+            "laboratory.change_objectfeatures",
+            "laboratory.view_registeruserqr",
+            "sga.add_dangerindication",
+            "sga.add_warningword",
+            "risk_management.add_incidentreport",
+            "derb.add_customform",
+            "academic.add_commentprocedurestep",
+            "academic.change_commentprocedurestep",
+            "academic.delete_commentprocedurestep",
+            "academic.change_myprocedure",
+            "blog.change_entry",
+            "djreservation.add_reservation",
+            "laboratory.add_registeruserqr",
+            "laboratory.change_furniture",
+            "laboratory.change_laboratory",
+            "laboratory.change_laboratoryroom",
+            "laboratory.change_shelf",
+            "laboratory.change_shelfobjectlog",
+            "reservations_management.add_reservations",
+            "reservations_management.add_reservedproducts",
+            "reservations_management.change_reservations",
+            "risk_management.add_zonetype",
+            "risk_management.change_incidentreport",
+            "sga.add_substanceobservation",
+            "sga.change_recipientsize",
+            "laboratory.do_report",
+            "laboratory.view_report",
+            "laboratory.view_organizationstructure",
+            "laboratory.view_organizationstructurerelations",
+            "laboratory.add_registeruserqr",
+            "auth_and_perms.view_profilepermission",
+        ],
+    )
 
 class Command(BaseCommand):
     help = "Update rol permissions by segment — idempotent, safe to re-run"
@@ -671,3 +731,5 @@ class Command(BaseCommand):
         update_lectura_agregado_sustancias()
         update_creador_laboratorios()
         update_tesista_modulo_desechos()
+        update_depositante_residuos()
+        update_solo_lectura()
