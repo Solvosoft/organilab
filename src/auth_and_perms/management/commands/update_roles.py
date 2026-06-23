@@ -1068,6 +1068,13 @@ def update_centro_trabajo():
             "blog.change_entry",
             "blog.add_entry",
             "blog.view_entry",
+            "djgentelella.can_manage_permissions",
+            "laboratory.change_catalog",
+            "laboratory.delete_catalog",
+            "laboratory.change_equipmenttype",
+            "laboratory.delete_equipmenttype",
+            "blog.add_category",
+            "laboratory.change_objectfeatures",
         ],
     )
     add_permissions(
