@@ -43,7 +43,7 @@
     </li>
    {% endif %}
 
-   {% if perms.laboratory.view_shelfobject and perms.laboratory.change_shelfobject %}
+   {% if perms.laboratory.can_manage_reorder %}
     <li><a href="{% url 'laboratory:shel_objects_reactives' org_pk laboratory %}">
      {% trans 'Consumption reorder' %}</a></li>
     <li>

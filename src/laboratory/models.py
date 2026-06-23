@@ -572,6 +572,7 @@ class ShelfObject(models.Model):
         permissions = [
             ("can_view_contract", "Can view contract"),
             ("can_view_process_condition", "Can view process condition"),
+            ("can_manage_reorder", "Can manage reactive consumption reorder"),
         ]
 
     def __str__(self):
