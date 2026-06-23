@@ -962,6 +962,74 @@ def update_regente():
     )
 
 
+def update_centro_trabajo():
+    rol = Rol.objects.filter(name="Administración de centro de trabajo").first()
+    if not rol:
+        print("WARNING: Rol 'Centro de trabajo' not found, skipping.")
+        return
+
+    remove_permissions(
+        rol,
+        [
+            "sga.add_dangerindication",
+            "sga.change_dangerindication",
+            "sga.delete_dangerindication",
+            "sga.add_warningword",
+            "sga.change_warningword",
+            "sga.delete_warningword",
+            "sga.add_prudenceadvice",
+            "sga.change_prudenceadvice",
+            "sga.delete_prudenceadvice",
+            "sga.add_substance",
+            "sga.change_substance",
+            "sga.delete_substance",
+            "sga.add_substancecharacteristics",
+            "sga.change_substancecharacteristics",
+            "sga.add_substanceobservation",
+            "sga.change_substanceobservation",
+            "sga.delete_substanceobservation",
+            "sga.add_templatesga",
+            "sga.view_recipientsize",
+            "sga.change_recipientsize",
+            "msds.add_msdsobject",
+            "msds.change_msdsobject",
+            "auth_and_perms.add_profilepermission",
+            "auth_and_perms.change_profilepermission",
+            "auth_and_perms.delete_profilepermission",
+            "auth_and_perms.add_profile",
+            "auth_and_perms.change_profile",
+            "auth_and_perms.delete_profile",
+            "laboratory.add_clinventory",
+            "laboratory.change_clinventory",
+            "laboratory.delete_clinventory",
+            "laboratory.view_clinventory",
+            "laboratory.delete_laboratory",
+            "laboratory.change_object",
+            "laboratory.delete_object",
+            "risk_management.delete_riskzone",
+            "risk_management.delete_buildings",
+            "risk_management.delete_structure",
+            "risk_management.delete_regent",
+            "laboratory.delete_objectfeatures",
+            "auth_and_perms.change_rol",
+            "auth_and_perms.add_rol",
+            "auth_and_perms.view_profilepermission",
+            "blog.delete_entry",
+            "blog.change_entry",
+            "blog.add_entry",
+            "blog.view_entry",
+        ],
+    )
+    add_permissions(
+        rol,
+        [
+            "laboratory.add_informscheduler",
+            "laboratory.view_informscheduler",
+            "laboratory.change_informscheduler",
+        ],
+    )
+
+
 class Command(BaseCommand):
     help = "Update rol permissions by segment — idempotent, safe to re-run"
 
@@ -978,3 +1046,4 @@ class Command(BaseCommand):
         update_solo_lectura()
         update_regente()
         update_tecnico_laboratorio()
+        update_centro_trabajo()
