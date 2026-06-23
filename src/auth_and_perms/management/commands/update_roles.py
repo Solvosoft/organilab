@@ -1000,9 +1000,9 @@ def update_regente():
     )
 
 def update_administrador_superior():
-    rol = Rol.objects.filter(name="Regente").first()
+    rol = Rol.objects.filter(name="Administrador de Laboratorio").first()
     if not rol:
-        print("WARNING: Rol 'Regente' not found, skipping.")
+        print("WARNING: Rol 'Administrador de Laboratorio' not found, skipping.")
         return
     add_permissions(
         rol,
