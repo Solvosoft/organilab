@@ -47,6 +47,13 @@ def update_depositante_residuos():
     if not rol:
         print("WARNING: Rol 'Depositante de residuos' not found, skipping.")
         return
+    add_permissions(
+        rol,
+        [
+            "laboratory.add_shelfobject",
+        ],
+    )
+
     remove_permissions(
         rol,
         [
@@ -129,9 +136,27 @@ def update_depositante_residuos():
             "sga.add_warningword",
             "sga.change_warningword",
             "sga.delete_warningword",
+            "sga.add_provider",
+            "sga.change_recipientsize",
+            "sga.delete_recipientsize",
+            "sga.add_substancecharacteristics",
+            "sga.add_substanceobservation",
+            "sga.add_substance",
             "msds.add_msdsobject",
-            "msds.change_msdsobject",
-            "msds.delete_msdsobject",
+            "sga.change_substancecharacteristics",
+            "sga.add_recipientsize",
+            "auth_and_perms.view_profilepermission",
+            "auth_and_perms.change_profilepermission",
+            "blog.add_entry",
+            "blog.change_entry",
+            "blog.view_entry",
+            "laboratory.view_organizationstructure",
+            "laboratory.view_precursorreport",
+            "risk_management.view_incidentreport",
+            "auth_and_perms.view_rol",
+            "laboratory.view_report",
+            "reservations_management.change_reservations",
+            "reservations_management.change_reservedproducts",
         ],
     )
 
@@ -187,6 +212,12 @@ def update_administrador_laboratorio():
     if not rol:
         print("WARNING: Rol 'Administrador de Laboratorio' not found, skipping.")
         return
+    add_permissions(
+        rol,
+        [
+            "laboratory.can_manage_reorder",
+        ],
+    )
 
     remove_permissions(
         rol,
@@ -416,6 +447,12 @@ def update_asistente_laboratorio():
     if not rol:
         print("WARNING: Rol 'Asistente de laboratorio' not found, skipping.")
         return
+    add_permissions(
+        rol,
+        [
+            "laboratory.can_manage_reorder",
+        ],
+    )
 
     remove_permissions(
         rol,
@@ -962,6 +999,19 @@ def update_regente():
     )
 
 
+def update_administrador_superior():
+    rol = Rol.objects.filter(name="Administrador de Laboratorio").first()
+    if not rol:
+        print("WARNING: Rol 'Administrador de Laboratorio' not found, skipping.")
+        return
+    add_permissions(
+        rol,
+        [
+            "laboratory.can_manage_reorder",
+        ],
+    )
+
+
 def update_centro_trabajo():
     rol = Rol.objects.filter(name="Administración de centro de trabajo").first()
     if not rol:
@@ -1026,6 +1076,7 @@ def update_centro_trabajo():
             "laboratory.add_informscheduler",
             "laboratory.view_informscheduler",
             "laboratory.change_informscheduler",
+            "laboratory.can_manage_reorder",
         ],
     )
 
@@ -1047,3 +1098,4 @@ class Command(BaseCommand):
         update_regente()
         update_tecnico_laboratorio()
         update_centro_trabajo()
+        update_administrador_superior()
