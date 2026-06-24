@@ -799,6 +799,29 @@ class OrganizationStructureAdmin(admin.ModelAdmin):
     indented_name.short_description = "Name"
 
 
+@admin.register(models.LabOrOrgRequest)
+class LabOrOrgRequestAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "name",
+        "entity_type",
+        "status",
+        "requested_by",
+        "requested_at",
+        "organization",
+    )
+    list_filter = ("entity_type", "status", "organization")
+    search_fields = (
+        "name",
+        "requested_by__username",
+        "requested_by__first_name",
+        "requested_by__last_name",
+        "organization__name",
+    )
+    readonly_fields = ("requested_at", "requested_by")
+    list_select_related = ("requested_by", "organization")
+
+
 admin.site.register(models.PrecursorReport, PrecursorReportAdmin)
 admin.site.register(models.PrecursorReportValues, PrecursorReportValuesAdmin)
 admin.site.register(models.SDSTraceability, SDSTraceabilityAdmin)

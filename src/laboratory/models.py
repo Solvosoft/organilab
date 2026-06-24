@@ -1987,6 +1987,114 @@ class LaboratoryProcess(BaseCreationObj):
     description = models.TextField(_("Description"), null=True, blank=True)
 
 
+class LabOrOrgRequest(models.Model):
+    TYPE_ORGANIZATION = "org"
+    TYPE_LABORATORY = "lab"
+    TYPE_CHOICES = [
+        (TYPE_ORGANIZATION, _("Organization")),
+        (TYPE_LABORATORY, _("Laboratory")),
+    ]
+
+    STATUS_PENDING = "pending"
+    STATUS_APPROVED = "approved"
+    STATUS_REJECTED = "rejected"
+    STATUS_CHOICES = [
+        (STATUS_PENDING, _("Pending")),
+        (STATUS_APPROVED, _("Approved")),
+        (STATUS_REJECTED, _("Rejected")),
+    ]
+
+    entity_type = models.CharField(_("Entity type"), max_length=3, choices=TYPE_CHOICES)
+    status = models.CharField(
+        _("Status"), max_length=10, default=STATUS_PENDING, choices=STATUS_CHOICES
+    )
+    name = models.CharField(_("Name"), max_length=255)
+
+    # Laboratory fields
+    phone_number = models.CharField(_("Phone"), max_length=25, blank=True)
+    location = models.CharField(_("Location"), max_length=255, blank=True)
+    geolocation = PlainLocationField(
+        default="9.895804362670006,-84.1552734375",
+        zoom=15,
+        verbose_name=_("Geolocation"),
+        null=True,
+        blank=True,
+    )
+    email = models.EmailField(_("Email"), blank=True)
+    coordinator = models.CharField(_("Coordinator"), max_length=255, blank=True)
+    unit = models.CharField(_("Unit"), max_length=50, blank=True)
+    description = models.TextField(_("Description"), null=True, blank=True)
+    area = models.FloatField(_("Area"), default=0.0)
+    faculty_dispatch = models.CharField(
+        _("Faculty or dispatch"), max_length=255, null=True, blank=True
+    )
+    organization = models.ForeignKey(
+        OrganizationStructure,
+        verbose_name=_("Parent organization"),
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="lab_requests",
+    )
+    responsible = models.ForeignKey(
+        User,
+        verbose_name=_("Responsible"),
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="responsible_lab_requests",
+    )
+    nearby_sites = models.FileField(
+        verbose_name=_("Nearby sites"),
+        upload_to=upload_files,
+        null=True,
+        blank=True,
+    )
+    water_resources_affected = models.FileField(
+        verbose_name=_("Water resources affected"),
+        upload_to=upload_files,
+        null=True,
+        blank=True,
+    )
+    workplace = models.ManyToManyField(
+        OrganizationStructure,
+        blank=True,
+        related_name="lab_requests_workplace",
+        verbose_name=_("Workplace"),
+    )
+
+    # OrganizationStructure fields
+    parent_org = models.ForeignKey(
+        OrganizationStructure,
+        verbose_name=_("Parent organization (for org)"),
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="child_org_requests",
+    )
+
+    # Request metadata
+    requested_by = models.ForeignKey(
+        User,
+        verbose_name=_("Requested by"),
+        on_delete=models.CASCADE,
+        related_name="lab_org_requests",
+    )
+    requested_at = models.DateTimeField(_("Requested at"), auto_now_add=True)
+    review_notes = models.TextField(_("Review notes"), blank=True)
+
+    class Meta:
+        verbose_name = _("Lab or organization request")
+        verbose_name_plural = _("Lab or organization requests")
+        ordering = ["-requested_at"]
+        permissions = [
+            ("can_approve_labororgrequest", "Can approve lab or organization request"),
+        ]
+
+    def __str__(self):
+        return self.name
+
+
 class TemporalUploadReactive(BaseCreationObj):
     key = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     shelf = models.ForeignKey(

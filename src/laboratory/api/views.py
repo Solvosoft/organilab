@@ -26,6 +26,7 @@ from auth_and_perms.organization_utils import (
     user_is_allowed_on_organization,
     organization_can_change_laboratory,
 )
+from auth_and_perms.views.user_org_creation import set_rol_administrator_on_org
 from laboratory.api import serializers, filterset
 
 from laboratory.api.filterset import (
@@ -35,6 +36,7 @@ from laboratory.api.filterset import (
     ObjectFeatureFilter,
     ObjectFilter,
     ShelObjectReactiveFilter,
+    LabOrOrgRequestFilter,
 )
 
 from laboratory.api.forms import CommentInformForm
@@ -57,6 +59,11 @@ from laboratory.api.serializers import (
     ObjectSerializer,
     ObjectDataTableSerializer,
     ObjectValidateSerializer,
+    LabOrOrgRequestValidateSerializer,
+    LabOrOrgRequestSerializer,
+    LabOrOrgRequestDataTableSerializer,
+    LabOrOrgRequestReviewSerializer,
+    LabOrOrgRequestReviewDataTableSerializer,
 )
 from laboratory.forms import ObservationShelfObjectForm
 from laboratory.models import (
@@ -76,6 +83,7 @@ from laboratory.models import (
     Provider,
     ObjectFeatures,
     ShelfObjectObservation,
+    LabOrOrgRequest,
 )
 from laboratory.qr_utils import get_or_create_qr_shelf_object
 from laboratory.shelfobject.forms import ShelfObjectStatusForm
@@ -90,6 +98,10 @@ from laboratory.utils import (
     get_pk_org_ancestors_decendants,
     PermissionByLaboratoryInOrganization,
     organilab_logentry,
+)
+from laboratory.lab_or_org_request_notifications import (
+    notify_request_created,
+    notify_request_status_changed,
 )
 from reservations_management.models import ReservedProducts
 from rest_framework.exceptions import PermissionDenied
@@ -1809,3 +1821,177 @@ class ShelObjectReactiveViewset(AuthAllPermBaseObjectManagement):
         return JsonResponse(
             {"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
         )
+
+
+class LabOrOrgRequestViewSet(AuthAllPermBaseObjectManagement):
+    """Requester: create, list own, delete own requests."""
+
+    serializer_class = {
+        "list": LabOrOrgRequestDataTableSerializer,
+        "create": LabOrOrgRequestValidateSerializer,
+        "update": LabOrOrgRequestValidateSerializer,
+        "partial_update": LabOrOrgRequestValidateSerializer,
+        "destroy": LabOrOrgRequestSerializer,
+    }
+    perms = {
+        "list": ["laboratory.view_labororgrequest"],
+        "create": ["laboratory.add_labororgrequest"],
+        "update": ["laboratory.change_labororgrequest"],
+        "partial_update": ["laboratory.change_labororgrequest"],
+        "destroy": ["laboratory.delete_labororgrequest"],
+    }
+    queryset = LabOrOrgRequest.objects.all()
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    filterset_class = LabOrOrgRequestFilter
+    search_fields = ["name"]
+    ordering_fields = ["name", "requested_at"]
+    ordering = ("-requested_at",)
+
+    def get_queryset(self):
+        org_pk = self.kwargs.get("org_pk")
+        return LabOrOrgRequest.objects.filter(
+            requested_by=self.request.user,
+            organization__pk=org_pk,
+        )
+
+    def perform_create(self, serializer):
+        org_pk = self.kwargs.get("org_pk")
+        org = get_object_or_404(OrganizationStructure, pk=org_pk)
+        instance = serializer.save(
+            requested_by=self.request.user,
+            status=LabOrOrgRequest.STATUS_PENDING,
+        )
+        organilab_logentry(
+            self.request.user,
+            instance,
+            ADDITION,
+            "lab or org request",
+            changed_data=[],
+            relobj=org,
+        )
+        notify_request_created(instance)
+
+    def perform_update(self, serializer):
+        instance = serializer.save()
+        org = instance.organization or instance.parent_org
+        organilab_logentry(
+            self.request.user,
+            instance,
+            CHANGE,
+            "lab or org request",
+            changed_data=[],
+            relobj=org,
+        )
+
+    def perform_destroy(self, instance):
+        if instance.requested_by != self.request.user:
+            raise PermissionDenied(_("You can only delete your own requests."))
+        org = instance.organization or instance.parent_org
+        organilab_logentry(
+            self.request.user,
+            instance,
+            DELETION,
+            "lab or org request",
+            changed_data=[],
+            relobj=org,
+        )
+        instance.delete()
+
+
+class LabOrOrgRequestReviewViewSet(AuthAllPermBaseObjectManagement):
+    """Approver: list pending requests, approve or reject."""
+
+    serializer_class = {
+        "list": LabOrOrgRequestReviewDataTableSerializer,
+        "destroy": LabOrOrgRequestReviewSerializer,
+    }
+    perms = {
+        "list": ["laboratory.can_approve_labororgrequest"],
+        "approve": ["laboratory.can_approve_labororgrequest"],
+        "reject": ["laboratory.can_approve_labororgrequest"],
+        "destroy": ["laboratory.can_approve_labororgrequest"],
+    }
+    queryset = LabOrOrgRequest.objects.all()
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    filterset_class = LabOrOrgRequestFilter
+    search_fields = ["name", "entity_type"]
+    ordering_fields = ["name", "requested_at", "entity_type"]
+    ordering = ("-requested_at",)
+
+    def get_queryset(self):
+        org_pk = self.kwargs.get("org_pk")
+        return LabOrOrgRequest.objects.filter(organization__pk=org_pk)
+
+    def _create_entity(self, instance, user):
+        if instance.entity_type == LabOrOrgRequest.TYPE_LABORATORY:
+            lab = Laboratory.objects.create(
+                name=instance.name,
+                phone_number=instance.phone_number,
+                location=instance.location,
+                geolocation=instance.geolocation,
+                email=instance.email,
+                coordinator=instance.coordinator,
+                unit=instance.unit,
+                description=instance.description,
+                area=instance.area,
+                faculty_dispatch=instance.faculty_dispatch,
+                organization=instance.organization,
+                responsible=instance.responsible,
+                nearby_sites=instance.nearby_sites,
+                water_resources_affected=instance.water_resources_affected,
+                created_by=user,
+            )
+            if instance.workplace.exists():
+                lab.workplace.set(instance.workplace.all())
+            return lab, "laboratory"
+        else:
+            parent = instance.parent_org
+            org = OrganizationStructure.objects.create(
+                name=instance.name,
+                parent=parent,
+                active=True,
+            )
+            if parent:
+                org.position = parent.last_child_position + 1
+                org.save()
+            profile = getattr(instance.requested_by, "profile", None)
+            if profile:
+                set_rol_administrator_on_org(profile, org)
+            return org, "organization"
+
+    @action(detail=True, methods=["post"])
+    def approve(self, request, org_pk=None, pk=None):
+        instance = self.get_object()
+        entity, entity_label = self._create_entity(instance, request.user)
+        org = get_object_or_404(OrganizationStructure, pk=org_pk)
+        organilab_logentry(
+            request.user,
+            entity,
+            ADDITION,
+            f"{entity_label} approved from request",
+            changed_data=["status"],
+            relobj=org,
+        )
+        instance.status = LabOrOrgRequest.STATUS_APPROVED
+        instance.save(update_fields=["status"])
+        notify_request_status_changed(instance)
+        return Response({"detail": _("Request approved.")}, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=["post"])
+    def reject(self, request, org_pk=None, pk=None):
+        instance = self.get_object()
+        org = get_object_or_404(OrganizationStructure, pk=org_pk)
+        instance.status = LabOrOrgRequest.STATUS_REJECTED
+        instance.save(update_fields=["status"])
+        organilab_logentry(
+            request.user,
+            instance,
+            CHANGE,
+            "lab or org request rejected",
+            changed_data=["status"],
+            relobj=org,
+        )
+        notify_request_status_changed(instance)
+        return Response({"detail": _("Request rejected.")}, status=status.HTTP_200_OK)

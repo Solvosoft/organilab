@@ -216,6 +216,10 @@ def update_administrador_laboratorio():
         rol,
         [
             "laboratory.can_manage_reorder",
+            "laboratory.add_labororgrequest",
+            "laboratory.view_labororgrequest",
+            "laboratory.change_labororgrequest",
+            "laboratory.delete_labororgrequest",
         ],
     )
 
@@ -1008,6 +1012,11 @@ def update_administrador_superior():
         rol,
         [
             "laboratory.can_manage_reorder",
+            "laboratory.add_labororgrequest",
+            "laboratory.view_labororgrequest",
+            "laboratory.change_labororgrequest",
+            "laboratory.delete_labororgrequest",
+            "laboratory.can_approve_labororgrequest",
         ],
     )
 
