@@ -1,6 +1,7 @@
 19/06/2026
 Command to update users roles
     - python manage.py update_roles
+    - python manage.py load_urlname_permissions
 
 16/06/2026
 Command to update users roles
