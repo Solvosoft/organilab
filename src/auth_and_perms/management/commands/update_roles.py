@@ -1022,10 +1022,10 @@ def update_administrador_superior():
     )
 
 
-def update_centro_trabajo():
-    rol = Rol.objects.filter(name="Administración de centro de trabajo").first()
+def update_administrativo_centro_trabajo():
+    rol = Rol.objects.filter(name="Administrativo de centro de trabajo").first()
     if not rol:
-        print("WARNING: Rol 'Centro de trabajo' not found, skipping.")
+        print("WARNING: Rol 'Administrativo de centro de trabajo' not found, skipping.")
         return
 
     remove_permissions(
@@ -1114,5 +1114,5 @@ class Command(BaseCommand):
         update_solo_lectura()
         update_regente()
         update_tecnico_laboratorio()
-        update_centro_trabajo()
+        update_administrativo_centro_trabajo()
         update_administrador_superior()
