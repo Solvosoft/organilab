@@ -30,9 +30,15 @@ class RiskZoneCreateForm(forms.ModelForm, GTForm):
         org_pk = kwargs.pop("org_pk", None)
         super().__init__(*args, **kwargs)
         queryset = get_user_laboratories(user)
+        labs = []
         if org_pk:
             self.fields["buildings"].queryset = Buildings.objects.filter(
                 organization__pk=org_pk
+            )
+            labs = list(
+                Buildings.objects.filter(organization__pk=org_pk).values_list(
+                    "laboratories", flat=True
+                )
             )
         if queryset.exists() and org_pk:
             extra_labs = OrganizationStructureRelations.objects.filter(
@@ -51,6 +57,9 @@ class RiskZoneCreateForm(forms.ModelForm, GTForm):
             + "?tipo="
             + quote("zone_type")
         )
+        if "instance" in kwargs:
+            labs += list(self.instance.laboratories.all().values_list("pk", flat=True))
+            self.fields["laboratories"].initial = Laboratory.objects.filter(pk__in=labs)
 
     def save(self, commit=True):
         priority = self.instance.zone_type.get_priority(self.instance.num_workers)
@@ -59,7 +68,7 @@ class RiskZoneCreateForm(forms.ModelForm, GTForm):
 
     class Meta:
         model = RiskZone
-        exclude = ["priority", "organization", "created_by", "laboratories"]
+        exclude = ["priority", "organization", "created_by"]
         widgets = {
             "name": djgentelella.TextInput,
             "buildings": djgentelella.SelectMultiple,
@@ -67,6 +76,7 @@ class RiskZoneCreateForm(forms.ModelForm, GTForm):
             "zone_type": djgentelella.SelectWithAdd(
                 attrs={"add_url": "#", "data-otrono": 1}
             ),
+            "laboratories": djgentelella.SelectMultiple(),
         }
 
 
