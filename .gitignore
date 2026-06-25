@@ -126,3 +126,4 @@ docs/capacitacion/
 # Claude Code
 .claude/
 CLAUDE.md
+/src/roles_grandes.xlsx
