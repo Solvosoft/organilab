@@ -15,9 +15,18 @@ class Command(BaseCommand):
 
     def initial_data(self):
         self.pp = ProfilePermission.objects.filter(rol__name="Administrativo superior")
-        self.profiles = Profile.objects.filter(
-            pk__in=[p.profile.pk for p in self.pp]
-        ).distinct()
+        self.profiles = (
+            Profile.objects.filter(pk__in=[p.profile.pk for p in self.pp])
+            .distinct()
+            .exclude(
+                user__email__in=[
+                    "sitio@solvosoft.com",
+                    "wendy.umana.herrera@una.cr",
+                    "maikol.rojas.garcia@est.una.ac.cr",
+                    "daniela.guerrero.mayorga@est.una.ac.cr",
+                ]
+            )
+        )
 
     def handle(self, *args, **options):
         self.initial_data()
@@ -77,7 +86,7 @@ class Command(BaseCommand):
                         if OrganizationStructure.objects.filter(pk=p.object_id).exists()
                         else "Desconocido"
                     )
-                elif p.content_type.app_label == "organization_structure":
+                elif p.content_type.app_label == "organizationstructure":
                     org = (
                         OrganizationStructure.objects.filter(pk=p.object_id)
                         .first()
@@ -98,4 +107,4 @@ class Command(BaseCommand):
         for col in range(1, 5):
             ws.column_dimensions[get_column_letter(col)].width = 25
 
-        wb.save("roles_grandes.xlsx")
+        # wb.save("roles_grandes.xlsx")
