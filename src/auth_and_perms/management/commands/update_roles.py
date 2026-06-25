@@ -216,6 +216,10 @@ def update_administrador_laboratorio():
         rol,
         [
             "laboratory.can_manage_reorder",
+            "laboratory.add_labororgrequest",
+            "laboratory.view_labororgrequest",
+            "laboratory.change_labororgrequest",
+            "laboratory.delete_labororgrequest",
         ],
     )
 
@@ -250,6 +254,7 @@ def update_administrador_laboratorio():
             "msds.delete_msdsobject",
             "msds.add_msdsobject",
             "msds.change_msdsobject",
+            "laboratory.can_approve_labororgrequest",
         ],
     )
 
@@ -1000,14 +1005,19 @@ def update_regente():
 
 
 def update_administrador_superior():
-    rol = Rol.objects.filter(name="Administrador de Laboratorio").first()
+    rol = Rol.objects.filter(name="Administrativo superior").first()
     if not rol:
-        print("WARNING: Rol 'Administrador de Laboratorio' not found, skipping.")
+        print("WARNING: Rol 'Administrativo superior' not found, skipping.")
         return
     add_permissions(
         rol,
         [
             "laboratory.can_manage_reorder",
+            "laboratory.add_labororgrequest",
+            "laboratory.view_labororgrequest",
+            "laboratory.change_labororgrequest",
+            "laboratory.delete_labororgrequest",
+            "laboratory.can_approve_labororgrequest",
         ],
     )
 

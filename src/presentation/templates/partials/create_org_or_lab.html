@@ -1,0 +1,32 @@
+{% load i18n %}
+
+{% if perms.laboratory.add_labororgrequest or perms.laboratory.can_approve_labororgrequest %}
+	<li>
+		<a>
+			<i class="fa fa-plus-square" aria-hidden="true"></i>
+			{% trans 'Create organization/laboratory' %}
+			<span class="fa fa-chevron-down"></span>
+		</a>
+		<ul class="nav child_menu">
+			{% if perms.laboratory.add_labororgrequest %}
+				<li>
+					<a class="nav-link" href="{% url 'laboratory:lab_or_org_request_list' org_pk %}"
+								title="{% trans 'My Requests' %}">
+						<i class="fa fa-share-square"></i>
+						{% trans 'My Requests' %}
+					</a>
+				</li>
+			{% endif %}
+
+			{% if perms.laboratory.can_approve_labororgrequest %}
+				<li>
+					<a class="nav-link" href="{% url 'laboratory:lab_or_org_request_review' org_pk %}"
+								title="{% trans 'Review Requests' %}">
+						<i class="fa fa-thumbs-up" aria-hidden="true"></i>
+						{% trans 'Review Requests' %}
+					</a>
+				</li>
+			{% endif %}
+		</ul>
+	</li>
+{% endif %}

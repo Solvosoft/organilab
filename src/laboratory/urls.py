@@ -98,6 +98,11 @@ from laboratory.views.organizations import (
     OrganizationActionsFormview,
 )
 from laboratory.views.provider import provider_view
+from laboratory.views.lab_or_org_request import (
+    lab_or_org_request_view,
+    lab_or_org_request_review_view,
+)
+from laboratory.api.views import LabOrOrgRequestViewSet, LabOrOrgRequestReviewViewSet
 
 objviews = ObjectView()
 
@@ -314,6 +319,23 @@ lab_features_urls = [
         objectfeature.objectfeatures_view,
         name="objectfeatures_view",
     ),
+]
+
+lab_or_org_request_router = DefaultRouter()
+lab_or_org_request_router.register(
+    "api_requests", LabOrOrgRequestViewSet, basename="api-labororgrequest"
+)
+
+lab_or_org_request_review_router = DefaultRouter()
+lab_or_org_request_review_router.register(
+    "api_review", LabOrOrgRequestReviewViewSet, basename="api-labororgrequest-review"
+)
+
+lab_or_org_request_urls = [
+    path("api/my/", include(lab_or_org_request_router.urls)),
+    path("my/", lab_or_org_request_view, name="lab_or_org_request_list"),
+    path("api/review/", include(lab_or_org_request_review_router.urls)),
+    path("review/", lab_or_org_request_review_view, name="lab_or_org_request_review"),
 ]
 
 provider_router = DefaultRouter()
@@ -631,6 +653,7 @@ urlpatterns += organization_urls + [
         name="api_shelfobject_graphic",
     ),
     path("org/api/shels/list", ShelfList.as_view(), name="get_shelfs_list"),
+    path("<int:org_pk>/requests/", include(lab_or_org_request_urls)),
     path("<int:org_pk>/", include(reports_all_lab)),
     path("catalogs/", include(catalogs_urls)),
     path("inform/api/<int:org_pk>/", include(comment_router.urls)),

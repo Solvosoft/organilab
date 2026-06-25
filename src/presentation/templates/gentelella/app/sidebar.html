@@ -28,6 +28,7 @@
 				{% include 'partials/organizations.html' %}
 
 				{% if org_pk %}
+					{% include 'partials/create_org_or_lab.html' %}
 					{% include 'partials/sga_academic.html' %}
 					{% include 'partials/sga_menu.html' %}
 					{% include 'partials/reservations_menu.html' %}
@@ -55,7 +56,7 @@
 					<li>
 						<a class="nav-link" href="
 							{% url 'feedback' %}{% if laboratory and org_pk %}?lab_pk={{ laboratory }}&org_pk={{ org_pk }}{% endif %}">
-							<i class="fa fa-wrench fa-fw"></i> {% trans 'Feedback' %}</a>
+							<i class="fa fa-life-ring"></i> {% trans 'Feedback' %}</a>
 					</li>
 				{% endif %}
 			</ul>
