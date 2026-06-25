@@ -1476,3 +1476,12 @@ msgstr "Familia Instrumental"
 
 msgid "Unit code"
 msgstr "Código de unidad"
+
+msgid "Requested by"
+msgstr "Solicitado por"
+
+msgid "Location"
+msgstr "Ubicación"
+
+msgid "Reject"
+msgstr "Rechazar"

@@ -38,6 +38,7 @@ from laboratory.models import (
     MaterialCapacity,
     LaboratoryRoom,
     Furniture,
+    LabOrOrgRequest,
 )
 
 from laboratory.models import Protocol
@@ -2069,3 +2070,256 @@ class LoadArchiveSerializer(serializers.Serializer):
         if not name.lower().endswith(".xlsm"):
             raise serializers.ValidationError(_("Only .xlsm files are allowed."))
         return value
+
+
+# LabOrOrgRequest serializers
+
+
+class LabOrOrgRequestValidateSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(required=True, max_length=255)
+    is_org = serializers.BooleanField(required=False, default=False)
+    review_notes = serializers.CharField(required=False, allow_blank=True, default="")
+    phone_number = serializers.CharField(
+        required=False, allow_blank=True, max_length=25, default=""
+    )
+    location = serializers.CharField(
+        required=False, allow_blank=True, max_length=255, default=""
+    )
+    geolocation = serializers.CharField(
+        required=False, allow_blank=True, allow_null=True
+    )
+    email = serializers.EmailField(required=False, allow_blank=True, default="")
+    coordinator = serializers.CharField(
+        required=False, allow_blank=True, max_length=255, default=""
+    )
+    unit = serializers.CharField(
+        required=False, allow_blank=True, max_length=50, default=""
+    )
+    description = serializers.CharField(
+        required=False, allow_blank=True, allow_null=True
+    )
+    area = serializers.FloatField(required=False, default=0.0)
+    faculty_dispatch = serializers.CharField(
+        required=False, allow_blank=True, allow_null=True, max_length=255
+    )
+    organization = serializers.PrimaryKeyRelatedField(
+        queryset=OrganizationStructure.objects.all(), required=False, allow_null=True
+    )
+    responsible = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(), required=False, allow_null=True
+    )
+    nearby_sites = ChunkedFileField(required=False, allow_null=True)
+    water_resources_affected = ChunkedFileField(required=False, allow_null=True)
+    workplace = serializers.PrimaryKeyRelatedField(
+        queryset=OrganizationStructure.objects.all(), many=True, required=False
+    )
+    parent_org = serializers.PrimaryKeyRelatedField(
+        queryset=OrganizationStructure.objects.all(), required=False, allow_null=True
+    )
+
+    LAB_ONLY_FIELDS = [
+        "phone_number",
+        "location",
+        "geolocation",
+        "email",
+        "coordinator",
+        "unit",
+        "description",
+        "area",
+        "faculty_dispatch",
+        "responsible",
+        "nearby_sites",
+        "water_resources_affected",
+        "workplace",
+    ]
+    ORG_ONLY_FIELDS = ["parent_org"]
+
+    def validate(self, attrs):
+        # On update: derive type from existing instance, don't allow changing it
+        if self.instance:
+            is_org = self.instance.entity_type == LabOrOrgRequest.TYPE_ORGANIZATION
+            attrs.pop("is_org", None)
+        else:
+            is_org = attrs.get("is_org", False)
+
+        if is_org:
+            if not self.instance and not attrs.get("parent_org"):
+                raise serializers.ValidationError(
+                    {
+                        "parent_org": _(
+                            "This field is required for organization requests."
+                        )
+                    }
+                )
+            for field in self.LAB_ONLY_FIELDS:
+                attrs.pop(field, None)
+        else:
+            if not self.instance and not attrs.get("organization"):
+                raise serializers.ValidationError(
+                    {
+                        "organization": _(
+                            "This field is required for laboratory requests."
+                        )
+                    }
+                )
+            for field in self.ORG_ONLY_FIELDS:
+                attrs.pop(field, None)
+        return attrs
+
+    def create(self, validated_data):
+        is_org = validated_data.pop("is_org", False)
+        validated_data["entity_type"] = (
+            LabOrOrgRequest.TYPE_ORGANIZATION
+            if is_org
+            else LabOrOrgRequest.TYPE_LABORATORY
+        )
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        validated_data.pop("is_org", None)  # entity_type is immutable after creation
+        return super().update(instance, validated_data)
+
+    class Meta:
+        model = LabOrOrgRequest
+        fields = [
+            "name",
+            "is_org",
+            "review_notes",
+            "phone_number",
+            "location",
+            "geolocation",
+            "email",
+            "coordinator",
+            "unit",
+            "description",
+            "area",
+            "faculty_dispatch",
+            "organization",
+            "responsible",
+            "nearby_sites",
+            "water_resources_affected",
+            "workplace",
+            "parent_org",
+        ]
+
+
+class LabOrOrgRequestSerializer(serializers.ModelSerializer):
+    actions = serializers.SerializerMethodField()
+    is_org = serializers.SerializerMethodField()
+    entity_type_display = serializers.CharField(
+        source="get_entity_type_display", read_only=True
+    )
+    status_display = serializers.CharField(source="get_status_display", read_only=True)
+    requested_at = GTDateTimeField(required=False)
+    requested_by = GTS2SerializerBase(many=False)
+    parent_org = GTS2SerializerBase(many=False)
+    responsible = GTS2SerializerBase(many=False)
+    workplace = GTS2SerializerBase(many=True)
+
+    def get_is_org(self, obj):
+        return obj.entity_type == LabOrOrgRequest.TYPE_ORGANIZATION
+
+    def get_actions(self, obj):
+        user = self.context["request"].user
+        is_pending = obj.status == LabOrOrgRequest.STATUS_PENDING
+        is_owner = obj.requested_by == user
+        can_change = user.has_perm("laboratory.change_labororgrequest")
+        can_delete = user.has_perm("laboratory.delete_labororgrequest")
+        return {
+            "update": can_change and is_owner and is_pending,
+            "destroy": can_delete and is_owner,
+        }
+
+    class Meta:
+        model = LabOrOrgRequest
+        fields = [
+            "id",
+            "name",
+            "is_org",
+            "entity_type",
+            "entity_type_display",
+            "status",
+            "status_display",
+            "review_notes",
+            "requested_at",
+            "requested_by",
+            "phone_number",
+            "location",
+            "geolocation",
+            "email",
+            "coordinator",
+            "unit",
+            "description",
+            "area",
+            "faculty_dispatch",
+            "responsible",
+            "nearby_sites",
+            "water_resources_affected",
+            "workplace",
+            "parent_org",
+            "actions",
+        ]
+
+
+class LabOrOrgRequestReviewSerializer(serializers.ModelSerializer):
+    actions = serializers.SerializerMethodField()
+    entity_type_display = serializers.CharField(
+        source="get_entity_type_display", read_only=True
+    )
+    status_display = serializers.CharField(source="get_status_display", read_only=True)
+    requested_by = GTS2SerializerBase(many=False)
+    requested_at = GTDateTimeField(required=False)
+    parent_org = GTS2SerializerBase(many=False)
+
+    def get_actions(self, obj):
+        user = self.context["request"].user
+        can_approve = user.has_perm("laboratory.can_approve_labororgrequest")
+        is_pending = obj.status == LabOrOrgRequest.STATUS_PENDING
+        return {
+            "approve": can_approve and is_pending,
+            "reject": can_approve and is_pending,
+            "destroy": can_approve and not is_pending,
+        }
+
+    class Meta:
+        model = LabOrOrgRequest
+        fields = [
+            "id",
+            "name",
+            "entity_type",
+            "entity_type_display",
+            "status_display",
+            "review_notes",
+            "requested_at",
+            "requested_by",
+            "phone_number",
+            "location",
+            "geolocation",
+            "email",
+            "coordinator",
+            "unit",
+            "description",
+            "area",
+            "faculty_dispatch",
+            "organization",
+            "responsible",
+            "nearby_sites",
+            "water_resources_affected",
+            "workplace",
+            "parent_org",
+            "actions",
+        ]
+
+
+class LabOrOrgRequestDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=LabOrOrgRequestSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+
+class LabOrOrgRequestReviewDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=LabOrOrgRequestReviewSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)

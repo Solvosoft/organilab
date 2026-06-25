@@ -2,19 +2,19 @@
 {% if perms.laboratory.can_manage_org_permissions %}
 <li>
         <a>
-            <i class="fa fa-university"></i>
+            <i class="fa fa-sitemap"></i>
                 {% trans 'Org and perms' %}
             <span class="fa fa-chevron-down"></span>
         </a>
         <ul class="nav child_menu">
             <li>
                 <a href="{% url 'auth_and_perms:organizationManager' %}" title="{% trans 'Manage Organizations' %}">
-                  <i class='fa fa-university'></i> {% trans 'Manage Organizations' %}
+                  <i class='fa fa-key'></i> {% trans 'Manage Organizations' %}
                 </a>
             </li>
 									<li>
                 <a href="{% url 'auth_and_perms:get_users' %}" title="{% trans 'User List' %}">
-                  <i class='fa fa-university'></i> {% trans 'User List' %}
+                  <i class='fa fa-users'></i> {% trans 'User List' %}
                 </a>
             </li>
 									<li>
