@@ -17,12 +17,12 @@
 
 		<div class="btn-toolbar justify-content-between" aria-label="Control button">
 			<div class="btn-group" role="group">
-				{% if perms.laboratory.add_provider %}
+				{% if perms.laboratory.view_provider %}
 					<a target="_blank" class="btn btn-outline-primary"
 								href="{% url 'laboratory:provider_view' org_pk=org_pk lab_pk=lab_pk %}">{% trans 'Provider' %}</a>
 				{% endif %}
 
-				{% if perms.laboratory.add_objectfeatures %}
+				{% if perms.laboratory.view_objectfeatures %}
 					<a target="_blank" class="btn btn-outline-primary"
 								href="{% url 'laboratory:objectfeatures_view' org_pk=org_pk lab_pk=lab_pk %}">{% trans 'Object features' %}</a>
 				{% endif %}
@@ -51,6 +51,23 @@
 
 	{% include 'gentelella/blocks/modal_template_delete.html' with form=delete_form id="delete_obj_modal" form_id="delete_obj_form" url=detail_obj_url %}
 
+	<!-- Modal de Detalle de Equipo -->
+	<div class="modal fade" id="equipment_detail_modal" tabindex="-1" role="dialog" aria-labelledby="equipment_detail_modalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-xl" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="equipment_detail_modalLabel">{% trans 'Equipment Detail' %}</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
+				</div>
+				<div class="modal-body" id="equipment_detail_modal_body">
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
 {% endblock %}
 {% block js %}
 	{{ block.super }}
@@ -65,7 +82,8 @@
 			list_url: "{% url 'laboratory:api-equipment-list' org_pk lab_pk %}",
 			create_url: "{% url 'laboratory:api-equipment-list' org_pk lab_pk %}",
 			destroy_url: "{% url "laboratory:api-equipment-detail" org_pk lab_pk 0 %}",
-			update_url: "{% url "laboratory:api-equipment-detail" org_pk lab_pk 0 %}"
+			update_url: "{% url "laboratory:api-equipment-detail" org_pk lab_pk 0 %}",
+			detail_url: "{% url "laboratory:api-equipment-detail" org_pk lab_pk 0 %}"
 		}
 
 		datatable_inits = {
@@ -97,7 +115,15 @@
 
 		var equipment_actions = {
 			table_actions: [],  //table_actions
-			object_actions: [],
+			object_actions: [
+				{
+					'name': 'view_detail',
+					'action': 'view_detail',
+					'title': gettext('View Detail'),
+					'in_action_column': true,
+					'i_class': 'fa fa-eye',
+				}
+			],
 			title: gettext('Actions'),
 			className: "no-export-col"
 		}
@@ -125,6 +151,130 @@
 
 
 		let ocrud = ObjectCRUD("equipmentcrudobj", objconfig)
+
+		ocrud.view_detail = function(obj, action) {
+			let detail_url = object_urls.detail_url.replace('/0/', '/' + obj.id + '/');
+			fetch(detail_url, {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-CSRFToken': getCookie('csrftoken')
+				}
+			})
+			.then(response => response.json())
+			.then(data => {
+				buildEquipmentDetailModal(data);
+				$('#equipment_detail_modal').modal('show');
+			})
+			.catch(error => {
+				console.error('Error fetching equipment detail:', error);
+			});
+		}
+
+		function buildEquipmentDetailModal(data) {
+			const modalBody = document.getElementById('equipment_detail_modal_body');
+			modalBody.innerHTML = '';
+
+			const modalLabel = document.getElementById('equipment_detail_modalLabel');
+			modalLabel.textContent = data.name || gettext('Equipment Detail');
+
+			let html = '<div class="container-fluid">';
+			html += '<div class="row">';
+
+			// Columna izquierda - Datos del Object
+			html += '<div class="col-md-6">';
+			html += '<h5 class="border-bottom pb-2 mb-3">' + gettext('General Information') + '</h5>';
+			html += '<table class="table table-sm table-striped">';
+			html += '<tbody>';
+			html += buildTableRow(gettext('Code'), data.code);
+			html += buildTableRow(gettext('Name'), data.name);
+			html += buildTableRow(gettext('Synonym'), data.synonym);
+			html += buildTableRow(gettext('Description'), data.description);
+			html += buildTableRow(gettext('Model'), data.model);
+			html += buildTableRow(gettext('Serie'), data.serie);
+			html += buildTableRow(gettext('Plaque'), data.plaque);
+			html += '</tbody></table>';
+
+			// Features
+			if (data.features && data.features.length > 0) {
+				html += '<h6 class="mt-3">' + gettext('Features') + '</h6>';
+				html += '<ul class="list-group list-group-flush">';
+				data.features.forEach(function(feature) {
+					html += '<li class="list-group-item py-1">' + feature.name + '</li>';
+				});
+				html += '</ul>';
+			}
+			html += '</div>';
+
+			// Columna derecha - Equipment Characteristics
+			html += '<div class="col-md-6">';
+			html += '<h5 class="border-bottom pb-2 mb-3">' + gettext('Equipment Characteristics') + '</h5>';
+
+			if (data.equipment_characteristics) {
+				const ec = data.equipment_characteristics;
+				html += '<table class="table table-sm table-striped">';
+				html += '<tbody>';
+				html += buildTableRow(gettext('Calibration Required'), ec.calibration_required ? gettext('Yes') : gettext('No'));
+				html += buildTableRow(gettext('Operation Voltage'), ec.operation_voltage);
+				html += buildTableRow(gettext('Operation Amperage'), ec.operation_amperage);
+				html += buildTableRow(gettext('Use Specials Conditions'), ec.use_specials_conditions);
+				html += buildTableRow(gettext('Generate Pathological Waste'), ec.generate_pathological_waste ? gettext('Yes') : gettext('No'));
+				html += buildTableRow(gettext('Clean Period According to Provider'), ec.clean_period_according_to_provider);
+				if (ec.instrumental_family) {
+					html += buildTableRow(gettext('Instrumental Family'), ec.instrumental_family.description);
+				}
+				if (ec.equipment_type) {
+					html += buildTableRow(gettext('Equipment Type'), ec.equipment_type.name);
+				}
+				html += '</tbody></table>';
+
+				// Providers
+				if (ec.providers && ec.providers.length > 0) {
+					html += '<h6 class="mt-3">' + gettext('Providers') + '</h6>';
+					html += '<ul class="list-group list-group-flush">';
+					ec.providers.forEach(function(provider) {
+						html += '<li class="list-group-item py-1">' + provider.name + '</li>';
+					});
+					html += '</ul>';
+				}
+
+				// Use Manual Link
+				if (ec.use_manual && ec.use_manual.url) {
+					html += '<div class="mt-3">';
+					html += '<a href="' + ec.use_manual.url + '" target="_blank" class="btn btn-outline-primary btn-sm">';
+					html += '<i class="fa fa-file-pdf-o"></i> ' + gettext('Download Use Manual');
+					html += '</a></div>';
+				}
+			} else {
+				html += '<p class="text-muted">' + gettext('No equipment characteristics available') + '</p>';
+			}
+
+			html += '</div>';
+			html += '</div>';
+			html += '</div>';
+
+			modalBody.innerHTML = html;
+		}
+
+		function buildTableRow(label, value) {
+			return '<tr><td class="fw-bold" style="width: 40%;">' + label + '</td><td>' + (value || '-') + '</td></tr>';
+		}
+
+		function getCookie(name) {
+			let cookieValue = null;
+			if (document.cookie && document.cookie !== '') {
+				const cookies = document.cookie.split(';');
+				for (let i = 0; i < cookies.length; i++) {
+					const cookie = cookies[i].trim();
+					if (cookie.substring(0, name.length + 1) === (name + '=')) {
+						cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+						break;
+					}
+				}
+			}
+			return cookieValue;
+		}
+
 		ocrud.init();
 
 

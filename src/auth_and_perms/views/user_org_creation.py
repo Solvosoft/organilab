@@ -1,5 +1,7 @@
 from datetime import timedelta
 from functools import partial
+
+from django.contrib.auth.decorators import login_required, permission_required
 from django.db import transaction
 from django.contrib import messages
 from django.contrib.auth.models import User, Group
@@ -15,6 +17,7 @@ from auth_and_perms.forms import (
     CreationUserOrganization,
     AddProfileForm,
     AddProfileDigitalSignatureForm,
+    RolListForm,
 )
 from auth_and_perms.models import (
     RegistrationUser,
@@ -103,13 +106,12 @@ def set_rol_administrator_on_org(
     else:
         root_org = organization.root
         rol = Rol.objects.filter(
-            name=_("Organization Management"),
-            organizationstructure=root_org
+            name=_("Organization Management"), organizationstructure=root_org
         ).first()
         if rol:
             ct = ContentType.objects.filter(
                 app_label=organization._meta.app_label,
-                model=organization._meta.model_name
+                model=organization._meta.model_name,
             ).first()
             pp, _created = ProfilePermission.objects.get_or_create(
                 profile=profile, content_type=ct, object_id=organization.pk
@@ -132,9 +134,10 @@ def create_user_organization(
     else:
         org = organization
     set_rol_administrator_on_org(profile, org, type_in_organization=user_type)
-    pending_tasks_group = Group.objects.filter(name="PendingTasks").first()
-    if pending_tasks_group:
-        user.groups.add(pending_tasks_group)
+    for group_name in ["Profile", "PendingTasks", "SGAView"]:
+        group = Group.objects.filter(name=group_name).first()
+        if group:
+            user.groups.add(group)
     user.active = True
     user.save()
 
@@ -235,3 +238,11 @@ def show_QR_img(request, pk):
     response = HttpResponse(content_type="image/svg+xml")
     img.save(response)
     return response
+
+
+@login_required()
+@permission_required("auth_and_perms.view_profile", raise_exception=True)
+def get_users(request):
+    return render(
+        request, "auth_and_perms/user_list.html", context={"form": RolListForm()}
+    )

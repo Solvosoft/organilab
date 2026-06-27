@@ -9,6 +9,8 @@ chown -R organilab:organilab /organilab /run/supervisor/
 runuser -p -c "python manage.py migrate" organilab
 runuser -p -c "python manage.py init_checks" organilab
 runuser -p -c "python manage.py load_urlname_permissions" organilab
+runuser -p -c "django-admin compilemessages --locale es" organilab
+runuser -p -c "django-admin compilemessages --locale en" organilab
 
 # Selector de servicio según SERVICE_TYPE
 case "${SERVICE_TYPE}" in

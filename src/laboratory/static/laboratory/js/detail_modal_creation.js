@@ -45,7 +45,9 @@ function configure_modal(data) {
         was_donated: data.object.was_donated ? gettext('Yes') : gettext('No')
     }, tbody_instance, {
         'was_donated': gettext('Donated income'),
-        'unit': gettext('Unit')
+        'unit': gettext('Unit'),
+        'shelfobject_code': gettext('Unit code'),
+
     });
     if (data.object['object_features']) {
         append_data_lists(data.object, {'object_features': gettext('Features')}, tbody_instance);
@@ -212,8 +214,10 @@ function load_array_data(array_list, title, inst) {
     let nested_key = Object.keys(array_list[0])[0]
     array_list.forEach((item) => {
         let value = item
-        if (nested_key) {
+        if (nested_key && !["Códigos H", "H-codes"].includes(title)) {
             value = value[nested_key]
+        }else{
+            value = value
         }
         html_object += `<li>${value}</li>`
     })

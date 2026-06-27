@@ -36,11 +36,10 @@ def get_informs(request, *args, **kwargs):
 @login_required
 @permission_required("laboratory.delete_inform", raise_exception=True)
 def remove_inform(request, *args, **kwargs):
+    lab = get_object_or_404(Laboratory, pk=kwargs.get("lab_pk"))
     informs = Inform.objects.filter(pk=int(kwargs.get("pk"))).first()
     if informs:
-        organilab_logentry(
-            request.user, informs, DELETION, "informs", relobj=kwargs.get("lab_pk")
-        )
+        organilab_logentry(request.user, informs, DELETION, "informs", relobj=lab)
         informs.delete()
         return redirect(
             reverse(
@@ -81,7 +80,8 @@ def create_informs(request, *args, **kwargs):
         inform.organization = organization
         inform.created_by = request.user
         inform.save()
-        organilab_logentry(request.user, inform, ADDITION, "informs", relobj=laboratory)
+        lab = get_object_or_404(Laboratory, pk=laboratory)
+        organilab_logentry(request.user, inform, ADDITION, "informs", relobj=lab)
         return redirect(
             reverse(
                 "laboratory:get_informs", kwargs={"lab_pk": laboratory, "org_pk": org}

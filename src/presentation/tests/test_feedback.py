@@ -35,9 +35,7 @@ class FeedbackTest(TestCase):
         pos = FeedbackEntry.objects.count()
         self.assertEqual(response.status_code, 200)
         self.assertTrue(pos > pre)
-        self.assertRedirects(
-            response, reverse("auth_and_perms:select_organization_by_user")
-        )
+        self.assertRedirects(response, reverse("pending_tasks:view_task"))
 
     def test_add_feedback_lab_org(self):
         f = ContentFile(b"Hello world!", name="hello-world.pdf")
@@ -80,9 +78,7 @@ class FeedbackTest(TestCase):
     def test_index_auth(self):
         response = self.client.get(reverse("index"))
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(
-            response, reverse("auth_and_perms:select_organization_by_user")
-        )
+        self.assertRedirects(response, reverse("pending_tasks:view_task"))
         self.assertTemplateNotUsed(response, "index.html")
 
     def test_index_no_auth(self):

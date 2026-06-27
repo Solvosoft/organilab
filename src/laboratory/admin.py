@@ -218,13 +218,33 @@ class OrganizationStructureRelationsAdmin(OrganizationInfoAdminMixin, admin.Mode
 
 class SDSTraceabilityAdmin(admin.ModelAdmin):
     list_display = [
-        "sustance_characteristics",
+        "sustance_characteristics__obj__name",
         "source",
         "revision_date",
         "creation_date",
     ]
     list_filter = ["source"]
     search_fields = ["sustance_characteristics__cas_id_number"]
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "sustance_characteristics":
+            kwargs["queryset"] = models.SustanceCharacteristics.objects.order_by("-id")
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+
+class SustanceCharacteristicsAdmin(admin.ModelAdmin):
+    list_display = [
+        "pk",
+        "obj__name",
+        "obj__code",
+        "cas_id_number",
+    ]
+    list_filter = ["obj__name", "cas_id_number", "h_code"]
+    search_fields = [
+        "obj__name",
+        "obj__code",
+        "cas_id_number",
+    ]
 
 
 @admin.register(models.UserOrganization)
@@ -779,8 +799,33 @@ class OrganizationStructureAdmin(admin.ModelAdmin):
     indented_name.short_description = "Name"
 
 
+@admin.register(models.LabOrOrgRequest)
+class LabOrOrgRequestAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "name",
+        "entity_type",
+        "status",
+        "requested_by",
+        "requested_at",
+        "organization",
+    )
+    list_filter = ("entity_type", "status", "organization")
+    search_fields = (
+        "name",
+        "requested_by__username",
+        "requested_by__first_name",
+        "requested_by__last_name",
+        "organization__name",
+    )
+    readonly_fields = ("requested_at", "requested_by")
+    list_select_related = ("requested_by", "organization")
+
+
 admin.site.register(models.PrecursorReport, PrecursorReportAdmin)
 admin.site.register(models.PrecursorReportValues, PrecursorReportValuesAdmin)
 admin.site.register(models.SDSTraceability, SDSTraceabilityAdmin)
 admin.site.register(models.ShelfObjectLimits)
+admin.site.register(models.LabOrgLogEntry)
+admin.site.register(models.SustanceCharacteristics, SustanceCharacteristicsAdmin)
 admin.site.site_header = _("Organilab Administration site")

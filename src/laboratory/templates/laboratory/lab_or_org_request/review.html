@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load i18n laboratory static %}
+{% load gtsettings %}
+{% load urlname_tags %}
+{% load organilab_tags %}
+{% block pre_head %}
+	{% define_true "use_datatables" %}
+	{% define_urlname_action 'lab_or_org_request_review' %}
+{% endblock %}
+{% block title %}{% trans 'Review lab or organization requests' %}{% endblock %}
+
+{% block content %}
+	<div class="page-header text-center"><h1>{% trans 'Pending Requests' %}</h1></div>
+
+	<section class="my-3">
+		{% if perms.laboratory.can_approve_labororgrequest %}
+			<div class="row mb-3">
+				<div class="col-auto d-flex align-items-center gap-2">
+					<label class="mb-0 fw-bold">{% trans 'Status' %}</label>
+					{{ form_filter.status }}
+				</div>
+			</div>
+			<div class="row mt-3">
+				<div class="col-12">
+					<table class="table table-hover table-striped w-100 table-responsive" id="table">
+					</table>
+				</div>
+			</div>
+		{% else %}
+			{% include 'laboratory/action_denied.html' %}
+		{% endif %}
+	</section>
+
+	{% url "laboratory:api-labororgrequest-review-detail" org_pk 0 as destroy_obj_url %}
+	{% trans 'Delete Request' as delete_obj_title %}
+	{% include 'gentelella/blocks/modal_template_delete.html' with form_id="delete_obj_form" id="delete_obj_modal" title=delete_obj_title url=destroy_obj_url %}
+
+{% endblock %}
+
+{% block js %}
+	{{ block.super }}
+	<script>
+		const object_urls = {
+			list_url: "{% url 'laboratory:api-labororgrequest-review-list' org_pk %}",
+			approve_url: "{% url 'laboratory:api-labororgrequest-review-approve' org_pk 0 %}",
+			reject_url: "{% url 'laboratory:api-labororgrequest-review-reject' org_pk 0 %}",
+			destroy_url: "{% url 'laboratory:api-labororgrequest-review-detail' org_pk 0 %}",
+		}
+	</script>
+	<script src="{% static 'laboratory/js/lab_or_org_request_review.js' %}?v={% get_organilab_version %}"></script>
+{% endblock %}

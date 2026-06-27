@@ -34,6 +34,7 @@ def get_dataset_report_discard_objects(report, laboratory, column_list=None):
             "created_by__username",
             "created_by__last_name",
             "measurement_unit__description",
+            "shelfobject_code",
         )
         .order_by("shelf")
     )
@@ -43,9 +44,16 @@ def get_dataset_report_discard_objects(report, laboratory, column_list=None):
             total = sum(b["units"] for b in obj["quantity_units"]) * obj["quantity"]
         else:
             total = obj["quantity"]
-        unit = obj["measurement_unit__description"] if obj["measurement_unit__description"] else ""
+        unit = (
+            obj["measurement_unit__description"]
+            if obj["measurement_unit__description"]
+            else ""
+        )
         data_column = {
             "shelf": obj["shelf__name"] if obj["shelf__name"] else "",
+            "shelfobject_code": (
+                obj["shelfobject_code"] if obj["shelfobject_code"] else ""
+            ),
             "object": obj["object__name"] if obj["object__name"] else "",
             "amount": str(round(total, 3)),
             "unit": unit,
@@ -68,7 +76,15 @@ def get_dataset_report_discard_objects(report, laboratory, column_list=None):
 
 def report_discard_object_doc(report):
     builder = ExcelGraphBuilder()
-    content = [_("Shelf"), _("Object"), _("Amount"), _("Unit"), _("Date"), _("Creator")]
+    content = [
+        _("Shelf"),
+        _("Unit code"),
+        _("Object"),
+        _("Amount"),
+        _("Unit"),
+        _("Date"),
+        _("Creator"),
+    ]
     doc = []
     organization = OrganizationStructure.objects.filter(
         pk=report.data["organization"]
@@ -125,6 +141,7 @@ def get_dataset_report_discard_objects_html(report, column_list=None):
                 "in_where_laboratory__name",
                 "created_by__username",
                 "measurement_unit__description",
+                "shelfobject_code",
             )
             .order_by("shelf")
         )
@@ -134,10 +151,17 @@ def get_dataset_report_discard_objects_html(report, column_list=None):
                 total = sum(b["units"] for b in obj["quantity_units"]) * obj["quantity"]
             else:
                 total = obj["quantity"]
-            unit = obj["measurement_unit__description"] if obj["measurement_unit__description"] else ""
+            unit = (
+                obj["measurement_unit__description"]
+                if obj["measurement_unit__description"]
+                else ""
+            )
             data_column = {
                 "in_where_laboratory__name": obj["in_where_laboratory__name"],
                 "shelf__name": obj["shelf__name"],
+                "shelfobject_code": (
+                    obj["shelfobject_code"] if obj["shelfobject_code"] else ""
+                ),
                 "object__name": obj["object__name"],
                 "quantity": str(round(total, 3)),
                 "measurement_unit__description": unit,
@@ -162,6 +186,7 @@ def report_discard_object_html(report):
     columns_fields = [
         {"name": "in_where_laboratory__name", "title": _("Laboratory")},
         {"name": "shelf__name", "title": _("Shelf")},
+        {"name": "shelfobject_code", "title": _("Unit code")},
         {"name": "object__name", "title": _("Object")},
         {"name": "quantity", "title": _("Quantity")},
         {"name": "measurement_unit__description", "title": _("Unit")},
