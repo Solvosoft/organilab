@@ -52,8 +52,7 @@ def _decrease_box_stock(reserved_product):
     shelfobject = reserved_product.shelf_object
 
     quantity_units = {
-        entry["code"]: entry["units"]
-        for entry in shelfobject.quantity_units
+        entry["code"]: entry["units"] for entry in shelfobject.quantity_units
     }
 
     existing_boxes = []
@@ -82,7 +81,10 @@ def _decrease_box_stock(reserved_product):
                 state="visible",
                 user=reserved_product.user,
                 message_type="warning",
-                description=_("Your reservation #%(pk)d was denied: not enough box stock to fulfill the request (%(units)d units short).") % {
+                description=_(
+                    "Your reservation #%(pk)d was denied: not enough box stock to fulfill the request (%(units)d units short)."
+                )
+                % {
                     "pk": reserved_product.pk,
                     "units": units_not_covered,
                 },
@@ -101,32 +103,63 @@ def _decrease_box_stock(reserved_product):
         code = box["code"]
         reserved_units = box["units"]
         current_units = quantity_units.get(code, 0)
+        old_quantity = shelfobject.get_box_totals()
+        obj_quantity = sum(
+            b.get("quantity", 0)
+            for b in shelfobject.quantity_units
+            if b["code"] == code
+        )
+        obj_units = sum(
+            b.get("units", 0) for b in shelfobject.quantity_units if b["code"] == code
+        )
+        new_quantity = (
+            obj_quantity
+            if obj_units == current_units
+            else obj_quantity / obj_units * current_units
+        )
+
         new_units = current_units - reserved_units
+        quantity_units[code] = new_units
 
         log_object_change(
             user,
             laboratory.pk,
             shelfobject,
-            current_units,
-            max(new_units, 0),
-            _("Automatic decrease via reservation #%(pk)d") % {"pk": reserved_product.pk},
+            old_quantity,
+            old_quantity - new_quantity,
+            _("Automatic decrease via reservation #%(pk)d")
+            % {"pk": reserved_product.pk},
             2,
             _("Spend"),
             create=False,
             organization=organization,
         )
 
-        if new_units <= 0:
-            quantity_units.pop(code, None)
-        else:
-            quantity_units[code] = new_units
+        quantity_units[code] = new_units
 
         affected_codes.append(code)
 
-    shelfobject.quantity_units = [
-        {"code": code, "units": units}
-        for code, units in quantity_units.items()
-    ]
+    for code, units in quantity_units.items():
+        i = 0
+        for box in shelfobject.quantity_units:
+
+            if box["code"] == code:
+                if units <= 0:
+                    shelfobject.quantity_units.remove(box)
+                    continue
+                box["units"] = units
+                box["quantity"] = (
+                    shelfobject.get_shelfobject_conversion_from_two_units(
+                        shelfobject.shelf.measurement_unit,
+                        shelfobject.measurement_unit,
+                    )
+                    * units
+                    if shelfobject.shelf.measurement_unit
+                    else shelfobject.quantity * units
+                )
+                shelfobject.quantity_units[i] = box
+            i += 1
+            continue
 
     save_object_by_action(
         user,
@@ -139,14 +172,15 @@ def _decrease_box_stock(reserved_product):
 
     ShelfObjectObservation.objects.create(
         action_taken=_("Box units decreased via reservation"),
-        description=_("Boxes %(codes)s consumed automatically from reservation #%(pk)d") % {
+        description=_("Boxes %(codes)s consumed automatically from reservation #%(pk)d")
+        % {
             "codes": ", ".join(affected_codes),
             "pk": reserved_product.pk,
         },
         shelf_object=shelfobject,
         created_by=user,
     )
-
+    shelfobject.save()
     reserved_product.status = BORROWED
     reserved_product.save(update_fields=["status"])
 
@@ -160,7 +194,11 @@ def decrease_stock(reserved_product):
     by code and updates quantity_box without touching quantity.
     For standard shelf objects, subtracts amount_required from quantity.
     """
-    reserved_product_pk = reserved_product if not isinstance(reserved_product, ReservedProducts) else reserved_product.pk
+    reserved_product_pk = (
+        reserved_product
+        if not isinstance(reserved_product, ReservedProducts)
+        else reserved_product.pk
+    )
     try:
         if not isinstance(reserved_product, ReservedProducts):
             try:
@@ -187,4 +225,6 @@ def decrease_stock(reserved_product):
             )
         reserved_product.shelf_object.save()
     finally:
-        PeriodicTask.objects.filter(name=f"decrease_stock_{reserved_product_pk}").delete()
+        PeriodicTask.objects.filter(
+            name=f"decrease_stock_{reserved_product_pk}"
+        ).delete()

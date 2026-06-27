@@ -13,13 +13,22 @@ from laboratory.models import Laboratory, UserOrganization, OrganizationStructur
 
 class CreateUserForm(forms.ModelForm, GTForm):
     phone_number = forms.CharField(
-        max_length=25, label=_("Phone"), widget=djgenwidgets.PhoneNumberMaskInput
+        max_length=25,
+        label=_("Phone"),
+        widget=djgenwidgets.PhoneNumberMaskInput,
+        required=False,
     )
     id_card = forms.CharField(
-        label=_("ID Card"), max_length=100, widget=djgenwidgets.TextInput
+        label=_("ID Card"),
+        max_length=100,
+        widget=djgenwidgets.TextInput,
+        required=False,
     )
     job_position = forms.CharField(
-        label=_("Job Position"), max_length=100, widget=djgenwidgets.TextInput
+        label=_("Job Position"),
+        max_length=100,
+        widget=djgenwidgets.TextInput,
+        required=False,
     )
     user_type = forms.ChoiceField(
         widget=djgenwidgets.Select,

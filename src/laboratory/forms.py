@@ -16,6 +16,7 @@ from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets.files import FileChunkedUpload
 from djgentelella.widgets.selects import AutocompleteSelect, AutocompleteSelectMultiple
 from djgentelella.widgets.tinymce import EditorTinymce
+from location_field.forms.plain import PlainLocationField as PlainLocationFormField
 
 from auth_and_perms.models import Profile, Rol
 from authentication.forms import PasswordChangeForm
@@ -35,6 +36,7 @@ from laboratory.models import (
     LaboratoryProcess,
     MaterialCapacity,
     UserOrganization,
+    LabOrOrgRequest,
 )
 from reservations_management.models import ReservedProducts
 from risk_management.models import Regent
@@ -630,7 +632,7 @@ class InformSchedulerFormEdit(GTForm, forms.ModelForm):
                 "informtemplate", url_suffix="-detail"
             ),
             "laboratories": AutocompleteSelectMultiple(
-                "laboratory",
+                "get_laboratories_by_organization",
                 attrs={
                     "data-s2filter-organization": "#id_organization",
                 },
@@ -1425,14 +1427,12 @@ class ReactiveForm(GTForm, forms.ModelForm):
         [["code"], ["bioaccumulable"], ["iarc"]],
         [["synonym"], ["is_precursor"], ["imdg"]],
         [["is_public"], ["precursor_type"], ["white_organ"]],
-        [["features"], ["h_code"], ["nfpa"]],
-        [["model"], ["molecular_formula"], ["ue_code"]],
-        [["plaque"], ["img_representation"], ["storage_class"]],
-        [["serie"], ["is_pure"], ["seveso_list"]],
-        [["type"], ["organization"], ["created_by"]],
+        [["features"], ["h_code"], ["nfpa"], ["molecular_formula"]],
+        [["ue_code"], ["img_representation"], ["storage_class"]],
+        [["is_pure"], ["seveso_list"], ["density"]],
         [["is_dangerous"], ["has_threshold"], ["threshold"]],
         [["description"]],
-        [["density"], ["laboratory"]],
+        [["organization"], ["type"], ["created_by"], ["laboratory"]],
     ]
 
     laboratory = forms.IntegerField(widget=genwidgets.HiddenInput)
@@ -1552,6 +1552,7 @@ class ReactiveForm(GTForm, forms.ModelForm):
         required=False,
         label=_("Threshold"),
         help_text=_("It belongs to the regulations of decree 44741"),
+        initial=0.0,
     )
     density = forms.FloatField(
         widget=genwidgets.TextInput,
@@ -1568,12 +1569,11 @@ class ReactiveForm(GTForm, forms.ModelForm):
         kwargs.pop("laboratory_pk")
         prefix = kwargs.get("prefix", "")
         super(ReactiveForm, self).__init__(*args, **kwargs)
-        self.fields["model"].required = True
         self.fields["name"].label = _("Substance Name")
 
     class Meta:
         model = Object
-        exclude = ["is_container"]
+        exclude = ["is_container", "model", "serie", "plaque"]
         widgets = {
             "features": genwidgets.SelectMultiple(),
             "code": genwidgets.TextInput,
@@ -1584,9 +1584,6 @@ class ReactiveForm(GTForm, forms.ModelForm):
             "type": genwidgets.HiddenInput,
             "organization": genwidgets.HiddenInput,
             "created_by": genwidgets.HiddenInput,
-            "model": genwidgets.TextInput,
-            "serie": genwidgets.TextInput,
-            "plaque": genwidgets.TextInput,
             "is_pure": genwidgets.YesNoInput,
         }
 
@@ -1863,3 +1860,152 @@ class LoadArchiveForm(GTForm, forms.Form):
     class Meta:
         model = None
         fields = ["file", "lab_room", "furniture", "shelf"]
+
+
+class LabOrOrgRequestForm(GTForm, forms.ModelForm):
+    default_render_type = "as_grid"
+    grid_representation = [
+        # Common fields
+        [
+            ["is_org", "name"],
+            ["review_notes"],
+        ],
+        # Lab-specific fields
+        [
+            [
+                "phone_number",
+                "coordinator",
+                "unit",
+                "location",
+                "area",
+                "geolocation",
+            ],
+            [
+                "responsible",
+                "email",
+                "workplace",
+                "faculty_dispatch",
+                "nearby_sites",
+                "water_resources_affected",
+                "description",
+            ],
+        ],
+        # Org-specific fields
+        [
+            ["parent_org"],
+            [""],
+        ],
+    ]
+
+    is_org = forms.BooleanField(
+        label=_("Is organization?"),
+        required=False,
+        widget=genwidgets.YesNoInput(shparent=".mb-3"),
+    )
+
+    geolocation = PlainLocationFormField(
+        based_fields=[],
+        zoom=15,
+        required=False,
+        initial="9.895804362670006,-84.1552734375",
+    )
+
+    def __init__(self, *args, **kwargs):
+        org_pk = kwargs.pop("org_pk", None)
+        super().__init__(*args, **kwargs)
+        self.fields["geolocation"].widget.attrs["class"] = "form-control"
+
+        p = (self.prefix + "-") if self.prefix else ""
+        self.fields["is_org"].widget.attrs["data-rel"] = f"#id_{p}parent_org"
+        self.fields["is_org"].widget.attrs["data-relhidden"] = ";".join([
+            f"#id_{p}phone_number",
+            f"#id_{p}location",
+            f"#id_{p}geolocation",
+            f"#id_{p}email",
+            f"#id_{p}coordinator",
+            f"#id_{p}unit",
+            f"#id_{p}description",
+            f"#id_{p}area",
+            f"#id_{p}faculty_dispatch",
+            f"#id_{p}organization",
+            f"#id_{p}responsible",
+            f"#id_{p}workplace",
+            f"#id_{p}nearby_sites",
+            f"#id_{p}water_resources_affected",
+        ])
+
+        if org_pk:
+            root = OrganizationStructure.objects.filter(pk=org_pk).first()
+            if root:
+                self.fields["organization"].initial = root.pk
+                self.fields["organization"].queryset = (
+                    OrganizationStructure.objects.filter(pk=root.pk)
+                )
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        is_org = self.cleaned_data.get("is_org", False)
+        instance.entity_type = (
+            LabOrOrgRequest.TYPE_ORGANIZATION
+            if is_org
+            else LabOrOrgRequest.TYPE_LABORATORY
+        )
+        if commit:
+            instance.save()
+        return instance
+
+    class Meta:
+        model = LabOrOrgRequest
+        fields = [
+            "is_org",
+            "name",
+            "review_notes",
+            # Lab fields
+            "phone_number",
+            "location",
+            "geolocation",
+            "email",
+            "coordinator",
+            "unit",
+            "description",
+            "area",
+            "faculty_dispatch",
+            "organization",
+            "responsible",
+            "nearby_sites",
+            "water_resources_affected",
+            "workplace",
+            # Org fields
+            "parent_org",
+        ]
+        widgets = {
+            "name": genwidgets.TextInput,
+            "review_notes": genwidgets.Textarea,
+            "phone_number": genwidgets.TextInput,
+            "location": genwidgets.TextInput,
+            "email": genwidgets.EmailInput,
+            "coordinator": genwidgets.TextInput,
+            "unit": genwidgets.TextInput,
+            "description": genwidgets.Textarea,
+            "area": genwidgets.FloatInput,
+            "faculty_dispatch": genwidgets.TextInput,
+            "organization": genwidgets.HiddenInput,
+            "responsible": AutocompleteSelect("userbase", attrs={}),
+            "nearby_sites": FileChunkedUpload,
+            "water_resources_affected": FileChunkedUpload,
+            "workplace": genwidgets.SelectMultiple,
+            "parent_org": AutocompleteSelect("orgbyuser", attrs={}),
+        }
+
+
+class LabOrOrgRequestFilterForm(GTForm, forms.Form):
+    default_render_type = "as_grid"
+    grid_representation = [[["status"]]]
+
+    status = forms.ChoiceField(
+        label=_("Status"),
+        choices=LabOrOrgRequest.STATUS_CHOICES,
+        initial=LabOrOrgRequest.STATUS_PENDING,
+        required=False,
+        widget=forms.Select(attrs={"class": "form-control"}),
+    )

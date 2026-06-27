@@ -367,12 +367,10 @@ class AddUser(CreateView):
         )
 
         send_email(self.request, user)
-        group = Group.objects.filter(name="Profile").first()
-        if group:
-            user.groups.add(group)
-        pending_tasks_group = Group.objects.filter(name="PendingTasks").first()
-        if pending_tasks_group:
-            user.groups.add(pending_tasks_group)
+        for group_name in ["Profile", "PendingTasks", "SGAView"]:
+            group = Group.objects.filter(name=group_name).first()
+            if group:
+                user.groups.add(group)
         organilab_logentry(
             user,
             user,
@@ -442,6 +440,41 @@ def get_roles_by_organization(request, pk):
 
 
 @login_required
+@require_http_methods(["GET"])
+def get_org_administrators(request, pk):
+    org = get_object_or_404(OrganizationStructure, pk=pk)
+    ct = ContentType.objects.get_for_model(OrganizationStructure)
+    active_user_pks = UserOrganization.objects.filter(
+        organization=org,
+        status=True,
+        type_in_organization__in=[
+            UserOrganization.ADMINISTRATOR,
+            UserOrganization.LABORATORY_MANAGER,
+            UserOrganization.LABORATORY_USER,
+        ],
+    ).values_list("user_id", flat=True)
+    profiles = (
+        ProfilePermission.objects.filter(
+            content_type=ct,
+            object_id=org.pk,
+            rol__name="Administrativo superior",
+            profile__user__in=active_user_pks,
+        )
+        .select_related("profile__user")
+        .distinct()
+    )
+    users = [
+        {
+            "name": pp.profile.user.get_full_name() or pp.profile.user.username,
+            "email": pp.profile.user.email,
+        }
+        for pp in profiles
+        if pp.profile and pp.profile.user
+    ]
+    return JsonResponse({"users": users})
+
+
+@login_required
 @permission_required("auth_and_perms.view_rol", raise_exception=True)
 @require_http_methods(["GET"])
 def get_rol(request, pk):
@@ -467,3 +500,27 @@ def update_rol(request, org_pk, pk):
     return redirect(
         reverse("auth_and_perms:list_rol_by_org", kwargs={"org_pk": org_pk})
     )
+
+
+@login_required
+@permission_required("laboratory.view_organizationstructure", raise_exception=True)
+@require_http_methods(["GET"])
+def get_labs_orgs(request):
+    return render(request, "auth_and_perms/lab_org_list.html")
+
+
+@login_required
+@permission_required("laboratory.change_organizationstructure", raise_exception=True)
+@require_http_methods(["POST"])
+def enable_child_organizations(request):
+    organization = get_object_or_404(
+        OrganizationStructure.objects.using(settings.READONLY_DATABASE),
+        pk=request.POST.get("organization", 0),
+    )
+    enable = request.POST.get("enable", "false")
+    if enable == "true":
+        organization.enable_child_organizations = True
+    else:
+        organization.enable_child_organizations = False
+    organization.save()
+    return redirect(reverse("auth_and_perms:organizationManager"))

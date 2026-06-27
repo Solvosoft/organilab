@@ -62,6 +62,7 @@ class ProfileMiddleware:
             view_kwargs.get("org_pk")
             or resolved_kwargs.get("org_pk")
             or request.GET.get("org_pk")
+            or request.GET.get("organization")
         )
         lab_pk = (
             view_kwargs.get("lab_pk")
@@ -168,6 +169,13 @@ class HandleErrorMiddleware:
         if response.status_code in (403, 404):
             content_type = response.get("Content-Type", "")
             if "application/json" in content_type:
+                return response
+
+            sec_fetch_dest = request.headers.get("Sec-Fetch-Dest", "")
+            if sec_fetch_dest and sec_fetch_dest != "document":
+                return response
+
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
                 return response
 
             error_path = reverse("error_view")

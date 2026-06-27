@@ -365,7 +365,6 @@ def update_sds_and_extract_data(
     )
     if sc_ids:
         qs = qs.filter(pk__in=sc_ids)
-
     total = qs.count()
     updated = 0
     skipped = 0

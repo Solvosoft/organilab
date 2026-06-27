@@ -38,6 +38,7 @@ from laboratory.models import (
     MaterialCapacity,
     LaboratoryRoom,
     Furniture,
+    LabOrOrgRequest,
 )
 
 from laboratory.models import Protocol
@@ -338,10 +339,14 @@ class ShelfObjectLaboratoryViewSerializer(
     def get_unit(self, obj):
         if obj.is_box:
             boxes = obj.quantity_units or []
-            return ", ".join(
-                f"{box['code']}: {box['units']} " + str(_("unit(s)"))
-                for box in boxes
-            ) if boxes else _("No boxes")
+            return (
+                ", ".join(
+                    f"{box['code']}: {box['units']} " + str(_("unit(s)"))
+                    for box in boxes
+                )
+                if boxes
+                else _("No boxes")
+            )
         return obj.get_measurement_unit_display()
 
     def get_quantity(self, obj):
@@ -376,6 +381,7 @@ class ShelfObjectLaboratoryViewSerializer(
             "created_by",
             "container",
             "was_donated",
+            "shelfobject_code",
             "actions",
         ]
 
@@ -703,6 +709,94 @@ class EquipmentDataTableSerializer(serializers.Serializer):
     recordsTotal = serializers.IntegerField(required=True)
 
 
+class EquipmentCharacteristicsDetailSerializer(serializers.ModelSerializer):
+    use_manual = serializers.SerializerMethodField()
+    providers = serializers.SerializerMethodField()
+    instrumental_family = serializers.SerializerMethodField()
+    equipment_type = serializers.SerializerMethodField()
+
+    def get_use_manual(self, obj):
+        if obj.use_manual:
+            return ChunkedFileField().to_representation(obj.use_manual)
+        return None
+
+    def get_providers(self, obj):
+        return [{"id": p.pk, "name": p.name} for p in obj.providers.all()]
+
+    def get_instrumental_family(self, obj):
+        if obj.instrumental_family:
+            return {
+                "id": obj.instrumental_family.pk,
+                "description": obj.instrumental_family.description,
+            }
+        return None
+
+    def get_equipment_type(self, obj):
+        if obj.equipment_type:
+            return {"id": obj.equipment_type.pk, "name": obj.equipment_type.name}
+        return None
+
+    class Meta:
+        model = EquipmentCharacteristics
+        fields = [
+            "id",
+            "use_manual",
+            "calibration_required",
+            "operation_voltage",
+            "operation_amperage",
+            "providers",
+            "use_specials_conditions",
+            "generate_pathological_waste",
+            "clean_period_according_to_provider",
+            "instrumental_family",
+            "equipment_type",
+        ]
+
+
+class EquipmentDetailSerializer(serializers.ModelSerializer):
+    features = serializers.SerializerMethodField()
+    organization_name = serializers.SerializerMethodField()
+    equipment_characteristics = serializers.SerializerMethodField()
+
+    def get_features(self, obj):
+        return [
+            {"id": f.pk, "name": f.name, "description": f.description}
+            for f in obj.features.all()
+        ]
+
+    def get_organization_name(self, obj):
+        if obj.organization:
+            return obj.organization.name
+        return None
+
+    def get_equipment_characteristics(self, obj):
+        if hasattr(obj, "equipmentcharacteristics") and obj.equipmentcharacteristics:
+            return EquipmentCharacteristicsDetailSerializer(
+                obj.equipmentcharacteristics
+            ).data
+        return None
+
+    class Meta:
+        model = Object
+        fields = [
+            "id",
+            "code",
+            "name",
+            "synonym",
+            "type",
+            "is_public",
+            "description",
+            "features",
+            "model",
+            "serie",
+            "plaque",
+            "is_container",
+            "organization",
+            "organization_name",
+            "equipment_characteristics",
+        ]
+
+
 class EquipmentTypeSerializer(serializers.ModelSerializer):
     actions = serializers.SerializerMethodField()
     delete_msg = serializers.SerializerMethodField()
@@ -798,9 +892,9 @@ class ValidateReactiveSerializer(serializers.ModelSerializer):
     organization = serializers.PrimaryKeyRelatedField(
         queryset=OrganizationStructure.objects.using(settings.READONLY_DATABASE)
     )
-    model = serializers.CharField(max_length=50, required=True)
-    serie = serializers.CharField(max_length=50)
-    plaque = serializers.CharField(max_length=50)
+    model = serializers.CharField(max_length=50, required=False, default="")
+    serie = serializers.CharField(max_length=50, required=False, default="")
+    plaque = serializers.CharField(max_length=50, required=False, default="")
     is_dangerous = serializers.BooleanField(required=False)
     has_threshold = serializers.BooleanField(required=False)
     threshold = serializers.FloatField(default=0.0, required=False)
@@ -1182,7 +1276,7 @@ class ReactiveSerializer(serializers.ModelSerializer):
             "update": ["laboratory.change_object", "laboratory.view_object"],
             "destroy": ["laboratory.delete_object", "laboratory.view_object"],
             "detail": ["laboratory.view_object"],
-            "add_limits": ["laboratory.add_object", "laboratory.view_object"],
+            "add_limits": ["laboratory.add_reactivelimit"],
             "get_reactive_limits": ["laboratory.view_object"],
         }
         return get_actions_by_perms(user, action_list)
@@ -1200,9 +1294,6 @@ class ReactiveSerializer(serializers.ModelSerializer):
             "type",
             "organization",
             "created_by",
-            "model",
-            "serie",
-            "plaque",
             "iarc",
             "imdg",
             "white_organ",
@@ -1244,6 +1335,141 @@ class ReactiveDataTableSerializer(serializers.Serializer):
         fields = super().get_fields()
         # fields["data"].child = ReactiveSerializer(context={"lab_pk": self.context["request"]})
         return fields
+
+
+class SustanceCharacteristicsDetailSerializer(serializers.ModelSerializer):
+    iarc = serializers.SerializerMethodField()
+    imdg = serializers.SerializerMethodField()
+    white_organ = serializers.SerializerMethodField()
+    precursor_type = serializers.SerializerMethodField()
+    h_code = serializers.SerializerMethodField()
+    ue_code = serializers.SerializerMethodField()
+    nfpa = serializers.SerializerMethodField()
+    storage_class = serializers.SerializerMethodField()
+    security_sheet = serializers.SerializerMethodField()
+    img_representation = serializers.SerializerMethodField()
+
+    def get_iarc(self, obj):
+        if obj.iarc:
+            return {"id": obj.iarc.pk, "description": obj.iarc.description}
+        return None
+
+    def get_imdg(self, obj):
+        if obj.imdg:
+            return {"id": obj.imdg.pk, "description": obj.imdg.description}
+        return None
+
+    def get_white_organ(self, obj):
+        return [
+            {"id": wo.pk, "description": wo.description} for wo in obj.white_organ.all()
+        ]
+
+    def get_precursor_type(self, obj):
+        if obj.precursor_type:
+            return {
+                "id": obj.precursor_type.pk,
+                "description": obj.precursor_type.description,
+            }
+        return None
+
+    def get_h_code(self, obj):
+        return [
+            {"id": hc.pk, "code": hc.code, "description": hc.description}
+            for hc in obj.h_code.all()
+        ]
+
+    def get_ue_code(self, obj):
+        return [
+            {"id": ue.pk, "description": ue.description} for ue in obj.ue_code.all()
+        ]
+
+    def get_nfpa(self, obj):
+        return [
+            {"id": nfpa.pk, "description": nfpa.description} for nfpa in obj.nfpa.all()
+        ]
+
+    def get_storage_class(self, obj):
+        return [
+            {"id": sc.pk, "description": sc.description}
+            for sc in obj.storage_class.all()
+        ]
+
+    def get_security_sheet(self, obj):
+        if obj.security_sheet:
+            return ChunkedFileField().to_representation(obj.security_sheet)
+        return None
+
+    def get_img_representation(self, obj):
+        if obj.img_representation:
+            return ChunkedFileField().to_representation(obj.img_representation)
+        return None
+
+    class Meta:
+        model = SustanceCharacteristics
+        fields = [
+            "id",
+            "iarc",
+            "imdg",
+            "white_organ",
+            "bioaccumulable",
+            "molecular_formula",
+            "cas_id_number",
+            "security_sheet",
+            "is_precursor",
+            "precursor_type",
+            "h_code",
+            "ue_code",
+            "nfpa",
+            "storage_class",
+            "seveso_list",
+            "img_representation",
+            "density",
+            "valid_molecular_formula",
+        ]
+
+
+class ReactiveDetailSerializer(serializers.ModelSerializer):
+    features = serializers.SerializerMethodField()
+    organization_name = serializers.SerializerMethodField()
+    sustance_characteristics = serializers.SerializerMethodField()
+
+    def get_features(self, obj):
+        return [
+            {"id": f.pk, "name": f.name, "description": f.description}
+            for f in obj.features.all()
+        ]
+
+    def get_organization_name(self, obj):
+        if obj.organization:
+            return obj.organization.name
+        return None
+
+    def get_sustance_characteristics(self, obj):
+        if hasattr(obj, "sustancecharacteristics") and obj.sustancecharacteristics:
+            return SustanceCharacteristicsDetailSerializer(
+                obj.sustancecharacteristics
+            ).data
+        return None
+
+    class Meta:
+        model = Object
+        fields = [
+            "id",
+            "code",
+            "name",
+            "synonym",
+            "type",
+            "is_public",
+            "description",
+            "features",
+            "is_dangerous",
+            "has_threshold",
+            "threshold",
+            "is_pure",
+            "organization",
+            "organization_name",
+            "sustance_characteristics",
+        ]
 
 
 class GetReactiveLimitSerializer(serializers.ModelSerializer):
@@ -1506,6 +1732,7 @@ class ObjectSerializer(serializers.ModelSerializer):
             "update": user.has_perm("laboratory.change_object"),
             "destroy": user.has_perm("laboratory.delete_object"),
             "list": user.has_perm("laboratory.view_object"),
+            "retrieve": user.has_perm("laboratory.view_object"),
         }
 
     class Meta:
@@ -1518,6 +1745,64 @@ class ObjectDataTableSerializer(serializers.Serializer):
     draw = serializers.IntegerField(required=True)
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)
+
+
+class MaterialCapacityDetailSerializer(serializers.ModelSerializer):
+    capacity_measurement_unit = serializers.SerializerMethodField()
+
+    def get_capacity_measurement_unit(self, obj):
+        if obj.capacity_measurement_unit:
+            return {
+                "id": obj.capacity_measurement_unit.pk,
+                "description": obj.capacity_measurement_unit.description,
+            }
+        return None
+
+    class Meta:
+        model = MaterialCapacity
+        fields = ["id", "capacity", "capacity_measurement_unit"]
+
+
+class ObjectMaterialDetailSerializer(serializers.ModelSerializer):
+    features = serializers.SerializerMethodField()
+    organization_name = serializers.SerializerMethodField()
+    material_capacity = serializers.SerializerMethodField()
+
+    def get_features(self, obj):
+        return [
+            {"id": f.pk, "name": f.name, "description": f.description}
+            for f in obj.features.all()
+        ]
+
+    def get_organization_name(self, obj):
+        if obj.organization:
+            return obj.organization.name
+        return None
+
+    def get_material_capacity(self, obj):
+        if hasattr(obj, "materialcapacity") and obj.materialcapacity:
+            return MaterialCapacityDetailSerializer(obj.materialcapacity).data
+        return None
+
+    class Meta:
+        model = Object
+        fields = [
+            "id",
+            "code",
+            "name",
+            "synonym",
+            "type",
+            "is_public",
+            "description",
+            "features",
+            "model",
+            "serie",
+            "plaque",
+            "is_container",
+            "organization",
+            "organization_name",
+            "material_capacity",
+        ]
 
 
 class ObjectValidateSerializer(serializers.ModelSerializer):
@@ -1785,3 +2070,256 @@ class LoadArchiveSerializer(serializers.Serializer):
         if not name.lower().endswith(".xlsm"):
             raise serializers.ValidationError(_("Only .xlsm files are allowed."))
         return value
+
+
+# LabOrOrgRequest serializers
+
+
+class LabOrOrgRequestValidateSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(required=True, max_length=255)
+    is_org = serializers.BooleanField(required=False, default=False)
+    review_notes = serializers.CharField(required=False, allow_blank=True, default="")
+    phone_number = serializers.CharField(
+        required=False, allow_blank=True, max_length=25, default=""
+    )
+    location = serializers.CharField(
+        required=False, allow_blank=True, max_length=255, default=""
+    )
+    geolocation = serializers.CharField(
+        required=False, allow_blank=True, allow_null=True
+    )
+    email = serializers.EmailField(required=False, allow_blank=True, default="")
+    coordinator = serializers.CharField(
+        required=False, allow_blank=True, max_length=255, default=""
+    )
+    unit = serializers.CharField(
+        required=False, allow_blank=True, max_length=50, default=""
+    )
+    description = serializers.CharField(
+        required=False, allow_blank=True, allow_null=True
+    )
+    area = serializers.FloatField(required=False, default=0.0)
+    faculty_dispatch = serializers.CharField(
+        required=False, allow_blank=True, allow_null=True, max_length=255
+    )
+    organization = serializers.PrimaryKeyRelatedField(
+        queryset=OrganizationStructure.objects.all(), required=False, allow_null=True
+    )
+    responsible = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(), required=False, allow_null=True
+    )
+    nearby_sites = ChunkedFileField(required=False, allow_null=True)
+    water_resources_affected = ChunkedFileField(required=False, allow_null=True)
+    workplace = serializers.PrimaryKeyRelatedField(
+        queryset=OrganizationStructure.objects.all(), many=True, required=False
+    )
+    parent_org = serializers.PrimaryKeyRelatedField(
+        queryset=OrganizationStructure.objects.all(), required=False, allow_null=True
+    )
+
+    LAB_ONLY_FIELDS = [
+        "phone_number",
+        "location",
+        "geolocation",
+        "email",
+        "coordinator",
+        "unit",
+        "description",
+        "area",
+        "faculty_dispatch",
+        "responsible",
+        "nearby_sites",
+        "water_resources_affected",
+        "workplace",
+    ]
+    ORG_ONLY_FIELDS = ["parent_org"]
+
+    def validate(self, attrs):
+        # On update: derive type from existing instance, don't allow changing it
+        if self.instance:
+            is_org = self.instance.entity_type == LabOrOrgRequest.TYPE_ORGANIZATION
+            attrs.pop("is_org", None)
+        else:
+            is_org = attrs.get("is_org", False)
+
+        if is_org:
+            if not self.instance and not attrs.get("parent_org"):
+                raise serializers.ValidationError(
+                    {
+                        "parent_org": _(
+                            "This field is required for organization requests."
+                        )
+                    }
+                )
+            for field in self.LAB_ONLY_FIELDS:
+                attrs.pop(field, None)
+        else:
+            if not self.instance and not attrs.get("organization"):
+                raise serializers.ValidationError(
+                    {
+                        "organization": _(
+                            "This field is required for laboratory requests."
+                        )
+                    }
+                )
+            for field in self.ORG_ONLY_FIELDS:
+                attrs.pop(field, None)
+        return attrs
+
+    def create(self, validated_data):
+        is_org = validated_data.pop("is_org", False)
+        validated_data["entity_type"] = (
+            LabOrOrgRequest.TYPE_ORGANIZATION
+            if is_org
+            else LabOrOrgRequest.TYPE_LABORATORY
+        )
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        validated_data.pop("is_org", None)  # entity_type is immutable after creation
+        return super().update(instance, validated_data)
+
+    class Meta:
+        model = LabOrOrgRequest
+        fields = [
+            "name",
+            "is_org",
+            "review_notes",
+            "phone_number",
+            "location",
+            "geolocation",
+            "email",
+            "coordinator",
+            "unit",
+            "description",
+            "area",
+            "faculty_dispatch",
+            "organization",
+            "responsible",
+            "nearby_sites",
+            "water_resources_affected",
+            "workplace",
+            "parent_org",
+        ]
+
+
+class LabOrOrgRequestSerializer(serializers.ModelSerializer):
+    actions = serializers.SerializerMethodField()
+    is_org = serializers.SerializerMethodField()
+    entity_type_display = serializers.CharField(
+        source="get_entity_type_display", read_only=True
+    )
+    status_display = serializers.CharField(source="get_status_display", read_only=True)
+    requested_at = GTDateTimeField(required=False)
+    requested_by = GTS2SerializerBase(many=False)
+    parent_org = GTS2SerializerBase(many=False)
+    responsible = GTS2SerializerBase(many=False)
+    workplace = GTS2SerializerBase(many=True)
+
+    def get_is_org(self, obj):
+        return obj.entity_type == LabOrOrgRequest.TYPE_ORGANIZATION
+
+    def get_actions(self, obj):
+        user = self.context["request"].user
+        is_pending = obj.status == LabOrOrgRequest.STATUS_PENDING
+        is_owner = obj.requested_by == user
+        can_change = user.has_perm("laboratory.change_labororgrequest")
+        can_delete = user.has_perm("laboratory.delete_labororgrequest")
+        return {
+            "update": can_change and is_owner and is_pending,
+            "destroy": can_delete and is_owner,
+        }
+
+    class Meta:
+        model = LabOrOrgRequest
+        fields = [
+            "id",
+            "name",
+            "is_org",
+            "entity_type",
+            "entity_type_display",
+            "status",
+            "status_display",
+            "review_notes",
+            "requested_at",
+            "requested_by",
+            "phone_number",
+            "location",
+            "geolocation",
+            "email",
+            "coordinator",
+            "unit",
+            "description",
+            "area",
+            "faculty_dispatch",
+            "responsible",
+            "nearby_sites",
+            "water_resources_affected",
+            "workplace",
+            "parent_org",
+            "actions",
+        ]
+
+
+class LabOrOrgRequestReviewSerializer(serializers.ModelSerializer):
+    actions = serializers.SerializerMethodField()
+    entity_type_display = serializers.CharField(
+        source="get_entity_type_display", read_only=True
+    )
+    status_display = serializers.CharField(source="get_status_display", read_only=True)
+    requested_by = GTS2SerializerBase(many=False)
+    requested_at = GTDateTimeField(required=False)
+    parent_org = GTS2SerializerBase(many=False)
+
+    def get_actions(self, obj):
+        user = self.context["request"].user
+        can_approve = user.has_perm("laboratory.can_approve_labororgrequest")
+        is_pending = obj.status == LabOrOrgRequest.STATUS_PENDING
+        return {
+            "approve": can_approve and is_pending,
+            "reject": can_approve and is_pending,
+            "destroy": can_approve and not is_pending,
+        }
+
+    class Meta:
+        model = LabOrOrgRequest
+        fields = [
+            "id",
+            "name",
+            "entity_type",
+            "entity_type_display",
+            "status_display",
+            "review_notes",
+            "requested_at",
+            "requested_by",
+            "phone_number",
+            "location",
+            "geolocation",
+            "email",
+            "coordinator",
+            "unit",
+            "description",
+            "area",
+            "faculty_dispatch",
+            "organization",
+            "responsible",
+            "nearby_sites",
+            "water_resources_affected",
+            "workplace",
+            "parent_org",
+            "actions",
+        ]
+
+
+class LabOrOrgRequestDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=LabOrOrgRequestSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+
+class LabOrOrgRequestReviewDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=LabOrOrgRequestReviewSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)

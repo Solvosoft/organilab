@@ -1321,26 +1321,167 @@ msgstr "¿Está verificado?"
 msgid "Verified Date"
 msgstr "Fecha de verificación"
 
-msgid "SDS marked as unverified"
-msgstr "SDS marcado como no verificado"
+msgid "FDS marked as unverified"
+msgstr "FDS marcado como no verificado"
 
-msgid "SDS marked as verified"
-msgstr "SDS marcado como verificado"
+msgid "FDS marked as verified"
+msgstr "FDS marcado como verificado"
 
-msgid "Do you want to mark this SDS as unverified?"
-msgstr "¿Desea marcar este SDS como no verificado?"
+msgid "Do you want to mark this FDS as unverified?"
+msgstr "¿Desea marcar este FDS como no verificado?"
 
-msgid "Do you want to mark this SDS as verified?"
-msgstr "¿Desea marcar este SDS como verificado?"
+msgid "Do you want to mark this FDS as verified?"
+msgstr "¿Desea marcar este FDS como verificado?"
 
-msgid "Unverify SDS"
-msgstr "Desverificar SDS"
+msgid "Unverify FDS"
+msgstr "Desverificar FDS"
 
-msgid "Verify SDS"
-msgstr "Verificar SDS"
+msgid "Verify FDS"
+msgstr "Verificar FDS"
 
 msgid "Mark as Verified"
 msgstr "Marcar como verificado"
 
 msgid "Mark as Unverified"
 msgstr "Marcar como no verificado"
+
+msgid "Information from "
+msgstr "Información de "
+
+msgid "Verified"
+msgstr "Verificado"
+
+msgid "Unverified"
+msgstr "No verificado"
+
+msgid "Get Substance Information"
+msgstr "Obtener información de la sustancia"
+
+msgid "This organization has no administrators assigned."
+msgstr "Esta organización no tiene administradores asignados."
+
+msgid "Only labs selected"
+msgstr "Solo usar laboratorios seleccionados"
+
+msgid "User name"
+msgstr "Nombre de usuario"
+
+msgid "First name"
+msgstr "Nombre"
+
+msgid "Last name"
+msgstr "Apellido"
+
+msgid "Organizations"
+msgstr "Organizaciones"
+
+msgid "Associated laboratories"
+msgstr "Laboratorios asociados"
+
+msgid "Partner organizations"
+msgstr "Organizaciones asociadas"
+
+msgid "No roles assigned"
+msgstr "No se asignaron roles"
+
+msgid "Organization"
+msgstr "Organización"
+
+msgid "Enable child organizations filter?"
+msgstr "Habilitar filtro de organizaciones hijas"
+
+msgid "Disable child organizations filter?"
+msgstr "Deshabilitar filtro de organizaciones hijas"
+
+msgid "Do you want to enable the child organizations filter?"
+msgstr "¿Desea habilitar el filtro de organizaciones hijas?"
+
+msgid "Do you want to disable the child organizations filter?"
+msgstr "¿Desea deshabilitar el filtro de organizaciones hijas?"
+
+msgid "Is Dangerous"
+msgstr "¿Es peligroso?"
+
+msgid "Has Threshold"
+msgstr "Tiene Umbral"
+
+msgid "Is Pure"
+msgstr "Es Puro"
+
+msgid "CAS Number"
+msgstr "Número CAS"
+
+msgid "Density"
+msgstr "Densidad"
+
+msgid "Storage Class"
+msgstr "Clase de Almacenamiento"
+
+msgid "Seveso List III?"
+msgstr "¿Lista de Seveso III?"
+
+msgid "Substance Characteristics"
+msgstr "Características de sustancia"
+
+msgid "Bioaccumulable"
+msgstr "Bioaccumulable"
+
+msgid "Download Security Sheet"
+msgstr "Descargar hoja de Seguridad"
+
+msgid "Substance Representation"
+msgstr "Representación de la sustancia"
+
+msgid "View Detail"
+msgstr "Ver detalle"
+
+msgid "Is Container"
+msgstr "Es Contenedor"
+
+msgid "Container Detail"
+msgstr "Detalle del Contenedor"
+
+msgid "No material capacity defined"
+msgstr "No se ha definido la capacidad de material"
+
+msgid "Equipment Characteristics"
+msgstr "Características del Equipo"
+
+msgid "Download Use Manual"
+msgstr "Descargar manual de uso"
+
+msgid "No equipment characteristics available"
+msgstr "No hay características de equipo disponibles"
+
+msgid "Calibration Required"
+msgstr "Calibración Requerida"
+
+msgid "Operation Voltage"
+msgstr "Voltaje de Operación"
+
+msgid "Operation Amperage"
+msgstr "Amperaje de Operación"
+
+msgid "Use Specials Conditions"
+msgstr "Condiciones Especiales de Uso"
+
+msgid "Generate Pathological Waste"
+msgstr "Generar Residuos Pathológicos"
+
+msgid "Clean Period According to Provider"
+msgstr "Período de Limpieza Según Proveedor"
+
+msgid "Instrumental Family"
+msgstr "Familia Instrumental"
+
+msgid "Unit code"
+msgstr "Código de unidad"
+
+msgid "Requested by"
+msgstr "Solicitado por"
+
+msgid "Location"
+msgstr "Ubicación"
+
+msgid "Reject"
+msgstr "Rechazar"

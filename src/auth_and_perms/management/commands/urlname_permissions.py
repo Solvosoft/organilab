@@ -1571,11 +1571,6 @@ URLNAME_PERMISSIONS = {
             "category": "Inform",
             "permission": "laboratory.view_inform",
         },
-        {
-            "name": "View Inform",
-            "category": "Inform",
-            "permission": "laboratory.view_inform",
-        },
     ],
     "remove_inform": [
         {
@@ -2914,27 +2909,6 @@ URLNAME_PERMISSIONS = {
             "permission": "risk_management.change_structure",
         },
     ],
-    "buildings_list": [
-        {
-            "name": "View Building",
-            "category": "Building",
-            "permission": "risk_management.view_buildings",
-        },
-    ],
-    "buildings_create": [
-        {
-            "name": "Add Building",
-            "category": "Building",
-            "permission": "risk_management.add_buildings",
-        },
-    ],
-    "buildings_delete": [
-        {
-            "name": "Delete Building",
-            "category": "Building",
-            "permission": "risk_management.delete_buildings",
-        },
-    ],
     "buildings_update": [
         {
             "name": "Change Building",
@@ -3159,5 +3133,34 @@ URLNAME_PERMISSIONS = {
             "category": "Verify SDS",
             "permission": "laboratory.change_sdstraceability",
         }
+    ],
+    "lab_or_org_request": [
+        {
+            "name": "View Lab or Organization Request",
+            "category": "Lab or Organization Request",
+            "permission": "laboratory.view_labororgrequest",
+        },
+        {
+            "name": "Add Lab or Organization Request",
+            "category": "Lab or Organization Request",
+            "permission": "laboratory.add_labororgrequest",
+        },
+        {
+            "name": "Change Lab or Organization Request",
+            "category": "Lab or Organization Request",
+            "permission": "laboratory.change_labororgrequest",
+        },
+        {
+            "name": "Delete Lab or Organization Request",
+            "category": "Lab or Organization Request",
+            "permission": "laboratory.delete_labororgrequest",
+        },
+    ],
+    "lab_or_org_request_review": [
+        {
+            "name": "Can Approve Lab or Organization Request",
+            "category": "Lab or Organization Request",
+            "permission": "laboratory.can_approve_labororgrequest",
+        },
     ],
 }

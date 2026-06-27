@@ -187,14 +187,26 @@ class ReserveShelfObjectSerializer(serializers.ModelSerializer):
 
         # Reserve full boxes using exactly units_per_box units each
         for box in complete_boxes[:full_count]:
-            selected.append({"code": box["code"], "units": units_per_box})
+            selected.append(
+                {
+                    "code": box["code"],
+                    "units": units_per_box,
+                    "quantity": box["quantity"],
+                }
+            )
 
         # Reserve fractional part from the next available box (complete first, then partial)
         if min_partial_units > 0:
             candidates = complete_boxes[full_count:] + partial_boxes
             for box in candidates:
                 if box["units"] >= min_partial_units:
-                    selected.append({"code": box["code"], "units": min_partial_units})
+                    selected.append(
+                        {
+                            "code": box["code"],
+                            "units": min_partial_units,
+                            "quantity": box["quantity"],
+                        }
+                    )
                     break
             else:
                 raise serializers.ValidationError(
@@ -342,14 +354,11 @@ class IncreaseShelfObjectSerializer(serializers.Serializer):
 
         if increase_unit:
             related_units = get_related_units(shelf.measurement_unit, query_unit)
-
             if measurement_unit is None:
                 related_units = get_related_units(64, query_unit)
             elif related_units is None:
                 related_units = get_related_units(measurement_unit.pk, query_unit)
-
             if increase_unit not in related_units:
-
                 updated_errors["measurement_unit"] = _("Measurement unit is not valid")
 
         if errors or updated_errors:
@@ -382,6 +391,12 @@ class DecreaseShelfObjectSerializer(serializers.Serializer):
         allow_null=True,
     )
     box_index = serializers.IntegerField(required=False, allow_null=True, min_value=0)
+
+    def to_internal_value(self, data):
+        if data.get("box_index") == "":
+            data = data.copy()
+            data["box_index"] = None
+        return super().to_internal_value(data)
 
     def validate_shelf_object(self, value):
         attr = super().validate(value)
@@ -631,6 +646,9 @@ class ReactiveShelfObjectSerializer(ContainerSerializer, serializers.ModelSerial
         queryset=Object.objects.using(settings.READONLY_DATABASE),
         required=True,
     )
+    shelfobject_code = serializers.CharField(
+        required=False, allow_blank=True, allow_null=True
+    )
     quantity = serializers.FloatField(required=True)
     measurement_unit = serializers.PrimaryKeyRelatedField(
         many=False,
@@ -671,6 +689,7 @@ class ReactiveShelfObjectSerializer(ContainerSerializer, serializers.ModelSerial
         model = ShelfObject
         fields = [
             "object",
+            "shelfobject_code",
             "shelf",
             "status",
             "quantity",
@@ -712,6 +731,9 @@ class ReactiveRefuseShelfObjectSerializer(
 ):
     object = serializers.PrimaryKeyRelatedField(
         many=False, queryset=Object.objects.using(settings.READONLY_DATABASE)
+    )
+    shelfobject_code = serializers.CharField(
+        required=False, allow_blank=True, allow_null=True
     )
     status = serializers.PrimaryKeyRelatedField(
         many=False,
@@ -758,6 +780,7 @@ class ReactiveRefuseShelfObjectSerializer(
         model = ShelfObject
         fields = [
             "object",
+            "shelfobject_code",
             "shelf",
             "status",
             "quantity",
@@ -801,6 +824,9 @@ class MaterialShelfObjectSerializer(
     object = serializers.PrimaryKeyRelatedField(
         many=False, queryset=Object.objects.using(settings.READONLY_DATABASE)
     )
+    shelfobject_code = serializers.CharField(
+        required=False, allow_blank=True, allow_null=True
+    )
     status = serializers.PrimaryKeyRelatedField(
         many=False,
         queryset=Catalog.objects.using(settings.READONLY_DATABASE),
@@ -817,6 +843,7 @@ class MaterialShelfObjectSerializer(
         model = ShelfObject
         fields = [
             "object",
+            "shelfobject_code",
             "shelf",
             "status",
             "quantity",
@@ -845,6 +872,9 @@ class MaterialRefuseShelfObjectSerializer(
     object = serializers.PrimaryKeyRelatedField(
         many=False, queryset=Object.objects.using(settings.READONLY_DATABASE)
     )
+    shelfobject_code = serializers.CharField(
+        required=False, allow_blank=True, allow_null=True
+    )
     status = serializers.PrimaryKeyRelatedField(
         many=False,
         queryset=Catalog.objects.using(settings.READONLY_DATABASE),
@@ -861,6 +891,7 @@ class MaterialRefuseShelfObjectSerializer(
         model = ShelfObject
         fields = [
             "object",
+            "shelfobject_code",
             "shelf",
             "status",
             "quantity",
@@ -1041,6 +1072,9 @@ class EquipmentShelfObjectSerializer(
     object = serializers.PrimaryKeyRelatedField(
         many=False, queryset=Object.objects.using(settings.READONLY_DATABASE)
     )
+    shelfobject_code = serializers.CharField(
+        required=False, allow_blank=True, allow_null=True
+    )
     status = serializers.PrimaryKeyRelatedField(
         many=False,
         queryset=Catalog.objects.using(settings.READONLY_DATABASE),
@@ -1056,6 +1090,7 @@ class EquipmentShelfObjectSerializer(
         model = ShelfObject
         fields = [
             "object",
+            "shelfobject_code",
             "shelf",
             "status",
             "quantity",
@@ -1083,6 +1118,9 @@ class EquipmentRefuseShelfObjectSerializer(
     object = serializers.PrimaryKeyRelatedField(
         many=False, queryset=Object.objects.using(settings.READONLY_DATABASE)
     )
+    shelfobject_code = serializers.CharField(
+        required=False, allow_blank=True, allow_null=True
+    )
     status = serializers.PrimaryKeyRelatedField(
         many=False,
         queryset=Catalog.objects.using(settings.READONLY_DATABASE),
@@ -1098,6 +1136,7 @@ class EquipmentRefuseShelfObjectSerializer(
         model = ShelfObject
         fields = [
             "object",
+            "shelfobject_code",
             "shelf",
             "status",
             "quantity",
@@ -1228,6 +1267,9 @@ class ShelfObjectDetailSerializer(
     container_open_date = GTDateField(required=False, allow_null=True)
     type_budget = serializers.SerializerMethodField()
     reactive_expiration_date = GTDateField(required=False, allow_null=True)
+    shelfobject_code = serializers.CharField(
+        required=False, allow_blank=True, allow_null=True
+    )
 
     class Meta:
         model = ShelfObject
@@ -2858,6 +2900,7 @@ class EditEquimentShelfobjectCharacteristicSerializer(serializers.ModelSerialize
         input_formats=settings.DATE_INPUT_FORMATS, required=False, allow_null=True
     )
     notes = serializers.CharField(allow_null=True, allow_blank=True, required=False)
+    shelfobject_code = serializers.CharField(required=False)
 
     def get_fields(self, *args, **kwargs):
         fields = super().get_fields(*args, **kwargs)
@@ -2905,6 +2948,7 @@ class EditEquimentShelfobjectCharacteristicSerializer(serializers.ModelSerialize
             "contract_of_maintenance",
             "available_to_use",
             "first_date_use",
+            "shelfobject_code",
             "notes",
         ]
 
@@ -2953,6 +2997,7 @@ class EditReactiveShelfObjectSerializer(serializers.ModelSerializer):
     reactive_expiration_date = DateFieldWithEmptyString(
         input_formats=settings.DATE_INPUT_FORMATS, required=True, allow_null=False
     )
+    shelfobject_code = serializers.CharField(required=False)
     status = serializers.PrimaryKeyRelatedField(
         many=False,
         queryset=Catalog.objects.using(settings.READONLY_DATABASE),
@@ -2993,6 +3038,7 @@ class EditReactiveShelfObjectSerializer(serializers.ModelSerializer):
             "description",
             "reactive_expiration_date",
             "physical_status",
+            "shelfobject_code",
             "pictograms",
             "batch",
             "type_budget",
@@ -3038,6 +3084,7 @@ class ReactiveShelfObjectDataSerializer(serializers.ModelSerializer):
         model = ShelfObject
         fields = [
             "status",
+            "shelfobject_code",
             "description",
             "reactive_expiration_date",
             "physical_status",
@@ -3055,7 +3102,7 @@ class MaterialShelfObjectDataSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ShelfObject
-        fields = ["status", "description", "batch", "was_donated"]
+        fields = ["status", "description", "batch", "was_donated", "shelfobject_code"]
 
 
 class ShelfObjectMaterialLimitsSerializer(serializers.ModelSerializer):

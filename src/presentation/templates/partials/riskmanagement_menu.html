@@ -35,7 +35,7 @@
 			{% if perms.risk_management.view_structure %}
 				<li><a href="{% url 'riskmanagement:structures_list' org_pk %}"
 											title="{% trans 'Manage structure' %}">
-					<i class="fa fa-building" aria-hidden="true"></i>
+					<i class="fa fa-building-o" aria-hidden="true"></i>
 					{% trans 'Manage structure' %}</a>
 				</li>
 			{% endif %}
@@ -61,7 +61,7 @@
 			{% endif %}
 
 			<li>
-				<a href="{% url 'auth_and_perms:map_of_laboratories'  %}">
+				<a href="{% url 'auth_and_perms:map_of_laboratories' org_pk %}">
 					<i class="fa fa-map" aria-hidden="true"></i>
 					{% trans 'Laboratories map' %}</a>
 			</li>
