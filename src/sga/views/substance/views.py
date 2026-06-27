@@ -892,10 +892,9 @@ def add_sga_provider(request, org_pk):
     raise_exception=True,
 )
 def generate_label(request, org_pk, pk):
-    """Genera una etiqueta GHS/SGA para una sustancia como imagen PNG o PDF."""
-    import os
-    import io
-    from sga.label_generator import LabelGenerator, generar_datos_desde_sustancia
+    """Genera una etiqueta GHS/SGA para una sustancia del catálogo (PNG/SVG/PDF)."""
+    from sga.label_blueprint import blueprint_from_substance
+    from sga.label_render import render_label
 
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -903,52 +902,18 @@ def generate_label(request, org_pk, pk):
     user_is_allowed_on_organization(request.user, organization)
     substance = get_object_or_404(Substance, pk=pk)
 
-    # Generar datos desde la sustancia
-    datos = generar_datos_desde_sustancia(substance)
+    # Overrides opcionales (params GET). El tamaño por defecto es mediano.
+    overrides = {
+        "lote": request.GET.get("lote", ""),
+        "fecha_caducidad": request.GET.get("fecha_caducidad", ""),
+        "cantidad": request.GET.get("cantidad", ""),
+        "qr_url": request.GET.get("qr_url", ""),
+        "ancho_mm": float(request.GET.get("ancho_mm", 70)),
+        "alto_mm": float(request.GET.get("alto_mm", 40)),
+    }
+    blueprint = blueprint_from_substance(
+        substance, organization=organization, **overrides
+    )
 
-    # Datos opcionales del request (GET params)
-    datos['lote'] = request.GET.get('lote', '')
-    datos['fecha_caducidad'] = request.GET.get('fecha_caducidad', '')
-    datos['cantidad'] = request.GET.get('cantidad', '')
-    datos['organizacion'] = organization.name
-
-    # Líneas institucionales opcionales
-    lineas = request.GET.getlist('linea_institucion')
-    if lineas:
-        datos['lineas_institucion'] = lineas
-
-    # QR URL opcional
-    datos['qr_url'] = request.GET.get('qr_url', '')
-
-    # Tamaño de etiqueta
-    ancho_mm = int(request.GET.get('ancho_mm', 70))
-    alto_mm = int(request.GET.get('alto_mm', 40))
-
-    generador = LabelGenerator()
-
-    formato = request.GET.get('formato', 'png').lower()
-    if formato == 'pdf':
-        from reportlab.pdfgen import canvas as pdf_canvas
-        from reportlab.lib.pagesizes import letter
-        from reportlab.lib.units import mm
-        import tempfile
-
-        img = generador.crear_etiqueta(datos, ancho_mm, alto_mm, dpi=300)
-
-        buf = io.BytesIO()
-        c = pdf_canvas.Canvas(buf, pagesize=letter)
-        with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as tmp:
-            img.save(tmp.name, 'PNG')
-            c.drawImage(tmp.name, 20, letter[1] - alto_mm * mm - 20,
-                        width=ancho_mm * mm, height=alto_mm * mm)
-            os.unlink(tmp.name)
-        c.save()
-        buf.seek(0)
-        response = HttpResponse(buf.getvalue(), content_type='application/pdf')
-        response['Content-Disposition'] = f'attachment; filename="etiqueta_{substance.pk}.pdf"'
-        return response
-    else:
-        img_bytes = generador.crear_etiqueta_bytes(datos, ancho_mm, alto_mm, dpi=200)
-        response = HttpResponse(img_bytes, content_type='image/png')
-        response['Content-Disposition'] = f'inline; filename="etiqueta_{substance.pk}.png"'
-        return response
+    formato = request.GET.get("formato", "png")
+    return render_label(blueprint, formato, filename=f"etiqueta_{substance.pk}")
