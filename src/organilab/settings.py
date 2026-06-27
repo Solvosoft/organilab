@@ -326,6 +326,10 @@ CELERYBEAT_SCHEDULE = {
         "task": "laboratory.tasks.remove_relation_organization_laboratory",
         "schedule": crontab(minute=0, hour=6),
     },
+    "send_iper_update_reminders": {
+        "task": "risk_management.tasks.send_iper_update_reminders",
+        "schedule": crontab(minute=0, hour=8),
+    },
 }
 
 INTERNAL_IPS = ("127.0.0.1",)

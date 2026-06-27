@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-10 14:02-0600\n"
+"POT-Creation-Date: 2026-06-27 00:28-0600\n"
 "PO-Revision-Date: 2025-04-10 14:07-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -19,3 +19,144 @@ msgstr ""
 "1 : 2;\n"
 "X-Generator: Poedit 3.2.2\n"
 
+msgid "Name"
+msgstr ""
+
+msgid "Associated laboratories"
+msgstr ""
+
+msgid "Partner organizations"
+msgstr ""
+
+msgid "User"
+msgstr ""
+
+msgid "Roles"
+msgstr ""
+
+msgid "No roles assigned"
+msgstr ""
+
+msgid "Email"
+msgstr ""
+
+msgid "Rols"
+msgstr ""
+
+msgid "Actions"
+msgstr ""
+
+msgid "Your rol was set successfully"
+msgstr ""
+
+msgid "Now you can set this rol in laboratory user table"
+msgstr ""
+
+msgid "User registered successfully"
+msgstr ""
+
+msgid ""
+"There was a problem performing your request. Please try again later or "
+"contact the administrator."
+msgstr ""
+
+msgid ""
+"User successfully added, now you can search for it in the adjacent tab to "
+"add it in the organization."
+msgstr ""
+
+msgid "Success"
+msgstr ""
+
+msgid "Failed to add user. Please try again"
+msgstr ""
+
+msgid "Error"
+msgstr ""
+
+msgid "Are you sure?"
+msgstr ""
+
+msgid "will be part of your organization!"
+msgstr ""
+
+msgid "Yes, add it!"
+msgstr ""
+
+msgid "Relate user to organization"
+msgstr ""
+
+msgid "Current laboratory"
+msgstr ""
+
+msgid "Relate user to laboratory"
+msgstr ""
+
+msgid "Laboratory needs to be selected"
+msgstr ""
+
+msgid "Sorry you need to select laboratory before relate user to it"
+msgstr ""
+
+msgid "Are you sure you want to delete?"
+msgstr ""
+
+msgid " from "
+msgstr ""
+
+msgid "Yes, delete it"
+msgstr ""
+
+msgid "Also disable user login on platform"
+msgstr ""
+
+msgid "No organization selected"
+msgstr ""
+
+msgid "You need to select a organization before using this tab."
+msgstr ""
+
+msgid "Are you sure you want to add this profile into others  organizations?"
+msgstr ""
+
+msgid "Yes"
+msgstr ""
+
+msgid "This organization has no administrators assigned."
+msgstr ""
+
+msgid "Do you want to disable the child organizations filter?"
+msgstr ""
+
+msgid "Disable child organizations filter?"
+msgstr ""
+
+msgid "Enable child organizations filter?"
+msgstr ""
+
+msgid "Do you want to enable the child organizations filter?"
+msgstr ""
+
+msgid "Shelf Object"
+msgstr ""
+
+msgid "Shelf"
+msgstr ""
+
+msgid "Quantity"
+msgstr ""
+
+msgid "Laboratory"
+msgstr ""
+
+msgid "Id"
+msgstr ""
+
+msgid "User name"
+msgstr ""
+
+msgid "Organization"
+msgstr ""
+
+msgid "Laboratories"
+msgstr ""

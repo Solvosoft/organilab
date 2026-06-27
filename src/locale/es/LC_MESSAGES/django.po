@@ -1,8 +1,9 @@
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-22 14:24-0600\n"
+"POT-Creation-Date: 2026-06-27 00:28-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -20,6 +21,9 @@ msgstr "Editar"
 
 msgid "Reserved"
 msgstr "Reservar"
+
+msgid "Download"
+msgstr "Descargar"
 
 msgid "Delete"
 msgstr "Eliminar"
@@ -147,6 +151,15 @@ msgstr "Enviar a borrador"
 msgid "Add observation"
 msgstr "Agregar Observación"
 
+msgid "Form"
+msgstr "Formulario"
+
+msgid "No step has been selected"
+msgstr "Ningún paso ha sido seleccionado"
+
+msgid "Save"
+msgstr "Guardar"
+
 msgid "Back to list"
 msgstr "Volver a la lista"
 
@@ -164,6 +177,15 @@ msgstr "Observaciones"
 
 msgid "Don't has observations"
 msgstr "No tiene observaciones"
+
+msgid "No form data recorded"
+msgstr "No hay datos de formulario registrados"
+
+msgid "Comments"
+msgstr "Comentarios"
+
+msgid "No comments"
+msgstr "Sin comentarios"
 
 msgid "List of procedures"
 msgstr "Lista de procedimientos"
@@ -199,9 +221,6 @@ msgstr ""
 msgid "Edit procedure"
 msgstr "Editar procedimiento"
 
-msgid "Save"
-msgstr "Guardar"
-
 msgid "Procedure templates"
 msgstr "Plantillas de Procedimientos"
 
@@ -232,6 +251,11 @@ msgstr "Eliminar Objeto"
 msgid "Do you want to remove the object?"
 msgstr "¿Desea eliminar el objeto?"
 
+#, fuzzy
+#| msgid "Step"
+msgid "Step Form"
+msgstr "Paso"
+
 msgid "There is no object in the inventory with this unit of measurement"
 msgstr "No existe ningún objeto en el inventario con esta unidad de medida"
 
@@ -244,476 +268,40 @@ msgstr ""
 
 #, python-format
 msgid ""
-"The laboratory does not have enough of this object to be able to reserve it. "
-"<br>%(list)s"
+"The laboratory does not have enough of this object to be able to reserve it."
+" <br>%(list)s"
 msgstr ""
 "El laboratorio no tiene suficiente de este objeto para ser capaz de "
 "reservarlo.<br>%(list)s"
 
-msgid "User not found, Sorry try to use add user button on organization list"
-msgstr ""
-"Usuario no existe, Lo lamentamos, intente agregar el usuario en el botón en "
-"la lista de organizaciones"
-
-msgid "User exist on organization"
-msgstr "Usuario existe en la organización"
-
-msgid "User not match with email"
-msgstr "Ningún usuario con ese correo está registrado"
-
-msgid "Organization can't change this laboratory"
-msgstr "La organización no puede editar este laboratorio"
-
-msgid "User doesn't have permissions"
-msgstr "El usuario no tiene permisos"
-
-msgid "Shelfobject does not belong to this laboratory."
-msgstr "El objeto de estante no pertenece a este laboratorio."
-
-msgid "Shelfobject does not belong to this organization."
-msgstr "El objeto de estante no pertenece a esta organización."
-
-msgid "Shelfobject does not belong to this shelf."
-msgstr "El objeto de estante no pertenece a este estante."
-
-msgid "Shelf does not belong to this laboratory."
-msgstr "El estante no pertenece a este laboratorio."
-
-msgid "Shelf does not belong to this organization."
-msgstr "El estante no pertenece a esta organización."
-
-msgid "Organization cannot be inactive"
-msgstr "Organización no puede ser inactivada"
-
-msgid "Laboratory modification not authorized"
-msgstr "Modificación en el laboratorio no autorizada"
-
-msgid "Profile was updated successfully."
-msgstr "El perfil fue actualizado exitosamente"
-
-msgid "Users"
-msgstr "Usuarios"
-
-msgid "Rols"
-msgstr "Roles"
-
-msgid "Organization name"
-msgstr "Nombre de la Organización"
-
-msgid "Digital signature"
-msgstr "Firma digital"
-
-msgid "Validation method"
-msgstr "Método de validación"
-
-msgid "new-password"
-msgstr "nueva-contraseña"
-
-msgid "Email"
-msgstr "Correo Electrónico"
-
-msgid "First name"
-msgstr "Nombre"
-
-msgid "Last name"
-msgstr "Apellido"
-
-msgid "Email address"
-msgstr "Dirección de correo electrónico"
-
 msgid "Phone"
 msgstr "Teléfono"
-
-msgid "Identification"
-msgstr "Identificación"
-
-msgid "Job Position"
-msgstr "Puesto de Trabajo"
-
-msgid "Language"
-msgstr "Idioma"
-
-msgid "It will used to login when you want to login with digital signature"
-msgstr "Este campo será usado cuando se autentique con firma digital"
-
-msgid "Laboratories"
-msgstr "Laboratorios"
-
-msgid "Inactive organization"
-msgstr "Desactivar Organización"
-
-msgid "Clone organization"
-msgstr "Clonar Organización"
-
-msgid "Change organization name"
-msgstr "Cambiar nombre de la organización"
-
-msgid "Active organization"
-msgstr "Activar Organización"
-
-msgid "Search by object"
-msgstr "Buscar por objeto"
-
-msgid "Organization not found"
-msgstr "Organización no existe"
 
 msgid "ID Card"
 msgstr "Tarjeta de identificación"
 
-msgid "Can add external user to organization"
-msgstr "Puede agregar usuarios externos a la organización"
-
-msgid "permissions"
-msgstr "permisos"
-
-msgid "Rol"
-msgstr "Rol"
-
-msgid "Profile"
-msgstr "Perfil"
-
-msgid "Profile Rol"
-msgstr "Rol de Perfil"
-
-msgid "Profile Rols"
-msgstr "Roles de Perfil"
-
-msgid "Impostor"
-msgstr "Impostor"
-
-msgid "Logged in as"
-msgstr "Autenticado como"
-
-msgid "Impostor's IP address"
-msgstr "Dirección IP del Impostor"
-
-msgid "Logged on"
-msgstr "Autenticado"
-
-msgid "Logged out"
-msgstr "Cerrar Sesión"
-
-msgid "Token"
-msgstr "Token"
-
-msgid "Impostor log"
-msgstr "Bitácora de impostor"
-
-msgid "Impostor logs"
-msgstr "Bitácoras de impostor"
-
-#, python-format
-msgid "User %(user)s not allowed on organization %(organization)r "
-msgstr ""
-"Usuario %(user)s no está autorizado en la organización %(organization)r"
-
-msgid "You can modify this laboratory"
-msgstr "Puede editar este laboratorio"
-
-msgid "Register with new organization"
-msgstr "Registrar con nueva organización"
-
-msgid "Register you as organization administrator"
-msgstr "Registrarse como administrador de organización"
-
-msgid "Create user"
-msgstr "Crear usuario"
-
-msgid ""
-"We need to validate that you are not a robot or spamer, so you need to "
-"configure a Two-Factor Authentication"
-msgstr ""
-"Necesitamos validar que no sos un robot spammer, por eso necesitamos "
-"configurar un método de autenticación de dos pasos"
-
-msgid ""
-"You need an OTP generator to login on the platform, you can use a free app "
-"called FreeOTP:"
-msgstr ""
-"Usted necesita un generador de OTP para registrarse en la plataforma, por "
-"favor use una aplicación llamada FreeOTP"
-
-msgid ""
-"For Costa Rica citicen, use your digital signature to login on organilab"
-msgstr ""
-"Solo para ciudadanos de Costa Rica, use su firma digital para ingresar a "
-"Organilab"
-
-msgid "Configure your profile"
-msgstr "Configure su perfil"
-
-msgid "Validate user"
-msgstr "Validar usuario"
-
-msgid "How use Digital Signature"
-msgstr "Cómo usar Firma digital"
-
-msgid ""
-"If you don't have Digital signature, please request on your favorite bank"
-msgstr ""
-"Si usted no tiene firma digital, por favor solicítela en su banco favorito"
-
-msgid "Configure your machine using this link"
-msgstr "Configure su máquina usando este enlace"
-
-msgid "Download and install Gaudi"
-msgstr "Descargar e instalar Gaudi"
-
-msgid "Connect you card on computer and wait for connect success popup "
-msgstr ""
-"Conecte su tarjeta a la computadora y espere hasta el emergente de conexión "
-"satisfactoria"
-
-msgid "Your OTP Seed"
-msgstr "Su semilla OTP"
-
-msgid "This image will not available in the future, please save it"
-msgstr "Esta imágen no estará disponible en el futuro, por favor guardela"
-
-msgid "Profile create successfully"
-msgstr "Elemento guardado exitosamente"
-
-msgid ""
-"Your organization was created successfully, please login with your "
-"credentials"
-msgstr ""
-"Su organización fue creada con éxito, por favor autentifiques con sus "
-"credenciales"
-
-msgid "Login"
-msgstr "Inicio de sesión"
-
-msgid "Add organization"
-msgstr "Agregar Organización"
-
-msgid "Add new rol"
-msgstr "Agregar Nuevo Rol"
-
-msgid "Add User"
-msgstr "Agregar Usuario"
-
-msgid "User"
-msgstr "Usuario"
-
-msgid "Related Users"
-msgstr "Usuario relacionado"
-
-msgid "Add Laboratory"
-msgstr "Agregar Laboratorio"
-
-msgid "Laboratory"
-msgstr "Laboratorio"
-
-msgid "Related Laboratory"
-msgstr "Relacionar Laboratorio"
-
-msgid "Log List"
-msgstr "Bitácoras"
-
-msgid "Change parent of organization"
-msgstr "Cambia padre de la organización"
-
-msgid "Rol List"
-msgstr "Lista de roles"
-
-msgid "Delete organization"
-msgstr "Eliminar organización"
-
-msgid "By laboratory"
-msgstr "Por laboratorio"
-
-msgid "By organization"
-msgstr "Por Organización"
-
-msgid "By profile"
-msgstr "Por perfil"
-
-msgid "Rol by laboratory"
-msgstr "Rol por laboratorio"
-
-msgid "Add or restrict permission on this laboratory"
-msgstr "Añada o remueva permisos en este laboratorio"
-
-msgid "Relate user with this laboratory"
-msgstr "Relacionar usuario con este laboratorio"
-
-msgid "Rol in all organization"
-msgstr "Rol en todas las Organizaciones"
-
-msgid "Rol used when you don't have rol set on laboratory"
-msgstr "Rol usado cuando no se posee un rol asignado en el laboratorio"
-
-msgid "Relate user with this organization"
-msgstr "Relacionar usuario con esta organización"
-
-msgid ""
-"This section will assign permissions groups to some profile who belongs to "
-"selected organization. If you do not find the user in profile selector, "
-"could you add it from By organization tab."
-msgstr ""
-"Esta sección asignará grupos de permisos a algunos perfiles que pertenecen a "
-"la organización seleccionada. Si no encuentras al usuario en el selector de "
-"perfiles, puedes agregarlo desde la pestaña \"Por organización\"."
-
-msgid "Add New Rol"
-msgstr "Agregar Nuevo Rol"
-
-msgid "Copy Rols"
-msgstr "Copiar Roles"
-
-msgid "Rol name"
-msgstr "Nombre del rol"
-
-msgid "Copy permissions from other roles?"
-msgstr "¿Copiar permisos de otros roles?"
-
-msgid "Select roles to copy"
-msgstr "Seleccione roles a copiar"
-
-msgid "Create Organization"
-msgstr "Crear Organización"
-
-msgid "Relate Organization with Permission objects"
-msgstr "Relaciona Organizaciones con objetos de permisos"
-
-msgid "Organization parent:"
-msgstr "Organización padre:"
-
-msgid "Select an organization to be parent of"
-msgstr "Seleccione una organización padre"
-
-msgid "Relate user to laboratory"
-msgstr "Relacionar usuario con laboratorio"
-
-msgid "From my organization"
-msgstr "Desde mi organización"
-
-msgid "External user"
-msgstr "Usuario externo"
-
-msgid "Important"
-msgstr "Importante"
-
-msgid ""
-"In this tab, you add the existing users in Organilab who are not associated "
-"with the organization, so you need to know the user's email address to add "
-"them."
-msgstr ""
-"En este tab, usted puede agregar usuarios existentes en Organilab que no "
-"están asociados a su organización, usted debe conocer el correo electrónico "
-"con el que el usuario se registró en la plataforma."
-
-msgid ""
-"Once added, you can search for the profile in the organization tab to relate "
-"user to organization"
-msgstr ""
-"Una vez agregado, puede buscar el perfil en el tab de la organización y "
-"relacionarlo con su organización"
-
-msgid "Find user"
-msgstr "Buscar usuario"
-
-msgid "Actions for Organization"
-msgstr "Acciones de la organización"
-
-msgid "My laboratories"
-msgstr "Mis Laboratorios"
-
-msgid "Reports"
-msgstr "Reportes"
-
-msgid "Risk Zones"
-msgstr "Zonas de riesgo"
-
-msgid "Admin Informs"
-msgstr "Admin Informes"
-
-msgid "MSDS"
-msgstr "MSDS"
-
-msgid "SGA"
-msgstr "SGA"
-
-msgid "Disposal"
-msgstr "Desecho"
-
-msgid "Manage Rol"
-msgstr "Administrar perfil"
-
-msgid "How to deal with permission merge"
-msgstr "Como manejar las mezclas de permisos"
-
-msgid "Append"
-msgstr "Agregar"
-
-msgid "Sustract"
-msgstr "Eliminar"
-
-msgid "Only rols selected"
-msgstr "Solo usar roles seleccionados"
-
-msgid "Only labs selected"
-msgstr "Solo usar laboratorios seleccionados"
-
-msgid "Manage Users"
-msgstr "Administrar Usuarios"
-
-msgid "Delete Organization Rol"
-msgstr "Eliminar rol de organización"
-
-msgid "Are you sure you want to delete"
-msgstr "¿Está seguro de que desea eliminar?"
-
-msgid "Current permissions"
-msgstr "Permisos actuales"
-
-msgid "Confirm"
-msgstr "Confirmar"
-
-msgid "Roles registered on this organization"
-msgstr "Roles registrados en esta organización"
-
-msgid "Organization doesn't exists"
-msgstr "Organización no existe"
-
-msgid "Element saved successfully"
-msgstr "Elemento guardado exitosamente"
-
-msgid "Error, form is invalid"
-msgstr "Error el formulario es inválido"
-
-#, python-format
-msgid ""
-"You have active impostor session <a class=\"text-white fw-bold text-"
-"decoration-underline\" href=\"%(reverseurl)s?all=1\">Finish it</a>"
-msgstr ""
-
-msgid "Request User is the same as current user"
-msgstr "Usuario solicitando es el mismo que el usuario actual"
-
-msgid "User not in organization"
-msgstr "Usuario no existe en la organización"
-
-msgid "Form data is wrong, you need to pass a valid laboratory as contenttype"
-msgstr "Formulario erróneo, debe pasar un laboratorio válido como contenttype"
-
-msgid "Organization Management"
-msgstr "Administración de Organización"
-
-msgid ""
-"You have no creation process, maybe it was expired, please try to register "
-"again"
-msgstr ""
-"No tiene un proceso de creación activo, o está expirado, por favor vuelva a "
-"inscribirse"
+msgid "Job Position"
+msgstr "Puesto de Trabajo"
 
 msgid "Profile in organization"
 msgstr "Perfil en la organización"
+
+msgid "Address"
+msgstr "Dirección"
 
 msgid "User email exist, please try to add user on organization modal"
 msgstr ""
 "Usuario no existe, Lo lamentamos, intente agregar el usuario en modal de "
 "organización"
+
+msgid "Language"
+msgstr "Idioma"
+
+msgid "Identification"
+msgstr "Identificación"
+
+msgid "Workplace"
+msgstr "Centro de trabajo"
 
 msgid "Password"
 msgstr "Contraseña"
@@ -733,7 +321,11 @@ msgstr "Actualizar"
 msgid "Change password"
 msgstr "Cambiar contraseña"
 
-msgid "Your password may not closely resemble your other personal information."
+msgid "Laboratories where you are affiliated"
+msgstr "Laboratorios en los que estás afiliado:"
+
+msgid ""
+"Your password may not closely resemble your other personal information."
 msgstr "Su contraseña no debe ser información personal o derivada de esta."
 
 msgid "Your password must contain at least 8 characters."
@@ -759,35 +351,52 @@ msgstr "Qué pasa cuando se crea un usuario"
 
 msgid ""
 "To the created user, an email will be sent with instructions on how to "
-"change their password. Please contact them to check their email. Some emails "
-"might go to the SPAM folder, so please also check the SPAM mailbox."
+"change their password. Please contact them to check their email. Some emails"
+" might go to the SPAM folder, so please also check the SPAM mailbox."
 msgstr ""
-"Al usuario creado le llegará un correo electrónico donde se le facilita el "
-"cambio de contraseña del usuario, comuníquese con él para que revise su "
-"correo.\n"
-"Algunos correos podrían llegar al SPAM, por favor revisar también la bandeja "
-"de correos SPAM"
+"Al usuario creado le llegará un correo electrónico donde se le facilita el cambio de contraseña del usuario, comuníquese con él para que revise su correo.\n"
+"Algunos correos podrían llegar al SPAM, por favor revisar también la bandeja de correos SPAM"
 
 msgid "The email is used as username."
 msgstr "El correo será usado como nombre de usuario"
 
+#, fuzzy
+#| msgid ""
+#| "The user is created with the default role of Student, so they will be ready to be added to the desired laboratory. You can add an administrative role by adding the user to the organization in the organization tab. In both cases, the user should be assigned roles in each laboratory.\n"
+#| "Remember, you can use the user creation functionality via QR code provided in the laboratory administration to simplify the role assignment for a large number of users."
 msgid ""
-"The user is created with the default role of Student, so they will be ready "
-"to be added to the desired laboratory. You can add an administrative role by "
-"adding the user to the organization in the organization tab. In both cases, "
-"the user should be assigned roles in each laboratory.\n"
-"Remember, you can use the user creation functionality via QR code provided "
-"in the laboratory administration to simplify the role assignment for a large "
-"number of users."
+"The user is created with the default role of Student, so they will be\n"
+"\t\t\t\t\t\t\tready to be added to the desired laboratory. You can add an administrative role by adding the user to the\n"
+"\t\t\t\t\t\t\torganization in the organization tab. In both cases, the user should be assigned roles in each laboratory.\n"
+"\t\t\t\t\t\t\tRemember, you can use the user creation functionality via QR code provided in the laboratory administration to\n"
+"\t\t\t\t\t\t\tsimplify the role assignment for a large number of users."
 msgstr ""
-"El usuario se crea con el rol Estudiante por defecto, por lo que quedará "
-"listo para agregar al laboratorio deseado, puede agregar un rol "
-"administrativo agregando el usuario a la organización en la pestaña de "
-"organización, en ambos caso al usuario se le deberán asignar los roles en "
-"cada laboratorio.\n"
-"Recuerde puede usar la funcionalidad de creación de usuarios mediante QR "
-"provista en la administración del laboratorio para simplificar la asignación "
-"de roles a un gran número de usuarios"
+"El usuario se crea con el rol Estudiante por defecto, por lo que quedará listo para agregar al laboratorio deseado, puede agregar un rol administrativo agregando el usuario a la organización en la pestaña de organización, en ambos caso al usuario se le deberán asignar los roles en cada laboratorio.\n"
+"Recuerde puede usar la funcionalidad de creación de usuarios mediante QR provista en la administración del laboratorio para simplificar la asignación de roles a un gran número de usuarios"
+
+msgid "User Profile Explanations"
+msgstr "Explicación de los perfiles de usuario"
+
+msgid ""
+"Administrator: Manages organizations, users, permissions, laboratories, risk"
+" zones, and reports at the system level."
+msgstr ""
+"Administrador: Gestiona organizaciones, usuarios, permisos, laboratorios, "
+"zonas de riesgo y reportes a nivel sistema."
+
+msgid ""
+"Laboratory Administrator: Manages substance inventory and the physical "
+"structure of the laboratory (shelves, zones)."
+msgstr ""
+"Administrador de Laboratorio: Administra el inventario de sustancias y la "
+"estructura física del laboratorio (estantes, zonas)."
+
+msgid ""
+"Laboratory User: Executes procedures and adds or removes substances between "
+"shelves."
+msgstr ""
+"Usuario de Laboratorio: Ejecuta procedimientos y agregar o quitar sustancias"
+" entre estantes."
 
 msgid "Feedback"
 msgstr "Retroalimentación"
@@ -895,17 +504,67 @@ msgstr "La plantilla de informe ha sido eliminada."
 msgid "Deleted!"
 msgstr "¡Eliminado!"
 
+#, fuzzy
+#| msgid "Organization"
+msgid "Organization ID"
+msgstr "Organización"
+
+msgid "Organization name"
+msgstr "Nombre de la Organización"
+
+#, fuzzy
+#| msgid "Creator"
+msgid "Creator Org ID"
+msgstr "Creador"
+
+#, fuzzy
+#| msgid "Laboratory name"
+msgid "Creator Org name"
+msgstr "Nombre del Laboratorio"
+
+#, fuzzy
+#| msgid "Register user"
+msgid "Register Org ID"
+msgstr "Registrar usuario"
+
+#, fuzzy
+#| msgid "Register Object"
+msgid "Register Org name"
+msgstr "Registrar Material"
+
+#, fuzzy
+#| msgid "Delete object"
+msgid "Related object"
+msgstr "Borrar objeto"
+
+msgid "Laboratory"
+msgstr "Laboratorio"
+
 msgid "Organilab Administration site"
 msgstr "Sitio administrativo de Organilab"
 
 msgid "File not found"
 msgstr "Archivo no encontrado"
 
-msgid "Download"
-msgstr "Descargar"
-
 msgid "Register"
 msgstr "Registrarse"
+
+msgid "Box"
+msgstr "Caja"
+
+#, python-format
+msgid "%(name)s (%(quantity)s %(unit)s)"
+msgstr "%(name)s (%(quantity)s %(unit)s)"
+
+msgid "unit(s)"
+msgstr "unidad(es)"
+
+msgid "No boxes"
+msgstr "Sin cajas"
+
+#, python-format
+msgid "%(boxes)s box(es)"
+msgstr "%(boxes)s caja(s)"
 
 msgid "Type equipment object is not valid."
 msgstr "Tipo de objeto de equipo no es válido."
@@ -928,11 +587,54 @@ msgstr "implica eliminar todos los equipos relacionados a el."
 msgid "Deleting"
 msgstr "Eliminar"
 
+msgid "Maximum limit cannot be lower than minimum limit."
+msgstr "El límite máximo no puede ser menor que el límite mínimo."
+
+msgid "This field is required."
+msgstr "Este campo es requerido."
+
+msgid "Ensure this value is greater than or equal to 1e-07."
+msgstr "Asegúrese que el valor es mayor o igual que 1e-07."
+
+msgid ""
+"Cannot change is container because this material is referenced by shelf "
+"objects."
+msgstr ""
+"No se puede cambiar el contenedor porque este material está referenciado por"
+" objetos del estante."
+
+msgid ""
+"Cannot change measurement unit because this material is referenced by shelf "
+"objects."
+msgstr ""
+"No se puede cambiar la unidad de medida porque este material está "
+"referenciado por objetos del estante."
+
+msgid "Only .xlsm files are allowed."
+msgstr "Solo se permiten archivos .xlsm."
+
+#, fuzzy
+#| msgid "My lab or organization requests"
+msgid "This field is required for organization requests."
+msgstr "Mis solicitudes de laboratorio u organización"
+
+#, fuzzy
+#| msgid "This field is required."
+msgid "This field is required for laboratory requests."
+msgstr "Este campo es requerido."
+
+msgid "Income"
+msgstr "Ingreso"
+
 msgid "Created Object"
 msgstr "Objeto creado"
 
 msgid "The creation was performed successfully."
 msgstr "La creación se ha realizado con éxito."
+
+#, python-format
+msgid "%(count)d box(es) created successfully."
+msgstr "%(count)d caja(s) creada(s) exitosamente."
 
 msgid "Shelf object was increased successfully."
 msgstr "El objeto de estante fue incrementado exitosamente."
@@ -943,9 +645,15 @@ msgstr "El objeto del estante fue disminuido exitosamente."
 msgid "Reservation was performed successfully."
 msgstr "La reservación se ha realizado con éxito."
 
+#, fuzzy
+#| msgid "Box was increased successfully."
+msgid "Boxes were returned successfully."
+msgstr "La caja fue incrementada exitosamente."
+
 msgid ""
 "This value cannot be greater than the quantity available for the object."
-msgstr "Este valor no puede ser mayor a la cantidad disponible para el objeto."
+msgstr ""
+"Este valor no puede ser mayor a la cantidad disponible para el objeto."
 
 msgid "The transfer out was saved successfully."
 msgstr "La transferencia fue guardada exitosamente."
@@ -955,6 +663,13 @@ msgstr "La transferencia fue denegada exitosamente."
 
 msgid "The transfer in was approved successfully."
 msgstr "La transferencia fue aprobada exitosamente."
+
+msgid ""
+"This item cannot be deleted because it has active reservations. Please close"
+" all reservations first."
+msgstr ""
+"Este artículo no puede eliminarse porque tiene reservas activas. Por favor, "
+"cierre todas las reservas primero."
 
 msgid "The item was deleted successfully"
 msgstr "El elemento fue eliminado exitosamente"
@@ -983,6 +698,12 @@ msgstr "El elemento fue actualizado exitosamente"
 
 msgid "Shelfobject was updated successfully."
 msgstr "El objeto de estantería fue actualizado correctamente."
+
+msgid "Box updated"
+msgstr "Caja actualizada"
+
+msgid "Box was updated successfully."
+msgstr "La caja fue actualizada exitosamente."
 
 msgid "Maintenance created"
 msgstr "Mantenimiento creado"
@@ -1027,6 +748,44 @@ msgstr "Capacitación eliminada"
 msgid "Training updated"
 msgstr "Capacitación actualizada"
 
+#, python-format
+msgid "[{'changed': {'fields': ['Login', %d]}}]"
+msgstr "[{'changed': {'fields': ['Login', %d]}}]"
+
+#, python-format
+msgid "[{'added': {'fields': ['Register', %d]}}]"
+msgstr "[{'added': {'fields': ['Register', %d]}}]"
+
+msgid "This endpoint requires lab_pk in the URL."
+msgstr "Este endpoint requiere lab_pk en la URL."
+
+#, fuzzy
+#| msgid "This endpoint requires lab_pk in the URL."
+msgid "This endpoint requires org_pk in the URL."
+msgstr "Este endpoint requiere lab_pk en la URL."
+
+#, fuzzy
+#| msgid "Shelf object was decrease successfully."
+msgid "Shelf object was decreased successfully."
+msgstr "El objeto del estante fue disminuido exitosamente."
+
+msgid "You can only delete your own requests."
+msgstr "Solo puede eliminar sus propias solicitudes."
+
+msgid "Request approved."
+msgstr "Solicitud aprobada."
+
+msgid "Request rejected."
+msgstr "Solicitud rechazada."
+
+#, fuzzy
+#| msgid "Regents"
+msgid "Regent"
+msgstr "Regentes"
+
+msgid "Last update"
+msgstr "Última actualización"
+
 msgid "Filter substances by H Code"
 msgstr "Filtre reactivos por código H"
 
@@ -1057,6 +816,9 @@ msgstr "Apellidos"
 msgid "Id Card"
 msgstr "Tarjeta de identificación"
 
+msgid "Location"
+msgstr "Ubicación"
+
 msgid "Shelf"
 msgstr "Estante"
 
@@ -1071,6 +833,9 @@ msgstr "Padre de la organización no puede ser inactivado"
 
 msgid "Laboratories to be related to this organization"
 msgstr "Laboratorios a relacionar con esta organización"
+
+msgid "Organization cannot be inactive"
+msgstr "Organización no puede ser inactivada"
 
 msgid "Organization"
 msgstr "Organización"
@@ -1113,29 +878,11 @@ msgstr "Reactivo"
 msgid "Material"
 msgstr "Materiales"
 
-msgid "Materials"
-msgstr "Materiales"
-
 msgid "Equipment"
 msgstr "Equipo"
 
-msgid "Available for use"
-msgstr "A disposición de uso"
-
 msgid "New status"
 msgstr "Nuevo Estado"
-
-msgid "Capacity"
-msgstr "Capacidad"
-
-msgid "Capacity measurement unit"
-msgstr "Unidad de medida de capacidad"
-
-msgid "This field is required."
-msgstr "Este campo es requerido."
-
-msgid "Ensure this value is greater than or equal to 1e-07."
-msgstr "Asegúrese que el valor es mayor o igual que 1e-07."
 
 msgid "Use manual"
 msgstr "Manual de uso"
@@ -1166,6 +913,257 @@ msgstr "Familia instrumental"
 
 msgid "Equipment type"
 msgstr "Tipo de equipo"
+
+msgid "Capacity"
+msgstr "Capacidad"
+
+msgid "Capacity measurement unit"
+msgstr "Unidad de medida de capacidad"
+
+msgid "Is Container?"
+msgstr "¿Es un Contenedor?"
+
+msgid "Iarc"
+msgstr "IARC"
+
+msgid "Imdg"
+msgstr "IMDG"
+
+msgid "White Organ"
+msgstr "Organo blanco"
+
+msgid "Share with others"
+msgstr "Compartir con otros"
+
+#, fuzzy
+#| msgid "Bioaccumulable"
+msgid "Bioaccumulable?"
+msgstr "Bioacumulable"
+
+msgid "Molecular formula"
+msgstr "Formula molecular"
+
+msgid "Cas number"
+msgstr "Número CAS"
+
+msgid "Security sheet"
+msgstr "Hojas de seguridad"
+
+msgid "Is precursor?"
+msgstr "¿Es precursor?"
+
+msgid "Precursor Type"
+msgstr "Tipo de precursor"
+
+msgid "Danger indication"
+msgstr "Indicación de peligro"
+
+msgid "UE Codes"
+msgstr "Códigos UE"
+
+msgid "NFPA codes"
+msgstr "Códigos NFPA"
+
+msgid "Storage class"
+msgstr "Clases de almacenamientos"
+
+msgid "Is Seveso list III?"
+msgstr "¿Está Seveso en la lista III?"
+
+msgid "Sustance representation"
+msgstr "Representación de la sustancia"
+
+msgid "Is dangerous?"
+msgstr "¿Es peligroso?"
+
+msgid "It belongs to the regulations of decree 44741"
+msgstr "Pertenece al reglamento del decreto 44741"
+
+msgid "Has threshold?"
+msgstr "Tiene umbral?"
+
+msgid "Threshold"
+msgstr "Umbral"
+
+msgid "Density"
+msgstr "Densidad"
+
+#, fuzzy
+#| msgid "It belongs to the regulations of decree 44741"
+msgid ""
+"It belongs to the regulations of decree 44741, only use dot like 0.344 on "
+"decimal"
+msgstr "Pertenece al reglamento del decreto 44741"
+
+msgid "Substance Name"
+msgstr "Nombre de la sustancia"
+
+msgid "Reagents"
+msgstr "Reactivos"
+
+msgid "Year"
+msgstr "Año"
+
+msgid "Name of the product"
+msgstr "Nombre del producto"
+
+msgid "CAS number"
+msgstr "Número ID CAS"
+
+msgid "Chemical formula"
+msgstr "Fórmula química"
+
+#, fuzzy
+#| msgid "Used Quantity"
+msgid "Units of the quantity"
+msgstr "Cantidad Utilizada"
+
+msgid "Capacity of the container"
+msgstr "Capacidad del envase"
+
+msgid "Measurement unit of the container"
+msgstr "Unidad de medida del envase"
+
+msgid "Material of the container"
+msgstr "Material del contenedor"
+
+msgid "Maximum annual quantity"
+msgstr "Cantidad anual máxima"
+
+msgid "Measurement unit of the maximum annual quantity"
+msgstr "Unidad de medida de la cantidad anual máxima"
+
+msgid "Expiration date"
+msgstr "Fecha de expiración"
+
+msgid "The unit not exist in the database"
+msgstr "La unidad no existe en la base de datos"
+
+msgid ""
+"The quantity cannot be greater than the quantity available for the "
+"container."
+msgstr ""
+"La cantidad no puede ser mayor que la cantidad disponible en el contenedor."
+
+msgid "Load archive"
+msgstr "Cargar archivo"
+
+msgid "Know places"
+msgstr "Lugares conocidos"
+
+msgid "Laboratory Room"
+msgstr "Sala de laboratorio"
+
+msgid "Furniture"
+msgstr "Mueble"
+
+msgid "Is organization?"
+msgstr "¿Es organización?"
+
+#, python-format
+msgid "Monthly limit history %s"
+msgstr "Historial de límites mensuales %s"
+
+msgid "January"
+msgstr "Enero"
+
+msgid "February"
+msgstr "Febrero"
+
+msgid "March"
+msgstr "Marzo"
+
+msgid "April"
+msgstr "Abril"
+
+msgid "May"
+msgstr "Mayo"
+
+msgid "June"
+msgstr "Junio"
+
+msgid "July"
+msgstr "Julio"
+
+msgid "August"
+msgstr "Agosto"
+
+msgid "September"
+msgstr "Setiembre"
+
+msgid "October"
+msgstr "Octubre"
+
+msgid "November"
+msgstr "Noviembre"
+
+msgid "December"
+msgstr "Diciembre"
+
+msgid "Quantity"
+msgstr "Cantidad"
+
+msgid "Organization not found"
+msgstr "Organización no existe"
+
+#, python-format
+msgid "New %(type)s request: %(name)s"
+msgstr "Nueva solicitud de %(type)s: %(name)s"
+
+#, python-format
+msgid ""
+"Hi,\n"
+"\n"
+"A new %(type)s request has been submitted and requires your review.\n"
+"\n"
+"Name: %(name)s\n"
+"Requested by: %(user)s\n"
+"\n"
+"Please log in to review this request.\n"
+"\n"
+"Thanks,\n"
+"Organilab system"
+msgstr ""
+"Hola,\n"
+"\n"
+"Se ha enviado una nueva solicitud de %(type)s y requiere su revisión.\n"
+"\n"
+"Nombre: %(name)s\n"
+"Solicitado por: %(user)s\n"
+"\n"
+"Por favor inicie sesión para revisar esta solicitud.\n"
+"\n"
+"Gracias,\n"
+"Sistema Organilab"
+
+#, python-format
+msgid "Your request '%(name)s' has been %(status)s"
+msgstr "Su solicitud '%(name)s' ha sido %(status)s"
+
+#, python-format
+msgid ""
+"Hi %(user)s,\n"
+"\n"
+"Your %(type)s request '%(name)s' has been %(status)s.\n"
+"\n"
+"Thanks,\n"
+"Organilab system"
+msgstr ""
+"Hola %(user)s,\n"
+"\n"
+"Su solicitud de %(type)s '%(name)s' ha sido %(status)s.\n"
+"\n"
+"Gracias,\n"
+"Sistema Organilab"
+
+msgid "ShelfObject expiration"
+msgstr "Vencimiento de objetos de estante"
+
+msgid "Adjustment quantities in logs"
+msgstr "Ajuste de cantidades en bitacoras"
+
+msgid "Spend"
+msgstr "Gasto"
 
 #, python-format
 msgid "Can %s"
@@ -1198,9 +1196,6 @@ msgstr "Nombres separados por comas"
 msgid "Type"
 msgstr "Tipo"
 
-msgid "Share with others"
-msgstr "Compartir con otros"
-
 msgid "Model"
 msgstr "Modelo"
 
@@ -1210,17 +1205,16 @@ msgstr "Serie"
 msgid "Plaque"
 msgstr "Placa"
 
-msgid "Is Container?"
-msgstr "¿Es un Contenedor?"
+#, fuzzy
+#| msgid "Is dangerous?"
+msgid "Is Dangerous?"
+msgstr "¿Es peligroso?"
 
-msgid "Molecular formula"
-msgstr "Formula molecular"
+msgid "Is pure?"
+msgstr "¿Es pura?"
 
 msgid "Cas ID Number"
 msgstr "Número ID CAS"
-
-msgid "Security sheet"
-msgstr "Hojas de seguridad"
 
 msgid "Is precursor"
 msgstr "¿Es precursor?"
@@ -1231,17 +1225,12 @@ msgstr "Indicación de peligro"
 msgid "UE codes"
 msgstr "Códigos UE"
 
-msgid "NFPA codes"
-msgstr "Códigos NFPA"
-
-msgid "Storage class"
-msgstr "Clases de almacenamientos"
-
-msgid "Is Seveso list III?"
-msgstr "¿Está Seveso en la lista III?"
-
-msgid "Sustance representation"
-msgstr "Representación de la sustancia"
+#, fuzzy
+#| msgid "It belongs to the regulations of decree 44741"
+msgid ""
+"t belongs to the regulations of decree 44741, only use dot like 0.344 on "
+"decimal"
+msgstr "Pertenece al reglamento del decreto 44741"
 
 msgid "Sustance characteristic"
 msgstr "Características de sustancia"
@@ -1249,20 +1238,90 @@ msgstr "Características de sustancia"
 msgid "Sustance characteristics"
 msgstr "Características de sustancias"
 
+msgid "Manual upload"
+msgstr "Carga manual"
+
+msgid "SDS source"
+msgstr "Fuente de la FDS"
+
+#, fuzzy
+#| msgid "Revision date"
+msgid "SDS revision date"
+msgstr "Fecha de revisión"
+
+#, fuzzy
+#| msgid "Download QR"
+msgid "Download URL"
+msgstr "Descargar QR"
+
+msgid "Verified by"
+msgstr "Verificado por"
+
+#, fuzzy
+#| msgid "Printing date"
+msgid "Verified date"
+msgstr "Fecha de impresión"
+
+msgid "Is verified"
+msgstr "Está verificado"
+
+msgid "SDS traceability"
+msgstr "Trazabilidad de FDS"
+
+msgid "SDS traceability records"
+msgstr "Registros de trazabilidad de FDS"
+
 msgid "Limit material quantity"
 msgstr "Cantidad límite de material"
 
-msgid "Expiration date"
+#, fuzzy
+#| msgid "Expiration date"
+msgid "Expiration date?"
 msgstr "Fecha de expiración"
 
-msgid "Equipment or reactive or sustance"
+msgid "Liquid"
+msgstr "Líquido"
+
+msgid "Solid powder"
+msgstr "Sólido en polvo"
+
+msgid "Solid granular or crystalline"
+msgstr "Sólido granulares o cristalinos"
+
+msgid "Gaseous"
+msgstr "Gaseoso"
+
+msgid "Tablets"
+msgstr "Tablas"
+
+msgid "Lentils"
+msgstr "Lentejas"
+
+msgid "Granza"
+msgstr "Granza"
+
+msgid "Card"
+msgstr "Tarjeta"
+
+msgid "Solid"
+msgstr "Solido"
+
+msgid "Colloidal"
+msgstr "Coloidal"
+
+msgid "Viscuos Liquid"
+msgstr "Líquido viscoso"
+
+msgid "Kit"
+msgstr "Kit"
+
+#, fuzzy
+#| msgid "Equipment or reactive or sustance"
+msgid "Equipment or reactive or substance"
 msgstr "Equipo o reactivo o sustancia"
 
 msgid "Production batch"
 msgstr "Numero de lote"
-
-msgid "Quantity"
-msgstr "Cantidad"
 
 msgid "Quantity Base Unit"
 msgstr "Unidad base de cantidad"
@@ -1287,6 +1346,57 @@ msgstr "QR del objeto"
 
 msgid "Container"
 msgstr "Contenedor"
+
+msgid "Physical Status"
+msgstr "Estado físico"
+
+msgid "Concentration"
+msgstr "Concentración"
+
+msgid "Pictograms"
+msgstr "Pictogramas"
+
+msgid "Expiration Date"
+msgstr "Fecha de caducidad"
+
+msgid "Type Budget"
+msgstr "Tipo de presupuesto"
+
+msgid "Container Entry Date"
+msgstr "Fecha de entrada del contenedor"
+
+msgid "Container Open Date"
+msgstr "Fecha de apertura del contenedor"
+
+msgid "Was donated?"
+msgstr "Fue donado?"
+
+msgid "Process Condition"
+msgstr "Condición de proceso"
+
+msgid "Is box?"
+msgstr "Es caja?"
+
+msgid "Units per box"
+msgstr "Unidades por caja"
+
+msgid ""
+"List of box entries, each with \"code\" (e.g. \"b-0001\") and \"units\" "
+"(integer count)"
+msgstr ""
+"Lista de entradas de caja, cada una con «code» (ej. «b-0001») y «units» "
+"(conteo entero)"
+
+#, fuzzy
+#| msgid "Units per box"
+msgid "Units per box (reference)"
+msgstr "Unidades por caja"
+
+msgid "Original number of units per box at creation time"
+msgstr "Número original de unidades por caja al momento de la creación"
+
+msgid "Unit code"
+msgstr "Código de unidad"
 
 msgid "Unknown unit"
 msgstr "Unidad desconocida"
@@ -1372,17 +1482,14 @@ msgstr "Cambios del Objeto"
 msgid "Action Taken"
 msgstr "Acciones Tomadas"
 
-msgid "Laboratory Room"
-msgstr "Sala de laboratorio"
-
 msgid "Laboratory Rooms"
 msgstr "Salas de laboratorio"
 
-msgid "Furniture"
-msgstr "Mueble"
-
 msgid "Container shelf"
 msgstr "Estante del contenedor"
+
+msgid "Disposal"
+msgstr "Desecho"
 
 msgid "Limit quantity of the shelf"
 msgstr "Cantidad límite del estante"
@@ -1411,6 +1518,11 @@ msgstr "Pieza de mueble"
 msgid "Organizations"
 msgstr "Organizaciones"
 
+#, fuzzy
+#| msgid "Relate Organization with Permission objects"
+msgid "Can manage organization permission structure"
+msgstr "Relaciona Organizaciones con objetos de permisos"
+
 msgid "Administrator"
 msgstr "Administrador"
 
@@ -1426,11 +1538,39 @@ msgstr "Usuario de la Organización"
 msgid "User Organizations"
 msgstr "Organizaciones del usuario"
 
-msgid "Location"
-msgstr "Ubicación"
+msgid "Geolocation"
+msgstr "Geolocalización"
+
+msgid "Email"
+msgstr "Correo Electrónico"
 
 msgid "Coordinator"
 msgstr "Coordinador"
+
+msgid "Area"
+msgstr "Área"
+
+msgid "Responsible"
+msgstr "Responsable"
+
+msgid ""
+"Study centers, hospitals, transportation terminals, gas stations, or others "
+"that might be affected in the event of an emergency."
+msgstr ""
+"Centros de estudios, hospitales, terminales de transporte, gasolineras o "
+"otros lugares que pueden ser afectados en caso de una emergencia."
+
+msgid ""
+"Rivers, streams, springs and aquifers that are affected in an emergency"
+msgstr ""
+"Ríos, quebradas, nacientes y mantos acuíferos que pueden ser afectados en "
+"una emergencia"
+
+msgid "Faculty or dispatch"
+msgstr "Facultad o Despacho"
+
+msgid "Laboratories"
+msgstr "Laboratorios"
 
 msgid "Can see available reports"
 msgstr "Puede ver los informes disponibles"
@@ -1438,8 +1578,11 @@ msgstr "Puede ver los informes disponibles"
 msgid "Can download available reports"
 msgstr "Puede descargar los informes disponibles"
 
-msgid "legal identity"
-msgstr "Cédula Jurídica"
+msgid "Legal Identity"
+msgstr "Identidad Jurídica"
+
+msgid "User"
+msgstr "Usuario"
 
 msgid "Blocked List Notification"
 msgstr "Notificación de la lista de bloqueados"
@@ -1458,42 +1601,6 @@ msgstr "Laboratorio que Envía"
 
 msgid "Laboratory Received"
 msgstr "Laboratorio que Recibe"
-
-msgid "January"
-msgstr "Enero"
-
-msgid "February"
-msgstr "Febrero"
-
-msgid "March"
-msgstr "Marzo"
-
-msgid "April"
-msgstr "Abril"
-
-msgid "May"
-msgstr "Mayo"
-
-msgid "June"
-msgstr "Junio"
-
-msgid "July"
-msgstr "Julio"
-
-msgid "August"
-msgstr "Agosto"
-
-msgid "September"
-msgstr "Setiembre"
-
-msgid "October"
-msgstr "Octubre"
-
-msgid "November"
-msgstr "Noviembre"
-
-msgid "December"
-msgstr "Diciembre"
 
 msgid "Report"
 msgstr "Reporte"
@@ -1519,6 +1626,10 @@ msgstr "Balance final"
 msgid "Reason to spend"
 msgstr "Razón del gasto"
 
+#, python-format
+msgid "1 of %s of %d - %d of %s of %d"
+msgstr "1 de %s del %d - %d de %s del %d"
+
 msgid "Inform"
 msgstr "Informe"
 
@@ -1527,6 +1638,11 @@ msgstr "Entrada de bitácora"
 
 msgid "Protocol PDF File"
 msgstr "Archivo del protocolo en PDF"
+
+#, fuzzy
+#| msgid "Only .xlsm files are allowed."
+msgid "Only PDF files are allowed"
+msgstr "Solo se permiten archivos .xlsm."
 
 msgid "short description"
 msgstr "descripción corta"
@@ -1537,8 +1653,20 @@ msgstr "Protocolo"
 msgid "Protocols"
 msgstr "Protocolos"
 
+msgid "Start application date"
+msgstr "Fecha de inicio de aplicación"
+
+msgid "Close application date"
+msgstr "Fecha de cierre del informe"
+
+msgid "Period on days"
+msgstr "Periodo en días"
+
 msgid "Inform template"
 msgstr "Plantilla de Informe"
+
+msgid "Active"
+msgstr "Activo"
 
 msgid "Activate user"
 msgstr "Activar usuario"
@@ -1552,36 +1680,95 @@ msgstr "QR registro de usuario"
 msgid "Role"
 msgstr "Rol"
 
+msgid "Maximum Limit"
+msgstr "Límite Máximo"
+
+msgid "Minimum Limit"
+msgstr "Límite mínimo"
+
+msgid "Pending"
+msgstr "Pendiente"
+
+msgid "Approved"
+msgstr "Aprobado"
+
+msgid "Rejected"
+msgstr "Rechazado"
+
+msgid "Entity type"
+msgstr "Tipo de entidad"
+
+msgid "Parent organization"
+msgstr "Organización padre"
+
+msgid "Nearby sites"
+msgstr "Sitios cercanos"
+
+msgid "Water resources affected"
+msgstr "Recursos hídricos afectados"
+
+msgid "Parent organization (for org)"
+msgstr "Organización padre (para org)"
+
+msgid "Requested by"
+msgstr "Solicitado por"
+
+msgid "Requested at"
+msgstr "Solicitado el"
+
+msgid "Review notes"
+msgstr "Notas de revisión"
+
+msgid "Lab or organization request"
+msgstr "Solicitud de laboratorio u organización"
+
+msgid "Lab or organization requests"
+msgstr "Solicitudes de laboratorio u organización"
+
+msgid "Yes"
+msgstr "Si"
+
+msgid "No"
+msgstr "No"
+
 msgid "Product added successful"
 msgstr "Producto Agregado exitosamente"
 
+msgid "Measurement Unit"
+msgstr "Unidad de Medida"
+
+msgid "Use"
+msgstr "Uso"
+
 msgid ""
-"This select only shows shelves with same measurement unit than current object"
+"This select only shows shelves with same measurement unit than current "
+"object"
 msgstr ""
 "Esta selección solo muestra los estantes que tengan la misma unidad de "
 "medida que el objeto actual."
 
 msgid ""
 "This select only shows shelves with some of the following features: <br>1) "
-"Infinity quantity capacity and not defined measurement unit. <br>2) Infinity "
-"quantity capacity and same measurement unit than selected shelf object. "
+"Infinity quantity capacity and not defined measurement unit. <br>2) Infinity"
+" quantity capacity and same measurement unit than selected shelf object. "
 "<br>3) Same measurement unit than selected shelf object and available "
 "capacity in the shelf."
 msgstr ""
 "Esta selección solo muestra estanterías con algunas de las siguientes "
-"características: <br>1) Capacidad de cantidad infinita y unidad de medida no "
-"definida. <br>2) Capacidad de cantidad infinita y misma unidad de medida que "
-"el objeto de estantería seleccionado. <br>3) Misma unidad de medida que el "
-"objeto de estantería seleccionado y capacidad disponible en la estantería."
+"características: <br>1) Capacidad de cantidad infinita y unidad de medida no"
+" definida. <br>2) Capacidad de cantidad infinita y misma unidad de medida "
+"que el objeto de estantería seleccionado. <br>3) Misma unidad de medida que "
+"el objeto de estantería seleccionado y capacidad disponible en la "
+"estantería."
 
 msgid "Unlimited"
 msgstr "Ilimitado"
 
-msgid "Minimum Limit"
-msgstr "Límite mínimo"
+msgid "Number of boxes"
+msgstr "Número de cajas"
 
-msgid "Maximum Limit"
-msgstr "Límite Máximo"
+msgid "Search by name, code or CAS number"
+msgstr "Buscar por nombre, código o número de CAS"
 
 msgid "Container Options"
 msgstr "Opciones de Contenedor"
@@ -1589,8 +1776,8 @@ msgstr "Opciones de Contenedor"
 msgid "Search by name"
 msgstr "Buscar por nombre"
 
-msgid "Search by name, code or CAS number"
-msgstr "Buscar por nombre, código o número de CAS"
+msgid "Reason"
+msgstr "Razón"
 
 msgid "Object does not exist in the laboratory."
 msgstr "El objeto no existe en el laboratorio."
@@ -1601,11 +1788,26 @@ msgstr "Crear nuevo basado en el seleccionado"
 msgid "Use selected"
 msgstr "Usar seleccionado"
 
-msgid "Final date cannot be equal to initial date."
-msgstr "La fecha final no puede ser igual a la fecha inicial."
+#, python-format
+msgid ""
+"Not enough complete boxes available. %(needed)d complete box(es) required "
+"but only %(available)d available."
+msgstr ""
+"No hay suficientes cajas completas disponibles. Se requieren %(needed)d "
+"caja(s) completa(s) pero solo hay %(available)d disponible(s)."
 
-msgid "Initial date cannot be greater than final date."
-msgstr "La fecha inicial no puede ser mayor a la fecha final."
+#, python-format
+msgid ""
+"No box with enough units for the partial amount (%(needed)d unit(s) "
+"required)."
+msgstr ""
+"No hay caja con suficientes unidades para la cantidad parcial (%(needed)d "
+"unidad(es) requerida(s))."
+
+#, fuzzy
+#| msgid "Final date cannot be equal or lower than current date."
+msgid "Final date cannot be equal or lower than initial date."
+msgstr "La fecha final no puede ser igual o menor a la fecha actual."
 
 msgid "Initial date cannot be equal or lower than current date."
 msgstr "La fecha inicial no puede ser igual or menor a la fecha actual."
@@ -1616,9 +1818,46 @@ msgstr "La fecha final no puede ser igual o menor a la fecha actual."
 msgid "Provider does not exist in the laboratory."
 msgstr "Proveedor no existe en el laboratorio."
 
+#, fuzzy
+#| msgid "Measurement units"
+msgid "Measurement unit is not valid"
+msgstr "Unidades de medida"
+
+msgid "Box selection is required for box objects."
+msgstr "La selección de caja es requerida para objetos de tipo caja."
+
+msgid "Invalid box selection."
+msgstr "Selección de caja inválida."
+
+msgid "Subtract amount cannot be greater than the available box units."
+msgstr ""
+"La cantidad a restar no puede ser mayor que las unidades disponibles de la "
+"caja."
+
 msgid "Subtract amount cannot be greater than the available shelf's amount."
 msgstr ""
 "El monto a substraer no puede ser mayor al monto disponible en el estante."
+
+#, fuzzy
+#| msgid "Shelf does not belong to this laboratory."
+msgid "Reservation does not belong to this laboratory."
+msgstr "El estante no pertenece a este laboratorio."
+
+msgid ""
+"Only box shelf object reservations can be returned through this action."
+msgstr ""
+"Solo las reservas de objetos de estante tipo caja pueden devolverse mediante"
+" esta acción."
+
+msgid "Only borrowed reservations can be returned."
+msgstr "Solo las reservas prestadas pueden devolverse."
+
+#, fuzzy
+#| msgid "The shelfobject quantity cannot be less than minimum limit."
+msgid "The shelfobject quantity cannot be less than maximum limit."
+msgstr ""
+"La cantidad de la sustancia o material no puede ser menor a la cantidad "
+"mínima."
 
 msgid "Minimum limit cannot be greater than maximum limit."
 msgstr "Límite mínimo no puede ser mayor al límite máximo."
@@ -1626,8 +1865,34 @@ msgstr "Límite mínimo no puede ser mayor al límite máximo."
 msgid "Quantity cannot be greater than maximum limit."
 msgstr "La cantidad no puede mayor que el límite maximo."
 
+#, fuzzy
+#| msgid "Quantity cannot be greater than maximum limit."
+msgid "Quantity cannot be lower than minimum limit."
+msgstr "La cantidad no puede mayor que el límite maximo."
+
+msgid ""
+"Cannot change the number of boxes or units per box because one or more boxes"
+" have already been modified. Use the decrease or increase actions instead."
+msgstr ""
+"No se puede cambiar el número de cajas ni las unidades por caja porque una o"
+" más cajas ya fueron modificadas. Use las acciones de disminuir o aumentar."
+
+msgid ""
+"The transfer out cannot be performed since the boxes available for the "
+"source object is less than the amount to transfer."
+msgstr ""
+"La transferencia no puede realizarse porque la cantidad de cajas disponibles"
+" para el objeto de origen es menor que la cantidad a transferir."
+
 msgid "Infinity"
 msgstr "Infinito"
+
+msgid "of"
+msgstr "de"
+
+#, python-format
+msgid "Box of %(name)s (%(quantity)s %(unit)s)"
+msgstr "Caja de %(name)s (%(quantity)s %(unit)s)"
 
 msgid "Laboratory room does not exist in the laboratory."
 msgstr "Sala de laboratorio no existe en el laboratorio."
@@ -1705,17 +1970,11 @@ msgstr ""
 "tiene un contenedor asignado."
 
 msgid ""
-"The source container cannot be moved since the entire quantity available for "
-"the source object was not transferred in."
+"The source container cannot be moved since the entire quantity available for"
+" the source object was not transferred in."
 msgstr ""
 "El contenedor fuente no puede ser movido ya que no se transfirió toda la "
 "cantidad disponible en el objeto fuente."
-
-msgid "Yes"
-msgstr "Si"
-
-msgid "No"
-msgstr "No"
 
 msgid "The shelfobject is not valid"
 msgstr "El objeto de estantería no es válido"
@@ -1726,8 +1985,74 @@ msgstr "El objeto de estantería no pertenece al laboratorio"
 msgid "The shelfobject do not belong to the organization"
 msgstr "El objeto de estantería no pertenece a la organización"
 
+msgid "Initial date cannot be greater than final date."
+msgstr "La fecha inicial no puede ser mayor a la fecha final."
+
 msgid "Shelf object is not an equipment"
 msgstr "El objeto de estantería no es un equipo"
+
+msgid "The shelfobject quantity cannot be less than minimum limit."
+msgstr ""
+"La cantidad de la sustancia o material no puede ser menor a la cantidad "
+"mínima."
+
+#, fuzzy
+#| msgid "This account is inactive."
+msgid "This object is not a reactive."
+msgstr "Su cuenta está activa."
+
+#, fuzzy
+#| msgid "Shelf object is not an equipment"
+msgid "Shelf object is required."
+msgstr "El objeto de estantería no es un equipo"
+
+#, python-format
+msgid ""
+"Quantity cannot be less than the container object minimun limit: %(limit)s."
+msgstr ""
+"La cantidad no puede ser menor que el límite mínimo del contenedor: "
+"%(limit)s."
+
+#, python-format
+msgid ""
+"Quantity cannot be greater than the container object maximum limit: "
+"%(limit)s."
+msgstr ""
+"La cantidad no puede ser mayor que el límite máximo del contenedor: "
+"%(limit)s."
+
+#, fuzzy
+#| msgid ""
+#| "Measurement unit cannot be different than the shelf's measurement unit."
+msgid "Measurement unit is not compatible with the object's unit."
+msgstr "La unidad de medida no puede ser diferente a la del estante."
+
+#, fuzzy
+#| msgid "Laboratory Received"
+msgid "Laboratory context is required."
+msgstr "Laboratorio que Recibe"
+
+#, fuzzy
+#| msgid ""
+#| "Subtract amount cannot be greater than the available box units."
+msgid "Subtract amount cannot be greater than the available quantity."
+msgstr ""
+"La cantidad a restar no puede ser mayor que las unidades disponibles de la "
+"caja."
+
+msgid "Box units decreased"
+msgstr "Unidades de caja disminuidas"
+
+#, python-format
+msgid "Box %(box)s: %(units)d unit(s) remaining"
+msgstr "Caja %(box)s: %(units)d unidad(es) restante(s)"
+
+msgid "Box was increased successfully."
+msgstr "La caja fue incrementada exitosamente."
+
+#, python-format
+msgid "Added the box %(box)s: %(units)d unit(s) remaining"
+msgstr "Se agregó la caja %(box)s: %(units)d unidad(es) restante(s)"
 
 msgid "Object was decreased"
 msgstr "El objeto fue disminuido"
@@ -1738,6 +2063,23 @@ msgstr "El objeto fue incrementado"
 #, python-format
 msgid "Current available objects: %(amount)d"
 msgstr "Objetos disponibles actualmente: %(amount)d"
+
+msgid "Return"
+msgstr "Devolver"
+
+#, python-format
+msgid "Boxes %(codes)s returned from reservation #%(pk)d"
+msgstr "Cajas %(codes)s devueltas de la reserva #%(pk)d"
+
+#, fuzzy
+#| msgid "Box units decreased"
+msgid "Box units returned"
+msgstr "Unidades de caja disminuidas"
+
+#, fuzzy, python-format
+#| msgid "Move in the boxes %(boxes)s from the laboratory %(lab)s."
+msgid "Income the boxes %(boxes)s from the laboratory %(lab)s."
+msgstr "Movió las cajas %(boxes)s desde el laboratorio %(lab)s."
 
 msgid "Move out"
 msgstr "Mover hacia"
@@ -1754,7 +2096,8 @@ msgstr "Eliminar objeto de estante sin cantidad"
 msgid "Object is not allowed in the shelf."
 msgstr "El objeto no está permitido en el estante."
 
-msgid "Measurement unit cannot be different than the shelf's measurement unit."
+msgid ""
+"Measurement unit cannot be different than the shelf's measurement unit."
 msgstr "La unidad de medida no puede ser diferente a la del estante."
 
 #, python-format
@@ -1783,29 +2126,33 @@ msgstr ""
 "La unidad de medida no puede ser diferente que la unidad de medida del "
 "objeto del contenedor: %(unit)s."
 
+#, python-format
+msgid "Move in the boxes %(boxes)s from the laboratory %(lab)s."
+msgstr "Movió las cajas %(boxes)s desde el laboratorio %(lab)s."
+
 msgid "Sustance saved successfully"
 msgstr "Sustancia guardada satisfactoriamente"
 
 msgid "Pending information in form"
 msgstr "Información pendiente en el formulario"
 
-msgid "Is precursor?"
-msgstr "¿Es precursor?"
+#, fuzzy, python-format
+#| msgid ""
+#| "New period inform was created in the laboratory %s with the name %s"
+msgid "New period inform was created in the laboratory %s"
+msgstr ""
+"Se creó un nuevo informe de periodo en el laboratorio %s con el nombre %s"
 
-msgid "Is bioaccumulable?"
-msgstr "¿Es bioacumulable?"
+msgid "New period inform"
+msgstr "Nuevo informe de periodo"
 
-msgid "Is public?"
-msgstr "¿Es público?"
+#, python-format
+msgid "New period inform was created in the laboratory %s with the name %s"
+msgstr ""
+"Se creó un nuevo informe de periodo en el laboratorio %s con el nombre %s"
 
-msgid "Edit substance"
-msgstr "Editar sustancia"
-
-msgid "Delete substance"
-msgstr "Eliminar sustancia"
-
-msgid "Download security sheet"
-msgstr "Descargar hoja de seguridad"
+msgid "List of ShelfObject in limits"
+msgstr "Lista de objetos de estante con límites"
 
 msgid "Hi,"
 msgstr "Hola,"
@@ -1814,8 +2161,8 @@ msgid ""
 "You have received this email because you are in charge of a laboratory in "
 "the Organilab system."
 msgstr ""
-"Usted ha recibido este correo porque tiene un cambio en un laboratorio en el "
-"sistema Organilab."
+"Usted ha recibido este correo porque tiene un cambio en un laboratorio en el"
+" sistema Organilab."
 
 msgid ""
 "This message is to notify you that one of the shelf objects of your "
@@ -1843,11 +2190,11 @@ msgid "Measurement unit:"
 msgstr "Unidad de medida:"
 
 msgid ""
-"Please refill this product or contact the people that reserved it to balance "
-"the current quantity."
+"Please refill this product or contact the people that reserved it to balance"
+" the current quantity."
 msgstr ""
-"Por favor recargue este producto o contacte a la persona que lo reservó para "
-"cambiar la cantidad disponible."
+"Por favor recargue este producto o contacte a la persona que lo reservó para"
+" cambiar la cantidad disponible."
 
 msgid "If you don't want to recieve notifications of this object, please use"
 msgstr "Si no desea recibir notificaciones de este objeto, por favor utilice"
@@ -1858,8 +2205,8 @@ msgstr "este enlace"
 msgid ""
 "if your email service block links then copy and paste this url in a new tab"
 msgstr ""
-"si su servicio de correo electrónico bloquea los enlaces, copie y pegue esta "
-"url en una nueva pestaña"
+"si su servicio de correo electrónico bloquea los enlaces, copie y pegue esta"
+" url en una nueva pestaña"
 
 msgid "Thanks,"
 msgstr "Gracias,"
@@ -1888,18 +2235,12 @@ msgstr "Crear agendador de periodos"
 msgid "About Inform periods"
 msgstr "Acerca de los periodos de informe"
 
-msgid "Start application date"
-msgstr "Fecha de inicio de aplicación"
-
 msgid ""
 "Corresponds to the date of the first report, additionally it is the date "
 "since the cycle begins to count."
 msgstr ""
 "Corresponde a la fecha del primer informe, adicionalmente es la fecha desde "
 "que se inicia a contar el ciclo."
-
-msgid "Close application date"
-msgstr "Fecha de cierre del informe"
 
 msgid ""
 "It is used to define the date where the period of filling of a report is "
@@ -1909,9 +2250,6 @@ msgstr ""
 "Se usa para definir la fecha donde se termina el período de llenado de un "
 "informe, la diferencia entre la fecha de inicio y de cerrado de la primera "
 "ejecución se mantiene en los ciclos posteriores."
-
-msgid "Active"
-msgstr "Activo"
 
 msgid "Define if new period have to be created in the next run"
 msgstr "Define si se debe crear un nuevo periodo en la próxima ejecución"
@@ -2015,6 +2353,9 @@ msgstr "Sustancia"
 msgid "Date"
 msgstr "Fecha"
 
+msgid "Profile"
+msgstr "Perfil"
+
 msgid "Limit material of  the shelf"
 msgstr "Cantidad limite de materiales del estante"
 
@@ -2030,6 +2371,11 @@ msgstr "Crear equipo"
 msgid "Update equipment"
 msgstr "Editar equipo"
 
+#, fuzzy
+#| msgid "Equipment type"
+msgid "Equipment Detail"
+msgstr "Tipo de equipo"
+
 msgid "Equipment Type List"
 msgstr "Lista de Tipos de Equipo"
 
@@ -2041,6 +2387,12 @@ msgstr "Actualizar registro de tipos de equipo"
 
 msgid "Delete furniture"
 msgstr "Eliminar pieza de mueble"
+
+msgid "Are you sure you want to delete"
+msgstr "¿Está seguro de que desea eliminar?"
+
+msgid "Confirm"
+msgstr "Confirmar"
 
 msgid "Furniture management"
 msgstr "Administración de muebles"
@@ -2105,11 +2457,29 @@ msgstr "Administración del laboratorio"
 msgid "My procedures"
 msgstr "Mis procedimientos"
 
+msgid "Processes"
+msgstr "Procesos"
+
 msgid "Register user"
 msgstr "Registrar usuario"
 
+msgid "Reactive Stats"
+msgstr "Estadísticas de reactivos"
+
+msgid "Consumption reorder"
+msgstr "Reorden de consumo"
+
+msgid "Update process condition of reagents"
+msgstr "Actualizar condición de proceso de reactivos"
+
+msgid "Load reagent inventory"
+msgstr "Cargar inventario de reactivos"
+
 msgid "Welcome to the Simple laboratory organizer"
 msgstr "Bienvenido al organizador de laboratorio"
+
+msgid "Login"
+msgstr "Inicio de sesión"
 
 msgid "Informs"
 msgstr "Informes"
@@ -2138,6 +2508,33 @@ msgstr "Editar laboratorio"
 msgid "Delete laboratory"
 msgstr "Eliminar el laboratorio"
 
+msgid "Available for use"
+msgstr "A disposición de uso"
+
+msgid "Materials"
+msgstr "Materiales"
+
+msgid "My lab or organization requests"
+msgstr "Mis solicitudes de laboratorio u organización"
+
+msgid "My Requests"
+msgstr "Mis Solicitudes"
+
+msgid "New Request"
+msgstr "Nueva Solicitud"
+
+msgid "Update Request"
+msgstr "Actualizar Solicitud"
+
+msgid "Delete Request"
+msgstr "Eliminar Solicitud"
+
+msgid "Review lab or organization requests"
+msgstr "Revisar solicitudes de laboratorio u organización"
+
+msgid "Pending Requests"
+msgstr "Solicitudes Pendientes"
+
 msgid "Create laboratory"
 msgstr "Crear un laboratorio"
 
@@ -2160,6 +2557,18 @@ msgstr ""
 msgid "Maybe you are not associate with any laboratory in a role"
 msgstr "Posiblemente, porque no tiene asociado un laboratorio en algún rol"
 
+msgid "Laboratory Processes View"
+msgstr "Vista de procesos de laboratorio"
+
+msgid "Laboratory Processes List"
+msgstr "Listado de procesos del laboratorio"
+
+msgid "Create process"
+msgstr "Crear proceso"
+
+msgid "Update process"
+msgstr "Actualizar proceso"
+
 msgid "Delete laboratory room"
 msgstr "Eliminar sala de laboratorio"
 
@@ -2180,6 +2589,15 @@ msgstr "Salas de laboratorio"
 
 msgid "Remove All Tags"
 msgstr "Eliminar todas las etiquetas"
+
+msgid "Upload Reactives"
+msgstr "Subir reactivos"
+
+msgid "Save Reactives"
+msgstr "Guardar reactivos"
+
+msgid "Load Archive"
+msgstr "Cargar Archivo"
 
 msgid "Info"
 msgstr "Info"
@@ -2205,6 +2623,8 @@ msgstr "Eliminar el elemento seleccionado"
 msgid "Do you want to delete this item?"
 msgstr "¿Desea eliminar este elemento?"
 
+msgid "Accept"
+msgstr "Aceptar"
 
 msgid "Delete All Selected Items"
 msgstr "Borrar todos los elementos seleccionados"
@@ -2218,15 +2638,6 @@ msgstr "Mis reservaciones"
 msgid "Pending Reservations"
 msgstr "Reservaciones Pendientes"
 
-msgid "Reservation History"
-msgstr "Historial de Reservaciones"
-
-msgid "No pending reservations."
-msgstr "No hay reservaciones pendientes."
-
-msgid "No reservation history found."
-msgstr "No se encontró historial de reservaciones."
-
 msgid "Cancel all selected products"
 msgstr "Cancelar todos los productos seleccionados"
 
@@ -2236,8 +2647,45 @@ msgstr "Reservar"
 msgid "Amount required"
 msgstr "Cantidad requerida"
 
+msgid "boxes"
+msgstr "cajas"
+
+msgid "No pending reservations."
+msgstr "No hay reservaciones pendientes."
+
+msgid "Reservation History"
+msgstr "Historial de Reservaciones"
+
+#, fuzzy
+#| msgid "Amount Returned"
+msgid "Amount returned"
+msgstr "Cantidad devuelta"
+
+msgid "No reservation history found."
+msgstr "No se encontró historial de reservaciones."
+
 msgid "Objects Management"
 msgstr "Manejo de objetos"
+
+msgid "Object management"
+msgstr "Administración de objetos"
+
+msgid "Material management"
+msgstr "Administración de Materiales"
+
+msgid "Register Object"
+msgstr "Registrar Material"
+
+msgid "Update Object"
+msgstr "Editar Objeto"
+
+msgid "Delete Object"
+msgstr "Eliminar Material"
+
+#, fuzzy
+#| msgid "Material"
+msgid "Material Detail"
+msgstr "Materiales"
 
 msgid "Delete object feature"
 msgstr "Eliminar características de objeto"
@@ -2245,23 +2693,26 @@ msgstr "Eliminar características de objeto"
 msgid "Object features management"
 msgstr "Administración de características de objetos"
 
-msgid "No object features"
-msgstr "No hay características de objeto"
+msgid "Register Object Feature"
+msgstr "Registrar características de objetos"
 
-msgid "of"
-msgstr "de"
+msgid "Update Object Feature"
+msgstr "Actualizar características de objetos"
+
+msgid "Delete Object Feature"
+msgstr "Eliminar características de objetos"
+
+msgid "Stats"
+msgstr "Estadísticas"
+
+msgid "Filter"
+msgstr "Filtrar"
 
 msgid "Delete object"
 msgstr "Borrar objeto"
 
-msgid "Material management"
-msgstr "Administración de Materiales"
-
 msgid "Equipment management"
 msgstr "Administración de Equipos"
-
-msgid "Object management"
-msgstr "Administración de objetos"
 
 msgid "Reactive management"
 msgstr "Administración de Reactivos"
@@ -2274,19 +2725,8 @@ msgstr "Administración de la estructura de la organización"
 
 msgid "You don't have the permissions required to access this section"
 msgstr ""
-"Usted no cuenta con los privilegios suficientes para acceder este laboratorio"
-
-msgid "Precursor Report"
-msgstr "Reporte sobre precursores"
-
-msgid "Consecutive"
-msgstr "Consecutivo"
-
-msgid "Month"
-msgstr "Mes"
-
-msgid "Export"
-msgstr "Exportar"
+"Usted no cuenta con los privilegios suficientes para acceder este "
+"laboratorio"
 
 msgid "Information"
 msgstr "Información"
@@ -2318,23 +2758,22 @@ msgstr "Descripción corta"
 msgid "Update your Protocol"
 msgstr "Editar sus protocolos"
 
-msgid "Back"
-msgstr "Atrás"
-
-msgid "Create Provider"
-msgstr "Crear Proveedor"
-
 msgid "Laboratory providers management"
 msgstr "Administración de sala de laboratorio"
 
 msgid "Providers List"
 msgstr "Listado de Proveedores"
 
-msgid "No objects"
-msgstr "No hay objetos"
+msgid "Register Provider"
+msgstr "Registrar Proveedor"
 
 msgid "Update Provider"
 msgstr "Editar Proveedor"
+
+#, fuzzy
+#| msgid "Select Provider"
+msgid "Delete Provider"
+msgstr "Seleccione Proveedor"
 
 msgid "Delete Register User QR"
 msgstr "Eliminar QR de registro de usuario"
@@ -2366,9 +2805,6 @@ msgstr "QR de registro de usuario"
 msgid "Creation date"
 msgstr "Fecha de creación"
 
-msgid "Last update"
-msgstr "Última actualización"
-
 msgid "History"
 msgstr "Historial"
 
@@ -2387,28 +2823,64 @@ msgstr "Diferencia"
 msgid "Precursor"
 msgstr "¿Es precursor?"
 
-msgid "Reactive presence"
+msgid ""
+"Sistema regencial para la gestión de riesgo en bodegas y laboratorios en los"
+" que se almacena reactivos y productos químicos"
+msgstr ""
+"Sistema regencial para la gestión de riesgo en bodegas y laboratorios en los"
+" que se almacena reactivos y productos químicos"
+
+msgid "Regency Report"
+msgstr "Informe Regencial"
+
+msgid "Chemical inventory report"
+msgstr "Informe de inventario de sustancias químicas"
+
+msgid "Reports"
+msgstr "Reportes"
+
+msgid "Occupational Health Report"
+msgstr "Reporte de Salud Laboral"
+
+msgid "Furnitures"
+msgstr "Muebles"
+
+msgid "Reactive precursor objects"
 msgstr "Objetos reactivos precursores"
 
-msgid "Exposition report"
-msgstr "Reporte de exposición"
+msgid "Object changes"
+msgstr "Movimiento de Objetos"
+
+msgid "Limited shelf objects"
+msgstr "Objetos en el límite"
+
+msgid "Precursor Report"
+msgstr "Reporte sobre precursores"
+
+msgid "Waste Report"
+msgstr "Reporte de desechos"
+
+msgid "Reactive Report"
+msgstr "Reporte de reactivos"
+
+msgid "Risk Zone Report"
+msgstr "Reporte de zona de riesgo"
+
+msgid "Reactive Stock Report"
+msgstr "Reporte de inventario de reactivos"
+
+msgid "Compatibility Report"
+msgstr "Reporte de compatibilidad SGA"
+
+msgid "Compatibility Laboratory Report"
+msgstr "Informe de laboratorio de compatibilidad"
+
+msgid "Donations Report"
+msgstr "Informe de donaciones"
 
 # Reservations
 msgid "Reservations"
 msgstr "Reservaciones"
-
-msgid "View Reservations"
-msgstr "Ver Reservaciones"
-
-msgid "Add Reservations"
-msgstr "Agregar Reservaciones"
-
-msgid "Change Reservations"
-msgstr "Actualizar Reservaciones"
-
-msgid "Delete Reservations"
-msgstr "Eliminar Reservaciones"
-
 
 msgid "Complete the fields"
 msgstr "Complete los campos"
@@ -2457,6 +2929,18 @@ msgstr "Crear Equipo"
 
 msgid "Create Material"
 msgstr "Crear Material"
+
+msgid "Create Box"
+msgstr "Crear caja"
+
+msgid "Edit Reactive"
+msgstr "Editar Reactivo"
+
+msgid "Edit Material"
+msgstr "Editar Material"
+
+msgid "Edit Box"
+msgstr "Editar caja"
 
 msgid "Approve Transfer In - Container"
 msgstr "Aprobar Transferencias Entrantes - Contenedor"
@@ -2524,11 +3008,14 @@ msgstr "Crear capacitación"
 msgid "Edit training"
 msgstr "Editar training"
 
-msgid "Measurement Unit"
-msgstr "Unidad de Medida"
+msgid "Measurement Unit Base"
+msgstr "Unidad de Medida Base"
 
 msgid "Used Quantity"
 msgstr "Cantidad Utilizada"
+
+msgid "Unit to Base Unit"
+msgstr "Unidad a Unidad Base"
 
 msgid "Used Percentage"
 msgstr "Porcentaje Utilizado"
@@ -2536,8 +3023,17 @@ msgstr "Porcentaje Utilizado"
 msgid "Purpose"
 msgstr "Propósito"
 
+msgid "Decrease"
+msgstr "Disminuir"
+
 msgid "Shelf Information"
 msgstr "Información del Estante"
+
+msgid "Update process condition"
+msgstr "Actualizar condición de proceso"
+
+msgid "Update Process Condition"
+msgstr "Actualizar Condición de Proceso"
 
 msgid "Update Status"
 msgstr "Actualizar Estado"
@@ -2550,9 +3046,6 @@ msgstr "Observaciones del objeto"
 
 msgid "Add Object"
 msgstr "Agregar Objeto"
-
-msgid "Update Object"
-msgstr "Editar Objeto"
 
 msgid "Are you sure that do you want delete this object"
 msgstr "¿Está seguro de que quiere borrar este objeto?"
@@ -2569,17 +3062,11 @@ msgstr "Número CAS"
 msgid "Is Precursor"
 msgstr "¿Es precursor?"
 
-msgid "Precursor Type"
-msgstr "Tipo de precursor"
-
 msgid "IARC"
 msgstr "IARC"
 
 msgid "IMDG"
 msgstr "IMDG"
-
-msgid "White Organ"
-msgstr "Organo blanco"
 
 msgid "Bio Accumulable"
 msgstr "Bioacumulable"
@@ -2593,14 +3080,16 @@ msgstr "Hojas de seguridad"
 msgid "Sustance Representation"
 msgstr "Representación de la sustancia"
 
-msgid "Add new Substance"
-msgstr "Añadir nueva sustancia"
+msgid "Update Reactive"
+msgstr "Actualizar Reactivo"
 
-msgid "Cas code"
-msgstr "Código CAS"
+msgid "Update Limits"
+msgstr "Actualizar límites"
 
-msgid "Substance Management"
-msgstr "Administración de soluciones"
+#, fuzzy
+#| msgid "Reactive Stats"
+msgid "Reactive Detail"
+msgstr "Estadísticas de reactivos"
 
 msgid "Select the Shelf"
 msgstr "Seleccione el Estante"
@@ -2682,6 +3171,12 @@ msgstr "No hay Objetos"
 msgid "Limit Quantity"
 msgstr "Cantidad límite"
 
+msgid "Ingreso por donacion"
+msgstr "Ingreso por donacion"
+
+msgid "Box detail"
+msgstr "Detalle de cajas"
+
 msgid "Bioaccumulable"
 msgstr "Bioacumulable"
 
@@ -2694,13 +3189,20 @@ msgstr "Clases de almacenamientos"
 msgid "NFPA Codes"
 msgstr "Códigos NFPA"
 
-msgid "UE Codes"
-msgstr "Códigos UE"
-
 #, python-format
 msgid "Quantity cannot be greater than the shelf's quantity limit: %(limit)s."
 msgstr ""
 "La cantidad no puede ser mayor a la cantidad límite del estante: %(limit)s."
+
+#, fuzzy
+#| msgid ""
+#| "Resulting quantity cannot be greater than the shelf's quantity limit: "
+#| "%(limit)s."
+msgid ""
+"Resulting quantity cannot be greater than the shelf's quantity limit: 40.0."
+msgstr ""
+"La cantidad resultante no puede ser mayor a la cantidad límite del estante: "
+"%(limit)s."
 
 msgid "You do not have permission to perform this action."
 msgstr "No tienes los permisos necesarios para realizar esta acción."
@@ -2711,8 +3213,17 @@ msgstr "Este campo no debe ser nulo."
 msgid "Authentication credentials were not provided."
 msgstr "No se proporcionaron las credenciales de autenticación."
 
+#, fuzzy
+#| msgid "User %(user)s not allowed on organization %(organization)r "
+msgid "User renatafg not allowed on organization Org MK "
+msgstr ""
+"Usuario %(user)s no está autorizado en la organización %(organization)r"
+
 msgid "This field may not be blank."
 msgstr "Este campo no debe estar vacío."
+
+msgid "You can modify this laboratory"
+msgstr "Puede editar este laboratorio"
 
 msgid "Ensure this value is greater than or equal to 0."
 msgstr "Asegúrese que el valor es mayor o igual que 0."
@@ -2721,11 +3232,11 @@ msgid "A valid number is required."
 msgstr "Un número es requerido."
 
 msgid ""
-"Date has wrong format. Use one of these formats instead: DD/MM/YYYY, YYYY-MM-"
-"DD, DD/MM/YY."
+"Date has wrong format. Use one of these formats instead: DD/MM/YYYY, YYYY-"
+"MM-DD, DD/MM/YY."
 msgstr ""
-"Formato de fecha incorrecto, por favor use alguno de estos formatos DD/MM/"
-"YYYY, YYYY-MM-DD, DD/MM/YY."
+"Formato de fecha incorrecto, por favor use alguno de estos formatos "
+"DD/MM/YYYY, YYYY-MM-DD, DD/MM/YY."
 
 msgid "Final date can't be equal to initial date"
 msgstr "La fecha final no puede ser igual a la fecha inicial"
@@ -2742,12 +3253,27 @@ msgstr "Fecha inicial no puede ser menor a la fecha actual"
 msgid "Final date can't be lower than current date"
 msgstr "Fecha final no puede ser menor a la fecha actual"
 
+#, fuzzy
+#| msgid "Deleting shelf"
+msgid "Delete shelf"
+msgstr "Eliminación de estante"
+
+#, fuzzy
+#| msgid "Deleting ShelfObject by shelf"
+msgid "Delete ShelfObject by shelf"
+msgstr "Eliminación de objeto de estante"
+
+msgid "Created"
+msgstr "Creado"
+
+#, fuzzy
+#| msgid "Object feature"
+msgid "Object Created"
+msgstr "Característica del objeto"
+
 #, python-format
 msgid "%(value)s is not a valid molecular formula"
 msgstr "%(value)s no es un número molecular (es sensible a mayúsculas)"
-
-msgid "Objects by Furniture Report"
-msgstr "Reporte de Objetos por Muebles"
 
 msgid "ERROR"
 msgstr "ERROR"
@@ -2763,6 +3289,9 @@ msgstr "Nuevo estante contenedor"
 
 msgid "New Shelfobject status"
 msgstr "Nuevo estado de objeto"
+
+msgid "New Structure type"
+msgstr "Nuevo Tipo Estructura"
 
 msgid "Laboratory was created successfully"
 msgstr "Laboratorio creado exitosamente"
@@ -2786,7 +3315,8 @@ msgstr "fue creado por"
 msgid ""
 "this action will involve deleting all relations with others organizations."
 msgstr ""
-"esta acción implicará eliminar todas las relaciones con otras organizaciones."
+"esta acción implicará eliminar todas las relaciones con otras "
+"organizaciones."
 
 msgid "The related organizations are: "
 msgstr "Las organizaciones relacionadas son: "
@@ -2799,7 +3329,14 @@ msgstr ""
 "irreversible."
 
 msgid "Use following QR code to register user in laboratory"
-msgstr "Use el siguiente código QR para registrar un usuario en el laboratorio"
+msgstr ""
+"Use el siguiente código QR para registrar un usuario en el laboratorio"
+
+msgid "Element saved successfully"
+msgstr "Elemento guardado exitosamente"
+
+msgid "Error, form is invalid"
+msgstr "Error el formulario es inválido"
 
 msgid "Element was deleted successfully"
 msgstr "Elemento eliminado exitosamente"
@@ -2816,91 +3353,33 @@ msgstr "Códigos H"
 msgid "Objects by Laboratory Room Report"
 msgstr "Reporte de Objetos por Sala de Laboratorio"
 
+#, python-format
+msgid ""
+"The measurement unit in some reactive is different from the shelf "
+"measurement unit %s"
+msgstr ""
+"La unidad de medida en algunos reactivos es diferente de la unidad de medida"
+" de la estante %s"
+
+msgid "The archive was loaded successfully."
+msgstr "El archivo fue cargado correctamente."
+
 msgid "Filter Organization"
 msgstr "Filtrar Organización"
 
-msgid "Objects Report"
-msgstr "Reporte de Objetos"
+msgid "Sin FDS"
+msgstr "Sin FDS"
 
-msgid "Reactive Objects Report"
-msgstr "Reporte de Objetos Reactivos"
+msgid "Fuente"
+msgstr "Fuente"
 
-msgid "Material Objects Report"
-msgstr "Reporte de Objetos Materiales"
+msgid "Cantidad"
+msgstr "Cantidad"
 
-msgid "Equipment Objects Report"
-msgstr "Reporte de Objetos Equipos"
-
-msgid "Page not found"
-msgstr "Página no encontrada"
-
-msgid "Limited Shelf Objects Report"
-msgstr "Reporte de Objetos en el Límite"
-
-msgid "Reactive Precursor Objects Report"
-msgstr "Reporte de Objetos Reactivos Precursores"
-
-msgid "Changes on Objects Report"
-msgstr "Reporte de Cambio de Objetos"
-
-#, python-format
-msgid ""
-"Name of natural or legal person: %(lab)s  N° Registration: %(consecutive)d"
-msgstr ""
-"Nombre de la sustancia o producto: %(lab)s  N° Inscripción: %(consecutive)d"
-
-#, python-format
-msgid "Activity to which the company is dedicated: %(activity)s"
-msgstr "Actividad a la que se dedica la empresa: %(activity)s"
-
-#, python-format
-msgid "Report of the Month:: %(month)s of the year: %(year)d Tel: %(tel)s"
-msgstr "Informe del mes de %(month)s  del año %(year)d  Telefono: %(tel)s"
-
-#, python-format
-msgid ""
-"Responsible: %(responsible)s  Signature: %(signature)s  Position: "
-"%(position)s"
-msgstr ""
-"Responsable: %(responsible)s  Firma: %(signature)s  Cargo: %(position)s:"
-
-msgid "Name of the substance or product"
-msgstr "Nombre de la sustancia o producto"
-
-msgid "Final balance of the previous report"
-msgstr "Saldo final del reporte anterios"
-
-msgid "Income during the month"
-msgstr "Ingresos durante el mes"
-
-msgid "Import or local purchase invoice number that covers the entry"
-msgstr "Número de factura de importación o compra local que ampara el ingreso"
-
-msgid ""
-"Supplier that supplied the purchased product (in case of local purchase)"
-msgstr "Proveedor que suplió el producto adquirido (en caso de compra local)"
-
-msgid "Total Stock"
-msgstr "Total de existencias"
-
-msgid "Dispatch or expense during this month"
-msgstr "Despacho o gasto durante este mes"
-
-msgid "Balance at the end of the month reported in this report"
-msgstr "Saldo al final del mes reportado en este informe"
-
-msgid "Reason for dispatch or expense"
-msgstr "Razón del despacho o gasto"
-
-#, python-format
-msgid "Report_of_precursors_%(month)s_%(consecutive)d"
-msgstr "Reporte_sobre_precursores_%(month)s_%(consecutive)d"
-
-msgid "User Reactive Exposition in Organization Report"
-msgstr "Reporte Exposición Reactiva del Usuario en la Organización"
-
-msgid "Waste objects by shelf report"
-msgstr "Informe de objetos desechados por estante"
+#, fuzzy
+#| msgid "Used Percentage"
+msgid "Porcentaje"
+msgstr "Porcentaje Utilizado"
 
 msgid "The quantity is more than the shelf has"
 msgstr "La cantidad es mayor a la que posee el estante"
@@ -2917,7 +3396,8 @@ msgid "The quantity is much larger than the shelf limit %(limit)s"
 msgstr "La cantidad es mucho mayor al limite del estante %(limit)s"
 
 #, python-format
-msgid "The measurent unit is different of there shelf has %(measurement_unit)s"
+msgid ""
+"The measurent unit is different of there shelf has %(measurement_unit)s"
 msgstr ""
 "La unidad de medida es diferente de la que tiene el estante "
 "%(measurement_unit)s"
@@ -2927,6 +3407,9 @@ msgstr "Transferencia realizada con éxito"
 
 msgid "The amount sends is more than the laboratory have"
 msgstr "La cantidad enviada es más de lo que el laboratorio tiene"
+
+msgid "Available objects"
+msgstr "Objetos disponibles"
 
 msgid "The quantity need to be greater than 0"
 msgstr "La cantidad debe ser mayor que 0"
@@ -2965,14 +3448,58 @@ msgstr ""
 "El estante tiene otros objetos además de los seleccionados que deben "
 "agregarse o eliminarse de él: "
 
-msgid "MSDS File"
-msgstr "Archivo MSDS"
+#, fuzzy
+#| msgid "Verify FDS"
+msgid "Verify SDS"
+msgstr "Verificar FDS"
 
-msgid "Product"
-msgstr "Nombre del producto"
+#, fuzzy
+#| msgid "Unverify FDS"
+msgid "Unverify SDS"
+msgstr "Desverificar FDS"
 
-msgid "MSDS Object"
-msgstr "Objeto MSDS"
+msgid "The verification was performed successfully."
+msgstr "La verificación se ha realizado con éxito."
+
+msgid "The unverification was performed successfully."
+msgstr "La desverificación se ha realizado con éxito."
+
+#, fuzzy
+#| msgid "Object doesn't exists"
+msgid "The SDS doesn't exist."
+msgstr "Objeto no existe"
+
+#, fuzzy
+#| msgid "Substance characteristics SGA"
+msgid "No substance characteristics found."
+msgstr "Características de sustancia SGA"
+
+msgid "FDS File (PDF)"
+msgstr "Archivo FDS (PDF)"
+
+msgid "Substance name"
+msgstr "Nombre de la sustancia"
+
+msgid "Revision date"
+msgstr "Fecha de revisión"
+
+msgid "H-codes"
+msgstr "Códigos H"
+
+msgid "EU codes"
+msgstr "Códigos UE"
+
+msgid "NFPA"
+msgstr "NFPA"
+
+msgid "Precursor type"
+msgstr "Tipo de precursor"
+
+msgid "Seveso list"
+msgstr "Lista Seveso"
+
+msgid "Target organs"
+msgstr "Órganos afectados"
 
 msgid "Regulation File"
 msgstr "Archivo de regulación"
@@ -2983,20 +3510,38 @@ msgstr "Documento regulatorio"
 msgid "Regulation documents"
 msgstr "Documentos y reglamentos"
 
-msgid "Search MSDS"
-msgstr "Buscar MSDS"
+msgid "FDS Coverage"
+msgstr "Cobertura FDS"
 
-msgid "Upload your MSDS"
-msgstr "Subir sus MSDS"
+msgid "Search FDS"
+msgstr "Buscar FDS"
 
-msgid "Add new MSDS"
-msgstr "Añadir nuevo MSDS"
+msgid "Upload FDS"
+msgstr "Subir FDS"
 
-msgid "Confirm remove"
-msgstr "Confirme eliminación"
+msgid "Upload FDS File"
+msgstr "Subir archivo FDS"
 
-msgid "by "
-msgstr "por "
+msgid "Analyze"
+msgstr "Analizar"
+
+msgid "Review extracted data"
+msgstr "Revisar datos extraídos"
+
+msgid "Classifications"
+msgstr "Clasificaciones"
+
+msgid "Risks"
+msgstr "Riesgos"
+
+msgid "Confirm and create substance"
+msgstr "Confirmar y crear sustancia"
+
+msgid "List of FDS"
+msgstr "Listado de FDS"
+
+msgid "Storage Class"
+msgstr "Clase de almacenamiento"
 
 msgid "Country"
 msgstr "Cantidad"
@@ -3004,26 +3549,152 @@ msgstr "Cantidad"
 msgid "Download all"
 msgstr "Descargar"
 
-msgid "Your MSDS was uploaded successfully"
-msgstr "Su MSDS fue subido satisfactoriamente"
+msgid ""
+"Could not extract data from the PDF. Please fill in the fields manually."
+msgstr ""
+"No se pudieron extraer los datos del PDF. Por favor complete los campos "
+"manualmente."
 
-msgid "Your MSDS was updated successfully"
-msgstr "Su MSDS fue editado satisfactoriamente"
+msgid "Temporary file not found. Please upload again."
+msgstr "Archivo temporal no encontrado. Por favor súbalo de nuevo."
 
-msgid "Your MSDS was delete successfully"
-msgstr "Su MSDS fue eliminado satisfactoriamente"
+#, fuzzy
+#| msgid "Substance deleted successfully"
+msgid "SDS uploaded and substance created successfully"
+msgstr "Sustancia guardada con éxito"
 
-msgid "*Type the amount in dollars"
-msgstr "*Tipo de cantidad en dolares"
+msgid "Pending Tasks"
+msgstr "Tareas Pendientes"
 
-msgid "Add me to the donators list"
-msgstr "Agregarme a la lista de donantes"
+msgid "In process"
+msgstr "En proceso"
+
+msgid "Finished"
+msgstr "Finalizada"
+
+msgid "Risk Zones"
+msgstr "Zonas de riesgo"
+
+#, fuzzy
+#| msgid "Role"
+msgid "Roles"
+msgstr "Rol"
+
+msgid "Link"
+msgstr "Enlace"
+
+#, fuzzy
+#| msgid "Load archive"
+msgid "Is archived"
+msgstr "Cargar archivo"
+
+#, fuzzy
+#| msgid "Pending Task"
+msgid "Pending task"
+msgstr "Tarea pendiente"
+
+#, fuzzy
+#| msgid "Pending Tasks"
+msgid "Pending tasks"
+msgstr "Tareas Pendientes"
+
+#, fuzzy
+#| msgid "Pending Task"
+msgid "Pending task manager"
+msgstr "Tarea pendiente"
+
+#, fuzzy
+#| msgid "Pending Tasks"
+msgid "Pending task managers"
+msgstr "Tareas Pendientes"
+
+msgid ""
+"You have been assigned a task because you have a change in a laboratory that"
+" you are responsible in the Organilab system."
+msgstr ""
+"Usted se le ha asignado una tarea porque tiene un cambio en un laboratorio "
+"que eres responsable en el sistema Organilab."
+
+msgid ""
+"This message is to notify you that one or more reactives in the laboratory"
+msgstr ""
+"Este mensaje es para notificarle que uno o más reactivos en el laboratorio"
+
+msgid "will expire tomorrow."
+msgstr "vencerán mañana."
+
+msgid "Reagents nearing their expiration date"
+msgstr "Reactivos próximos a vencer"
+
+msgid ""
+"This message is to notify you that one or more objects in the laboratory"
+msgstr ""
+"Este mensaje es para notificarle que uno o más objetos en el laboratorio"
+
+msgid "are at the minimum quota."
+msgstr "están en las cuotas mínimas."
+
+msgid "Detail of objects at the limit"
+msgstr "Detalle de objetos al límite"
+
+#, fuzzy
+#| msgid "Minimum Limit"
+msgid "MinimunLimit"
+msgstr "Límite mínimo"
+
+msgid "Open link"
+msgstr "Abrir enlace"
+
+msgid "Expand description"
+msgstr "Expandir descripción"
+
+msgid "Edit task"
+msgstr "Editar tarea"
+
+msgid "Delete task"
+msgstr "Eliminar tarea"
+
+msgid "Archive task"
+msgstr "Archivar tarea"
+
+msgid "Unassigned"
+msgstr "Sin asignar"
+
+msgid "Archive all finished tasks"
+msgstr "Archivar todas las tareas terminadas"
+
+msgid "Create task"
+msgstr "Crear tarea"
+
+msgid "No pending tasks"
+msgstr "No hay tareas pendientes"
+
+msgid "No tasks in process"
+msgstr "No hay tareas en proceso"
+
+msgid "No finished tasks"
+msgstr "No hay tareas finalizadas"
+
+#, python-format
+msgid "New pending task: %s"
+msgstr "Nueva tarea pendiente: %s"
+
+#, fuzzy
+#| msgid "Contract"
+msgid "Content"
+msgstr "Contrato"
 
 msgid "Explanation"
 msgstr "Explicación"
 
 msgid "Related file"
 msgstr "Archivo relacionado"
+
+msgid "*Type the amount in dollars"
+msgstr "*Tipo de cantidad en dolares"
+
+msgid "Add me to the donators list"
+msgstr "Agregarme a la lista de donantes"
 
 msgid "Laboratory id"
 msgstr "Id de laboratorio"
@@ -3049,6 +3720,166 @@ msgstr "Donación"
 msgid "Donations"
 msgstr "Donaciones"
 
+msgid "General"
+msgstr "Uso general"
+
+#, fuzzy
+#| msgid "permissions"
+msgid "Permissions"
+msgstr "permisos"
+
+msgid "Substances"
+msgstr "Sustancias"
+
+msgid "Scheduled Tasks"
+msgstr "Tareas programadas"
+
+#, fuzzy
+#| msgid "Rol name"
+msgid "URL name(s)"
+msgstr "Nombre del rol"
+
+msgid ""
+"Django URL name where this tutorial applies. Comma-separated for multiple "
+"pages."
+msgstr ""
+"Nombre de URL de Django donde aplica este tutorial. Separado por comas para "
+"múltiples páginas."
+
+#, fuzzy
+#| msgid "Target organs"
+msgid "Target roles"
+msgstr "Órganos afectados"
+
+msgid "Roles that should see this tutorial. Empty = all users."
+msgstr "Roles que deberían ver este tutorial. Vacío = todos los usuarios."
+
+msgid "Chapter"
+msgstr "Capítulo"
+
+#, fuzzy
+#| msgid "Not started"
+msgid "Auto start"
+msgstr "No iniciado"
+
+msgid "Start automatically on first visit (if user has tutorials enabled)"
+msgstr ""
+"Iniciar automáticamente en la primera visita (si el usuario tiene los "
+"tutoriales habilitados)"
+
+msgid "Order"
+msgstr "Orden"
+
+#, fuzzy
+#| msgid "Tutorials"
+msgid "Tutorial"
+msgstr "Tutoriales"
+
+msgid "Tutorials"
+msgstr "Tutoriales"
+
+#, fuzzy
+#| msgid "High-risk establishment"
+msgid "Highlight element"
+msgstr "Establecimiento de alto riesgo"
+
+msgid "Modal dialog"
+msgstr "Diálogo modal"
+
+msgid "Popover tooltip"
+msgstr "Información emergente (popover)"
+
+msgid "Top"
+msgstr "Arriba"
+
+msgid "Bottom"
+msgstr "Abajo"
+
+msgid "Left"
+msgstr "Izquierda"
+
+#, fuzzy
+#| msgid "Height"
+msgid "Right"
+msgstr "Alto"
+
+#, fuzzy
+#| msgid "Step"
+msgid "Step key"
+msgstr "Paso"
+
+msgid "Supports HTML"
+msgstr "Admite HTML"
+
+#, fuzzy
+#| msgid "Step"
+msgid "Step type"
+msgstr "Paso"
+
+#, fuzzy
+#| msgid "Select box"
+msgid "CSS selector"
+msgstr "Seleccionar caja"
+
+msgid "CSS selector of the target element to highlight"
+msgstr "Selector CSS del elemento objetivo a resaltar"
+
+#, fuzzy
+#| msgid "Position:"
+msgid "Position"
+msgstr "Posición:"
+
+#, fuzzy
+#| msgid "Action"
+msgid "Action URL"
+msgstr "Acciones"
+
+msgid "URL to navigate after this step (for cross-page tutorials)"
+msgstr ""
+"URL a la que navegar después de este paso (para tutoriales entre páginas)"
+
+msgid "Image"
+msgstr "Imagen"
+
+#, fuzzy
+#| msgid "Tutorials"
+msgid "Tutorial step"
+msgstr "Tutoriales"
+
+#, fuzzy
+#| msgid "Tutorials"
+msgid "Tutorial steps"
+msgstr "Tutoriales"
+
+msgid "Completed"
+msgstr "Completado"
+
+#, fuzzy
+#| msgid "Procedure step"
+msgid "Current step"
+msgstr "Paso en procedimiento"
+
+#, fuzzy
+#| msgid "Start Date"
+msgid "Started at"
+msgstr "Fecha de inicio"
+
+#, fuzzy
+#| msgid "Completed"
+msgid "Completed at"
+msgstr "Completado"
+
+msgid "Dismissed"
+msgstr "Descartado"
+
+msgid "User temporarily dismissed this tutorial"
+msgstr "El usuario descartó temporalmente este tutorial"
+
+#, fuzzy
+#| msgid "Tutorials"
+msgid "Tutorial progress"
+msgstr "Tutoriales"
+
 msgid "QR Url"
 msgstr "Enlace QR"
 
@@ -3057,6 +3888,54 @@ msgstr "Imagen QR en SVG"
 
 msgid "Base64 Image QR"
 msgstr "Imagen QR en Base 64"
+
+# error_view.html
+msgid "Access denied"
+msgstr "Acceso denegado"
+
+msgid "Page not available"
+msgstr "Página no disponible"
+
+msgid "You don’t have permission to view this page"
+msgstr "No tiene permisos para ver esta página"
+
+msgid ""
+"Your account doesn’t have access to this resource. If you think this is a "
+"mistake, contact the administrator."
+msgstr ""
+"Su cuenta no tiene acceso a este recurso. Si considera que esto es un error,"
+" contacte al administrador."
+
+msgid "We couldn’t find that page"
+msgstr "No pudimos encontrar esa página"
+
+msgid ""
+"It may not exist, it may have moved, or you may not have permission to view "
+"it."
+msgstr ""
+"Puede que no exista, que haya cambiado de ubicación o que no tenga permisos "
+"para verla."
+
+msgid "Access issue"
+msgstr "Problema de acceso"
+
+msgid "Not found"
+msgstr "No encontrada"
+
+msgid "Try again with another account or request access."
+msgstr "Intente nuevamente con otra cuenta o solicite acceso."
+
+msgid "Check the URL or go back to the home page."
+msgstr "Verifique la URL o regrese a la página principal."
+
+msgid "Referrer"
+msgstr "Página de origen"
+
+msgid "Go to home"
+msgstr "Ir al inicio"
+
+msgid "Error code"
+msgstr "Código de error"
 
 msgid "Organilab - General Information"
 msgstr "Organilab - Información General"
@@ -3067,8 +3946,8 @@ msgstr "¿En qué consiste Organilab?"
 msgid ""
 "It is a software that offers a comprehensive solution for the management of "
 "laboratories in an automated manner.  It includes data security, inventory "
-"management, traceability of chemicals and analysis equipment, and management "
-"of safety and health in the laboratory."
+"management, traceability of chemicals and analysis equipment, and management"
+" of safety and health in the laboratory."
 msgstr ""
 "Es un software que ofrece una solución integral para la gestión de "
 "laboratorios de manera automatizada. Incluye seguridad de los datos, manejo "
@@ -3144,8 +4023,8 @@ msgid ""
 "If you want to participate, please use the following survey to enter your "
 "information and choose your preferred schedule."
 msgstr ""
-"Si deseas participar, por favor usa el siguiente formulario para ingresar tu "
-"información y elegir el horario de tu preferencia."
+"Si deseas participar, por favor usa el siguiente formulario para ingresar tu"
+" información y elegir el horario de tu preferencia."
 
 msgid "Webinar participation"
 msgstr "Participación en el webinar"
@@ -3153,29 +4032,8 @@ msgstr "Participación en el webinar"
 msgid "Administration"
 msgstr "Administración"
 
-msgid "View laboratory"
-msgstr "Ver laboratorio"
-
-msgid "Go to laboratory"
-msgstr "Ir al Laboratorio"
-
 msgid "All Rights Reserved."
 msgstr "Todos los Derechos Reservados."
-
-msgid "Furnitures"
-msgstr "Muebles"
-
-msgid "Reactive precursor objects"
-msgstr "Objetos reactivos precursores"
-
-msgid "Object changes"
-msgstr "Movimiento de Objetos"
-
-msgid "Limited shelf objects"
-msgstr "Objetos en el límite"
-
-msgid "Waste Report"
-msgstr "Reporte de desechos"
 
 msgid "user profile icon"
 msgstr "icono de perfil"
@@ -3192,8 +4050,11 @@ msgstr "Blog"
 msgid "Logout"
 msgstr "Salir"
 
-msgid "Tutorials"
-msgstr "Tutoriales"
+msgid "Go to laboratory"
+msgstr "Ir al Laboratorio"
+
+msgid "My laboratories"
+msgstr "Mis Laboratorios"
 
 msgid "Permission Management"
 msgstr "Administración de permisos"
@@ -3220,18 +4081,35 @@ msgstr "Activar cuenta en"
 msgid "Your username and password didn't match. Please try again."
 msgstr "Su usuario y contraseña no concuerdan. Por favor inténtelo de nuevo."
 
+#, fuzzy
+#| msgid ""
+#| "Your account doesn't have access to this page. To proceed,\n"
+#| "                        please login with an account that has access."
 msgid ""
 "Your account doesn't have access to this page. To proceed,\n"
-"                        please login with an account that has access."
+"\t\t\t\t\t\t\t\t\t\t\tplease login with an account that has access."
 msgstr ""
 "Su cuenta no tiene permisos para acceder a esta página. Para proceder,\n"
 "                        Inicie sesión con una cuenta que tenga acceso."
 
+msgid "Single Sign-On"
+msgstr "Inicio Único"
+
 msgid "Lost your password?"
 msgstr "¿Olvidó su contraseña?"
 
-msgid "Register to platform"
-msgstr "Registrar a la plataforma"
+msgid "Logged out"
+msgstr "Cerrar Sesión"
+
+#, fuzzy
+#| msgid "Are you sure you want to delete"
+msgid "Are you sure that you want to logout?"
+msgstr "¿Está seguro de que desea eliminar?"
+
+#, fuzzy
+#| msgid "Logged out"
+msgid "Log out"
+msgstr "Cerrar Sesión"
 
 msgid "Do you want to login again?"
 msgstr "¿Desea iniciar sesión nuevamente?"
@@ -3296,12 +4174,11 @@ msgid "Here"
 msgstr "Aquí"
 
 msgid ""
-"This email was send because someone try to reset your password, if you "
-"didn't request a reset, please delete this email and do not more actions\n"
+"This email was send because someone try to reset your password, if you didn't request a reset, please delete this email and do not more actions\n"
 "    "
 msgstr ""
-"Este correo ha sido enviado porque alguien trató de reiniciar su contraseña, "
-"si usted no fue por favor elimine este correo y no realice ninguna otra "
+"Este correo ha sido enviado porque alguien trató de reiniciar su contraseña,"
+" si usted no fue por favor elimine este correo y no realice ninguna otra "
 "acción"
 
 msgid "Reset password"
@@ -3312,8 +4189,8 @@ msgstr "Por favor ingrese el correo registrado en la plataforma"
 
 msgid "We will send you a email to verify you are were you say you are"
 msgstr ""
-"Nosotros le enviaremos un correo de verificación  para probar que accedes al "
-"correo"
+"Nosotros le enviaremos un correo de verificación  para probar que accedes al"
+" correo"
 
 msgid "Send email"
 msgstr "Enviar correo"
@@ -3332,14 +4209,23 @@ msgstr ""
 msgid "Welcome to Organilab"
 msgstr "Bienvenido a Organilab"
 
-msgid "Donate"
-msgstr "Donar"
-
 msgid "Org and perms"
 msgstr "Organizaciones y permisos"
 
 msgid "Manage Organizations"
 msgstr "Administración de Organizaciones"
+
+msgid "User List"
+msgstr "Lista de Usuarios"
+
+msgid "Laboratory and Organization List"
+msgstr "Lista de Laboratorios y Organizaciones"
+
+msgid "Create organization/laboratory"
+msgstr "Crear organización/laboratorio"
+
+msgid "Review Requests"
+msgstr "Revisar Solicitudes"
 
 msgid "Reports, Informs and Procedures"
 msgstr "Reportes, Informes y Procedimientos"
@@ -3365,15 +4251,6 @@ msgstr "Reservaciones Denegadas"
 msgid "Closed Reservations"
 msgstr "Reservaciones Cerradas"
 
-msgid "Are you sure you want to close this reservation?"
-msgstr "¿Está seguro de que desea cerrar esta reserva?"
-
-msgid "Close reservation"
-msgstr "Cerrar reserva"
-
-msgid "Yes, close it"
-msgstr "Sí, cerrarla"
-
 msgid "Risk Management"
 msgstr "Manejo de Riesgo"
 
@@ -3385,6 +4262,33 @@ msgstr "Vista de reporte"
 
 msgid "H code Reports"
 msgstr "Reporte códigos H"
+
+msgid "Manage buildings"
+msgstr "Gestionar Edificios"
+
+msgid "Manage structure"
+msgstr "Gestionar Estructura"
+
+msgid "Manage regents"
+msgstr "Gestionar Regentes"
+
+msgid "Statistics"
+msgstr "Estadísticas"
+
+msgid "IPER assessments"
+msgstr "Evaluaciones IPER"
+
+msgid "IPER dashboard"
+msgstr "Panel IPER"
+
+msgid "Risk zone report"
+msgstr "Informe de zonas de riesgo"
+
+msgid "Laboratories map"
+msgstr "Mapa de laboratorios"
+
+msgid "SGA"
+msgstr "SGA"
 
 msgid "Create Substances"
 msgstr "Crear Sustancias"
@@ -3407,6 +4311,12 @@ msgstr "Consejo de prudencia"
 msgid "Size of recipients"
 msgstr "Tamaños de recipiente"
 
+msgid "Dangerous Substances"
+msgstr "Sustancias peligrosas"
+
+msgid "Dangerous Substance Categories"
+msgstr "Categorías de sustancias peligrosas"
+
 msgid "SGA Management"
 msgstr "Gestión SGA"
 
@@ -3418,6 +4328,9 @@ msgstr "Editor SGA"
 
 msgid "FDS: Security sheets"
 msgstr "FDS: Hojas de seguridad"
+
+msgid "Verify FDS"
+msgstr "Verificar FDS"
 
 msgid "Companies Managment"
 msgstr "Gestión de Compañías"
@@ -3437,16 +4350,71 @@ msgstr "Detalle de la donación"
 msgid "Add to donators list?"
 msgstr "¿Agregar a lista de donantes?"
 
+msgid ""
+"Interactive guides to help you use the system. Click on a tutorial to start "
+"it."
+msgstr ""
+"Guías interactivas para ayudarte a usar el sistema. Haz clic en un tutorial "
+"para iniciarlo."
+
+msgid ""
+"Access learning resources to understand how to use the system step by step."
+msgstr ""
+"Accede a material de capacitación para aprender a usar el sistema paso a "
+"paso."
+
+msgid "Training Resources"
+msgstr "Capacitaciones"
+
+msgid "Enable tutorials"
+msgstr "Activar tutoriales"
+
+msgid "In progress"
+msgstr "En proceso"
+
+msgid "Not started"
+msgstr "No iniciado"
+
+msgid "Restart"
+msgstr "Reiniciar"
+
+#, fuzzy
+#| msgid "Start Date"
+msgid "Start"
+msgstr "Fecha de inicio"
+
+msgid "steps"
+msgstr "pasos"
+
+msgid "No tutorials available for your current role."
+msgstr "No hay tutoriales disponibles para su rol actual."
+
+#, fuzzy
+#| msgid "Training Resources"
+msgid "Additional resources"
+msgstr "Capacitaciones"
+
 msgid "MSDS Files"
 msgstr "Archivo MSDS"
 
-msgid ""
-"Your donation was completed successfully, thank you for support this project!"
-msgstr "¡Su donación fue completada, muchas gracias por apoyar este proyecto!"
+#, fuzzy
+#| msgid "Tutorials"
+msgid "Tutorials enabled"
+msgstr "Tutoriales"
+
+#, fuzzy
+#| msgid "Tutorials"
+msgid "Tutorials disabled"
+msgstr "Tutoriales"
 
 msgid "Thank you for your help. We will check your problem as soon as we can"
 msgstr ""
 "Gracias por tu ayuda. Comprobaremos su problema tan pronto como podamos"
+
+#, fuzzy
+#| msgid "This endpoint requires lab_pk in the URL."
+msgid "This endpoint requires precusor_pk in the URL."
+msgstr "Este endpoint requiere lab_pk en la URL."
 
 msgid "File Name"
 msgstr "Nombre de archivo"
@@ -3460,15 +4428,11 @@ msgstr "En pantalla"
 msgid "Format"
 msgstr "Formato"
 
-msgid ""
-"This option allows to expand this query to all laboratories of current "
-"organization"
-msgstr ""
-"Esta opción permite expandir la consulta a todos los laboratorios de la "
-"organización actual"
+msgid "All"
+msgstr "Todos"
 
-msgid "All laboratories"
-msgstr "En todos los laboratorios"
+msgid "Object type"
+msgstr "Tipo de objecto"
 
 msgid "If you want to delimit this query select laboratory rooms (Optional)"
 msgstr ""
@@ -3498,11 +4462,19 @@ msgstr "Registrar usuario"
 msgid "Object type is not allowed"
 msgstr "Tipo de objeto no permitido"
 
+#, fuzzy
+#| msgid "Organization is not valid."
+msgid "Organization is required"
+msgstr "La organización no es válida."
+
 msgid "Furniture is not allowed"
 msgstr "Mueble no permitido"
 
 msgid "Task report doesn't exists"
 msgstr "Tarea de reporte no existe"
+
+msgid "Buildings"
+msgstr "Edificios"
 
 msgid "Delivered"
 msgstr "Entregado"
@@ -3525,11 +4497,127 @@ msgstr "Encolando creación de reporte"
 msgid "Download the report in this link"
 msgstr "Descargar el reporte en este enlace"
 
+msgid "Diagnostic"
+msgstr "Diagnóstico"
+
+#, fuzzy
+#| msgid "Reactive"
+msgid "Reactives"
+msgstr "Reactivo"
+
+msgid "Reactives with H-codes"
+msgstr "Reactivos con códigos H"
+
+msgid "Unique H-codes"
+msgstr "Códigos H únicos"
+
+msgid "Hazard Map"
+msgstr "Mapa de peligros"
+
+msgid "Legend"
+msgstr "Leyenda"
+
+msgid "Compatible"
+msgstr "Compatible"
+
+msgid "Caution"
+msgstr "Advertencia"
+
+msgid "Incompatible"
+msgstr "Incompatible"
+
+msgid "Total reactive weight"
+msgstr "Peso total de reactivos"
+
+msgid "tons"
+msgstr "toneladas"
+
+msgid "No shelf layout configured for this furniture."
+msgstr "No hay diseño de estantes configurado para este mueble."
+
+msgid "No furniture in this room."
+msgstr "No hay muebles en esta sala."
+
+msgid "No rooms in this laboratory."
+msgstr "No hay salas en este laboratorio."
+
+msgid "No laboratory data available."
+msgstr "No hay datos de laboratorio disponibles."
+
+msgid "Incompatibility Alerts"
+msgstr "Advertencias de incompatibilidad"
+
+msgid "Shelf A"
+msgstr "Estante A"
+
+msgid "H-Code A"
+msgstr "Código H A"
+
+msgid "Shelf B"
+msgstr "Estante B"
+
+msgid "H-Code B"
+msgstr "Código H B"
+
+msgid "Summary Map"
+msgstr "Mapa de resumen"
+
+msgid "Consecutive"
+msgstr "Consecutivo"
+
+msgid "Month"
+msgstr "Mes"
+
+msgid "Date Range"
+msgstr "Rango de fechas"
+
+msgid "Export"
+msgstr "Exportar"
+
+msgid "Precursor Report Values"
+msgstr "Valores del informe de precursores"
+
+msgid "Register Precursor Report Values"
+msgstr "Registrar valores del informe de precursores"
+
+msgid "Update Precursor Report Values"
+msgstr "Actualizar valores del informe de precursores"
+
+msgid "Delete Precursor Report Values"
+msgstr "Eliminar valores del informe de precursores"
+
+msgid "High-risk establishment"
+msgstr "Establecimiento de alto riesgo"
+
+msgid "Danger Substance of the list 3"
+msgstr "Sustancia de peligro de la lista 3"
+
+msgid "Danger Categories of the list 4"
+msgstr "Categorías de peligro de la lista 4"
+
+msgid "Sum of dangers categories"
+msgstr "Suma de categorías de peligro"
+
+msgid "Health totals:"
+msgstr "Totales de salud:"
+
+msgid "Physical totals:"
+msgstr "Totales físicos:"
+
+msgid "Environmental totals:"
+msgstr "Totales ambientales:"
+
 msgid "seconds"
 msgstr "segundos"
 
 msgid "minutes"
 msgstr "minutos"
+
+msgid "Initial amount"
+msgstr "Cantidad inicial"
+
+msgid "Final amount"
+msgstr "Cantidad final"
 
 msgid "Starting report creation"
 msgstr "Iniciando creacíon del reporte"
@@ -3537,10 +4625,43 @@ msgstr "Iniciando creacíon del reporte"
 msgid "Loading data to analyze in"
 msgstr "Cargando datos a analizar en"
 
+#, fuzzy
+#| msgid "Created"
+msgid "created in"
+msgstr "Creado"
+
+msgid "with"
+msgstr "con"
+
+msgid "records"
+msgstr "registros"
+
 msgid "Report can't be processed, try again or contact administrator"
 msgstr ""
 "Reporte no puede ser procesado, intente nuevamente o contacte el "
 "administrador"
+
+msgid "Unauthorized"
+msgstr "No autorizado"
+
+msgid "Invalid form"
+msgstr "Formularion inválido"
+
+#, python-format
+msgid "(%(units)s) units per box"
+msgstr "(%(units)s) unidades por caja"
+
+msgid "CAS"
+msgstr "CAS"
+
+msgid "Physical Hazard Category (Code H)"
+msgstr "Categoría de peligro físico (Código H)"
+
+msgid "Health Hazard Category (Code H)"
+msgstr "Categoría de peligro de la salud (Código H)"
+
+msgid "Environmental Hazard Category (Code H)"
+msgstr "Categoría de peligro ambiental (Código H)"
 
 msgid "Quantity total"
 msgstr "Cantidad total"
@@ -3554,29 +4675,365 @@ msgstr "Número de identificación CAS"
 msgid "IMDG type"
 msgstr "Tipo IMDG"
 
-msgid "Danger indication"
-msgstr "Indicación de peligro"
-
-msgid "Limit quantity"
-msgstr "Cantidad límite"
-
-msgid "First Name"
-msgstr "Nombre"
-
-msgid "CAS"
-msgstr "CAS"
+msgid "Name of official"
+msgstr "Nombre del funcionario"
 
 msgid "Carcinogenic"
 msgstr "Carcinógeno"
 
-msgid "Exposition"
-msgstr "Exposición"
+msgid "ID Number"
+msgstr "Número de identificación"
 
-msgid "Sustance"
-msgstr "Sustancia"
+msgid "Classification"
+msgstr "Clasificación"
+
+msgid "Criterion"
+msgstr "Criterio"
+
+msgid "Physical"
+msgstr "Físico"
+
+msgid "Health"
+msgstr "Salud"
+
+msgid "Environmental"
+msgstr "Ambiental"
+
+msgid "Nominated"
+msgstr "Nominada"
+
+msgid "Ratio"
+msgstr "Ratio"
+
+msgid "Cross rule"
+msgstr "Regla cruzada"
+
+msgid "Warnings"
+msgstr "Advertencias"
+
+msgid "Health contributions"
+msgstr "Contribuciones de salud"
+
+msgid "Physical contributions"
+msgstr "Contribuciones físicas"
+
+msgid "Environmental contributions"
+msgstr "Contribuciones ambientales"
+
+msgid "Data not available"
+msgstr "Dato no disponible"
+
+msgid "Totals by category"
+msgstr "Sumatorias por categoría"
+
+msgid "Details of the substances"
+msgstr "Detalle de las sustancias"
+
+msgid "Físico"
+msgstr "Físico"
+
+msgid "Salud"
+msgstr "Salud"
+
+#, fuzzy
+#| msgid "Impacto ambiental"
+msgid "Ambiental"
+msgstr "Impacto ambiental"
+
+msgid "Nombre"
+msgstr "Nombre"
+
+#, fuzzy
+#| msgid "Nominated"
+msgid "Nominada"
+msgstr "Nominada"
+
+msgid "Umbral"
+msgstr "Umbral"
+
+msgid "Regla Cruzada"
+msgstr "Regla Cruzada"
+
+#, fuzzy
+#| msgid "Detail"
+msgid "Detalle"
+msgstr "Detalle"
+
+msgid "Advertencias"
+msgstr "Advertencias"
+
+msgid "Contribuciones en salud"
+msgstr "Contribuciones en salud"
+
+msgid "Contribuciones en físico"
+msgstr "Contribuciones en físico"
+
+#, fuzzy
+#| msgid "Container Open Date"
+msgid "Contribuciones en ambiente"
+msgstr "Fecha de apertura del contenedor"
+
+msgid "Objects Report"
+msgstr "Reporte de Objetos"
+
+msgid "Reactive Objects Report"
+msgstr "Reporte de Objetos Reactivos"
+
+msgid "Material Objects Report"
+msgstr "Reporte de Objetos Materiales"
+
+msgid "Equipment Objects Report"
+msgstr "Reporte de Objetos Equipos"
+
+msgid "Page not found"
+msgstr "Página no encontrada"
+
+msgid "Limited Shelf Objects Report"
+msgstr "Reporte de Objetos en el Límite"
+
+msgid "Reactive Precursor Objects Report"
+msgstr "Reporte de Objetos Reactivos Precursores"
+
+msgid "Changes on Objects Report"
+msgstr "Reporte de Cambio de Objetos"
+
+#, python-format
+msgid ""
+"Name of natural or legal person: %(lab)s  N° Registration: %(consecutive)d"
+msgstr ""
+"Nombre de la sustancia o producto: %(lab)s  N° Inscripción: %(consecutive)d"
+
+#, python-format
+msgid "Activity to which the company is dedicated: %(activity)s"
+msgstr "Actividad a la que se dedica la empresa: %(activity)s"
+
+#, python-format
+msgid "Report of the Month:: %(month)s of the year: %(year)d Tel: %(tel)s"
+msgstr "Informe del mes de %(month)s  del año %(year)d  Telefono: %(tel)s"
+
+#, python-format
+msgid ""
+"Responsible: %(responsible)s  Signature: %(signature)s  Position: "
+"%(position)s"
+msgstr ""
+"Responsable: %(responsible)s  Firma: %(signature)s  Cargo: %(position)s:"
+
+#, python-format
+msgid "Period range of the data: %(date_range)s"
+msgstr "Rango de periodo de los datos: %(date_range)s"
+
+msgid "Name of the substance or product"
+msgstr "Nombre de la sustancia o producto"
+
+msgid "Final balance of the previous report"
+msgstr "Saldo final del reporte anterios"
+
+msgid "Income during the month"
+msgstr "Ingresos durante el mes"
+
+msgid "Import or local purchase invoice number that covers the entry"
+msgstr "Número de factura de importación o compra local que ampara el ingreso"
+
+msgid ""
+"Supplier that supplied the purchased product (in case of local purchase)"
+msgstr "Proveedor que suplió el producto adquirido (en caso de compra local)"
+
+msgid "Total Stock"
+msgstr "Total de existencias"
+
+msgid "Dispatch or expense during this month"
+msgstr "Despacho o gasto durante este mes"
+
+msgid "Balance at the end of the month reported in this report"
+msgstr "Saldo al final del mes reportado en este informe"
+
+msgid "Type of movement"
+msgstr "Tipo de movimiento"
+
+#, python-format
+msgid "Report_of_precursors_%(month)s_%(consecutive)d"
+msgstr "Reporte_sobre_precursores_%(month)s_%(consecutive)d"
+
+msgid "Waste objects by shelf report"
+msgstr "Informe de objetos desechados por estante"
+
+msgid "Objects by Furniture Report"
+msgstr "Reporte de Objetos por Muebles"
+
+msgid "Donation Report"
+msgstr "Informe de donaciones"
+
+msgid "Square 3"
+msgstr "Cuadro 3"
+
+msgid "Square 4"
+msgstr "Cuadro 4"
+
+#, fuzzy
+#| msgid "Threshold"
+msgid "Yes Exceeds Threshold"
+msgstr "Umbral"
+
+msgid "None"
+msgstr "Ninguno"
+
+#, fuzzy
+#| msgid "Threshold"
+msgid "No Exceeds Threshold"
+msgstr "Umbral"
+
+msgid "Table 4, 3 or none"
+msgstr "Cuadro 4, 3 o ninguna"
+
+msgid "Exceeds THRESHOLD OR NA, if the previous (column) is none"
+msgstr "Supera UMBRAL O NA, si el anterior(columna) es ninguno"
+
+#, fuzzy
+#| msgid "Buildings"
+msgid "Building"
+msgstr "Edificios"
+
+#, fuzzy
+#| msgid "Risk Zones"
+msgid "Risk Zone"
+msgstr "Zonas de riesgo"
+
+msgid "Compatibility"
+msgstr "Compatibilidad"
+
+#, fuzzy
+#| msgid "Substance A"
+msgid "Substances A"
+msgstr "Substancia A"
+
+#, fuzzy
+#| msgid "Substance B"
+msgid "Substances B"
+msgstr "Substancia B"
+
+msgid "Laboratory A"
+msgstr "Laboratorio A"
+
+msgid "Laboratory B"
+msgstr "Laboratorio B"
+
+msgid "No buildings found for this organization."
+msgstr "No se encontraron edificios para esta organización."
+
+msgid "Create buildings and assign them to risk zones first."
+msgstr "Cree edificios y asignelos a zonas de riesgo primero."
+
+msgid "No risk zones found linked to the selected buildings."
+msgstr ""
+"No se encontraron zonas de riesgo vinculadas a los edificios seleccionados."
+
+msgid "Assign risk zones to buildings first."
+msgstr "Asigne zonas de riesgo a edificios primero."
+
+msgid "Risk zones found but none have laboratories assigned."
+msgstr ""
+"Zonas de riesgo encontradas pero ninguna tiene laboratorios asignados."
+
+msgid "Assign laboratories to the risk zones."
+msgstr "Asigne laboratorios a las zonas de riesgo."
+
+msgid "Laboratories found but no reactive substances registered."
+msgstr ""
+"Laboratorios encontrados pero no se han registrado sustancias reactivas."
+
+msgid ""
+"Register reactive substances (ShelfObjects of type Reactive) in the "
+"laboratories."
+msgstr ""
+"Registre sustancias reactivas (objetos de estante de tipo Reactive) en los "
+"laboratorios."
+
+msgid ""
+"Reactive substances found but none have H-codes (danger indications) "
+"assigned."
+msgstr ""
+"Sustancias reactivas encontradas pero ninguna tiene códigos H (indicaciones "
+"de peligro) asignados."
+
+msgid ""
+"Edit each reactive substance and assign H-codes via Substance "
+"Characteristics (SGA)."
+msgstr ""
+"Edite cada sustancia reactiva y asigne códigos H (indicaciones de peligro) a"
+" través de Características de sustancias (SGA)."
+
+msgid ""
+"Only one unique H-code found across all zones. At least 2 different H-codes "
+"are needed to compare compatibility."
+msgstr ""
+"Sólo se encontró un único código H en todas las zonas. Se necesitan al menos"
+" 2 códigos H diferentes para comparar la compatibilidad."
+
+msgid "Assign different H-codes to the reactive substances."
+msgstr "Asigne diferentes códigos H a las sustancias reactivas."
+
+msgid ""
+"No compatibility pairs generated. Each zone needs at least 2 different "
+"H-codes within the same zone."
+msgstr ""
+"No se generaron pares de compatibilidad. Cada zona necesita al menos 2 "
+"códigos H diferentes dentro de la misma zona."
+
+msgid ""
+"Ensure at least one risk zone contains substances with 2 or more different "
+"H-codes."
+msgstr ""
+"Asegúrese de que al menos una zona de riesgo contiene sustancias con 2 o más"
+" códigos H diferentes."
+
+msgid "Container Capacity"
+msgstr "Capacidad del envase"
+
+msgid "Container Quantity"
+msgstr "Cantidad de envases"
+
+msgid "Container Material"
+msgstr "Material del contenedor"
+
+msgid "Maximum Annual Amount"
+msgstr "Cantidad anual máxima"
+
+msgid "Expiration date of the reagent"
+msgstr "Fecha de caducidad del reactivo"
 
 msgid "Reserved product doesn't exists in this organization"
 msgstr "El producto reservado no existe en esta organización"
+
+msgid "Amount to return"
+msgstr "Cantidad a devolver"
+
+msgid "Boxes to return"
+msgstr "Cajas para devolver"
+
+msgid "Select at least one box to return."
+msgstr "Seleccione al menos una caja para devolver."
+
+msgid "Amount to return must be greater than 0."
+msgstr "La cantidad a devolver debe ser mayor a 0."
+
+#, python-format
+msgid "Amount to return cannot exceed the required amount (%(max)s)."
+msgstr ""
+"La cantidad a devolver no puede superar la cantidad requerida (%(max)s)."
+
+#, fuzzy
+#| msgid "Invalid search"
+msgid "Invalid data."
+msgstr "Búsqueda Inválida"
+
+#, fuzzy
+#| msgid "Only rols selected"
+msgid "No boxes selected."
+msgstr "Solo usar roles seleccionados"
+
+#, python-format
+msgid "Return via reservation #%(pk)d"
+msgstr "Devolución mediante la reserva #%(pk)d"
 
 msgid "Denied"
 msgstr "Rechazado"
@@ -3614,9 +5071,6 @@ msgstr "Sábado"
 msgid "Sunday"
 msgstr "Domingo"
 
-msgid "Comments"
-msgstr "Comentarios"
-
 msgid "Is massive"
 msgstr "Es masivo"
 
@@ -3625,6 +5079,36 @@ msgstr "Se devuelve"
 
 msgid "Amount Returned"
 msgstr "Cantidad devuelta"
+
+#, fuzzy
+#| msgid "Reserved"
+msgid "Reserved boxes"
+msgstr "Reservar"
+
+msgid "List of reserved box entries: [{'code': 'b-0001', 'units': 12}]"
+msgstr ""
+"Lista de entradas de caja reservadas: [{'code': 'b-0001', 'units': 12}]"
+
+#, python-format
+msgid ""
+"Your reservation #%(pk)d was denied: not enough box stock to fulfill the "
+"request (%(units)d units short)."
+msgstr ""
+"Su reserva #%(pk)d fue denegada: no hay suficiente stock de cajas para "
+"cumplir la solicitud (%(units)d unidades faltantes)."
+
+#, python-format
+msgid "Automatic decrease via reservation #%(pk)d"
+msgstr "Disminución automática mediante la reserva #%(pk)d"
+
+#, fuzzy
+#| msgid "Box units decreased"
+msgid "Box units decreased via reservation"
+msgstr "Unidades de caja disminuidas"
+
+#, python-format
+msgid "Boxes %(codes)s consumed automatically from reservation #%(pk)d"
+msgstr "Cajas %(codes)s consumidas automáticamente de la reserva #%(pk)d"
 
 msgid "Manage Reservation"
 msgstr "Administrar reservaciones"
@@ -3637,6 +5121,9 @@ msgstr "Formulario de Reservación"
 
 msgid "for laboratory"
 msgstr "para laboratorio"
+
+msgid "Reject"
+msgstr "Rechazar"
 
 msgid "Products List"
 msgstr "Lista de productos"
@@ -3653,6 +5140,41 @@ msgstr "Fecha de inicio"
 msgid "End Date"
 msgstr "Fecha de devolución"
 
+msgid "No products in this reservation."
+msgstr "No hay productos en esta reserva."
+
+#, fuzzy
+#| msgid "Product"
+msgid "Return Product"
+msgstr "Nombre del producto"
+
+msgid "Confirm Return"
+msgstr "Confirmar devolución"
+
+msgid "Reserved units"
+msgstr "Unidades reservadas"
+
+msgid "Units to return"
+msgstr "Unidades a devolver"
+
+#, fuzzy
+#| msgid "Ensure this value is greater than or equal to 0."
+msgid "Enter units greater than 0 for at least one box."
+msgstr "Asegúrese que el valor es mayor o igual que 0."
+
+msgid "Enter a valid amount."
+msgstr "Valor ingresado invalido"
+
+msgid "Units must be between 0 and the reserved amount for each box."
+msgstr ""
+"Las unidades deben estar entre 0 y la cantidad reservada para cada caja."
+
+msgid "No reserved box information found for this product."
+msgstr "No se encontró información de cajas reservadas para este producto."
+
+msgid "Error loading product data."
+msgstr "Error al cargar los datos del producto."
+
 msgid "Manage Product"
 msgstr "Administración de producto"
 
@@ -3665,44 +5187,144 @@ msgstr "Reservación masiva"
 msgid "Manage"
 msgstr "Administrar"
 
+msgid "Close reservation"
+msgstr "Cerrar reserva"
+
+msgid "Are you sure you want to close this reservation?"
+msgstr "¿Está seguro de que desea cerrar esta reserva?"
+
+msgid "Yes, close it"
+msgstr "Sí, cerrarla"
+
+#, fuzzy
+#| msgid "Back to the reservations list"
+msgid "Back to reservation"
+msgstr "Regresar a la lista de reservaciones"
+
+msgid "Already Returned"
+msgstr "Ya devuelto"
+
+msgid ""
+"The reservation has not started yet. Returns are not allowed before the "
+"initial date."
+msgstr ""
+"La reserva aún no ha iniciado. No se permiten devoluciones antes de la fecha"
+" de inicio."
+
+#, fuzzy
+#| msgid "Invalid box selection."
+msgid "Invalid box code."
+msgstr "Selección de caja inválida."
+
+#, python-format
+msgid "Units must be greater than 0 for box %(code)s."
+msgstr "Las unidades deben ser mayores a 0 para la caja %(code)s."
+
+#, fuzzy, python-format
+#| msgid "Units must be greater than 0 for box %(code)s."
+msgid "Units exceed reserved amount for box %(code)s."
+msgstr "Las unidades deben ser mayores a 0 para la caja %(code)s."
+
+#, fuzzy
+#| msgid "Enter a valid amount."
+msgid "Invalid amount."
+msgstr "Valor ingresado invalido"
+
+#, python-format
+msgid "Amount must be between 0 and %(max)s."
+msgstr "La cantidad debe estar entre 0 y %(max)s."
+
+msgid "Could not process the return. Please verify the values."
+msgstr "No se pudo procesar la devolución. Por favor verifique los valores."
+
+#, fuzzy
+#| msgid "Classification"
+msgid "Hazard classification"
+msgstr "Clasificación"
+
+#, fuzzy
+#| msgid "Risk zone"
+msgid "Risk level"
+msgstr "Zona de riesgo"
+
+msgid "From"
+msgstr "Desde"
+
+msgid "To"
+msgstr "Hasta"
+
 msgid "Sustances per Danger Indications"
 msgstr "Sustancias por indicación de peligro"
 
 msgid "No data registered"
 msgstr "Sin datos registrados"
 
-msgid "Count elements with code H"
-msgstr "Conteo de elementos con código H"
+msgid "Litro (L)"
+msgstr "Litro (L)"
+
+msgid "Kilogramo (Kg)"
+msgstr "Kilogramo (Kg)"
+
+msgid "Libra (Lb)"
+msgstr "Libra (Lb)"
 
 msgid "Sustances per White Organ"
 msgstr "Sustancias por Órgano blanco"
 
-msgid "Count elements by White Organ"
-msgstr "Conteo de elementos por Órgano blanco"
-
 msgid "Sustances per Percursor Type"
 msgstr "Sustancias por tipo de precursor"
-
-msgid "Count elements by Precursor Type"
-msgstr "Conteo de elementos por tipo de precursor"
 
 msgid "Sustances per NFPA"
 msgstr "Sustancias por NFPA"
 
-msgid "Count elements by NFPA"
-msgstr "Conteo de elementos por NFPA"
-
 msgid "Sustances per UE Code"
 msgstr "Sustancias por Código EU"
-
-msgid "Count elements by UE Code"
-msgstr "Conteo de elementos por código EU"
 
 msgid "Sustances per Storage Class"
 msgstr "Sustancias por clase de almacenamientos"
 
-msgid "Count elements by Storage Class"
-msgstr "Conteo de elementos por clase de almacenamiento"
+#, fuzzy
+#| msgid "Adjustment quantities in logs"
+msgid "Substances quantity in tons"
+msgstr "Ajuste de cantidades en bitacoras"
+
+msgid "Unidades"
+msgstr "Unidades"
+
+msgid "Pascales (Pa)"
+msgstr "Pascales (Pa)"
+
+msgid "PSI"
+msgstr "PSI"
+
+msgid "Toneladas (t)"
+msgstr "Toneladas (t)"
+
+msgid "Risk Categories Summary"
+msgstr "Resumen de Categorías de Riesgo"
+
+msgid "Hazards by risk level"
+msgstr "Peligros por nivel de riesgo"
+
+msgid "Hazards"
+msgstr "Peligros"
+
+#, fuzzy
+#| msgid "Totals by category"
+msgid "Hazards by category"
+msgstr "Sumatorias por categoría"
+
+msgid "IPER compliance"
+msgstr "Cumplimiento IPER"
+
+msgid "Current"
+msgstr "Vigente"
+
+msgid "Overdue"
+msgstr "Vencido"
+
+msgid "Missing"
+msgstr "Sin IPER"
 
 msgid "Identificador"
 msgstr "Identificador"
@@ -3737,8 +5359,280 @@ msgstr "Recomandaciones"
 msgid "Incidents"
 msgstr "Incidentes"
 
-msgid "Incident Report"
-msgstr "Reporte de incidentes"
+#, python-format
+msgid "Incident report in the risk zone %s"
+msgstr "Informe de incidentes en la zona de riesgo %s"
+
+msgid "Condiciones físicas que pueden causar accidentes"
+msgstr "Condiciones físicas que pueden causar accidentes"
+
+msgid "Pisos mojados, resbaladizos o en mal estado"
+msgstr "Pisos mojados, resbaladizos o en mal estado"
+
+msgid "Maquinaria sin guardas de protección"
+msgstr "Maquinaria sin guardas de protección"
+
+msgid "Instalaciones eléctricas deficientes o sin protección"
+msgstr "Instalaciones eléctricas deficientes o sin protección"
+
+msgid "Trabajo en alturas sin equipo de seguridad"
+msgstr "Trabajo en alturas sin equipo de seguridad"
+
+msgid "Almacenamiento inadecuado de materiales pesados"
+msgstr "Almacenamiento inadecuado de materiales pesados"
+
+msgid "Herramientas en mal estado o uso incorrecto"
+msgstr "Herramientas en mal estado o uso incorrecto"
+
+msgid "Señalización de seguridad deficiente o ausente"
+msgstr "Señalización de seguridad deficiente o ausente"
+
+msgid "Materiales inflamables mal almacenados"
+msgstr "Materiales inflamables mal almacenados"
+
+msgid "Riesgo de explosión por gases o presión"
+msgstr "Riesgo de explosión por gases o presión"
+
+msgid "Falta de orden y limpieza en el área"
+msgstr "Falta de orden y limpieza en el área"
+
+msgid "Energía en el ambiente que puede dañar la salud"
+msgstr "Energía en el ambiente que puede dañar la salud"
+
+msgid "Ruido excesivo de centrífugas, agitadores o equipos"
+msgstr "Ruido excesivo de centrífugas, agitadores o equipos"
+
+msgid "Vibraciones de maquinaria de laboratorio"
+msgstr "Vibraciones de maquinaria de laboratorio"
+
+msgid "Iluminación insuficiente en zonas de trabajo"
+msgstr "Iluminación insuficiente en zonas de trabajo"
+
+msgid "Calor excesivo cerca de hornos, autoclaves o reactores"
+msgstr "Calor excesivo cerca de hornos, autoclaves o reactores"
+
+msgid "Frío extremo en cuartos de refrigeración o congelamiento"
+msgstr "Frío extremo en cuartos de refrigeración o congelamiento"
+
+msgid "Radiación ultravioleta de lámparas germicidas (UV)"
+msgstr "Radiación ultravioleta de lámparas germicidas (UV)"
+
+msgid "Radiación ionizante (rayos X, materiales radiactivos)"
+msgstr "Radiación ionizante (rayos X, materiales radiactivos)"
+
+msgid "Presiones anormales en equipos presurizados"
+msgstr "Presiones anormales en equipos presurizados"
+
+msgid "Ventilación inadecuada o corrientes de aire"
+msgstr "Ventilación inadecuada o corrientes de aire"
+
+msgid "Sustancias que pueden ser tóxicas, corrosivas o peligrosas"
+msgstr "Sustancias que pueden ser tóxicas, corrosivas o peligrosas"
+
+msgid "Vapores de solventes orgánicos (acetona, metanol, hexano)"
+msgstr "Vapores de solventes orgánicos (acetona, metanol, hexano)"
+
+msgid "Gases tóxicos generados en reacciones químicas"
+msgstr "Gases tóxicos generados en reacciones químicas"
+
+msgid "Ácidos corrosivos (HCl, H₂SO₄, HNO₃)"
+msgstr "Ácidos corrosivos (HCl, H₂SO₄, HNO₃)"
+
+msgid "Bases corrosivas (NaOH, KOH)"
+msgstr "Bases corrosivas (NaOH, KOH)"
+
+msgid "Polvo de reactivos o muestras sólidas"
+msgstr "Polvo de reactivos o muestras sólidas"
+
+msgid "Aerosoles de soluciones químicas"
+msgstr "Aerosoles de soluciones químicas"
+
+msgid "Reactivos cancerígenos o mutagénicos"
+msgstr "Reactivos cancerígenos o mutagénicos"
+
+msgid "Formaldehído, glutaraldehído u otros preservantes"
+msgstr "Formaldehído, glutaraldehído u otros preservantes"
+
+msgid "Derrames de sustancias peligrosas"
+msgstr "Derrames de sustancias peligrosas"
+
+msgid "Mezcla accidental de químicos incompatibles"
+msgstr "Mezcla accidental de químicos incompatibles"
+
+msgid "Agentes vivos que pueden causar enfermedades o infecciones"
+msgstr "Agentes vivos que pueden causar enfermedades o infecciones"
+
+msgid "Bacterias patógenas en muestras clínicas"
+msgstr "Bacterias patógenas en muestras clínicas"
+
+msgid "Virus presentes en muestras de sangre o fluidos corporales"
+msgstr "Virus presentes en muestras de sangre o fluidos corporales"
+
+msgid "Hongos y esporas en cultivos microbiológicos"
+msgstr "Hongos y esporas en cultivos microbiológicos"
+
+msgid "Parásitos en muestras fecales u otras muestras"
+msgstr "Parásitos en muestras fecales u otras muestras"
+
+msgid "Pinchazos accidentales con agujas contaminadas"
+msgstr "Pinchazos accidentales con agujas contaminadas"
+
+msgid "Contacto directo con sangre u otros fluidos"
+msgstr "Contacto directo con sangre u otros fluidos"
+
+msgid "Aerosoles de muestras infecciosas al centrifugar"
+msgstr "Aerosoles de muestras infecciosas al centrifugar"
+
+msgid "Residuos biológicos mal clasificados o gestionados"
+msgstr "Residuos biológicos mal clasificados o gestionados"
+
+msgid "Cultivos de microorganismos patógenos"
+msgstr "Cultivos de microorganismos patógenos"
+
+msgid "Condiciones que generan lesiones musculoesqueléticas"
+msgstr "Condiciones que generan lesiones musculoesqueléticas"
+
+msgid "Postura forzada al usar microscopio u otros equipos"
+msgstr "Postura forzada al usar microscopio u otros equipos"
+
+msgid "Pipeteo manual continuo (movimientos repetitivos de mano)"
+msgstr "Pipeteo manual continuo (movimientos repetitivos de mano)"
+
+msgid "Carga manual de objetos pesados (tanques, cajas, equipos)"
+msgstr "Carga manual de objetos pesados (tanques, cajas, equipos)"
+
+msgid "Trabajo prolongado de pie sin pausas activas"
+msgstr "Trabajo prolongado de pie sin pausas activas"
+
+msgid "Silla, mesa o equipo no ajustable ergonómicamente"
+msgstr "Silla, mesa o equipo no ajustable ergonómicamente"
+
+msgid "Espacio de trabajo insuficiente o mal distribuido"
+msgstr "Espacio de trabajo insuficiente o mal distribuido"
+
+msgid "Tensión visual por trabajo de precisión prolongado"
+msgstr "Tensión visual por trabajo de precisión prolongado"
+
+msgid "Inclinación frecuente sobre superficies de trabajo"
+msgstr "Inclinación frecuente sobre superficies de trabajo"
+
+msgid "Factores que afectan el bienestar mental y emocional"
+msgstr "Factores que afectan el bienestar mental y emocional"
+
+msgid "Exceso de carga de trabajo o plazos muy ajustados"
+msgstr "Exceso de carga de trabajo o plazos muy ajustados"
+
+msgid "Alta responsabilidad o trabajo bajo presión constante"
+msgstr "Alta responsabilidad o trabajo bajo presión constante"
+
+msgid "Funciones y responsabilidades poco claras"
+msgstr "Funciones y responsabilidades poco claras"
+
+msgid "Trabajo monótono y repetitivo sin variación"
+msgstr "Trabajo monótono y repetitivo sin variación"
+
+msgid "Falta de comunicación o apoyo del equipo de trabajo"
+msgstr "Falta de comunicación o apoyo del equipo de trabajo"
+
+msgid "Jornadas laborales prolongadas o trabajo nocturno"
+msgstr "Jornadas laborales prolongadas o trabajo nocturno"
+
+msgid "Acoso laboral o conflictos interpersonales frecuentes"
+msgstr "Acoso laboral o conflictos interpersonales frecuentes"
+
+msgid "Falta de reconocimiento o posibilidades de desarrollo"
+msgstr "Falta de reconocimiento o posibilidades de desarrollo"
+
+msgid "El daño ocurrirá raramente"
+msgstr "El daño ocurrirá raramente"
+
+msgid "El daño ocurrirá algunas veces"
+msgstr "El daño ocurrirá algunas veces"
+
+msgid "El daño ocurrirá siempre o casi siempre"
+msgstr "El daño ocurrirá siempre o casi siempre"
+
+msgid "Lesiones superficiales o irritación leve"
+msgstr "Lesiones superficiales o irritación leve"
+
+msgid "Lesiones con incapacidad temporal"
+msgstr "Lesiones con incapacidad temporal"
+
+msgid "Lesiones graves, irreversibles o muerte"
+msgstr "Lesiones graves, irreversibles o muerte"
+
+msgid "No se requiere acción específica. Mantener las condiciones actuales."
+msgstr "No se requiere acción específica. Mantener las condiciones actuales."
+
+msgid ""
+"No se necesitan controles adicionales. Verificar periódicamente los "
+"controles existentes."
+msgstr ""
+"No se necesitan controles adicionales. Verificar periódicamente los "
+"controles existentes."
+
+msgid ""
+"Se deben hacer esfuerzos para reducir el riesgo. Establezca mejoras en un "
+"plazo determinado."
+msgstr ""
+"Se deben hacer esfuerzos para reducir el riesgo. Establezca mejoras en un "
+"plazo determinado."
+
+msgid ""
+"No debe comenzarse el trabajo hasta reducir el riesgo. Se requiere acción "
+"urgente."
+msgstr ""
+"No debe comenzarse el trabajo hasta reducir el riesgo. Se requiere acción "
+"urgente."
+
+msgid ""
+"No debe comenzar ni continuar el trabajo. Prohibir la actividad hasta "
+"eliminar el riesgo."
+msgstr ""
+"No debe comenzar ni continuar el trabajo. Prohibir la actividad hasta "
+"eliminar el riesgo."
+
+msgid "Update the IPER risk assessment"
+msgstr "Actualizar la evaluación de riesgo IPER"
+
+#, python-format
+msgid "Please fill or update the IPER for laboratory %(lab)s"
+msgstr "Por favor complete o actualice el IPER del laboratorio %(lab)s"
+
+#, python-format
+msgid "IPER update requested to %(count)d laboratory responsibles."
+msgstr ""
+"Se solicitó la actualización del IPER a %(count)d responsables de "
+"laboratorio."
+
+msgid "Hazard"
+msgstr "Peligro"
+
+#, fuzzy
+#| msgid "Compatibility"
+msgid "Probability"
+msgstr "Compatibilidad"
+
+#, fuzzy
+#| msgid "Consecutive"
+msgid "Consequence"
+msgstr "Consecutivo"
+
+#, fuzzy
+#| msgid "Contract"
+msgid "Controls"
+msgstr "Contrato"
+
+#, fuzzy
+#| msgid "Not started"
+msgid "Not allowed"
+msgstr "No iniciado"
+
+msgid "Only the root organization can manage the IPER catalog."
+msgstr "Solo la organización raíz puede gestionar el catálogo IPER."
+
+msgid "Add IPER catalog value"
+msgstr "Agregar valor al catálogo IPER"
 
 msgid "Opertation"
 msgstr "Operación"
@@ -3813,11 +5707,13 @@ msgid "Recomendaciones"
 msgstr "Recomendaciones"
 
 msgid ""
-"Recomendaciones que describan en detalle las medidas que se vayan a llevar a "
-"cabo para reducir el riesgo de que accidentes similares vuelvan a producirse."
+"Recomendaciones que describan en detalle las medidas que se vayan a llevar a"
+" cabo para reducir el riesgo de que accidentes similares vuelvan a "
+"producirse."
 msgstr ""
-"Recomendaciones que describan en detalle las medidas que se vayan a llevar a "
-"cabo para reducir el riesgo de que accidentes similares vuelvan a producirse."
+"Recomendaciones que describan en detalle las medidas que se vayan a llevar a"
+" cabo para reducir el riesgo de que accidentes similares vuelvan a "
+"producirse."
 
 msgid ""
 "En caso de intoxicación adjuntar copia de la notificación realizada al "
@@ -3825,6 +5721,214 @@ msgid ""
 msgstr ""
 "En caso de intoxicación adjuntar copia de la notificación realizada al "
 "Centro Nacional de Control de Intoxicaciones (CNCI)"
+
+msgid "Chemical"
+msgstr "Químico"
+
+msgid "Chemical Engineer"
+msgstr "Ingeniero Químico"
+
+msgid "Veterinarian"
+msgstr "Veterinario"
+
+msgid "Type Regent"
+msgstr "Tipo de Regente"
+
+msgid "It is Associated with Buildings?"
+msgstr "¿Esta asociado a edificios?"
+
+msgid "Nearby Buildings"
+msgstr "Edificios Cercanos"
+
+msgid "Regents Associated"
+msgstr "Regentes Asociados"
+
+msgid "Presence of rivers, streams, springs and aquifers"
+msgstr "Presencia de ríos, quebradas, nacientes y mantos acuíferos"
+
+msgid ""
+"Are there establishments with a large concentration of people that could be "
+"exposed to the risk of an accident?"
+msgstr ""
+"¿Existen establecimientos con concentración de personas que puedan verse "
+"expuestos al riesgo de un accidente?"
+
+msgid "Plans"
+msgstr "Planos"
+
+msgid "Security Plan"
+msgstr "Plan de Seguridad"
+
+msgid "Regulatory Plans"
+msgstr "Planes de Regulación"
+
+msgid "Emergency Plan"
+msgstr "Plan de Emergencia"
+
+msgid "Area/Volume"
+msgstr "Área/Volumen"
+
+msgid "Establishment Status"
+msgstr "Estado del establecimiento"
+
+msgid "Day shift"
+msgstr "Jornada diurna"
+
+msgid "Mixed shift"
+msgstr "Jornada mixta"
+
+msgid "Night shift"
+msgstr "Jornada nocturna"
+
+msgid "Workday"
+msgstr "Jornada Laboral"
+
+msgid "Start Time"
+msgstr "Hora de inicio"
+
+msgid "End Time"
+msgstr "Hora de salida"
+
+msgid "IPER risk matrix"
+msgstr "Matriz de riesgo IPER"
+
+#, fuzzy
+#| msgid "Update equipment"
+msgid "Update period (months)"
+msgstr "Editar equipo"
+
+msgid "Remind days before due date"
+msgstr "Días de aviso antes del vencimiento"
+
+#, fuzzy
+#| msgid "Reactive"
+msgid "Is active"
+msgstr "Reactivo"
+
+#, fuzzy
+#| msgid "Data configuration"
+msgid "IPER configuration"
+msgstr "Configuración de datos"
+
+#, fuzzy
+#| msgid "Data configuration"
+msgid "IPER configurations"
+msgstr "Configuración de datos"
+
+msgid "Draft"
+msgstr "Borrador"
+
+msgid "Obsolete"
+msgstr "Obsoleto"
+
+#, fuzzy
+#| msgid "Period"
+msgid "Periodic"
+msgstr "PerÍodo"
+
+msgid "On demand"
+msgstr "Bajo demanda"
+
+#, fuzzy
+#| msgid "Risk zone report"
+msgid "Risk zone request"
+msgstr "Informe de zonas de riesgo"
+
+msgid "Assessment date"
+msgstr "Fecha de evaluación"
+
+#, fuzzy
+#| msgid "permissions"
+msgid "Version"
+msgstr "permisos"
+
+#, fuzzy
+#| msgid "Previous"
+msgid "Previous version"
+msgstr "Anterior"
+
+msgid "Next update due date"
+msgstr "Fecha de próxima actualización"
+
+msgid "Source"
+msgstr "Origen"
+
+msgid "IPER assessment"
+msgstr "Evaluación IPER"
+
+msgid "Can view all IPER assessments in the organization"
+msgstr "Puede ver todas las evaluaciones IPER de la organización"
+
+msgid "Can request laboratories to fill the IPER"
+msgstr "Puede solicitar a los laboratorios llenar el IPER"
+
+msgid "Can view the IPER risk dashboard"
+msgstr "Puede ver el panel de riesgo IPER"
+
+msgid "Can manage IPER catalog and risk matrix (root org)"
+msgstr "Puede gestionar el catálogo IPER y la matriz de riesgo (org raíz)"
+
+msgid "Assessment"
+msgstr "Evaluación"
+
+#, fuzzy
+#| msgid "Expand description"
+msgid "Hazard description"
+msgstr "Expandir descripción"
+
+#, fuzzy
+#| msgid "Geolocation"
+msgid "Hazard location"
+msgstr "Geolocalización"
+
+#, fuzzy
+#| msgid "Priority"
+msgid "Risk priority"
+msgstr "Prioridad"
+
+msgid "Implemented controls"
+msgstr "Controles implementados"
+
+#, fuzzy
+#| msgid "Recomendaciones"
+msgid "Recommended controls"
+msgstr "Recomendaciones"
+
+#, fuzzy
+#| msgid "Related Users"
+msgid "Related inventory items"
+msgstr "Usuario relacionado"
+
+msgid "IPER hazard"
+msgstr "Peligro IPER"
+
+msgid "IPER hazards"
+msgstr "Peligros IPER"
+
+msgid "Author"
+msgstr "Autor"
+
+#, fuzzy
+#| msgid "Edit observation"
+msgid "IPER observation"
+msgstr "Editar observación"
+
+#, fuzzy
+#| msgid "Edit observation"
+msgid "IPER observations"
+msgstr "Editar observación"
+
+#, python-format
+msgid "The IPER for laboratory %(lab)s is due on %(date)s."
+msgstr "El IPER del laboratorio %(lab)s vence el %(date)s."
+
+msgid "List of Buildings"
+msgstr "Lista de edificios"
+
+#, fuzzy
+#| msgid "Create Building"
+msgid "Delete Building"
+msgstr "Crear Edificio"
 
 msgid "Delete Incident report"
 msgstr "Eliminar reporte de incidente"
@@ -3873,38 +5977,280 @@ msgstr ""
 "Recomendaciones que describen en detalle las acciones a tomar para mitigar "
 "el riesgo de incidentes similares vuelvan a pasar"
 
+msgid "IPER — Risk dashboard"
+msgstr "IPER — Panel de riesgo"
+
+msgid "IPER"
+msgstr "IPER"
+
+msgid "Create a new version pre-filled with this one"
+msgstr "Crear una nueva versión precargada con esta"
+
+#, fuzzy
+#| msgid "Update the observation"
+msgid "Update (new version)"
+msgstr "Actualizar Observación"
+
+msgid "New version with empty hazards"
+msgstr "Nueva versión sin peligros"
+
+#, fuzzy
+#| msgid "Start Date"
+msgid "Start clean"
+msgstr "Fecha de inicio"
+
+#, fuzzy
+#| msgid "Identified uses"
+msgid "Identified hazards"
+msgstr "Usos específicos finales"
+
+msgid "P"
+msgstr "P"
+
+msgid "C"
+msgstr "C"
+
+#, fuzzy
+#| msgid "Risks"
+msgid "Risk"
+msgstr "Riesgos"
+
+#, fuzzy
+#| msgid "No data registered"
+msgid "No hazards registered yet."
+msgstr "Sin datos registrados"
+
+msgid "Add hazard"
+msgstr "Agregar peligro"
+
+#, fuzzy
+#| msgid "Don't has observations"
+msgid "Analyst observations"
+msgstr "No tiene observaciones"
+
+#, fuzzy
+#| msgid "New observation"
+msgid "No observations."
+msgstr "Nueva observación"
+
+#, fuzzy
+#| msgid "Laboratory A"
+msgid "Laboratory help"
+msgstr "Laboratorio A"
+
+msgid "Loading inventory and hazards…"
+msgstr "Cargando inventario y peligros…"
+
+msgid "Items in"
+msgstr "Ítems en"
+
+msgid "Could not load help."
+msgstr "No se pudo cargar la ayuda."
+
+msgid "Identification of Hazards and Risk Assessment (INTE T55)"
+msgstr "Identificación de Peligros y Evaluación de Riesgos (INTE T55)"
+
+#, fuzzy
+#| msgid "History"
+msgid "IPER history"
+msgstr "Historial"
+
+msgid "IPER — Hazard history"
+msgstr "IPER — Historial de peligros"
+
+msgid "Excel"
+msgstr "Excel"
+
+msgid "No records."
+msgstr "Sin registros."
+
+msgid "IPER — Risk follow-up"
+msgstr "IPER — Seguimiento del riesgo"
+
+msgid "Dashboard"
+msgstr "Panel"
+
+#, fuzzy
+#| msgid "Chemical Safety Assessment"
+msgid "New assessment"
+msgstr "Evaluación de la seguridad química"
+
+#, fuzzy
+#| msgid "Last update"
+msgid "Next update"
+msgstr "Última actualización"
+
+#, fuzzy
+#| msgid "Open link"
+msgid "Open"
+msgstr "Abrir enlace"
+
+msgid "No assessments yet."
+msgstr "Aún no hay evaluaciones."
+
+msgid "Regents"
+msgstr "Regentes"
+
+msgid "List of Regents"
+msgstr "Lista de Regentes"
+
+msgid "Register Regent"
+msgstr "Registrar Regente"
+
+#, fuzzy
+#| msgid "Update Request"
+msgid "Update Regent"
+msgstr "Actualizar Solicitud"
+
+#, fuzzy
+#| msgid "Delete Request"
+msgid "Delete Regent"
+msgstr "Eliminar Solicitud"
+
+msgid "View search filters"
+msgstr "Ver filtros de búsqueda"
+
+#, fuzzy
+#| msgid "Danger Substance"
+msgid "Tons per Substance"
+msgstr "Sustancia Peligrosa"
+
+msgid "EU Code"
+msgstr "Código UE"
+
 msgid "Delete risk zone"
 msgstr "Eliminar zona de riesgo"
 
 msgid "Zone list"
 msgstr "Lista de zonas"
 
-msgid "Incident Reports"
-msgstr "Reportes de incidentes"
+msgid "List of incidents in the risk zone"
+msgstr "Lista de incidentes en el zona de riesgo"
 
-msgid "Incident Reports Create"
-msgstr "Crear Reporte de incidentes"
+msgid "Download all incidents"
+msgstr "Descargar todos los incidentes"
 
-msgid "Stats"
-msgstr "Estadísticas"
+msgid "Download Incident Information"
+msgstr "Descargar información del incidente"
 
-msgid "Storage Class"
-msgstr "Clase de almacenamiento"
+msgid "Register Incident"
+msgstr "Registrar Incidente"
 
-msgid "EU Code"
-msgstr "Código UE"
+msgid "Update Incident"
+msgstr "Actualizar Incidente"
 
-msgid "NFPA"
-msgstr "NFPA"
+msgid "Delete Incident"
+msgstr "Eliminar Incidente"
 
 msgid "Risk Zone Management"
 msgstr "Administración de zonas de riesgo"
+
+msgid "Structures"
+msgstr "Estructuras"
+
+msgid "Workers"
+msgstr "Trabajadores"
+
+#, fuzzy
+#| msgid "Download all"
+msgid "Download Excel"
+msgstr "Descargar"
+
+msgid "Workdays"
+msgstr "Jornadas Laborales"
+
+msgid "List of Structures"
+msgstr "Lista de estructuras"
+
+#, fuzzy
+#| msgid "Create Structure"
+msgid "Delete Structure"
+msgstr "Crear Estructura"
+
+msgid "Workdays of the risk zone"
+msgstr "Jornadas Laborales de la zona de riesgo"
+
+msgid "Register Workday"
+msgstr "Registrar Jornada Laboral"
+
+msgid "Update Workday"
+msgstr "Actualizar Jornada Laboral"
+
+msgid "Delete Workday"
+msgstr "Eliminar Jornada Laboral"
+
+#, fuzzy
+#| msgid "Resume"
+msgid "Resumen"
+msgstr "Resumen"
+
+#, fuzzy
+#| msgid "Classification"
+msgid "Clasificación"
+msgstr "Clasificación"
+
+#, fuzzy
+#| msgid "Criterion"
+msgid "Criterio"
+msgstr "Criterio"
+
+msgid "Sumatorias por Categoría"
+msgstr "Sumatorias por Categoría"
+
+#, fuzzy
+#| msgid "Category"
+msgid "Categoría"
+msgstr "Categoría"
+
+msgid "Valor"
+msgstr "Valor"
+
+#, fuzzy
+#| msgid "Create Substances"
+msgid "Detalle Sustancias"
+msgstr "Crear Sustancias"
+
+msgid "Cantidad (t)"
+msgstr "Cantidad (t)"
+
+#, fuzzy
+#| msgid "Nominated"
+msgid "Nominada C3"
+msgstr "Nominada"
+
+msgid "Umbral C3 (t)"
+msgstr "Umbral C3 (t)"
+
+#, fuzzy
+#| msgid "Ratio"
+msgid "Ratio C3"
+msgstr "Ratio"
+
+msgid "Regla cruzada Salud"
+msgstr "Regla cruzada Salud"
+
+#, fuzzy
+#| msgid "Health contributions"
+msgid "Detalle Contribuciones"
+msgstr "Contribuciones de salud"
 
 msgid "There is an error in the form"
 msgstr "Existe un error en el formulario"
 
 msgid "Add a new zonetype"
 msgstr "Ingrese un tipo de zona"
+
+msgid "Create Building"
+msgstr "Crear Edificio"
+
+msgid "Update Building"
+msgstr "Actualizar Edificio"
+
+msgid "Create Structure"
+msgstr "Crear Estructura"
+
+msgid "Update Structure"
+msgstr "Actualizar Estructura"
 
 msgid "Item created successfully."
 msgstr "Elemento creado exitosamente."
@@ -3993,23 +6339,14 @@ msgstr "Consejo de prudencia"
 msgid "Indication of Danger"
 msgstr "Indicaciones de peligro"
 
-msgid "CAS number"
-msgstr "Número ID CAS"
-
 msgid "Component"
 msgstr "Componentes SGA"
 
 msgid "Components"
 msgstr "Componentes"
 
-msgid "Draft"
-msgstr "Borrador"
-
 msgid "Under Review"
 msgstr "En revisión"
-
-msgid "Approved"
-msgstr "Aprobado"
 
 msgid "Comercial name"
 msgstr "Nombre Comercial"
@@ -4026,9 +6363,6 @@ msgstr "Sinónimos"
 msgid "Agrochemical"
 msgstr "Agroquímicos"
 
-msgid "Substances"
-msgstr "Sustancias"
-
 msgid "White organ"
 msgstr "Organo blanco"
 
@@ -4041,17 +6375,11 @@ msgstr "Numero CE"
 msgid "Molecular Weight"
 msgstr "Peso Molecular"
 
-msgid "Concentration"
-msgstr "Concentración"
-
 msgid "Substance characteristic SGA"
 msgstr "Característica de sustancia SGA"
 
 msgid "Substance characteristics SGA"
 msgstr "Características de sustancia SGA"
-
-msgid "Address"
-msgstr "Dirección"
 
 msgid "Commercial Information"
 msgstr "Información Comercial"
@@ -4136,7 +6464,8 @@ msgstr "Clasificación de acuerdo con el Reglamento (CE) 1272/2008"
 
 msgid "Classification according to EU Directives 67/548/CEE or 1999/45/CE"
 msgstr ""
-"Clasificación deacuerdo con las directivas de la EU  67/548/CEE or 1999/45/CE"
+"Clasificación deacuerdo con las directivas de la EU  67/548/CEE or "
+"1999/45/CE"
 
 msgid "General recommendations"
 msgstr "Recomendaciones generales"
@@ -4360,6 +6689,9 @@ msgstr "Resultados de la valoración PBT y mPmB"
 msgid "Other adverse effects"
 msgstr "Otros efectos adversos"
 
+msgid "Product"
+msgstr "Nombre del producto"
+
 msgid "Contaminated packaging"
 msgstr "Envases contaminados"
 
@@ -4388,14 +6720,15 @@ msgid ""
 "Regulations and legislation on safety, health and the environment specific "
 "to the substance or mixture"
 msgstr ""
-"Reglamentación y legislación en materia de seguridad, salud y medio ambiente "
-"específicas para la sustancia o la mezcla"
+"Reglamentación y legislación en materia de seguridad, salud y medio ambiente"
+" específicas para la sustancia o la mezcla"
 
 msgid "Chemical Safety Assessment"
 msgstr "Evaluación de la seguridad química"
 
 msgid "Full text of the H-Statements referred to in sections 2 and 3."
-msgstr "Texto íntegro de las Declaraciones-H referidas en las secciones 2 y 3."
+msgstr ""
+"Texto íntegro de las Declaraciones-H referidas en las secciones 2 y 3."
 
 msgid "The full text of the R-phrases referred to in points 2 and 3"
 msgstr "El texto completo de las frases-R referidas en los puntos 2 y 3"
@@ -4406,8 +6739,38 @@ msgstr "Otro datos"
 msgid "Review Substance"
 msgstr "Crear  Sustancia"
 
+msgid "Environment"
+msgstr "Ambiente"
+
+msgid "Type Match"
+msgstr "Tipo de Coincidencia"
+
+msgid "Patron Name"
+msgstr "Nombre del Patrón"
+
+msgid "CAS code"
+msgstr "Código CAS"
+
+msgid "Notes"
+msgstr "Notas"
+
+msgid "Especial Condition"
+msgstr "Condición Especial"
+
+msgid "H Code"
+msgstr "Código H"
+
+msgid "Category"
+msgstr "Categoría"
+
+msgid "Section"
+msgstr "Sección"
+
 msgid "Create New Recipient"
 msgstr "Crear Nuevo Recipiente"
+
+msgid "Back"
+msgstr "Atrás"
 
 msgid "List of Companies"
 msgstr "Listado de companías"
@@ -4424,14 +6787,20 @@ msgstr "¿Desea eliminar la compañía?"
 msgid "The company is removed successfully"
 msgstr "Se elimino correctamente la compañía"
 
-msgid "Substance Name"
-msgstr "Nombre de la sustancia"
+msgid "Danger Substance"
+msgstr "Sustancia Peligrosa"
+
+msgid "Register Danger Substance"
+msgstr "Registrar Sustancia Peligrosa"
+
+msgid "Update Danger Substance"
+msgstr "Actualizar Sustancia Peligrosa"
+
+msgid "Delete Danger Substance"
+msgstr "Eliminar Sustancia Peligrosa"
 
 msgid "UIPA Name"
 msgstr "Nombre UIPA"
-
-msgid "Cas number"
-msgstr "Número CAS"
 
 msgid "Seler name"
 msgstr "Nombre del vendedor"
@@ -4447,6 +6816,21 @@ msgstr "Información Comercial"
 
 msgid "Graphics"
 msgstr "Gráficos"
+
+msgid "H Code Categories"
+msgstr "Categorías de codigo H"
+
+msgid "Register H Code Category"
+msgstr "Registrar categoría de codigo H"
+
+msgid "Update H Code Category"
+msgstr "Actualizar categoría de codigo H"
+
+msgid "Delete H Code Category"
+msgstr "Eliminar categoría de codigo H"
+
+msgid "List of Code H Categories"
+msgstr "Listado de categorías de codigo H"
 
 msgid "GHS"
 msgstr "SGA"
@@ -4468,6 +6852,9 @@ msgstr "Listado de Sustancias"
 
 msgid "Show approved substances"
 msgstr "Mostrar sustancias aprobadas"
+
+msgid "Substance Management"
+msgstr "Administración de soluciones"
 
 msgid "Did you find H code component?"
 msgstr "¿Encontró el componente de códigos H?"
@@ -4520,9 +6907,6 @@ msgstr "Hoja de Seguridad"
 
 msgid "SECTION 8: Exposure controls/personal protection"
 msgstr "SECCIÓN 8: Controles de exposición/protección individual"
-
-msgid "Data not available"
-msgstr "Dato no disponible"
 
 msgid "Exposure controls"
 msgstr "Controles de la exposición"
@@ -4577,7 +6961,8 @@ msgid "Product Identifiers"
 msgstr "Identificadores del producto"
 
 msgid ""
-"Relevant identified uses of the substance or mixture and uses advised against"
+"Relevant identified uses of the substance or mixture and uses advised "
+"against"
 msgstr ""
 "Usos pertinentes identificados de la sustancia o de la mezcla y usos "
 "desaconsejados"
@@ -4613,10 +6998,8 @@ msgid "SECTION 3: Composition/Information on ingredients"
 msgstr "SECCION 3: Composición/Informacion sobre los componentes"
 
 msgid "Hazardous ingredients according to Regulation (EC) No. 1272/2008"
-msgstr "Ingredientes peligrosos de acuerdo con el Reglamento (CE) Nº 1272/2008"
-
-msgid "Classification"
-msgstr "Clasificación"
+msgstr ""
+"Ingredientes peligrosos de acuerdo con el Reglamento (CE) Nº 1272/2008"
 
 msgid "Hazardous ingredients according to Directive 1999/45/EC"
 msgstr "Ingredientes peligrosos según la Directiva 1999/45/CE"
@@ -4636,11 +7019,11 @@ msgstr "Elementos de la etiqueta"
 msgid "Labeling in accordance with Regulation (EC) 1272/2008"
 msgstr "Etiquetado de acuerdo con el Reglamento (CE) 1272/2008"
 
-msgid "Pictograms"
-msgstr "Pictogramas"
-
 msgid "Other dangers"
 msgstr "Otros Peligros"
+
+msgid "Important"
+msgstr "Importante"
 
 msgid "Changing de code field create new instance"
 msgstr "Cambiando el campo de código genera una nueva instancia"
@@ -4700,9 +7083,6 @@ msgstr "Ir a tus etiquetas"
 msgid "There can only be one Indication of Danger or Attention"
 msgstr "Sólo puede haber una Indicación de Peligro o Atención"
 
-msgid "General"
-msgstr "Uso general"
-
 msgid "En vivo"
 msgstr "En vivo"
 
@@ -4726,9 +7106,6 @@ msgstr "Cliente"
 
 msgid "Tag Template saved successfully"
 msgstr "Plantilla de la etiqueta guardada con éxito"
-
-msgid "Invalid form"
-msgstr "Formularion inválido"
 
 msgid "SGA label was deleted successfully"
 msgstr "Etiqueta SGA fue eliminada exitosamente"
@@ -4774,1577 +7151,3 @@ msgstr "Actualizar consejo de prudencia"
 
 msgid "Update the Danger indication"
 msgstr "Actualizar indicacion de peligro"
-
-msgid "Unit to Base Unit"
-msgstr "Unidad a Unidad Base"
-
-msgid "Measurement Unit Base"
-msgstr "Unidad de Medida Base"
-
-msgid "Added the user %(user)r in the organization %(org)r"
-msgstr "Se agrego el usuario %(user)r en la organización %(org)r"
-
-msgid "Added the groups %(groups)r to the profile %(profile)r"
-msgstr "Se agregaron los grupos %(groups)r al perfil %(profile)r"
-
-msgid "Removed the groups %(groups)r from the profile %(profile)r"
-msgstr "Se eliminaron los grupos %(groups)r del perfil %(profile)r"
-
-msgid "Manager"
-msgstr "Encargado"
-
-msgid "Regents Associated"
-msgstr "Regentes Asociados"
-
-msgid "Nearby Buildings"
-msgstr "Edificios Cercanos"
-
-msgid "Security Plan"
-msgstr "Plan de Seguridad"
-
-msgid "Plans"
-msgstr "Planos"
-
-msgid "Has nearby water resources?"
-msgstr "¿Tiene recursos hidricos cercanos?"
-
-msgid "Has Nearby Sites?"
-msgstr "¿Hay sitios cercanos?"
-
-msgid "Regulatory Plans"
-msgstr "Planes de Regulación"
-
-msgid "Geolocation"
-msgstr "Geolocalización"
-
-msgid "It is Associated with Buildings?"
-msgstr "¿Esta asociado a edificios?"
-
-msgid "Buildings"
-msgstr "Edificios"
-
-msgid "Create structure"
-msgstr "Crear estructura"
-
-msgid "Create Building"
-msgstr "Crear Edificio"
-
-msgid "List of Structures"
-msgstr "Lista de estructuras"
-
-msgid "List of Buildings"
-msgstr "Lista de edificios"
-
-msgid "List of Regents"
-msgstr "Lista de Regentes"
-
-msgid "Structures"
-msgstr "Estructuras"
-
-msgid "Regents"
-msgstr "Regentes"
-
-msgid "Create Structure"
-msgstr "Crear Estructura"
-
-msgid "Update Structure"
-msgstr "Actualizar Estructura"
-
-msgid "Update Building"
-msgstr "Actualizar Edificio"
-
-msgid "Object type"
-msgstr "Tipo de objecto"
-
-msgid "Manage structure"
-msgstr "Gestionar Estructura"
-
-msgid "Manage buildings"
-msgstr "Gestionar Edificios"
-
-msgid "Manage regents"
-msgstr "Gestionar Regentes"
-
-msgid "Register Regent"
-msgstr "Registrar Regente"
-
-msgid "Responsible"
-msgstr "Responsable"
-
-msgid "List of incidents in the risk zone"
-msgstr "Lista de incidentes en el zona de riesgo"
-
-msgid "Download all incidents"
-msgstr "Descargar todos los incidentes"
-
-msgid "Download Incident Information"
-msgstr "Descargar información del incidente"
-
-msgid "Incident report in the risk zone %s"
-msgstr "Informe de incidentes en la zona de riesgo %s"
-
-msgid "Presence of rivers, streams, springs and aquifers"
-msgstr "Presencia de ríos, quebradas, nacientes y mantos acuíferos"
-
-msgid "Emergency Plan"
-msgstr "Plan de Emergencia"
-
-msgid "Are there establishments with a large concentration of people that could be exposed to the risk of an accident?"
-msgstr "¿Existen establecimientos con concentración de personas que puedan verse expuestos al riesgo de un accidente?"
-
-msgid "H Code Categories"
-msgstr "Categorías de codigo H"
-
-msgid "List of Code H Categories"
-msgstr "Listado de categorías de codigo H"
-
-msgid "Register H Code Category"
-msgstr "Registrar categoría de codigo H"
-
-msgid "Update H Code Category"
-msgstr "Actualizar categoría de codigo H"
-
-msgid "Delete H Code Category"
-msgstr "Eliminar categoría de codigo H"
-
-msgid "Physical"
-msgstr "Físico"
-
-msgid "Environment"
-msgstr "Ambiente"
-
-msgid "Health"
-msgstr "Salud"
-
-msgid "Chemical"
-msgstr "Químico"
-
-msgid "Chemical Engineer"
-msgstr "Ingeniero Químico"
-
-msgid "Veterinarian"
-msgstr "Veterinario"
-
-msgid "Physical Status"
-msgstr "Estado físico"
-
-msgid "Liquid"
-msgstr "Líquido"
-
-msgid "Solid powder"
-msgstr "Sólido en polvo"
-
-msgid "Solid granular or crystalline"
-msgstr "Sólido granulares o cristalinos"
-
-msgid "Gaseous"
-msgstr "Gaseoso"
-
-msgid "Final amount"
-msgstr "Cantidad final"
-
-msgid "Initial amount"
-msgstr "Cantidad inicial"
-
-msgid "Physical Hazard Category (Code H)"
-msgstr "Categoría de peligro físico (Código H)"
-
-msgid "Health Hazard Category (Code H)"
-msgstr "Categoría de peligro de la salud (Código H)"
-
-msgid "Environmental Hazard Category (Code H)"
-msgstr "Categoría de peligro ambiental (Código H)"
-
-msgid "Study centers, hospitals, transportation terminals, gas stations, or others that might be affected in the event of an emergency."
-msgstr "Centros de estudios, hospitales, terminales de transporte, gasolineras o otros lugares que pueden ser afectados en caso de una emergencia."
-
-msgid "Rivers, streams, springs and aquifers that are affected in an emergency"
-msgstr "Ríos, quebradas, nacientes y mantos acuíferos que pueden ser afectados en una emergencia"
-
-msgid "Type Regent"
-msgstr "Tipo de Regente"
-
-msgid "Adjustment quantities in logs"
-msgstr "Ajuste de cantidades en bitacoras"
-
-msgid "Deleting shelf"
-msgstr "Eliminación de estante"
-
-msgid "Deleting ShelfObject by shelf"
-msgstr "Eliminación de objeto de estante"
-
-msgid "1 of %s of %d - %d of %s of %d"
-msgstr "1 de %s del %d - %d de %s del %d"
-
-msgid "Date Range"
-msgstr "Rango de fechas"
-
-msgid "Period range of the data: %(date_range)s"
-msgstr "Rango de periodo de los datos: %(date_range)s"
-
-msgid "Type of movement"
-msgstr "Tipo de movimiento"
-
-msgid "Spend"
-msgstr "Gasto"
-
-msgid "Income"
-msgstr "Ingreso"
-
-msgid "Created"
-msgstr "Creado"
-
-msgid "Reactive Report"
-msgstr "Reporte de reactivos"
-
-msgid "Is dangerous?"
-msgstr "¿Es peligroso?"
-
-msgid "Has threshold?"
-msgstr "Tiene umbral?"
-
-msgid "Threshold"
-msgstr "Umbral"
-
-msgid "Exceeds THRESHOLD OR NA, if the previous (column) is none"
-msgstr "Supera UMBRAL O NA, si el anterior(columna) es ninguno"
-
-msgid "Table 4, 3 or none"
-msgstr "Cuadro 4, 3 o ninguna"
-
-msgid "Statistics"
-msgstr "Estadísticas"
-
-msgid "Risk zone report"
-msgstr "Informe de zonas de riesgo"
-
-msgid "View search filters"
-msgstr "Ver filtros de búsqueda"
-
-msgid "Filter"
-msgstr "Filtrar"
-
-msgid "Is pure?"
-msgstr "¿Es pura?"
-
-msgid "Maximum unit"
-msgstr "Unidad máxima"
-
-msgid "Container Capacity"
-msgstr "Capacidad del envase"
-
-msgid "Container Unit"
-msgstr "Unidad de medida del envase"
-
-msgid "Container Quantity"
-msgstr "Cantidad de envases"
-
-msgid "Container Material"
-msgstr "Material del contenedor"
-
-msgid "Maximum Annual Amount"
-msgstr "Cantidad anual máxima"
-
-msgid "Expiration date of the reagent"
-msgstr "Fecha de caducidad del reactivo"
-
-msgid "Reactive Stock Report"
-msgstr "Reporte de inventario de reactivos"
-
-msgid "Expiration Date"
-msgstr "Fecha de caducidad"
-
-msgid "Edit Reactive"
-msgstr "Editar Reactivo"
-
-msgid "Edit Equipment"
-msgstr "Editar Equipo"
-
-msgid "Edit Material"
-msgstr "Editar Material"
-
-msgid "The shelfobject quantity cannot be less than minimum limit."
-msgstr "La cantidad de la sustancia o material no puede ser menor a la cantidad mínima."
-
-msgid "Tablets"
-msgstr "Tablas"
-
-msgid "Lentils"
-msgstr "Lentejas"
-
-msgid "Granza"
-msgstr "Granza"
-msgid "Maximum limit cannot be lower than minimum limit."
-msgstr "El límite máximo no puede ser menor que el límite mínimo."
-
-msgid "Update Limits"
-msgstr "Actualizar límites"
-
-msgid "Monthly limit history %s"
-msgstr "Historial de límites mensuales %s"
-
-msgid "Reagents"
-msgstr "Reactivos"
-
-msgid "Year"
-msgstr "Año"
-
-msgid "Reactive Stats"
-msgstr "Estadísticas de reactivos"
-
-msgid "Kit"
-msgstr "Kit"
-
-msgid "Colloidal"
-msgstr "Coloidal"
-
-msgid "Solid"
-msgstr "Solido"
-
-msgid "Card"
-msgstr "Tarjeta"
-
-msgid "Viscuos Liquid"
-msgstr "Líquido viscoso"
-
-msgid "It belongs to the regulations of decree 44741"
-msgstr "Pertenece al reglamento del decreto 44741"
-
-msgid "Laboratories where you are affiliated"
-msgstr "Laboratorios en los que estás afiliado:"
-
-msgid "Faculty or dispatch"
-msgstr "Facultad o Despacho"
-
-msgid "Laboratory Processes View"
-msgstr "Vista de procesos de laboratorio"
-
-msgid "Create process"
-msgstr "Crear proceso"
-
-msgid "Update process"
-msgstr "Actualizar proceso"
-
-msgid "Laboratory Processes List"
-msgstr "Listado de procesos del laboratorio"
-
-msgid "Workplace"
-msgstr "Centro de trabajo"
-
-msgid "Processes"
-msgstr "Procesos"
-
-msgid "Container Entry Date"
-msgstr "Fecha de entrada del contenedor"
-
-msgid "Container Open Date"
-msgstr "Fecha de apertura del contenedor"
-
-msgid "Use"
-msgstr "Uso"
-
-msgid "Type Budget"
-msgstr "Tipo de presupuesto"
-
-msgid "ID Number"
-msgstr "Número de identificación"
-
-msgid "Substance name"
-msgstr "Nombre de la sustancia"
-
-msgid "Name of official"
-msgstr "Nombre del funcionario"
-
-msgid "Occupational Health Report"
-msgstr "Reporte de Salud Laboral"
-
-msgid "Show Roles information"
-msgstr "Mostrar información de roles"
-
-msgid "Add a description"
-msgstr "Agregar una descripción"
-
-msgid "Add a new rol"
-msgstr "Agregar un nuevo rol"
-
-msgid "Groups"
-msgstr "Grupos"
-
-msgid "Help Text"
-msgstr "Texto de ayuda"
-
-msgid "Show descriptions of groups"
-msgstr "Mostrar descripciones de los grupos"
-
-msgid "Role updated successfully"
-msgstr "El rol fue actualizado exitosamente"
-
-msgid "Edit Role"
-msgstr "Editar Rol"
-
-msgid "Chemical inventory report"
-msgstr "Informe de inventario de sustancias químicas"
-
-msgid "UNA can access"
-msgstr "UNA puede acceder"
-
-msgid "This endpoint requires lab_pk in the URL."
-msgstr "Este endpoint requiere lab_pk en la URL."
-
-msgid "Legal Identity"
-msgstr "Identidad Jurídica"
-
-msgid "Register Object Feature"
-msgstr "Registrar características de objetos"
-
-msgid "Update Object Feature"
-msgstr "Actualizar características de objetos"
-
-msgid "Delete Object Feature"
-msgstr "Eliminar características de objetos"
-
-msgid "Register Object"
-msgstr "Registrar Material"
-
-msgid "Delete Object"
-msgstr "Eliminar Material"
-
-msgid "Cannot change measurement unit because this material is referenced by shelf objects."
-msgstr "No se puede cambiar la unidad de medida porque este material está referenciado por objetos del estante."
-
-msgid "Cannot change is container because this material is referenced by shelf objects."
-msgstr "No se puede cambiar el contenedor porque este material está referenciado por objetos del estante."
-
-msgid "High-risk establishment"
-msgstr "Establecimiento de alto riesgo"
-
-msgid "Health totals:"
-msgstr "Totales de salud:"
-
-msgid "Physical totals:"
-msgstr "Totales físicos:"
-
-msgid "Environmental totals:"
-msgstr "Totales ambientales:"
-
-msgid "Calculator"
-msgstr "Calculadora"
-
-msgid "Danger Categories of the list 4"
-msgstr "Categorías de peligro de la lista 4"
-
-msgid "Danger Substance of the list 3"
-msgstr "Sustancia de peligro de la lista 3"
-
-msgid "Sum of dangers categories"
-msgstr "Suma de categorías de peligro"
-
-msgid "Danger substance"
-msgstr "Sustancia de peligro"
-
-msgid "Break threshold"
-msgstr "Umbral superado"
-
-msgid "Regency Report"
-msgstr "Informe Regencial"
-
-msgid "Dangerous substance of the list 3"
-msgstr "Sustancia peligrosa de la lista 3"
-
-msgid "Dangerous categoies of the list 4"
-msgstr "Categorías peligrosas de la lista 4"
-
-msgid "Dangerous substance of the list 4"
-msgstr "Sustancia peligrosa de la lista 4"
-
-msgid "Danger category"
-msgstr "Categoría de peligro"
-
-msgid "Intitution can access"
-msgstr "Institución puede acceder"
-
-msgid "List Reagents"
-msgstr "Listar Reactivos"
-
-msgid "Consumption reorder"
-msgstr "Reorden de consumo"
-
-msgid "Quantity cannot be less than the container object minimun limit: %(limit)s."
-msgstr "La cantidad no puede ser menor que el límite mínimo del contenedor: %(limit)s."
-
-msgid "Quantity cannot be greater than the container object maximum limit: %(limit)s."
-msgstr "La cantidad no puede ser mayor que el límite máximo del contenedor: %(limit)s."
-
-msgid "Decrease"
-msgstr "Disminuir"
-
-msgid "Administrator: Manages organizations, users, permissions, laboratories, risk zones, and reports at the system level."
-msgstr "Administrador: Gestiona organizaciones, usuarios, permisos, laboratorios, zonas de riesgo y reportes a nivel sistema."
-
-msgid "Laboratory Administrator: Manages substance inventory and the physical structure of the laboratory (shelves, zones)."
-msgstr "Administrador de Laboratorio: Administra el inventario de sustancias y la estructura física del laboratorio (estantes, zonas)."
-
-msgid "Laboratory User: Executes procedures and adds or removes substances between shelves."
-msgstr "Usuario de Laboratorio: Ejecuta procedimientos y agregar o quitar sustancias entre estantes."
-
-msgid "User Profile Explanations"
-msgstr "Explicación de los perfiles de usuario"
-
-msgid "Was donated?"
-msgstr "Fue donado?"
-
-msgid "You have received this email because you have expiring reactives in the Organilab system."
-msgstr "Usted ha recibido este correo porque tiene reactivos próximos a vencer en el sistema Organilab."
-
-msgid "This message is to notify you that one or more reactives in the laboratory <strong>%(lab_name)s</strong> will expire tomorrow."
-msgstr "Este mensaje es para notificarle que uno o más reactivos en el laboratorio <strong>%(lab_name)s</strong> vencerán mañana."
-
-msgid "Expiring reactives"
-msgstr "Reactivos próximos a vencer"
-
-msgid "Expiration date:"
-msgstr "Fecha de vencimiento:"
-
-msgid "Available quantity:"
-msgstr "Cantidad disponible:"
-
-msgid "Please take the necessary measures with these reactives before they expire."
-msgstr "Por favor tome las medidas necesarias con estos reactivos antes de su vencimiento."
-
-msgid "Organilab: Expiring reactives notification"
-msgstr "Organilab: Notificación de reactivos por vencer"
-
-msgid "You won't be recieving notifications of this object anymore."
-msgstr "Ya no recibirás notificaciones de este objeto."
-
-
-msgid "About precursor"
-msgstr "Sobre precursor"
-
-msgid "Risk Zone Report"
-msgstr "Reporte de zona de riesgo"
-
-msgid "Square 3"
-msgstr "Cuadro 3"
-
-msgid "Square 4"
-msgstr "Cuadro 4"
-
-msgid "Update flashpoint"
-msgstr "Actualizar flashpoint"
-
-msgid "Update Flashpoint"
-msgstr "Actualizar punto de inflamación"
-
-msgid "ShelfObject Flashpoint"
-msgstr "Punto de inflamación del objeto de estante"
-
-msgid "Danger Substance"
-msgstr "Sustancia Peligrosa"
-
-msgid "Register Danger Substance"
-msgstr "Registrar Sustancia Peligrosa"
-
-msgid "Update Danger Substance"
-msgstr "Actualizar Sustancia Peligrosa"
-
-msgid "Delete Danger Substance"
-msgstr "Eliminar Sustancia Peligrosa"
-
-msgid "Dangerous Substances"
-msgstr "Sustancias peligrosas"
-
-msgid "Notes"
-msgstr "Notas"
-
-msgid "Type Match"
-msgstr "Tipo de Coincidencia"
-
-msgid "Patron Name"
-msgstr "Nombre del Patrón"
-
-msgid "Especial Condition"
-msgstr "Condición Especial"
-
-msgid "Dangerous Substance Categories"
-msgstr "Categorías de sustancias peligrosas"
-
-msgid "H Code"
-msgstr "Código H"
-
-msgid "Category"
-msgstr "Categoría"
-
-msgid "Section"
-msgstr "Sección"
-
-msgid "Process Condition"
-msgstr "Condición de proceso"
-
-msgid "Update process condition"
-msgstr "Actualizar condición de proceso"
-
-msgid "Process condition updated successfully"
-msgstr "La condición de proceso fue actualizada exitosamente"
-
-msgid "Process condition was not updated"
-msgstr "La condición de proceso no fue actualizada"
-
-msgid "Update Process Condition"
-msgstr "Actualizar Condición de Proceso"
-
-msgid "Criterion"
-msgstr "Criterio"
-
-msgid "Cross rule"
-msgstr "Regla cruzada"
-
-msgid "H-codes"
-msgstr "Códigos H"
-
-msgid "Warnings"
-msgstr "Advertencias"
-
-msgid "Health contributions"
-msgstr "Contribuciones de salud"
-
-msgid "Physical contributions"
-msgstr "Contribuciones físicas"
-
-msgid "Environmental contributions"
-msgstr "Contribuciones ambientales"
-
-msgid "Details of the substances"
-msgstr "Detalle de las sustancias"
-
-msgid "Totals by category"
-msgstr "Sumatorias por categoría"
-
-msgid "Environmental"
-msgstr "Ambiental"
-
-msgid "Risk Categories Summary"
-msgstr "Resumen de Categorías de Riesgo"
-
-msgid "Establishment Status"
-msgstr "Estado del establecimiento"
-
-msgid "Linking laboratories of the parent organization"
-msgstr "Relacionar de laboratorios de la organización principal"
-
-msgid "Precursor Report Values"
-msgstr "Valores del informe de precursores"
-
-msgid "Register Precursor Report Values"
-msgstr "Registrar valores del informe de precursores"
-
-msgid "Update Precursor Report Values"
-msgstr "Actualizar valores del informe de precursores"
-
-msgid "Delete Precursor Report Values"
-msgstr "Eliminar valores del informe de precursores"
-
-msgid "You do not have access to this organization reports"
-msgstr "No tiene acceso a los informes de esta organización"
-
-msgid "Update process condition of reagents"
-msgstr "Actualizar condición de proceso de reactivos"
-
-# error_view.html
-
-msgid "Access denied"
-msgstr "Acceso denegado"
-
-msgid "Page not available"
-msgstr "Página no disponible"
-
-msgid "You don’t have permission to view this page"
-msgstr "No tiene permisos para ver esta página"
-
-msgid "Your account doesn’t have access to this resource. If you think this is a mistake, contact the administrator."
-msgstr "Su cuenta no tiene acceso a este recurso. Si considera que esto es un error, contacte al administrador."
-
-msgid "We couldn’t find that page"
-msgstr "No pudimos encontrar esa página"
-
-msgid "It may not exist, it may have moved, or you may not have permission to view it."
-msgstr "Puede que no exista, que haya cambiado de ubicación o que no tenga permisos para verla."
-
-msgid "Access issue"
-msgstr "Problema de acceso"
-
-msgid "Not found"
-msgstr "No encontrada"
-
-msgid "Try again with another account or request access."
-msgstr "Intente nuevamente con otra cuenta o solicite acceso."
-
-msgid "Check the URL or go back to the home page."
-msgstr "Verifique la URL o regrese a la página principal."
-
-msgid "Referrer"
-msgstr "Página de origen"
-
-msgid "Go to home"
-msgstr "Ir al inicio"
-
-msgid "Error code"
-msgstr "Código de error"
-
-msgid "CAS code"
-msgstr "Código CAS"
-
-msgid "Donations Report"
-msgstr "Informe de donaciones"
-
-msgid "Donation Report"
-msgstr "Informe de donaciones"
-
-msgid "Load reagent inventory"
-msgstr "Cargar inventario de reactivos"
-
-msgid "Load Archive"
-msgstr "Cargar Archivo"
-
-msgid "Load archive"
-msgstr "Cargar archivo"
-
-msgid "Only .xlsm files are allowed."
-msgstr "Solo se permiten archivos .xlsm."
-
-msgid "The archive was loaded successfully."
-msgstr "El archivo fue cargado correctamente."
-
-msgid "Save Reactives"
-msgstr "Guardar reactivos"
-
-msgid "The measurement unit in some reactive is different from the shelf measurement unit %s"
-msgstr "La unidad de medida en algunos reactivos es diferente de la unidad de medida de la estante %s"
-
-msgid "The unit not exist in the database"
-msgstr "La unidad no existe en la base de datos"
-
-msgid "The quantity cannot be greater than the quantity available for the container."
-msgstr "La cantidad no puede ser mayor que la cantidad disponible en el contenedor."
-
-msgid "Maximum annual quantity"
-msgstr "Cantidad anual máxima"
-
-msgid "Capacity of the container"
-msgstr "Capacidad del envase"
-
-msgid "Measurement unit of the container"
-msgstr "Unidad de medida del envase"
-
-msgid "Chemical formula"
-msgstr "Fórmula química"
-
-msgid "Measurement unit of the maximum annual quantity"
-msgstr "Unidad de medida de la cantidad anual máxima"
-
-msgid "Name of the product"
-msgstr "Nombre del producto"
-
-msgid "Material of the container"
-msgstr "Material del contenedor"
-
-msgid "Upload Reactives"
-msgstr "Subir reactivos"
-
-msgid "Form"
-msgstr "Formulario"
-
-msgid "No step has been selected"
-msgstr "Ningún paso ha sido seleccionado"
-
-msgid "Period on days"
-msgstr "Periodo en días"
-
-msgid "Register Provider"
-msgstr "Registrar Proveedor"
-
-msgid "Compatibility Laboratory Report"
-msgstr "Informe de laboratorio de compatibilidad"
-
-msgid "Compatibility Report"
-msgstr "Reporte de compatibilidad SGA"
-
-msgid "Compatible"
-msgstr "Compatible"
-
-msgid "Caution"
-msgstr "Advertencia"
-
-msgid "Incompatible"
-msgstr "Incompatible"
-
-msgid "Incompatibility Alerts"
-msgstr "Advertencias de incompatibilidad"
-
-msgid "Shelf A"
-msgstr "Estante A"
-
-msgid "H-Code A"
-msgstr "Código H A"
-
-msgid "Shelf B"
-msgstr "Estante B"
-
-msgid "H-Code B"
-msgstr "Código H B"
-
-msgid "Reason"
-msgstr "Razón"
-
-msgid "Summary Map"
-msgstr "Mapa de resumen"
-
-msgid "No rooms in this laboratory."
-msgstr "No hay salas en este laboratorio."
-
-msgid "No shelf layout configured for this furniture."
-msgstr "No hay diseño de estantes configurado para este mueble."
-
-msgid "No furniture in this room."
-msgstr "No hay muebles en esta sala."
-
-msgid "No laboratory data available."
-msgstr "No hay datos de laboratorio disponibles."
-
-msgid "Total reactive weight"
-msgstr "Peso total de reactivos"
-
-msgid "tons"
-msgstr "toneladas"
-
-msgid "Substance A"
-msgstr "Substancia A"
-
-msgid "Substance B"
-msgstr "Substancia B"
-
-msgid "Laboratory A"
-msgstr "Laboratorio A"
-
-msgid "Laboratory B"
-msgstr "Laboratorio B"
-
-msgid "No buildings found for this organization."
-msgstr "No se encontraron edificios para esta organización."
-
-msgid "Create buildings and assign them to risk zones first."
-msgstr "Cree edificios y asignelos a zonas de riesgo primero."
-
-msgid "No risk zones found linked to the selected buildings."
-msgstr "No se encontraron zonas de riesgo vinculadas a los edificios seleccionados."
-
-msgid "Assign risk zones to buildings first."
-msgstr "Asigne zonas de riesgo a edificios primero."
-
-msgid "Risk zones found but none have laboratories assigned."
-msgstr "Zonas de riesgo encontradas pero ninguna tiene laboratorios asignados."
-
-msgid "Assign laboratories to the risk zones."
-msgstr "Asigne laboratorios a las zonas de riesgo."
-
-msgid "Laboratories found but no reactive substances registered."
-msgstr "Laboratorios encontrados pero no se han registrado sustancias reactivas."
-
-msgid "Register reactive substances (ShelfObjects of type Reactive) in the laboratories."
-msgstr "Registre sustancias reactivas (objetos de estante de tipo Reactive) en los laboratorios."
-
-msgid "Reactive substances found but none have H-codes (danger indications) assigned."
-msgstr "Sustancias reactivas encontradas pero ninguna tiene códigos H (indicaciones de peligro) asignados."
-
-msgid "Edit each reactive substance and assign H-codes via Substance Characteristics (SGA)."
-msgstr "Edite cada sustancia reactiva y asigne códigos H (indicaciones de peligro) a través de Características de sustancias (SGA)."
-
-msgid "Only one unique H-code found across all zones. At least 2 different H-codes are needed to compare compatibility."
-msgstr "Sólo se encontró un único código H en todas las zonas. Se necesitan al menos 2 códigos H diferentes para comparar la compatibilidad."
-
-msgid "Assign different H-codes to the reactive substances."
-msgstr "Asigne diferentes códigos H a las sustancias reactivas."
-
-msgid "No compatibility pairs generated. Each zone needs at least 2 different H-codes within the same zone."
-msgstr "No se generaron pares de compatibilidad. Cada zona necesita al menos 2 códigos H diferentes dentro de la misma zona."
-
-msgid "Ensure at least one risk zone contains substances with 2 or more different H-codes."
-msgstr "Asegúrese de que al menos una zona de riesgo contiene sustancias con 2 o más códigos H diferentes."
-
-msgid "Compatibility"
-msgstr "Compatibilidad"
-
-msgid "Know places"
-msgstr "Lugares conocidos"
-
-msgid "Density"
-msgstr "Densidad"
-
-msgid "Search FDS"
-msgstr "Buscar FDS"
-
-msgid "Upload FDS"
-msgstr "Subir FDS"
-
-msgid "Analyze"
-msgstr "Analizar"
-
-msgid "Upload FDS File"
-msgstr "Subir archivo FDS"
-
-msgid "FDS File (PDF)"
-msgstr "Archivo FDS (PDF)"
-
-msgid "Diagnostic"
-msgstr "Diagnóstico"
-
-msgid "Classifications"
-msgstr "Clasificaciones"
-
-msgid "Corresponds to the date of the first report, additionally it is the date since the cycle begins to count"
-msgstr "Corresponde a la fecha del primer informe, además es la fecha desde que se inicia a contar el ciclo"
-
-msgid "No comments"
-msgstr "Sin comentarios"
-
-msgid "Legend"
-msgstr "Leyenda"
-
-msgid "No form data recorded"
-msgstr "No hay datos de formulario registrados"
-
-msgid "Reactives with H-codes"
-msgstr "Reactivos con códigos H"
-
-msgid "Unique H-codes"
-msgstr "Códigos H únicos"
-
-msgid "Review extracted data"
-msgstr "Revisar datos extraídos"
-
-msgid "FDS Coverage"
-msgstr "Cobertura FDS"
-
-msgid "Interactive guides to help you use the system. Click on a tutorial to start it."
-msgstr "Guías interactivas para ayudarte a usar el sistema. Haz clic en un tutorial para iniciarlo."
-
-msgid "Enable tutorials"
-msgstr "Activar tutoriales"
-
-msgid "Restart"
-msgstr "Reiniciar"
-
-msgid "steps"
-msgstr "pasos"
-
-msgid "Completed"
-msgstr "Completado"
-
-msgid "In progress"
-msgstr "En proceso"
-
-msgid "Not started"
-msgstr "No iniciado"
-
-msgid "Management system for risk management in warehouses and laboratories where reagents and chemicals are stored"
-msgstr "Sistema regencial para la gestión de riesgo en bodegas y laboratorios en los que se almacena reactivos y productos químicos"
-
-msgid "Workers"
-msgstr "Trabajadores"
-
-msgid "Pending Tasks"
-msgstr "Tareas Pendientes"
-
-msgid "Add Pending Task"
-msgstr "Agregar tarea pendiente"
-
-msgid "Change Pending Task"
-msgstr "Modificar tarea pendiente"
-
-msgid "Delete Pending Task"
-msgstr "Eliminar tarea pendiente"
-
-msgid "View Pending Task"
-msgstr "Ver tarea pendiente"
-
-msgid "Pending Task"
-msgstr "Tarea pendiente"
-
-msgid "Create task"
-msgstr "Crear tarea"
-
-msgid "Edit task"
-msgstr "Editar tarea"
-
-msgid "Delete task"
-msgstr "Eliminar tarea"
-
-msgid "Open link"
-msgstr "Abrir enlace"
-
-msgid "Pending"
-msgstr "Pendiente"
-
-msgid "In process"
-msgstr "En proceso"
-
-msgid "Finished"
-msgstr "Finalizada"
-
-msgid "No pending tasks"
-msgstr "No hay tareas pendientes"
-
-msgid "No tasks in process"
-msgstr "No hay tareas en proceso"
-
-msgid "No finished tasks"
-msgstr "No hay tareas finalizadas"
-
-msgid "Archive all finished tasks"
-msgstr "Archivar todas las tareas terminadas"
-
-msgid "Archive task"
-msgstr "Archivar tarea"
-
-msgid "Expand description"
-msgstr "Expandir descripción"
-
-msgid "New pending task: %s"
-msgstr "Nueva tarea pendiente: %s"
-
-msgid "Day shift"
-msgstr "Jornada diurna"
-
-msgid "Mixed shift"
-msgstr "Jornada mixta"
-
-msgid "Night shift"
-msgstr "Jornada nocturna"
-
-msgid "Workday"
-msgstr "Jornada Laboral"
-
-msgid "Number of workers"
-msgstr "Número de trabajadores"
-
-msgid "Start Time"
-msgstr "Hora de inicio"
-
-msgid "End Time"
-msgstr "Hora de salida"
-
-msgid "Workdays of the risk zone"
-msgstr "Jornadas Laborales de la zona de riesgo"
-
-msgid "Workdays"
-msgstr "Jornadas Laborales"
-
-msgid "Update Workday"
-msgstr "Actualizar Jornada Laboral"
-
-msgid "Register Workday"
-msgstr "Registrar Jornada Laboral"
-
-msgid "View Workdays"
-msgstr "Ver Jornadas Laborales"
-
-msgid "Delete Workday"
-msgstr "Eliminar Jornada Laboral"
-
-msgid "Register Workdays"
-msgstr "Registrar Jornadas Laborales"
-
-msgid "Update Workdays"
-msgstr "Actualizar Jornadas Laborales"
-
-msgid "environmental"
-msgstr "ambiental"
-
-msgid "health"
-msgstr "salud"
-
-msgid "physical"
-msgstr "físico"
-
-msgid "ShelfObject expiration"
-msgstr "Vencimiento de objetos de estante"
-
-msgid "List of ShelfObject in limits"
-msgstr "Lista de objetos de estante con límites"
-
-msgid "You have been assigned a task because you have a change in a laboratory that you are responsible in the Organilab system."
-msgstr "Usted se le ha asignado una tarea porque tiene un cambio en un laboratorio que eres responsable en el sistema Organilab."
-
-msgid "This message is to notify you that one or more objects in the laboratory"
-msgstr "Este mensaje es para notificarle que uno o más objetos en el laboratorio"
-
-msgid "are at the minimum quota."
-msgstr "están en las cuotas mínimas."
-
-msgid "Detail of objects at the limit"
-msgstr "Detalle de objetos al límite"
-
-msgid "This message is to notify you that one or more reactives in the laboratory"
-msgstr "Este mensaje es para notificarle que uno o más reactivos en el laboratorio"
-
-msgid "will expire tomorrow."
-msgstr "vencerán mañana."
-
-msgid "Reagents nearing their expiration date"
-msgstr "Reactivos próximos a vencer"
-
-msgid "New period inform"
-msgstr "Nuevo informe de periodo"
-
-msgid "New period inform was created in the laboratory %s with the name %s"
-msgstr "Se creó un nuevo informe de periodo en el laboratorio %s con el nombre %s"
-
-msgid "Update Reactive"
-msgstr "Actualizar Reactivo"
-
-msgid "Available objects"
-msgstr "Objetos disponibles"
-
-msgid "Nominated"
-msgstr "Nominada"
-
-msgid "Ratio"
-msgstr "Ratio"
-
-msgid "Area/Volume"
-msgstr "Área/Volumen"
-
-msgid "New Structure type"
-msgstr "Nuevo Tipo Estructura"
-
-msgid "Create Box"
-msgstr "Crear caja"
-
-msgid "Quantity of boxes"
-msgstr "Cantidad de cajas"
-
-msgid "Quantity Units per box"
-msgstr "Unidades por caja"
-
-msgid "Is box?"
-msgstr "Es caja?"
-
-msgid "Box"
-msgstr "Caja"
-
-msgid "Number of boxes"
-msgstr "Número de cajas"
-
-msgid "Box detail"
-msgstr "Detalle de cajas"
-
-msgid "Units per box"
-msgstr "Unidades por caja"
-
-msgid "List of integer unit quantities indexed by box position"
-msgstr "Lista de cantidades enteras de unidades indexadas por posición de caja"
-
-msgid "Quantity Box"
-msgstr "Cantidad de cajas"
-
-msgid "Number of box"
-msgstr "Número de cajas"
-
-msgid "%(quantity)s %(unit)s"
-msgstr "%(quantity)s %(unit)s"
-
-msgid "%(boxes)s box(es) x %(units)s units"
-msgstr "%(boxes)s caja(s) x %(units)s unidades"
-
-msgid "%(count)d box(es) created successfully."
-msgstr "%(count)d caja(s) creada(s) exitosamente."
-
-msgid "%(name)s (%(quantity)s %(unit)s)"
-msgstr "%(name)s (%(quantity)s %(unit)s)"
-
-msgid "%(units)s unit(s)"
-msgstr "%(units)s unidad(es)"
-
-msgid "%(boxes)s box(es)"
-msgstr "%(boxes)s caja(s)"
-
-msgid "Select box"
-msgstr "Seleccionar caja"
-
-msgid "unit(s)"
-msgstr "unidad(es)"
-
-msgid "Box units decreased"
-msgstr "Unidades de caja disminuidas"
-
-msgid "Box %(box)s: %(units)d unit(s) remaining"
-msgstr "Caja %(box)s: %(units)d unidad(es) restante(s)"
-
-msgid "No boxes"
-msgstr "Sin cajas"
-
-msgid "Box updated"
-msgstr "Caja actualizada"
-
-msgid "Box was updated successfully."
-msgstr "La caja fue actualizada exitosamente."
-
-msgid "Edit Box"
-msgstr "Editar caja"
-
-msgid "(%(units)s) units per box"
-msgstr "(%(units)s) unidades por caja"
-
-msgid "Box of %(name)s (%(quantity)s %(unit)s)"
-msgstr "Caja de %(name)s (%(quantity)s %(unit)s)"
-
-msgid "Cannot change the number of boxes or units per box because one or more boxes have already been modified. Use the decrease or increase actions instead."
-msgstr "No se puede cambiar el número de cajas ni las unidades por caja porque una o más cajas ya fueron modificadas. Use las acciones de disminuir o aumentar."
-
-msgid "Box selection is required for box objects."
-msgstr "La selección de caja es requerida para objetos de tipo caja."
-
-msgid "Invalid box selection."
-msgstr "Selección de caja inválida."
-
-msgid "Subtract amount cannot be greater than the available box units."
-msgstr "La cantidad a restar no puede ser mayor que las unidades disponibles de la caja."
-
-msgid "Added the box %(box)s: %(units)d unit(s) remaining"
-msgstr "Se agregó la caja %(box)s: %(units)d unidad(es) restante(s)"
-
-msgid "Box was increased successfully."
-msgstr "La caja fue incrementada exitosamente."
-
-msgid "boxes"
-msgstr "cajas"
-
-msgid "Boxes to return"
-msgstr "Cajas para devolver"
-
-msgid "The transfer out cannot be performed since the boxes available for the source object is less than the amount to transfer."
-msgstr "La transferencia no puede realizarse porque la cantidad de cajas disponibles para el objeto de origen es menor que la cantidad a transferir."
-
-msgid "Laboratories map"
-msgstr "Mapa de laboratorios"
-
-
-msgid "Move in the boxes %(boxes)s from the laboratory %(lab)s."
-msgstr "Movió las cajas %(boxes)s desde el laboratorio %(lab)s."
-
-msgid "Box of"
-msgstr "Caja de"
-
-msgid "Your reservation #%(pk)d was denied: not enough box stock to fulfill the request (%(units)d units short)."
-msgstr "Su reserva #%(pk)d fue denegada: no hay suficiente stock de cajas para cumplir la solicitud (%(units)d unidades faltantes)."
-
-msgid "Not enough complete boxes available. %(needed)d complete box(es) required but only %(available)d available."
-msgstr "No hay suficientes cajas completas disponibles. Se requieren %(needed)d caja(s) completa(s) pero solo hay %(available)d disponible(s)."
-
-msgid "This item cannot be deleted because it has active reservations. Please close all reservations first."
-msgstr "Este artículo no puede eliminarse porque tiene reservas activas. Por favor, cierre todas las reservas primero."
-
-
-msgid "Select at least one box to return."
-msgstr "Seleccione al menos una caja para devolver."
-
-msgid "Units must be greater than 0 for box %(code)s."
-msgstr "Las unidades deben ser mayores a 0 para la caja %(code)s."
-
-msgid "Units must be between 0 and the reserved amount for each box."
-msgstr "Las unidades deben estar entre 0 y la cantidad reservada para cada caja."
-
-msgid "Amount to return must be greater than 0."
-msgstr "La cantidad a devolver debe ser mayor a 0."
-
-msgid "Amount to return cannot exceed the required amount (%(max)s)."
-msgstr "La cantidad a devolver no puede superar la cantidad requerida (%(max)s)."
-
-msgid "Could not process the return. Please verify the values."
-msgstr "No se pudo procesar la devolución. Por favor verifique los valores."
-
-msgid "Amount to return"
-msgstr "Cantidad a devolver"
-
-msgid "Reserved units"
-msgstr "Unidades reservadas"
-
-msgid "Units to return"
-msgstr "Unidades a devolver"
-
-msgid "Confirm Return"
-msgstr "Confirmar devolución"
-
-msgid "Accept"
-msgstr "Aceptar"
-
-msgid "Reject"
-msgstr "Rechazar"
-
-msgid "No products in this reservation."
-msgstr "No hay productos en esta reserva."
-
-msgid "Already Returned"
-msgstr "Ya devuelto"
-
-msgid "The reservation has not started yet. Returns are not allowed before the initial date."
-msgstr "La reserva aún no ha iniciado. No se permiten devoluciones antes de la fecha de inicio."
-
-msgid "Return"
-msgstr "Devolver"
-
-msgid "Training Resources"
-msgstr "Capacitaciones"
-
-msgid "Access learning resources to understand how to use the system step by step."
-msgstr "Accede a material de capacitación para aprender a usar el sistema paso a paso."
-
-msgid "The unverification was performed successfully."
-msgstr "La desverificación se ha realizado con éxito."
-
-msgid "The verification was performed successfully."
-msgstr "La verificación se ha realizado con éxito."
-
-msgid "Unverify FDS"
-msgstr "Desverificar FDS"
-
-msgid "Verify FDS"
-msgstr "Verificar FDS"
-
-msgid "No file"
-msgstr "No hay archivo"
-
-msgid "List of FDS"
-msgstr "Listado de FDS"
-
-msgid "Register Incident"
-msgstr "Registrar Incidente"
-
-msgid "Update Incident"
-msgstr "Actualizar Incidente"
-
-msgid "Delete Incident"
-msgstr "Eliminar Incidente"
-
-msgid "The reservation start date cannot be later than the current date."
-msgstr "La fecha de inicio de la reserva no puede ser pasada la fecha actual"
-
-msgid "Enter a valid amount."
-msgstr "Valor ingresado invalido"
-
-msgid "View administrators"
-msgstr "Ver administradores"
-
-msgid "Administrators"
-msgstr "Administradores"
-
-msgid "Single Sign-On"
-msgstr "Inicio Único"
-
-msgid "User List"
-msgstr "Lista de Usuarios"
-
-msgid "Organizations List"
-msgstr "Lista de Organizaciones"
-
-msgid "Laboratories List"
-msgstr "Lista de Laboratorios"
-
-msgid "Laboratory and Organization List"
-msgstr "Lista de Laboratorios y Organizaciones"
-
-msgid "No roles assigned"
-msgstr "No se asignaron roles"
-
-msgid "User roles list"
-msgstr "Lista de roles por usuario"
-
-msgid "Filter by roles"
-msgstr "Filtrar por roles"
-
-msgid "User roles in laboratory"
-msgstr "Roles de usuario en laboratorio"
-
-msgid "User roles in organization"
-msgstr "Roles de usuario en organización"
-
-msgid "Clear filters"
-msgstr "Limpiar filtros"
-
-msgid "Filter by organization"
-msgstr "Filtrar por organización"
-
-msgid "Enable child organizations filter?"
-msgstr "Habilitar filtro de organizaciones hijas"
-
-msgid "Disable child organizations filter?"
-msgstr "Deshabilitar filtro de organizaciones hijas"
-
-msgid "Do you want to enable the child organizations filter?"
-msgstr "¿Desea habilitar el filtro de organizaciones hijas?"
-
-msgid "Do you want to disable the child organizations filter?"
-msgstr "¿Desea deshabilitar el filtro de organizaciones hijas?"
-
-msgid "Unit code"
-msgstr "Código de unidad"
-
-msgid "Revision date"
-msgstr "Fecha de revisión"
-
-msgid "EU codes"
-msgstr "Códigos UE"
-
-msgid "Precursor type"
-msgstr "Tipo de precursor"
-
-msgid "Seveso list"
-msgstr "Lista Seveso"
-
-msgid "Target organs"
-msgstr "Órganos afectados"
-
-msgid "Risks"
-msgstr "Riesgos"
-
-msgid "Confirm and create substance"
-msgstr "Confirmar y crear sustancia"
-
-msgid "My lab or organization requests"
-msgstr "Mis solicitudes de laboratorio u organización"
-
-msgid "My Requests"
-msgstr "Mis Solicitudes"
-
-msgid "New Request"
-msgstr "Nueva Solicitud"
-
-msgid "Update Request"
-msgstr "Actualizar Solicitud"
-
-msgid "New %(type)s request: %(name)s"
-msgstr "Nueva solicitud de %(type)s: %(name)s"
-
-msgid ""
-"Hi,\n"
-"\n"
-"A new %(type)s request has been submitted and requires your review.\n"
-"\n"
-"Name: %(name)s\n"
-"Requested by: %(user)s\n"
-"\n"
-"Please log in to review this request.\n"
-"\n"
-"Thanks,\n"
-"Organilab system"
-msgstr ""
-"Hola,\n"
-"\n"
-"Se ha enviado una nueva solicitud de %(type)s y requiere su revisión.\n"
-"\n"
-"Nombre: %(name)s\n"
-"Solicitado por: %(user)s\n"
-"\n"
-"Por favor inicie sesión para revisar esta solicitud.\n"
-"\n"
-"Gracias,\n"
-"Sistema Organilab"
-
-msgid "Your request '%(name)s' has been %(status)s"
-msgstr "Su solicitud '%(name)s' ha sido %(status)s"
-
-msgid ""
-"Hi %(user)s,\n"
-"\n"
-"Your %(type)s request '%(name)s' has been %(status)s.\n"
-"\n"
-"Thanks,\n"
-"Organilab system"
-msgstr ""
-"Hola %(user)s,\n"
-"\n"
-"Su solicitud de %(type)s '%(name)s' ha sido %(status)s.\n"
-"\n"
-"Gracias,\n"
-"Sistema Organilab"
-
-msgid "Request approved."
-msgstr "Solicitud aprobada."
-
-msgid "Request rejected."
-msgstr "Solicitud rechazada."
-
-msgid "Delete Request"
-msgstr "Eliminar Solicitud"
-
-msgid "Review lab or organization requests"
-msgstr "Revisar solicitudes de laboratorio u organización"
-
-msgid "Pending Requests"
-msgstr "Solicitudes Pendientes"
-
-msgid "Is organization?"
-msgstr "¿Es organización?"
-
-msgid "Review notes"
-msgstr "Notas de revisión"
-
-msgid "Water resources affected"
-msgstr "Recursos hídricos afectados"
-
-msgid "Nearby sites"
-msgstr "Sitios cercanos"
-
-msgid "Entity type"
-msgstr "Tipo de entidad"
-
-msgid "Rejected"
-msgstr "Rechazado"
-
-msgid "Lab or organization request"
-msgstr "Solicitud de laboratorio u organización"
-
-msgid "Lab or organization requests"
-msgstr "Solicitudes de laboratorio u organización"
-
-msgid "Requested at"
-msgstr "Solicitado el"
-
-msgid "Requested by"
-msgstr "Solicitado por"
-
-msgid "Parent organization"
-msgstr "Organización padre"
-
-msgid "Parent organization (for org)"
-msgstr "Organización padre (para org)"
-
-msgid "Can approve lab or organization request"
-msgstr "Puede aprobar solicitud de laboratorio u organización"
-
-msgid "Lab or Organization Request"
-msgstr "Solicitud de Laboratorio u Organización"
-
-msgid "View Lab or Organization Request"
-msgstr "Ver solicitud de laboratorio u organización"
-
-msgid "Add Lab or Organization Request"
-msgstr "Agregar solicitud de laboratorio u organización"
-
-msgid "Change Lab or Organization Request"
-msgstr "Cambiar solicitud de laboratorio u organización"
-
-msgid "Delete Lab or Organization Request"
-msgstr "Eliminar solicitud de laboratorio u organización"
-
-msgid "Can Approve Lab or Organization Request"
-msgstr "Puede aprobar solicitud de laboratorio u organización"
-
-msgid "Show resolved requests"
-msgstr "Mostrar solicitudes resueltas"
-
-msgid "Create organization/laboratory"
-msgstr "Crear organización/laboratorio"
-
-msgid "Review Requests"
-msgstr "Revisar Solicitudes"

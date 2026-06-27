@@ -22,10 +22,23 @@ from laboratory.models import (
     OrganizationStructure,
     BaseUnitValues,
     Object,
+    Laboratory,
 )
 from laboratory.utils_base_unit import get_conversion_units
 from risk_management.api.serializer import RiskZoneSerializer
-from risk_management.models import RiskZone, Buildings, EstablishmentLogs
+from risk_management.models import (
+    RiskZone,
+    Buildings,
+    EstablishmentLogs,
+    IPERAssessment,
+    IPERHazard,
+)
+from risk_management.iper_defaults import (
+    HAZARD_CATEGORIES,
+    KEY_HAZARD_CATEGORY,
+    KEY_RISK_LEVEL,
+    RISK_LEVELS,
+)
 from sga.models import DangerIndication
 
 default_colors = [
@@ -1109,3 +1122,108 @@ class EstablishmentLogsClassChart(BaseChart, HorizontalBarChart):
             },
         ]
 
+
+# ---------------------------------------------------------------------------
+# IPER (INTE T55) dashboard charts
+# ---------------------------------------------------------------------------
+class IPERBaseChart(BaseChart):
+    permission_classes = [LaboratoryPermission]
+    django_permissions_list = ["risk_management.view_iper_dashboard"]
+
+    def list(self, request):
+        raise Http404("Not found")
+
+    def retrieve(self, request, pk):
+        self.request = request
+        self.organization = get_object_or_404(OrganizationStructure, pk=pk)
+        data = self.get_graph_data()
+        serializer = self.serializer_class(data)
+        return Response(serializer.data)
+
+    def single_dataset(self, label):
+        self.index = randint(0, len(self.colors) - 1)
+        color = self.get_color()
+        return [
+            {
+                "label": str(label),
+                "backgroundColor": color,
+                "borderColor": color,
+                "borderWidth": 1,
+                "data": self.data,
+            }
+        ]
+
+
+@register_lookups(prefix="iper_risk_level", basename="iperrisklevelchart")
+class IPERRiskLevelChart(IPERBaseChart, HorizontalBarChart):
+
+    def get_title(self):
+        return {"display": True, "text": _("Hazards by risk level")}
+
+    def get_labels(self):
+        self.data = []
+        labels = []
+        base = IPERHazard.objects.filter(
+            assessment__organization__pk=self.organization.pk
+        )
+        for level in RISK_LEVELS:
+            labels.append(level)
+            self.data.append(
+                base.filter(
+                    risk_level__key=KEY_RISK_LEVEL, risk_level__description=level
+                ).count()
+            )
+        return labels
+
+    def get_datasets(self):
+        return self.single_dataset(_("Hazards"))
+
+
+@register_lookups(prefix="iper_hazard_category", basename="iperhazardcategorychart")
+class IPERHazardCategoryChart(IPERBaseChart, HorizontalBarChart):
+
+    def get_title(self):
+        return {"display": True, "text": _("Hazards by category")}
+
+    def get_labels(self):
+        self.data = []
+        labels = []
+        base = IPERHazard.objects.filter(
+            assessment__organization__pk=self.organization.pk
+        )
+        for category in HAZARD_CATEGORIES:
+            labels.append(category)
+            self.data.append(
+                base.filter(
+                    category__key=KEY_HAZARD_CATEGORY, category__description=category
+                ).count()
+            )
+        return labels
+
+    def get_datasets(self):
+        return self.single_dataset(_("Hazards"))
+
+
+@register_lookups(prefix="iper_compliance", basename="ipercompliancechart")
+class IPERComplianceChart(IPERBaseChart, HorizontalBarChart):
+
+    def get_title(self):
+        return {"display": True, "text": _("IPER compliance")}
+
+    def get_labels(self):
+        today = timezone.now().date()
+        current = overdue = missing = 0
+        labs = Laboratory.objects.filter(organization__pk=self.organization.pk)
+        for lab in labs:
+            latest = lab.iper_assessments.order_by("-version").first()
+            if latest is None:
+                missing += 1
+            elif latest.due_date and latest.due_date < today:
+                overdue += 1
+            else:
+                current += 1
+        self.data = [current, overdue, missing]
+        return [str(_("Current")), str(_("Overdue")), str(_("Missing"))]
+
+    def get_datasets(self):
+        return self.single_dataset(_("Laboratories"))

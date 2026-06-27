@@ -11,10 +11,18 @@ from django.utils.translation import gettext_lazy as _
 from location_field.models.plain import PlainLocationField
 
 from laboratory import catalog
-from laboratory.models import Laboratory, Catalog
+from laboratory.models import Laboratory, Catalog, ShelfObject
 from laboratory.models_utils import upload_files
 from presentation.models import AbstractOrganizationRef
-from risk_management.models_utils import PriorityCalculator
+from risk_management.models_utils import PriorityCalculator, compute_risk_level
+from risk_management.iper_defaults import (
+    KEY_HAZARD_CATEGORY,
+    KEY_PROBABILITY,
+    KEY_CONSEQUENCE,
+    KEY_RISK_LEVEL,
+    DEFAULT_PERIOD_MONTHS,
+    DEFAULT_REMINDER_DAYS_BEFORE,
+)
 
 
 class PriorityConstrain(AbstractOrganizationRef, PriorityCalculator):
@@ -372,3 +380,271 @@ class Workday(AbstractOrganizationRef):
         blank=True,
         on_delete=models.CASCADE,
     )
+
+
+# ---------------------------------------------------------------------------
+# IPER (Identificación de Peligros y Evaluación de Riesgos) — metodología INTE T55
+# ---------------------------------------------------------------------------
+
+
+class IPERRiskMatrix(models.Model):
+    """Matriz Probabilidad x Consecuencia -> Nivel de riesgo (global, 9 filas).
+
+    Las tres columnas referencian entradas del ``Catalog`` global vía
+    ``GTForeignKey`` filtrando por ``key``. Se siembra en la migración.
+    """
+
+    probability = catalog.GTForeignKey(
+        Catalog,
+        on_delete=models.DO_NOTHING,
+        verbose_name=_("Probability"),
+        key_name="key",
+        key_value=KEY_PROBABILITY,
+        related_name="iper_matrix_probability",
+    )
+    consequence = catalog.GTForeignKey(
+        Catalog,
+        on_delete=models.DO_NOTHING,
+        verbose_name=_("Consequence"),
+        key_name="key",
+        key_value=KEY_CONSEQUENCE,
+        related_name="iper_matrix_consequence",
+    )
+    risk_level = catalog.GTForeignKey(
+        Catalog,
+        on_delete=models.DO_NOTHING,
+        verbose_name=_("Risk level"),
+        key_name="key",
+        key_value=KEY_RISK_LEVEL,
+        related_name="iper_matrix_risk_level",
+    )
+
+    class Meta:
+        verbose_name = _("IPER risk matrix")
+        verbose_name_plural = _("IPER risk matrix")
+        unique_together = ("probability", "consequence")
+        ordering = ["pk"]
+
+    def __str__(self):
+        return "%s x %s -> %s" % (
+            self.probability,
+            self.consequence,
+            self.risk_level,
+        )
+
+
+class IPERConfig(AbstractOrganizationRef):
+    """Configuración de periodicidad del IPER. Vive en la organización raíz; puede
+    sobreescribirse por laboratorio."""
+
+    period_months = models.PositiveIntegerField(
+        verbose_name=_("Update period (months)"), default=DEFAULT_PERIOD_MONTHS
+    )
+    reminder_days_before = models.PositiveIntegerField(
+        verbose_name=_("Remind days before due date"),
+        default=DEFAULT_REMINDER_DAYS_BEFORE,
+    )
+    is_active = models.BooleanField(verbose_name=_("Is active"), default=True)
+    laboratory = models.ForeignKey(
+        Laboratory,
+        verbose_name=_("Laboratory"),
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        related_name="iper_configs",
+    )
+
+    class Meta:
+        verbose_name = _("IPER configuration")
+        verbose_name_plural = _("IPER configurations")
+        ordering = ["pk"]
+
+    def __str__(self):
+        return "%s (%s)" % (self.organization, self.period_months)
+
+
+class IPERAssessment(AbstractOrganizationRef):
+    """Evaluación IPER de un laboratorio, versionada en el tiempo."""
+
+    DRAFT = "draft"
+    COMPLETED = "completed"
+    OBSOLETE = "obsolete"
+    STATUS = (
+        (DRAFT, _("Draft")),
+        (COMPLETED, _("Completed")),
+        (OBSOLETE, _("Obsolete")),
+    )
+
+    PERIODIC = "periodic"
+    ON_DEMAND = "on_demand"
+    ZONE_REQUEST = "zone_request"
+    SOURCES = (
+        (PERIODIC, _("Periodic")),
+        (ON_DEMAND, _("On demand")),
+        (ZONE_REQUEST, _("Risk zone request")),
+    )
+
+    laboratory = models.ForeignKey(
+        Laboratory,
+        verbose_name=_("Laboratory"),
+        on_delete=models.CASCADE,
+        related_name="iper_assessments",
+    )
+    assessment_date = models.DateField(verbose_name=_("Assessment date"))
+    responsible = models.ForeignKey(
+        get_user_model(),
+        verbose_name=_("Responsible"),
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="iper_responsible",
+    )
+    status = models.CharField(
+        max_length=20, choices=STATUS, default=DRAFT, verbose_name=_("Status")
+    )
+    version = models.PositiveIntegerField(verbose_name=_("Version"), default=1)
+    previous = models.ForeignKey(
+        "self",
+        verbose_name=_("Previous version"),
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="next_versions",
+    )
+    due_date = models.DateField(
+        verbose_name=_("Next update due date"), null=True, blank=True
+    )
+    source = models.CharField(
+        max_length=20, choices=SOURCES, default=ON_DEMAND, verbose_name=_("Source")
+    )
+
+    class Meta:
+        verbose_name = _("IPER assessment")
+        verbose_name_plural = _("IPER assessments")
+        ordering = ("-assessment_date", "-version", "-pk")
+        permissions = [
+            ("view_all_iper", _("Can view all IPER assessments in the organization")),
+            ("request_iper", _("Can request laboratories to fill the IPER")),
+            ("view_iper_dashboard", _("Can view the IPER risk dashboard")),
+            (
+                "manage_iper_catalog",
+                _("Can manage IPER catalog and risk matrix (root org)"),
+            ),
+        ]
+
+    def __str__(self):
+        return "%s v%d (%s)" % (self.laboratory, self.version, self.assessment_date)
+
+    def risk_level_counts(self):
+        """Conteo de peligros por nivel de riesgo (description -> total)."""
+        counts = {}
+        for hazard in self.hazards.select_related("risk_level"):
+            if hazard.risk_level_id:
+                key = hazard.risk_level.description
+                counts[key] = counts.get(key, 0) + 1
+        return counts
+
+
+class IPERHazard(models.Model):
+    """Un peligro identificado dentro de una evaluación IPER."""
+
+    assessment = models.ForeignKey(
+        IPERAssessment,
+        verbose_name=_("Assessment"),
+        on_delete=models.CASCADE,
+        related_name="hazards",
+    )
+    category = catalog.GTForeignKey(
+        Catalog,
+        on_delete=models.DO_NOTHING,
+        verbose_name=_("Hazard classification"),
+        key_name="key",
+        key_value=KEY_HAZARD_CATEGORY,
+        related_name="iper_hazard_category",
+    )
+    description = models.TextField(verbose_name=_("Hazard description"))
+    location = models.CharField(
+        max_length=255, verbose_name=_("Hazard location"), blank=True
+    )
+    probability = catalog.GTForeignKey(
+        Catalog,
+        on_delete=models.DO_NOTHING,
+        verbose_name=_("Probability"),
+        key_name="key",
+        key_value=KEY_PROBABILITY,
+        related_name="iper_hazard_probability",
+    )
+    consequence = catalog.GTForeignKey(
+        Catalog,
+        on_delete=models.DO_NOTHING,
+        verbose_name=_("Consequence"),
+        key_name="key",
+        key_value=KEY_CONSEQUENCE,
+        related_name="iper_hazard_consequence",
+    )
+    risk_level = catalog.GTForeignKey(
+        Catalog,
+        on_delete=models.DO_NOTHING,
+        verbose_name=_("Risk level"),
+        key_name="key",
+        key_value=KEY_RISK_LEVEL,
+        related_name="iper_hazard_risk_level",
+        null=True,
+        blank=True,
+        editable=False,
+    )
+    risk_priority = models.SmallIntegerField(
+        verbose_name=_("Risk priority"), default=0, editable=False
+    )
+    controls = models.TextField(verbose_name=_("Implemented controls"), blank=True)
+    recommended_controls = models.TextField(
+        verbose_name=_("Recommended controls"), blank=True
+    )
+    related_shelfobjects = models.ManyToManyField(
+        ShelfObject,
+        verbose_name=_("Related inventory items"),
+        related_name="iper_hazards",
+        blank=True,
+    )
+
+    class Meta:
+        verbose_name = _("IPER hazard")
+        verbose_name_plural = _("IPER hazards")
+        ordering = ("-risk_priority", "pk")
+
+    def save(self, *args, **kwargs):
+        level, priority = compute_risk_level(self.probability, self.consequence)
+        self.risk_level = level
+        self.risk_priority = priority
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.description[:50]
+
+
+class IPERObservation(models.Model):
+    """Observación del analista de riesgo sobre una evaluación (sin aprobación)."""
+
+    assessment = models.ForeignKey(
+        IPERAssessment,
+        verbose_name=_("Assessment"),
+        on_delete=models.CASCADE,
+        related_name="observations",
+    )
+    author = models.ForeignKey(
+        get_user_model(),
+        verbose_name=_("Author"),
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name="iper_observations",
+    )
+    text = models.TextField(verbose_name=_("Observation"))
+    creation_date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = _("IPER observation")
+        verbose_name_plural = _("IPER observations")
+        ordering = ("-creation_date", "-pk")
+
+    def __str__(self):
+        return self.text[:50]

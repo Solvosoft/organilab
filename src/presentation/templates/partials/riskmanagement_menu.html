@@ -52,6 +52,20 @@
 				<i class="fa fa-line-chart" aria-hidden="true"></i>
 				{% trans 'Statistics' %}</a>
 			</li>
+			{% if perms.risk_management.view_iperassessment %}
+				<li><a href="{% url 'riskmanagement:iper_list' org_pk %}"
+											title="{% trans 'IPER assessments' %}">
+					<i class="fa fa-clipboard-list" aria-hidden="true"></i>
+					{% trans 'IPER assessments' %}</a>
+				</li>
+			{% endif %}
+			{% if perms.risk_management.view_iper_dashboard %}
+				<li><a href="{% url 'riskmanagement:iper_dashboard' org_pk %}"
+											title="{% trans 'IPER dashboard' %}">
+					<i class="fa fa-tachometer" aria-hidden="true"></i>
+					{% trans 'IPER dashboard' %}</a>
+				</li>
+			{% endif %}
 			{% if perms.laboratory.do_report %}
 				<li><a href="{% url 'report:risk_zone_report' org_pk %}"
 											title="{% trans 'Risk zone report' %}">

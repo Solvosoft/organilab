@@ -4,6 +4,7 @@ from rest_framework.routers import DefaultRouter
 from laboratory.views.furniture import add_catalog
 from risk_management import views as zoneviews
 from risk_management import incidents
+from risk_management import iper_views
 from risk_management.api.viewset import (
     RegentViewSet,
     BuildingViewSet,
@@ -104,4 +105,60 @@ urlpatterns = [
         include(workday_router.urls),
         name="api-workday",
     ),
+    # --- IPER (INTE T55) ---
+    path("iper/list/", iper_views.IPERAssessmentList.as_view(), name="iper_list"),
+    path("iper/create/", iper_views.IPERAssessmentCreate.as_view(), name="iper_create"),
+    path(
+        "iper/<int:pk>/detail/",
+        iper_views.IPERAssessmentDetail.as_view(),
+        name="iper_detail",
+    ),
+    path(
+        "iper/<int:pk>/update/",
+        iper_views.IPERAssessmentUpdate.as_view(),
+        name="iper_update",
+    ),
+    path(
+        "iper/<int:pk>/delete/",
+        iper_views.IPERAssessmentDelete.as_view(),
+        name="iper_delete",
+    ),
+    path(
+        "iper/<int:pk>/clone/",
+        iper_views.iper_clone_for_update,
+        name="iper_clone",
+    ),
+    path(
+        "iper/<int:pk>/observation/",
+        iper_views.iper_observation_add,
+        name="iper_observation_add",
+    ),
+    path(
+        "iper/<int:assessment_pk>/hazard/create/",
+        iper_views.iper_hazard_action,
+        name="iper_hazard_create",
+    ),
+    path(
+        "iper/<int:assessment_pk>/hazard/<int:pk>/update/",
+        iper_views.iper_hazard_action,
+        name="iper_hazard_update",
+    ),
+    path(
+        "iper/<int:assessment_pk>/hazard/<int:pk>/delete/",
+        iper_views.iper_hazard_delete,
+        name="iper_hazard_delete",
+    ),
+    path("iper/history/", iper_views.IPERHistory.as_view(), name="iper_history"),
+    path("iper/dashboard/", iper_views.IPERDashboard.as_view(), name="iper_dashboard"),
+    path(
+        "iper/zone/<int:risk_pk>/request/",
+        iper_views.iper_request_for_zone,
+        name="iper_request_zone",
+    ),
+    path(
+        "iper/labdata/<int:lab_pk>/",
+        iper_views.iper_lab_help,
+        name="iper_lab_help",
+    ),
+    path("iper/catalog/add/", iper_views.iper_catalog_add, name="iper_catalog_add"),
 ]
