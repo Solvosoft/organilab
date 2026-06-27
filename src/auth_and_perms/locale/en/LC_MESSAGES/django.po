@@ -3,54 +3,46 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-06-27 00:28-0600\n"
-"PO-Revision-Date: 2025-04-10 14:07-0600\n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"Language: es\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? "
-"1 : 2;\n"
-"X-Generator: Poedit 3.2.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "No roles assigned"
 msgstr ""
 
 msgid "Roles: manage the user's roles within the organization"
-msgstr "Roles: gestiona los roles del usuario dentro de la organización"
+msgstr ""
 
 msgid "List Roles: show user's roles"
-msgstr "Listar Roles: muestra los roles del usuario"
+msgstr ""
 
 msgid ""
 "Incognito mode: browse the system as this user without modifying your session"
 msgstr ""
-"Modo incógnito: navega el sistema como este usuario sin modificar tu sesión"
 
 msgid ""
 "Inherit: propagate the user's profile and roles to all child organizations"
 msgstr ""
-"Heredar: propaga el perfil y roles del usuario a todas las sub-"
-"organizaciones hijas"
 
 msgid "Remove: remove user from organization, can also disable platform access"
 msgstr ""
-"Eliminar: remueve al usuario de la organización, también puede deshabilitar "
-"el acceso a la plataforma"
 
 msgid "User not found, Sorry try to use add user button on organization list"
 msgstr ""
 
-#, fuzzy
-#| msgid "Add External User in Organization"
 msgid "User exist on organization"
-msgstr "Agregar usuario externo a la organización"
+msgstr ""
 
 msgid "User not match with email"
 msgstr ""
@@ -64,10 +56,8 @@ msgstr ""
 msgid "Shelfobject does not belong to this laboratory."
 msgstr ""
 
-#, fuzzy
-#| msgid "Click to manage this organization"
 msgid "Shelfobject does not belong to this organization."
-msgstr "Haga clic para gestionar esta organización"
+msgstr ""
 
 msgid "Shelfobject does not belong to this shelf."
 msgstr ""
@@ -75,34 +65,24 @@ msgstr ""
 msgid "Shelf does not belong to this laboratory."
 msgstr ""
 
-#, fuzzy
-#| msgid "Click to manage this organization"
 msgid "Shelf does not belong to this organization."
-msgstr "Haga clic para gestionar esta organización"
+msgstr ""
 
-#  Organization
-#, fuzzy
-#| msgid "Organization Structure"
 msgid "Organization cannot be inactive"
-msgstr "Estructura organizacional"
+msgstr ""
 
-#, fuzzy
-#| msgid "Role"
 msgid "Roles"
-msgstr "Rol"
+msgstr ""
 
-#, fuzzy
-#| msgid "User"
 msgid "Users"
-msgstr "Usuario"
+msgstr ""
 
 msgid "Laboratory modification not authorized"
 msgstr ""
 
-#, fuzzy, python-format
-#| msgid "Add External User in Organization"
+#, python-format
 msgid "Added the user %(user)r in the organization %(org)r"
-msgstr "Agregar usuario externo a la organización"
+msgstr ""
 
 #, python-format
 msgid "Removed the groups %(groups)r from the profile %(profile)r"
@@ -118,19 +98,14 @@ msgstr ""
 msgid "You don't have permissions to access this section"
 msgstr ""
 
-#  Organization
-#, fuzzy
-#| msgid "Organization Structure"
 msgid "Organization parameter is required"
-msgstr "Estructura organizacional"
+msgstr ""
 
 msgid "Rols"
 msgstr ""
 
-#, fuzzy
-#| msgid "Organization User Management"
 msgid "Organization name"
-msgstr "Gestión de usuarios de la organización"
+msgstr ""
 
 msgid "Digital signature"
 msgstr ""
@@ -168,36 +143,26 @@ msgstr ""
 msgid "It will used to login when you want to login with digital signature"
 msgstr ""
 
-#, fuzzy
-#| msgid "Laboratory"
 msgid "Laboratories"
-msgstr "Laboratorio"
+msgstr ""
 
 msgid "User"
-msgstr "Usuario"
+msgstr ""
 
 msgid "Laboratory"
-msgstr "Laboratorio"
+msgstr ""
 
-#, fuzzy
-#| msgid "Click to manage this organization"
 msgid "Inactive organization"
-msgstr "Haga clic para gestionar esta organización"
+msgstr ""
 
-#, fuzzy
-#| msgid "Click to manage this organization"
 msgid "Clone organization"
-msgstr "Haga clic para gestionar esta organización"
+msgstr ""
 
-#, fuzzy
-#| msgid "Change Organization User Management"
 msgid "Change organization name"
-msgstr "Actualizar gestión de usuarios de la organización"
+msgstr ""
 
-#, fuzzy
-#| msgid "Click to manage this organization"
 msgid "Active organization"
-msgstr "Haga clic para gestionar esta organización"
+msgstr ""
 
 msgid "Actions"
 msgstr ""
@@ -206,16 +171,13 @@ msgid "Name"
 msgstr ""
 
 msgid "Profile"
-msgstr "Perfil"
+msgstr ""
 
 msgid "Groups"
 msgstr ""
 
-#  Organization
-#, fuzzy
-#| msgid "Organization Structure"
 msgid "Organization"
-msgstr "Estructura organizacional"
+msgstr ""
 
 msgid "Search by object"
 msgstr ""
@@ -223,16 +185,11 @@ msgstr ""
 msgid "Filter by roles"
 msgstr ""
 
-#, fuzzy
-#| msgid "Click to manage this organization"
 msgid "Filter by organization"
-msgstr "Haga clic para gestionar esta organización"
+msgstr ""
 
-#  Organization
-#, fuzzy
-#| msgid "Organization Structure"
 msgid "Organization not found"
-msgstr "Estructura organizacional"
+msgstr ""
 
 msgid "Address"
 msgstr ""
@@ -246,10 +203,8 @@ msgstr ""
 msgid "Workplace"
 msgstr ""
 
-#, fuzzy
-#| msgid "Add External User in Organization"
 msgid "Can add external user to organization"
-msgstr "Agregar usuario externo a la organización"
+msgstr ""
 
 msgid "Institution can access"
 msgstr ""
@@ -257,31 +212,20 @@ msgstr ""
 msgid "Can change own user/profile data"
 msgstr ""
 
-#  Permissions / Roles
-#, fuzzy
-#| msgid "Manage Permissions"
 msgid "permissions"
-msgstr "Gestionar permisos"
+msgstr ""
 
-#, fuzzy
-#| msgid "Reservation"
 msgid "Description"
-msgstr "Reserva"
+msgstr ""
 
-#, fuzzy
-#| msgid "Role"
 msgid "Rol"
-msgstr "Rol"
+msgstr ""
 
-#, fuzzy
-#| msgid "Profile"
 msgid "Profile Rol"
-msgstr "Perfil"
+msgstr ""
 
-#, fuzzy
-#| msgid "Profile"
 msgid "Profile Rols"
-msgstr "Perfil"
+msgstr ""
 
 msgid "Impostor"
 msgstr ""
@@ -314,18 +258,14 @@ msgstr ""
 msgid "You can modify this laboratory"
 msgstr ""
 
-#, fuzzy
-#| msgid "Roles: manage the user's roles within the organization"
 msgid "Register with new organization"
-msgstr "Roles: gestiona los roles del usuario dentro de la organización"
+msgstr ""
 
 msgid "Register you as organization administrator"
 msgstr ""
 
-#, fuzzy
-#| msgid "Create"
 msgid "Create user"
-msgstr "Crear"
+msgstr ""
 
 msgid ""
 "We need to validate that you are not a robot or spamer, so you need to "
@@ -341,10 +281,8 @@ msgid ""
 "For Costa Rica citicen, use your digital signature to login on organilab"
 msgstr ""
 
-#, fuzzy
-#| msgid "Change Profile"
 msgid "Configure your profile"
-msgstr "Actualizar perfil"
+msgstr ""
 
 msgid "Validate user"
 msgstr ""
@@ -385,25 +323,17 @@ msgstr ""
 msgid "Laboratory and Organization List"
 msgstr ""
 
-#, fuzzy
-#| msgid "Laboratory"
 msgid "By laboratory"
-msgstr "Laboratorio"
+msgstr ""
 
 msgid "By organization"
 msgstr ""
 
-#  Organization
-#, fuzzy
-#| msgid "Organization Structure"
 msgid "Organizations List"
-msgstr "Estructura organizacional"
+msgstr ""
 
-# Laboratory Process
-#, fuzzy
-#| msgid "Laboratory Process"
 msgid "Laboratories List"
-msgstr "Proceso de Laboratorio"
+msgstr ""
 
 msgid "User roles list"
 msgstr ""
@@ -411,45 +341,32 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
-#  Organization Structure
-#, fuzzy
-#| msgid "Add Organization Structure"
 msgid "Add organization"
-msgstr "Agregar estructura organizacional"
+msgstr ""
 
 msgid "Click to manage this organization"
-msgstr "Haga clic para gestionar esta organización"
+msgstr ""
 
 msgid "Choose"
-msgstr "Elegir"
+msgstr ""
 
-#  Profile
-#, fuzzy
-#| msgid "Add Profile"
 msgid "Add new rol"
-msgstr "Agregar perfil"
+msgstr ""
 
-#  Common actions
 msgid "Add"
-msgstr "Agregar"
+msgstr ""
 
-#  User
 msgid "Add User"
-msgstr "Agregar usuario"
+msgstr ""
 
-#, fuzzy
-#| msgid "Delete User"
 msgid "Related Users"
-msgstr "Eliminar usuario"
+msgstr ""
 
-#  Laboratory
 msgid "Add Laboratory"
-msgstr "Agregar Laboratorio"
+msgstr ""
 
-#, fuzzy
-#| msgid "Delete Laboratory"
 msgid "Related Laboratory"
-msgstr "Eliminar Laboratorio"
+msgstr ""
 
 msgid "Disable child organizations filter"
 msgstr ""
@@ -457,43 +374,29 @@ msgstr ""
 msgid "Enable child organizations filter"
 msgstr ""
 
-#, fuzzy
-#| msgid "List"
 msgid "Log List"
-msgstr "Listar"
+msgstr ""
 
 msgid "Show Roles information"
 msgstr ""
 
-#, fuzzy
-#| msgid "View Contracts"
 msgid "View administrators"
-msgstr "Ver Contratos"
+msgstr ""
 
-#, fuzzy
-#| msgid "Click to manage this organization"
 msgid "Change parent of organization"
-msgstr "Haga clic para gestionar esta organización"
+msgstr ""
 
-#, fuzzy
-#| msgid "List"
 msgid "Rol List"
-msgstr "Listar"
+msgstr ""
 
-#, fuzzy
-#| msgid "Delete Organization Structure"
 msgid "Delete organization"
-msgstr "Eliminar estructura organizacional"
+msgstr ""
 
-#, fuzzy
-#| msgid "Profile"
 msgid "By profile"
-msgstr "Perfil"
+msgstr ""
 
-#, fuzzy
-#| msgid "Laboratory"
 msgid "Rol by laboratory"
-msgstr "Laboratorio"
+msgstr ""
 
 msgid "Add or restrict permission on this laboratory"
 msgstr ""
@@ -501,18 +404,14 @@ msgstr ""
 msgid "Relate user with this laboratory"
 msgstr ""
 
-#, fuzzy
-#| msgid "Click to manage this organization"
 msgid "Rol in all organization"
-msgstr "Haga clic para gestionar esta organización"
+msgstr ""
 
 msgid "Rol used when you don't have rol set on laboratory"
 msgstr ""
 
-#, fuzzy
-#| msgid "Roles: manage the user's roles within the organization"
 msgid "Relate user with this organization"
-msgstr "Roles: gestiona los roles del usuario dentro de la organización"
+msgstr ""
 
 msgid "Help Text"
 msgstr ""
@@ -529,10 +428,8 @@ msgstr ""
 msgid "Save changes"
 msgstr ""
 
-#, fuzzy
-#| msgid "Add Role"
 msgid "Add New Rol"
-msgstr "Agregar Rol"
+msgstr ""
 
 msgid "Copy Rols"
 msgstr ""
@@ -540,10 +437,8 @@ msgstr ""
 msgid "Rol name"
 msgstr ""
 
-#, fuzzy
-#| msgid "Add Reservation"
 msgid "Add a description"
-msgstr "Agregar Reservaciones"
+msgstr ""
 
 msgid "Copy permissions from other roles?"
 msgstr ""
@@ -551,10 +446,8 @@ msgstr ""
 msgid "Select roles to copy"
 msgstr ""
 
-#, fuzzy
-#| msgid "Delete Organization Structure"
 msgid "Create Organization"
-msgstr "Eliminar estructura organizacional"
+msgstr ""
 
 msgid "Linking laboratories of the parent organization"
 msgstr ""
@@ -571,26 +464,17 @@ msgstr ""
 msgid "Only labs selected"
 msgstr ""
 
-#  Organization
-#, fuzzy
-#| msgid "Organization Structure"
 msgid "Organization parent:"
-msgstr "Estructura organizacional"
+msgstr ""
 
-#, fuzzy
-#| msgid "Delete Organization User Management"
 msgid "Select an organization to be parent of"
-msgstr "Eliminar gestión de usuarios de la organización"
+msgstr ""
 
-#, fuzzy
-#| msgid "Delete Provider Laboratory"
 msgid "Relate user to laboratory"
-msgstr "Eliminar Proveedor de Laboratorio "
+msgstr ""
 
-#, fuzzy
-#| msgid "Click to manage this organization"
 msgid "From my organization"
-msgstr "Haga clic para gestionar esta organización"
+msgstr ""
 
 msgid "External user"
 msgstr ""
@@ -612,10 +496,8 @@ msgstr ""
 msgid "Find user"
 msgstr ""
 
-#, fuzzy
-#| msgid "Add External User in Organization"
 msgid "Actions for Organization"
-msgstr "Agregar usuario externo a la organización"
+msgstr ""
 
 msgid "Do you want to enable the child organizations filter?"
 msgstr ""
@@ -623,103 +505,68 @@ msgstr ""
 msgid "Administrators"
 msgstr ""
 
-#, fuzzy
-#| msgid "Laboratory"
 msgid "My laboratories"
-msgstr "Laboratorio"
+msgstr ""
 
-# Reports
-#, fuzzy
-#| msgid "Report"
 msgid "Reports"
-msgstr "Reporte"
+msgstr ""
 
-# Risk Management
-#, fuzzy
-#| msgid "Risk Zone"
 msgid "Risk Zones"
-msgstr "Zona de Riesgo"
+msgstr ""
 
-#, fuzzy
-#| msgid "Add Inform"
 msgid "Admin Informs"
-msgstr "Agregar Informe"
+msgstr ""
 
-# MSDS
 msgid "MSDS"
-msgstr "MSDS"
+msgstr ""
 
-# SGA / Safety
 msgid "SGA"
-msgstr "SGA"
+msgstr ""
 
-#, fuzzy
-#| msgid "Add Disposal"
 msgid "Disposal"
-msgstr "Agregar desecho"
+msgstr ""
 
-#, fuzzy
-#| msgid "Change Role"
 msgid "Manage Rol"
-msgstr "Actualizar Rol"
+msgstr ""
 
 msgid "Only rols selected"
 msgstr ""
 
-#, fuzzy
-#| msgid "Change User"
 msgid "Manage Users"
-msgstr "Actualizar usuario"
+msgstr ""
 
-#, fuzzy
-#| msgid "Delete Organization Structure"
 msgid "Delete Organization Rol"
-msgstr "Eliminar estructura organizacional"
+msgstr ""
 
 msgid "Are you sure you want to delete"
 msgstr ""
 
-#  Permissions / Roles
-#, fuzzy
-#| msgid "Manage Permissions"
 msgid "Current permissions"
-msgstr "Gestionar permisos"
+msgstr ""
 
 msgid "Confirm"
 msgstr ""
 
-#, fuzzy
-#| msgid "Click to manage this organization"
 msgid "Roles registered on this organization"
-msgstr "Haga clic para gestionar esta organización"
+msgstr ""
 
-#, fuzzy
-#| msgid "Add Role"
 msgid "Edit Role"
-msgstr "Agregar Rol"
+msgstr ""
 
-#, fuzzy
-#| msgid "List"
 msgid "User List"
-msgstr "Listar"
+msgstr ""
 
 msgid "Clear filters"
 msgstr ""
 
-#, fuzzy
-#| msgid "Add External User in Organization"
 msgid "User roles in organization"
-msgstr "Agregar usuario externo a la organización"
+msgstr ""
 
-#, fuzzy
-#| msgid "Delete Laboratory"
 msgid "User roles in laboratory"
-msgstr "Eliminar Laboratorio"
+msgstr ""
 
-#, fuzzy
-#| msgid "Organization User Management"
 msgid "Organization doesn't exists"
-msgstr "Gestión de usuarios de la organización"
+msgstr ""
 
 msgid "Element saved successfully"
 msgstr ""
@@ -736,10 +583,8 @@ msgstr ""
 msgid "Request User is the same as current user"
 msgstr ""
 
-#, fuzzy
-#| msgid "Add External User in Organization"
 msgid "User not in organization"
-msgstr "Agregar usuario externo a la organización"
+msgstr ""
 
 msgid "Form data is wrong, you need to pass a valid laboratory as contenttype"
 msgstr ""
@@ -747,10 +592,8 @@ msgstr ""
 msgid "Role updated successfully"
 msgstr ""
 
-#, fuzzy
-#| msgid "Organization User Management"
 msgid "Organization Management"
-msgstr "Gestión de usuarios de la organización"
+msgstr ""
 
 msgid ""
 "You have no creation process, maybe it was expired, please try to register "

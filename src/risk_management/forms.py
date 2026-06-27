@@ -12,9 +12,22 @@ from laboratory.models import (
     OrganizationStructureRelations,
     Laboratory,
     OrganizationStructure,
+    Catalog,
 )
 from laboratory.utils import get_user_laboratories, get_users_from_organization
-from risk_management.models import RiskZone, IncidentReport, ZoneType, Buildings
+from risk_management.models import (
+    RiskZone,
+    IncidentReport,
+    ZoneType,
+    Buildings,
+    IPERAssessment,
+    IPERHazard,
+    IPERObservation,
+)
+from risk_management.iper_defaults import (
+    KEY_HAZARD_CATEGORY,
+    KEY_RISK_LEVEL,
+)
 from djgentelella.widgets import core as djgentelella
 from djgentelella.widgets import core as genwidgets
 from urllib.parse import quote
@@ -384,3 +397,91 @@ class WorkdayForm(forms.ModelForm):
             "start_time": djgentelella.TimeInput,
             "end_time": djgentelella.TimeInput,
         }
+
+
+# ---------------------------------------------------------------------------
+# IPER (Identificación de Peligros y Evaluación de Riesgos)
+# ---------------------------------------------------------------------------
+
+
+class IPERAssessmentForm(GTForm, forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        org_pk = kwargs.pop("org_pk", None)
+        user = kwargs.pop("user", None)
+        super().__init__(*args, **kwargs)
+        labs = Laboratory.objects.none()
+        if user is not None:
+            labs = get_user_laboratories(user)
+            if org_pk:
+                labs = labs.filter(organization__pk=org_pk)
+        self.fields["laboratory"].queryset = labs
+
+    class Meta:
+        model = IPERAssessment
+        fields = ["laboratory", "assessment_date"]
+        widgets = {
+            "laboratory": genwidgets.Select,
+            "assessment_date": genwidgets.DateInput,
+        }
+
+
+class IPERHazardForm(GTForm, forms.ModelForm):
+    class Meta:
+        model = IPERHazard
+        fields = [
+            "category",
+            "description",
+            "location",
+            "probability",
+            "consequence",
+            "controls",
+            "recommended_controls",
+        ]
+        widgets = {
+            "category": genwidgets.Select,
+            "description": genwidgets.Textarea(attrs={"rows": 2}),
+            "location": genwidgets.TextInput,
+            "probability": genwidgets.Select,
+            "consequence": genwidgets.Select,
+            "controls": genwidgets.Textarea(attrs={"rows": 2}),
+            "recommended_controls": genwidgets.Textarea(attrs={"rows": 2}),
+        }
+
+
+class IPERObservationForm(GTForm, forms.ModelForm):
+    class Meta:
+        model = IPERObservation
+        fields = ["text"]
+        widgets = {
+            "text": genwidgets.Textarea(attrs={"rows": 2}),
+        }
+
+
+class IPERHistoryFilterForm(GTForm, forms.Form):
+    category = forms.ModelChoiceField(
+        queryset=Catalog.objects.filter(key=KEY_HAZARD_CATEGORY),
+        required=False,
+        widget=genwidgets.Select(attrs={"class": "form-control"}),
+        label=_("Hazard classification"),
+    )
+    risk_level = forms.ModelChoiceField(
+        queryset=Catalog.objects.filter(key=KEY_RISK_LEVEL),
+        required=False,
+        widget=genwidgets.Select(attrs={"class": "form-control"}),
+        label=_("Risk level"),
+    )
+    date_from = forms.DateField(
+        required=False,
+        widget=genwidgets.DateInput(attrs={"class": "form-control"}),
+        label=_("From"),
+    )
+    date_to = forms.DateField(
+        required=False,
+        widget=genwidgets.DateInput(attrs={"class": "form-control"}),
+        label=_("To"),
+    )
+
+    default_render_type = "as_grid"
+    grid_representation = [
+        [["category"], ["risk_level"], ["date_from"], ["date_to"]],
+    ]
