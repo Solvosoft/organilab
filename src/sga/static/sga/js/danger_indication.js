@@ -37,26 +37,29 @@ function delete_danger_indication(pk){
     }
     });
 }
-datatableelement=createDataTable('#dangerindicationtable', document.url_dangers_table, {
+var datatableConfig = {
     columns: [
         {data: "code", name: "code", title: gettext("Code"), type: "string", visible: true},
         {data: "description", name: "description", title: gettext("Description"), type: "string", visible: true},
         {data: "warning_words", name: "warning_words", title: gettext("Warning Words"), type: "string", visible: true},
         {data: "actions", name:"actions", title: gettext("Actions"), type: "string", visible: true, sortable: false},
     ],
-    buttons: [
-
-            {
-                text: '<i class="fa fa-plus" aria-hidden="true"></i> ' + gettext('Add'),
-                className: 'btn btn-success',
-                action: function (e, dt, node, config) {
-                    window.location.href = document.url_add_danger_indication;
-                }
-            }
-
-    ],
     dom: "<'d-flex justify-content-between'<'m-2'l>" +
     "<'m-2'B><'m-2 d-flex justify-content-start'f>>" +
     "<'row'tr><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 m-auto'p>>",
-}, addfilter=false);
+};
+
+if (has_perm) {
+    datatableConfig.buttons = [
+        {
+            text: '<i class="fa fa-plus" aria-hidden="true"></i> ' + gettext('Add'),
+            className: 'btn btn-success',
+            action: function (e, dt, node, config) {
+                window.location.href = document.url_add_danger_indication;
+            }
+        }
+    ];
+}
+
+datatableelement=createDataTable('#dangerindicationtable', document.url_dangers_table, datatableConfig, addfilter=false);
 

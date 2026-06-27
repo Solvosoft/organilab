@@ -74,7 +74,15 @@ if (has_perm_add_object) {
 
 const actions = {
     table_actions: [],
-    object_actions: [],
+    object_actions: [
+        {
+            'name': 'view_detail',
+            'action': 'view_detail',
+            'title': gettext('View Detail'),
+            'in_action_column': true,
+            'i_class': 'fa fa-eye',
+        }
+    ],
     title: 'Actions',
     className: "no-export-col"
 }
@@ -101,10 +109,106 @@ const objconfig = {
     gt_form_modals: {
         'create': {"parentdiv": 'p'},
         'update': {"parentdiv": 'p'},
-        'detail': {},
-        'destroy': {}
     }
 }
 
 const ocrud = ObjectCRUD("crudobj", objconfig)
+ocrud.view_detail = function(obj, action) {
+    let detail_url = object_urls.detail_url.replace('/0/', '/' + obj.id + '/');
+    fetch(detail_url, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        buildObjectDetailModal(data);
+        $('#object_detail_modal').modal('show');
+    })
+    .catch(error => {
+        console.error('Error fetching object detail:', error);
+    });
+}
+
+function buildObjectDetailModal(data) {
+    const modalBody = document.getElementById('object_detail_modal_body');
+    modalBody.innerHTML = '';
+
+    const modalLabel = document.getElementById('object_detail_modalLabel');
+    modalLabel.textContent = data.name || gettext('Material Detail');
+
+    let html = '<div class="container-fluid">';
+    html += '<div class="row">';
+
+    // Columna izquierda - Datos del Object
+    html += '<div class="col-md-6">';
+    html += '<h5 class="border-bottom pb-2 mb-3">' + gettext('General Information') + '</h5>';
+    html += '<table class="table table-sm table-striped">';
+    html += '<tbody>';
+    html += buildTableRow(gettext('Code'), data.code);
+    html += buildTableRow(gettext('Name'), data.name);
+    html += buildTableRow(gettext('Synonym'), data.synonym);
+    html += buildTableRow(gettext('Description'), data.description);
+    html += buildTableRow(gettext('Model'), data.model);
+    html += buildTableRow(gettext('Serie'), data.serie);
+    html += buildTableRow(gettext('Plaque'), data.plaque);
+    html += buildTableRow(gettext('Organization'), data.organization_name);
+    html += buildTableRow(gettext('Is Container'), data.is_container ? gettext('Yes') : gettext('No'));
+    html += '</tbody></table>';
+
+    // Features
+    if (data.features && data.features.length > 0) {
+        html += '<h6 class="mt-3">' + gettext('Features') + '</h6>';
+        html += '<ul class="list-group list-group-flush">';
+        data.features.forEach(function(feature) {
+            html += '<li class="list-group-item py-1">' + feature.name + '</li>';
+        });
+        html += '</ul>';
+    }
+    html += '</div>';
+
+    // Columna derecha - Material Capacity
+    html += '<div class="col-md-6">';
+    html += '<h5 class="border-bottom pb-2 mb-3">' + gettext('Container Detail') + '</h5>';
+
+    if (data.material_capacity) {
+        const mc = data.material_capacity;
+        html += '<table class="table table-sm table-striped">';
+        html += '<tbody>';
+        html += buildTableRow(gettext('Capacity'), mc.capacity);
+        if (mc.capacity_measurement_unit) {
+            html += buildTableRow(gettext('Measurement Unit'), mc.capacity_measurement_unit.description);
+        }
+        html += '</tbody></table>';
+    } else {
+        html += '<p class="text-muted">' + gettext('No material capacity defined') + '</p>';
+    }
+
+    html += '</div>';
+    html += '</div>';
+    html += '</div>';
+
+    modalBody.innerHTML = html;
+}
+
+function buildTableRow(label, value) {
+    return '<tr><td class="fw-bold" style="width: 40%;">' + label + '</td><td>' + (value || '-') + '</td></tr>';
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
 ocrud.init();

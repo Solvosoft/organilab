@@ -53,6 +53,8 @@
 			update_url: "{% url 'riskmanagement:api-workday-detail' org_pk risk.pk 0 %}",
 			create_url: "{% url 'riskmanagement:api-workday-list' org_pk risk.pk %}"
 		}
+		const has_create_perm = {{ perms.risk_management.add_workday|yesno:"true,false" }};
+		console.log(has_create_perm);
 	</script>
 	<script src="{% static 'js/workday.js' %}?v={% get_organilab_version %}"></script>
 

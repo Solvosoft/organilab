@@ -120,6 +120,6 @@ class OrganiLabOIDCBackend(OIDCAuthenticationBackend):
             pp.rol.add(rol)
 
     def _assign_default_groups(self, user):
-        groups = Group.objects.filter(name__in=["Profile", "PendingTasks"])
+        groups = Group.objects.filter(name__in=["Profile", "PendingTasks", "SGAView"])
         for group in groups:
             user.groups.add(group)

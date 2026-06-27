@@ -14,6 +14,11 @@ from auth_and_perms.api.viewsets import (
     ExternalUserToOrganizationViewSet,
     LaboratoryGeolocationsAPI,
     ManageOrgLabsAPI,
+    UserListViewset,
+    LaboratoryOrganizationViewset,
+    OrganizationLaboratoryViewset,
+    LaboratoryOrganizationRoles,
+    UserRoles,
 )
 from auth_and_perms.views import organizationstructure as orgstruct
 
@@ -48,6 +53,12 @@ routes.register(
 routes.register(
     "searchshelfobjectorg", SearchShelfObjectOrganization, "api-searchshelfobjectorg"
 )
+
+routes.register("userlist", UserListViewset, "api-userlist")
+routes.register("laborglist", LaboratoryOrganizationViewset, "api-laborglist")
+routes.register("orglablist", OrganizationLaboratoryViewset, "api-orglablist")
+routes.register("laborgroles", LaboratoryOrganizationRoles, "api-laborgroles")
+routes.register("userroles", UserRoles, "api-userroles")
 
 app_name = "auth_and_perms"
 
@@ -92,7 +103,7 @@ urlpatterns = [
         name="organizationManager",
     ),
     path(
-        "organization/map/laboratories/",
+        "<int:org_pk>/organization/map/laboratories/",
         map_of_laboratories_view,
         name="map_of_laboratories",
     ),
@@ -169,5 +180,12 @@ urlpatterns = [
         "api/laboratory_geolocations/",
         LaboratoryGeolocationsAPI.as_view(),
         name="api_laboratory_geolocations",
+    ),
+    path("get_users/", user_org_creation.get_users, name="get_users"),
+    path("lab_org_list/", orgstruct.get_labs_orgs, name="lab_org_list"),
+    path(
+        "enable_child_organizations/",
+        orgstruct.enable_child_organizations,
+        name="enable_child_organizations",
     ),
 ]

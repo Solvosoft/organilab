@@ -18,7 +18,6 @@ language: {"url": datatables_lang },
     }
 }
 }, addfilter=false);
-    relateusertoorg
 
 datatableorpermelement=createDataTable('#orpermelement', userinorg_api_url, {
 language: {"url": datatables_lang },
@@ -347,13 +346,18 @@ function deleteuserlab(elementid, contentTypeobj){
     })
 }
 
-function newuserrol(profile){
-    var element=$("#profile_"+profile)[0]
+function newuserrol(profile, model, objectid){
+    var element=$("#profile_"+profile+"_"+model+"_"+objectid)[0]
+    if (!element) {
+        console.error("Element not found: profile_"+profile+"_"+model+"_"+objectid);
+        return;
+    }
 
     document.contextroletable.as_conttentype=false;
     document.contextroletable.as_user=false;
     document.contextroletable.user=null;
     document.contextroletable.as_role=true;
+    document.contextroletable.contenttypeobj = null;
     document.contextroletable.contenttypeobj=Object.assign({}, element.dataset);
     document.contextroletable.profile=profile;
     $("#modal"+element.dataset.org).modal('show');
@@ -523,9 +527,7 @@ $(".contenttyperelobjbtnadd").on('click', function(e){
 
     organizationinput.val(orgPk);
     saveBtn.data('url', baseUrl.replace('/0/', '/' + orgPk + '/'));
-
     let dataUrl = fullbaseUrl.replace('/0/', '/' + orgPk + '/');
-    $(select).data('url', dataUrl);
 
     if ($(select).hasClass('select2-hidden-accessible')) {
         $(select).select2('destroy');
@@ -942,4 +944,23 @@ $(".admin_users_btn").on('click', function () {
             $("#admin_users_modal").modal('show');
         }
     });
+});
+
+$("#enable_button").on('click', function(){
+$("#enable_form").submit();
+});
+
+$(".enable_child_org").on('click', function(){
+    let orgPk = $(this).data('org');
+    let enable = $(this).data('enable');
+    $("#id_organization_enable").val(orgPk);
+    $("#id_enable_field").val(enable);
+    console.log(enable);
+    if (enable == true){
+        $("#enable-msg").text(gettext("Do you want to disable the child organizations filter?"));
+        $("#enable-title").text(gettext("Disable child organizations filter?"));
+    }else{
+        $("#enable-title").text(gettext("Enable child organizations filter?"));
+        $("#enable-msg").text(gettext("Do you want to enable the child organizations filter?"));
+    }
 });

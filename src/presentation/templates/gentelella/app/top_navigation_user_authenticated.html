@@ -13,7 +13,7 @@
 		</li>
 	{% endif %}
 {% endif %}
-{% if org_pk %}
+{% if org_pk and perms.laboratory.view_laboratory %}
 	<li>
 		<a href="{% url 'laboratory:mylabs' org_pk %}" title="{% trans 'My laboratories' %}">
 			<strong>{% trans 'My laboratories' %}</strong>
@@ -23,7 +23,7 @@
 {% if laboratory and org_pk %}
 
 
-	{% if perms.laboratory.add_objectfeatures %}
+	{% if perms.reservations_management.view_reservations %}
 		<li id="reservation_list_id"><a
 			href="{% url 'laboratory:my_reservations' org_pk laboratory %}">{% trans 'My reservations' %} </a>
 		</li>
@@ -38,7 +38,7 @@
 	{% if perms.academic.view_procedure or perms.laboratory.view_laboratoryroom %}
 		{% include 'gentelella/app/laboratory_menu.html' %}
 	{% endif %}
-	{% if perms.laboratory.add_laboratory or perms.laboratory.change_laboratory or perms.laboratory.add_furniture or perms.laboratory.add_object or perms.laboratory.add_features %}
+	{% if perms.laboratory.view_laboratory or perms.laboratory.view_furniture or perms.laboratory.view_object or perms.laboratory.view_features %}
 		{% include 'gentelella/app/administration_menu.html' %}
 	{% endif %}
 

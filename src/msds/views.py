@@ -34,7 +34,7 @@ logger = logging.getLogger("organilab")
 
 
 @login_required
-@permission_required("auth_and_perms.institution_can_access", raise_exception=True)
+@permission_required("msds.view_msdsobject", raise_exception=True)
 def index_msds(request, org_pk):
     source_labels = dict(SDSTraceability.SDS_SOURCE_CHOICES)
     existing_sources = (
@@ -56,7 +56,7 @@ def index_msds(request, org_pk):
 
 
 @login_required
-@permission_required("auth_and_perms.institution_can_access", raise_exception=True)
+@permission_required("msds.view_msdsobject", raise_exception=True)
 def get_list_msds(request, org_pk):
     objs = SDSTraceability.objects.filter(
         sustance_characteristics__obj__organization__pk=org_pk
@@ -166,7 +166,7 @@ def get_list_msds(request, org_pk):
 
 
 @login_required
-@permission_required("auth_and_perms.institution_can_access", raise_exception=True)
+@permission_required("msds.add_msdsobject", raise_exception=True)
 def sds_create(request, org_pk):
     context = {"org_pk": org_pk}
 

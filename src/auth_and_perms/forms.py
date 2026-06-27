@@ -323,3 +323,16 @@ class RolForm(GTForm, forms.ModelForm):
             "name": genwidgets.TextInput,
             "description": genwidgets.Textarea(attrs={"rows": 10}),
         }
+
+
+class RolListForm(GTForm, forms.Form):
+    rol = forms.ModelMultipleChoiceField(
+        queryset=Rol.objects.all().order_by("pk"),
+        widget=genwidgets.SelectMultiple,
+        label=_("Filter by roles"),
+    )
+    organization = forms.ModelChoiceField(
+        queryset=OrganizationStructure.objects.all().order_by("pk"),
+        widget=genwidgets.Select,
+        label=_("Filter by organization"),
+    )

@@ -93,7 +93,6 @@ def get_dataset_report(report, column_list=None):
         and len(report.data["risk_zone"]) == 0
     ):
         laboratories = risk_zones.values_list("buildings__laboratories", flat=True)
-
     filters.update({"in_where_laboratory__in": list(set(laboratories))})
 
     objs = ShelfObject.objects.filter(**filters).values_list("object__pk", flat=True)

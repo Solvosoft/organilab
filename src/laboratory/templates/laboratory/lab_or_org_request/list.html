@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% load i18n laboratory static %}
+{% load gtsettings %}
+{% load urlname_tags %}
+{% load organilab_tags %}
+{% block pre_head %}
+	{% define_true "use_datatables" %}
+	{% define_urlname_action 'lab_or_org_request' %}
+{% endblock %}
+{% block title %}{% trans 'My lab or organization requests' %}{% endblock %}
+
+{% block content %}
+	<div class="page-header text-center"><h1>{% trans 'My Requests' %}</h1></div>
+
+	<section class="my-3">
+		{% if perms.laboratory.view_labororgrequest %}
+			<div class="row mb-3">
+				<div class="col-auto d-flex align-items-center gap-2">
+					<label class="mb-0 fw-bold">{% trans 'Status' %}</label>
+					{{ form_filter.status }}
+				</div>
+			</div>
+			<div class="row mt-3">
+				<div class="col-12">
+					<table class="table table-hover table-striped w-100 table-responsive" id="table">
+					</table>
+				</div>
+			</div>
+		{% else %}
+			{% include 'laboratory/action_denied.html' %}
+		{% endif %}
+	</section>
+
+	{% url "laboratory:api-labororgrequest-list" org_pk as list_obj_url %}
+	{% trans 'New Request' as create_obj_title %}
+	{% include 'gentelella/blocks/modal_template.html' with form=form_create id="create_obj_modal" title=create_obj_title form_id="create_obj_form" url=list_obj_url principal_class='modal-xl' %}
+
+	{% url "laboratory:api-labororgrequest-detail" org_pk 0 as detail_obj_url %}
+
+	{% trans 'Update Request' as update_obj_tittle %}
+	{% include 'gentelella/blocks/modal_template.html' with form=form_update form_id="update_obj_form" id="update_obj_modal" title=update_obj_tittle url=detail_obj_url principal_class='modal-xl' %}
+
+	{% trans 'Delete Request' as delete_obj_title %}
+	{% include 'gentelella/blocks/modal_template_delete.html' with form_id="delete_obj_form" id="delete_obj_modal" title=delete_obj_title url=detail_obj_url %}
+
+{% endblock %}
+
+{% block js %}
+	{{ block.super }}
+	<script>
+		window.has_perm_create = {{ perms.laboratory.add_labororgrequest|yesno:"true,false" }};
+
+		const object_urls = {
+			list_url: "{% url 'laboratory:api-labororgrequest-list' org_pk %}",
+			create_url: "{% url 'laboratory:api-labororgrequest-list' org_pk %}",
+			destroy_url: "{% url 'laboratory:api-labororgrequest-detail' org_pk 0 %}",
+			update_url: "{% url 'laboratory:api-labororgrequest-detail' org_pk 0 %}",
+		}
+	</script>
+	<script>
+		(function () {
+			['#create_obj_modal', '#update_obj_modal'].forEach(function (id) {
+				var input = document.querySelector(id + ' input[data-location-field-options]');
+				if (input) input.setAttribute('data-location-field-observed', true);
+			});
+		})();
+	</script>
+	{{ form_create.media }}
+	<script src="{% static 'laboratory/js/lab_or_org_request.js' %}?v={% get_organilab_version %}"></script>
+	<script>
+		window._lf_map_instances = {};
+
+		function _patch_leaflet() {
+			if (typeof L === 'undefined' || !L.Map || L.Map._organilab_patched) return;
+			var origInit = L.Map.prototype.initialize;
+			L.Map.prototype.initialize = function (id, options) {
+				origInit.call(this, id, options);
+				if (this._container && this._container.id) {
+					window._lf_map_instances[this._container.id] = this;
+				}
+			};
+			var origRemove = L.Map.prototype.remove;
+			L.Map.prototype.remove = function () {
+				var mapId = this._container && this._container.id;
+				if (mapId) delete window._lf_map_instances[mapId];
+				return origRemove.call(this);
+			};
+			L.Map._organilab_patched = true;
+		}
+
+		var _patchAttempts = 0;
+		function _tryPatchLeaflet() {
+			_patch_leaflet();
+			if ((typeof L === 'undefined' || !L.Map._organilab_patched) && _patchAttempts++ < 200) {
+				setTimeout(_tryPatchLeaflet, 50);
+			}
+		}
+		_tryPatchLeaflet();
+
+		function reinit_map_in_modal(modal) {
+			var input = modal.querySelector('input[data-location-field-options]');
+			if (!input) return;
+			var mapId = 'map_' + input.name;
+			var mapContainer = document.getElementById(mapId);
+			if (!mapContainer) return;
+			input.removeAttribute('data-location-field-observed');
+			if (mapContainer._leaflet_id) {
+				var existing = window._lf_map_instances[mapId];
+				if (existing) {
+					try { existing.remove(); } catch (e) {}
+				} else {
+					delete mapContainer._leaflet_id;
+					mapContainer.innerHTML = '';
+				}
+			}
+			document.documentElement.setAttribute('data-lf-init', Date.now());
+		}
+		$('#create_obj_modal').on('shown.bs.modal', function () { reinit_map_in_modal(this); });
+		$('#update_obj_modal').on('shown.bs.modal', function () { reinit_map_in_modal(this); });
+	</script>
+{% endblock %}

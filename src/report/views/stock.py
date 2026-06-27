@@ -128,18 +128,7 @@ def get_stock_dataset(lab_pk, column_list=None):
         reactive = ShelfObject.objects.filter(
             object__pk=obj, container__isnull=True, **filters
         ).first()
-        print(
-            reactive.object.name,
-            reactive.total_quantity,
-            reactive.get_box_totals(),
-            reactive.is_box,
-        )
-        if reactive.object.name == "Tolueno":
-            print(
-                ShelfObject.objects.filter(
-                    object=reactive.object, container__isnull=True
-                )
-            )
+
         amount = sum(
             [
                 get_conversion_units(

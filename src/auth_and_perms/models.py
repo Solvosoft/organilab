@@ -14,12 +14,18 @@ from django_otp.plugins.otp_totp.models import TOTPDevice
 
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    phone_number = models.CharField(_("Phone"), default="", max_length=25)
-    id_card = models.CharField(_("Identification"), max_length=100)
+    phone_number = models.CharField(
+        _("Phone"), default="", max_length=25, null=True, blank=True
+    )
+    id_card = models.CharField(
+        _("Identification"), max_length=100, blank=True, null=True
+    )
     laboratories = models.ManyToManyField(
         "laboratory.Laboratory", verbose_name=_("Laboratories"), blank=True
     )
-    job_position = models.CharField(_("Job Position"), max_length=100)
+    job_position = models.CharField(
+        _("Job Position"), max_length=100, blank=True, null=True
+    )
     language = models.CharField(
         max_length=4,
         default=settings.LANGUAGE_CODE,
@@ -32,7 +38,7 @@ class Profile(models.Model):
     show_tutorials = models.BooleanField(
         default=True,
         verbose_name=_("Show tutorials"),
-        help_text=_("Enable automatic tutorial display on page visits")
+        help_text=_("Enable automatic tutorial display on page visits"),
     )
     workplace = models.ManyToManyField(
         "laboratory.OrganizationStructure",
@@ -57,6 +63,10 @@ class Profile(models.Model):
                 "institution_can_access",
                 _("Institution can access"),
             ),
+            (
+                "change_own_profile",
+                _("Can change own user/profile data"),
+            ),
         ]
 
 
@@ -76,7 +86,7 @@ class Rol(models.Model):
     description = models.TextField(blank=True, null=True, verbose_name=_("Description"))
 
     def __str__(self):
-        return f"{self.pk} {self.name}"
+        return f"{self.name}"
 
     class Meta:
         verbose_name = _("Rol")
@@ -96,6 +106,14 @@ class ProfilePermission(models.Model):
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")
     rol = models.ManyToManyField(Rol, blank=True, verbose_name=_("Rol"))
+    organization = models.ForeignKey(
+        "laboratory.OrganizationStructure",
+        verbose_name=_("Organization"),
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="profile_permissions",
+    )
 
     def __str__(self):
         return "%s" % (self.profile,)
