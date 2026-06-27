@@ -112,7 +112,7 @@ test-selenium-single-fast: ## Run a single Selenium test without GIF generation 
 
 
 docs: clean ##  - generate Sphinx HTML documentation, including API docs
-	pip install 'sphinx==8.2.3' sphinx-rtd-theme==3.0.2
+	pip install 'sphinx==8.2.3' sphinx-rtd-theme==3.0.2 sphinxcontrib-video==0.4.2
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
 	sphinx-build -b linkcheck ./docs/source ./docs/build/
@@ -123,7 +123,7 @@ docs_full: ##  - generate full docs, Sphinx HTML documentation, including API do
 	xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" sh -c "cd src && python manage.py test  --no-input --tag=selenium --parallel 12"
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
-	pip install 'sphinx==8.2.3' sphinx-rtd-theme==3.0.2
+	pip install 'sphinx==8.2.3' sphinx-rtd-theme==3.0.2 sphinxcontrib-video==0.4.2
 	sphinx-build -b linkcheck ./docs/source ./docs/build/
 	sphinx-build -b html ./docs/source ./docs/build/
 	python docs/fix_capacitacion_images.py

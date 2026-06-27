@@ -1,6 +1,7 @@
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse
+from djgentelella.decorators.perms import any_permission_required
 from djgentelella.widgets import core as genwidgets
 from presentation.utils import build_qr_instance
 from ..forms import FurnitureForm, CatalogForm, FurnitureLabRoomForm
@@ -84,7 +85,11 @@ class FurnitureCreateView(CreateView):
 
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
-    permission_required("laboratory.change_furniture", raise_exception=True),
+    any_permission_required(
+        ["laboratory.view_furniture", "laboratory.change_furniture"],
+        raise_exception=True,
+    ),
+    # permission_required("laboratory.change_furniture", raise_exception=True),
     name="dispatch",
 )
 class FurnitureUpdateView(UpdateView):

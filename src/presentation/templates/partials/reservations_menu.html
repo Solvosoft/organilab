@@ -1,5 +1,5 @@
 {% load i18n %}
-{% if perms.laboratory.add_objectfeatures %}
+{% if perms.reservations_management.view_reservations %}
     <li>
         <a>
             <i class="fa fa-shopping-basket"></i>
@@ -10,7 +10,7 @@
             <li>
                 <a class="nav-link" href="{% url 'reservations_management:reservations_list' org_pk 0 %}"
         title="{% trans 'Requested reservations' %}">
-            <i class="fa fa-child"></i>
+            <i class="fa fa-shopping-cart"></i>
             {% trans 'Requested Reservations' %}
                 </a>
             </li>

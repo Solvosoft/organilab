@@ -23,7 +23,9 @@ from laboratory.models import OrganizationStructure, Laboratory
 from laboratory.utils import get_user_laboratories
 
 
-@method_decorator(permission_required("auth.change_user"), name="dispatch")
+@method_decorator(
+    permission_required("auth_and_perms.change_own_profile"), name="dispatch"
+)
 class ChangeUser(UpdateView):
     model = User
     form_class = EditUserForm
@@ -93,7 +95,7 @@ def get_profile(request, org_pk, pk):
     return render(request, "laboratory/profile_detail.html", context=context)
 
 
-@permission_required("auth.change_user")
+@permission_required("auth_and_perms.change_own_profile")
 @sensitive_post_parameters("password", "password_confirm")
 @require_http_methods(["POST"])
 def password_change(request, pk):

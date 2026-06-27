@@ -1,5 +1,44 @@
+25/06/2026
+Command to update risk zones
+    - python manage.py reorder_zones
+
+24/06/2026
+command to remove super role for users
+    - python manage.py remove_super_role
+
+19/06/2026
+Command to update users roles
+    - python manage.py update_roles
+    - python manage.py load_urlname_permissions
+
+16/06/2026
+Command to update users roles
+    - python manage.py clean_solo_lectura_permissions
+
+11/06/2026
+Command to upload users from excel
+    - python manage.py upload_org_and_users ./laboratory/management/commands/Usuarios_por_laboratorio_2.xlsx
+    - python manage.py upload_org_and_users ./laboratory/management/commands/Usuarios_por_laboratorio.xlsx
+
+11/06/2026
+command to update role permissions and add new role
+    - python manage.py add_laboratory_profile_in_org
+    - python manage.py setup_auxiliar_rol
+    - python manage.py cleanup_groups
+    - python manage.py setup_sga_view_group
+
+
+10/06/2026
+command para actualizar la organización de los roles de permisos.
+
+    - python manage.py add_laboratory_profile_in_org
+
+04/06/2026
+    - python manage.py check_security_sheets
+    - python manage.py update_sustances_cha ./laboratory/management/commands/Reporte_Final_Diagnóstico-1.xlsx
+
 15/05/2026
-command to update rol permissions
+command to update role permissions
     - python manage.py update_roles_permissions
 
 11/05/2026
@@ -8,7 +47,7 @@ Command to update FDS
 
 08/05/2026
 Command to update FDS
-    - python manage.py update_sustances_cha ./laboratory/management/commands/ajustes_a_hojas.xlsx ./laboratory/management/commands/Reporte_Final_Diagnóstico.xlsx
+    - python manage.py update_sustances_cha ./laboratory/management/commands/Reporte_Final_Diagnóstico.xlsx
 
 20/04/2026
 Command to update Permissions and Create groups

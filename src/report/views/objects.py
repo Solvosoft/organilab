@@ -375,6 +375,7 @@ def get_dataset_objects(report, column_list=None):
         cas = get_cas(obj.object, "") if get_cas(obj.object, "") else ""
         data_column = {
             "laboratory": obj.in_where_laboratory.name,
+            "shelfobject_code": obj.shelfobject_code if obj.shelfobject_code else "",
             "code": obj.object.code,
             "name": obj.object.name,
             "type": obj.object.get_type_display(),
@@ -400,6 +401,7 @@ def report_objects_html(report):
 
     columns = [{"name": "laboratory", "title": _("Laboratory")}] if general else []
     columns_fields = columns + [
+        {"name": "shelfobject_code", "title": _("Unit code")},
         {"name": "code", "title": _("Code")},
         {"name": "name", "title": _("Name")},
         {"name": "type", "title": _("Type")},
@@ -423,6 +425,7 @@ def report_objects_doc(report):
     content = [
         [
             _("Laboratory"),
+            _("Unit code"),
             _("Code"),
             _("Name"),
             _("Type"),
@@ -508,6 +511,9 @@ def get_dataset_limit_objects(report, column_list=None):
                 data_column = {
                     "laboratory": lab.name,
                     "shelf": shelfobj.shelf.name,
+                    "shelfobject_code": (
+                        shelfobj.shelfobject_code if shelfobj.shelfobject_code else ""
+                    ),
                     "code": shelfobj.object.code,
                     "object": obj_name,
                     "quantity": obj_quantity,
@@ -540,6 +546,7 @@ def report_limit_object_html(report):
     columns = [{"name": "laboratory", "title": _("Laboratory")}] if general else []
     columns_fields = columns + [
         {"name": "shelf", "title": _("Shelf")},
+        {"name": "shelfobject_code", "title": _("Unit code")},
         {"name": "code", "title": _("Code")},
         {"name": "object", "title": _("Object")},
         {"name": "quantity", "title": _("Quantity")},
@@ -562,6 +569,7 @@ def report_limit_object_doc(report):
     content = [
         [
             _("Shelf"),
+            _("Unit code"),
             _("Code"),
             _("Object"),
             _("Quantity"),

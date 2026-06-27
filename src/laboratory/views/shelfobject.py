@@ -934,7 +934,7 @@ def view_equipment_shelfobject_detail(request, org_pk, lab_pk, pk):
 
 
 @login_required()
-@permission_required("laboratory.change_shelfobject", raise_exception=True)
+@permission_required("laboratory.can_manage_reorder", raise_exception=True)
 def shelf_object_reagents(request, org_pk, lab_pk):
     org = get_object_or_404(OrganizationStructure, pk=org_pk)
     lab = get_object_or_404(Laboratory, pk=lab_pk)

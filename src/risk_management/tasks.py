@@ -26,5 +26,8 @@ def create_establishment_reports():
         create_estableshment_logs_data(risk, day, labs)
 
     for org in OrganizationStructure.objects.all():
-        labs = list(set(org.get_my_laboratories))
-        create_estableshment_logs_data(org, day, labs)
+        try:
+            labs = list(set(org.get_my_laboratories))
+            create_estableshment_logs_data(org, day, labs)
+        except OrganizationStructure.DoesNotExist:
+            continue

@@ -6138,5 +6138,213 @@ msgstr "Ver administradores"
 msgid "Administrators"
 msgstr "Administradores"
 
- msgid "Single Sign-On"
- msgstr "Inicio Único"
+msgid "Single Sign-On"
+msgstr "Inicio Único"
+
+msgid "User List"
+msgstr "Lista de Usuarios"
+
+msgid "Organizations List"
+msgstr "Lista de Organizaciones"
+
+msgid "Laboratories List"
+msgstr "Lista de Laboratorios"
+
+msgid "Laboratory and Organization List"
+msgstr "Lista de Laboratorios y Organizaciones"
+
+msgid "No roles assigned"
+msgstr "No se asignaron roles"
+
+msgid "User roles list"
+msgstr "Lista de roles por usuario"
+
+msgid "Filter by roles"
+msgstr "Filtrar por roles"
+
+msgid "User roles in laboratory"
+msgstr "Roles de usuario en laboratorio"
+
+msgid "User roles in organization"
+msgstr "Roles de usuario en organización"
+
+msgid "Clear filters"
+msgstr "Limpiar filtros"
+
+msgid "Filter by organization"
+msgstr "Filtrar por organización"
+
+msgid "Enable child organizations filter?"
+msgstr "Habilitar filtro de organizaciones hijas"
+
+msgid "Disable child organizations filter?"
+msgstr "Deshabilitar filtro de organizaciones hijas"
+
+msgid "Do you want to enable the child organizations filter?"
+msgstr "¿Desea habilitar el filtro de organizaciones hijas?"
+
+msgid "Do you want to disable the child organizations filter?"
+msgstr "¿Desea deshabilitar el filtro de organizaciones hijas?"
+
+msgid "Unit code"
+msgstr "Código de unidad"
+
+msgid "Revision date"
+msgstr "Fecha de revisión"
+
+msgid "EU codes"
+msgstr "Códigos UE"
+
+msgid "Precursor type"
+msgstr "Tipo de precursor"
+
+msgid "Seveso list"
+msgstr "Lista Seveso"
+
+msgid "Target organs"
+msgstr "Órganos afectados"
+
+msgid "Risks"
+msgstr "Riesgos"
+
+msgid "Confirm and create substance"
+msgstr "Confirmar y crear sustancia"
+
+msgid "My lab or organization requests"
+msgstr "Mis solicitudes de laboratorio u organización"
+
+msgid "My Requests"
+msgstr "Mis Solicitudes"
+
+msgid "New Request"
+msgstr "Nueva Solicitud"
+
+msgid "Update Request"
+msgstr "Actualizar Solicitud"
+
+msgid "New %(type)s request: %(name)s"
+msgstr "Nueva solicitud de %(type)s: %(name)s"
+
+msgid ""
+"Hi,\n"
+"\n"
+"A new %(type)s request has been submitted and requires your review.\n"
+"\n"
+"Name: %(name)s\n"
+"Requested by: %(user)s\n"
+"\n"
+"Please log in to review this request.\n"
+"\n"
+"Thanks,\n"
+"Organilab system"
+msgstr ""
+"Hola,\n"
+"\n"
+"Se ha enviado una nueva solicitud de %(type)s y requiere su revisión.\n"
+"\n"
+"Nombre: %(name)s\n"
+"Solicitado por: %(user)s\n"
+"\n"
+"Por favor inicie sesión para revisar esta solicitud.\n"
+"\n"
+"Gracias,\n"
+"Sistema Organilab"
+
+msgid "Your request '%(name)s' has been %(status)s"
+msgstr "Su solicitud '%(name)s' ha sido %(status)s"
+
+msgid ""
+"Hi %(user)s,\n"
+"\n"
+"Your %(type)s request '%(name)s' has been %(status)s.\n"
+"\n"
+"Thanks,\n"
+"Organilab system"
+msgstr ""
+"Hola %(user)s,\n"
+"\n"
+"Su solicitud de %(type)s '%(name)s' ha sido %(status)s.\n"
+"\n"
+"Gracias,\n"
+"Sistema Organilab"
+
+msgid "Request approved."
+msgstr "Solicitud aprobada."
+
+msgid "Request rejected."
+msgstr "Solicitud rechazada."
+
+msgid "Delete Request"
+msgstr "Eliminar Solicitud"
+
+msgid "Review lab or organization requests"
+msgstr "Revisar solicitudes de laboratorio u organización"
+
+msgid "Pending Requests"
+msgstr "Solicitudes Pendientes"
+
+msgid "Is organization?"
+msgstr "¿Es organización?"
+
+msgid "Review notes"
+msgstr "Notas de revisión"
+
+msgid "Water resources affected"
+msgstr "Recursos hídricos afectados"
+
+msgid "Nearby sites"
+msgstr "Sitios cercanos"
+
+msgid "Entity type"
+msgstr "Tipo de entidad"
+
+msgid "Rejected"
+msgstr "Rechazado"
+
+msgid "Lab or organization request"
+msgstr "Solicitud de laboratorio u organización"
+
+msgid "Lab or organization requests"
+msgstr "Solicitudes de laboratorio u organización"
+
+msgid "Requested at"
+msgstr "Solicitado el"
+
+msgid "Requested by"
+msgstr "Solicitado por"
+
+msgid "Parent organization"
+msgstr "Organización padre"
+
+msgid "Parent organization (for org)"
+msgstr "Organización padre (para org)"
+
+msgid "Can approve lab or organization request"
+msgstr "Puede aprobar solicitud de laboratorio u organización"
+
+msgid "Lab or Organization Request"
+msgstr "Solicitud de Laboratorio u Organización"
+
+msgid "View Lab or Organization Request"
+msgstr "Ver solicitud de laboratorio u organización"
+
+msgid "Add Lab or Organization Request"
+msgstr "Agregar solicitud de laboratorio u organización"
+
+msgid "Change Lab or Organization Request"
+msgstr "Cambiar solicitud de laboratorio u organización"
+
+msgid "Delete Lab or Organization Request"
+msgstr "Eliminar solicitud de laboratorio u organización"
+
+msgid "Can Approve Lab or Organization Request"
+msgstr "Puede aprobar solicitud de laboratorio u organización"
+
+msgid "Show resolved requests"
+msgstr "Mostrar solicitudes resueltas"
+
+msgid "Create organization/laboratory"
+msgstr "Crear organización/laboratorio"
+
+msgid "Review Requests"
+msgstr "Revisar Solicitudes"

@@ -344,6 +344,7 @@ class DataWorkdaySerializer(serializers.Serializer):
             "update": user.has_perm("risk_management.change_workday"),
             "destroy": user.has_perm("risk_management.delete_workday"),
         }
+        print(perms)
 
         return perms
 

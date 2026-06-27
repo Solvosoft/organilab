@@ -7,21 +7,24 @@
 			title="{% trans 'Detail' %}">
 	<i class="fa fa-eye text-success" aria-hidden="true"></i>
 </a>
-
+{% if perms.reservations_management.add_reservedproducts %}
 <a class="ms-2" onclick="return show_me_modal(this, event);" data-modalid="reservesomodal"
 			title="{% trans 'Reservation' %}" data-shelfobject="{{ shelfobject.pk }}" data-shelf="{{ shelfobject.shelf.pk }}"><i
 	class="fa fa-shopping-basket" aria-hidden="true"></i></a>
-{% if shelfobject.object.type != shelfobject.object.EQUIPMENT %}
+{% endif %}
+{% if shelfobject.object.type != shelfobject.object.EQUIPMENT and perms.laboratory.change_shelfobject %}
 	<a class="ms-2" onclick="return show_me_modal(this, event);" data-modalid="increasesomodal" title="{% trans 'Add' %}"
 				data-shelfobject="{{ shelfobject.pk }}" data-shelf="{{ shelfobject.shelf.pk }}" data-box="{{ shelfobject.is_box }}",
 	data-expiration="{{ shelfobject.reactive_expiration_date }}"><i class="fa fa-plus text-success"
 																																																																																							aria-hidden="true"></i></a>
 {% endif %}
+{% if perms.laboratory.add_tranferobject %}
 <a class="ms-2" onclick="return show_me_modal(this, event);" data-modalid="transfer_out_obj_id_modal"
 			title="{% trans 'Transfer Out' %}" data-shelfobject="{{ shelfobject.pk }}" data-shelf="{{ shelfobject.shelf.pk }}"
 			data-expiration="{{ shelfobject.reactive_expiration_date }}"><i
 	class="fa fa-window-restore" aria-hidden="true"></i></a>
-{% if shelfobject.object.type != shelfobject.object.EQUIPMENT %}
+{% endif %}
+{% if shelfobject.object.type != shelfobject.object.EQUIPMENT  and perms.laboratory.change_shelfobject %}
 	<a class="ms-2" onclick="return show_decrease_modal(this, event);" data-modalid="decreasesomodal"
 				title="{% trans 'Substract' %}" data-shelfobject="{{ shelfobject.pk }}" data-shelf="{{ shelfobject.shelf.pk }}"
 				data-is-box="{{ shelfobject.is_box|yesno:'true,false' }}"
@@ -33,8 +36,9 @@
 				href="{% url 'laboratory:get_shelfobject_log' lab_pk=laboratory.pk org_pk=org_pk.pk pk=shelfobject.pk %}"
 				target="_blank" title="{% trans 'Log' %}"><i class="fa fa-file-text-o" aria-hidden="true"></i></a>
 {% endif %}
+{% if perms.laboratory.change_shelfobject %}
 {% if shelfobject.object.type == shelfobject.object.REACTIVE %}
-	{% if not shelfobject.is_box %}
+	{% if not shelfobject.is_box and perms.laboratory.change_shelfobject %}
 	<a class="ms-2" onclick="return editReactiveShelfObject(this, event);" data-modalid="edit_reactive_modal"
 				title="{% trans 'Edit' %}" data-shelfobject="{{ shelfobject.pk }}" data-shelf="{{ shelfobject.shelf.pk }}"
 				data-form="edit_reactive_form"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
@@ -48,7 +52,6 @@
 				title="{% trans 'Edit' %}" data-shelfobject="{{ shelfobject.pk }}" data-shelf="{{ shelfobject.shelf.pk }}"
 				data-form="edit_box_form"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
 	{% endif %}
-
 	{% if not shelfobject.is_box %}
 		<a class="ms-2" onclick="return show_me_modal(this, event);" data-modalid="movesocontainermodal"
 					title="{% trans 'Move' %}" data-shelfobject="{{ shelfobject.pk }}" data-shelf="{{ shelfobject.shelf.pk }}"><i
@@ -67,6 +70,7 @@
 	<a class="ms-2" onclick="return editMaterialShelfObject(this, event);" data-modalid="edit_material_modal"
 				title="{% trans 'Edit' %}" data-shelfobject="{{ shelfobject.pk }}" data-shelf="{{ shelfobject.shelf.pk }}"
 				data-form="edit_material_form"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+{% endif %}
 {% endif %}
 {% if shelfobject.object.type == shelfobject.object.EQUIPMENT and perms.laboratory.view_shelfobject and perms.laboratory.change_shelfobject %}
 	<a class="ms-2"

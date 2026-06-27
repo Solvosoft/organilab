@@ -34,7 +34,22 @@
 
 {% include 'gentelella/blocks/modal_template.html' with form=limit_form id="create_limit_modal" title=limit_obj_tittle form_id="create_reactive_limit_form" url=detail_obj_url principal_class='modal-xl' %}
 
-
+<!-- Modal de Detalle de Reactivo -->
+<div class="modal fade" id="reactive_detail_modal" tabindex="-1" role="dialog" aria-labelledby="reactive_detail_modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reactive_detail_modalLabel">{% trans 'Reactive Detail' %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
+            </div>
+            <div class="modal-body" id="reactive_detail_modal_body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 {% endblock %}
@@ -48,7 +63,8 @@ var object_urls = {
     list_url: "{% url 'laboratory:api-reactive-list' org_pk lab_pk%}",
     create_url: "{% url 'laboratory:api-reactive-list' org_pk lab_pk%}",
     destroy_url: "{% url 'laboratory:api-reactive-detail' org_pk lab_pk 0 %}",
-    update_url: "{% url 'laboratory:api-reactive-detail' org_pk lab_pk 0 %}"
+    update_url: "{% url 'laboratory:api-reactive-detail' org_pk lab_pk 0 %}",
+    detail_url: "{% url 'laboratory:api-reactive-detail' org_pk lab_pk 0 %}"
 }
 var limit_urls = {
 					get_limits: "{% url 'laboratory:api-reactive-get-reactive-limits' org_pk=org_pk lab_pk=lab_pk pk=0 %}",
@@ -84,6 +100,13 @@ if (has_perm) {
 var reactive_actions = {
     table_actions: [], // table_actions
     object_actions: [
+					{
+						'name' : 'view_detail',
+						'action' : 'view_detail',
+						'title' : gettext('View Detail'),
+						'in_action_column' : true,
+						'i_class' : 'fa fa-eye',
+					},
 					{
 						'name' : 'download',
 						'action' : 'download',
@@ -162,6 +185,180 @@ crud.add_limits = function(obj, action){
 	};
 	gtformequipment.show_modal = function(){};
 	gtformequipment.init();
+}
+
+crud.view_detail = function(obj, action){
+	let detail_url = object_urls.detail_url.replace('/0/', '/' + obj.id + '/');
+	fetch(detail_url, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+			'X-CSRFToken': getCookie('csrftoken')
+		}
+	})
+	.then(response => response.json())
+	.then(data => {
+		buildReactiveDetailModal(data);
+		$('#reactive_detail_modal').modal('show');
+	})
+	.catch(error => {
+		console.error('Error fetching reactive detail:', error);
+	});
+}
+
+function buildReactiveDetailModal(data) {
+	const modalBody = document.getElementById('reactive_detail_modal_body');
+	modalBody.innerHTML = '';
+
+	const modalLabel = document.getElementById('reactive_detail_modalLabel');
+	modalLabel.textContent = data.name || gettext('Reactive Detail');
+
+	let html = '<div class="container-fluid">';
+	html += '<div class="row">';
+
+	// Columna izquierda - Datos del Object
+	html += '<div class="col-md-6">';
+	html += '<h5 class="border-bottom pb-2 mb-3">' + gettext('General Information') + '</h5>';
+	html += '<table class="table table-sm table-striped">';
+	html += '<tbody>';
+	html += buildTableRow(gettext('Code'), data.code);
+	html += buildTableRow(gettext('Name'), data.name);
+	html += buildTableRow(gettext('Synonym'), data.synonym);
+	html += buildTableRow(gettext('Description'), data.description);
+	html += buildTableRow(gettext('Organization'), data.organization_name);
+	html += buildTableRow(gettext('Is Dangerous'), data.is_dangerous ? gettext('Yes') : gettext('No'));
+	html += buildTableRow(gettext('Is Pure'), data.is_pure ? gettext('Yes') : gettext('No'));
+	html += buildTableRow(gettext('Has Threshold'), data.has_threshold ? gettext('Yes') : gettext('No'));
+	if (data.has_threshold) {
+		html += buildTableRow(gettext('Threshold'), data.threshold);
+	}
+	html += '</tbody></table>';
+
+	// Features
+	if (data.features && data.features.length > 0) {
+		html += '<h6 class="mt-3">' + gettext('Features') + '</h6>';
+		html += '<ul class="list-group list-group-flush">';
+		data.features.forEach(function(feature) {
+			html += '<li class="list-group-item py-1">' + feature.name + '</li>';
+		});
+		html += '</ul>';
+	}
+	html += '</div>';
+
+	// Columna derecha - Sustance Characteristics
+	html += '<div class="col-md-6">';
+	html += '<h5 class="border-bottom pb-2 mb-3">' + gettext('Substance Characteristics') + '</h5>';
+
+	if (data.sustance_characteristics) {
+		const sc = data.sustance_characteristics;
+		html += '<table class="table table-sm table-striped">';
+		html += '<tbody>';
+		html += buildTableRow(gettext('CAS Number'), sc.cas_id_number);
+		html += buildTableRow(gettext('Molecular Formula'), sc.molecular_formula);
+		html += buildTableRow(gettext('Is Precursor'), sc.is_precursor ? gettext('Yes') : gettext('No'));
+		if (sc.precursor_type) {
+			html += buildTableRow(gettext('Precursor Type'), sc.precursor_type.description);
+		}
+		html += buildTableRow(gettext('IARC'), sc.iarc ? sc.iarc.description : '');
+		html += buildTableRow(gettext('IMDG'), sc.imdg ? sc.imdg.description : '');
+		html += buildTableRow(gettext('Bioaccumulable'), sc.bioaccumulable ? gettext('Yes') : gettext('No'));
+		html += buildTableRow(gettext('Seveso List III'), sc.seveso_list ? gettext('Yes') : gettext('No'));
+		html += buildTableRow(gettext('Density'), sc.density);
+		html += '</tbody></table>';
+
+		// White Organs
+		if (sc.white_organ && sc.white_organ.length > 0) {
+			html += '<h6 class="mt-3">' + gettext('White Organs') + '</h6>';
+			html += '<ul class="list-group list-group-flush">';
+			sc.white_organ.forEach(function(wo) {
+				html += '<li class="list-group-item py-1">' + wo.description + '</li>';
+			});
+			html += '</ul>';
+		}
+
+		// H Codes
+		if (sc.h_code && sc.h_code.length > 0) {
+			html += '<h6 class="mt-3">' + gettext('H Codes') + '</h6>';
+			html += '<ul class="list-group list-group-flush">';
+			sc.h_code.forEach(function(hc) {
+				html += '<li class="list-group-item py-1">' + hc.code + ' - ' + hc.description + '</li>';
+			});
+			html += '</ul>';
+		}
+
+		// UE Codes
+		if (sc.ue_code && sc.ue_code.length > 0) {
+			html += '<h6 class="mt-3">' + gettext('UE Codes') + '</h6>';
+			html += '<ul class="list-group list-group-flush">';
+			sc.ue_code.forEach(function(ue) {
+				html += '<li class="list-group-item py-1">' + ue.description + '</li>';
+			});
+			html += '</ul>';
+		}
+
+		// NFPA
+		if (sc.nfpa && sc.nfpa.length > 0) {
+			html += '<h6 class="mt-3">' + gettext('NFPA Codes') + '</h6>';
+			html += '<ul class="list-group list-group-flush">';
+			sc.nfpa.forEach(function(nfpa) {
+				html += '<li class="list-group-item py-1">' + nfpa.description + '</li>';
+			});
+			html += '</ul>';
+		}
+
+		// Storage Class
+		if (sc.storage_class && sc.storage_class.length > 0) {
+			html += '<h6 class="mt-3">' + gettext('Storage Class') + '</h6>';
+			html += '<ul class="list-group list-group-flush">';
+			sc.storage_class.forEach(function(stc) {
+				html += '<li class="list-group-item py-1">' + stc.description + '</li>';
+			});
+			html += '</ul>';
+		}
+
+		// Security Sheet Link
+		if (sc.security_sheet && sc.security_sheet.url) {
+			html += '<div class="mt-3">';
+			html += '<a href="' + sc.security_sheet.url + '" target="_blank" class="btn btn-outline-primary btn-sm">';
+			html += '<i class="fa fa-file-pdf-o"></i> ' + gettext('Download Security Sheet');
+			html += '</a></div>';
+		}
+
+		// Image Representation
+		if (sc.img_representation && sc.img_representation.url) {
+			html += '<div class="mt-3">';
+			html += '<h6>' + gettext('Substance Representation') + '</h6>';
+			html += '<img src="' + sc.img_representation.url + '" class="img-fluid img-thumbnail" style="max-width: 200px;" />';
+			html += '</div>';
+		}
+	} else {
+		html += '<p class="text-muted">' + gettext('No substance characteristics available') + '</p>';
+	}
+
+	html += '</div>';
+	html += '</div>';
+	html += '</div>';
+
+	modalBody.innerHTML = html;
+}
+
+function buildTableRow(label, value) {
+	return '<tr><td class="fw-bold" style="width: 40%;">' + label + '</td><td>' + (value || '-') + '</td></tr>';
+}
+
+function getCookie(name) {
+	let cookieValue = null;
+	if (document.cookie && document.cookie !== '') {
+		const cookies = document.cookie.split(';');
+		for (let i = 0; i < cookies.length; i++) {
+			const cookie = cookies[i].trim();
+			if (cookie.substring(0, name.length + 1) === (name + '=')) {
+				cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+				break;
+			}
+		}
+	}
+	return cookieValue;
 }
 
 crud.init();
