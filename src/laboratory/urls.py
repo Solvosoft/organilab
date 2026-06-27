@@ -207,6 +207,11 @@ shelf_object_urls = [
         name="shelfobject_detail",
     ),
     path(
+        "label/<int:pk>/",
+        shelfobject.generate_shelfobject_label,
+        name="shelfobject_label",
+    ),
+    path(
         "edit/<int:pk>/", shelfobject.ShelfObjectEdit.as_view(), name="shelfobject_edit"
     ),
     path(

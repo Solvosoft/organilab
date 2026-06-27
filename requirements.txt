@@ -26,6 +26,7 @@ pyfva==0.0.43
 django-otp==1.7.0
 python-barcode==0.16.1
 qrcode==8.2
+reportlab==5.0.0
 sentry-sdk==2.49.0
 legacy-cgi==2.6.4
 setuptools<82

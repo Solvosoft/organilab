@@ -970,3 +970,37 @@ def shelf_object_hcode(request, org_pk, lab_pk):
             "form": ShelfObjectFlashpointForm(prefix="update"),
         },
     )
+
+
+@login_required()
+@all_permission_required(["laboratory.view_shelfobject"], raise_exception=True)
+def generate_shelfobject_label(request, org_pk, lab_pk, pk):
+    """Genera la etiqueta GHS/SGA de un ShelfObject (instancia física).
+
+    Hereda el color del contenedor (estante), la ubicación, cantidad, lote y
+    caducidad, y ajusta el tamaño a la capacidad del envase. Formato PNG/SVG/PDF.
+    """
+    from sga.label_blueprint import blueprint_from_shelfobject
+    from sga.label_render import render_label
+
+    org = get_object_or_404(OrganizationStructure, pk=org_pk)
+    lab = get_object_or_404(Laboratory, pk=lab_pk)
+    user_is_allowed_on_organization(request.user, org)
+    organization_can_change_laboratory(lab, org)
+    shelfobject = get_object_or_404(
+        ShelfObject.objects.using(settings.READONLY_DATABASE), pk=pk
+    )
+
+    overrides = {}
+    for field in ("lote", "fecha_caducidad", "cantidad", "qr_url"):
+        if request.GET.get(field):
+            overrides[field] = request.GET.get(field)
+    # El tamaño se deriva de la capacidad; permitir override explícito.
+    if request.GET.get("ancho_mm"):
+        overrides["ancho_mm"] = float(request.GET["ancho_mm"])
+    if request.GET.get("alto_mm"):
+        overrides["alto_mm"] = float(request.GET["alto_mm"])
+
+    blueprint = blueprint_from_shelfobject(shelfobject, organization=org, **overrides)
+    formato = request.GET.get("formato", "png")
+    return render_label(blueprint, formato, filename=f"etiqueta_shelfobject_{pk}")

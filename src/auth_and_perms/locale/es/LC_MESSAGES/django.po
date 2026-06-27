@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-10 14:02-0600\n"
+"POT-Creation-Date: 2026-06-27 01:43-0600\n"
 "PO-Revision-Date: 2025-04-10 14:07-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -19,39 +19,8 @@ msgstr ""
 "1 : 2;\n"
 "X-Generator: Poedit 3.2.2\n"
 
-#  Common actions
-msgid "Add"
-msgstr "Agregar"
-
-msgid "Update"
-msgstr "Actualizar"
-
-msgid "Delete"
-msgstr "Eliminar"
-
-msgid "View"
-msgstr "Ver"
-
-msgid "List"
-msgstr "Listar"
-
-msgid "Manage"
-msgstr "Gestionar"
-
-msgid "Create"
-msgstr "Crear"
-
-msgid "Change"
-msgstr "Actualizar"
-
-msgid "Switch to other user"
-msgstr "Actualizar a otro usuario"
-
-msgid "Incognito mode: browse the system as this user without modifying your session"
-msgstr "Modo incógnito: navega el sistema como este usuario sin modificar tu sesión"
-
-msgid "Inherit: propagate the user's profile and roles to all child organizations"
-msgstr "Heredar: propaga el perfil y roles del usuario a todas las sub-organizaciones hijas"
+msgid "No roles assigned"
+msgstr ""
 
 msgid "Roles: manage the user's roles within the organization"
 msgstr "Roles: gestiona los roles del usuario dentro de la organización"
@@ -59,1190 +28,731 @@ msgstr "Roles: gestiona los roles del usuario dentro de la organización"
 msgid "List Roles: show user's roles"
 msgstr "Listar Roles: muestra los roles del usuario"
 
+msgid ""
+"Incognito mode: browse the system as this user without modifying your session"
+msgstr ""
+"Modo incógnito: navega el sistema como este usuario sin modificar tu sesión"
+
+msgid ""
+"Inherit: propagate the user's profile and roles to all child organizations"
+msgstr ""
+"Heredar: propaga el perfil y roles del usuario a todas las sub-"
+"organizaciones hijas"
+
 msgid "Remove: remove user from organization, can also disable platform access"
-msgstr "Eliminar: remueve al usuario de la organización, también puede deshabilitar el acceso a la plataforma"
+msgstr ""
+"Eliminar: remueve al usuario de la organización, también puede deshabilitar "
+"el acceso a la plataforma"
 
-# Provider Laboratory
-msgid "Add Provider Laboratory"
-msgstr "Agregar Proveedor de Laboratorio"
+msgid "User not found, Sorry try to use add user button on organization list"
+msgstr ""
 
-msgid "View Provider Laboratory"
-msgstr "Ver Proveedor de Laboratorio"
+#, fuzzy
+#| msgid "Add External User in Organization"
+msgid "User exist on organization"
+msgstr "Agregar usuario externo a la organización"
 
-msgid "Change Provider Laboratory"
-msgstr "Actualizar Proveedor de Laboratorio"
+msgid "User not match with email"
+msgstr ""
 
-msgid "Delete Provider Laboratory"
-msgstr "Eliminar Proveedor de Laboratorio "
+msgid "Organization can't change this laboratory"
+msgstr ""
 
-msgid "Provider Laboratory"
-msgstr "Proveedor de Laboratorio"
+msgid "User doesn't have permissions"
+msgstr ""
 
-# Provider SGA
-msgid "Add Provider SGA"
-msgstr "Agregar Proveedor de SGA"
+msgid "Shelfobject does not belong to this laboratory."
+msgstr ""
 
-msgid "View Provider SGA"
-msgstr "Ver Proveedor de SGA"
+#, fuzzy
+#| msgid "Click to manage this organization"
+msgid "Shelfobject does not belong to this organization."
+msgstr "Haga clic para gestionar esta organización"
 
-msgid "Change Provider SGA"
-msgstr "Actualizar Proveedor de SGA"
+msgid "Shelfobject does not belong to this shelf."
+msgstr ""
 
-msgid "Delete Provider SGA"
-msgstr "Eliminar Proveedor de SGA "
+msgid "Shelf does not belong to this laboratory."
+msgstr ""
 
-msgid "Provider SGA"
-msgstr "Proveedor de SGA"
+#, fuzzy
+#| msgid "Click to manage this organization"
+msgid "Shelf does not belong to this organization."
+msgstr "Haga clic para gestionar esta organización"
 
-#  Laboratory
-msgid "Add Laboratory"
-msgstr "Agregar Laboratorio"
+#  Organization
+#, fuzzy
+#| msgid "Organization Structure"
+msgid "Organization cannot be inactive"
+msgstr "Estructura organizacional"
 
-msgid "View Laboratory"
-msgstr "Ver Laboratorio"
+#, fuzzy
+#| msgid "Role"
+msgid "Roles"
+msgstr "Rol"
 
-msgid "Change Laboratory"
-msgstr "Actualizar Laboratorio"
+#, fuzzy
+#| msgid "User"
+msgid "Users"
+msgstr "Usuario"
 
-msgid "Delete Laboratory"
-msgstr "Eliminar Laboratorio"
+msgid "Laboratory modification not authorized"
+msgstr ""
+
+#, fuzzy, python-format
+#| msgid "Add External User in Organization"
+msgid "Added the user %(user)r in the organization %(org)r"
+msgstr "Agregar usuario externo a la organización"
+
+#, python-format
+msgid "Removed the groups %(groups)r from the profile %(profile)r"
+msgstr ""
+
+#, python-format
+msgid "Added the groups %(groups)r to the profile %(profile)r"
+msgstr ""
+
+msgid "Profile was updated successfully."
+msgstr ""
+
+msgid "You don't have permissions to access this section"
+msgstr ""
+
+#  Organization
+#, fuzzy
+#| msgid "Organization Structure"
+msgid "Organization parameter is required"
+msgstr "Estructura organizacional"
+
+msgid "Rols"
+msgstr ""
+
+#, fuzzy
+#| msgid "Organization User Management"
+msgid "Organization name"
+msgstr "Gestión de usuarios de la organización"
+
+msgid "Digital signature"
+msgstr ""
+
+msgid "Validation method"
+msgstr ""
+
+msgid "new-password"
+msgstr ""
+
+msgid "Email"
+msgstr ""
+
+msgid "First name"
+msgstr ""
+
+msgid "Last name"
+msgstr ""
+
+msgid "Email address"
+msgstr ""
+
+msgid "Phone"
+msgstr ""
+
+msgid "Identification"
+msgstr ""
+
+msgid "Job Position"
+msgstr ""
+
+msgid "Language"
+msgstr ""
+
+msgid "It will used to login when you want to login with digital signature"
+msgstr ""
+
+#, fuzzy
+#| msgid "Laboratory"
+msgid "Laboratories"
+msgstr "Laboratorio"
+
+msgid "User"
+msgstr "Usuario"
 
 msgid "Laboratory"
 msgstr "Laboratorio"
 
+#, fuzzy
+#| msgid "Click to manage this organization"
+msgid "Inactive organization"
+msgstr "Haga clic para gestionar esta organización"
 
-#  Permissions / Roles
-msgid "Manage Permissions"
-msgstr "Gestionar permisos"
+#, fuzzy
+#| msgid "Click to manage this organization"
+msgid "Clone organization"
+msgstr "Haga clic para gestionar esta organización"
 
-msgid "Role"
-msgstr "Rol"
+#, fuzzy
+#| msgid "Change Organization User Management"
+msgid "Change organization name"
+msgstr "Actualizar gestión de usuarios de la organización"
 
-msgid "Add Role"
-msgstr "Agregar Rol"
+#, fuzzy
+#| msgid "Click to manage this organization"
+msgid "Active organization"
+msgstr "Haga clic para gestionar esta organización"
 
-msgid "Delete Role"
-msgstr "Eliminar Rol"
+msgid "Actions"
+msgstr ""
 
-msgid "View Role"
-msgstr "Ver Rol"
-
-msgid "Change Role"
-msgstr "Actualizar Rol"
-
-#  Profile Permission
-msgid "Add Profile Permission"
-msgstr "Agregar permiso de perfil"
-
-msgid "Change Profile Permission"
-msgstr "Actualizar permiso de perfil"
-
-msgid "Delete Profile Permission"
-msgstr "Eliminar permiso de perfil"
-
-msgid "View Profile Permission"
-msgstr "Ver permiso de perfil"
-
-msgid "Profile Permission"
-msgstr "Permiso de perfil"
-
-#  Profile
-msgid "Add Profile"
-msgstr "Agregar perfil"
-
-msgid "View Profile"
-msgstr "Ver perfil"
-
-msgid "Change Profile"
-msgstr "Actualizar perfil"
-
-msgid "Delete Profile"
-msgstr "Eliminar perfil"
+msgid "Name"
+msgstr ""
 
 msgid "Profile"
 msgstr "Perfil"
 
+msgid "Groups"
+msgstr ""
+
+#  Organization
+#, fuzzy
+#| msgid "Organization Structure"
+msgid "Organization"
+msgstr "Estructura organizacional"
+
+msgid "Search by object"
+msgstr ""
+
+msgid "Filter by roles"
+msgstr ""
+
+#, fuzzy
+#| msgid "Click to manage this organization"
+msgid "Filter by organization"
+msgstr "Haga clic para gestionar esta organización"
+
+#  Organization
+#, fuzzy
+#| msgid "Organization Structure"
+msgid "Organization not found"
+msgstr "Estructura organizacional"
+
+msgid "Address"
+msgstr ""
+
+msgid "Show tutorials"
+msgstr ""
+
+msgid "Enable automatic tutorial display on page visits"
+msgstr ""
+
+msgid "Workplace"
+msgstr ""
+
+#, fuzzy
+#| msgid "Add External User in Organization"
+msgid "Can add external user to organization"
+msgstr "Agregar usuario externo a la organización"
+
+msgid "Institution can access"
+msgstr ""
+
+msgid "Can change own user/profile data"
+msgstr ""
+
+#  Permissions / Roles
+#, fuzzy
+#| msgid "Manage Permissions"
+msgid "permissions"
+msgstr "Gestionar permisos"
+
+#, fuzzy
+#| msgid "Reservation"
+msgid "Description"
+msgstr "Reserva"
+
+#, fuzzy
+#| msgid "Role"
+msgid "Rol"
+msgstr "Rol"
+
+#, fuzzy
+#| msgid "Profile"
+msgid "Profile Rol"
+msgstr "Perfil"
+
+#, fuzzy
+#| msgid "Profile"
+msgid "Profile Rols"
+msgstr "Perfil"
+
+msgid "Impostor"
+msgstr ""
+
+msgid "Logged in as"
+msgstr ""
+
+msgid "Impostor's IP address"
+msgstr ""
+
+msgid "Logged on"
+msgstr ""
+
+msgid "Logged out"
+msgstr ""
+
+msgid "Token"
+msgstr ""
+
+msgid "Impostor log"
+msgstr ""
+
+msgid "Impostor logs"
+msgstr ""
+
+#, python-format
+msgid "User %(user)s not allowed on organization %(organization)r "
+msgstr ""
+
+msgid "You can modify this laboratory"
+msgstr ""
+
+#, fuzzy
+#| msgid "Roles: manage the user's roles within the organization"
+msgid "Register with new organization"
+msgstr "Roles: gestiona los roles del usuario dentro de la organización"
+
+msgid "Register you as organization administrator"
+msgstr ""
+
+#, fuzzy
+#| msgid "Create"
+msgid "Create user"
+msgstr "Crear"
+
+msgid ""
+"We need to validate that you are not a robot or spamer, so you need to "
+"configure a Two-Factor Authentication"
+msgstr ""
+
+msgid ""
+"You need an OTP generator to login on the platform, you can use a free app "
+"called FreeOTP:"
+msgstr ""
+
+msgid ""
+"For Costa Rica citicen, use your digital signature to login on organilab"
+msgstr ""
+
+#, fuzzy
+#| msgid "Change Profile"
+msgid "Configure your profile"
+msgstr "Actualizar perfil"
+
+msgid "Validate user"
+msgstr ""
+
+msgid "How use Digital Signature"
+msgstr ""
+
+msgid ""
+"If you don't have Digital signature, please request on your favorite bank"
+msgstr ""
+
+msgid "Configure your machine using this link"
+msgstr ""
+
+msgid "Download and install Gaudi"
+msgstr ""
+
+msgid "Connect you card on computer and wait for connect success popup "
+msgstr ""
+
+msgid "Your OTP Seed"
+msgstr ""
+
+msgid "This image will not available in the future, please save it"
+msgstr ""
+
+msgid "Profile create successfully"
+msgstr ""
+
+msgid ""
+"Your organization was created successfully, please login with your "
+"credentials"
+msgstr ""
+
+msgid "Login"
+msgstr ""
+
+msgid "Laboratory and Organization List"
+msgstr ""
+
+#, fuzzy
+#| msgid "Laboratory"
+msgid "By laboratory"
+msgstr "Laboratorio"
+
+msgid "By organization"
+msgstr ""
+
+#  Organization
+#, fuzzy
+#| msgid "Organization Structure"
+msgid "Organizations List"
+msgstr "Estructura organizacional"
+
+# Laboratory Process
+#, fuzzy
+#| msgid "Laboratory Process"
+msgid "Laboratories List"
+msgstr "Proceso de Laboratorio"
+
+msgid "User roles list"
+msgstr ""
+
+msgid "Close"
+msgstr ""
+
+#  Organization Structure
+#, fuzzy
+#| msgid "Add Organization Structure"
+msgid "Add organization"
+msgstr "Agregar estructura organizacional"
+
+msgid "Click to manage this organization"
+msgstr "Haga clic para gestionar esta organización"
+
+msgid "Choose"
+msgstr "Elegir"
+
+#  Profile
+#, fuzzy
+#| msgid "Add Profile"
+msgid "Add new rol"
+msgstr "Agregar perfil"
+
+#  Common actions
+msgid "Add"
+msgstr "Agregar"
 
 #  User
 msgid "Add User"
 msgstr "Agregar usuario"
 
-msgid "Change User"
-msgstr "Actualizar usuario"
-
-msgid "View User"
-msgstr "Ver usuario"
-
-msgid "Delete User"
+#, fuzzy
+#| msgid "Delete User"
+msgid "Related Users"
 msgstr "Eliminar usuario"
 
-msgid "User"
-msgstr "Usuario"
+#  Laboratory
+msgid "Add Laboratory"
+msgstr "Agregar Laboratorio"
 
-msgid "Add External User in Organization"
-msgstr "Agregar usuario externo a la organización"
+#, fuzzy
+#| msgid "Delete Laboratory"
+msgid "Related Laboratory"
+msgstr "Eliminar Laboratorio"
 
-#  Organization Structure
-msgid "Add Organization Structure"
-msgstr "Agregar estructura organizacional"
+msgid "Disable child organizations filter"
+msgstr ""
 
-msgid "Change Organization Structure"
-msgstr "Actualizar estructura organizacional"
+msgid "Enable child organizations filter"
+msgstr ""
 
-msgid "View Organization Structure"
-msgstr "Ver estructura organizacional"
+#, fuzzy
+#| msgid "List"
+msgid "Log List"
+msgstr "Listar"
 
-msgid "Delete Organization Structure"
+msgid "Show Roles information"
+msgstr ""
+
+#, fuzzy
+#| msgid "View Contracts"
+msgid "View administrators"
+msgstr "Ver Contratos"
+
+#, fuzzy
+#| msgid "Click to manage this organization"
+msgid "Change parent of organization"
+msgstr "Haga clic para gestionar esta organización"
+
+#, fuzzy
+#| msgid "List"
+msgid "Rol List"
+msgstr "Listar"
+
+#, fuzzy
+#| msgid "Delete Organization Structure"
+msgid "Delete organization"
 msgstr "Eliminar estructura organizacional"
 
-# --- Organization Structure Relations ---
-msgid "Add Organization Structure Relations"
-msgstr "Agregar relaciones de estructura organizacional"
+#, fuzzy
+#| msgid "Profile"
+msgid "By profile"
+msgstr "Perfil"
 
-msgid "View Organization Structure Relations"
-msgstr "Ver relaciones de estructura organizacional"
+#, fuzzy
+#| msgid "Laboratory"
+msgid "Rol by laboratory"
+msgstr "Laboratorio"
 
-msgid "Organization Structure Relations"
-msgstr "Relaciones de estructura organizacional"
+msgid "Add or restrict permission on this laboratory"
+msgstr ""
 
-#  Organization User Management
-msgid "Add Organization Permissions Management"
-msgstr "Agregar administración de permisos de organización"
+msgid "Relate user with this laboratory"
+msgstr ""
 
-msgid "Add Organization User Management"
-msgstr "Agregar gestión de usuarios de la organización"
+#, fuzzy
+#| msgid "Click to manage this organization"
+msgid "Rol in all organization"
+msgstr "Haga clic para gestionar esta organización"
 
-msgid "Change Organization User Management"
-msgstr "Actualizar gestión de usuarios de la organización"
+msgid "Rol used when you don't have rol set on laboratory"
+msgstr ""
 
-msgid "Delete Organization User Management"
-msgstr "Eliminar gestión de usuarios de la organización"
+#, fuzzy
+#| msgid "Roles: manage the user's roles within the organization"
+msgid "Relate user with this organization"
+msgstr "Roles: gestiona los roles del usuario dentro de la organización"
 
-msgid "View Organization User Management"
-msgstr "Ver gestión de usuarios de la organización"
+msgid "Help Text"
+msgstr ""
 
-msgid "Organization User Management"
-msgstr "Gestión de usuarios de la organización"
+msgid ""
+"This section will assign permissions groups to some profile who belongs to "
+"selected organization. If you do not find the user in profile selector, "
+"could you add it from By organization tab."
+msgstr ""
 
-#  Disposal
-msgid "Manage Disposal"
-msgstr "Gestionar desecho"
+msgid "Show descriptions of groups"
+msgstr ""
 
-msgid "View Disposal"
-msgstr "Ver desecho"
+msgid "Save changes"
+msgstr ""
 
-msgid "Add Disposal"
-msgstr "Agregar desecho"
+#, fuzzy
+#| msgid "Add Role"
+msgid "Add New Rol"
+msgstr "Agregar Rol"
 
-msgid "Delete Disposal"
-msgstr "Eliminar desecho"
+msgid "Copy Rols"
+msgstr ""
 
-msgid "Change Disposal"
-msgstr "Actualizar desecho"
+msgid "Rol name"
+msgstr ""
 
-#  Shelf
-msgid "Shelf"
-msgstr "Estantería"
+#, fuzzy
+#| msgid "Add Reservation"
+msgid "Add a description"
+msgstr "Agregar Reservaciones"
 
-msgid "Add Shelf"
-msgstr "Agregar Estantería"
+msgid "Copy permissions from other roles?"
+msgstr ""
 
-msgid "Delete Shelf"
-msgstr "Eliminar Estantería"
+msgid "Select roles to copy"
+msgstr ""
 
-msgid "Change Shelf"
-msgstr "Actualizar Estantería"
+#, fuzzy
+#| msgid "Delete Organization Structure"
+msgid "Create Organization"
+msgstr "Eliminar estructura organizacional"
 
-msgid "View Shelf"
-msgstr "Ver Estantería"
+msgid "Linking laboratories of the parent organization"
+msgstr ""
 
-#  Custom template
-msgid "Custom template"
-msgstr "Plantilla personalizada"
+msgid "How to deal with permission merge"
+msgstr ""
 
-msgid "Add Custom template"
-msgstr "Agregar Plantilla personalizada"
+msgid "Append"
+msgstr ""
 
-msgid "View Custom template"
-msgstr "Ver Plantilla personalizada"
+msgid "Sustract"
+msgstr ""
 
-msgid "Delete Custom template"
-msgstr "Eliminar Plantilla personalizada"
-
-msgid "Change Custom template"
-msgstr "Actualizar Plantilla personalizada"
-
-#  Risk Management
-msgid "View Risk Management"
-msgstr "Ver gestión de riesgos"
-
-msgid "Risk Management"
-msgstr "Gestión de riesgos"
-
-#  Recipient Size
-msgid "Add Recipient Size"
-msgstr "Agregar Tamaño de Recipiente"
-
-msgid "Change Recipient Size"
-msgstr "Actualizar Tamaño de Recipiente"
-
-msgid "Delete Recipient Size"
-msgstr "Eliminar Tamaño de Recipiente"
-
-msgid "View Recipient Size"
-msgstr "Ver Tamaño de Recipiente"
-
-msgid "Recipient Size"
-msgstr "Tamaño de Recipiente"
-
-
-# Laboratory
-msgid "Laboratory Room"
-msgstr "Sala de laboratorio"
-
-msgid "Add Laboratory Room"
-msgstr "Agregar Sala de laboratorio"
-
-msgid "Delete Laboratory Room"
-msgstr "Eliminar Sala de laboratorio"
-
-msgid "View Laboratory Room"
-msgstr "Ver Sala de laboratorio"
-
-msgid "Change Laboratory Room"
-msgstr "Actualizar Sala de laboratorio"
+msgid "Only labs selected"
+msgstr ""
 
 #  Organization
-msgid "Organization Structure"
+#, fuzzy
+#| msgid "Organization Structure"
+msgid "Organization parent:"
 msgstr "Estructura organizacional"
 
-# Reservations
-msgid "Reservations"
-msgstr "Reservas"
+#, fuzzy
+#| msgid "Delete Organization User Management"
+msgid "Select an organization to be parent of"
+msgstr "Eliminar gestión de usuarios de la organización"
 
-msgid "Reservation"
-msgstr "Reserva"
+#, fuzzy
+#| msgid "Delete Provider Laboratory"
+msgid "Relate user to laboratory"
+msgstr "Eliminar Proveedor de Laboratorio "
 
-# Reserved Products
-msgid "Reserved Products"
-msgstr "Productos reservados"
+#, fuzzy
+#| msgid "Click to manage this organization"
+msgid "From my organization"
+msgstr "Haga clic para gestionar esta organización"
 
-msgid "Add Reserved Products"
-msgstr "Agregar Productos reservados"
+msgid "External user"
+msgstr ""
 
-msgid "Change Reserved Products"
-msgstr "Cambiar Productos reservados"
+msgid "Important"
+msgstr ""
 
-msgid "Delete Reserved Products"
-msgstr "Eliminar Productos reservados"
+msgid ""
+"In this tab, you add the existing users in Organilab who are not associated "
+"with the organization, so you need to know the user's email address to add "
+"them."
+msgstr ""
 
-msgid "View Reserved Products"
-msgstr "Ver Productos reservados"
+msgid ""
+"Once added, you can search for the profile in the organization tab to relate "
+"user to organization"
+msgstr ""
 
+msgid "Find user"
+msgstr ""
 
-# Furniture
-msgid "Furniture"
-msgstr "Mueble"
+#, fuzzy
+#| msgid "Add External User in Organization"
+msgid "Actions for Organization"
+msgstr "Agregar usuario externo a la organización"
 
-msgid "Add Furniture"
-msgstr "Agregar Mueble"
+msgid "Do you want to enable the child organizations filter?"
+msgstr ""
 
-msgid "Delete Furniture"
-msgstr "Eliminar Mueble"
+msgid "Administrators"
+msgstr ""
 
-msgid "View Furniture"
-msgstr "Ver Mueble"
-
-msgid "Change Furniture"
-msgstr "Actualizar Mueble"
-
-# Shelf
-msgid "Shelf Object"
-msgstr "Objeto de estantería"
-
-msgid "Add Shelf Object"
-msgstr "Agregar Objeto de estantería"
-
-msgid "Delete Shelf Object"
-msgstr "Eliminar Objeto de estantería"
-
-msgid "Change Shelf Object"
-msgstr "Actualizar Objeto de estantería"
-
-msgid "View Shelf Object"
-msgstr "Ver Objeto de estantería"
-
-msgid "Add Shelf Object Status"
-msgstr "Agregar Estado del objeto de estantería"
-
-msgid "Shelf Object Status"
-msgstr "Estado del objeto de estantería"
-
-# Shelf Object Observations
-msgid "Shelf Object Observations"
-msgstr "Observaciones del objeto de estantería"
-
-msgid "Add Shelf Object Observations"
-msgstr "Agregar Observaciones del objeto de estantería"
-
-msgid "Delete Shelf Object Observations"
-msgstr "Eliminar Observaciones del objeto de estantería"
-
-msgid "Change Shelf Object Observations"
-msgstr "Actualizar Observaciones del objeto de estantería"
-
-msgid "View Shelf Object Observations"
-msgstr "Ver Observaciones del objeto de estantería"
-
-#  Shelf Object Calibration
-msgid "Shelf Object Calibration"
-msgstr "Calibración del objeto de estantería"
-
-msgid "Add Shelf Object Calibration"
-msgstr "Agregar Calibración del objeto de estantería"
-
-msgid "Delete Shelf Object Calibration"
-msgstr "Eliminar Calibración del objeto de estantería"
-
-msgid "Change Shelf Object Calibration"
-msgstr "Actualizar Calibración del objeto de estantería"
-
-msgid "View Shelf Object Calibration"
-msgstr "Ver Calibración del objeto de estantería"
-
-# Shelf Object Guarantee
-msgid "Shelf Object Guarantee"
-msgstr "Garantía del objeto de estantería"
-
-msgid "Add Shelf Object Guarantee"
-msgstr "Agregar Garantía del objeto de estantería"
-
-msgid "Delete Shelf Object Guarantee"
-msgstr "Eliminar Garantía del objeto de estantería"
-
-msgid "View Shelf Object Guarantee"
-msgstr "Ver Garantía del objeto de estantería"
-
-msgid "Change Shelf Object Guarantee"
-msgstr "Actualizar Garantía del objeto de estantería"
+#, fuzzy
+#| msgid "Laboratory"
+msgid "My laboratories"
+msgstr "Laboratorio"
 
 # Reports
-msgid "Report"
+#, fuzzy
+#| msgid "Report"
+msgid "Reports"
 msgstr "Reporte"
 
-msgid "Add Report"
-msgstr "Agregar Reporte"
-
-msgid "View Report"
-msgstr "Ver Reporte"
-
-msgid "Delete Report"
-msgstr "Eliminar Reporte"
-
-msgid "Change Report"
-msgstr "Actualizar Reporte"
-
-# Report Template
-msgid "Report Template"
-msgstr "Plantilla de reporte"
-
-msgid "Add Report Template"
-msgstr "Agregar Plantilla de reporte"
-
-msgid "Add Period Inform Scheduler"
-msgstr "Agregar Agendador Periodo de informe"
-
-msgid "Change Report Template"
-msgstr "Actualizar Plantilla de reporte"
-
-msgid "Delete Report Template"
-msgstr "Eliminar Plantilla de reporte"
-
-msgid "View Report Template"
-msgstr "Ver Plantilla de reporte"
-
-msgid "List my reservations"
-msgstr "Listar mis reservas"
-
-
-# Inform Observation
-msgid "Inform Observation"
-msgstr "Observación del informe"
-
-msgid "Add Inform Observation"
-msgstr "Agregar Observación del informe"
-
-msgid "Change Inform Observation"
-msgstr "Actualizar Observación del informe"
-
-msgid "Delete Inform Observation"
-msgstr "Eliminar Observación del informe"
-
-msgid "View Inform Observation"
-msgstr "Ver Observación del informe"
-
-# Inform
-msgid "Inform"
-msgstr "Informe"
-
-msgid "Add Inform"
-msgstr "Agregar Informe"
-
-msgid "Delete Inform"
-msgstr "Eliminar Informe"
-
-msgid "Change Inform"
-msgstr "Actualizar Informe"
-
-msgid "View Inform"
-msgstr "Ver Informe"
-
-msgid "Manage status Inform"
-msgstr "Gestionar estado Informe"
-
-# Precursor Report
-msgid "Precursor Report"
-msgstr "Informe de precursores"
-
-msgid "Add Precursor Report"
-msgstr "Agregar Informe de precursores"
-
-msgid "Delete Precursor Report"
-msgstr "Eliminar Informe de precursores"
-
-msgid "Change Precursor Report"
-msgstr "Actualizar Informe de precursores"
-
-msgid "View Precursor Report"
-msgstr "Ver Informe de precursores"
-
-# Procedures
-msgid "Procedure"
-msgstr "Procedimiento"
-
-msgid "Add Procedure"
-msgstr "Agregar Procedimiento"
-
-msgid "Delete Procedure"
-msgstr "Eliminar Procedimiento"
-
-msgid "View Procedure"
-msgstr "Ver Procedimiento"
-
-msgid "Change Procedure"
-msgstr "Actualizar Procedimiento"
-
-# Procedures Step
-msgid "Procedure Step"
-msgstr "Paso del procedimiento"
-
-msgid "Add Procedure Step"
-msgstr "Agregar Paso del procedimiento"
-
-msgid "Delete Procedure Step"
-msgstr "Eliminar Paso del procedimiento"
-
-msgid "Change Procedure Step"
-msgstr "Actualizar Paso del procedimiento"
-
-msgid "View Procedure Step"
-msgstr "Ver Paso del procedimiento"
-
-msgid "Procedure Template"
-msgstr "Plantilla de procedimiento"
-
-# My Procedure
-msgid "My Procedure"
-msgstr "Mi procedimiento"
-
-msgid "Add My Procedure"
-msgstr "Agregar Mi procedimiento"
-
-msgid "Delete My Procedure"
-msgstr "Eliminar Mi procedimiento"
-
-msgid "Change My Procedure"
-msgstr "Actualizar Mi procedimiento"
-
-msgid "View My Procedure"
-msgstr "Ver Mi procedimiento"
-
-# Procedure Required Object
-msgid "Procedure Required Object"
-msgstr "Objeto Requerido por el Procedimiento"
-
-msgid "Add Procedure Required Object"
-msgstr "Agregar Objeto Requerido por el Procedimiento"
-
-msgid "Delete Procedure Required Object"
-msgstr "Eliminar Objeto Requerido por el Procedimiento"
-
-msgid "Update Procedure Required Object"
-msgstr "Actualizar Objeto Requerido por el Procedimiento"
-
-msgid "View Procedure Required Object"
-msgstr "Ver Objeto Requerido por el Procedimiento"
-
-# Procedure Observations
-msgid "Procedure Observations"
-msgstr "Observaciones del procedimiento"
-
-msgid "Add Procedure Observations"
-msgstr "Agregar Observaciones del procedimiento"
-
-msgid "Delete Procedure Observations"
-msgstr "Eliminar Observaciones del procedimiento"
-
-msgid "Update Procedure Observations"
-msgstr "Actualizar Observaciones del procedimiento"
-
-msgid "View Procedure Observations"
-msgstr "Ver Observaciones del procedimiento"
-
 # Risk Management
-msgid "Risk Zone"
+#, fuzzy
+#| msgid "Risk Zone"
+msgid "Risk Zones"
 msgstr "Zona de Riesgo"
 
-msgid "Add Risk Zone"
-msgstr "Agregar Zona de Riesgo"
-
-msgid "Delete Risk Zone"
-msgstr "Eliminar Zona de Riesgo"
-
-msgid "Change Risk Zone"
-msgstr "Actualizar Zona de Riesgo"
-
-msgid "View Risk Zone"
-msgstr "Ver Zona de Riesgo"
-
-
-# Incident Report
-msgid "Incident Report"
-msgstr "Reporte de incidente"
-
-msgid "Add Incident Report"
-msgstr "Agregar Reporte de incidente"
-
-msgid "Delete Incident Report"
-msgstr "Eliminar Reporte de incidente"
-
-msgid "Change Incident Report"
-msgstr "Actualizar Reporte de incidente"
-
-msgid "View Incident Report"
-msgstr "Ver Reporte de incidente"
-
-# SGA / Safety
-msgid "SGA"
-msgstr "SGA"
-
-msgid "View SGA"
-msgstr "Ver SGA"
-
-msgid "View SGA Label"
-msgstr "Ver etiqueta SGA"
-
-# Label SGA
-msgid "Label SGA"
-msgstr "Etiqueta SGA"
-
-msgid "Add Label SGA"
-msgstr "Agregar Etiqueta SGA"
-
-msgid "Delete Label SGA"
-msgstr "Eliminar Etiqueta SGA"
-
-msgid "Change Label SGA"
-msgstr "Actualizar Etiqueta SGA"
-
-msgid "View Label SGA"
-msgstr "Ver Etiqueta SGA"
-
-# Security Leaf
-msgid "Security Leaf"
-msgstr "Hoja de seguridad"
-
-msgid "Add Security Leaf"
-msgstr "Agregar Hoja de seguridad"
-
-msgid "Delete Security Leaf"
-msgstr "Eliminar Hoja de seguridad"
-
-msgid "Change Security Leaf"
-msgstr "Hoja de seguridad"
-
-msgid "View Security Leaf"
-msgstr "Ver Hoja de seguridad"
-
+#, fuzzy
+#| msgid "Add Inform"
+msgid "Admin Informs"
+msgstr "Agregar Informe"
 
 # MSDS
 msgid "MSDS"
 msgstr "MSDS"
 
-# MSDS Object
-msgid "MSDS Object"
-msgstr "Objeto MSDS"
-
-msgid "Add MSDS Object"
-msgstr "Agregar Objeto MSDS"
-
-msgid "Delete MSDS Object"
-msgstr "Eliminar Objeto MSDS"
-
-msgid "View MSDS Object"
-msgstr "Ver Objeto MSDS"
-
-msgid "Change MSDS Object"
-msgstr "Actualizar Objeto MSDS"
-
-
-msgid "View MSDS"
-msgstr "Ver MSDS"
-
-# Equipment
-msgid "Equipment Type"
-msgstr "Tipo de equipo"
-
-msgid "Add Equipment Type"
-msgstr "Agregar Tipo de equipo"
-
-msgid "Delete Equipment Type"
-msgstr "Eliminar Tipo de equipo"
-
-msgid "Change Equipment Type"
-msgstr "Actualizar Tipo de equipo"
-
-msgid "View Equipment Type"
-msgstr "Ver Tipo de equipo"
-
-# Instrumental Family
-msgid "Instrumental Family"
-msgstr "Familia instrumental"
-
-msgid "Add Instrumental Family"
-msgstr "Agregar Familia instrumental"
-
-msgid "View Instrumental Family"
-msgstr "Ver Familia instrumental"
-
-msgid "Delete Instrumental Family"
-msgstr "Eliminar Familia instrumental"
-
-msgid "Change Instrumental Family"
-msgstr "Actualizar Familia instrumental"
-
-# Contracts
-msgid "Contracts"
-msgstr "Contratos"
-
-msgid "Add Contracts"
-msgstr "Agregar Contratos"
-
-msgid "Delete Contracts"
-msgstr "Eliminar Contratos"
-
-msgid "Change Contracts"
-msgstr "Actualizar Contratos"
-
-msgid "View Contracts"
-msgstr "Ver Contratos"
-
-# Objeto
-msgid "Object"
-msgstr "Objeto"
-
-msgid "Add Object"
-msgstr "Agregar Objeto"
-
-msgid "Delete Object"
-msgstr "Eliminar Objeto"
-
-msgid "View Object"
-msgstr "Ver Objeto"
-
-msgid "Change Object"
-msgstr "Actualizar Objeto"
-
-# Object Features
-msgid "Object Features"
-msgstr "Características del objeto"
-
-msgid "Add Object Features"
-msgstr "Agregar Características del objeto"
-
-msgid "Delete Object Features"
-msgstr "Eliminar Características del objeto"
-
-msgid "View Object Features"
-msgstr "Ver Características del objeto"
-
-msgid "Change Object Features"
-msgstr "Actualizar Características del objeto"
-
-# Protocol
-msgid "Protocol"
-msgstr "Protocolo"
-
-msgid "Add Protocol"
-msgstr "Agregar Protocolo"
-
-msgid "Delete Protocol"
-msgstr "Eliminar Protocolo"
-
-msgid "View Protocol"
-msgstr "Ver Protocolo"
-
-msgid "Change Protocol"
-msgstr "Actualizar Protocolo"
-
-# Register User QR Code
-msgid "Register User QR Code"
-msgstr "Código QR de registro de usuario"
-
-msgid "Add Register User QR Code"
-msgstr "Agregar Código QR de registro de usuario"
-
-msgid "Change Register User QR Code"
-msgstr "Actualizar Código QR de registro de usuario"
-
-msgid "Delete Register User QR Code"
-msgstr "Eliminar Código QR de registro de usuario"
-
-msgid "View Register User QR Code"
-msgstr "Ver Código QR de registro de usuario"
-
-# H Code Category
-msgid "H Code Category"
-msgstr "Categoría de código H"
-
-msgid "Add H Code Category"
-msgstr "Agregar Categoría de código H"
-
-msgid "Delete H Code Category"
-msgstr "Eliminar Categoría de código H"
-
-msgid "Change H Code Category"
-msgstr "Actualizar Categoría de código H"
-
-msgid "View H Code Category"
-msgstr "Ver Categoría de código H"
-
-# Structure
-msgid "Structure"
-msgstr "Estructura"
-
-msgid "Add Structure"
-msgstr "Agregar estructura"
-
-msgid "Change Structure"
-msgstr "Actualizar estructura"
-
-msgid "Delete Structure"
-msgstr "Eliminar estructura"
-
-msgid "View Structure"
-msgstr "Ver estructura"
-
-# Regent
-msgid "Add Regent"
-msgstr "Agregar regente"
-
-msgid "Change Regent"
-msgstr "Actualizar regente"
-
-msgid "Delete Regent"
-msgstr "Eliminar regente"
-
-msgid "View Regent"
-msgstr "Ver regente"
-
-msgid "Regent"
-msgstr "Regente"
-
-# Building
-msgid "Add Building"
-msgstr "Agregar edificio"
-
-msgid "Change Building"
-msgstr "Actualizar edificio"
-
-msgid "Delete Building"
-msgstr "Eliminar edificio"
-
-msgid "View Building"
-msgstr "Ver edificio"
-
-msgid "Building"
-msgstr "Edificio"
-
-# SGA Complement
-msgid "Add SGA Complement"
-msgstr "Agregar complemento SGA"
-
-msgid "Change SGA Complement"
-msgstr "Actualizar complemento SGA"
-
-msgid "View SGA Complement"
-msgstr "Ver complemento SGA"
-
-msgid "SGA Complement"
-msgstr "Complemento SGA"
-
-# Display
-msgid "Change Display Label"
-msgstr "Actualizar etiqueta visible"
-
-msgid "Display Label"
-msgstr "Etiqueta visible"
-
-# Label
-msgid "Label"
-msgstr "Etiqueta"
-
-msgid "Add Label"
-msgstr "Agregar Etiqueta"
-
-msgid "Delete Label"
-msgstr "Eliminar Etiqueta"
-
-msgid "Change Label"
-msgstr "Actualizar Etiqueta"
-
-msgid "View Label"
-msgstr "Ver Etiqueta"
-
-# Warning Word
-msgid "Add Warning Word"
-msgstr "Agregar palabra de advertencia"
-
-msgid "Change Warning Word"
-msgstr "Actualizar palabra de advertencia"
-
-msgid "Delete Warning Word"
-msgstr "Eliminar palabra de advertencia"
-
-msgid "View Warning Word"
-msgstr "Ver palabra de advertencia"
-
-msgid "Warning Word"
-msgstr "Palabra de advertencia"
-
-# Danger Indication
-msgid "Add Danger Indication"
-msgstr "Agregar indicación de peligro"
-
-msgid "Change Danger Indication"
-msgstr "Actualizar indicación de peligro"
-
-msgid "Delete Danger Indication"
-msgstr "Eliminar indicación de peligro"
-
-msgid "View Danger Indication"
-msgstr "Ver indicación de peligro"
-
-msgid "Danger Indication"
-msgstr "Indicación de peligro"
-
-# Prudence Advice
-msgid "Add Prudence Advice"
-msgstr "Agregar consejo de prudencia"
-
-msgid "Change Prudence Advice"
-msgstr "Actualizar consejo de prudencia"
-
-msgid "Delete Prudence Advice"
-msgstr "Eliminar consejo de prudencia"
-
-msgid "View Prudence Advice"
-msgstr "Ver consejo de prudencia"
-
-msgid "Prudence Advice"
-msgstr "Consejo de prudencia"
-
-# Substance Observation
-msgid "Substance Observation"
-msgstr "Observación de la sustancia"
-
-msgid "View Substance Observation"
-msgstr "Ver Observación de la sustancia"
-
-msgid "Add Substance Observation"
-msgstr "Agregar Observación de la sustancia"
-
-msgid "Delete Substance Observation"
-msgstr "Eliminar Observación de la sustancia"
-
-msgid "Change Substance Observation"
-msgstr "Actualizar Observación de la sustancia"
-
-# Substance Characteristics
-msgid "Substance Characteristics"
-msgstr "Características de la sustancia"
-
-msgid "View Substance Characteristics"
-msgstr "Ver Características de la sustancia"
-
-msgid "Add Substance Characteristics"
-msgstr "Agregar Características de la sustancia"
-
-msgid "Change Substance Characteristics"
-msgstr "Actualizar Características de la sustancia"
-
-msgid "Delete Substance Characteristics"
-msgstr "Eliminar Características de la sustancia"
-
-# Substance Characteristics
-msgid "ZoneType"
-msgstr "Tipo de Zona"
-
-msgid "Add ZoneType"
-msgstr "Agregar Tipo de Zona"
-
-msgid "View ZoneType"
-msgstr "Ver Tipo de Zona"
-
-msgid "Change ZoneType"
-msgstr "Actualizar Tipo de Zona"
-
-msgid "Delete ZoneType"
-msgstr "Eliminar Tipo de Zona"
-
-# Transfer
-msgid "Transfer"
-msgstr "Transferencia"
-
-msgid "Add Transfer"
-msgstr "Agregar Transferencia"
-
-msgid "Change Transfer"
-msgstr "Actualizar Transferencia"
-
-msgid "View Transfer"
-msgstr "Ver Transferencia"
-
-msgid "Delete Transfer"
-msgstr "Eliminar Transferencia"
-
-# Substance
-msgid "Substance"
-msgstr "Sustancia"
-
-msgid "Add Substance"
-msgstr "Agregar Sustancia"
-
-msgid "Delete Substance"
-msgstr "Eliminar Sustancia"
-
-msgid "Change Substance"
-msgstr "Actualizar Sustancia"
-
-msgid "View Substance"
-msgstr "Ver Sustancia"
-
-# Template SGA
-msgid "Template SGA"
-msgstr "Plantilla SGA"
-
-msgid "Add Template SGA"
-msgstr "Agregar Plantilla SGA"
-
-msgid "Delete Template SGA"
-msgstr "Eliminar Plantilla SGA"
-
-msgid "Change Template SGA"
-msgstr "Actualizar Plantilla SGA"
-
-msgid "View Template SGA"
-msgstr "Ver Plantilla SGA"
-
-# Step Comment
-msgid "Step Comment"
-msgstr "Comentario del paso"
-
-msgid "Add Step Comment"
-msgstr "Agregar Comentario del paso"
-
-msgid "Delete Step Comment"
-msgstr "Eliminar Comentario del paso"
-
-msgid "Change Step Comment"
-msgstr "Actualizar Comentario del paso"
-
-msgid "View Step Comment"
-msgstr "Ver Comentario del paso"
-
-# Shelf Object Training
-msgid "Shelf Object Training"
-msgstr "Capacitación sobre objeto de estantería"
-
-msgid "Add Shelf Object Training"
-msgstr "Agregar Capacitación sobre objeto de estantería"
-
-msgid "Change Shelf Object Training"
-msgstr "Actualizar Capacitación sobre objeto de estantería"
-
-msgid "Delete Shelf Object Training"
-msgstr "Eliminar Capacitación sobre objeto de estantería"
-
-msgid "View Shelf Object Training"
-msgstr "Ver Capacitación sobre objeto de estantería"
-
-# Shelf Object Log
-msgid "Shelf Object Log"
-msgstr "Registro del objeto de estantería"
-
-msgid "Add Shelf Object Log"
-msgstr "Agregar Registro del objeto de estantería"
-
-msgid "Change Shelf Object Log"
-msgstr "Actualizar Registro del objeto de estantería"
-
-msgid "Delete Shelf Object Log"
-msgstr "Eliminar Registro del objeto de estantería"
-
-msgid "View Shelf Object Log"
-msgstr "Ver Registro del objeto de estantería"
-
-# Regulation Document
-msgid "Regulation Document"
-msgstr "Documento normativo"
-
-msgid "View Regulation Document"
-msgstr "Ver Documento normativo"
-
-msgid "Delete Regulation Document"
-msgstr "Eliminar Documento normativo"
-
-msgid "Change Regulation Document"
-msgstr "Actualizar Documento normativo"
-
-msgid "Add Regulation Document"
-msgstr "Agregar Documento normativo"
-
-# Entry
-msgid "Blog Entry"
-msgstr "Entrada de Blog"
-
-msgid "Add Blog Entry"
-msgstr "Agregar Entrada de Blog"
-
-msgid "Delete Blog Entry"
-msgstr "Eliminar Entrada de Blog"
-
-msgid "Change Blog Entry"
-msgstr "Actualizar Entrada de Blog"
-
-msgid "View Blog Entry"
-msgstr "Ver Entrada de Blog"
-
-# Blog Category
-msgid "Blog Category"
-msgstr "Categoría del blog"
-
-msgid "Add Blog Category"
-msgstr "Agregar Categoría del blog"
-
-msgid "Delete Blog Category"
-msgstr "Eliminar Categoría del blog"
-
-msgid "Change Blog Category"
-msgstr "Actualizar Categoría del blog"
-
-msgid "View Blog Category"
-msgstr "Ver Categoría del blog"
-
-# Laboratory Process
-msgid "Laboratory Process"
-msgstr "Proceso de Laboratorio"
-
-msgid "Add Laboratory Process"
-msgstr "Agregar Proceso de Laboratorio"
-
-msgid "Change Laboratory Process"
-msgstr "Actualizar Proceso de Laboratorio"
-
-msgid "Delete Laboratory Process"
-msgstr "Eliminar Proceso de Laboratorio"
-
-msgid "View Laboratory Process"
-msgstr "Ver Proceso de Laboratorio"
-
-#Shelf Object Maintenance
-
-msgid "Update Shelf Object"
-msgstr "Actualizar objeto de estantería"
-
-msgid "View Unit Measurement"
-msgstr "Ver unidad de medida"
-
-msgid "Unit Measurement"
-msgstr "Unidad de medida"
-
-msgid "Can manage organization permission structure"
-msgstr "Puede gestionar la estructura de permisos de la organización"
-
-msgid "View Danger Substance"
-msgstr "Ver Sustancia Peligrosa"
-
-msgid "Add Danger Substance"
-msgstr "Agregar Sustancia Peligrosa"
-
-msgid "Change Danger Substance"
-msgstr "Cambiar Sustancia Peligrosa"
-
-msgid "View Danger Substance Category"
-msgstr "Ver categoría de sustancia peligrosa"
-
-msgid "Add Danger Substance Category"
-msgstr "Agregar categoría de sustancia peligrosa"
-
-msgid "Change Danger Substance Category"
-msgstr "Cambiar categoría de sustancia peligrosa"
-
-msgid "Delete Danger Substance Category"
-msgstr "Eliminar categoría de sustancia peligrosa"
-
-msgid "Add Precursor Report Value"
-msgstr "Agregar valor del informe de precursores"
-
-msgid "Change Precursor Report Value"
-msgstr "Modificar valor del informe de precursores"
-
-msgid "Delete Precursor Report Value"
-msgstr "Eliminar valor del informe de precursores"
-
-msgid "View Precursor Report Value"
-msgstr "Ver valor del informe de precursores"
-
-msgid "Precursor Report Value"
-msgstr "Valor del informe de precursores"
-
-msgid "View Catalog"
-msgstr "Ver Catálogo"
-
-msgid "Catalog"
-msgstr "Catálogo"
-
-msgid "Add Reservation"
-msgstr "Agregar Reservaciones"
-
-msgid "Can Request Reservations"
-msgstr "Puede Solicitar Reservaciones"
-
-msgid "Danger Substance Category"
-msgstr "Categoría de Sustancia Peligrosa"
-
-msgid "View Register User"
-msgstr "Ver Registro de Usuario"
-
-msgid "Additional resources"
-msgstr "Recursos adicionales"
-
-msgid "Dismissed"
-msgstr "Omitido"
-
-msgid "Choose"
-msgstr "Elegir"
-
-msgid "Click to manage this organization"
+# SGA / Safety
+msgid "SGA"
+msgstr "SGA"
+
+#, fuzzy
+#| msgid "Add Disposal"
+msgid "Disposal"
+msgstr "Agregar desecho"
+
+#, fuzzy
+#| msgid "Change Role"
+msgid "Manage Rol"
+msgstr "Actualizar Rol"
+
+msgid "Only rols selected"
+msgstr ""
+
+#, fuzzy
+#| msgid "Change User"
+msgid "Manage Users"
+msgstr "Actualizar usuario"
+
+#, fuzzy
+#| msgid "Delete Organization Structure"
+msgid "Delete Organization Rol"
+msgstr "Eliminar estructura organizacional"
+
+msgid "Are you sure you want to delete"
+msgstr ""
+
+#  Permissions / Roles
+#, fuzzy
+#| msgid "Manage Permissions"
+msgid "Current permissions"
+msgstr "Gestionar permisos"
+
+msgid "Confirm"
+msgstr ""
+
+#, fuzzy
+#| msgid "Click to manage this organization"
+msgid "Roles registered on this organization"
 msgstr "Haga clic para gestionar esta organización"
+
+#, fuzzy
+#| msgid "Add Role"
+msgid "Edit Role"
+msgstr "Agregar Rol"
+
+#, fuzzy
+#| msgid "List"
+msgid "User List"
+msgstr "Listar"
+
+msgid "Clear filters"
+msgstr ""
+
+#, fuzzy
+#| msgid "Add External User in Organization"
+msgid "User roles in organization"
+msgstr "Agregar usuario externo a la organización"
+
+#, fuzzy
+#| msgid "Delete Laboratory"
+msgid "User roles in laboratory"
+msgstr "Eliminar Laboratorio"
+
+#, fuzzy
+#| msgid "Organization User Management"
+msgid "Organization doesn't exists"
+msgstr "Gestión de usuarios de la organización"
+
+msgid "Element saved successfully"
+msgstr ""
+
+msgid "Error, form is invalid"
+msgstr ""
+
+#, python-format
+msgid ""
+"You have active impostor session <a class=\"text-white fw-bold text-"
+"decoration-underline\" href=\"%(reverseurl)s?all=1\">Finish it</a>"
+msgstr ""
+
+msgid "Request User is the same as current user"
+msgstr ""
+
+#, fuzzy
+#| msgid "Add External User in Organization"
+msgid "User not in organization"
+msgstr "Agregar usuario externo a la organización"
+
+msgid "Form data is wrong, you need to pass a valid laboratory as contenttype"
+msgstr ""
+
+msgid "Role updated successfully"
+msgstr ""
+
+#, fuzzy
+#| msgid "Organization User Management"
+msgid "Organization Management"
+msgstr "Gestión de usuarios de la organización"
+
+msgid ""
+"You have no creation process, maybe it was expired, please try to register "
+"again"
+msgstr ""
