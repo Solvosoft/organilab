@@ -1,3 +1,8 @@
+31/06/2026
+Command to update users roles
+    - python manage.py update_roles
+    - python manage.py load_urlname_permissions
+
 25/06/2026
 Command to update risk zones
     - python manage.py reorder_zones
