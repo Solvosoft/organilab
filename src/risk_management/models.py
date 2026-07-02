@@ -517,6 +517,11 @@ class IPERAssessment(AbstractOrganizationRef):
     source = models.CharField(
         max_length=20, choices=SOURCES, default=ON_DEMAND, verbose_name=_("Source")
     )
+    is_anonymous = models.BooleanField(
+        default=True,
+        verbose_name=_("Anonymous"),
+        help_text=_("When enabled, the laboratory name is hidden in public listings."),
+    )
 
     class Meta:
         verbose_name = _("IPER assessment")
