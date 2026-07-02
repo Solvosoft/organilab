@@ -114,6 +114,11 @@ urlpatterns = [
         name="iper_detail",
     ),
     path(
+        "iper/<int:pk>/toggle-anonymous/",
+        iper_views.iper_toggle_anonymous,
+        name="iper_toggle_anonymous",
+    ),
+    path(
         "iper/<int:pk>/update/",
         iper_views.IPERAssessmentUpdate.as_view(),
         name="iper_update",
