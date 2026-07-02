@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-27 00:28-0600\n"
+"POT-Creation-Date: 2026-07-02 08:55-0600\n"
 "PO-Revision-Date: 2024-04-12 23:50-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -162,6 +162,143 @@ msgstr "Cancelado"
 msgid "Reserved"
 msgstr "Reservar"
 
+msgid "Associated laboratories"
+msgstr "Laboratorios asociados"
+
+msgid "Partner organizations"
+msgstr "Organizaciones asociadas"
+
+msgid "User"
+msgstr "Usuario"
+
+msgid "Roles"
+msgstr ""
+
+msgid "No roles assigned"
+msgstr "No se asignaron roles"
+
+msgid "Email"
+msgstr "Correo electrónico"
+
+msgid "Rols"
+msgstr "Roles"
+
+msgid "Your rol was set successfully"
+msgstr "Rol fue asignado correctamente"
+
+msgid "Now you can set this rol in laboratory user table"
+msgstr ""
+"Ahora se puede establecer este rol en la tabla de usuarios del laboratorio"
+
+msgid "User registered successfully"
+msgstr "Usuario guardado satisfactoriamente"
+
+msgid ""
+"There was a problem performing your request. Please try again later or "
+"contact the administrator."
+msgstr ""
+"Hubo un problema realizando su solicitud. Por favor intente más tarde o "
+"contacte al administrador."
+
+msgid ""
+"User successfully added, now you can search for it in the adjacent tab to "
+"add it in the organization."
+msgstr ""
+"Usuario agregado con éxito, ahora puedes buscarlo en el tab contiguo para "
+"agregarlo en la organización."
+
+msgid "Success"
+msgstr "Éxito"
+
+msgid "Failed to add user. Please try again"
+msgstr "Falló al agregar organización, por favor trate más tarde"
+
+msgid "Are you sure?"
+msgstr "¿Está seguro?"
+
+msgid "will be part of your organization!"
+msgstr "será parte de su organización!"
+
+msgid "Yes, add it!"
+msgstr "Si, agréguelo!"
+
+msgid "Relate user to organization"
+msgstr "Relacionar usuario a la organización"
+
+msgid "Current laboratory"
+msgstr "Laboratorio actual"
+
+msgid "Relate user to laboratory"
+msgstr "Relacionar usuario a laboratorio"
+
+msgid "Laboratory needs to be selected"
+msgstr "Un laboratorio necesita ser seleccionado"
+
+msgid "Sorry you need to select laboratory before relate user to it"
+msgstr ""
+"Lo lamentamos necesita seleccionar un laboratorio antes de relacionar un "
+"usuario con un laboratorio"
+
+msgid "Are you sure you want to delete?"
+msgstr "¿Está seguro/a de que desea eliminar?"
+
+msgid " from "
+msgstr " desde "
+
+msgid "Yes, delete it"
+msgstr "Si, eliminarlo"
+
+msgid "Also disable user login on platform"
+msgstr "También deshabilitar el usuario para autenticarse en la plataforma"
+
+msgid "No organization selected"
+msgstr "Sin organización seleccionada"
+
+msgid "You need to select a organization before using this tab."
+msgstr "Necesita seleccionar una organización para realizar esta acción."
+
+msgid "Are you sure you want to add this profile into others  organizations?"
+msgstr "¿Está seguro de que desea agregar este perfil a otras organizaciones?"
+
+msgid "This organization has no administrators assigned."
+msgstr "Esta organización no tiene administradores asignados."
+
+msgid "Do you want to disable the child organizations filter?"
+msgstr "¿Desea deshabilitar el filtro de organizaciones hijas?"
+
+msgid "Disable child organizations filter?"
+msgstr "Deshabilitar filtro de organizaciones hijas"
+
+msgid "Enable child organizations filter?"
+msgstr "Habilitar filtro de organizaciones hijas"
+
+msgid "Do you want to enable the child organizations filter?"
+msgstr "¿Desea habilitar el filtro de organizaciones hijas?"
+
+msgid "Shelf Object"
+msgstr "Objeto en estante"
+
+msgid "Shelf"
+msgstr "Estante"
+
+msgid "Quantity"
+msgstr "Cantidad"
+
+msgid "Laboratory"
+msgstr "Laboratorio"
+
+msgid "Id"
+msgstr "Id"
+
+msgid "User name"
+msgstr "Nombre de usuario"
+
+msgid "Organization"
+msgstr "Organización"
+
+msgid "Laboratories"
+msgstr "Laboratorios"
+
 msgid "Select an option from the available APIs in Organilab"
 msgstr "Seleccione una API de las disponibles en Organilab"
 
@@ -198,16 +335,6 @@ msgstr "Le gustaría eliminar el contenedor"
 msgid "as well?"
 msgstr "también?"
 
-msgid "Success"
-msgstr "Éxito"
-
-msgid ""
-"There was a problem performing your request. Please try again later or "
-"contact the administrator."
-msgstr ""
-"Hubo un problema realizando su solicitud. Por favor intente más tarde o "
-"contacte al administrador."
-
 msgid "An error has occurred"
 msgstr "Ha ocurrido un error"
 
@@ -225,9 +352,6 @@ msgstr "Unidad de Medida"
 msgid "It is filtered by the shelf's measurement unit."
 msgstr "Es filtrada por la unidad de medida del estante."
 
-msgid "Quantity"
-msgstr "Cantidad"
-
 msgid ""
 "There is no limit if the shelf has infinite quantity setup, in any other "
 "case the capacity is restricted."
@@ -244,8 +368,7 @@ msgstr "Contenedor"
 msgid ""
 "This field represents a material object like a box, a bottle, a tank, or a "
 "tin that will be responsible for containing a substance.  As a requirement, "
-"the container object needs to be registered on this laboratory as a "
-"material."
+"the container object needs to be registered on this laboratory as a material."
 msgstr ""
 "Este campo representa un objeto material como una caja, una botella, un "
 "tanque o una lata que sería responsable de contener una sustancia.  Como "
@@ -259,8 +382,8 @@ msgid ""
 "If you wish to add a new box, please note that it will be subject to the "
 "expiration date of"
 msgstr ""
-"Si desea agregar una nueva caja, por favor tenga en cuenta que se asumirá la"
-" fecha de vencimiento del"
+"Si desea agregar una nueva caja, por favor tenga en cuenta que se asumirá la "
+"fecha de vencimiento del"
 
 msgid "Select box"
 msgstr "Seleccionar caja"
@@ -430,9 +553,6 @@ msgstr "Necesita seleccionar un estante antes de realizar esta acción."
 msgid "Are you sure you want to deny the transfer of"
 msgstr "¿Está seguro/a de que desea denegar la transferencia de"
 
-msgid "Are you sure?"
-msgstr "¿Está seguro?"
-
 msgid "Confirm"
 msgstr "Confirmar"
 
@@ -450,9 +570,6 @@ msgstr "Contenedores"
 
 msgid "Transfer In"
 msgstr "Transferir aquí"
-
-msgid "Id"
-msgstr "Id"
 
 msgid "Laboratory Send"
 msgstr "Laboratorio que Envía"
@@ -492,9 +609,6 @@ msgstr "Ver detalle"
 msgid "Material Detail"
 msgstr "Detalle del Contenedor"
 
-msgid "Organization"
-msgstr "Organización"
-
 msgid "Is Container"
 msgstr "Es Contenedor"
 
@@ -507,14 +621,8 @@ msgstr "No se ha definido la capacidad de material"
 msgid "Phone"
 msgstr "Teléfono"
 
-msgid "Email"
-msgstr "Correo electrónico"
-
 msgid "Legal Identity"
 msgstr "Identidad Jurídica"
-
-msgid "Laboratory"
-msgstr "Laboratorio"
 
 msgid "CAS number"
 msgstr "Número CAS"
@@ -524,9 +632,6 @@ msgstr "Sala de laboratorio"
 
 msgid "Furniture"
 msgstr "Mueble"
-
-msgid "Shelf"
-msgstr "Estante"
 
 msgid "Boxes"
 msgstr "Cajas"
@@ -551,9 +656,6 @@ msgstr "Enviar"
 
 msgid "No code"
 msgstr "Sin código"
-
-msgid "User"
-msgstr "Usuario"
 
 msgid "Day"
 msgstr "Día"
@@ -625,7 +727,7 @@ msgid "Substance"
 msgstr "Sustancia"
 
 msgid "CAS"
-msgstr "CAS"
+msgstr ""
 
 #, fuzzy
 #| msgid "H Codes"
@@ -645,7 +747,7 @@ msgid "Verified Date"
 msgstr "Fecha de verificación"
 
 msgid "No file"
-msgstr "Sin archivo"
+msgstr ""
 
 msgid "Verified"
 msgstr "Verificado"
@@ -698,7 +800,7 @@ msgid "Available tutorials"
 msgstr "Tutoriales disponibles"
 
 msgid "Total"
-msgstr "Total"
+msgstr ""
 
 msgid "Break threshold"
 msgstr "Umbral superado"
@@ -738,9 +840,6 @@ msgstr "Regentes Asociados"
 msgid "Nearby Buildings"
 msgstr "Edificios Cercanos"
 
-msgid "Laboratories"
-msgstr "Laboratorios"
-
 msgid "Create building"
 msgstr "Crear Edificio"
 
@@ -760,6 +859,27 @@ msgstr "Edificios"
 
 msgid "Download PDF"
 msgstr "Descargar PDF"
+
+msgid "Close"
+msgstr "Cerrar"
+
+msgid "Help about classifications"
+msgstr "Ayuda sobre clasificaciones"
+
+msgid "View examples by category"
+msgstr "Ver ejemplos por categoría"
+
+msgid "Select a classification to see examples."
+msgstr "Seleccione una clasificación para ver ejemplos."
+
+msgid "Examples"
+msgstr "Ejemplos"
+
+msgid "Help about probability"
+msgstr "Ayuda sobre probabilidad"
+
+msgid "Help about consequence"
+msgstr "Ayuda sobre consecuencia"
 
 msgid "Chemical"
 msgstr "Químico"
@@ -820,8 +940,8 @@ msgid "Especial Condition"
 msgstr "Condición Especial"
 
 msgid ""
-"Are you sure you want to delete this Danger substance? <br> This action will"
-" delete all data related."
+"Are you sure you want to delete this Danger substance? <br> This action will "
+"delete all data related."
 msgstr ""
 "¿Está seguro de que desea eliminar esta sustancia peligrosa? <br> Esta "
 "acción eliminará todos los datos relacionados."
