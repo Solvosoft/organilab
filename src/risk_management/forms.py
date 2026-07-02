@@ -474,11 +474,13 @@ class IPERHistoryFilterForm(GTForm, forms.Form):
         required=False,
         widget=genwidgets.DateInput(attrs={"class": "form-control"}),
         label=_("From"),
+        input_formats=["%d/%m/%Y", "%Y-%m-%d"],
     )
     date_to = forms.DateField(
         required=False,
         widget=genwidgets.DateInput(attrs={"class": "form-control"}),
         label=_("To"),
+        input_formats=["%d/%m/%Y", "%Y-%m-%d"],
     )
 
     default_render_type = "as_grid"
