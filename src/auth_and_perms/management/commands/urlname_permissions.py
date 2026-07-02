@@ -725,6 +725,41 @@ URLNAME_PERMISSIONS = {
             "category": "IPER",
             "permission": "risk_management.manage_iper_catalog",
         },
+        {
+            "name": "Add IPER hazard",
+            "category": "IPER",
+            "permission": "risk_management.add_iperhazard",
+        },
+        {
+            "name": "Change IPER hazard",
+            "category": "IPER",
+            "permission": "risk_management.change_iperhazard",
+        },
+        {
+            "name": "Delete IPER hazard",
+            "category": "IPER",
+            "permission": "risk_management.delete_iperhazard",
+        },
+        {
+            "name": "View IPER hazard",
+            "category": "IPER",
+            "permission": "risk_management.view_iperhazard",
+        },
+        {
+            "name": "Change IPER observation",
+            "category": "IPER",
+            "permission": "risk_management.change_iperobservation",
+        },
+        {
+            "name": "Delete IPER observation",
+            "category": "IPER",
+            "permission": "risk_management.delete_iperobservation",
+        },
+        {
+            "name": "View IPER observation",
+            "category": "IPER",
+            "permission": "risk_management.view_iperobservation",
+        },
     ],
     "riskzone_create": [
         {

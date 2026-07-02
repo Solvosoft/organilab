@@ -1098,6 +1098,58 @@ def update_administrativo_centro_trabajo():
     )
 
 
+IPER_FULL = [
+    "risk_management.view_iperassessment",
+    "risk_management.add_iperassessment",
+    "risk_management.change_iperassessment",
+    "risk_management.delete_iperassessment",
+    "risk_management.view_all_iper",
+    "risk_management.view_iper_dashboard",
+    "risk_management.request_iper",
+    "risk_management.manage_iper_catalog",
+    "risk_management.view_iperhazard",
+    "risk_management.add_iperhazard",
+    "risk_management.change_iperhazard",
+    "risk_management.delete_iperhazard",
+    "risk_management.add_iperobservation",
+    "risk_management.change_iperobservation",
+    "risk_management.delete_iperobservation",
+    "risk_management.view_iperobservation",
+]
+
+IPER_READONLY = [
+    "risk_management.view_iperassessment",
+    "risk_management.view_iperhazard",
+    "risk_management.view_iperobservation",
+]
+
+
+def update_iper_roles():
+    full_roles = [
+        "Administrador de Laboratorio",
+        "Administrativo de centro de trabajo",
+        "Administrativo superior",
+    ]
+    readonly_roles = [
+        "Solo Lectura",
+        "Lectura y agregado de sustancias",
+        "Regente",
+        "Asistente de laboratorio",
+    ]
+    for name in full_roles:
+        rol = Rol.objects.filter(name=name).first()
+        if rol:
+            add_permissions(rol, IPER_FULL)
+        else:
+            print(f"WARNING: Rol '{name}' not found, skipping.")
+    for name in readonly_roles:
+        rol = Rol.objects.filter(name=name).first()
+        if rol:
+            add_permissions(rol, IPER_READONLY)
+        else:
+            print(f"WARNING: Rol '{name}' not found, skipping.")
+
+
 class Command(BaseCommand):
     help = "Update rol permissions by segment — idempotent, safe to re-run"
 
@@ -1116,3 +1168,4 @@ class Command(BaseCommand):
         update_tecnico_laboratorio()
         update_administrativo_centro_trabajo()
         update_administrador_superior()
+        update_iper_roles()
