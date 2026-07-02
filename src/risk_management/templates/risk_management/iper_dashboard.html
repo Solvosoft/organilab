@@ -3,7 +3,7 @@
 {% block title %}{% trans 'IPER dashboard' %}{% endblock %}
 {% block content %}
 	<input type="hidden" value="{{ org_pk }}" id="org">
-	<div class="row">
+	<div class="row ">
 		<div class="page-header col-xs-13" align="center">
 			<h3 class="heading-1"><span>{% trans 'IPER — Risk dashboard' %}</span></h3>
 		</div>
@@ -11,21 +11,21 @@
 	<div class="row">
 		<div class="col-md-6 mb-4">
 			<div class="card"><div class="card-header">{% trans 'Hazards by risk level' %}</div>
-				<div class="card-body" style="height:320px;">
+				<div class="card-body">
 					{% include 'gentelella/widgets/chartjs.html' with graph_url=risklevelchart %}
 				</div>
 			</div>
 		</div>
 		<div class="col-md-6 mb-4">
 			<div class="card"><div class="card-header">{% trans 'Hazards by category' %}</div>
-				<div class="card-body" style="height:320px;">
+				<div class="card-body">
 					{% include 'gentelella/widgets/chartjs.html' with graph_url=hazardcategorychart %}
 				</div>
 			</div>
 		</div>
 		<div class="col-md-6 mb-4">
 			<div class="card"><div class="card-header">{% trans 'IPER compliance' %}</div>
-				<div class="card-body" style="height:320px;">
+				<div class="card-body">
 					{% include 'gentelella/widgets/chartjs.html' with graph_url=compliancechart %}
 				</div>
 			</div>

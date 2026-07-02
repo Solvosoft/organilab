@@ -14,7 +14,11 @@ from laboratory.models import (
     OrganizationStructure,
     Catalog,
 )
-from laboratory.utils import get_user_laboratories, get_users_from_organization
+from laboratory.utils import (
+    get_laboratories_from_organization,
+    get_user_laboratories,
+    get_users_from_organization,
+)
 from risk_management.models import (
     RiskZone,
     IncidentReport,
@@ -410,17 +414,20 @@ class IPERAssessmentForm(GTForm, forms.ModelForm):
         user = kwargs.pop("user", None)
         super().__init__(*args, **kwargs)
         labs = Laboratory.objects.none()
-        if user is not None:
-            labs = get_user_laboratories(user)
-            if org_pk:
-                labs = labs.filter(organization__pk=org_pk)
+        if user is not None and org_pk:
+            labs = Laboratory.objects.filter(
+                pk__in=get_laboratories_from_organization(org_pk, user)
+            )
         self.fields["laboratory"].queryset = labs
 
     class Meta:
         model = IPERAssessment
         fields = ["laboratory", "assessment_date"]
         widgets = {
-            "laboratory": genwidgets.Select,
+            "laboratory": AutocompleteSelect(
+                "labs_by_org",
+                attrs={"data-s2filter-organization": "#org"},
+            ),
             "assessment_date": genwidgets.DateInput,
         }
 
