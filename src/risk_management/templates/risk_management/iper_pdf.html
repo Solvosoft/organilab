@@ -29,7 +29,7 @@
 			{% for hazard in object_list %}
 				<tr>
 					<td>{{ hazard.assessment.assessment_date }}</td>
-					<td>{{ hazard.assessment.laboratory.name }}</td>
+					<td>{% if hazard.assessment.is_anonymous %}<em>{% trans 'Anonymous' %}</em>{% else %}{{ hazard.assessment.laboratory.name }}{% endif %}</td>
 					<td>{{ hazard.category }}</td>
 					<td>{{ hazard.description }}</td>
 					<td>{{ hazard.location }}</td>

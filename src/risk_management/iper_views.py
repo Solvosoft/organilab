@@ -1,3 +1,6 @@
+import json
+from io import BytesIO
+
 from django.contrib import messages
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.contrib.auth.decorators import login_required, permission_required
@@ -39,14 +42,27 @@ from risk_management.forms import (
     IPERHistoryFilterForm,
     IPERObservationForm,
 )
+from openpyxl import Workbook
+from openpyxl.styles import (
+    Alignment,
+    Border,
+    Font,
+    PatternFill,
+    Side,
+)
+from openpyxl.utils import get_column_letter
+
 from risk_management.iper_defaults import (
+    CONSEQUENCE_LEVELS,
     HAZARD_CATEGORIES,
     KEY_CONSEQUENCE,
     KEY_HAZARD_CATEGORY,
     KEY_PROBABILITY,
     KEY_RISK_LEVEL,
+    PROBABILITY_LEVELS,
     RISK_LEVEL_BOOTSTRAP,
     RISK_LEVELS,
+    RISK_MATRIX,
 )
 from risk_management.models import (
     IPERAssessment,
@@ -95,7 +111,7 @@ class IPERAssessmentList(ListView):
         q = self.request.GET.get("q", "")
         if q:
             queryset = queryset.filter(
-                Q(laboratory__name__icontains=q)
+                Q(laboratory__name__icontains=q, is_anonymous=False)
                 | Q(responsible__username__icontains=q)
             ).distinct()
         return queryset.select_related("laboratory", "responsible")
@@ -226,8 +242,12 @@ class IPERAssessmentDetail(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["hazard_form"] = IPERHazardForm()
-        context["observation_form"] = IPERObservationForm()
+        context["hazard_form"] = IPERHazardForm(
+            render_type="as_p",
+        )
+        context["observation_form"] = IPERObservationForm(
+            render_type="as_p",
+        )
         context["hazards"] = self.object.hazards.select_related(
             "category", "probability", "consequence", "risk_level"
         )
@@ -237,13 +257,69 @@ class IPERAssessmentDetail(DetailView):
             "risk_management.add_iperobservation"
         )
         context["can_edit"] = self.request.user.has_perm(
-            "risk_management.change_iperassessment"
+            "risk_management.add_iperhazard"
+        )
+        context["can_delete_hazard"] = self.request.user.has_perm(
+            "risk_management.delete_iperhazard"
         )
         context["help_url"] = reverse(
             "riskmanagement:iper_lab_help",
             kwargs={"org_pk": self.org, "lab_pk": self.object.laboratory_id},
         )
+        context["hazard_category_help"] = json.dumps(
+            {
+                k: {
+                    "emoji": v["emoji"],
+                    "description": str(v["description"]),
+                    "examples": [str(e) for e in v["examples"]],
+                }
+                for k, v in HAZARD_CATEGORIES.items()
+            },
+            ensure_ascii=False,
+        )
+        context["probability_help"] = json.dumps(
+            {k: str(v["help"]) for k, v in PROBABILITY_LEVELS.items()},
+            ensure_ascii=False,
+        )
+        context["consequence_help"] = json.dumps(
+            {k: str(v["help"]) for k, v in CONSEQUENCE_LEVELS.items()},
+            ensure_ascii=False,
+        )
+        matrix_nested = {}
+        for (prob, cons), level in RISK_MATRIX.items():
+            matrix_nested.setdefault(prob, {})[cons] = {
+                "level": level,
+                "color": RISK_LEVEL_BOOTSTRAP.get(level, "secondary"),
+            }
+        context["risk_matrix_data"] = json.dumps(
+            {
+                "matrix": matrix_nested,
+                "probability_order": list(PROBABILITY_LEVELS.keys()),
+                "probability_short": {
+                    k: v["short"] for k, v in PROBABILITY_LEVELS.items()
+                },
+                "consequence_order": list(CONSEQUENCE_LEVELS.keys()),
+                "consequence_short": {
+                    k: v["short"] for k, v in CONSEQUENCE_LEVELS.items()
+                },
+            },
+            ensure_ascii=False,
+        )
         return context
+
+
+# --- anonimato -----------------------------------------------------------
+@login_required
+@permission_required("risk_management.change_iperassessment", raise_exception=True)
+def iper_toggle_anonymous(request, org_pk, pk):
+    user_is_allowed_on_organization(request.user, org_pk)
+    assessment = get_object_or_404(IPERAssessment, pk=pk, organization__pk=org_pk)
+    assessment.is_anonymous = not assessment.is_anonymous
+    assessment.save(update_fields=["is_anonymous"])
+    organilab_logentry(request.user, assessment, CHANGE, relobj=[assessment.laboratory])
+    return redirect(
+        reverse("riskmanagement:iper_detail", kwargs={"org_pk": org_pk, "pk": pk})
+    )
 
 
 # --- peligros: agregar / editar / borrar ----------------------------------
@@ -419,15 +495,17 @@ class IPERHistory(ReportListView):
         if not self.request.user.has_perm("risk_management.view_all_iper"):
             labs = get_user_laboratories(self.request.user)
             queryset = queryset.filter(assessment__laboratory__in=labs)
-        get = self.request.GET
-        if get.get("category"):
-            queryset = queryset.filter(category__pk=get["category"])
-        if get.get("risk_level"):
-            queryset = queryset.filter(risk_level__pk=get["risk_level"])
-        if get.get("date_from"):
-            queryset = queryset.filter(assessment__assessment_date__gte=get["date_from"])
-        if get.get("date_to"):
-            queryset = queryset.filter(assessment__assessment_date__lte=get["date_to"])
+        form = IPERHistoryFilterForm(self.request.GET or None)
+        if form.is_valid():
+            cd = form.cleaned_data
+            if cd.get("category"):
+                queryset = queryset.filter(category=cd["category"])
+            if cd.get("risk_level"):
+                queryset = queryset.filter(risk_level=cd["risk_level"])
+            if cd.get("date_from"):
+                queryset = queryset.filter(assessment__assessment_date__gte=cd["date_from"])
+            if cd.get("date_to"):
+                queryset = queryset.filter(assessment__assessment_date__lte=cd["date_to"])
         return queryset.order_by("-assessment__assessment_date", "-risk_priority")
 
     def get_context_data(self, **kwargs):
@@ -442,41 +520,140 @@ class IPERHistory(ReportListView):
         context["pgparams"] = self.request.GET.urlencode()
         return context
 
+    # openpyxl hex fills per risk level
+    _RISK_FILLS = {
+        "Trivial":      PatternFill("solid", fgColor="92D050"),
+        "Tolerable":    PatternFill("solid", fgColor="00B0F0"),
+        "Moderado":     PatternFill("solid", fgColor="FFFF00"),
+        "Importante":   PatternFill("solid", fgColor="FF9900"),
+        "Intolerable":  PatternFill("solid", fgColor="FF0000"),
+    }
+
     def get_book(self, context):
-        rows = [
-            [
-                str(_("Date")),
-                str(_("Laboratory")),
-                str(_("Classification")),
-                str(_("Hazard")),
-                str(_("Location")),
-                str(_("Probability")),
-                str(_("Consequence")),
-                str(_("Risk level")),
-                str(_("Controls")),
-            ]
+        # kept for ODS/XLS fallback (no styling)
+        headers = [
+            str(_("Date")), str(_("Laboratory")), str(_("Classification")),
+            str(_("Hazard")), str(_("Location")), str(_("Probability")),
+            str(_("Consequence")), str(_("Risk level")), str(_("Controls")),
         ]
+        rows = [headers]
+        anonymous_label = str(_("Anonymous"))
         for hazard in self.get_queryset():
-            rows.append(
-                [
-                    str(hazard.assessment.assessment_date),
-                    hazard.assessment.laboratory.name,
-                    str(hazard.category) if hazard.category_id else "",
-                    hazard.description,
-                    hazard.location,
-                    str(hazard.probability) if hazard.probability_id else "",
-                    str(hazard.consequence) if hazard.consequence_id else "",
-                    str(hazard.risk_level) if hazard.risk_level_id else "",
-                    hazard.controls,
-                ]
+            lab_name = (
+                anonymous_label
+                if hazard.assessment.is_anonymous
+                else hazard.assessment.laboratory.name
             )
+            rows.append([
+                str(hazard.assessment.assessment_date),
+                lab_name,
+                str(hazard.category) if hazard.category_id else "",
+                hazard.description,
+                hazard.location,
+                str(hazard.probability) if hazard.probability_id else "",
+                str(hazard.consequence) if hazard.consequence_id else "",
+                str(hazard.risk_level) if hazard.risk_level_id else "",
+                hazard.controls,
+            ])
         return rows
+
+    def get_xlsx(self, request, *args, **kwargs):
+        self.object_list = self.get_queryset()
+        anonymous_label = str(_("Anonymous"))
+
+        wb = Workbook()
+        ws = wb.active
+        ws.title = str(_("IPER history"))
+
+        headers = [
+            str(_("Date")), str(_("Laboratory")), str(_("Classification")),
+            str(_("Hazard")), str(_("Location")), str(_("Probability")),
+            str(_("Consequence")), str(_("Risk level")), str(_("Controls")),
+        ]
+
+        header_fill = PatternFill("solid", fgColor="1F4E79")
+        header_font = Font(bold=True, color="FFFFFF", size=11)
+        thin = Side(border_style="thin", color="BFBFBF")
+        cell_border = Border(top=thin, left=thin, right=thin, bottom=thin)
+
+        ws.append(headers)
+        for col_idx, _hdr in enumerate(headers, start=1):
+            cell = ws.cell(row=1, column=col_idx)
+            cell.fill = header_fill
+            cell.font = header_font
+            cell.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
+            cell.border = cell_border
+
+        ws.row_dimensions[1].height = 30
+        ws.freeze_panes = "A2"
+        ws.auto_filter.ref = ws.dimensions
+
+        # column widths (chars)
+        col_widths = [12, 24, 20, 45, 20, 14, 22, 16, 45]
+
+        wrap_align = Alignment(vertical="top", wrap_text=True)
+        center_align = Alignment(horizontal="center", vertical="top")
+
+        for row_idx, hazard in enumerate(self.get_queryset(), start=2):
+            lab_name = (
+                anonymous_label
+                if hazard.assessment.is_anonymous
+                else hazard.assessment.laboratory.name
+            )
+            risk_desc = str(hazard.risk_level) if hazard.risk_level_id else ""
+            row_data = [
+                hazard.assessment.assessment_date,
+                lab_name,
+                str(hazard.category) if hazard.category_id else "",
+                hazard.description or "",
+                hazard.location or "",
+                str(hazard.probability) if hazard.probability_id else "",
+                str(hazard.consequence) if hazard.consequence_id else "",
+                risk_desc,
+                hazard.controls or "",
+            ]
+            ws.append(row_data)
+
+            for col_idx, value in enumerate(row_data, start=1):
+                cell = ws.cell(row=row_idx, column=col_idx)
+                cell.border = cell_border
+                # wrap long text columns
+                if col_idx in (4, 5, 9):
+                    cell.alignment = wrap_align
+                else:
+                    cell.alignment = center_align
+
+            # color risk level cell
+            risk_cell = ws.cell(row=row_idx, column=8)
+            risk_fill = self._RISK_FILLS.get(risk_desc)
+            if risk_fill:
+                risk_cell.fill = risk_fill
+                # dark text on yellow/green, white on orange/red
+                dark = risk_desc in ("Trivial", "Tolerable", "Moderado")
+                risk_cell.font = Font(bold=True, color="000000" if dark else "FFFFFF")
+
+        for col_idx, width in enumerate(col_widths, start=1):
+            ws.column_dimensions[get_column_letter(col_idx)].width = width
+
+        output = BytesIO()
+        wb.save(output)
+        output.seek(0)
+
+        from django.http import HttpResponse
+        response = HttpResponse(
+            output.read(),
+            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        )
+        response["Content-Disposition"] = (
+            f'attachment; filename="{self.get_file_name(request)}.xlsx"'
+        )
+        return response
 
 
 # --- dashboard del analista -----------------------------------------------
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
-    permission_required("risk_management.view_iper_dashboard", raise_exception=True),
+    permission_required("risk_management.view_iperassessment", raise_exception=True),
     name="dispatch",
 )
 class IPERDashboard(TemplateView):
