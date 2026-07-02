@@ -1119,6 +1119,7 @@ IPER_FULL = [
 
 IPER_READONLY = [
     "risk_management.view_iperassessment",
+    "risk_management.view_iper_dashboard",
     "risk_management.view_iperhazard",
     "risk_management.view_iperobservation",
 ]
