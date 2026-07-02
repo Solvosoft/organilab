@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
-{% load i18n %}
+{% load i18n urlname_tags %}
 {% block title %}{% trans 'IPER assessments' %}{% endblock %}
+{% block pre_head %}
+	{% define_urlname_action 'iper_list' %}
+{% endblock %}
 {% block content %}
 	<input type="hidden" value="{{ org_pk }}" id="org">
 	<div class="row">
@@ -45,7 +48,15 @@
 				<tbody>
 					{% for object in object_list %}
 						<tr>
-							<td>{{ object.laboratory.name }}</td>
+							<td>
+								{% if object.is_anonymous %}
+									<span class="text-muted fst-italic">{% trans 'Anonymous' %}</span>
+									<i class="fa fa-lock text-muted ms-1" title="{% trans 'Laboratory name hidden' %}"></i>
+								{% else %}
+									{{ object.laboratory.name }}
+									<i class="fa fa-unlock text-success ms-1" title="{% trans 'Laboratory name visible' %}"></i>
+								{% endif %}
+							</td>
 							<td>{{ object.assessment_date }}</td>
 							<td>{{ object.version }}</td>
 							<td><span class="badge bg-secondary">{{ object.get_status_display }}</span></td>
@@ -54,6 +65,13 @@
 							<td class="text-end">
 								<a class="btn btn-sm btn-outline-primary" href="{% url 'riskmanagement:iper_detail' org_pk object.pk %}">
 									<i class="fa fa-eye"></i> {% trans 'Open' %}</a>
+								{% if perms.risk_management.delete_iperassessment %}
+								<button type="button" class="btn btn-sm btn-outline-danger ms-1"
+									data-bs-toggle="modal" data-bs-target="#delete_obj_modal"
+									data-delete-url="{% url 'riskmanagement:iper_delete' org_pk object.pk %}"
+									data-delete-label="{{ object.laboratory.name }} v{{ object.version }} ({{ object.assessment_date }})">
+									<i class="fa fa-trash"></i> {% trans 'Delete' %}</button>
+								{% endif %}
 							</td>
 						</tr>
 					{% empty %}
@@ -70,4 +88,29 @@
 			{% endif %}
 		</div>
 	</div>
+
+	{% if perms.risk_management.delete_iperassessment %}
+		{% trans 'Delete IPER assessment' as delete_title %}
+		{% include 'gentelella/blocks/modal_template_delete.html' with form_id="delete_obj_form" id="delete_obj_modal" title=delete_title url="" %}
+	{% endif %}
+{% endblock %}
+{% block js %}
+{% if perms.risk_management.delete_iperassessment %}
+<script>
+(function () {
+	var modal = document.getElementById('delete_obj_modal');
+	if (!modal) return;
+	modal.addEventListener('show.bs.modal', function (event) {
+		var btn = event.relatedTarget;
+		var url = btn.getAttribute('data-delete-url');
+		var label = btn.getAttribute('data-delete-label');
+		modal.querySelector('.objtext').textContent = label;
+		modal.querySelector('form').setAttribute('action', url);
+	});
+	modal.querySelector('.delbtn').addEventListener('click', function () {
+		modal.querySelector('form').submit();
+	});
+})();
+</script>
+{% endif %}
 {% endblock %}

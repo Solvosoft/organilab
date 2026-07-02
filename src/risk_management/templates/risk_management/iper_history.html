@@ -9,7 +9,7 @@
 		</div>
 	</div>
 
-	<div class="row mb-2">
+	<div class="row mb-4">
 		<div class="col-12">
 			{% for item in risk_summary %}
 				<span class="badge bg-{{ item.color }} fs-6 me-1">{{ item.level }}: {{ item.count }}</span>
@@ -22,7 +22,8 @@
 			<form method="get" action="" class="row g-2 align-items-end">
 				{{ filter_form }}
 				<div class="col-auto">
-					<button type="submit" class="btn btn-sm btn-outline-secondary"><i class="fa fa-filter"></i> {% trans 'Filter' %}</button>
+					<button type="submit" class="btn btn-sm btn-outline-primary"><i class="fa fa-filter"></i> {% trans 'Filter' %}</button>
+					<a href="?" class="btn btn-sm btn-outline-secondary ms-1"><i class="fa fa-eraser"></i> {% trans 'Clear' %}</a>
 				</div>
 			</form>
 		</div>
@@ -48,14 +49,24 @@
 			{% for hazard in object_list %}
 				<tr>
 					<td>{{ hazard.assessment.assessment_date }}</td>
-					<td>{{ hazard.assessment.laboratory.name }}</td>
+					<td>
+						{% if hazard.assessment.is_anonymous %}
+							<span class="text-muted fst-italic">{% trans 'Anonymous' %}</span>
+						{% else %}
+							{{ hazard.assessment.laboratory.name }}
+						{% endif %}
+					</td>
 					<td>{{ hazard.category }}</td>
-					<td>{{ hazard.description }}</td>
+					<td {% if hazard.description|length > 200 %}data-bs-toggle="tooltip" data-bs-placement="top" title="{{ hazard.description }}"{% endif %}>
+						{{ hazard.description|truncatechars:200 }}
+					</td>
 					<td>{{ hazard.location }}</td>
 					<td>{{ hazard.probability }}</td>
 					<td>{{ hazard.consequence }}</td>
 					<td>{{ hazard.risk_level }}</td>
-					<td>{{ hazard.controls }}</td>
+					<td {% if hazard.controls|length > 200 %}data-bs-toggle="tooltip" data-bs-placement="top" title="{{ hazard.controls }}"{% endif %}>
+						{{ hazard.controls|truncatechars:200 }}
+					</td>
 				</tr>
 			{% empty %}
 				<tr><td colspan="9" class="text-muted text-center">{% trans 'No records.' %}</td></tr>
@@ -65,4 +76,11 @@
 {% endblock %}
 {% block js %}
 	{{ filter_form.media }}
+	<script>
+		document.addEventListener("DOMContentLoaded", function () {
+			document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function (el) {
+				new bootstrap.Tooltip(el, {html: false});
+			});
+		});
+	</script>
 {% endblock %}

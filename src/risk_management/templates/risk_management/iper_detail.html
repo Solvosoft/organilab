@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
-{% load i18n %}
+{% load i18n static urlname_tags %}
 {% block title %}{% trans 'IPER assessment' %}{% endblock %}
+{% block pre_head %}
+	{% define_urlname_action 'iper_list' %}
+{% endblock %}
 {% block content %}
 	<input type="hidden" value="{{ org_pk }}" id="org">
 	<div class="row mb-3">
@@ -14,7 +17,20 @@
 			</p>
 		</div>
 		<div class="col-md-4 text-end">
-			{% if perms.risk_management.add_iperassessment %}
+			{% if perms.risk_management.change_iperassessment %}
+				{% if object.is_anonymous %}
+					<a href="{% url 'riskmanagement:iper_toggle_anonymous' org_pk object.pk %}"
+						class="btn btn-sm btn-outline-success"
+						title="{% trans 'Make laboratory name visible in listings' %}">
+						<i class="fa fa-unlock"></i> {% trans 'Make public' %}</a>
+				{% else %}
+					<a href="{% url 'riskmanagement:iper_toggle_anonymous' org_pk object.pk %}"
+						class="btn btn-sm btn-outline-secondary"
+						title="{% trans 'Hide laboratory name in listings' %}">
+						<i class="fa fa-lock"></i> {% trans 'Make anonymous' %}</a>
+				{% endif %}
+			{% endif %}
+			{% if perms.risk_management.change_iperassessment %}
 				<a href="{% url 'riskmanagement:iper_clone' org_pk object.pk %}" class="btn btn-sm btn-outline-primary"
 					title="{% trans 'Create a new version pre-filled with this one' %}">
 					<i class="fa fa-copy"></i> {% trans 'Update (new version)' %}</a>
@@ -22,14 +38,6 @@
 					title="{% trans 'New version with empty hazards' %}">
 					<i class="fa fa-eraser"></i> {% trans 'Start clean' %}</a>
 			{% endif %}
-		</div>
-	</div>
-
-	<div class="row mb-3">
-		<div class="col-12">
-			{% for item in risk_summary %}
-				<span class="badge bg-{{ item.color }} fs-6 me-1">{{ item.level }}: {{ item.count }}</span>
-			{% endfor %}
 		</div>
 	</div>
 
@@ -52,13 +60,13 @@
 							{% for hazard in hazards %}
 								<tr>
 									<td>{{ hazard.category }}</td>
-									<td>{{ hazard.description }}</td>
+									<td {% if hazard.description|length > 200 %}data-bs-toggle="tooltip" data-bs-placement="top" title="{{ hazard.description }}"{% endif %}>{{ hazard.description|truncatechars:200 }}</td>
 									<td>{{ hazard.location }}</td>
 									<td>{{ hazard.probability }}</td>
 									<td>{{ hazard.consequence }}</td>
 									<td>{{ hazard.risk_level }}</td>
 									<td class="text-end">
-										{% if can_edit %}
+										{% if can_delete_hazard %}
 											<a class="btn btn-sm btn-outline-danger"
 												href="{% url 'riskmanagement:iper_hazard_delete' org_pk object.pk hazard.pk %}"><i class="fa fa-trash"></i></a>
 										{% endif %}
@@ -83,6 +91,48 @@
 						</form>
 					</div>
 				</div>
+
+			<div class="card mb-3" id="risk-matrix-card">
+				<div class="card-header d-flex justify-content-between align-items-center">
+					<span><i class="fa fa-table"></i> {% trans 'Risk matrix (INTE T55)' %}</span>
+				</div>
+				<div class="card-body p-2">
+					<table class="table table-sm table-bordered text-center mb-1" id="risk-matrix-table" style="font-size:0.85em;">
+						<thead class="table-light">
+							<tr>
+								<th>P / C</th>
+								<th>LD</th>
+								<th>D</th>
+								<th>ED</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<th>B</th>
+								<td class="bg-success text-white" data-prob="Baja" data-cons="Ligeramente Dañino">Trivial</td>
+								<td class="bg-info text-white" data-prob="Baja" data-cons="Dañino">Tolerable</td>
+								<td class="bg-warning" data-prob="Baja" data-cons="Extremadamente Dañino">Moderado</td>
+							</tr>
+							<tr>
+								<th>M</th>
+								<td class="bg-info text-white" data-prob="Media" data-cons="Ligeramente Dañino">Tolerable</td>
+								<td class="bg-warning" data-prob="Media" data-cons="Dañino">Moderado</td>
+								<td class="bg-danger text-white" data-prob="Media" data-cons="Extremadamente Dañino">Importante</td>
+							</tr>
+							<tr>
+								<th>A</th>
+								<td class="bg-warning" data-prob="Alta" data-cons="Ligeramente Dañino">Moderado</td>
+								<td class="bg-danger text-white" data-prob="Alta" data-cons="Dañino">Importante</td>
+								<td class="bg-dark text-white" data-prob="Alta" data-cons="Extremadamente Dañino">Intolerable</td>
+							</tr>
+						</tbody>
+					</table>
+					<p class="text-muted mb-0" style="font-size:0.78em;">
+						<strong>P:</strong> B=Baja, M=Media, A=Alta &nbsp;|&nbsp;
+						<strong>C:</strong> LD=Ligeramente Dañino, D=Dañino, ED=Extremadamente Dañino
+					</p>
+				</div>
+			</div>
 			{% endif %}
 
 			<div class="card mb-3">
@@ -119,6 +169,15 @@
 {% endblock %}
 {% block js %}
 	{{ hazard_form.media }}
+	{% if can_edit %}
+	<script>
+		window.IPER_CATEGORY_HELP = {{ hazard_category_help|safe }};
+		window.IPER_PROBABILITY_HELP = {{ probability_help|safe }};
+		window.IPER_CONSEQUENCE_HELP = {{ consequence_help|safe }};
+		window.IPER_RISK_MATRIX = {{ risk_matrix_data|safe }};
+	</script>
+	<script src="{% static 'js/iper_hazard_help.js' %}"></script>
+	{% endif %}
 	<script>
 		(function () {
 			fetch("{{ help_url }}", {headers: {"X-Requested-With": "XMLHttpRequest"}})
@@ -138,5 +197,8 @@
 					document.getElementById("iper-help").innerHTML = "<p class='text-muted'>{% trans 'Could not load help.' %}</p>";
 				});
 		})();
+		document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function (el) {
+			new bootstrap.Tooltip(el, {html: false});
+		});
 	</script>
 {% endblock %}
