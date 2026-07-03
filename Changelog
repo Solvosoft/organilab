@@ -1,3 +1,9 @@
+
+
+03/07/2026
+Command to Gestion SGA
+    - python manage.py merge_duplicate_warning_words
+
 25/06/2026
 Command to update risk zones
     - python manage.py reorder_zones
