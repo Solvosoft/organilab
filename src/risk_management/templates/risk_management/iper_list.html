@@ -59,7 +59,7 @@
 							</td>
 							<td>{{ object.assessment_date }}</td>
 							<td>{{ object.version }}</td>
-							<td><span class="badge bg-secondary">{{ object.get_status_display }}</span></td>
+							<td><span class="badge {% if object.status == 'completed' %}bg-success{% elif object.status == 'obsolete' %}bg-dark{% else %}bg-secondary{% endif %}">{{ object.get_status_display }}</span></td>
 							<td>{{ object.responsible|default:"—" }}</td>
 							<td>{{ object.due_date|default:"—" }}</td>
 							<td class="text-end">
