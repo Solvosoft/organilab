@@ -12,7 +12,7 @@
 			<p class="text-muted mb-1">
 				<i class="fa fa-sitemap"></i> {{ object.laboratory.organization }}
 				· <i class="fa fa-calendar"></i> {{ object.assessment_date }}
-				· <span class="badge bg-secondary">{{ object.get_status_display }}</span>
+				· <span class="badge {% if object.status == 'completed' %}bg-success{% elif object.status == 'obsolete' %}bg-dark{% else %}bg-secondary{% endif %}">{{ object.get_status_display }}</span>
 				{% if object.responsible %}· <i class="fa fa-user"></i> {{ object.responsible }}{% endif %}
 			</p>
 		</div>
@@ -25,12 +25,25 @@
 						<i class="fa fa-unlock"></i> {% trans 'Make public' %}</a>
 				{% else %}
 					<a href="{% url 'riskmanagement:iper_toggle_anonymous' org_pk object.pk %}"
-						class="btn btn-sm btn-outline-secondary"
+						class="btn btn-sm btn-outline-dark"
 						title="{% trans 'Hide laboratory name in listings' %}">
 						<i class="fa fa-lock"></i> {% trans 'Make anonymous' %}</a>
 				{% endif %}
 			{% endif %}
-			{% if perms.risk_management.change_iperassessment %}
+			{% if perms.risk_management.change_iperassessment and object.status != 'obsolete' %}
+				{% if object.status == 'completed' %}
+					<a href="{% url 'riskmanagement:iper_toggle_status' org_pk object.pk %}"
+						class="btn btn-sm btn-outline-warning"
+						title="{% trans 'Reopen as draft to keep editing hazards' %}">
+						<i class="fa fa-rotate-left"></i> {% trans 'Back to draft' %}</a>
+				{% else %}
+					<a href="{% url 'riskmanagement:iper_toggle_status' org_pk object.pk %}"
+						class="btn btn-sm btn-outline-success"
+						title="{% trans 'Mark as completed (locks hazards, only observations allowed)' %}">
+						<i class="fa fa-check"></i> {% trans 'Mark as completed' %}</a>
+				{% endif %}
+			{% endif %}
+			{% if perms.risk_management.change_iperassessment and object.status != 'completed' %}
 				<a href="{% url 'riskmanagement:iper_clone' org_pk object.pk %}" class="btn btn-sm btn-outline-primary"
 					title="{% trans 'Create a new version pre-filled with this one' %}">
 					<i class="fa fa-copy"></i> {% trans 'Update (new version)' %}</a>

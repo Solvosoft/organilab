@@ -36,6 +36,7 @@ from laboratory.views.djgeneric import (
     UpdateView,
 )
 from pending_tasks.utils import create_pending_task
+from report.utils import create_notification
 from risk_management.forms import (
     IPERAssessmentForm,
     IPERHazardForm,
@@ -256,11 +257,13 @@ class IPERAssessmentDetail(DetailView):
         context["can_observe"] = self.request.user.has_perm(
             "risk_management.add_iperobservation"
         )
-        context["can_edit"] = self.request.user.has_perm(
-            "risk_management.add_iperhazard"
+        context["can_edit"] = (
+            self.request.user.has_perm("risk_management.add_iperhazard")
+            and self.object.status != IPERAssessment.COMPLETED
         )
-        context["can_delete_hazard"] = self.request.user.has_perm(
-            "risk_management.delete_iperhazard"
+        context["can_delete_hazard"] = (
+            self.request.user.has_perm("risk_management.delete_iperhazard")
+            and self.object.status != IPERAssessment.COMPLETED
         )
         context["help_url"] = reverse(
             "riskmanagement:iper_lab_help",
@@ -322,6 +325,30 @@ def iper_toggle_anonymous(request, org_pk, pk):
     )
 
 
+# --- estados: completar / reabrir -----------------------------------------
+@login_required
+@permission_required("risk_management.change_iperassessment", raise_exception=True)
+def iper_toggle_status(request, org_pk, pk):
+    user_is_allowed_on_organization(request.user, org_pk)
+    assessment = get_object_or_404(IPERAssessment, pk=pk, organization__pk=org_pk)
+    if assessment.status == IPERAssessment.DRAFT:
+        assessment.status = IPERAssessment.COMPLETED
+    elif assessment.status == IPERAssessment.COMPLETED:
+        assessment.status = IPERAssessment.DRAFT
+    else:
+        messages.error(
+            request, _("Obsolete IPER assessments cannot change status.")
+        )
+        return redirect(
+            reverse("riskmanagement:iper_detail", kwargs={"org_pk": org_pk, "pk": pk})
+        )
+    assessment.save(update_fields=["status"])
+    organilab_logentry(request.user, assessment, CHANGE, relobj=[assessment.laboratory])
+    return redirect(
+        reverse("riskmanagement:iper_detail", kwargs={"org_pk": org_pk, "pk": pk})
+    )
+
+
 # --- peligros: agregar / editar / borrar ----------------------------------
 @login_required
 @permission_required("risk_management.change_iperassessment", raise_exception=True)
@@ -330,6 +357,17 @@ def iper_hazard_action(request, org_pk, assessment_pk, pk=None):
     assessment = get_object_or_404(
         IPERAssessment, pk=assessment_pk, organization__pk=org_pk
     )
+    if assessment.status == IPERAssessment.COMPLETED:
+        messages.error(
+            request,
+            _("Cannot modify hazards while the IPER assessment is completed."),
+        )
+        return redirect(
+            reverse(
+                "riskmanagement:iper_detail",
+                kwargs={"org_pk": org_pk, "pk": assessment_pk},
+            )
+        )
     hazard = None
     if pk:
         hazard = get_object_or_404(IPERHazard, pk=pk, assessment=assessment)
@@ -361,6 +399,17 @@ def iper_hazard_delete(request, org_pk, assessment_pk, pk):
     assessment = get_object_or_404(
         IPERAssessment, pk=assessment_pk, organization__pk=org_pk
     )
+    if assessment.status == IPERAssessment.COMPLETED:
+        messages.error(
+            request,
+            _("Cannot modify hazards while the IPER assessment is completed."),
+        )
+        return redirect(
+            reverse(
+                "riskmanagement:iper_detail",
+                kwargs={"org_pk": org_pk, "pk": assessment_pk},
+            )
+        )
     hazard = get_object_or_404(IPERHazard, pk=pk, assessment=assessment)
     organilab_logentry(request.user, hazard, DELETION, relobj=[assessment.laboratory])
     hazard.delete()
@@ -385,6 +434,20 @@ def iper_observation_add(request, org_pk, pk):
             observation.assessment = assessment
             observation.author = request.user
             observation.save()
+            organilab_logentry(
+                request.user, observation, ADDITION, relobj=[assessment.laboratory]
+            )
+            recipient = assessment.responsible or assessment.created_by
+            if recipient and recipient != request.user:
+                create_notification(
+                    recipient,
+                    _("A new observation was added to the IPER assessment of %s")
+                    % assessment.laboratory,
+                    reverse(
+                        "riskmanagement:iper_detail",
+                        kwargs={"org_pk": org_pk, "pk": pk},
+                    ),
+                )
     return redirect(
         reverse("riskmanagement:iper_detail", kwargs={"org_pk": org_pk, "pk": pk})
     )
@@ -396,6 +459,14 @@ def iper_observation_add(request, org_pk, pk):
 def iper_clone_for_update(request, org_pk, pk):
     user_is_allowed_on_organization(request.user, org_pk)
     previous = get_object_or_404(IPERAssessment, pk=pk, organization__pk=org_pk)
+    if previous.status == IPERAssessment.COMPLETED:
+        messages.error(
+            request,
+            _("Reopen this completed IPER assessment before creating a new version."),
+        )
+        return redirect(
+            reverse("riskmanagement:iper_detail", kwargs={"org_pk": org_pk, "pk": pk})
+        )
     clean = request.GET.get("clean") == "1"
 
     new = IPERAssessment(

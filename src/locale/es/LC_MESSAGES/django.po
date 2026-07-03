@@ -6463,6 +6463,30 @@ msgstr "Ocultar el nombre del laboratorio en los listados"
 msgid "Make anonymous"
 msgstr "Hacer anónimo"
 
+msgid "Reopen as draft to keep editing hazards"
+msgstr "Reabrir como borrador para seguir editando peligros"
+
+msgid "Back to draft"
+msgstr "Volver a borrador"
+
+msgid "Mark as completed (locks hazards, only observations allowed)"
+msgstr "Marcar como completado (bloquea peligros, solo permite observaciones)"
+
+msgid "Mark as completed"
+msgstr "Marcar como completado"
+
+msgid "Obsolete IPER assessments cannot change status."
+msgstr "Las evaluaciones IPER obsoletas no pueden cambiar de estado."
+
+msgid "Cannot modify hazards while the IPER assessment is completed."
+msgstr "No se pueden modificar peligros mientras la evaluación IPER esté completada."
+
+msgid "Reopen this completed IPER assessment before creating a new version."
+msgstr "Reabra esta evaluación IPER completada antes de crear una nueva versión."
+
+msgid "A new observation was added to the IPER assessment of %s"
+msgstr "Se agregó una nueva observación a la evaluación IPER de %s"
+
 msgid "Create a new version pre-filled with this one"
 msgstr "Crear una nueva versión prellenada con esta"
 
