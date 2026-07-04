@@ -16,13 +16,13 @@ class Command(BaseCommand):
         parser.add_argument(
             "--output",
             type=str,
-            default="duplicate_objects.xlsx",
-            help="Output Excel file path (default: duplicate_objects.xlsx)",
+            default="",
+            help="Output Excel file path ",
         )
         parser.add_argument(
             "--json-output",
             type=str,
-            default="duplicates_without_shelfobject.json",
+            default="",
             help="Output JSON file for duplicates without shelfobject",
         )
 
