@@ -1,6 +1,6 @@
 {% load i18n %}
 
-{% if perms.risk_management.view_riskzone %}
+{% if perms.risk_management.view_riskzone or perms.risk_management.view_iperassessment or perms.risk_management.view_iper_dashboard %}
 	<li>
 		<a>
 			<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
@@ -9,11 +9,14 @@
 			<span class="fa fa-chevron-down"></span>
 		</a>
 		<ul class="nav child_menu">
-			<li>
-				<a href="{% url 'riskmanagement:riskzone_list' org_pk %}">
-					<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-					{% trans 'Risk zones' %}</a>
-			</li>
+			{% if perms.risk_management.view_riskzone %}
+				<li>
+					<a href="{% url 'riskmanagement:riskzone_list' org_pk %}">
+						<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+						{% trans 'Risk zones' %}</a>
+				</li>
+			{% endif %}
+
 			{% if perms.laboratory.do_report %}
 				<li><a id='reports' href="{% url 'laboratory:h_code_reports' org_pk %}"
 											title="{% trans 'Report View' %}">
@@ -23,8 +26,8 @@
 					{% trans 'H code Reports' %}</a>
 				</li>
 			{% endif %}
-			{% if perms.risk_management.view_buildings %}
 
+			{% if perms.risk_management.view_buildings %}
 				<li><a href="{% url 'riskmanagement:buildings_list' org_pk %}"
 											title="{% trans 'Manage buildings' %}">
 					<i class="fa fa-building" aria-hidden="true"></i>
@@ -47,11 +50,16 @@
 					{% trans 'Manage regents' %}</a>
 				</li>
 			{% endif %}
-			<li><a href="{% url 'riskmanagement:zone_dashboard' org_pk %}"
+
+			{% if perms.risk_management.view_riskzone %}
+			<li>
+				<a href="{% url 'riskmanagement:zone_dashboard' org_pk %}"
 										title="{% trans 'Statistics' %}">
 				<i class="fa fa-line-chart" aria-hidden="true"></i>
 				{% trans 'Statistics' %}</a>
 			</li>
+			{% endif %}
+
 			{% if perms.risk_management.view_iperassessment %}
 				<li><a href="{% url 'riskmanagement:iper_list' org_pk %}"
 											title="{% trans 'IPER assessments' %}">
@@ -59,6 +67,7 @@
 					{% trans 'IPER assessments' %}</a>
 				</li>
 			{% endif %}
+
 			{% if perms.risk_management.view_iper_dashboard %}
 				<li><a href="{% url 'riskmanagement:iper_dashboard' org_pk %}"
 											title="{% trans 'IPER dashboard' %}">
@@ -66,6 +75,7 @@
 					{% trans 'IPER dashboard' %}</a>
 				</li>
 			{% endif %}
+
 			{% if perms.laboratory.do_report %}
 				<li><a href="{% url 'report:risk_zone_report' org_pk %}"
 											title="{% trans 'Risk zone report' %}">
@@ -74,11 +84,13 @@
 				</li>
 			{% endif %}
 
+			{% if perms.risk_management.view_riskzone %}
 			<li>
 				<a href="{% url 'auth_and_perms:map_of_laboratories' org_pk %}">
 					<i class="fa fa-map" aria-hidden="true"></i>
 					{% trans 'Laboratories map' %}</a>
 			</li>
+			{% endif %}
 		</ul>
 
 	</li>

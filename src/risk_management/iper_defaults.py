@@ -232,7 +232,7 @@ RISK_LEVEL_BOOTSTRAP = {
 }
 
 # Período por defecto (meses) para solicitar actualización del IPER.
-DEFAULT_PERIOD_MONTHS = 12
+DEFAULT_PERIOD_MONTHS = 6
 DEFAULT_REMINDER_DAYS_BEFORE = 30
 
 

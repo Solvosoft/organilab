@@ -2,6 +2,7 @@ from django.contrib.auth.models import Permission
 from django.core.management import BaseCommand
 
 from auth_and_perms.models import Rol
+from laboratory.models import OrganizationStructure
 
 
 def add_permissions(rol, perms):
@@ -1151,6 +1152,35 @@ def update_iper_roles():
             print(f"WARNING: Rol '{name}' not found, skipping.")
 
 
+AUDITOR_IPER_PERMS = IPER_READONLY + [
+    "risk_management.view_all_iper",
+    "risk_management.add_iperobservation",
+]
+
+
+def create_auditor_iper():
+    rol, created = Rol.objects.get_or_create(
+        name="Auditor IPER",
+        defaults={
+            "description": (
+                "Rol de auditoria para el modulo IPER de la Universidad Nacional (UNA). "
+                "Permite consultar evaluaciones, peligros y observaciones IPER de todos "
+                "los laboratorios de la organizacion, y agregar observaciones de auditoria."
+            ),
+        },
+    )
+    add_permissions(rol, AUDITOR_IPER_PERMS)
+    remove_permissions(rol, ["risk_management.view_riskzone"])
+
+    org = OrganizationStructure.objects.filter(name="UNA").first()
+    if org:
+        org.rol.add(rol)
+    else:
+        print(
+            "WARNING: OrganizationStructure 'UNA' not found, skipping org association."
+        )
+
+
 class Command(BaseCommand):
     help = "Update rol permissions by segment — idempotent, safe to re-run"
 
@@ -1170,3 +1200,4 @@ class Command(BaseCommand):
         update_administrativo_centro_trabajo()
         update_administrador_superior()
         update_iper_roles()
+        create_auditor_iper()
