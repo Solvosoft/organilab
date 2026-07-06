@@ -61,7 +61,7 @@ def send_iper_update_reminders():
         reminder_days = cfg.reminder_days_before if cfg else 30
         if assessment.due_date - timedelta(days=reminder_days) > today:
             continue
-        responsible = assessment.responsible or lab.responsible
+        responsible = lab.responsible
         if responsible is None or getattr(responsible, "profile", None) is None:
             continue
         create_pending_task(

@@ -732,7 +732,8 @@ class OrganizationButtons(APIView):
                 {
                     "result": render_to_string(
                         "auth_and_perms/organization_buttons.html",
-                        context={"request": request, "organization": organization},
+                        context={"organization": organization},
+                        request=request,
                     )
                 },
                 status=status.HTTP_200_OK,
