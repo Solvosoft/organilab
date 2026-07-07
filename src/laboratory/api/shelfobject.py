@@ -101,6 +101,7 @@ from laboratory.shelfobject.serializers import (
     ReactiveShelfObjectDataSerializer,
     MaterialShelfObjectDataSerializer,
     ShelfObjectMaterialLimitsSerializer,
+    RecipientSizeDataTableSerializer,
 )
 
 from laboratory.shelfobject.utils import (
@@ -124,6 +125,7 @@ from laboratory.shelfobject.utils import (
 
 from laboratory.utils import save_object_by_action, PermissionByLaboratoryInOrganization
 from laboratory.utils_base_unit import get_conversion_from_two_units, get_base_unit
+from sga.models import RecipientSize
 
 
 class ShelfObjectTableViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -809,6 +811,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         "edit_shelfobject_limits": ["laboratory.change_shelfobject"],
         "update_box_shelfobject": ["laboratory.change_shelfobject"],
         "get_box_edit_data": ["laboratory.view_shelfobject"],
+        "recipient_list": ["sga.view_recipient_size"],
     }
 
     # This is not an API endpoint
@@ -2291,6 +2294,47 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         else:
             errors.update(shelfobject_serializer.errors)
         return JsonResponse({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=["get"])
+    def recipient_list(self, request, org_pk, lab_pk, pk, **kwargs):
+        """
+
+        :param request: http request
+        :param org_pk: pk of the organization being queried
+        :param lab_pk: pk of the laboratory that can receive the transfer in
+        :param kwargs: other extra params
+        :return: JsonResponse with the transfer request information and the number of records
+        """
+        self._check_permission_on_laboratory(request, org_pk, lab_pk, "recipient_list")
+        self.serializer_class = RecipientSizeDataTableSerializer
+        self.pagination_class = LimitOffsetPagination
+        self.filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+        self.search_fields = [
+            "name",
+            "height",
+            "height_unit",
+            "width",
+            "width_unit",
+        ]
+        self.ordering_fields = [
+            "height",
+            "height_unit",
+            "width",
+            "width_unit",
+        ]
+        self.ordering = ("-pk",)  # default order
+
+        self.queryset = RecipientSize.objects.filter(laboratory=lab_pk)
+        queryset = self.filter_queryset(self.queryset)
+
+        data = self.paginate_queryset(queryset)
+        response_data = {
+            "data": data,
+            "recordsTotal": self.queryset.count(),
+            "recordsFiltered": self.queryset.count(),
+            "draw": self.request.query_params.get("draw", 1),
+        }
+        return JsonResponse(self.get_serializer(response_data).data)
 
 
 class SearchLabView(viewsets.GenericViewSet):

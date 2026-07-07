@@ -1,0 +1,78 @@
+{% load static i18n %}
+
+<div aria-hidden="true" id="{{ id }}" class="modal fade {{ principal_class }}"
+                        aria-labelledby="{{ id }}_title"
+                        data-bs-focus="false" role="dialog" tabindex="-1">
+    <div class="modal-dialog {{ modal_class }}" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <ul class="nav nav-tabs card-header-tabs me-auto" id="{{ id }}_tabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="{{ id }}_tab1_btn"
+                                                        data-bs-toggle="tab"
+                                                        data-bs-target="#{{ id }}_pane1"
+                                                        type="button" role="tab"
+                                                        aria-controls="{{ id }}_pane1"
+                                                        aria-selected="true">
+                            {{ title1 }}
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="{{ id }}_tab2_btn"
+                                                        data-bs-toggle="tab"
+                                                        data-bs-target="#{{ id }}_pane2"
+                                                        type="button" role="tab"
+                                                        aria-controls="{{ id }}_pane2"
+                                                        aria-selected="false">
+                            {{ title2 }}
+                        </button>
+                    </li>
+                </ul>
+                <button aria-label="{% trans 'Close' %}" class="btn-close"
+                                                data-bs-dismiss="modal" type="button">
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="tab-content" id="{{ id }}_tabContent">
+                    <div class="tab-pane fade show active" id="{{ id }}_pane1"
+                                        role="tabpanel" aria-labelledby="{{ id }}_tab1_btn">
+                        <table class="table table-striped w-100" id="{{ table_id }}"></table>
+                    </div>
+                    <div class="tab-pane fade" id="{{ id }}_pane2"
+                                        role="tabpanel" aria-labelledby="{{ id }}_tab2_btn">
+                        <form id="{{ form_id }}" method="POST" autocomplete="off" action="{{ url }}">
+                            {% csrf_token %}
+                            {{ form.as_horizontal }}
+                            <input type="hidden" name="prefix" class="form_prefix"
+                                                        value="{{ form.prefix|default_if_none:''}}">
+																									<button class="btn btn-primary formadd text-center" id="btn_{{ id }}_submit_btn" type="button"
+																																																			data-form="{{ form_id }}">
+																																																				{% trans 'Save changes' %}
+																																																			</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">
+                    {% trans 'Close' %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const tabContent = document.getElementById('{{ id }}_tabContent');
+    const submitBtn = document.getElementById('{{ id }}_submit_btn');
+
+    tabContent.addEventListener('shown.bs.tab', function(event) {
+        if (event.target.id === '{{ id }}_tab2_btn') {
+            submitBtn.classList.remove('d-none');
+        } else {
+            submitBtn.classList.add('d-none');
+        }
+    });
+});
+</script>
