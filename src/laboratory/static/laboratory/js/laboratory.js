@@ -894,3 +894,52 @@ function get_material_shelfobject_data(shelfobject){
     }
 
 
+function displayShelfobjectLabels(data) {
+     if ($.fn.DataTable.isDataTable('#recipient_datatable')) {
+      $('#recipient_datatable').DataTable().destroy();
+      $('#recipient_datatable').empty(); // Limpia el thead/tbody generado
+  }
+  let reagent_id = $(data).data('object');
+  createDataTable('#recipient_datatable', $(data).data('url'), {
+        columns: [
+            {data: "id", name: "id", title: gettext("Id"), type: "string", visible: false},
+            {data: "name", name: "name", title: gettext("Object"), type: "string", visible: true},
+            {data: "height", name: "height", title: gettext("Height"), type: "string", visible: true},
+            {data: "height_unit", name: "height_unit", title: gettext("Height Unit"), type: "string", visible: true,
+             render: selectobjprint({display_name: "text"})},
+            {data: "width", name: "width", title: gettext("Width"), type: "string", visible: true},
+            {data: "width_unit", name: "width_unit", title: gettext("Width Unit"), type: "string", visible: true,
+             render: selectobjprint({display_name: "text"})},
+            {data: null, title: gettext('Actions'), sortable: false, filterable: false,
+             defaultContent: `<button class='btn btn-sm btn-outline-success' title='` + gettext('Download') + `'><i class="fa fa-download"></i></button>
+                              <a  class='btn btn-sm btn-outline-danger' title='` + gettext('Delete') + `'><i class="fa fa-trash"></i></a>`
+            }
+        ],
+        paging: true,
+        buttons: [],
+        deferLoading: true,
+        dom: "<'row'<'col-sm-4 col-md-4 d-flex justify-content-start'l>" +
+        "<'col-sm-7 col-md-7 mt-1 d-flex justify-content-end'f>>" +
+        "<'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 m-auto'p>>",
+        ajax: {
+           url: $(data).data('url'),
+           type: 'GET',
+           data: function(dataTableParams, settings) {
+               var data= formatDataTableParams(dataTableParams, settings);
+               data['organization'] = $('#id_organization').val();
+               data['laboratory'] = $('#id_laboratory').val();
+               return data;
+           }
+       }
+    },
+    addfilter=false);
+    setTimeout(function(){
+        $('#recipient_datatable').DataTable().ajax.reload();
+                 $('#recipient_modal').modal('show')
+
+    }
+    , 100);
+
+
+
+}

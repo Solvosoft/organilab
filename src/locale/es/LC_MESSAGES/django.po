@@ -6361,3 +6361,8 @@ msgstr "Generado"
 msgid "Click \"Generate Label\" to preview"
 msgstr ""
 
+msgid "List of Recipients"
+msgstr "Lista de Recipientes"
+
+msgid "Create Recipient"
+msgstr "Crear Recipiente"

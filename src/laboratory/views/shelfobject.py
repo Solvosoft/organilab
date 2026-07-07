@@ -49,6 +49,7 @@ from laboratory.models import (
 )
 from laboratory.views.djgeneric import CreateView, UpdateView, DeleteView, DetailView
 from presentation.models import QRModel
+from sga.models import RecipientSize
 from ..logsustances import log_object_change
 from ..qr_utils import get_or_create_qr_shelf_object
 from ..shelfobject.forms import (
@@ -552,7 +553,11 @@ class ShelfObjectDelete(AJAXMixin, DeleteView):
 
     def form_valid(self, form):
         if has_active_reservations(self.object):
-            msg = str(_("This item cannot be deleted because it has active reservations. Please close all reservations first."))
+            msg = str(
+                _(
+                    "This item cannot be deleted because it has active reservations. Please close all reservations first."
+                )
+            )
             data = {
                 "inner-fragments": {
                     "#closemodal": f'<script>$("#object_delete").modal("hide"); Swal.fire({{title: "{str(_("Error"))}", text: "{msg}", icon: "error"}});</script>'
@@ -974,7 +979,7 @@ def shelf_object_hcode(request, org_pk, lab_pk):
 
 @login_required()
 @all_permission_required(["laboratory.view_shelfobject"], raise_exception=True)
-def generate_shelfobject_label(request, org_pk, lab_pk, pk):
+def generate_shelfobject_label(request, org_pk, lab_pk, pk, recipient):
     """Genera la etiqueta GHS/SGA de un ShelfObject (instancia física).
 
     Hereda el color del contenedor (estante), la ubicación, cantidad, lote y
@@ -990,6 +995,7 @@ def generate_shelfobject_label(request, org_pk, lab_pk, pk):
     shelfobject = get_object_or_404(
         ShelfObject.objects.using(settings.READONLY_DATABASE), pk=pk
     )
+    recipient = get_object_or_404(RecipientSize, pk=recipient)
 
     overrides = {}
     for field in ("lote", "fecha_caducidad", "cantidad", "qr_url"):

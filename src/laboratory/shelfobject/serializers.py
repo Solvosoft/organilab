@@ -67,7 +67,7 @@ from laboratory.shelfobject.utils import (
     get_selected_container,
     group_object_errors_for_serializer,
 )
-from sga.models import Pictogram
+from sga.models import Pictogram, RecipientSize
 
 logger = logging.getLogger("organilab")
 
@@ -3499,3 +3499,25 @@ class DecreaseReactiveShelfObjectSerializer(serializers.Serializer):
             raise serializers.ValidationError(decrease_errors)
 
         return data
+
+
+class RecipientSizeSerializer(serializers.ModelSerializer):
+    height = serializers.FloatField(required=False, allow_null=True)
+    height_unit = ChoicesGTS2Serializer(
+        required=False, allow_null=True, choices=RecipientSize.CHOICES
+    )
+    width = serializers.FloatField(required=False, allow_null=True)
+    width_unit = ChoicesGTS2Serializer(
+        required=False, allow_null=True, choices=RecipientSize.CHOICES
+    )
+
+    class Meta:
+        model = RecipientSize
+        fields = "__all__"
+
+
+class RecipientSizeDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=RecipientSizeSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
