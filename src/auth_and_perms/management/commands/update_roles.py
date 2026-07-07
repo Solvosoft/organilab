@@ -1127,17 +1127,19 @@ IPER_READONLY = [
 
 
 def update_iper_roles():
-    full_roles = [
-        "Administrador de Laboratorio",
-        "Administrativo de centro de trabajo",
-        "Administrativo superior",
-    ]
-    readonly_roles = [
-        "Solo Lectura",
-        "Lectura y agregado de sustancias",
-        "Regente",
-        "Asistente de laboratorio",
-    ]
+    # full_roles = [
+    #     "Administrador de Laboratorio",
+    #     "Administrativo de centro de trabajo",
+    #     "Administrativo superior",
+    # ]
+    # readonly_roles = [
+    #     "Solo Lectura",
+    #     "Lectura y agregado de sustancias",
+    #     "Regente",
+    #     "Asistente de laboratorio",
+    # ]
+    full_roles = ["Administrativo superior"]
+    readonly_roles = []
     for name in full_roles:
         rol = Rol.objects.filter(name=name).first()
         if rol:
