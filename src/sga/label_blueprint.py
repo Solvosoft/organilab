@@ -20,58 +20,109 @@ from sga.label_engine import LabelBlueprint
 # Mapa H-code → pictograma(s) GHS (nombres que entiende el motor, PICTOGRAMAS_OSHA)
 # ──────────────────────────────────────────────────────────────────────────────
 HCODE_PICTOGRAMAS = {
-    'H200': ['Explosivo'], 'H201': ['Explosivo'], 'H202': ['Explosivo'],
-    'H203': ['Explosivo'], 'H204': ['Explosivo'], 'H205': ['Explosivo'],
-    'H220': ['Inflamable'], 'H221': ['Inflamable'], 'H222': ['Inflamable'],
-    'H223': ['Inflamable'], 'H224': ['Inflamable'], 'H225': ['Inflamable'],
-    'H226': ['Inflamable'], 'H227': ['Inflamable'], 'H228': ['Inflamable'],
-    'H229': ['Gas Comprimido'],
-    'H240': ['Explosivo'], 'H241': ['Explosivo'], 'H242': ['Inflamable'],
-    'H250': ['Inflamable'], 'H251': ['Inflamable'], 'H252': ['Inflamable'],
-    'H260': ['Inflamable'], 'H261': ['Inflamable'],
-    'H270': ['Comburente'], 'H271': ['Comburente'], 'H272': ['Comburente'],
-    'H280': ['Gas Comprimido'], 'H281': ['Gas Comprimido'],
-    'H290': ['Corrosivo'],
-    'H300': ['Tóxico'], 'H301': ['Tóxico'], 'H302': ['Irritante'],
-    'H304': ['Peligro para la Salud'], 'H305': ['Peligro para la Salud'],
-    'H310': ['Tóxico'], 'H311': ['Tóxico'], 'H312': ['Irritante'],
-    'H314': ['Corrosivo'], 'H315': ['Irritante'], 'H317': ['Irritante'],
-    'H318': ['Corrosivo'], 'H319': ['Irritante'],
-    'H330': ['Tóxico'], 'H331': ['Tóxico'], 'H332': ['Irritante'],
-    'H334': ['Peligro para la Salud'], 'H335': ['Irritante'], 'H336': ['Irritante'],
-    'H340': ['Peligro para la Salud'], 'H341': ['Peligro para la Salud'],
-    'H350': ['Peligro para la Salud'], 'H351': ['Peligro para la Salud'],
-    'H360': ['Peligro para la Salud'], 'H361': ['Peligro para la Salud'],
-    'H362': ['Peligro para la Salud'],
-    'H370': ['Peligro para la Salud'], 'H371': ['Peligro para la Salud'],
-    'H372': ['Peligro para la Salud'], 'H373': ['Peligro para la Salud'],
-    'H400': ['Peligro Ambiental'], 'H410': ['Peligro Ambiental'],
-    'H411': ['Peligro Ambiental'], 'H412': ['Peligro Ambiental'],
-    'H413': ['Peligro Ambiental'], 'H420': ['Peligro Ambiental'],
+    "H200": ["Explosivo"],
+    "H201": ["Explosivo"],
+    "H202": ["Explosivo"],
+    "H203": ["Explosivo"],
+    "H204": ["Explosivo"],
+    "H205": ["Explosivo"],
+    "H220": ["Inflamable"],
+    "H221": ["Inflamable"],
+    "H222": ["Inflamable"],
+    "H223": ["Inflamable"],
+    "H224": ["Inflamable"],
+    "H225": ["Inflamable"],
+    "H226": ["Inflamable"],
+    "H227": ["Inflamable"],
+    "H228": ["Inflamable"],
+    "H229": ["Gas Comprimido"],
+    "H240": ["Explosivo"],
+    "H241": ["Explosivo"],
+    "H242": ["Inflamable"],
+    "H250": ["Inflamable"],
+    "H251": ["Inflamable"],
+    "H252": ["Inflamable"],
+    "H260": ["Inflamable"],
+    "H261": ["Inflamable"],
+    "H270": ["Comburente"],
+    "H271": ["Comburente"],
+    "H272": ["Comburente"],
+    "H280": ["Gas Comprimido"],
+    "H281": ["Gas Comprimido"],
+    "H290": ["Corrosivo"],
+    "H300": ["Tóxico"],
+    "H301": ["Tóxico"],
+    "H302": ["Irritante"],
+    "H304": ["Peligro para la Salud"],
+    "H305": ["Peligro para la Salud"],
+    "H310": ["Tóxico"],
+    "H311": ["Tóxico"],
+    "H312": ["Irritante"],
+    "H314": ["Corrosivo"],
+    "H315": ["Irritante"],
+    "H317": ["Irritante"],
+    "H318": ["Corrosivo"],
+    "H319": ["Irritante"],
+    "H330": ["Tóxico"],
+    "H331": ["Tóxico"],
+    "H332": ["Irritante"],
+    "H334": ["Peligro para la Salud"],
+    "H335": ["Irritante"],
+    "H336": ["Irritante"],
+    "H340": ["Peligro para la Salud"],
+    "H341": ["Peligro para la Salud"],
+    "H350": ["Peligro para la Salud"],
+    "H351": ["Peligro para la Salud"],
+    "H360": ["Peligro para la Salud"],
+    "H361": ["Peligro para la Salud"],
+    "H362": ["Peligro para la Salud"],
+    "H370": ["Peligro para la Salud"],
+    "H371": ["Peligro para la Salud"],
+    "H372": ["Peligro para la Salud"],
+    "H373": ["Peligro para la Salud"],
+    "H400": ["Peligro Ambiental"],
+    "H410": ["Peligro Ambiental"],
+    "H411": ["Peligro Ambiental"],
+    "H412": ["Peligro Ambiental"],
+    "H413": ["Peligro Ambiental"],
+    "H420": ["Peligro Ambiental"],
 }
 
 # Estado físico de Organilab → código de estado del motor ("l" → "(líq)").
 PHYSICAL_STATUS_TO_ESTADO = {
-    "liquid": "l", "viscuos liquid": "l", "colloidal": "l",
+    "liquid": "l",
+    "viscuos liquid": "l",
+    "colloidal": "l",
     "Gaseous": "g",
-    "solid": "s", "solid powder": "s", "solid granular or crystalline": "s",
+    "solid": "s",
+    "solid powder": "s",
+    "solid granular or crystalline": "s",
 }
 
 # Tamaños de etiqueta (mm) por tramo de capacidad del envase. Alineados con
 # LABEL_SIZES del motor; el motor valida luego el mínimo legible.
 SIZE_TIERS_MM = (
-    (50, (50, 30)),      # ≤ 50 mL  → Pequeña
-    (500, (70, 40)),     # ≤ 500 mL → Mediana
-    (2000, (100, 60)),   # ≤ 2 L    → Grande
+    (50, (50, 30)),  # ≤ 50 mL  → Pequeña
+    (500, (70, 40)),  # ≤ 500 mL → Mediana
+    (2000, (100, 60)),  # ≤ 2 L    → Grande
 )
-SIZE_DEFAULT_MM = (70, 40)       # capacidad desconocida → mediana
-SIZE_LARGE_MM = (120, 80)        # > 2 L → Extra grande
+SIZE_DEFAULT_MM = (70, 40)  # capacidad desconocida → mediana
+SIZE_LARGE_MM = (120, 80)  # > 2 L → Extra grande
 
 # Factores de conversión de unidad de volumen → mililitros.
 _VOLUME_TO_ML = {
-    "ml": 1.0, "milliliter": 1.0, "mililitro": 1.0, "cc": 1.0, "cm3": 1.0,
-    "l": 1000.0, "lt": 1000.0, "liter": 1000.0, "litro": 1000.0,
-    "ul": 0.001, "microliter": 0.001, "microlitro": 0.001,
+    "ml": 1.0,
+    "milliliter": 1.0,
+    "mililitro": 1.0,
+    "cc": 1.0,
+    "cm3": 1.0,
+    "l": 1000.0,
+    "lt": 1000.0,
+    "liter": 1000.0,
+    "litro": 1000.0,
+    "ul": 0.001,
+    "microliter": 0.001,
+    "microlitro": 0.001,
     "kl": 1_000_000.0,
 }
 
@@ -101,8 +152,9 @@ def resolver_palabra_advertencia(warning_words):
     return palabra
 
 
-def _fields_from_danger_indications(danger_qs, *, extra_prudence=None,
-                                    extra_warning=None, warning_word=None):
+def _fields_from_danger_indications(
+    danger_qs, *, extra_prudence=None, extra_warning=None, warning_word=None
+):
     """Campos GHS comunes (pictogramas, frases H/P y palabra) desde un queryset
     de ``DangerIndication``. Sirve tanto para ``Substance`` como para
     ``ShelfObject`` porque ambos exponen indicaciones de peligro homogéneas."""
@@ -188,8 +240,9 @@ def _shelfobject_capacity_ml(shelfobject):
     obj = shelfobject.object
     material_capacity = getattr(obj, "materialcapacity", None)
     if material_capacity is not None:
-        ml = capacity_to_ml(material_capacity.capacity,
-                            material_capacity.capacity_measurement_unit)
+        ml = capacity_to_ml(
+            material_capacity.capacity, material_capacity.capacity_measurement_unit
+        )
         if ml is not None:
             return ml
     return capacity_to_ml(shelfobject.quantity, shelfobject.measurement_unit)
@@ -284,7 +337,9 @@ def blueprint_from_displaylabel(display_label, *, organization=None, **overrides
     return _apply_overrides(blueprint, overrides)
 
 
-def blueprint_from_shelfobject(shelfobject, *, organization=None, **overrides):
+def blueprint_from_shelfobject(
+    shelfobject, *, organization=None, recipient=None, **overrides
+):
     """Construye un ``LabelBlueprint`` desde un ``laboratory.ShelfObject``.
 
     Es la instancia física: hereda contenedor (color del estante), ubicación,
@@ -297,8 +352,11 @@ def blueprint_from_shelfobject(shelfobject, *, organization=None, **overrides):
     fields = _fields_from_danger_indications(danger_qs)
 
     # Tamaño coherente con la capacidad del envase.
-    ancho_mm, alto_mm = capacity_to_size_mm(_shelfobject_capacity_ml(shelfobject))
-
+    if recipient is None:
+        ancho_mm, alto_mm = capacity_to_size_mm(_shelfobject_capacity_ml(shelfobject))
+    else:
+        ancho_mm = recipient.width
+        alto_mm = recipient.height
     # Cantidad almacenada (con unidad).
     cantidad = ""
     if shelfobject.quantity is not None:
@@ -313,7 +371,9 @@ def blueprint_from_shelfobject(shelfobject, *, organization=None, **overrides):
 
     # Nombre del recipiente: el contenedor padre si existe, si no el estante.
     if shelfobject.container_id and shelfobject.container:
-        recipiente_nombre = getattr(shelfobject.container.object, "name", "") or shelf_name
+        recipiente_nombre = (
+            getattr(shelfobject.container.object, "name", "") or shelf_name
+        )
     else:
         recipiente_nombre = shelf_name
 
@@ -324,8 +384,11 @@ def blueprint_from_shelfobject(shelfobject, *, organization=None, **overrides):
         estado_fisico=PHYSICAL_STATUS_TO_ESTADO.get(shelfobject.physical_status, ""),
         cantidad=cantidad,
         lote=shelfobject.batch or "",
-        fecha_caducidad=(shelfobject.reactive_expiration_date.strftime("%d/%m/%Y")
-                         if shelfobject.reactive_expiration_date else ""),
+        fecha_caducidad=(
+            shelfobject.reactive_expiration_date.strftime("%d/%m/%Y")
+            if shelfobject.reactive_expiration_date
+            else ""
+        ),
         ubicacion=ubicacion,
         institucion=getattr(organization, "name", "") or "",
         recipiente_nombre=recipiente_nombre,
