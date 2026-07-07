@@ -1007,6 +1007,8 @@ def generate_shelfobject_label(request, org_pk, lab_pk, pk, recipient):
     if request.GET.get("alto_mm"):
         overrides["alto_mm"] = float(request.GET["alto_mm"])
 
-    blueprint = blueprint_from_shelfobject(shelfobject, organization=org, **overrides)
+    blueprint = blueprint_from_shelfobject(
+        shelfobject, organization=org, recipient=recipient, **overrides
+    )
     formato = request.GET.get("formato", "png")
     return render_label(blueprint, formato, filename=f"etiqueta_shelfobject_{pk}")

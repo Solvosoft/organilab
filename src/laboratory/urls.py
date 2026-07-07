@@ -25,6 +25,7 @@ from laboratory.views.shelfobject import (
     view_equipment_shelfobject_detail,
     shelf_object_reagents,
     shelf_object_hcode,
+    generate_shelfobject_label,
 )
 from sga.api.sga_components_viewsets import (
     WarningWordAPI,
@@ -715,5 +716,10 @@ urlpatterns += organization_urls + [
         "<int:org_pk>/<int:lab_pk>/load_archive/create_shelfobjects/<uuid:key>/",
         upload_reactives,
         name="load_archive_create_shelfobjects",
+    ),
+    path(
+        "<int:org_pk>/<int:lab_pk>/<int:pk>/generate_shelfobject_label/<int:recipient>/",
+        generate_shelfobject_label,
+        name="generate_shelfobject_label",
     ),
 ]
