@@ -724,7 +724,7 @@ class IPERHistory(ReportListView):
 # --- dashboard del analista -----------------------------------------------
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
-    permission_required("risk_management.view_iperassessment", raise_exception=True),
+    permission_required("risk_management.view_iper_dashboard", raise_exception=True),
     name="dispatch",
 )
 class IPERDashboard(TemplateView):

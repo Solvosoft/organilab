@@ -1183,6 +1183,30 @@ def create_auditor_iper():
         )
 
 
+def create_administrador_iper():
+    rol, created = Rol.objects.get_or_create(
+        name="Administrador IPER",
+        defaults={
+            "description": (
+                "Rol de administracion para el modulo IPER de la Universidad Nacional (UNA). "
+                "Permite crear, editar, eliminar y consultar evaluaciones, peligros y "
+                "observaciones IPER de todos los laboratorios de la organizacion, y "
+                "administrar el catalogo/matriz de riesgo IPER."
+            ),
+        },
+    )
+    add_permissions(rol, IPER_FULL)
+    remove_permissions(rol, ["risk_management.view_riskzone"])
+
+    org = OrganizationStructure.objects.filter(name="UNA").first()
+    if org:
+        org.rol.add(rol)
+    else:
+        print(
+            "WARNING: OrganizationStructure 'UNA' not found, skipping org association."
+        )
+
+
 class Command(BaseCommand):
     help = "Update rol permissions by segment — idempotent, safe to re-run"
 
@@ -1203,3 +1227,4 @@ class Command(BaseCommand):
         update_administrador_superior()
         update_iper_roles()
         create_auditor_iper()
+        create_administrador_iper()
