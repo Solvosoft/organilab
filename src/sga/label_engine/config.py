@@ -45,9 +45,11 @@ def cargar_pictogramas_epp() -> dict[str, str]:
     if not os.path.isdir(CARPETA_PICTOGRAMAS_EPP):
         return pictogramas
     for archivo in sorted(os.listdir(CARPETA_PICTOGRAMAS_EPP)):
-        if archivo.lower().endswith('.eps'):
+        if archivo.lower().endswith(".eps"):
             nombre_base = os.path.splitext(archivo)[0]
-            nombre_limpio = nombre_base.split('.', 1)[0].replace('_', ' ').replace('-', ' ').strip()
+            nombre_limpio = (
+                nombre_base.split(".", 1)[0].replace("_", " ").replace("-", " ").strip()
+            )
             if not nombre_limpio:
                 nombre_limpio = nombre_base
             if nombre_limpio in pictogramas:
@@ -73,36 +75,36 @@ FONT_CANDIDATES = [
 # Dimensiones de etiquetas y papel
 # ─────────────────────────────────────────────────────────────────────────────
 LABEL_SIZES: dict[str, tuple[float, float] | None] = {
-    'Pequeña (50x30mm)': (50, 30),
-    'Mediana (70x40mm)': (70, 40),
-    'Grande (100x60mm)': (100, 60),
-    'Extra Grande (120x80mm)': (120, 80),
-    'Personalizado': None,
+    "Pequeña (50x30mm)": (50, 30),
+    "Mediana (70x40mm)": (70, 40),
+    "Grande (100x60mm)": (100, 60),
+    "Extra Grande (120x80mm)": (120, 80),
+    "Personalizado": None,
 }
 
 PAPER_SIZES: dict[str, tuple[float, float]] = {
-    'Letter': (612, 792),
-    'A3': (841.8897637795275, 1190.5511811023622),
-    'A4': (595.2755905511811, 841.8897637795275),
-    'Carta': (612, 792),
+    "Letter": (612, 792),
+    "A3": (841.8897637795275, 1190.5511811023622),
+    "A4": (595.2755905511811, 841.8897637795275),
+    "Carta": (612, 792),
 }
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Colores
 # ─────────────────────────────────────────────────────────────────────────────
 BORDER_COLORS: dict[str, str] = {
-    'PELIGRO': '#CD1719',
-    'ATENCION': '#034991',
-    'ATENCIÓN': '#034991',
-    'DEFAULT': '#a7a7a9',
+    "PELIGRO": "#CD1719",
+    "ATENCION": "#034991",
+    "ATENCIÓN": "#034991",
+    "DEFAULT": "#a7a7a9",
 }
 
-H_PHRASE_COLOR = '#CC0000'
-P_PHRASE_COLOR = '#0066CC'
-INFO_COLOR = '#666666'
-INSTITUTIONAL_COLOR = '#000000'
-MISC_COLOR = '#444444'
-FORMULA_LABEL_COLOR = '#333333'
+H_PHRASE_COLOR = "#CC0000"
+P_PHRASE_COLOR = "#0066CC"
+INFO_COLOR = "#666666"
+INSTITUTIONAL_COLOR = "#000000"
+MISC_COLOR = "#444444"
+FORMULA_LABEL_COLOR = "#333333"
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Ratios de layout (fracción del tamaño en píxeles)
@@ -141,13 +143,13 @@ DEFAULT_EPS_BASE_SIZE = 500
 # Las indicaciones de peligro (H) son obligatorias y nunca se recortan salvo
 # que la etiqueta sea físicamente demasiado pequeña (último recurso).
 # Tamaño mínimo absoluto de etiqueta (mm). Por debajo se rechaza sin medir.
-MIN_LABEL_MM = (35.0, 20.0)       # (ancho, alto)
+MIN_LABEL_MM = (35.0, 20.0)  # (ancho, alto)
 # Factor de escala mínimo del cuerpo en la negociación de espacio. Si ni a esta
 # escala cabe el contenido obligatorio a piso legible → LabelTooSmallError.
 MIN_BODY_SCALE = 0.40
 
-MIN_PHRASE_FONT_MM = 1.2          # altura mínima legible de carácter (mm)
-PHRASE_FONT_RATIO = 0.040         # tamaño "cómodo" inicial = ratio * dim_reference
+MIN_PHRASE_FONT_MM = 1.2  # altura mínima legible de carácter (mm)
+PHRASE_FONT_RATIO = 0.040  # tamaño "cómodo" inicial = ratio * dim_reference
 FDS_REFERENCE_TEXT = "Consulte la FDS para información completa"
-FDS_COLOR = '#666666'
-MAX_P_PHRASES = 6                 # GHS recomienda limitar P a los más relevantes
+FDS_COLOR = "#666666"
+MAX_P_PHRASES = 6  # GHS recomienda limitar P a los más relevantes

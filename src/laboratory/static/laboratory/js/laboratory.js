@@ -910,8 +910,11 @@ function displayShelfobjectLabels(data) {
             {data: null, title: gettext('Actions'), sortable: false, filterable: false,
              render: function(rowData, type, row) {
                  let url = $(data).data('recipient').replace('0', row.id);
-                 return `<a class='btn btn-sm btn-outline-success' download href='${url}' title='${gettext('Download')}'><i class="fa fa-download"></i></a>
-                         <a class='btn btn-sm btn-outline-danger delete_recipient' title='${gettext('Delete')}'><i class="fa fa-trash"></i></a>`;
+                 let buttons_actions= `<a class='btn btn-sm btn-outline-success' download href='${url}' title='${gettext('Download')}'><i class="fa fa-download"></i></a>`;
+                 if(has_perm.remove){
+                         buttons_actions+=`<a class='btn btn-sm btn-outline-danger delete_recipient' title='${gettext('Delete')}'><i class="fa fa-trash"></i></a>`;
+                 }
+                 return buttons_actions;
              }
             }
         ],
