@@ -3163,4 +3163,21 @@ URLNAME_PERMISSIONS = {
             "permission": "laboratory.can_approve_labororgrequest",
         },
     ],
+    "recipient_size": [
+        {
+            "name": "Add Recipient Size",
+            "category": "Recipient Size",
+            "permission": "sga.add_recipientsize",
+        },
+        {
+            "name": "Delete Recipient Size",
+            "category": "Recipient Size",
+            "permission": "sga.delete_recipientsize",
+        },
+        {
+            "name": "View Recipient Size",
+            "category": "Recipient Size",
+            "permission": "sga.view_recipientsize",
+        },
+    ],
 }

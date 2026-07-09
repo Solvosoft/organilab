@@ -7,6 +7,7 @@
 {% block pre_head %}
     {% define_true  "use_datatables" %}
     {% define_urlname_action 'laboratory_view_principal' %}
+    {% define_urlname_action 'recipient_size' %}
 {% endblock %}
 {% block title %}{% trans 'Laboratory rooms' %}{% endblock %}
 {# Container #}
@@ -141,6 +142,11 @@ document.search_by_url = JSON.parse(document.getElementById('search_by_url').tex
 document.suggestions_tag = JSON.parse(document.getElementById('suggestions_tag').textContent);
 document.url_container_list = "{% url 'laboratory:shelf_containers' org_pk=org_pk lab_pk=laboratory %}";
 document.delete_recipient_url = "{% url 'laboratory:api-shelfobject-delete-recipient' org_pk=org_pk lab_pk=laboratory pk=0 %}";
+
+		const has_perm = {
+			"create": {{ perms.sga.add_recipientsize|yesno:"true,false" }},
+			"remove": {{ perms.sga.delete_recipientsize|yesno:"true,false" }},
+		}
 </script>
 
 <script src="{% static 'js/shelfobjectedit.js' %}?v={% get_organilab_version %}"></script>

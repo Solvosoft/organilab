@@ -17,6 +17,7 @@
                             {{ title1 }}
                         </button>
                     </li>
+																	{% if perms.sga.add_recipientsize %}
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="{{ id }}_tab2_btn"
                                                         data-bs-toggle="tab"
@@ -27,6 +28,7 @@
                             {{ title2 }}
                         </button>
                     </li>
+																	{% endif %}
                 </ul>
                 <button aria-label="{% trans 'Close' %}" class="btn-close"
                                                 data-bs-dismiss="modal" type="button">
@@ -38,6 +40,7 @@
                                         role="tabpanel" aria-labelledby="{{ id }}_tab1_btn">
                         <table class="table table-striped w-100" id="{{ table_id }}"></table>
                     </div>
+																	{% if perms.sga.add_recipientsize %}
                     <div class="tab-pane fade" id="{{ id }}_pane2"
                                         role="tabpanel" aria-labelledby="{{ id }}_tab2_btn">
                         <form id="{{ form_id }}" method="POST" autocomplete="off" action="{{ url }}">
@@ -51,6 +54,7 @@
 																																																			</button>
                         </form>
                     </div>
+																	{% endif %}
                 </div>
             </div>
             <div class="modal-footer">

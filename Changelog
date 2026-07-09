@@ -1,4 +1,7 @@
-
+09/07/2026
+Commands to update users roles and permissions
+    - python manage.py update_roles
+    - python manage.py load_urlname_permissions
 
 03/07/2026
 Command to Gestion SGA

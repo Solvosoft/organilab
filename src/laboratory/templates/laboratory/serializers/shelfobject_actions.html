@@ -8,6 +8,7 @@
 	<i class="fa fa-eye text-success" aria-hidden="true"></i>
 </a>
 
+{% if shelfobject.object.type == shelfobject.object.REACTIVE and perms.sga.view_recipientsize %}
 <a class="ms-2"
 			data-url="{% url 'laboratory:api-shelfobject-recipient-list' org_pk=org_pk.pk lab_pk=laboratory.pk pk=shelfobject.pk %}"
 			onclick="displayShelfobjectLabels(this)"
@@ -16,6 +17,7 @@
 			title="{% trans 'List of Recipients' %}">
 	<i class="fa fa-list-alt" aria-hidden="true"></i>
 </a>
+{% endif %}
 {% if perms.reservations_management.add_reservedproducts %}
 <a class="ms-2" onclick="return show_me_modal(this, event);" data-modalid="reservesomodal"
 			title="{% trans 'Reservation' %}" data-shelfobject="{{ shelfobject.pk }}" data-shelf="{{ shelfobject.shelf.pk }}"><i

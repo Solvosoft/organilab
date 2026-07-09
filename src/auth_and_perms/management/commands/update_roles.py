@@ -38,6 +38,7 @@ def update_estudiante():
             "laboratory.change_shelfobjectlog",
             "laboratory.view_shelf",
             "laboratory.view_provider",
+            "sga.view_recipientsize",
         ],
     )
 
@@ -51,6 +52,8 @@ def update_depositante_residuos():
         rol,
         [
             "laboratory.add_shelfobject",
+            "sga.view_recipientsize",
+            "sga.add_recipientsize",
         ],
     )
 
@@ -76,7 +79,6 @@ def update_depositante_residuos():
             "sga.view_warningword",
             "sga.view_prudenceadvice",
             "sga.view_substanceobservation",
-            "sga.view_recipientsize",
             "laboratory.do_report",
             "laboratory.change_protocol",
             "laboratory.add_protocol",
@@ -144,7 +146,6 @@ def update_depositante_residuos():
             "sga.add_substance",
             "msds.add_msdsobject",
             "sga.change_substancecharacteristics",
-            "sga.add_recipientsize",
             "auth_and_perms.view_profilepermission",
             "auth_and_perms.change_profilepermission",
             "blog.add_entry",
@@ -190,6 +191,9 @@ def update_creador_laboratorios():
             "laboratory.view_inform",
             "laboratory.add_inform",
             "laboratory.change_inform",
+            "sga.view_recipientsize",
+            "sga.add_recipientsize",
+            "sga.delete_recipientsize",
         ],
     )
     remove_permissions(
@@ -220,6 +224,9 @@ def update_administrador_laboratorio():
             "laboratory.view_labororgrequest",
             "laboratory.change_labororgrequest",
             "laboratory.delete_labororgrequest",
+            "sga.view_recipientsize",
+            "sga.add_recipientsize",
+            "sga.delete_recipientsize",
         ],
     )
 
@@ -234,9 +241,7 @@ def update_administrador_laboratorio():
             "sga.add_prudenceadvice",
             "sga.change_prudenceadvice",
             "sga.delete_prudenceadvice",
-            "sga.add_recipientsize",
             "sga.change_recipientsize",
-            "sga.delete_recipientsize",
             "sga.change_securityleaf",
             "sga.add_substance",
             "sga.change_substance",
@@ -272,6 +277,8 @@ def update_lectura_agregado_sustancias():
             "academic.view_myprocedure",
             "laboratory.view_shelfobject",
             "laboratory.view_shelf",
+            "sga.view_recipientsize",
+            "sga.add_recipientsize",
         ],
     )
     remove_permissions(
@@ -357,10 +364,8 @@ def update_lectura_agregado_sustancias():
             "sga.change_provider",
             "sga.delete_provider",
             "sga.view_displaylabel",
-            "sga.add_recipientsize",
             "sga.change_recipientsize",
             "sga.delete_recipientsize",
-            "sga.view_recipientsize",
             "sga.add_substancecharacteristics",
             "sga.view_substancecharacteristics",
             "sga.change_substancecharacteristics",
@@ -389,7 +394,6 @@ def update_lectura_agregado_sustancias():
             "sga.view_securityleaf",
             "sga.view_substanceobservation",
             "sga.view_substance",
-            "sga.view_recipientsize",
             "sga.view_label",
             "laboratory.view_registeruserqr",
             "reservations_management.view_reservations",
@@ -408,6 +412,8 @@ def update_lectura_agregado_sustancias():
             "reservations_management.change_reservedproducts",
             "reservations_management.add_reservedproducts",
             "reservations_management.add_reservations",
+            "sga.view_recipientsize",
+            "sga.add_recipientsize",
         ],
     )
     remove_permissions(
@@ -421,7 +427,6 @@ def update_lectura_agregado_sustancias():
             "sga.add_prudenceadvice",
             "sga.change_prudenceadvice",
             "sga.delete_prudenceadvice",
-            "sga.add_recipientsize",
             "sga.change_recipientsize",
             "sga.delete_recipientsize",
             "sga.change_securityleaf",
@@ -456,6 +461,9 @@ def update_asistente_laboratorio():
         rol,
         [
             "laboratory.can_manage_reorder",
+            "sga.view_recipientsize",
+            "sga.add_recipientsize",
+            "sga.delete_recipientsize",
         ],
     )
 
@@ -479,10 +487,7 @@ def update_asistente_laboratorio():
             "sga.change_prudenceadvice",
             "sga.delete_prudenceadvice",
             "sga.view_prudenceadvice",
-            "sga.add_recipientsize",
             "sga.change_recipientsize",
-            "sga.delete_recipientsize",
-            "sga.view_recipientsize",
             "sga.change_securityleaf",
             "sga.view_securityleaf",
             "sga.add_sgacomplement",
@@ -584,6 +589,7 @@ def update_tesista_modulo_desechos():
             "laboratory.view_shelf",
             "laboratory.view_catalog",
             "risk_management.view_riskzone",
+            "sga.view_recipientsize",
         ],
     )
 
@@ -694,7 +700,6 @@ def update_tesista_modulo_desechos():
             "sga.view_substanceobservation",
             "sga.change_sgacomplement",
             "sga.view_sgacomplement",
-            "sga.view_recipientsize",
             "sga.delete_substance",
             "sga.view_templatesga",
             "sga.change_securityleaf",
@@ -775,6 +780,7 @@ def update_solo_lectura():
             "risk_management.view_regent",
             "risk_management.view_workday",
             "reservations_management.view_reservations",
+            "sga.view_recipientsize",
         ],
     )
 
@@ -842,6 +848,9 @@ def update_tecnico_laboratorio():
             "risk_management.view_structure",
             "risk_management.view_regent",
             "risk_management.view_workday",
+            "sga.view_recipientsize",
+            "sga.add_recipientsize",
+            "sga.delete_recipientsize",
         ],
     )
 
@@ -903,9 +912,7 @@ def update_tecnico_laboratorio():
             "sga.add_prudenceadvice",
             "sga.change_prudenceadvice",
             "sga.delete_prudenceadvice",
-            "sga.add_recipientsize",
             "sga.change_recipientsize",
-            "sga.delete_recipientsize",
             "sga.change_securityleaf",
             "sga.add_substance",
             "sga.change_substance",
@@ -931,10 +938,7 @@ def update_tecnico_laboratorio():
             "sga.delete_pictogram",
             "sga.delete_warningword",
             "sga.delete_warningclass",
-            "sga.add_recipientsize",
             "sga.change_recipientsize",
-            "sga.delete_recipientsize",
-            "sga.view_recipientsize",
             "sga.change_templatesga",
             "sga.view_builderinformation",
             "sga.view_substance",
@@ -1049,7 +1053,6 @@ def update_administrativo_centro_trabajo():
             "sga.change_substanceobservation",
             "sga.delete_substanceobservation",
             "sga.add_templatesga",
-            "sga.view_recipientsize",
             "sga.change_recipientsize",
             "msds.add_msdsobject",
             "msds.change_msdsobject",
@@ -1094,6 +1097,9 @@ def update_administrativo_centro_trabajo():
             "laboratory.view_informscheduler",
             "laboratory.change_informscheduler",
             "laboratory.can_manage_reorder",
+            "sga.view_recipientsize",
+            "sga.add_recipientsize",
+            "sga.delete_recipientsize",
         ],
     )
 
