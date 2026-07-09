@@ -2014,14 +2014,20 @@ class LabOrOrgRequestFilterForm(GTForm, forms.Form):
 
 
 class RecipientSizeForm(GTForm, forms.ModelForm):
+    unit = forms.CharField(
+        initial=_("Centimeters"),
+        label=_("Measurement unit"),
+        widget=genwidgets.TextInput(
+            attrs={"disabled": True},
+        ),
+    )
+
     class Meta:
         model = RecipientSize
-        fields = "__all__"
+        fields = ["name", "height", "width"]
         widgets = {
             "name": genwidgets.TextInput,
             "height": genwidgets.TextInput,
-            "height_unit": genwidgets.Select,
             "width": genwidgets.TextInput,
-            "width_unit": genwidgets.Select,
         }
         exclude = ["laboratory"]

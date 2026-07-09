@@ -45,7 +45,7 @@
                             {{ form.as_horizontal }}
                             <input type="hidden" name="prefix" class="form_prefix"
                                                         value="{{ form.prefix|default_if_none:''}}">
-																									<button class="btn btn-primary formadd text-center" id="btn_{{ id }}_submit_btn" type="button"
+                            <button class="btn btn-primary add_recipient text-center" id="btn_{{ id }}_submit_btn" type="button"
 																																																			data-form="{{ form_id }}">
 																																																				{% trans 'Save changes' %}
 																																																			</button>

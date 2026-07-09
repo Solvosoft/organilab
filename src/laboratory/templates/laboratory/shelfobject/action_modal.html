@@ -72,9 +72,9 @@
 {% trans "Approve Transfer In - Container" as transfer_in_approve_with_container_title %}
 {% include 'modal_template.html' with form=transfer_in_approve_with_container_form id="transfer_in_approve_with_container_id_modal" title=transfer_in_approve_with_container_title form_id="transfer_in_approve_with_container_form" url=transfer_in_approve_url %}
 
-{% url "sga:api-recipient-size-create-recipient" org_pk=org_pk as recipient_create_url %}
+{% url "laboratory:api-shelfobject-create-recipient" org_pk=org_pk lab_pk=laboratory pk=0 as recipient_create_url %}
 {% trans "List of Recipients" as recipient_list_title %}
 {% trans "Create Recipient" as recipient_create_title %}
-{% include 'modal_template_table_form.html' with id="recipient_modal" title1=recipient_list_title title2=recipient_create_title table_id="recipient_datatable" form=recipient_form form_id="recipient_form" url=recipient_create_url modal_class="modal-lg" %}
+{% include 'modal_template_table_form.html' with id="recipient_modal" title1=recipient_list_title title2=recipient_create_title table_id="recipient_datatable" form=recipient_form form_id="recipient_form" modal_class="modal-lg" url=recipient_create_url %}
 
 
