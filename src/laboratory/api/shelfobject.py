@@ -102,6 +102,8 @@ from laboratory.shelfobject.serializers import (
     MaterialShelfObjectDataSerializer,
     ShelfObjectMaterialLimitsSerializer,
     RecipientSizeDataTableSerializer,
+    RecipientSizeCreateSerializer,
+    RecipientSizeDeleteSerializer,
 )
 
 from laboratory.shelfobject.utils import (
@@ -812,6 +814,8 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         "update_box_shelfobject": ["laboratory.change_shelfobject"],
         "get_box_edit_data": ["laboratory.view_shelfobject"],
         "recipient_list": ["sga.view_recipient_size"],
+        "create_recipient": ["sga.add_recipient_size"],
+        "delete_recipient": ["sga.delete_recipient_size"],
     }
 
     # This is not an API endpoint
@@ -2335,6 +2339,89 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             "draw": self.request.query_params.get("draw", 1),
         }
         return JsonResponse(self.get_serializer(response_data).data)
+
+    @action(detail=True, methods=["post"])
+    def create_recipient(self, request, org_pk, lab_pk, pk, **kwargs):
+        """
+        Creates a new RecipientSize for the laboratory.
+
+        :param request: http request
+        :param org_pk: pk of the organization
+        :param lab_pk: pk of the laboratory
+        :param pk: pk of the shelf object (context)
+        :param kwargs: other extra params
+        :return: JsonResponse with result information (success or errors)
+        """
+        self._check_permission_on_laboratory(
+            request, org_pk, lab_pk, "create_recipient"
+        )
+        print(request.data)
+        self.serializer_class = RecipientSizeCreateSerializer
+        serializer = self.serializer_class(data=request.data)
+
+        if serializer.is_valid():
+            recipient_size = serializer.save(
+                laboratory_id=lab_pk, width_unit="cm", height_unit="cm"
+            )
+            utils.organilab_logentry(
+                request.user,
+                recipient_size,
+                ADDITION,
+                "recipientsize",
+                changed_data=list(serializer.validated_data.keys()),
+                relobj=self.laboratory,
+            )
+            return JsonResponse(
+                {
+                    "detail": _("Recipient size was created successfully."),
+                    "id": recipient_size.pk,
+                    "name": recipient_size.name,
+                },
+                status=status.HTTP_201_CREATED,
+            )
+
+        return JsonResponse(
+            {"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
+        )
+
+    @action(detail=True, methods=["delete"])
+    def delete_recipient(self, request, org_pk, lab_pk, pk, **kwargs):
+        """
+        Deletes a RecipientSize from the laboratory.
+
+        :param request: http request
+        :param org_pk: pk of the organization
+        :param lab_pk: pk of the laboratory
+        :param pk: pk of the shelf object (context)
+        :param kwargs: other extra params
+        :return: JsonResponse with result information (success or errors)
+        """
+        self._check_permission_on_laboratory(
+            request, org_pk, lab_pk, "delete_recipient"
+        )
+        self.serializer_class = RecipientSizeDeleteSerializer
+        serializer = self.serializer_class(
+            data={"recipient_size": pk}, context={"laboratory_id": lab_pk}
+        )
+
+        if serializer.is_valid():
+            recipient_size = serializer.validated_data["recipient_size"]
+            utils.organilab_logentry(
+                request.user,
+                recipient_size,
+                DELETION,
+                "recipientsize",
+                relobj=self.laboratory,
+            )
+            recipient_size.delete()
+            return JsonResponse(
+                {"detail": _("Recipient size was deleted successfully.")},
+                status=status.HTTP_200_OK,
+            )
+
+        return JsonResponse(
+            {"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
+        )
 
 
 class SearchLabView(viewsets.GenericViewSet):

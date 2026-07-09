@@ -1485,3 +1485,12 @@ msgstr "Ubicación"
 
 msgid "Reject"
 msgstr "Rechazar"
+
+msgid "Are you sure you want to delete this recipient size?"
+msgstr "¿Está seguro/a de que desea eliminar esta tamaño de recipiente?"
+
+msgid "Recipient size was deleted successfully."
+msgstr "Se eliminó con éxito el tamaño de recipiente."
+
+msgid "Recipient size was created successfully."
+msgstr "Se creó con éxito el tamaño de recipiente."

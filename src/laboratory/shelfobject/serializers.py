@@ -3503,17 +3503,15 @@ class DecreaseReactiveShelfObjectSerializer(serializers.Serializer):
 
 class RecipientSizeSerializer(serializers.ModelSerializer):
     height = serializers.FloatField(required=False, allow_null=True)
-    height_unit = ChoicesGTS2Serializer(
-        required=False, allow_null=True, choices=RecipientSize.CHOICES
-    )
     width = serializers.FloatField(required=False, allow_null=True)
-    width_unit = ChoicesGTS2Serializer(
-        required=False, allow_null=True, choices=RecipientSize.CHOICES
-    )
+    unit = serializers.SerializerMethodField()
+
+    def get_unit(self, obj):
+        return _("Centimeters")
 
     class Meta:
         model = RecipientSize
-        fields = "__all__"
+        fields = ["id", "name", "height", "width", "unit"]
 
 
 class RecipientSizeDataTableSerializer(serializers.Serializer):
@@ -3521,3 +3519,33 @@ class RecipientSizeDataTableSerializer(serializers.Serializer):
     draw = serializers.IntegerField(required=True)
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)
+
+
+class RecipientSizeCreateSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(max_length=150, required=True)
+    height = serializers.FloatField(min_value=0, required=True)
+    width = serializers.FloatField(min_value=0, required=True)
+    height_unit = serializers.ChoiceField(
+        choices=RecipientSize.CHOICES, default="cm", required=False
+    )
+    width_unit = serializers.ChoiceField(
+        choices=RecipientSize.CHOICES, default="cm", required=False
+    )
+
+    class Meta:
+        model = RecipientSize
+        fields = ["name", "height", "height_unit", "width", "width_unit"]
+
+
+class RecipientSizeDeleteSerializer(serializers.Serializer):
+    recipient_size = serializers.PrimaryKeyRelatedField(
+        queryset=RecipientSize.objects.using(settings.READONLY_DATABASE)
+    )
+
+    def validate_recipient_size(self, value):
+        laboratory_id = self.context.get("laboratory_id")
+        if value.laboratory_id != laboratory_id:
+            raise serializers.ValidationError(
+                _("The recipient size does not belong to this laboratory.")
+            )
+        return value

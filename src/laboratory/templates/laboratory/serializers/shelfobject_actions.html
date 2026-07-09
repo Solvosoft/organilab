@@ -11,9 +11,10 @@
 <a class="ms-2"
 			data-url="{% url 'laboratory:api-shelfobject-recipient-list' org_pk=org_pk.pk lab_pk=laboratory.pk pk=shelfobject.pk %}"
 			onclick="displayShelfobjectLabels(this)"
+			data-recipient="{% url 'laboratory:generate_shelfobject_label' org_pk=org_pk.pk lab_pk=laboratory.pk pk=shelfobject.pk recipient=0 %}"
 			data-object="{{ shelfobject.pk }}"
-			title="{% trans 'Detail' %}">
-	<i class="fa fa-list-alt text-info" aria-hidden="true"></i>
+			title="{% trans 'List of Recipients' %}">
+	<i class="fa fa-list-alt" aria-hidden="true"></i>
 </a>
 {% if perms.reservations_management.add_reservedproducts %}
 <a class="ms-2" onclick="return show_me_modal(this, event);" data-modalid="reservesomodal"

@@ -905,14 +905,14 @@ function displayShelfobjectLabels(data) {
             {data: "id", name: "id", title: gettext("Id"), type: "string", visible: false},
             {data: "name", name: "name", title: gettext("Object"), type: "string", visible: true},
             {data: "height", name: "height", title: gettext("Height"), type: "string", visible: true},
-            {data: "height_unit", name: "height_unit", title: gettext("Height Unit"), type: "string", visible: true,
-             render: selectobjprint({display_name: "text"})},
             {data: "width", name: "width", title: gettext("Width"), type: "string", visible: true},
-            {data: "width_unit", name: "width_unit", title: gettext("Width Unit"), type: "string", visible: true,
-             render: selectobjprint({display_name: "text"})},
+            {data: "unit", name: "unit", title: gettext("Unit"), type: "string", visible: true},
             {data: null, title: gettext('Actions'), sortable: false, filterable: false,
-             defaultContent: `<button class='btn btn-sm btn-outline-success' title='` + gettext('Download') + `'><i class="fa fa-download"></i></button>
-                              <a  class='btn btn-sm btn-outline-danger' title='` + gettext('Delete') + `'><i class="fa fa-trash"></i></a>`
+             render: function(rowData, type, row) {
+                 let url = $(data).data('recipient').replace('0', row.id);
+                 return `<a class='btn btn-sm btn-outline-success' download href='${url}' title='${gettext('Download')}'><i class="fa fa-download"></i></a>
+                         <a class='btn btn-sm btn-outline-danger delete_recipient' title='${gettext('Delete')}'><i class="fa fa-trash"></i></a>`;
+             }
             }
         ],
         paging: true,
@@ -940,6 +940,102 @@ function displayShelfobjectLabels(data) {
     }
     , 100);
 
-
-
 }
+$(document).on('click', '.add_recipient', function(e) {
+    e.preventDefault();
+    let formId = $(this).data('form');
+    let form = $('#' + formId);
+    let url = form.attr('action');
+    let formData = form.serialize();
+    formData = convertToStringJson(form, "recipient-")
+
+    $.ajax({
+        url: url,
+        type: 'POST',
+        data: formData,
+        contentType: 'application/json',
+        headers: {'X-CSRFToken': getCookie('csrftoken')},
+        success: function(response) {
+            Swal.fire({
+                icon: 'success',
+                title: gettext('Success'),
+                text: response.detail || gettext('Recipient size was created successfully.'),
+                timer: 1500
+            });
+            form[0].reset();
+            $('#recipient_datatable').DataTable().ajax.reload();
+            $('#recipient_modal_tab1_btn').tab('show');
+        },
+        error: function(xhr) {
+            let errorMsg = gettext('There was a problem performing your request.');
+            if (xhr.responseJSON && xhr.responseJSON.errors) {
+                let errors = xhr.responseJSON.errors;
+                let errorList = [];
+                for (let field in errors) {
+                    errorList.push(field + ': ' + errors[field].join(', '));
+                }
+                errorMsg = errorList.join('\n');
+            }
+            Swal.fire({
+                icon: 'error',
+                title: gettext('Error'),
+                text: errorMsg
+            });
+        }
+    });
+});
+
+$(document).on('click', '.delete_recipient', function(e) {
+    e.preventDefault();
+    let btn = $(this);
+    let row = $('#recipient_datatable').DataTable().row(btn.closest('tr'));
+    let rowData = row.data();
+    let recipient_url = document.delete_recipient_url.replace("/0/", "/"+rowData.id+"/")
+    Swal.fire({
+        icon: 'warning',
+        title: gettext('Are you sure?'),
+        text: gettext('Are you sure you want to delete this recipient size?'),
+        confirmButtonText: gettext('Confirm'),
+        showCloseButton: true,
+        denyButtonText: gettext('Cancel'),
+        showDenyButton: true,
+    }).then(function(result) {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: recipient_url,
+                type: 'DELETE',
+                data: JSON.stringify({recipient_size: rowData.id}),
+                contentType: 'application/json',
+                headers: {'X-CSRFToken': getCookie('csrftoken')},
+                success: function(response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: gettext('Success'),
+                        text: response.detail || gettext('Recipient size was deleted successfully.'),
+                        timer: 1500
+                    });
+                    $('#recipient_datatable').DataTable().ajax.reload();
+                },
+                error: function(xhr) {
+                    let errorMsg = gettext('There was a problem performing your request.');
+                    if (xhr.responseJSON && xhr.responseJSON.errors) {
+                        let errors = xhr.responseJSON.errors;
+                        let errorList = [];
+                        for (let field in errors) {
+                            errorList.push(errors[field].join(', '));
+                        }
+                        errorMsg = errorList.join('\n');
+                    } else if (xhr.responseJSON && xhr.responseJSON.detail) {
+                        errorMsg = xhr.responseJSON.detail;
+                    }
+                    Swal.fire({
+                        icon: 'error',
+                        title: gettext('Error'),
+                        text: errorMsg
+                    });
+                }
+            });
+        }
+    });
+});
+
