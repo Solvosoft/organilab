@@ -7668,3 +7668,12 @@ msgstr "Se eliminaron los roles %(rols)r de %(user)r en %(scope)r"
 
 msgid "Set the roles of %(user)r to %(rols)r in %(scope)r"
 msgstr "Se establecieron los roles de %(user)r a %(rols)r en %(scope)r"
+
+msgid "no role"
+msgstr "sin rol"
+
+msgid "not found"
+msgstr "no encontrado"
+
+msgid "no target"
+msgstr "sin objeto asociado"

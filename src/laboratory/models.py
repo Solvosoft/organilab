@@ -1390,7 +1390,11 @@ class UserOrganization(models.Model):
     )
 
     def __str__(self):
-        return "%s" % self.user
+        return "%s · %s (%s)" % (
+            self.user,
+            self.organization,
+            self.get_type_in_organization_display(),
+        )
 
     class Meta:
         ordering = ("pk",)
