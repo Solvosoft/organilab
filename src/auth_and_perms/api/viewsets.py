@@ -370,11 +370,15 @@ class UserInOrganization(mixins.ListModelMixin, viewsets.GenericViewSet):
             .distinct()
         )
 
-        return Profile.objects.using(settings.READONLY_DATABASE).filter(
-            user__pk__in=users,
-            profilepermission__content_type__app_label="laboratory",
-            profilepermission__content_type__model="organizationstructure",
-            profilepermission__object_id=self.organization.pk,
+        return (
+            Profile.objects.using(settings.READONLY_DATABASE)
+            .filter(
+                user__pk__in=users,
+                profilepermission__content_type__app_label="laboratory",
+                profilepermission__content_type__model="organizationstructure",
+                profilepermission__object_id=self.organization.pk,
+            )
+            .distinct()
         )
 
     def list(self, request, *args, **kwargs):
@@ -531,7 +535,7 @@ class DeleteUserFromContenttypeViewSet(mixins.ListModelMixin, viewsets.GenericVi
                 content_type__app_label="laboratory",
                 content_type__model="laboratory",
                 object_id__in=labs.values_list("pk", flat=True),
-                organization__pḱ=organization.pk,
+                organization__pk=organization.pk,
             )
             for pp in pps:
                 organilab_logentry(
