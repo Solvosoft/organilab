@@ -7599,3 +7599,72 @@ msgstr "Ver estructura"
 
 msgid "ZoneType"
 msgstr "Tipo de zona"
+
+msgid "Linked the user %(user)r to the organization %(org)r"
+msgstr "Se vinculó el usuario %(user)r a la organización %(org)r"
+
+msgid "Unlinked the user %(user)r from the organization %(org)r"
+msgstr "Se desvinculó el usuario %(user)r de la organización %(org)r"
+
+msgid "Assigned the roles %(rols)r to %(user)r on laboratory %(lab)r"
+msgstr "Se asignaron los roles %(rols)r a %(user)r en el laboratorio %(lab)r"
+
+msgid "Linked the laboratory %(lab)r to the organization %(org)r"
+msgstr "Se vinculó el laboratorio %(lab)r a la organización %(org)r"
+
+msgid "Copied the roles %(rols)r to the organization %(org)r"
+msgstr "Se copiaron los roles %(rols)r a la organización %(org)r"
+
+msgid "Linked the user %(user)r to %(objtype)s %(obj)r in organization %(org)r"
+msgstr "Se vinculó el usuario %(user)r a %(objtype)s %(obj)r en la organización %(org)r"
+
+msgid "Linked the laboratory %(lab)r to %(user)r"
+msgstr "Se vinculó el laboratorio %(lab)r a %(user)r"
+
+msgid "Unlinked the laboratory %(lab)r from %(user)r"
+msgstr "Se desvinculó el laboratorio %(lab)r de %(user)r"
+
+msgid "Assigned the roles %(rols)r to %(user)r"
+msgstr "Se asignaron los roles %(rols)r a %(user)r"
+
+msgid "Removed the roles %(rols)r from %(user)r"
+msgstr "Se eliminaron los roles %(rols)r de %(user)r"
+
+msgid "Set the roles of %(user)r to %(rols)r"
+msgstr "Se establecieron los roles de %(user)r a %(rols)r"
+
+msgid "Inherited the profile of %(user)r from %(org)r to its child organizations"
+msgstr "Se heredó el perfil de %(user)r desde %(org)r a sus organizaciones hijas"
+
+msgid "Set the laboratories linked to the organization %(org)r to %(labs)r"
+msgstr "Se establecieron los laboratorios vinculados a la organización %(org)r a %(labs)r"
+
+msgid "Linked the laboratories %(labs)r to the organization %(org)r"
+msgstr "Se vincularon los laboratorios %(labs)r a la organización %(org)r"
+
+msgid "Unlinked the laboratories %(labs)r from the organization %(org)r"
+msgstr "Se desvincularon los laboratorios %(labs)r de la organización %(org)r"
+
+msgid "Updated the role %(rol)r (%(fields)s)"
+msgstr "Se actualizó el rol %(rol)r (%(fields)s)"
+
+msgid "Enabled child organizations for %(org)r"
+msgstr "Se habilitaron las organizaciones hijas de %(org)r"
+
+msgid "Disabled child organizations for %(org)r"
+msgstr "Se deshabilitaron las organizaciones hijas de %(org)r"
+
+msgid "Deleted the role %(rol)r"
+msgstr "Se eliminó el rol %(rol)r"
+
+msgid "Created the role %(rol)r in %(org)r"
+msgstr "Se creó el rol %(rol)r en %(org)r"
+
+msgid "Assigned the roles %(rols)r to %(user)r in %(scope)r"
+msgstr "Se asignaron los roles %(rols)r a %(user)r en %(scope)r"
+
+msgid "Removed the roles %(rols)r from %(user)r in %(scope)r"
+msgstr "Se eliminaron los roles %(rols)r de %(user)r en %(scope)r"
+
+msgid "Set the roles of %(user)r to %(rols)r in %(scope)r"
+msgstr "Se establecieron los roles de %(user)r a %(rols)r en %(scope)r"
