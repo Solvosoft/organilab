@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.contrib.admin.models import ADDITION
+from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User, Group
 from django.contrib.contenttypes.models import ContentType
@@ -204,6 +204,18 @@ def add_users_organization(request, pk):
                         user.user_permissions.remove(*permissions)
                         pp_user.filter(object_id__in=org_labs).delete()
                     organizationstructure.users.remove(user)
+                    organilab_logentry(
+                        request.user,
+                        user,
+                        DELETION,
+                        "user",
+                        changed_data=[],
+                        change_message=_(
+                            "Unlinked the user %(user)r from the organization %(org)r"
+                        )
+                        % {"user": user.username, "org": organizationstructure.name},
+                        relobj=organizationstructure,
+                    )
 
             if add_users:
                 # user_management.users.add(*form.cleaned_data['users'])
@@ -213,6 +225,18 @@ def add_users_organization(request, pk):
                         status=True,
                         organization=organizationstructure,
                         type_in_organization=UserOrganization.LABORATORY_USER,
+                    )
+                    organilab_logentry(
+                        request.user,
+                        u.user,
+                        ADDITION,
+                        "user",
+                        changed_data=[],
+                        change_message=_(
+                            "Linked the user %(user)r to the organization %(org)r"
+                        )
+                        % {"user": u.user.username, "org": organizationstructure.name},
+                        relobj=organizationstructure,
                     )
             messages.success(request, _("Element saved successfully"))
             return redirect("auth_and_perms:organizationManager")
@@ -277,6 +301,18 @@ class DeleteRolByOrganization(DeleteView):
     def get_success_url(self):
         return reverse("auth_and_perms:list_rol_by_org", args=[self.org])
 
+    def form_valid(self, form):
+        organilab_logentry(
+            self.request.user,
+            self.object,
+            DELETION,
+            "rol",
+            changed_data=[],
+            change_message=_("Deleted the role %(rol)r") % {"rol": self.object.name},
+            relobj=OrganizationStructure.objects.filter(pk=self.org).first(),
+        )
+        return super().form_valid(form)
+
 
 def add_rol_by_laboratory(request):
     cc_lab = ContentType.objects.get(app_label="laboratory", model="laboratory")
@@ -316,6 +352,24 @@ def add_rol_by_laboratory(request):
                     )
                     pp_lab.rol.add(*form.cleaned_data["rols"])
                 assign_rol_permissions(pp_lab.profile.user, form.cleaned_data["rols"])
+                organilab_logentry(
+                    request.user,
+                    pp_lab.profile.user,
+                    CHANGE,
+                    "user",
+                    changed_data=[],
+                    change_message=_(
+                        "Assigned the roles %(rols)r to %(user)r on laboratory %(lab)r"
+                    )
+                    % {
+                        "rols": ", ".join(
+                            form.cleaned_data["rols"].values_list("name", flat=True)
+                        ),
+                        "user": pp_lab.profile.user.username,
+                        "lab": lab.name,
+                    },
+                    relobj=org,
+                )
 
             messages.success(request, _("Element saved successfully"))
         else:
@@ -406,6 +460,19 @@ def add_contenttype_to_org(request):
         )
         for obj in contentyperelobj:
             register_laboratory_contenttype(organization, obj)
+            lab = Laboratory.objects.filter(pk=obj).first()
+            organilab_logentry(
+                request.user,
+                lab,
+                ADDITION,
+                "laboratory",
+                changed_data=[],
+                change_message=_(
+                    "Linked the laboratory %(lab)r to the organization %(org)r"
+                )
+                % {"lab": str(lab), "org": organization.name},
+                relobj=organization,
+            )
     else:
         raise Http404(
             _("Form data is wrong, you need to pass a valid laboratory as contenttype")
@@ -421,6 +488,21 @@ def copy_rols(request, pk):
     form = AddRolForm(request.POST)
     if form.is_valid():
         org.rol.add(*form.cleaned_data["rols"])
+        organilab_logentry(
+            request.user,
+            org,
+            CHANGE,
+            "organization structure",
+            changed_data=[],
+            change_message=_("Copied the roles %(rols)r to the organization %(org)r")
+            % {
+                "rols": ", ".join(
+                    form.cleaned_data["rols"].values_list("name", flat=True)
+                ),
+                "org": org.name,
+            },
+            relobj=org,
+        )
         messages.success(request, _("Element saved successfully"))
     else:
         messages.error(request, _("Error, form is invalid"))
@@ -491,6 +573,14 @@ def update_rol(request, org_pk, pk):
     form = RolForm(request.POST, instance=rol)
     if form.is_valid():
         rol = form.save()
+        organilab_logentry(
+            request.user,
+            rol,
+            CHANGE,
+            "rol",
+            changed_data=list(form.changed_data),
+            relobj=OrganizationStructure.objects.filter(pk=org_pk).first(),
+        )
         messages.success(request, _("Role updated successfully"))
         return redirect(
             reverse("auth_and_perms:list_rol_by_org", kwargs={"org_pk": org_pk})
@@ -523,4 +613,21 @@ def enable_child_organizations(request):
     else:
         organization.enable_child_organizations = False
     organization.save()
+    if organization.enable_child_organizations:
+        change_message = _(
+            "Enabled child organizations for %(org)r"
+        ) % {"org": organization.name}
+    else:
+        change_message = _(
+            "Disabled child organizations for %(org)r"
+        ) % {"org": organization.name}
+    organilab_logentry(
+        request.user,
+        organization,
+        CHANGE,
+        "organization structure",
+        changed_data=["enable_child_organizations"],
+        change_message=change_message,
+        relobj=organization,
+    )
     return redirect(reverse("auth_and_perms:organizationManager"))
