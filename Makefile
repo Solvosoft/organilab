@@ -45,6 +45,9 @@ migrate: ## - makemigrations && migrate
 requirements: ## - install all dependencies
 	pip install -r requirements.txt
 
+test-requirements: ## - install all test dependencies
+	pip install -r test_requirements.txt
+
 create-profile: ## - create user and user profile
 	cd src && python manage.py createsuperuser && \
 	python manage.py shell -c "\
