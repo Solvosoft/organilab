@@ -74,7 +74,7 @@ class RiskZoneCreateForm(forms.ModelForm, GTForm):
             + "?tipo="
             + quote("zone_type")
         )
-        if "instance" in kwargs:
+        if self.instance.pk:
             labs += list(self.instance.laboratories.all().values_list("pk", flat=True))
             self.fields["laboratories"].initial = Laboratory.objects.filter(pk__in=labs)
 

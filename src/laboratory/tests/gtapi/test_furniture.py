@@ -293,16 +293,16 @@ class FurnitureViewTest13(FurnitureViewTest, OrgDoesNotExists, LabDoesNotExists)
     """
 
     def test_get_furniture_by_shelfobject_case1(self):
-        self.get_obj_by_shelfobject()
+        self.get_obj_by_shelfobject(status_code=404)
 
     def test_get_furniture_by_shelfobject_case2(self):
-        self.get_obj_by_shelfobject(self.user2, self.client2)
+        self.get_obj_by_shelfobject(self.user2, self.client2, status_code=404)
 
     def test_get_furniture_by_shelfobject_case3(self):
-        self.get_obj_by_shelfobject(self.user3, self.client3)
+        self.get_obj_by_shelfobject(self.user3, self.client3, status_code=404)
 
     def test_get_furniture_by_shelfobject_case4(self):
-        self.get_obj_by_shelfobject(self.user4, self.client4)
+        self.get_obj_by_shelfobject(self.user4, self.client4, status_code=404)
 
 
 class FurnitureViewTest14(FurnitureViewTest, LabDoesNotExists):
@@ -329,13 +329,13 @@ class FurnitureViewTest15(FurnitureViewTest, OrgDoesNotExists):
     """
 
     def test_get_furniture_by_shelfobject_case1(self):
-        self.get_obj_by_shelfobject()
+        self.get_obj_by_shelfobject(status_code=404)
 
     def test_get_furniture_by_shelfobject_case2(self):
-        self.get_obj_by_shelfobject(self.user2, self.client2)
+        self.get_obj_by_shelfobject(self.user2, self.client2, status_code=404)
 
     def test_get_furniture_by_shelfobject_case3(self):
-        self.get_obj_by_shelfobject(self.user3, self.client3)
+        self.get_obj_by_shelfobject(self.user3, self.client3, status_code=404)
 
     def test_get_furniture_by_shelfobject_case4(self):
-        self.get_obj_by_shelfobject(self.user4, self.client4)
+        self.get_obj_by_shelfobject(self.user4, self.client4, status_code=404)

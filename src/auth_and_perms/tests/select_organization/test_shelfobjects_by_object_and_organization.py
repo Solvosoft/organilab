@@ -23,7 +23,7 @@ class ShelfObjectsByObjectViewTest2(OrgDoesNotExists, ObjectDoesNotExists):
     """
 
     def test_get_shelfobjects_by_objects_and_org_case1(self):
-        self.check_tests()
+        self.check_tests(status_code=404)
 
 
 class ShelfObjectsByObjectViewTest3(ObjectDoesNotExists):
@@ -43,7 +43,7 @@ class ShelfObjectsByObjectViewTest4(ShelfObjectsByObjectViewTest, OrgDoesNotExis
     """
 
     def test_get_shelfobjects_by_objects_and_org_case1(self):
-        self.check_tests()
+        self.check_tests(status_code=404)
 
 
 class ShelfObjectsByObjectViewTest5(WithoutOrg, WithoutObject):
