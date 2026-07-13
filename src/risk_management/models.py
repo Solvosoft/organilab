@@ -240,7 +240,7 @@ class Buildings(AbstractOrganizationRef):
         User,
         verbose_name=_("Responsible"),
         related_name="manager",
-        on_delete=models.DO_NOTHING,
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )
@@ -327,7 +327,8 @@ class Structure(AbstractOrganizationRef):
     manager = models.ForeignKey(
         User,
         verbose_name=_("Responsible"),
-        on_delete=models.DO_NOTHING,
+        on_delete=models.SET_NULL,
+        null=True,
         related_name="structure_manager",
     )
 

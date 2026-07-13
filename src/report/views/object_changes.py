@@ -122,12 +122,15 @@ def resume_queryset_doc(report, queryset, objs, log_filters):
                 object_log = True
             for values in query_values:
 
-                try:
-                    user = values.user.get_full_name()
-                    if not user:
-                        user = values.user.username
-                except Exception as e:
-                    user = ""
+                if values.deleted_user_info:
+                    user = values.deleted_user_info
+                else:
+                    try:
+                        user = values.user.get_full_name()
+                        if not user:
+                            user = values.user.username
+                    except Exception as e:
+                        user = ""
                 builder.append(
                     [
                         user,

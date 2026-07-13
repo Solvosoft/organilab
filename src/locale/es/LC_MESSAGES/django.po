@@ -15,6 +15,12 @@ msgstr ""
 msgid "No user found"
 msgstr "Usuario no encontrado"
 
+msgid "Deleted user: %(full_name)s (%(username)s)"
+msgstr "Usuario eliminado: %(full_name)s (%(username)s)"
+
+msgid "Reassigned on user delete"
+msgstr "Reasignado por borrado de usuario"
+
 msgid "Edit"
 msgstr "Editar"
 
