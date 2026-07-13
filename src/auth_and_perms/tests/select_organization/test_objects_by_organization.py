@@ -23,7 +23,7 @@ class ObjectsByOrganizationViewTest2(ObjectsByOrganizationViewTest, OrgDoesNotEx
     """
 
     def test_get_objects_by_org_case1(self):
-        self.check_tests()
+        self.check_tests(status_code=404)
 
 
 class ObjectsByOrganizationViewTest3(ObjectsByOrganizationViewTest, WithoutOrg):
