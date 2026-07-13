@@ -486,7 +486,7 @@ class ObjectLogAdmin(OrganizationWhereActionAdminMixin, admin.ModelAdmin):
         "id",
         "object",
         "laboratory",
-        "user",
+        "user_display",
         "organization_id_display",
         "organization_name_display",
         "old_value",
@@ -495,6 +495,13 @@ class ObjectLogAdmin(OrganizationWhereActionAdminMixin, admin.ModelAdmin):
         "measurement_unit",
         "update_time",
     ]
+
+    @admin.display(description=_("User"), ordering="user")
+    def user_display(self, obj):
+        if obj.deleted_user_info:
+            return f"{obj.user} ({obj.deleted_user_info})"
+        return str(obj.user)
+
     search_fields = [
         "object__name",
         "object__code",
