@@ -209,7 +209,7 @@ class OrganizationStructureRelationsAdmin(OrganizationInfoAdminMixin, admin.Mode
         "object_id",
         "content_object_display",
     ]
-    list_filter = ["content_type", "organization"]
+    list_filter = [("content_type", admin.RelatedOnlyFieldListFilter), "organization"]
     search_fields = ["organization__name", "object_id"]
 
     def content_object_display(self, obj):
@@ -445,7 +445,7 @@ class InformAdmin(OrganizationInfoAdminMixin, admin.ModelAdmin):
         "custom_form__name",
         "object_id",
     )
-    list_filter = ("status", "organization", "content_type")
+    list_filter = ("status", "organization", ("content_type", admin.RelatedOnlyFieldListFilter))
 
 
 class PeriodScheduledAdmin(admin.TabularInline):
