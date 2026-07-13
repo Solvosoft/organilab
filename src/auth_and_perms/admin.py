@@ -63,6 +63,8 @@ def export_rol_perms(admin, request, queryset):
 
 
 class RolAdmin(admin.ModelAdmin):
+    list_display = ["id", "name", "color", "description"]
+    search_fields = ["name", "description"]
     filter_horizontal = ["permissions"]
     actions = [export_rol_perms]
 
@@ -78,12 +80,51 @@ class AuthorizedApplicationAdmin(admin.ModelAdmin):
 
 
 class ProfileAdmin(admin.ModelAdmin):
-    search_fields = ["user__username", "user__email"]
+    list_display = [
+        "id",
+        "user",
+        "job_position",
+        "phone_number",
+        "language",
+        "show_tutorials",
+    ]
+    list_select_related = ["user"]
+    list_filter = ["language", "show_tutorials"]
+    search_fields = [
+        "user__username",
+        "user__email",
+        "user__first_name",
+        "user__last_name",
+        "id_card",
+        "job_position",
+    ]
 
 
 class ProfilePermissionAdmin(admin.ModelAdmin):
-    search_fields = ["profile__user__email"]
-    list_display = ["profile", "content_type", "object_id"]
+    list_display = [
+        "id",
+        "profile",
+        "content_type",
+        "object_id",
+        "organization",
+        "roles_display",
+    ]
+    list_filter = [
+        ("content_type", admin.RelatedOnlyFieldListFilter),
+        ("organization", admin.RelatedOnlyFieldListFilter),
+    ]
+    search_fields = [
+        "profile__user__username",
+        "profile__user__email",
+        "rol__name",
+        "organization__name",
+    ]
+    raw_id_fields = ["profile", "organization"]
+    filter_horizontal = ["rol"]
+
+    @admin.display(description=_("Roles"))
+    def roles_display(self, obj):
+        return ", ".join(obj.rol.values_list("name", flat=True))
 
 
 class ImpostorAdmin(admin.ModelAdmin):
