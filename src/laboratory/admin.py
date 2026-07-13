@@ -1,7 +1,9 @@
 from django.contrib import admin
+from django.db.models import Q
 from django.http import HttpResponse
 from django.utils.translation import gettext_lazy as _
 
+from auth_and_perms.admin import DELETED_USER_TAG_MARKERS
 from laboratory import models
 from laboratory.task_utils import create_informsperiods
 from presentation.utils import update_qr_instance
@@ -499,12 +501,14 @@ class ObjectLogAdmin(OrganizationWhereActionAdminMixin, admin.ModelAdmin):
         "laboratory__name",
         "user__username",
         "organization_where_action_taken__name",
+        "deleted_user_info",
     ]
     list_filter = [
         "update_time",
         "organization_where_action_taken",
         "precursor",
         "type_action",
+        ("deleted_user_info", admin.EmptyFieldListFilter),
     ]
 
 
@@ -822,10 +826,32 @@ class LabOrOrgRequestAdmin(admin.ModelAdmin):
     list_select_related = ("requested_by", "organization")
 
 
+class LabOrgReassignedOnUserDeleteFilter(admin.SimpleListFilter):
+    title = _("Reassigned on user delete")
+    parameter_name = "reassigned_on_user_delete"
+
+    def lookups(self, request, model_admin):
+        return (("yes", _("Yes")),)
+
+    def queryset(self, request, queryset):
+        if self.value() == "yes":
+            marker_query = Q()
+            for marker in DELETED_USER_TAG_MARKERS:
+                marker_query |= Q(log_entry__object_repr__icontains=marker)
+            return queryset.filter(marker_query)
+        return queryset
+
+
+class LabOrgLogEntryAdmin(admin.ModelAdmin):
+    list_display = ["log_entry", "content_object"]
+    search_fields = ["log_entry__object_repr", "log_entry__user__username"]
+    list_filter = [LabOrgReassignedOnUserDeleteFilter]
+
+
 admin.site.register(models.PrecursorReport, PrecursorReportAdmin)
 admin.site.register(models.PrecursorReportValues, PrecursorReportValuesAdmin)
 admin.site.register(models.SDSTraceability, SDSTraceabilityAdmin)
 admin.site.register(models.ShelfObjectLimits)
-admin.site.register(models.LabOrgLogEntry)
+admin.site.register(models.LabOrgLogEntry, LabOrgLogEntryAdmin)
 admin.site.register(models.SustanceCharacteristics, SustanceCharacteristicsAdmin)
 admin.site.site_header = _("Organilab Administration site")
