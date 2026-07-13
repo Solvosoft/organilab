@@ -209,7 +209,10 @@ class OrganizationStructureRelationsAdmin(OrganizationInfoAdminMixin, admin.Mode
         "object_id",
         "content_object_display",
     ]
-    list_filter = [("content_type", admin.RelatedOnlyFieldListFilter), "organization"]
+    list_filter = [
+        ("content_type", admin.RelatedOnlyFieldListFilter),
+        ("organization", admin.RelatedOnlyFieldListFilter),
+    ]
     search_fields = ["organization__name", "object_id"]
 
     def content_object_display(self, obj):
@@ -279,7 +282,7 @@ class UserOrganizationAdmin(OrganizationInfoAdminMixin, admin.ModelAdmin):
 class LaboratoryAdmin(OrganizationInfoAdminMixin, admin.ModelAdmin):
     actions = [export_laboratory]
     search_fields = ["name", "organization__name"]
-    list_filter = ["organization"]
+    list_filter = [("organization", admin.RelatedOnlyFieldListFilter)]
     list_display = (
         "id",
         "name",
@@ -304,7 +307,12 @@ class ObjectAdmin(OrganizationInfoAdminMixin, admin.ModelAdmin):
         "is_precursor",
         "is_public",
     )
-    list_filter = ("type", "is_public", "is_dangerous", "organization")
+    list_filter = (
+        "type",
+        "is_public",
+        "is_dangerous",
+        ("organization", admin.RelatedOnlyFieldListFilter),
+    )
 
 
 @admin.register(models.ShelfObjectEquipmentCharacteristics)
@@ -327,7 +335,11 @@ class ShelfObjectEquipmentCharacteristicsAdmin(
         "organization__name",
         "provider__name",
     )
-    list_filter = ("available_to_use", "have_guarantee", "organization")
+    list_filter = (
+        "available_to_use",
+        "have_guarantee",
+        ("organization", admin.RelatedOnlyFieldListFilter),
+    )
 
 
 @admin.register(models.ShelfObjectMaintenance)
@@ -445,7 +457,11 @@ class InformAdmin(OrganizationInfoAdminMixin, admin.ModelAdmin):
         "custom_form__name",
         "object_id",
     )
-    list_filter = ("status", "organization", ("content_type", admin.RelatedOnlyFieldListFilter))
+    list_filter = (
+        "status",
+        ("organization", admin.RelatedOnlyFieldListFilter),
+        ("content_type", admin.RelatedOnlyFieldListFilter),
+    )
 
 
 class PeriodScheduledAdmin(admin.TabularInline):
@@ -475,7 +491,7 @@ class InformSchedulerAdmin(OrganizationInfoAdminMixin, admin.ModelAdmin):
         "period_on_days",
         "active",
     ]
-    list_filter = ("active", "organization")
+    list_filter = ("active", ("organization", admin.RelatedOnlyFieldListFilter))
     actions = [create_informs]
     inlines = [PeriodScheduledAdmin]
 
@@ -640,14 +656,14 @@ class ProtocolAdmin(admin.ModelAdmin):
         "laboratory__name",
         "upload_by__username",
     )
-    list_filter = ("laboratory", "creation_date")
+    list_filter = (("laboratory", admin.RelatedOnlyFieldListFilter), "creation_date")
 
 
 @admin.register(models.LaboratoryRoom)
 class LaboratoryRoomAdmin(admin.ModelAdmin):
     list_display = ("id", "name", "laboratory", "created_by", "creation_date")
     search_fields = ("name", "laboratory__name")
-    list_filter = ("laboratory",)
+    list_filter = (("laboratory", admin.RelatedOnlyFieldListFilter),)
 
 
 @admin.register(models.Furniture)
@@ -703,7 +719,7 @@ class ProviderAdmin(admin.ModelAdmin):
         "laboratory",
     )
     search_fields = ("name", "email", "legal_identity", "laboratory__name")
-    list_filter = ("laboratory",)
+    list_filter = (("laboratory", admin.RelatedOnlyFieldListFilter),)
 
 
 @admin.register(models.TranferObject)
@@ -729,8 +745,8 @@ class TranferObjectAdmin(admin.ModelAdmin):
         "status",
         "state",
         "mark_as_discard",
-        "laboratory_send",
-        "laboratory_received",
+        ("laboratory_send", admin.RelatedOnlyFieldListFilter),
+        ("laboratory_received", admin.RelatedOnlyFieldListFilter),
     )
 
 
@@ -762,7 +778,12 @@ class ObjectMaximumLimitAdmin(admin.ModelAdmin):
         "object__name",
         "object__code",
     )
-    list_filter = ("laboratory", "measurement_unit", "process_condition", "created_at")
+    list_filter = (
+        ("laboratory", admin.RelatedOnlyFieldListFilter),
+        "measurement_unit",
+        "process_condition",
+        "created_at",
+    )
 
 
 @admin.register(models.ReactiveLimit)
