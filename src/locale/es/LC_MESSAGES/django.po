@@ -4787,9 +4787,6 @@ msgstr "Unidad a Unidad Base"
 msgid "Measurement Unit Base"
 msgstr "Unidad de Medida Base"
 
-msgid "Added the user %(user)r in the organization %(org)r"
-msgstr "Se agrego el usuario %(user)r en la organización %(org)r"
-
 msgid "Added the groups %(groups)r to the profile %(profile)r"
 msgstr "Se agregaron los grupos %(groups)r al perfil %(profile)r"
 
@@ -7618,9 +7615,6 @@ msgstr "Se asignaron los roles %(rols)r a %(user)r en el laboratorio %(lab)r"
 msgid "Linked the laboratory %(lab)r to the organization %(org)r"
 msgstr "Se vinculó el laboratorio %(lab)r a la organización %(org)r"
 
-msgid "Copied the roles %(rols)r to the organization %(org)r"
-msgstr "Se copiaron los roles %(rols)r a la organización %(org)r"
-
 msgid "Linked the user %(user)r to %(objtype)s %(obj)r in organization %(org)r"
 msgstr "Se vinculó el usuario %(user)r a %(objtype)s %(obj)r en la organización %(org)r"
 
@@ -7660,12 +7654,6 @@ msgstr "Se habilitaron las organizaciones hijas de %(org)r"
 msgid "Disabled child organizations for %(org)r"
 msgstr "Se deshabilitaron las organizaciones hijas de %(org)r"
 
-msgid "Deleted the role %(rol)r"
-msgstr "Se eliminó el rol %(rol)r"
-
-msgid "Created the role %(rol)r in %(org)r"
-msgstr "Se creó el rol %(rol)r en %(org)r"
-
 msgid "Assigned the roles %(rols)r to %(user)r in %(scope)r"
 msgstr "Se asignaron los roles %(rols)r a %(user)r en %(scope)r"
 
@@ -7683,3 +7671,603 @@ msgstr "no encontrado"
 
 msgid "no target"
 msgstr "sin objeto asociado"
+
+msgid "Deleted risk zone '%(name)s'"
+msgstr "Zona de riesgo '%(name)s' eliminada"
+
+msgid "Created precursor report value"
+msgstr "Valor de reporte de precursor creado"
+
+msgid "Updated precursor report value"
+msgstr "Valor de reporte de precursor actualizado"
+
+msgid "Deleted precursor report value"
+msgstr "Valor de reporte de precursor eliminado"
+
+msgid "%(action)s equipment characteristics for '%(name)s'"
+msgstr "%(action)s características de equipo para '%(name)s'"
+
+msgid "%(action)s hazard '%(desc)s' in IPER assessment"
+msgstr "%(action)s peligro '%(desc)s' en evaluación IPER"
+
+msgid "%(action)s register user QR for organization '%(org)s'"
+msgstr "%(action)s registro de usuario QR para organización '%(org)s'"
+
+msgid "%(action)s substance characteristics for '%(name)s'"
+msgstr "%(action)s características de sustancia para '%(name)s'"
+
+msgid "Activated organization '%(name)s'"
+msgstr "Organización '%(name)s' activada"
+
+msgid "Deactivated organization '%(name)s'"
+msgstr "Organización '%(name)s' desactivada"
+
+msgid "Added observation to IPER assessment"
+msgstr "Observación agregada a evaluación IPER"
+
+msgid "Added observation to procedure step '%(title)s'"
+msgstr "Observación agregada al paso de procedimiento '%(title)s'"
+
+msgid "Added observation to shelfobject"
+msgstr "Observación agregada al objeto de estante"
+
+msgid "Added observation to shelfobject '%(name)s'"
+msgstr "Observación agregada al objeto de estante '%(name)s'"
+
+msgid "Added required object '%(obj)s' (%(qty)s %(unit)s) to procedure step"
+msgstr "Objeto requerido '%(obj)s' (%(qty)s %(unit)s) agregado al paso de procedimiento"
+
+msgid "Added step to procedure '%(name)s'"
+msgstr "Paso agregado al procedimiento '%(name)s'"
+
+msgid "Added user '%(user)s' to cloned organization '%(org)s'"
+msgstr "Usuario '%(user)s' agregado a la organización clonada '%(org)s'"
+
+msgid "Added user '%(user)s' to organization '%(org)s'"
+msgstr "Usuario '%(user)s' agregado a la organización '%(org)s'"
+
+msgid "Added user '%(user)s' to root organization '%(org)s'"
+msgstr "Usuario '%(user)s' agregado a la organización raíz '%(org)s'"
+
+msgid "Approved and created %(type)s '%(name)s' from request"
+msgstr "Aprobado y creado %(type)s '%(name)s' desde solicitud"
+
+msgid "Approved transfer - created shelfobject '%(name)s'"
+msgstr "Transferencia aprobada - objeto de estante '%(name)s' creado"
+
+msgid "Approved transfer request for '%(name)s'"
+msgstr "Solicitud de transferencia aprobada para '%(name)s'"
+
+msgid "Changed IPER assessment status to '%(status)s'"
+msgstr "Estado de evaluación IPER cambiado a '%(status)s'"
+
+msgid "Changed organization name to '%(name)s'"
+msgstr "Nombre de organización cambiado a '%(name)s'"
+
+msgid "Changed shelfobject status from '%(from)s' to '%(to)s'"
+msgstr "Estado de objeto de estante cambiado de '%(from)s' a '%(to)s'"
+
+msgid "Cloned IPER assessment to version %(version)s"
+msgstr "Evaluación IPER clonada a versión %(version)s"
+
+msgid "Cloned organization '%(original)s' to '%(clone)s'"
+msgstr "Organización '%(original)s' clonada a '%(clone)s'"
+
+msgid "Cloned shelfobject limits"
+msgstr "Límites de objeto de estante clonados"
+
+msgid "Cloned shelfobject '%(name)s' to shelf '%(shelf)s'"
+msgstr "Objeto de estante '%(name)s' clonado al estante '%(shelf)s'"
+
+msgid "Created box reservation for '%(obj)s' (%(boxes)s boxes)"
+msgstr "Reserva de caja creada para '%(obj)s' (%(boxes)s cajas)"
+
+msgid "Created box shelfobject '%(name)s' with %(boxes)s boxes"
+msgstr "Objeto de estante en caja '%(name)s' creado con %(boxes)s cajas"
+
+msgid "Created calibration record for shelfobject '%(name)s'"
+msgstr "Registro de calibración creado para objeto de estante '%(name)s'"
+
+msgid "Created guarantee record for shelfobject '%(name)s'"
+msgstr "Registro de garantía creado para objeto de estante '%(name)s'"
+
+msgid "Created log entry for shelfobject '%(name)s'"
+msgstr "Entrada de log creada para objeto de estante '%(name)s'"
+
+msgid "Created maintenance record for shelfobject '%(name)s'"
+msgstr "Registro de mantenimiento creado para objeto de estante '%(name)s'"
+
+msgid "Created training record for shelfobject '%(name)s'"
+msgstr "Registro de capacitación creado para objeto de estante '%(name)s'"
+
+msgid "Created catalog entry '%(desc)s'"
+msgstr "Entrada de catálogo '%(desc)s' creada"
+
+msgid "Created danger indication '%(code)s'"
+msgstr "Indicación de peligro '%(code)s' creada"
+
+msgid "Created equipment type '%(name)s'"
+msgstr "Tipo de equipo '%(name)s' creado"
+
+msgid "Created prudence advice '%(code)s'"
+msgstr "Consejo de prudencia '%(code)s' creado"
+
+msgid "Created recipient size '%(name)s'"
+msgstr "Tamaño de recipiente '%(name)s' creado"
+
+msgid "Created warning word '%(name)s'"
+msgstr "Palabra de advertencia '%(name)s' creada"
+
+msgid "Created custom form '%(name)s'"
+msgstr "Formulario personalizado '%(name)s' creado"
+
+msgid "Created custom form '%(name)s' for procedure step"
+msgstr "Formulario personalizado '%(name)s' creado para paso de procedimiento"
+
+msgid "Created equipment characteristics"
+msgstr "Características de equipo creadas"
+
+msgid "Created equipment characteristics for '%(name)s'"
+msgstr "Características de equipo creadas para '%(name)s'"
+
+msgid "Created furniture '%(name)s'"
+msgstr "Mobiliario '%(name)s' creado"
+
+msgid "Created incident report '%(desc)s'"
+msgstr "Reporte de incidente '%(desc)s' creado"
+
+msgid "Created inform from form '%(form)s'"
+msgstr "Informe creado desde formulario '%(form)s'"
+
+msgid "Created IPER assessment for laboratory '%(lab)s'"
+msgstr "Evaluación IPER creada para laboratorio '%(lab)s'"
+
+msgid "Created lab relation for '%(lab)s' in '%(org)s'"
+msgstr "Relación de laboratorio creada para '%(lab)s' en '%(org)s'"
+
+msgid "Created laboratory '%(name)s'"
+msgstr "Laboratorio '%(name)s' creado"
+
+msgid "Created laboratory process '%(desc)s'"
+msgstr "Proceso de laboratorio '%(desc)s' creado"
+
+msgid "Created laboratory room '%(name)s'"
+msgstr "Sala de laboratorio '%(name)s' creada"
+
+msgid "Created my procedure '%(name)s'"
+msgstr "Mi procedimiento '%(name)s' creado"
+
+msgid "Created object feature '%(name)s'"
+msgstr "Característica de objeto '%(name)s' creada"
+
+msgid "Created object '%(name)s'"
+msgstr "Objeto '%(name)s' creado"
+
+msgid "Created organization '%(name)s'"
+msgstr "Organización '%(name)s' creada"
+
+msgid "Created organization relation for '%(org)s'"
+msgstr "Relación de organización creada para '%(org)s'"
+
+msgid "Created partial shelfobject '%(name)s'"
+msgstr "Objeto de estante parcial '%(name)s' creado"
+
+msgid "Created shelfobject equipment '%(name)s'"
+msgstr "Equipo de estante '%(name)s' creado"
+
+msgid "Created shelfobject limits"
+msgstr "Límites de objeto de estante creados"
+
+msgid "Created shelfobject material '%(name)s' with quantity %(qty)s"
+msgstr "Material de estante '%(name)s' creado con cantidad %(qty)s"
+
+msgid "Created shelfobject '%(name)s' from transfer"
+msgstr "Objeto de estante '%(name)s' creado desde transferencia"
+
+msgid "Created shelfobject '%(name)s' in shelf '%(shelf)s'"
+msgstr "Objeto de estante '%(name)s' creado en estante '%(shelf)s'"
+
+msgid "Created shelfobject reactive '%(name)s' with quantity %(qty)s"
+msgstr "Reactivo de estante '%(name)s' creado con cantidad %(qty)s"
+
+msgid "Created refuse equipment shelfobject '%(name)s'"
+msgstr "Equipo de desecho '%(name)s' creado"
+
+msgid "Created refuse material shelfobject '%(name)s'"
+msgstr "Material de desecho '%(name)s' creado"
+
+msgid "Created refuse reactive shelfobject '%(name)s'"
+msgstr "Reactivo de desecho '%(name)s' creado"
+
+msgid "Created procedure '%(name)s'"
+msgstr "Procedimiento '%(name)s' creado"
+
+msgid "Created procedure step '%(title)s'"
+msgstr "Paso de procedimiento '%(title)s' creado"
+
+msgid "Created profile for user '%(user)s'"
+msgstr "Perfil creado para usuario '%(user)s'"
+
+msgid "Created profile permission for user '%(user)s'"
+msgstr "Permiso de perfil creado para usuario '%(user)s'"
+
+msgid "Created provider '%(name)s'"
+msgstr "Proveedor '%(name)s' creado"
+
+msgid "Created reactive '%(name)s'"
+msgstr "Reactivo '%(name)s' creado"
+
+msgid "Created reservation for '%(obj)s' (%(amount)s units)"
+msgstr "Reserva creada para '%(obj)s' (%(amount)s unidades)"
+
+msgid "Created reservation for shelfobject '%(name)s'"
+msgstr "Reserva creada para objeto de estante '%(name)s'"
+
+msgid "Created role '%(name)s' for organization '%(org)s'"
+msgstr "Rol '%(name)s' creado para organización '%(org)s'"
+
+msgid "Created SGA template '%(name)s' from editor"
+msgstr "Plantilla SGA '%(name)s' creada desde editor"
+
+msgid "Created shelf '%(name)s'"
+msgstr "Estante '%(name)s' creado"
+
+msgid "Created substance characteristics for '%(name)s'"
+msgstr "Características de sustancia creadas para '%(name)s'"
+
+msgid "Created transfer request for '%(name)s' from '%(from)s' to '%(to)s'"
+msgstr "Solicitud de transferencia creada para '%(name)s' de '%(from)s' a '%(to)s'"
+
+msgid "Created %(type)s request '%(name)s'"
+msgstr "Solicitud de %(type)s '%(name)s' creada"
+
+msgid "Created user '%(user)s' via QR registration"
+msgstr "Usuario '%(user)s' creado vía registro QR"
+
+msgid "Created risk zone '%(name)s'"
+msgstr "Zona de riesgo '%(name)s' creada"
+
+msgid "Deleted calibration record for shelfobject '%(name)s'"
+msgstr "Registro de calibración eliminado para objeto de estante '%(name)s'"
+
+msgid "Deleted guarantee record for shelfobject '%(name)s'"
+msgstr "Registro de garantía eliminado para objeto de estante '%(name)s'"
+
+msgid "Deleted log entry for shelfobject '%(name)s'"
+msgstr "Entrada de log eliminada para objeto de estante '%(name)s'"
+
+msgid "Deleted maintenance record for shelfobject '%(name)s'"
+msgstr "Registro de mantenimiento eliminado para objeto de estante '%(name)s'"
+
+msgid "Deleted training record for shelfobject '%(name)s'"
+msgstr "Registro de capacitación eliminado para objeto de estante '%(name)s'"
+
+msgid "Deleted catalog entry '%(desc)s'"
+msgstr "Entrada de catálogo '%(desc)s' eliminada"
+
+msgid "Deleted danger indication '%(code)s'"
+msgstr "Indicación de peligro '%(code)s' eliminada"
+
+msgid "Deleted equipment type '%(name)s'"
+msgstr "Tipo de equipo '%(name)s' eliminado"
+
+msgid "Deleted prudence advice '%(code)s'"
+msgstr "Consejo de prudencia '%(code)s' eliminado"
+
+msgid "Deleted recipient size '%(name)s'"
+msgstr "Tamaño de recipiente '%(name)s' eliminado"
+
+msgid "Deleted warning word '%(name)s'"
+msgstr "Palabra de advertencia '%(name)s' eliminada"
+
+msgid "Deleted custom form '%(name)s'"
+msgstr "Formulario personalizado '%(name)s' eliminado"
+
+msgid "Deleted equipment characteristics for '%(name)s'"
+msgstr "Características de equipo eliminadas para '%(name)s'"
+
+msgid "Deleted equipment '%(name)s'"
+msgstr "Equipo '%(name)s' eliminado"
+
+msgid "Deleted equipment '%(name)s' (cascade from equipment type)"
+msgstr "Equipo '%(name)s' eliminado (en cascada desde tipo de equipo)"
+
+msgid "Deleted shelfobject equipment (cascade from equipment type)"
+msgstr "Equipo de estante eliminado (en cascada desde tipo de equipo)"
+
+msgid "Deleted furniture '%(name)s'"
+msgstr "Mobiliario '%(name)s' eliminado"
+
+msgid "Deleted hazard '%(desc)s' from IPER assessment"
+msgstr "Peligro '%(desc)s' eliminado de evaluación IPER"
+
+msgid "Deleted incident report '%(desc)s'"
+msgstr "Reporte de incidente '%(desc)s' eliminado"
+
+msgid "Deleted inform"
+msgstr "Informe eliminado"
+
+msgid "Deleted IPER assessment for laboratory '%(lab)s'"
+msgstr "Evaluación IPER eliminada para laboratorio '%(lab)s'"
+
+msgid "Deleted laboratory '%(name)s'"
+msgstr "Laboratorio '%(name)s' eliminado"
+
+msgid "Deleted laboratory room '%(name)s'"
+msgstr "Sala de laboratorio '%(name)s' eliminada"
+
+msgid "Deleted my procedure '%(name)s'"
+msgstr "Mi procedimiento '%(name)s' eliminado"
+
+msgid "Deleted object feature '%(name)s'"
+msgstr "Característica de objeto '%(name)s' eliminada"
+
+msgid "Deleted object '%(name)s'"
+msgstr "Objeto '%(name)s' eliminado"
+
+msgid "Deleted procedure '%(name)s'"
+msgstr "Procedimiento '%(name)s' eliminado"
+
+msgid "Deleted procedure step '%(title)s'"
+msgstr "Paso de procedimiento '%(title)s' eliminado"
+
+msgid "Deleted organization '%(name)s'"
+msgstr "Organización '%(name)s' eliminada"
+
+msgid "Deleted provider '%(name)s'"
+msgstr "Proveedor '%(name)s' eliminado"
+
+msgid "Deleted reactive '%(name)s'"
+msgstr "Reactivo '%(name)s' eliminado"
+
+msgid "Deleted register user QR"
+msgstr "Registro de usuario QR eliminado"
+
+msgid "Deleted SGA substance '%(name)s'"
+msgstr "Sustancia SGA '%(name)s' eliminada"
+
+msgid "Deleted shelf '%(name)s'"
+msgstr "Estante '%(name)s' eliminado"
+
+msgid "Deleted shelfobject '%(name)s'"
+msgstr "Objeto de estante '%(name)s' eliminado"
+
+msgid "Deleted shelfobject '%(name)s' from shelf '%(shelf)s'"
+msgstr "Objeto de estante '%(name)s' eliminado del estante '%(shelf)s'"
+
+msgid "Deleted shelfobject '%(name)s' with no quantity left"
+msgstr "Objeto de estante '%(name)s' eliminado sin cantidad restante"
+
+msgid "Deleted substance characteristics for '%(name)s'"
+msgstr "Características de sustancia eliminadas para '%(name)s'"
+
+msgid "Deleted %(type)s request '%(name)s'"
+msgstr "Solicitud de %(type)s '%(name)s' eliminada"
+
+msgid "Denied transfer request for '%(name)s'"
+msgstr "Solicitud de transferencia denegada para '%(name)s'"
+
+msgid "Rejected %(type)s request '%(name)s'"
+msgstr "Solicitud de %(type)s '%(name)s' rechazada"
+
+msgid "Moved shelfobject '%(name)s' to shelf '%(shelf)s'"
+msgstr "Objeto de estante '%(name)s' movido al estante '%(shelf)s'"
+
+msgid "Registered user '%(user)s' via QR code"
+msgstr "Usuario '%(user)s' registrado vía código QR"
+
+msgid "User '%(user)s' logged in via QR code"
+msgstr "Usuario '%(user)s' inició sesión vía código QR"
+
+msgid "Removed observation from procedure step"
+msgstr "Observación eliminada del paso de procedimiento"
+
+msgid "Removed required object '%(obj)s' from procedure step"
+msgstr "Objeto requerido '%(obj)s' eliminado del paso de procedimiento"
+
+msgid "Returned %(amount)s units to stock from reservation"
+msgstr "%(amount)s unidades devueltas al stock desde reserva"
+
+msgid "Toggled anonymous mode for IPER assessment"
+msgstr "Modo anónimo alternado para evaluación IPER"
+
+msgid "Transferred role '%(role)s' to organization '%(org)s'"
+msgstr "Rol '%(role)s' transferido a organización '%(org)s'"
+
+msgid "Transferred user '%(user)s' to organization '%(org)s'"
+msgstr "Usuario '%(user)s' transferido a organización '%(org)s'"
+
+msgid "Updated box shelfobject '%(name)s'"
+msgstr "Objeto de estante en caja '%(name)s' actualizado"
+
+msgid "Updated calibration record for shelfobject '%(name)s'"
+msgstr "Registro de calibración actualizado para objeto de estante '%(name)s'"
+
+msgid "Updated guarantee record for shelfobject '%(name)s'"
+msgstr "Registro de garantía actualizado para objeto de estante '%(name)s'"
+
+msgid "Updated log entry for shelfobject '%(name)s'"
+msgstr "Entrada de log actualizada para objeto de estante '%(name)s'"
+
+msgid "Updated maintenance record for shelfobject '%(name)s'"
+msgstr "Registro de mantenimiento actualizado para objeto de estante '%(name)s'"
+
+msgid "Updated training record for shelfobject '%(name)s'"
+msgstr "Registro de capacitación actualizado para objeto de estante '%(name)s'"
+
+msgid "Updated catalog entry '%(desc)s'"
+msgstr "Entrada de catálogo '%(desc)s' actualizada"
+
+msgid "Updated custom form '%(name)s' schema"
+msgstr "Esquema de formulario personalizado '%(name)s' actualizado"
+
+msgid "Updated name of custom form to '%(name)s'"
+msgstr "Nombre de formulario personalizado actualizado a '%(name)s'"
+
+msgid "Updated schema of custom form '%(name)s'"
+msgstr "Esquema de formulario personalizado '%(name)s' actualizado"
+
+msgid "Updated equipment characteristics for shelfobject '%(name)s'"
+msgstr "Características de equipo actualizadas para objeto de estante '%(name)s'"
+
+msgid "Updated equipment '%(name)s'"
+msgstr "Equipo '%(name)s' actualizado"
+
+msgid "Updated equipment shelfobject '%(name)s'"
+msgstr "Equipo de estante '%(name)s' actualizado"
+
+msgid "Updated equipment type '%(name)s'"
+msgstr "Tipo de equipo '%(name)s' actualizado"
+
+msgid "Updated furniture '%(name)s'"
+msgstr "Mobiliario '%(name)s' actualizado"
+
+msgid "Updated incident report '%(desc)s'"
+msgstr "Reporte de incidente '%(desc)s' actualizado"
+
+msgid "Updated IPER assessment for laboratory '%(lab)s'"
+msgstr "Evaluación IPER actualizada para laboratorio '%(lab)s'"
+
+msgid "Updated laboratory '%(name)s'"
+msgstr "Laboratorio '%(name)s' actualizado"
+
+msgid "Updated laboratory room '%(name)s'"
+msgstr "Sala de laboratorio '%(name)s' actualizada"
+
+msgid "Updated object feature '%(name)s'"
+msgstr "Característica de objeto '%(name)s' actualizada"
+
+msgid "Updated object '%(name)s'"
+msgstr "Objeto '%(name)s' actualizado"
+
+msgid "Updated procedure '%(name)s'"
+msgstr "Procedimiento '%(name)s' actualizado"
+
+msgid "Updated procedure step '%(title)s'"
+msgstr "Paso de procedimiento '%(title)s' actualizado"
+
+msgid "Updated process condition for shelfobject '%(name)s'"
+msgstr "Condición de proceso actualizada para objeto de estante '%(name)s'"
+
+msgid "Updated organization '%(name)s'"
+msgstr "Organización '%(name)s' actualizada"
+
+msgid "Updated profile permission for user '%(user)s'"
+msgstr "Permiso de perfil actualizado para usuario '%(user)s'"
+
+msgid "Updated provider '%(name)s'"
+msgstr "Proveedor '%(name)s' actualizado"
+
+msgid "Updated reactive '%(name)s'"
+msgstr "Reactivo '%(name)s' actualizado"
+
+msgid "Updated reactive shelfobject '%(name)s'"
+msgstr "Reactivo de estante '%(name)s' actualizado"
+
+msgid "Updated recipient size '%(name)s'"
+msgstr "Tamaño de recipiente '%(name)s' actualizado"
+
+msgid "Updated shelf '%(name)s'"
+msgstr "Estante '%(name)s' actualizado"
+
+msgid "Updated shelfobject '%(name)s'"
+msgstr "Objeto de estante '%(name)s' actualizado"
+
+msgid "Updated shelfobject '%(name)s' quantity"
+msgstr "Cantidad de objeto de estante '%(name)s' actualizada"
+
+msgid "Updated substance '%(name)s'"
+msgstr "Sustancia '%(name)s' actualizada"
+
+msgid "Updated %(type)s request '%(name)s'"
+msgstr "Solicitud de %(type)s '%(name)s' actualizada"
+
+msgid "Updated risk zone '%(name)s'"
+msgstr "Zona de riesgo '%(name)s' actualizada"
+
+msgid "Added observation to substance '%(name)s'"
+msgstr "Observación agregada a sustancia '%(name)s'"
+
+msgid "Added the user %(user)r in the organization %(org)r"
+msgstr "Usuario %(user)r agregado a la organización %(org)r"
+
+msgid "Approved substance '%(name)s'"
+msgstr "Sustancia '%(name)s' aprobada"
+
+msgid "Closed reservation"
+msgstr "Reserva cerrada"
+
+msgid "Copied the roles %(rols)r to the organization %(org)r"
+msgstr "Roles %(rols)r copiados a la organización %(org)r"
+
+msgid "Created equipment '%(name)s'"
+msgstr "Equipo '%(name)s' creado"
+
+msgid "Created new substance"
+msgstr "Nueva sustancia creada"
+
+msgid "Created pending task '%(name)s'"
+msgstr "Tarea pendiente '%(name)s' creada"
+
+msgid "Created review substance"
+msgstr "Sustancia de revisión creada"
+
+msgid "Created substance characteristics"
+msgstr "Características de sustancia creadas"
+
+msgid "Created the role %(rol)r in %(org)r"
+msgstr "Rol %(rol)r creado en %(org)r"
+
+msgid "Deactivated user '%(user)s'"
+msgstr "Usuario '%(user)s' desactivado"
+
+msgid "Deleted substance '%(name)s'"
+msgstr "Sustancia '%(name)s' eliminada"
+
+msgid "Deleted substance observation"
+msgstr "Observación de sustancia eliminada"
+
+msgid "Deleted the role %(rol)r"
+msgstr "Rol %(rol)r eliminado"
+
+msgid "Removed laboratory permission from user '%(user)s'"
+msgstr "Permiso de laboratorio removido del usuario '%(user)s'"
+
+msgid "Removed organization permission from user '%(user)s'"
+msgstr "Permiso de organización removido del usuario '%(user)s'"
+
+msgid "Removed profile permission from user '%(user)s'"
+msgstr "Permiso de perfil removido del usuario '%(user)s'"
+
+msgid "Removed user '%(user)s' from organization '%(org)s'"
+msgstr "Usuario '%(user)s' removido de la organización '%(org)s'"
+
+msgid "Updated builder information for substance '%(name)s'"
+msgstr "Información del constructor actualizada para sustancia '%(name)s'"
+
+msgid "Updated characteristics of substance '%(name)s'"
+msgstr "Características de sustancia '%(name)s' actualizadas"
+
+msgid "Updated danger indication '%(code)s'"
+msgstr "Indicación de peligro '%(code)s' actualizada"
+
+msgid "Updated personal SGA template editor for substance '%(name)s'"
+msgstr "Editor de plantilla SGA personal actualizado para sustancia '%(name)s'"
+
+msgid "Updated personal SGA template for substance '%(name)s'"
+msgstr "Plantilla SGA personal actualizada para sustancia '%(name)s'"
+
+msgid "Updated prudence advice '%(code)s'"
+msgstr "Consejo de prudencia '%(code)s' actualizado"
+
+msgid "Updated reservation status to '%(status)s'"
+msgstr "Estado de reserva actualizado a '%(status)s'"
+
+msgid "Updated SGA complement for substance '%(name)s'"
+msgstr "Complemento SGA actualizado para sustancia '%(name)s'"
+
+msgid "Updated substance observation description"
+msgstr "Descripción de observación de sustancia actualizada"
+
+msgid "Updated warning word '%(name)s'"
+msgstr "Palabra de advertencia '%(name)s' actualizada"
