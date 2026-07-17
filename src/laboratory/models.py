@@ -28,7 +28,7 @@ import calendar
 
 
 class BaseCreationObj(models.Model):
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     creation_date = models.DateTimeField(auto_now_add=True)
     last_update = models.DateTimeField(auto_now=True)
 
@@ -1390,7 +1390,11 @@ class UserOrganization(models.Model):
     )
 
     def __str__(self):
-        return "%s" % self.user
+        return "%s · %s (%s)" % (
+            self.user,
+            self.organization,
+            self.get_type_in_organization_display(),
+        )
 
     class Meta:
         ordering = ("pk",)
@@ -1545,6 +1549,7 @@ class ObjectLogChange(models.Model):
         key_value="units",
     )
     subject = models.TextField(default="", blank=True, null=True)
+    deleted_user_info = models.CharField(max_length=200, blank=True, null=True)
     provider = models.ForeignKey(
         Provider,
         blank=True,
@@ -1870,7 +1875,7 @@ class RegisterUserQR(models.Model):
     creation_date = models.DateTimeField(auto_now_add=True)
     last_update = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(
-        User, on_delete=models.DO_NOTHING, verbose_name=_("Created by")
+        User, on_delete=models.SET_NULL, null=True, verbose_name=_("Created by")
     )
     activate_user = models.BooleanField(default=True, verbose_name=_("Activate user"))
     url = models.TextField(verbose_name=_("Url"))

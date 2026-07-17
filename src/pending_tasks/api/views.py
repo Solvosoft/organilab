@@ -3,6 +3,7 @@ import logging
 from django.contrib.admin.models import ADDITION
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
+from django.utils.translation import gettext_lazy as _
 
 from django_filters.rest_framework import DjangoFilterBackend
 from djgentelella.permission_management import AllPermissionByAction
@@ -99,7 +100,8 @@ class PendingTaskViewSet(
             self.request.user,
             instance,
             ADDITION,
-            changed_data=["name", "description", "status"],
+            changed_data=list(serializer.validated_data.keys()),
+            change_message=_("Created pending task '%(name)s'") % {"name": instance.name},
         )
         notify_task_created(instance, self.request.user)
 

@@ -310,6 +310,27 @@ def organilab_logentry(
             )
 
 
+def get_changed_fields(old_values, instance):
+    """
+    Compara los valores anteriores con los actuales del objeto
+    y retorna la lista de campos que realmente cambiaron.
+
+    :param old_values: dict con {field_name: old_value} capturado ANTES de save()
+    :param instance: objeto actualizado DESPUÉS de save()
+    :return: list de nombres de campos modificados
+    """
+    changed = []
+    for field, old_value in old_values.items():
+        new_value = getattr(instance, field, None)
+        if hasattr(old_value, 'pk'):
+            old_value = old_value.pk
+        if hasattr(new_value, 'pk'):
+            new_value = new_value.pk
+        if old_value != new_value:
+            changed.append(field)
+    return changed
+
+
 def get_pk_org_ancestors(org_pk, descendants=True):
     organization = OrganizationStructure.objects.filter(pk=org_pk)
     pks = []

@@ -152,6 +152,10 @@ class ZoneCreate(CreateView):
             self.request.user,
             self.object,
             ADDITION,
+            "riskzone",
+            changed_data=["name", "laboratories"],
+            change_message=_("Created risk zone '%(name)s'")
+            % {"name": self.object.name},
             relobj=list(self.object.laboratories.all()),
         )
         return dev
@@ -185,6 +189,10 @@ class ZoneEdit(UpdateView):
             self.request.user,
             self.object,
             CHANGE,
+            "riskzone",
+            changed_data=form.changed_data,
+            change_message=_("Updated risk zone '%(name)s'")
+            % {"name": self.object.name},
             relobj=list(self.object.laboratories.all()),
         )
         return dev
@@ -211,6 +219,10 @@ class ZoneDelete(DeleteView):
             self.request.user,
             self.object,
             DELETION,
+            "riskzone",
+            changed_data=["name"],
+            change_message=_("Deleted risk zone '%(name)s'")
+            % {"name": self.object.name},
             relobj=list(self.object.laboratories.all()),
         )
         self.object.delete()

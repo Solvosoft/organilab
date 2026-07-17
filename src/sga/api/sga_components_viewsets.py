@@ -113,6 +113,8 @@ class WarningWordAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
                 "warning word",
                 relobj=[self.organization],
                 changed_data=form.changed_data,
+                change_message=_("Created warning word '%(name)s'")
+                % {"name": warning_word.name},
             )
 
             return JsonResponse(
@@ -154,6 +156,8 @@ class WarningWordAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
                     "warning word",
                     relobj=[self.organization],
                     changed_data=form.changed_data,
+                    change_message=_("Updated warning word '%(name)s'")
+                    % {"name": warning_word.name},
                 )
 
                 return JsonResponse(
@@ -195,6 +199,9 @@ class WarningWordAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
                 DELETION,
                 "warning word",
                 relobj=[self.organization],
+                changed_data=["name", "weigth"],
+                change_message=_("Deleted warning word '%(name)s'")
+                % {"name": warning_word.name},
             )
             warning_word.delete()
 
@@ -287,6 +294,8 @@ class DangerIndicationAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
                 "danger indication",
                 relobj=[self.organization],
                 changed_data=form.changed_data,
+                change_message=_("Created danger indication '%(code)s'")
+                % {"code": danger_indication.code},
             )
 
             return JsonResponse(
@@ -325,6 +334,8 @@ class DangerIndicationAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
                     "danger indication",
                     relobj=[self.organization],
                     changed_data=form.changed_data,
+                    change_message=_("Updated danger indication '%(code)s'")
+                    % {"code": danger_indication.code},
                 )
 
                 return JsonResponse(
@@ -345,6 +356,9 @@ class DangerIndicationAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
                 DELETION,
                 "danger indication",
                 relobj=[self.organization],
+                changed_data=["code", "description", "warning_words"],
+                change_message=_("Deleted danger indication '%(code)s'")
+                % {"code": danger_indication.code},
             )
             danger_indication.delete()
 
@@ -442,6 +456,8 @@ class PrudenceAdviceAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
                 "prudence advice",
                 relobj=[self.organization],
                 changed_data=form.changed_data,
+                change_message=_("Created prudence advice '%(code)s'")
+                % {"code": prudence_advice.code},
             )
 
             return JsonResponse(
@@ -481,6 +497,8 @@ class PrudenceAdviceAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
                     "prudence advice",
                     relobj=[self.organization],
                     changed_data=form.changed_data,
+                    change_message=_("Updated prudence advice '%(code)s'")
+                    % {"code": prudence_advice.code},
                 )
 
                 return JsonResponse(
@@ -501,6 +519,9 @@ class PrudenceAdviceAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
                 DELETION,
                 "prudence advice",
                 relobj=[self.organization],
+                changed_data=["code", "name", "prudence_advice_help"],
+                change_message=_("Deleted prudence advice '%(code)s'")
+                % {"code": prudence_advice.code},
             )
             prudence_advice.delete()
 

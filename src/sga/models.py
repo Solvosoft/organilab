@@ -279,7 +279,7 @@ class BuilderInformation(AbstractOrganizationRef):
     user = models.ForeignKey(
         User,
         verbose_name=_("User"),
-        on_delete=models.DO_NOTHING,
+        on_delete=models.SET_NULL,
         null=True,
         related_name="user_bi",
     )
@@ -825,7 +825,7 @@ class SubstanceObservation(models.Model):
     substance = models.ForeignKey("sga.Substance", on_delete=models.CASCADE)
     description = models.TextField(verbose_name=_("Description"))
     created_by = models.ForeignKey(
-        User, on_delete=models.DO_NOTHING, null=True, verbose_name=_("Creator")
+        User, on_delete=models.SET_NULL, null=True, verbose_name=_("Creator")
     )
     create_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Date"))
 

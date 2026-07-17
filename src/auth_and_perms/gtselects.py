@@ -173,7 +173,7 @@ class LabUserS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
     def get_queryset(self):
         if self.organization:
             orgByuser = OrganizationStructure.os_manager.organization_tree(
-                self.organization.pk
+                self.organization.root.pk
             )
             users = list(
                 OrganizationStructure.objects.filter(pk__in=orgByuser).values_list(
@@ -184,12 +184,15 @@ class LabUserS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
                 Q(userorganization__organization__in=orgByuser) | Q(pk__in=users)
             )
             if self.contenttypeobj:
-                profiles = get_profile_by_organization(self.organization.pk)
-                profiles = profiles.filter(
-                    profilepermission__content_type__app_label=self.contenttypeobj._meta.app_label,
-                    profilepermission__content_type__model=self.contenttypeobj._meta.model_name,
-                    profilepermission__object_id=self.contenttypeobj.pk,
-                )
+                profiles = get_profile_by_organization(self.organization.root.pk)
+                filters = {
+                    "profilepermission__content_type__app_label": self.contenttypeobj._meta.app_label,
+                    "profilepermission__content_type__model": self.contenttypeobj._meta.model_name,
+                    "profilepermission__object_id": self.contenttypeobj.pk,
+                }
+                if self.contenttypeobj._meta.model_name == "laboratory":
+                    filters["profilepermission__organization"] = self.organization
+                profiles = profiles.filter(**filters).distinct()
                 queryset = queryset.exclude(profile__in=profiles)
                 return queryset.distinct().order_by("first_name")
             return queryset.none()
@@ -236,21 +239,8 @@ class UserS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
         return super().list(request, *args, **kwargs)
 
     def get_queryset(self):
-        orgs = []
-        orgByuser = OrganizationStructure.os_manager.filter_user_orgs(
-            user=self.request.user, org=self.organization
-        )
-        for org in orgByuser:
-            orgs += list(org.descendants())
-            orgs += list(org.ancestors())
-            orgs.append(org)
-
-        users = []
-        for org in set(orgs):
-            users += list(
-                get_users_from_organization(org.pk, org=org)
-            )
-        return self.model.objects.filter(pk__in=set(users)).order_by("pk")
+        users = get_users_from_organization(self.organization.root.pk)
+        return self.model.objects.filter(pk__in=users).order_by("pk")
 
     def filter_queryset(self, queryset):
         queryset = super().filter_queryset(queryset)

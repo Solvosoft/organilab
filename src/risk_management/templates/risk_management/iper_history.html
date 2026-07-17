@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans 'IPER history' %}{% endblock %}
+{% block content %}
+	<input type="hidden" value="{{ org_pk }}" id="org">
+	<div class="row">
+		<div class="page-header col-xs-13" align="center">
+			<h3 class="heading-1"><span>{% trans 'IPER — Hazard history' %}</span></h3>
+		</div>
+	</div>
+
+	<div class="row mb-4">
+		<div class="col-12">
+			{% for item in risk_summary %}
+				<span class="badge bg-{{ item.color }} fs-6 me-1">{{ item.level }}: {{ item.count }}</span>
+			{% endfor %}
+		</div>
+	</div>
+
+	<div class="row mb-2">
+		<div class="col-md-9">
+			<form method="get" action="" class="row g-2 align-items-end">
+				{{ filter_form }}
+				<div class="col-auto">
+					<button type="submit" class="btn btn-sm btn-outline-primary"><i class="fa fa-filter"></i> {% trans 'Filter' %}</button>
+					<a href="?" class="btn btn-sm btn-outline-secondary ms-1"><i class="fa fa-eraser"></i> {% trans 'Clear' %}</a>
+				</div>
+			</form>
+		</div>
+		<div class="col-md-3 text-end">
+			<a class="btn btn-sm btn-outline-success" href="?{{ pgparams }}&format=xlsx"><i class="fa fa-file-excel-o"></i> {% trans 'Excel' %}</a>
+			<a class="btn btn-sm btn-outline-danger" href="?{{ pgparams }}&format=pdf"><i class="fa fa-file-pdf-o"></i> {% trans 'PDF' %}</a>
+		</div>
+	</div>
+
+	<table class="table table-sm table-hover">
+		<thead><tr>
+			<th>{% trans 'Date' %}</th>
+			<th>{% trans 'Laboratory' %}</th>
+			<th>{% trans 'Classification' %}</th>
+			<th>{% trans 'Hazard' %}</th>
+			<th>{% trans 'Location' %}</th>
+			<th>{% trans 'P' %}</th>
+			<th>{% trans 'C' %}</th>
+			<th>{% trans 'Risk' %}</th>
+			<th>{% trans 'Controls' %}</th>
+		</tr></thead>
+		<tbody>
+			{% for hazard in object_list %}
+				<tr>
+					<td>{{ hazard.assessment.assessment_date }}</td>
+					<td>
+						{% if hazard.assessment.is_anonymous %}
+							<span class="text-muted fst-italic">{% trans 'Anonymous' %}</span>
+						{% else %}
+							{{ hazard.assessment.laboratory.name }}
+						{% endif %}
+					</td>
+					<td>{{ hazard.category }}</td>
+					<td {% if hazard.description|length > 200 %}data-bs-toggle="tooltip" data-bs-placement="top" title="{{ hazard.description }}"{% endif %}>
+						{{ hazard.description|truncatechars:200 }}
+					</td>
+					<td>{{ hazard.location }}</td>
+					<td>{{ hazard.probability }}</td>
+					<td>{{ hazard.consequence }}</td>
+					<td>{{ hazard.risk_level }}</td>
+					<td {% if hazard.controls|length > 200 %}data-bs-toggle="tooltip" data-bs-placement="top" title="{{ hazard.controls }}"{% endif %}>
+						{{ hazard.controls|truncatechars:200 }}
+					</td>
+				</tr>
+			{% empty %}
+				<tr><td colspan="9" class="text-muted text-center">{% trans 'No records.' %}</td></tr>
+			{% endfor %}
+		</tbody>
+	</table>
+{% endblock %}
+{% block js %}
+	{{ filter_form.media }}
+	<script>
+		document.addEventListener("DOMContentLoaded", function () {
+			document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function (el) {
+				new bootstrap.Tooltip(el, {html: false});
+			});
+		});
+	</script>
+{% endblock %}

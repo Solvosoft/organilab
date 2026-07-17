@@ -679,6 +679,88 @@ URLNAME_PERMISSIONS = {
             "permission": "risk_management.view_buildings",
         },
     ],
+    "iper_list": [
+        {
+            "name": "View IPER assessment",
+            "category": "IPER",
+            "permission": "risk_management.view_iperassessment",
+        },
+        {
+            "name": "Add IPER assessment",
+            "category": "IPER",
+            "permission": "risk_management.add_iperassessment",
+        },
+        {
+            "name": "Change IPER assessment",
+            "category": "IPER",
+            "permission": "risk_management.change_iperassessment",
+        },
+        {
+            "name": "Delete IPER assessment",
+            "category": "IPER",
+            "permission": "risk_management.delete_iperassessment",
+        },
+        {
+            "name": "View all IPER assessments",
+            "category": "IPER",
+            "permission": "risk_management.view_all_iper",
+        },
+        {
+            "name": "View IPER dashboard",
+            "category": "IPER",
+            "permission": "risk_management.view_iper_dashboard",
+        },
+        {
+            "name": "Request IPER fill",
+            "category": "IPER",
+            "permission": "risk_management.request_iper",
+        },
+        {
+            "name": "Add IPER observation",
+            "category": "IPER",
+            "permission": "risk_management.add_iperobservation",
+        },
+        {
+            "name": "Manage IPER catalog",
+            "category": "IPER",
+            "permission": "risk_management.manage_iper_catalog",
+        },
+        {
+            "name": "Add IPER hazard",
+            "category": "IPER",
+            "permission": "risk_management.add_iperhazard",
+        },
+        {
+            "name": "Change IPER hazard",
+            "category": "IPER",
+            "permission": "risk_management.change_iperhazard",
+        },
+        {
+            "name": "Delete IPER hazard",
+            "category": "IPER",
+            "permission": "risk_management.delete_iperhazard",
+        },
+        {
+            "name": "View IPER hazard",
+            "category": "IPER",
+            "permission": "risk_management.view_iperhazard",
+        },
+        {
+            "name": "Change IPER observation",
+            "category": "IPER",
+            "permission": "risk_management.change_iperobservation",
+        },
+        {
+            "name": "Delete IPER observation",
+            "category": "IPER",
+            "permission": "risk_management.delete_iperobservation",
+        },
+        {
+            "name": "View IPER observation",
+            "category": "IPER",
+            "permission": "risk_management.view_iperobservation",
+        },
+    ],
     "riskzone_create": [
         {
             "name": "Add Risk Zone",

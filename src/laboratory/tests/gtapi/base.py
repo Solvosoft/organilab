@@ -116,7 +116,7 @@ class TestCaseBase(TestCase):
             )
             self.assertEqual(check_user_access, user_access)
 
-        if response.content:
+        if response.content and "application/json" in response.get("Content-Type", ""):
             response_data = json.loads(response.content)
             self.assertEqual("results" not in response_data, results_data)
 
@@ -142,7 +142,9 @@ class TestCaseBase(TestCase):
         if user and client:
             self.user = user
             self.client = client
-        response = self.client.get(self.url, data=self.data)
+        response = self.client.get(
+            self.url, data=self.data, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+        )
         self.check_tests(response, status_code, org_can_manage, user_access)
 
 
@@ -212,7 +214,9 @@ class ShelfViewTestOrgCanManageLab(ShelfViewTest):
         if user and client:
             self.user = user
             self.client = client
-        response = self.client.get(self.url, data=self.data)
+        response = self.client.get(
+            self.url, data=self.data, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+        )
         results = self.check_tests(
             response, status_code, True, user_access, results_data
         )
@@ -256,7 +260,9 @@ class FurnitureViewTestOrgCanManageLab(FurnitureViewTest):
         if user and client:
             self.user = user
             self.client = client
-        response = self.client.get(self.url, data=self.data)
+        response = self.client.get(
+            self.url, data=self.data, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+        )
         results = self.check_tests(
             response, status_code, True, user_access, results_data
         )
@@ -299,7 +305,9 @@ class LabRoomViewTestOrgCanManageLab(LabRoomViewTest):
         if user and client:
             self.user = user
             self.client = client
-        response = self.client.get(self.url, data=self.data)
+        response = self.client.get(
+            self.url, data=self.data, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+        )
         results = self.check_tests(
             response, status_code, True, user_access, results_data
         )
@@ -338,7 +346,9 @@ class ShelfObjectViewTest(TestCaseBase):
         if user and client:
             self.user = user
             self.client = client
-        response = self.client.get(self.url, data=self.data)
+        response = self.client.get(
+            self.url, data=self.data, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+        )
         self.check_tests(response, status_code, org_can_manage, user_access)
         if "laboratory" in self.data and "shelf" in self.data:
             self.assertEqual(
@@ -369,7 +379,9 @@ class ShelfObjectViewTestOrgCanManageLab(ShelfObjectViewTest):
         if user and client:
             self.user = user
             self.client = client
-        response = self.client.get(self.url, data=self.data)
+        response = self.client.get(
+            self.url, data=self.data, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+        )
         results = self.check_tests(
             response, status_code, True, user_access, results_data
         )

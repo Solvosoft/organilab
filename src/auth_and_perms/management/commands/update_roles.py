@@ -2,6 +2,7 @@ from django.contrib.auth.models import Permission
 from django.core.management import BaseCommand
 
 from auth_and_perms.models import Rol
+from laboratory.models import OrganizationStructure
 
 
 def add_permissions(rol, perms):
@@ -522,6 +523,16 @@ def update_asistente_laboratorio():
             "risk_management.add_zonetype",
             "djgentelella.can_manage_permissions",
             "auth_and_perms.delete_profilepermission",
+            "auth_and_perms.add_profile",
+            "auth_and_perms.add_profilepermission",
+            "auth_and_perms.change_profilepermission",
+            "auth_and_perms.view_profilepermission",
+            "auth_and_perms.add_rol",
+            "auth_and_perms.change_rol",
+            "laboratory.change_organizationstructure",
+            "laboratory.delete_organizationstructure",
+            "laboratory.add_organizationstructurerelations",
+            "laboratory.view_organizationstructurerelations",
         ],
     )
 
@@ -727,6 +738,7 @@ def update_tesista_modulo_desechos():
             "auth_and_perms.add_rol",
             "auth_and_perms.change_rol",
             "auth.add_user",
+            "auth.change_user",
             "blog.add_entry",
             "blog.change_entry",
             "blog.view_entry",
@@ -787,6 +799,8 @@ def update_solo_lectura():
     remove_permissions(
         rol,
         [
+            "laboratory.add_laboratory",
+            "laboratory.delete_laboratory",
             "laboratory.change_object",
             "laboratory.add_catalog",
             "laboratory.change_catalog",
@@ -858,6 +872,7 @@ def update_tecnico_laboratorio():
         rol,
         [
             "auth.add_user",
+            "auth.change_user",
             "auth_and_perms.add_profile",
             "auth_and_perms.add_profilepermission",
             "auth_and_perms.change_profilepermission",
@@ -1022,6 +1037,18 @@ def update_administrador_superior():
             "laboratory.change_labororgrequest",
             "laboratory.delete_labororgrequest",
             "laboratory.can_approve_labororgrequest",
+            "auth.add_user",
+            "auth.change_user",
+            "auth.view_user",
+            "blog.add_category",
+            "blog.add_entry",
+            "blog.change_entry",
+            "blog.delete_entry",
+            "blog.view_entry",
+            "djreservation.add_product",
+            "djreservation.change_product",
+            "djreservation.delete_product",
+            "djreservation.add_reservation",
         ],
     )
 
@@ -1104,6 +1131,196 @@ def update_administrativo_centro_trabajo():
     )
 
 
+IPER_FULL = [
+    "risk_management.view_iperassessment",
+    "risk_management.add_iperassessment",
+    "risk_management.change_iperassessment",
+    "risk_management.delete_iperassessment",
+    "risk_management.view_all_iper",
+    "risk_management.view_iper_dashboard",
+    "risk_management.request_iper",
+    "risk_management.manage_iper_catalog",
+    "risk_management.view_iperhazard",
+    "risk_management.add_iperhazard",
+    "risk_management.change_iperhazard",
+    "risk_management.delete_iperhazard",
+    "risk_management.add_iperobservation",
+    "risk_management.change_iperobservation",
+    "risk_management.delete_iperobservation",
+    "risk_management.view_iperobservation",
+]
+
+IPER_READONLY = [
+    "risk_management.view_iperassessment",
+    "risk_management.view_iper_dashboard",
+    "risk_management.view_iperhazard",
+    "risk_management.view_iperobservation",
+]
+
+
+def update_iper_roles():
+    # full_roles = [
+    #     "Administrador de Laboratorio",
+    #     "Administrativo de centro de trabajo",
+    #     "Administrativo superior",
+    # ]
+    # readonly_roles = [
+    #     "Solo Lectura",
+    #     "Lectura y agregado de sustancias",
+    #     "Regente",
+    #     "Asistente de laboratorio",
+    # ]
+    full_roles = ["Administrativo superior"]
+    readonly_roles = []
+    for name in full_roles:
+        rol = Rol.objects.filter(name=name).first()
+        if rol:
+            add_permissions(rol, IPER_FULL)
+        else:
+            print(f"WARNING: Rol '{name}' not found, skipping.")
+    for name in readonly_roles:
+        rol = Rol.objects.filter(name=name).first()
+        if rol:
+            add_permissions(rol, IPER_READONLY)
+        else:
+            print(f"WARNING: Rol '{name}' not found, skipping.")
+
+
+AUDITOR_IPER_PERMS = IPER_READONLY + [
+    "risk_management.view_all_iper",
+    "risk_management.add_iperobservation",
+]
+
+
+def create_auditor_iper():
+    rol = Rol.objects.filter(name="Auditor IPER").first()
+    if not rol:
+        rol = Rol.objects.create(
+            name="Auditor IPER",
+            description=(
+                "Rol de auditoria para el modulo IPER de la Universidad Nacional (UNA). "
+                "Permite consultar evaluaciones, peligros y observaciones IPER de todos "
+                "los laboratorios de la organizacion, y agregar observaciones de auditoria."
+            ),
+        )
+    add_permissions(rol, AUDITOR_IPER_PERMS)
+    remove_permissions(rol, ["risk_management.view_riskzone"])
+
+    org = OrganizationStructure.objects.filter(name="UNA").first()
+    if org:
+        org.rol.add(rol)
+    else:
+        print(
+            "WARNING: OrganizationStructure 'UNA' not found, skipping org association."
+        )
+
+
+def create_administrador_iper():
+    rol = Rol.objects.filter(name="Administrador IPER").first()
+    if not rol:
+        rol = Rol.objects.create(
+            name="Administrador IPER",
+            description=(
+                "Rol de administracion para el modulo IPER de la Universidad Nacional (UNA). "
+                "Permite crear, editar, eliminar y consultar evaluaciones, peligros y "
+                "observaciones IPER de todos los laboratorios de la organizacion, y "
+                "administrar el catalogo/matriz de riesgo IPER."
+            ),
+        )
+    add_permissions(rol, IPER_FULL)
+    remove_permissions(rol, ["risk_management.view_riskzone"])
+
+    org = OrganizationStructure.objects.filter(name="UNA").first()
+    if org:
+        org.rol.add(rol)
+    else:
+        print(
+            "WARNING: OrganizationStructure 'UNA' not found, skipping org association."
+        )
+
+
+ROL_DESCRIPTIONS = {
+    "Administrador de Laboratorio": (
+        "Gestiona de forma integral el laboratorio: inventario, académico, "
+        "riesgos y reservaciones. Acceso de solo consulta a SGA y MSDS. Máxima "
+        "autoridad operativa del laboratorio."
+    ),
+    "Profesor": (
+        "Crea y administra procedimientos académicos (plantillas, pasos, "
+        "observaciones, objetos requeridos) y consulta el laboratorio. Para "
+        "docentes que diseñan guías de práctica."
+    ),
+    "Solo Lectura": (
+        "Consulta amplia de laboratorio, inventario, académico, SGA, riesgo y "
+        "MSDS, sin permisos de crear ni eliminar. Para auditoría y supervisión."
+    ),
+    "Lectura y agregado de sustancias": (
+        "Consulta general más permisos para registrar y editar objetos de "
+        "inventario y su trazabilidad. Para personal técnico que ingresa "
+        "reactivos al sistema."
+    ),
+    "Técnico de Laboratorio": (
+        "Opera el día a día del laboratorio: inventario, estantes, académico y "
+        "reservaciones. Tiene acceso puntual a algunas funciones de SGA. Rol "
+        "operativo de planta."
+    ),
+    "Regente": (
+        "Solo lectura con cobertura total del sistema, incluye reportes de "
+        "regencia y precursores. Diseñado para el Regente Químico."
+    ),
+    "Estudiante": (
+        "Acceso básico: consulta el laboratorio y su perfil, agrega/retira "
+        "objetos de estantes y tiene permisos básicos de desechos. Para "
+        "estudiantes en prácticas."
+    ),
+    "Asistente de laboratorio": (
+        "Gestiona procedimientos, inventario, informes y reservaciones, y "
+        "puede crear estructura organizacional nueva. Consulta incidentes y "
+        "riesgo."
+    ),
+    "Administrativo superior": (
+        "Administra todo el sistema: usuarios y autenticación avanzada, "
+        "laboratorio e inventario completos, académico, SGA, riesgos (incluye "
+        "IPER), reportes, reservaciones y formularios personalizados. Máxima "
+        "autoridad administrativa."
+    ),
+    "Depositante de residuos": (
+        "Registra y gestiona desechos, crea objetos en estantes e informes "
+        "básicos. Consulta sustancias (sin editarlas). Para personal que "
+        "deposita residuos."
+    ),
+    "Tesista modulo desechos": (
+        "Enfocado en gestión de desechos y flujo del laboratorio. No gestiona "
+        "usuarios, roles ni estructura organizacional. Para "
+        "tesistas/investigadores del módulo de desechos."
+    ),
+    "Creador de laboratorio": (
+        "Crea y configura la estructura física: laboratorios, salas, muebles, "
+        "estantes, objetos y características de sustancias. Sin reportes, SGA "
+        "ni reservaciones."
+    ),
+    "SGA": (
+        "Acceso completo y exclusivo al módulo SGA: sustancias, hojas de "
+        "seguridad, pictogramas y etiquetas."
+    ),
+    "Administrativo de centro de trabajo": (
+        "Administra laboratorios, inventario, académico, riesgo y "
+        "reservaciones a nivel de centro de trabajo. Sin gestión de "
+        "usuarios/roles. Acceso puntual a SGA."
+    ),
+}
+
+
+def update_descriptions():
+    for name, description in ROL_DESCRIPTIONS.items():
+        rol = Rol.objects.filter(name=name).first()
+        if not rol:
+            print(f"WARNING: Rol '{name}' not found, skipping description update.")
+            continue
+        rol.description = description
+        rol.save(update_fields=["description"])
+
+
 class Command(BaseCommand):
     help = "Update rol permissions by segment — idempotent, safe to re-run"
 
@@ -1122,3 +1339,7 @@ class Command(BaseCommand):
         update_tecnico_laboratorio()
         update_administrativo_centro_trabajo()
         update_administrador_superior()
+        update_iper_roles()
+        create_auditor_iper()
+        create_administrador_iper()
+        update_descriptions()

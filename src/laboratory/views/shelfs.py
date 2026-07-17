@@ -56,7 +56,15 @@ def delete_shelf(request, org_pk, lab_pk, pk, row, col):
 
         shelf.delete()
 
-        organilab_logentry(request.user, shelf, DELETION, relobj=lab_pk)
+        organilab_logentry(
+            request.user,
+            shelf,
+            DELETION,
+            "shelf",
+            changed_data=["name"],
+            change_message=_("Deleted shelf '%(name)s'") % {"name": shelf.name},
+            relobj=lab_pk,
+        )
         return JsonResponse({"result": "OK"}, status=status.HTTP_200_OK)
 
     row, col = int(row), int(col)
@@ -363,6 +371,7 @@ class ShelfCreate(AJAXMixin, CreateView):
             ADDITION,
             "shelf",
             changed_data=form.changed_data,
+            change_message=_("Created shelf '%(name)s'") % {"name": self.object.name},
             relobj=self.lab,
         )
 
@@ -451,7 +460,9 @@ class ShelfEdit(AJAXMixin, UpdateView):
             self.request.user,
             self.object,
             CHANGE,
+            "shelf",
             changed_data=form.changed_data,
+            change_message=_("Updated shelf '%(name)s'") % {"name": self.object.name},
             relobj=self.lab,
         )
 

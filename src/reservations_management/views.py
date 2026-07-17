@@ -110,7 +110,15 @@ class ManageReservationView(PermissionRequiredMixin, UpdateView):
         else:
             reservation.save()
 
-        organilab_logentry(self.request.user, self.object, CHANGE, relobj=self.object)
+        organilab_logentry(
+            self.request.user,
+            self.object,
+            CHANGE,
+            changed_data=["status"],
+            change_message=_("Updated reservation status to '%(status)s'")
+            % {"status": self.object.get_status_display()},
+            relobj=self.object,
+        )
         return redirect(self.get_success_url())
 
 
@@ -268,7 +276,14 @@ class CloseReservationView(PermissionRequiredMixin, View):
         reservation = get_object_or_404(Reservations, pk=kwargs["pk"])
         reservation.status = CLOSED
         reservation.save(update_fields=["status"])
-        organilab_logentry(request.user, reservation, CHANGE, relobj=reservation)
+        organilab_logentry(
+            request.user,
+            reservation,
+            CHANGE,
+            changed_data=["status"],
+            change_message=_("Closed reservation"),
+            relobj=reservation,
+        )
         return redirect(
             reverse(
                 "reservations_management:reservations_list",

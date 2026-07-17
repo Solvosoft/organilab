@@ -116,7 +116,14 @@ class ProfilePermission(models.Model):
     )
 
     def __str__(self):
-        return "%s" % (self.profile,)
+        roles = ", ".join(self.rol.values_list("name", flat=True)) if self.pk else ""
+        if self.content_object is not None:
+            target = self.content_object
+        elif self.content_type_id:
+            target = "%s #%s (%s)" % (self.content_type, self.object_id, _("not found"))
+        else:
+            target = _("no target")
+        return "%s · %s · %s" % (self.profile, target, roles or _("no role"))
 
     class Meta:
         verbose_name = _("Profile Rol")

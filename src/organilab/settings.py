@@ -266,6 +266,10 @@ EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", None)
 SERVER_EMAIL = os.getenv("SERVER_EMAIL", "sitio@organilab.org")
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
+# Username to reassign audit trail (LogEntry/ObjectLogChange) to when a User is deleted.
+# If unset or the user doesn't exist, deletion proceeds without reassignment (history is lost).
+DELETED_USER_SENTINEL_USERNAME = os.getenv("DELETED_USER_SENTINEL_USERNAME", "solvoadmin")
+
 # Celery settings
 BROKER_URL = os.getenv("BROKER_URL", "amqp://guest:guest@localhost:5672/organilabvhost")
 CELERY_TIMEZONE = TIME_ZONE
@@ -325,6 +329,10 @@ CELERYBEAT_SCHEDULE = {
     "remove_relation_organization_laboratory": {
         "task": "laboratory.tasks.remove_relation_organization_laboratory",
         "schedule": crontab(minute=0, hour=6),
+    },
+    "send_iper_update_reminders": {
+        "task": "risk_management.tasks.send_iper_update_reminders",
+        "schedule": crontab(minute=0, hour=8),
     },
 }
 

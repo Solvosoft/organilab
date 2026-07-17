@@ -25,7 +25,7 @@ class PendingTaskAdmin(admin.ModelAdmin):
 
 class PendingTaskManagerAdmin(admin.ModelAdmin):
     list_display = ["id", "task", "content_type", "object_id"]
-    list_filter = ["task", "content_type", "object_id"]
+    list_filter = ["task", ("content_type", admin.RelatedOnlyFieldListFilter), "object_id"]
     search_fields = ["task", "content_type", "object_id"]
 
 

@@ -66,12 +66,15 @@ def resume_queryset(queryset):
     i = 0
     for obj in objectchange_list:
         for ob in obj["values"]:
-            try:
-                user = ob.user.get_full_name()
-                if not user:
-                    user = ob.user.username
-            except Exception as e:
-                user = ""
+            if ob.deleted_user_info:
+                user = ob.deleted_user_info
+            else:
+                try:
+                    user = ob.user.get_full_name()
+                    if not user:
+                        user = ob.user.username
+                except Exception as e:
+                    user = ""
 
             object_list = ResultQueryElement(
                 {

@@ -33,7 +33,8 @@ def create_pending_task(
         created_by,
         pending_task,
         ADDITION,
-        changed_data=["name", "description", "status", "profile", "link"],
+        changed_data=["name", "description", "status", "profile", "link", "rols"],
+        change_message=_("Created pending task '%(name)s'") % {"name": pending_task.name},
     )
 
     if notify:

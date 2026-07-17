@@ -248,16 +248,22 @@ class ShelfObjectViewTest11(ShelfObjectViewTest, OrgDoesNotExists, LabDoesNotExi
     """
 
     def test_get_available_container_by_lab_and_shelf_case1(self):
-        self.get_available_container_by_lab_and_shelf()
+        self.get_available_container_by_lab_and_shelf(status_code=404)
 
     def test_get_available_container_by_lab_and_shelf_case2(self):
-        self.get_available_container_by_lab_and_shelf(self.user2, self.client2)
+        self.get_available_container_by_lab_and_shelf(
+            self.user2, self.client2, status_code=404
+        )
 
     def test_get_available_container_by_lab_and_shelf_case3(self):
-        self.get_available_container_by_lab_and_shelf(self.user3, self.client3)
+        self.get_available_container_by_lab_and_shelf(
+            self.user3, self.client3, status_code=404
+        )
 
     def test_get_available_container_by_lab_and_shelf_case4(self):
-        self.get_available_container_by_lab_and_shelf(self.user4, self.client4)
+        self.get_available_container_by_lab_and_shelf(
+            self.user4, self.client4, status_code=404
+        )
 
 
 class ShelfObjectViewTest12(ShelfObjectViewTest, LabDoesNotExists):
@@ -284,19 +290,19 @@ class ShelfObjectViewTest13(ShelfObjectViewTest, OrgDoesNotExists):
     """
 
     def test_get_available_container_by_lab_and_shelf_case1(self):
-        self.get_available_container_by_lab_and_shelf(same_lab=True)
+        self.get_available_container_by_lab_and_shelf(same_lab=True, status_code=404)
 
     def test_get_available_container_by_lab_and_shelf_case2(self):
         self.get_available_container_by_lab_and_shelf(
-            self.user2, self.client2, same_lab=True,
+            self.user2, self.client2, same_lab=True, status_code=404,
         )
 
     def test_get_available_container_by_lab_and_shelf_case3(self):
         self.get_available_container_by_lab_and_shelf(
-            self.user3, self.client3, same_lab=True
+            self.user3, self.client3, same_lab=True, status_code=404
         )
 
     def test_get_available_container_by_lab_and_shelf_case4(self):
         self.get_available_container_by_lab_and_shelf(
-            self.user4, self.client4, same_lab=True
+            self.user4, self.client4, same_lab=True, status_code=404
         )
