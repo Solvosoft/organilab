@@ -431,7 +431,8 @@ class PrecursorReportValuesViewSet(AuthAllPermBaseObjectManagement):
             precusor_value,
             ADDITION,
             "precursorreportvalues",
-            changed_data=[],
+            changed_data=list(serializer.validated_data.keys()),
+            change_message=_("Created precursor report value"),
             relobj=precusor_pk,
         )
 
@@ -477,6 +478,7 @@ class PrecursorReportValuesViewSet(AuthAllPermBaseObjectManagement):
             CHANGE,
             "precursorreportvalues",
             changed_data=changed_fields,
+            change_message=_("Updated precursor report value"),
             relobj=precusor_pk,
         )
 
@@ -490,7 +492,8 @@ class PrecursorReportValuesViewSet(AuthAllPermBaseObjectManagement):
             instance,
             DELETION,
             "precursorreportvalues",
-            changed_data=[],
+            changed_data=["object", "quantity"],
+            change_message=_("Deleted precursor report value"),
             object_repr=precusor_value_repr,
             relobj=precusor_pk,
         )

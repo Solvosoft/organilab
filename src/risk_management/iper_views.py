@@ -162,7 +162,14 @@ class IPERAssessmentCreate(CreateView):
         assessment.save()
         self.object = assessment
         organilab_logentry(
-            self.request.user, assessment, ADDITION, relobj=[assessment.laboratory]
+            self.request.user,
+            assessment,
+            ADDITION,
+            "iperassessment",
+            changed_data=["laboratory", "assessment_date", "responsible"],
+            change_message=_("Created IPER assessment for laboratory '%(lab)s'")
+            % {"lab": assessment.laboratory.name},
+            relobj=[assessment.laboratory],
         )
         return redirect(self.get_success_url())
 
@@ -195,7 +202,14 @@ class IPERAssessmentUpdate(UpdateView):
     def form_valid(self, form):
         dev = super().form_valid(form)
         organilab_logentry(
-            self.request.user, self.object, CHANGE, relobj=[self.object.laboratory]
+            self.request.user,
+            self.object,
+            CHANGE,
+            "iperassessment",
+            changed_data=form.changed_data,
+            change_message=_("Updated IPER assessment for laboratory '%(lab)s'")
+            % {"lab": self.object.laboratory.name},
+            relobj=[self.object.laboratory],
         )
         return dev
 
@@ -219,7 +233,14 @@ class IPERAssessmentDelete(DeleteView):
 
     def form_valid(self, form):
         organilab_logentry(
-            self.request.user, self.object, DELETION, relobj=[self.object.laboratory]
+            self.request.user,
+            self.object,
+            DELETION,
+            "iperassessment",
+            changed_data=["laboratory", "assessment_date"],
+            change_message=_("Deleted IPER assessment for laboratory '%(lab)s'")
+            % {"lab": self.object.laboratory.name},
+            relobj=[self.object.laboratory],
         )
         self.object.delete()
         return redirect(self.get_success_url())
@@ -319,7 +340,16 @@ def iper_toggle_anonymous(request, org_pk, pk):
     assessment = get_object_or_404(IPERAssessment, pk=pk, organization__pk=org_pk)
     assessment.is_anonymous = not assessment.is_anonymous
     assessment.save(update_fields=["is_anonymous"])
-    organilab_logentry(request.user, assessment, CHANGE, relobj=[assessment.laboratory])
+    organilab_logentry(
+        request.user,
+        assessment,
+        CHANGE,
+        "iperassessment",
+        changed_data=["is_anonymous"],
+        change_message=_("Toggled anonymous mode for IPER assessment")
+        % {},
+        relobj=[assessment.laboratory],
+    )
     return redirect(
         reverse("riskmanagement:iper_detail", kwargs={"org_pk": org_pk, "pk": pk})
     )
@@ -343,7 +373,16 @@ def iper_toggle_status(request, org_pk, pk):
             reverse("riskmanagement:iper_detail", kwargs={"org_pk": org_pk, "pk": pk})
         )
     assessment.save(update_fields=["status"])
-    organilab_logentry(request.user, assessment, CHANGE, relobj=[assessment.laboratory])
+    organilab_logentry(
+        request.user,
+        assessment,
+        CHANGE,
+        "iperassessment",
+        changed_data=["status"],
+        change_message=_("Changed IPER assessment status to '%(status)s'")
+        % {"status": assessment.get_status_display()},
+        relobj=[assessment.laboratory],
+    )
     return redirect(
         reverse("riskmanagement:iper_detail", kwargs={"org_pk": org_pk, "pk": pk})
     )
@@ -378,10 +417,16 @@ def iper_hazard_action(request, org_pk, assessment_pk, pk=None):
             hazard.assessment = assessment
             hazard.save()
             form.save_m2m()
+            action = CHANGE if pk else ADDITION
+            action_msg = _("Updated") if pk else _("Created")
             organilab_logentry(
                 request.user,
                 hazard,
-                CHANGE if pk else ADDITION,
+                action,
+                "iperhazard",
+                changed_data=form.changed_data,
+                change_message=_("%(action)s hazard '%(desc)s' in IPER assessment")
+                % {"action": action_msg, "desc": hazard.description[:50]},
                 relobj=[assessment.laboratory],
             )
     return redirect(
@@ -411,7 +456,16 @@ def iper_hazard_delete(request, org_pk, assessment_pk, pk):
             )
         )
     hazard = get_object_or_404(IPERHazard, pk=pk, assessment=assessment)
-    organilab_logentry(request.user, hazard, DELETION, relobj=[assessment.laboratory])
+    organilab_logentry(
+        request.user,
+        hazard,
+        DELETION,
+        "iperhazard",
+        changed_data=["description"],
+        change_message=_("Deleted hazard '%(desc)s' from IPER assessment")
+        % {"desc": hazard.description[:50]},
+        relobj=[assessment.laboratory],
+    )
     hazard.delete()
     return redirect(
         reverse(
@@ -435,7 +489,13 @@ def iper_observation_add(request, org_pk, pk):
             observation.author = request.user
             observation.save()
             organilab_logentry(
-                request.user, observation, ADDITION, relobj=[assessment.laboratory]
+                request.user,
+                observation,
+                ADDITION,
+                "iperobservation",
+                changed_data=["text"],
+                change_message=_("Added observation to IPER assessment"),
+                relobj=[assessment.laboratory],
             )
             recipient = assessment.responsible or assessment.created_by
             if recipient and recipient != request.user:
@@ -496,7 +556,16 @@ def iper_clone_for_update(request, org_pk, pk):
 
     previous.status = IPERAssessment.OBSOLETE
     previous.save()
-    organilab_logentry(request.user, new, ADDITION, relobj=[new.laboratory])
+    organilab_logentry(
+        request.user,
+        new,
+        ADDITION,
+        "iperassessment",
+        changed_data=["laboratory", "version", "previous"],
+        change_message=_("Cloned IPER assessment to version %(version)s")
+        % {"version": new.version},
+        relobj=[new.laboratory],
+    )
     return redirect(
         reverse("riskmanagement:iper_detail", kwargs={"org_pk": org_pk, "pk": new.pk})
     )

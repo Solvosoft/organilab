@@ -1,6 +1,7 @@
 from django.contrib.admin.models import DELETION
 from django.db.models import F
 from django.http import JsonResponse
+from django.utils.translation import gettext_lazy as _
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status
 from rest_framework.authentication import SessionAuthentication
@@ -79,7 +80,10 @@ class SubstanceViewSet(viewsets.ModelViewSet):
             self.request.user,
             instance,
             DELETION,
-            "SGA Substance " + str(instance),
+            "SGA Substance",
             relobj=[self.organization],
+            changed_data=["comercial_name", "uipa_name", "cas_id_number"],
+            change_message=_("Deleted SGA substance '%(name)s'")
+            % {"name": instance.comercial_name},
         )
         instance.delete()

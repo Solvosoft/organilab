@@ -348,7 +348,9 @@ def save_shelfobject_limits_from_serializer(limits_serializer, user):
         user,
         limits,
         ADDITION,
+        "shelfobjectlimits",
         changed_data=["minimum_limit", "maximum_limit", "expiration_date"],
+        change_message=_("Created shelfobject limits"),
     )
     return limits
 
@@ -363,7 +365,13 @@ def create_shelfobject_observation(
         created_by=user,
     )
     organilab_logentry(
-        user, observation, ADDITION, "shelfobjectobservation", relobj=laboratory
+        user,
+        observation,
+        ADDITION,
+        "shelfobjectobservation",
+        changed_data=["description", "action_taken", "shelf_object"],
+        change_message=_("Added observation to shelfobject"),
+        relobj=laboratory,
     )
     return observation
 
@@ -379,7 +387,9 @@ def clone_shelfobject_limits(shelfobject, user):
             user,
             new_limits,
             ADDITION,
+            "shelfobjectlimits",
             changed_data=["minimum_limit", "maximum_limit", "expiration_date"],
+            change_message=_("Cloned shelfobject limits"),
         )
     return new_limits
 
@@ -530,6 +540,7 @@ def clone_shelfobject_to(
         request.user,
         shelfobject,
         ADDITION,
+        "shelfobject",
         changed_data=[
             "shelf",
             "object",
@@ -547,6 +558,8 @@ def clone_shelfobject_to(
             "shelf_object_url",
             "shelf_object_qr",
         ],
+        change_message=_("Cloned shelfobject '%(name)s' to shelf '%(shelf)s'")
+        % {"name": str(shelfobject.object), "shelf": shelfobject.shelf.name},
         relobj=destination_laboratory_id,
     )
     create_shelfobject_observation(
@@ -634,6 +647,7 @@ def create_new_shelfobject_from_object_in(
         request.user,
         shelfobject,
         ADDITION,
+        "shelfobject",
         changed_data=[
             "shelf",
             "object",
@@ -644,6 +658,8 @@ def create_new_shelfobject_from_object_in(
             "shelf_object_url",
             "shelf_object_qr",
         ],
+        change_message=_("Created partial shelfobject '%(name)s'")
+        % {"name": str(shelfobject.object)},
         relobj=destination_laboratory_id,
     )
     create_shelfobject_observation(
@@ -701,6 +717,7 @@ def move_shelfobject_to(
         request.user,
         shelfobject,
         CHANGE,
+        "shelfobject",
         changed_data=[
             "shelf",
             "in_where_laboratory",
@@ -708,6 +725,8 @@ def move_shelfobject_to(
             "shelf_object_qr",
             "shelf_object_url",
         ],
+        change_message=_("Moved shelfobject '%(name)s' to shelf '%(shelf)s'")
+        % {"name": str(shelfobject.object), "shelf": destination_shelf.name},
         relobj=destination_laboratory_id,
     )
     create_shelfobject_observation(
@@ -749,7 +768,15 @@ def update_shelfobject_quantity(
             _("Change quantity"),
             organization=organization,
         )
-        organilab_logentry(user, shelfobject, CHANGE, changed_data=["quantity"])
+        organilab_logentry(
+            user,
+            shelfobject,
+            CHANGE,
+            "shelfobject",
+            changed_data=["quantity"],
+            change_message=_("Updated shelfobject '%(name)s' quantity")
+            % {"name": str(shelfobject.object)},
+        )
     else:  # delete those that will be left with quantity of 0 or less with the requested change
         log_object_change(
             user,
@@ -762,7 +789,15 @@ def update_shelfobject_quantity(
             _("Delete ShelfObject with no quantity left"),
             organization=organization,
         )
-        organilab_logentry(user, shelfobject, DELETION)
+        organilab_logentry(
+            user,
+            shelfobject,
+            DELETION,
+            "shelfobject",
+            changed_data=["object", "quantity"],
+            change_message=_("Deleted shelfobject '%(name)s' with no quantity left")
+            % {"name": str(shelfobject.object)},
+        )
         shelfobject.delete()
 
 
@@ -1015,7 +1050,14 @@ def save_shelfobject_characteristics(characteristic, user):
         "notes",
         "provider",
     ]
-    organilab_logentry(user, obj, ADDITION, changed_data=changed_data)
+    organilab_logentry(
+        user,
+        obj,
+        ADDITION,
+        "shelfobjectequipmentcharacteristics",
+        changed_data=changed_data,
+        change_message=_("Created equipment characteristics"),
+    )
 
 
 def has_active_reservations(shelfobject):
@@ -1025,7 +1067,16 @@ def has_active_reservations(shelfobject):
 
 
 def delete_shelfobjects(shelfobject, user, laboratory):
-    organilab_logentry(user, shelfobject, DELETION, relobj=laboratory)
+    organilab_logentry(
+        user,
+        shelfobject,
+        DELETION,
+        "shelfobject",
+        changed_data=["object", "shelf", "quantity"],
+        change_message=_("Deleted shelfobject '%(name)s'")
+        % {"name": str(shelfobject.object)},
+        relobj=laboratory,
+    )
     shelfobject.delete()
 
 
@@ -1106,6 +1157,7 @@ def move_shelfobject_to(
         request.user,
         shelfobject,
         CHANGE,
+        "shelfobject",
         changed_data=[
             "shelf",
             "in_where_laboratory",
@@ -1113,6 +1165,8 @@ def move_shelfobject_to(
             "shelf_object_qr",
             "shelf_object_url",
         ],
+        change_message=_("Moved shelfobject '%(name)s' to shelf '%(shelf)s'")
+        % {"name": str(shelfobject.object), "shelf": destination_shelf.name},
         relobj=destination_laboratory_id,
     )
     create_shelfobject_observation(

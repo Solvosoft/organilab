@@ -5,6 +5,7 @@ from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
+from django.utils.translation import gettext_lazy as _
 
 from laboratory.models import OrganizationStructure
 from laboratory.views.djgeneric import ListView, DeleteView
@@ -47,7 +48,15 @@ class DeleteForm(DeleteView):
 
     def form_valid(self, form):
         success_url = self.get_success_url()
-        organilab_logentry(self.request.user, self.object, DELETION, "custom form")
+        organilab_logentry(
+            self.request.user,
+            self.object,
+            DELETION,
+            "custom form",
+            changed_data=["name", "schema", "organization"],
+            change_message=_("Deleted custom form '%(name)s'")
+            % {"name": self.object.name},
+        )
         self.object.delete()
         return HttpResponseRedirect(success_url)
 
@@ -77,7 +86,15 @@ def CreateForm(request, org_pk):
             organization=organization,
         )
         url = reverse("derb:edit_view", args=[org_pk, custom_form.id])
-        organilab_logentry(request.user, custom_form, ADDITION, "custom form")
+        organilab_logentry(
+            request.user,
+            custom_form,
+            ADDITION,
+            "custom form",
+            changed_data=["name", "status", "schema", "organization"],
+            change_message=_("Created custom form '%(name)s'")
+            % {"name": custom_form.name},
+        )
 
         return JsonResponse({"url": url})
     return None
