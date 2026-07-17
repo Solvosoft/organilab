@@ -57,6 +57,8 @@ class FurnitureCreateView(CreateView):
             ADDITION,
             "furniture",
             changed_data=form.changed_data,
+            change_message=_("Created furniture '%(name)s'")
+            % {"name": self.object.name},
             relobj=self.lab,
         )
         return redirect(self.get_success_url())
@@ -141,6 +143,8 @@ class FurnitureUpdateView(UpdateView):
             CHANGE,
             "furniture",
             changed_data=form.changed_data,
+            change_message=_("Updated furniture '%(name)s'")
+            % {"name": self.object.name},
             relobj=self.lab,
         )
         return redirect(self.get_success_url())
@@ -161,7 +165,14 @@ class FurnitureDelete(DeleteView):
     def form_valid(self, form):
         success_url = self.get_success_url()
         organilab_logentry(
-            self.request.user, self.object, DELETION, "furniture", relobj=self.lab
+            self.request.user,
+            self.object,
+            DELETION,
+            "furniture",
+            changed_data=["name"],
+            change_message=_("Deleted furniture '%(name)s'")
+            % {"name": self.object.name},
+            relobj=self.lab,
         )
         self.object.delete()
         return HttpResponseRedirect(success_url)

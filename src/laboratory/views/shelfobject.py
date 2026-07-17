@@ -361,7 +361,10 @@ class ShelfObjectCreate(AJAXMixin, CreateView):
             self.request.user,
             self.object,
             ADDITION,
+            "shelfobject",
             changed_data=form.changed_data,
+            change_message=_("Created shelfobject '%(name)s' in shelf '%(shelf)s'")
+            % {"name": str(self.object.object), "shelf": self.object.shelf.name},
             relobj=self.lab,
         )
 
@@ -440,7 +443,10 @@ class ShelfObjectEdit(AJAXMixin, UpdateView):
             self.request.user,
             self.object,
             CHANGE,
+            "shelfobject",
             changed_data=form.changed_data,
+            change_message=_("Updated shelfobject '%(name)s'")
+            % {"name": str(self.object.object)},
             relobj=self.lab,
         )
 
@@ -560,7 +566,14 @@ class ShelfObjectDelete(AJAXMixin, DeleteView):
             }
             return data
         utils.organilab_logentry(
-            self.request.user, self.object, DELETION, relobj=self.lab
+            self.request.user,
+            self.object,
+            DELETION,
+            "shelfobject",
+            changed_data=["object", "shelf", "quantity"],
+            change_message=_("Deleted shelfobject '%(name)s' from shelf '%(shelf)s'")
+            % {"name": str(self.object.object), "shelf": self.object.shelf.name},
+            relobj=self.lab,
         )
         self.object.delete()
         data = {
@@ -727,7 +740,10 @@ def objects_transfer(request, org_pk, lab_pk, transfer_pk, shelf_pk):
                 request.user,
                 new_object,
                 ADDITION,
+                "shelfobject",
                 changed_data=changed_data,
+                change_message=_("Created shelfobject '%(name)s' from transfer")
+                % {"name": str(new_object.object)},
                 relobj=[transfer.laboratory_received, transfer.laboratory_send],
             )
 

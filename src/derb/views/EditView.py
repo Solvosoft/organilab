@@ -3,6 +3,7 @@ import json
 from django.contrib.admin.models import CHANGE
 from django.http import JsonResponse, HttpResponseBadRequest
 from django.views.generic import TemplateView
+from django.utils.translation import gettext_lazy as _
 
 from derb.models import CustomForm
 from django.utils.decorators import method_decorator
@@ -57,6 +58,8 @@ class EditView(TemplateView):
                     CHANGE,
                     "custom form",
                     changed_data=["schema"],
+                    change_message=_("Updated schema of custom form '%(name)s'")
+                    % {"name": custom_form.name},
                 )
                 return JsonResponse(json.dumps({"result": True}), safe=False)
             else:
@@ -75,6 +78,12 @@ def UpdateForm(request, org_pk):
         form.schema["name"] = form.name
         form.save()
         organilab_logentry(
-            request.user, form, CHANGE, "custom form", changed_data=["name", "schema"]
+            request.user,
+            form,
+            CHANGE,
+            "custom form",
+            changed_data=["name", "schema"],
+            change_message=_("Updated name of custom form to '%(name)s'")
+            % {"name": form.name},
         )
     return JsonResponse({"name": form.schema["name"]})

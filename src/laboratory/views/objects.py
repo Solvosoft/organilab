@@ -16,6 +16,7 @@ from django.shortcuts import render, get_object_or_404
 from django.urls import path
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
+from django.utils.translation import gettext_lazy as _
 
 from laboratory.forms import (
     ObjectForm,
@@ -86,7 +87,10 @@ class ObjectView(object):
                     self.request.user,
                     object,
                     ADDITION,
+                    "object",
                     changed_data=changed_data,
+                    change_message=_("Created object '%(name)s'")
+                    % {"name": object.name},
                     relobj=self.lab,
                 )
                 return super(ObjectCreateView, self).form_valid(form)
@@ -146,7 +150,10 @@ class ObjectView(object):
                     self.request.user,
                     object,
                     CHANGE,
+                    "object",
                     changed_data=changed_data,
+                    change_message=_("Updated object '%(name)s'")
+                    % {"name": object.name},
                     relobj=self.lab,
                 )
                 return super(ObjectUpdateView, self).form_valid(object)
@@ -190,7 +197,14 @@ class ObjectView(object):
             def form_valid(self, form):
                 success_url = self.get_success_url()
                 organilab_logentry(
-                    self.request.user, self.object, DELETION, relobj=self.lab
+                    self.request.user,
+                    self.object,
+                    DELETION,
+                    "object",
+                    changed_data=["name", "code"],
+                    change_message=_("Deleted object '%(name)s'")
+                    % {"name": self.object.name},
+                    relobj=self.lab,
                 )
                 self.object.delete()
                 return HttpResponseRedirect(success_url)

@@ -294,6 +294,8 @@ class ShelfObjectCreateMethods:
                 "in_where_laboratory",
                 "limits",
             ],
+            change_message=_("Created shelfobject reactive '%(name)s' with quantity %(qty)s")
+            % {"name": str(shelfobject.object), "qty": shelfobject.quantity},
             relobj=laboratory_id,
         )
 
@@ -387,6 +389,8 @@ class ShelfObjectCreateMethods:
                 "in_where_laboratory",
                 "limits",
             ],
+            change_message=_("Created refuse reactive shelfobject '%(name)s'")
+            % {"name": str(shelfobject.object)},
             relobj=laboratory_id,
         )
 
@@ -448,6 +452,8 @@ class ShelfObjectCreateMethods:
                 "in_where_laboratory",
                 "limits",
             ],
+            change_message=_("Created shelfobject material '%(name)s' with quantity %(qty)s")
+            % {"name": str(shelfobject.object), "qty": shelfobject.quantity},
             relobj=laboratory_id,
         )
 
@@ -509,6 +515,8 @@ class ShelfObjectCreateMethods:
                 "in_where_laboratory",
                 "limits",
             ],
+            change_message=_("Created refuse material shelfobject '%(name)s'")
+            % {"name": str(shelfobject.object)},
             relobj=laboratory_id,
         )
 
@@ -605,6 +613,8 @@ class ShelfObjectCreateMethods:
             shelfobject,
             ADDITION,
             changed_data=changed_fields,
+            change_message=_("Created box shelfobject '%(name)s' with %(boxes)s boxes")
+            % {"name": str(shelfobject.object), "boxes": quantity_box},
             relobj=laboratory_id,
         )
 
@@ -682,6 +692,8 @@ class ShelfObjectCreateMethods:
                 "created_by",
                 "in_where_laboratory",
             ],
+            change_message=_("Created shelfobject equipment '%(name)s'")
+            % {"name": str(shelfobject.object)},
             relobj=laboratory_id,
         )
 
@@ -758,6 +770,8 @@ class ShelfObjectCreateMethods:
                 "created_by",
                 "in_where_laboratory",
             ],
+            change_message=_("Created refuse equipment shelfobject '%(name)s'")
+            % {"name": str(shelfobject.object)},
             relobj=laboratory_id,
         )
 
@@ -1159,6 +1173,8 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                 ADDITION,
                 "reserved product",
                 changed_data=changed_data,
+                change_message=_("Created reservation for shelfobject '%(name)s'")
+                % {"name": str(instance.shelf_object.object)},
                 relobj=[self.laboratory, instance],
             )
         else:
@@ -1320,6 +1336,12 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                         "mark_as_discard",
                         "created_by",
                     ],
+                    change_message=_("Created transfer request for '%(name)s' from '%(from)s' to '%(to)s'")
+                    % {
+                        "name": str(shelf_object.object),
+                        "from": source_laboratory.name,
+                        "to": target_laboratory.name,
+                    },
                     relobj=[source_laboratory, target_laboratory],
                 )
             else:
@@ -1405,10 +1427,14 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             data=request.data, context={"laboratory_id": lab_pk}
         )
         if serializer.is_valid():
+            transfer_obj = serializer.validated_data["transfer_object"]
             utils.organilab_logentry(
                 self.request.user,
-                serializer.validated_data["transfer_object"],
+                transfer_obj,
                 DELETION,
+                changed_data=["object", "status", "laboratory_send", "laboratory_received"],
+                change_message=_("Denied transfer request for '%(name)s'")
+                % {"name": str(transfer_obj.object.object)},
                 relobj=self.laboratory,
             )
             serializer.validated_data["transfer_object"].delete()
@@ -1586,6 +1612,8 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                 new_shelf_object,
                 CHANGE,
                 changed_data=["container", "marked_as_discard"],
+                change_message=_("Approved transfer - created shelfobject '%(name)s'")
+                % {"name": str(new_shelf_object.object)},
                 relobj=lab_pk,
             )
 
@@ -1597,6 +1625,8 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                 transfer_object,
                 CHANGE,
                 changed_data=["status"],
+                change_message=_("Approved transfer request for '%(name)s'")
+                % {"name": str(transfer_object.object.object)},
                 relobj=lab_pk,
             )
         else:
@@ -1636,7 +1666,13 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
             utils.organilab_logentry(
-                self.request.user, shelfobject, DELETION, relobj=self.laboratory
+                self.request.user,
+                shelfobject,
+                DELETION,
+                changed_data=["object", "shelf", "quantity"],
+                change_message=_("Deleted shelfobject '%(name)s'")
+                % {"name": str(shelfobject.object)},
+                relobj=self.laboratory,
             )
             log_object_change(
                 request.user,
@@ -1694,6 +1730,9 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                 observation_instance,
                 ADDITION,
                 "shelfobjectobservation",
+                changed_data=list(serializer_sho.validated_data.keys()),
+                change_message=_("Added observation to shelfobject '%(name)s'")
+                % {"name": str(shelf_object.object)},
                 relobj=self.laboratory,
             )
         else:
@@ -1785,6 +1824,8 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                 shelfobject,
                 CHANGE,
                 changed_data=["status"],
+                change_message=_("Changed shelfobject status from '%(from)s' to '%(to)s'")
+                % {"from": pre_status, "to": shelfobject.status.description},
                 relobj=self.laboratory,
             )
             return JsonResponse(
@@ -2036,13 +2077,23 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                 obj_ch,
                 CHANGE,
                 "shelfobjectequipmentcharacteristics",
+                changed_data=list(serializer_equipment_charac.validated_data.keys()),
+                change_message=_("Updated equipment characteristics for shelfobject '%(name)s'")
+                % {"name": str(shelf_object.object)},
                 relobj=lab_pk,
             )
 
             if serializer_equipment.is_valid():
                 obj = serializer_equipment.save()
                 utils.organilab_logentry(
-                    request.user, obj, CHANGE, "shelfobject", relobj=lab_pk
+                    request.user,
+                    obj,
+                    CHANGE,
+                    "shelfobject",
+                    changed_data=list(serializer_equipment.validated_data.keys()),
+                    change_message=_("Updated equipment shelfobject '%(name)s'")
+                    % {"name": str(obj.object)},
+                    relobj=lab_pk,
                 )
             else:
                 errors = serializer_equipment.errors
@@ -2100,7 +2151,14 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                 obj.limits = limit
                 obj.save()
                 utils.organilab_logentry(
-                    request.user, obj, CHANGE, "shelfobject", relobj=lab_pk
+                    request.user,
+                    obj,
+                    CHANGE,
+                    "shelfobject",
+                    changed_data=list(shelf_object_serializer.validated_data.keys()) + ["limits"],
+                    change_message=_("Updated reactive shelfobject '%(name)s'")
+                    % {"name": str(obj.object)},
+                    relobj=lab_pk,
                 )
                 return JsonResponse({}, status=status.HTTP_200_OK)
             else:
@@ -2215,6 +2273,8 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             CHANGE,
             "shelfobject",
             changed_data=list(request.data.keys()),
+            change_message=_("Updated box shelfobject '%(name)s'")
+            % {"name": str(obj.object)},
             relobj=lab_pk,
         )
         create_shelfobject_observation(
@@ -2584,6 +2644,9 @@ class ShelfObjectMaintanenceViewset(AuthAllPermBaseObjectManagementShelfObjectBa
                 maintenance,
                 ADDITION,
                 "shelfobjectmaintenance",
+                changed_data=list(serializer.validated_data.keys()),
+                change_message=_("Created maintenance record for shelfobject '%(name)s'")
+                % {"name": str(maintenance.shelfobject.object)},
                 relobj=self.lab_pk,
             )
             return JsonResponse({}, status=status.HTTP_201_CREATED)
@@ -2619,6 +2682,9 @@ class ShelfObjectMaintanenceViewset(AuthAllPermBaseObjectManagementShelfObjectBa
                 instance,
                 DELETION,
                 "shelfobjectmaintenance",
+                changed_data=["maintenance_date", "maintenance_observation", "provider"],
+                change_message=_("Deleted maintenance record for shelfobject '%(name)s'")
+                % {"name": str(instance.shelfobject.object)},
                 relobj=self.lab_pk,
             )
             instance.delete()
@@ -2659,6 +2725,9 @@ class ShelfObjectMaintanenceViewset(AuthAllPermBaseObjectManagementShelfObjectBa
                 instance,
                 CHANGE,
                 "shelfobjectmaintenance",
+                changed_data=list(validate_shelfobject.validated_data.keys()),
+                change_message=_("Updated maintenance record for shelfobject '%(name)s'")
+                % {"name": str(instance.shelfobject.object)},
                 relobj=self.lab_pk,
             )
             return JsonResponse({}, status=status.HTTP_200_OK)
@@ -2713,7 +2782,9 @@ class ShelfObjectLogViewset(AuthAllPermBaseObjectManagementShelfObjectBase):
                 log,
                 ADDITION,
                 "shelfobjectlog",
-                changed_data=[serializer.validated_data],
+                changed_data=list(serializer.validated_data.keys()),
+                change_message=_("Created log entry for shelfobject '%(name)s'")
+                % {"name": str(log.shelfobject.object)},
                 relobj=self.lab_pk,
             )
             return JsonResponse({}, status=status.HTTP_201_CREATED)
@@ -2737,7 +2808,14 @@ class ShelfObjectLogViewset(AuthAllPermBaseObjectManagementShelfObjectBase):
 
         if validate_log.is_valid(raise_exception=True):
             utils.organilab_logentry(
-                request.user, instance, DELETION, "shelfobjectlog", relobj=self.lab_pk
+                request.user,
+                instance,
+                DELETION,
+                "shelfobjectlog",
+                changed_data=["description", "shelfobject"],
+                change_message=_("Deleted log entry for shelfobject '%(name)s'")
+                % {"name": str(instance.shelfobject.object)},
+                relobj=self.lab_pk,
             )
             instance.delete()
             return JsonResponse({}, status=status.HTTP_200_OK)
@@ -2770,7 +2848,9 @@ class ShelfObjectLogViewset(AuthAllPermBaseObjectManagementShelfObjectBase):
                 instance,
                 CHANGE,
                 "shelfobjectlog",
-                changed_data=[validate_log.validated_data],
+                changed_data=list(validate_log.validated_data.keys()),
+                change_message=_("Updated log entry for shelfobject '%(name)s'")
+                % {"name": str(instance.shelfobject.object)},
                 relobj=self.lab_pk,
             )
             return JsonResponse({}, status=status.HTTP_200_OK)
@@ -2837,7 +2917,9 @@ class ShelfObjectCalibrateViewset(AuthAllPermBaseObjectManagementShelfObjectBase
                 calibration,
                 ADDITION,
                 "shelfobjectcalibrate",
-                changed_data=[serializer.validated_data],
+                changed_data=list(serializer.validated_data.keys()),
+                change_message=_("Created calibration record for shelfobject '%(name)s'")
+                % {"name": str(calibration.shelfobject.object)},
                 relobj=self.lab_pk,
             )
 
@@ -2873,6 +2955,9 @@ class ShelfObjectCalibrateViewset(AuthAllPermBaseObjectManagementShelfObjectBase
                 instance,
                 DELETION,
                 "shelfobjectcalibrate",
+                changed_data=["calibrate_name", "calibration_date", "observation"],
+                change_message=_("Deleted calibration record for shelfobject '%(name)s'")
+                % {"name": str(instance.shelfobject.object)},
                 relobj=self.lab_pk,
             )
             instance.delete()
@@ -2919,7 +3004,9 @@ class ShelfObjectCalibrateViewset(AuthAllPermBaseObjectManagementShelfObjectBase
                 instance,
                 CHANGE,
                 "shelfobjectcalibrate",
-                changed_data=[validate_calibrate.validated_data],
+                changed_data=list(validate_calibrate.validated_data.keys()),
+                change_message=_("Updated calibration record for shelfobject '%(name)s'")
+                % {"name": str(instance.shelfobject.object)},
                 relobj=self.lab_pk,
             )
             return JsonResponse({}, status=status.HTTP_200_OK)
@@ -2985,7 +3072,9 @@ class ShelfObjectGuaranteeViewset(AuthAllPermBaseObjectManagementShelfObjectBase
                 guarentee,
                 ADDITION,
                 "shelfobjectguarantee",
-                changed_data=[serializer.validated_data],
+                changed_data=list(serializer.validated_data.keys()),
+                change_message=_("Created guarantee record for shelfobject '%(name)s'")
+                % {"name": str(guarentee.shelfobject.object)},
                 relobj=self.lab_pk,
             )
             return JsonResponse({}, status=status.HTTP_201_CREATED)
@@ -3020,6 +3109,9 @@ class ShelfObjectGuaranteeViewset(AuthAllPermBaseObjectManagementShelfObjectBase
                 guarantee,
                 DELETION,
                 "shelfobjectguarantee",
+                changed_data=["guarantee_initial_date", "guarantee_final_date"],
+                change_message=_("Deleted guarantee record for shelfobject '%(name)s'")
+                % {"name": str(guarantee.shelfobject.object)},
                 relobj=self.lab_pk,
             )
             guarantee.delete()
@@ -3059,7 +3151,9 @@ class ShelfObjectGuaranteeViewset(AuthAllPermBaseObjectManagementShelfObjectBase
                 guarantee,
                 CHANGE,
                 "shelfobjectguarantee",
-                changed_data=[validate_shelfobject.validated_data],
+                changed_data=list(validate_shelfobject.validated_data.keys()),
+                change_message=_("Updated guarantee record for shelfobject '%(name)s'")
+                % {"name": str(guarantee.shelfobject.object)},
                 relobj=self.lab_pk,
             )
             return JsonResponse({}, status=status.HTTP_200_OK)
@@ -3123,7 +3217,9 @@ class ShelfObjectTrainingViewset(AuthAllPermBaseObjectManagementShelfObjectBase)
                 instance,
                 ADDITION,
                 "shelfobjecttraining",
-                changed_data=[serializer.validated_data],
+                changed_data=list(serializer.validated_data.keys()),
+                change_message=_("Created training record for shelfobject '%(name)s'")
+                % {"name": str(instance.shelfobject.object)},
                 relobj=self.lab_pk,
             )
             return JsonResponse({}, status=status.HTTP_201_CREATED)
@@ -3158,6 +3254,9 @@ class ShelfObjectTrainingViewset(AuthAllPermBaseObjectManagementShelfObjectBase)
                 instance,
                 DELETION,
                 "shelfobjecttraining",
+                changed_data=["place", "observation", "number_of_hours", "training_initial_date"],
+                change_message=_("Deleted training record for shelfobject '%(name)s'")
+                % {"name": str(instance.shelfobject.object)},
                 relobj=self.lab_pk,
             )
             instance.delete()
@@ -3197,7 +3296,9 @@ class ShelfObjectTrainingViewset(AuthAllPermBaseObjectManagementShelfObjectBase)
                 instance,
                 CHANGE,
                 "shelfobjecttraining",
-                changed_data=[validate_shelfobject.validated_data],
+                changed_data=list(validate_shelfobject.validated_data.keys()),
+                change_message=_("Updated training record for shelfobject '%(name)s'")
+                % {"name": str(instance.shelfobject.object)},
                 relobj=self.lab_pk,
             )
             return JsonResponse({}, status=status.HTTP_200_OK)

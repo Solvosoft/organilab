@@ -614,6 +614,8 @@ class EquipmentManagementViewset(AuthAllPermBaseObjectManagement):
                     ADDITION,
                     "equipment object",
                     changed_data=equipment_changed_data,
+                    change_message=_("Created equipment '%(name)s'")
+                    % {"name": instance.name},
                     relobj=organization,
                 )
 
@@ -624,6 +626,8 @@ class EquipmentManagementViewset(AuthAllPermBaseObjectManagement):
                         ADDITION,
                         "equipment characteristics",
                         changed_data=equipment_ch_changed_data,
+                        change_message=_("Created equipment characteristics for '%(name)s'")
+                        % {"name": instance.name},
                         relobj=organization,
                     )
 
@@ -659,7 +663,14 @@ class EquipmentManagementViewset(AuthAllPermBaseObjectManagement):
 
         # Log Entry Destroy Action
         organilab_logentry(
-            request.user, instance, DELETION, "equipment object", relobj=organization
+            request.user,
+            instance,
+            DELETION,
+            "equipment object",
+            changed_data=["name", "code", "type"],
+            change_message=_("Deleted equipment '%(name)s'")
+            % {"name": instance.name},
+            relobj=organization,
         )
 
         if equipment_ch_instance:
@@ -668,6 +679,9 @@ class EquipmentManagementViewset(AuthAllPermBaseObjectManagement):
                 equipment_ch_instance,
                 DELETION,
                 "equipment characteristics",
+                changed_data=["equipment_type", "provider", "calibration"],
+                change_message=_("Deleted equipment characteristics for '%(name)s'")
+                % {"name": instance.name},
                 relobj=organization,
             )
         return destroy
@@ -713,18 +727,23 @@ class EquipmentManagementViewset(AuthAllPermBaseObjectManagement):
                     CHANGE,
                     "equipment object",
                     changed_data=equipment_changed_data,
+                    change_message=_("Updated equipment '%(name)s'")
+                    % {"name": instance.name},
                     relobj=organization,
                 )
 
                 if not hasattr(instance, "equipmentcharacteristics"):
                     equipment_ch_action = ADDITION
 
+                action_msg = _("Updated") if equipment_ch_action == CHANGE else _("Created")
                 organilab_logentry(
                     request.user,
                     equipment_ch,
                     equipment_ch_action,
                     "equipment characteristics",
                     changed_data=equipment_ch_changed_data,
+                    change_message=_("%(action)s equipment characteristics for '%(name)s'")
+                    % {"action": action_msg, "name": instance.name},
                     relobj=organization,
                 )
 
@@ -794,6 +813,8 @@ class InstrumentalFamilyManagementViewset(AuthAllPermBaseObjectManagement):
                     ADDITION,
                     "catalog",
                     changed_data=["key", "description"],
+                    change_message=_("Created catalog entry '%(desc)s'")
+                    % {"desc": instance.description},
                     relobj=get_object_or_404(
                         OrganizationStructure.objects.using(settings.READONLY_DATABASE),
                         pk=self.org_pk,
@@ -813,6 +834,9 @@ class InstrumentalFamilyManagementViewset(AuthAllPermBaseObjectManagement):
             instance,
             DELETION,
             "catalog",
+            changed_data=["key", "description"],
+            change_message=_("Deleted catalog entry '%(desc)s'")
+            % {"desc": instance.description},
             relobj=get_object_or_404(
                 OrganizationStructure.objects.using(settings.READONLY_DATABASE),
                 pk=self.org_pk,
@@ -832,6 +856,8 @@ class InstrumentalFamilyManagementViewset(AuthAllPermBaseObjectManagement):
             CHANGE,
             "catalog",
             changed_data=["key", "description"],
+            change_message=_("Updated catalog entry '%(desc)s'")
+            % {"desc": instance.description},
             relobj=get_object_or_404(
                 OrganizationStructure.objects.using(settings.READONLY_DATABASE),
                 pk=self.org_pk,
@@ -892,6 +918,8 @@ class EquipmentTypeManagementViewset(AuthAllPermBaseObjectManagement):
                     ADDITION,
                     "equipment type",
                     changed_data=["name", "description"],
+                    change_message=_("Created equipment type '%(name)s'")
+                    % {"name": instance.name},
                     relobj=organization,
                 )
         return create
@@ -912,7 +940,14 @@ class EquipmentTypeManagementViewset(AuthAllPermBaseObjectManagement):
         )
 
         organilab_logentry(
-            request.user, instance, DELETION, "equipment type", relobj=organization
+            request.user,
+            instance,
+            DELETION,
+            "equipment type",
+            changed_data=["name", "description"],
+            change_message=_("Deleted equipment type '%(name)s'")
+            % {"name": instance.name},
+            relobj=organization,
         )
 
         destroy = super().destroy(request, *args, **kwargs)
@@ -927,6 +962,9 @@ class EquipmentTypeManagementViewset(AuthAllPermBaseObjectManagement):
                 obj_equipment,
                 DELETION,
                 "equipment object",
+                changed_data=["name", "code", "type"],
+                change_message=_("Deleted equipment '%(name)s' (cascade from equipment type)")
+                % {"name": obj_equipment.name},
                 relobj=organization,
             )
 
@@ -936,6 +974,8 @@ class EquipmentTypeManagementViewset(AuthAllPermBaseObjectManagement):
                 shelfobj_equipment,
                 DELETION,
                 "shelfobject equipment",
+                changed_data=["object", "shelf", "quantity"],
+                change_message=_("Deleted shelfobject equipment (cascade from equipment type)"),
                 relobj=organization,
             )
 
@@ -958,6 +998,8 @@ class EquipmentTypeManagementViewset(AuthAllPermBaseObjectManagement):
             CHANGE,
             "equipment type",
             changed_data=["name", "description"],
+            change_message=_("Updated equipment type '%(name)s'")
+            % {"name": instance.name},
             relobj=organization,
         )
         return update
@@ -1082,6 +1124,8 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
                     ADDITION,
                     "reactive object",
                     changed_data=reactive_changed_data,
+                    change_message=_("Created reactive '%(name)s'")
+                    % {"name": instance.name},
                     relobj=organization,
                 )
 
@@ -1092,6 +1136,8 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
                         ADDITION,
                         "sustance characteristics",
                         changed_data=reactive_ch_changed_data,
+                        change_message=_("Created substance characteristics for '%(name)s'")
+                        % {"name": instance.name},
                         relobj=organization,
                     )
 
@@ -1126,7 +1172,14 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
 
         # Log Entry Destroy Action
         organilab_logentry(
-            request.user, instance, DELETION, "reactive object", relobj=organization
+            request.user,
+            instance,
+            DELETION,
+            "reactive object",
+            changed_data=["name", "code", "type"],
+            change_message=_("Deleted reactive '%(name)s'")
+            % {"name": instance.name},
+            relobj=organization,
         )
 
         if reactive_ch_instance:
@@ -1135,6 +1188,9 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
                 reactive_ch_instance,
                 DELETION,
                 "sustance characteristics",
+                changed_data=["cas_id_number", "molecular_formula"],
+                change_message=_("Deleted substance characteristics for '%(name)s'")
+                % {"name": instance.name},
                 relobj=organization,
             )
         return destroy
@@ -1179,18 +1235,23 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
                     CHANGE,
                     "reactive object",
                     changed_data=reactive_changed_data,
+                    change_message=_("Updated reactive '%(name)s'")
+                    % {"name": instance.name},
                     relobj=organization,
                 )
 
                 if not hasattr(instance, "sustancecharacteristics"):
                     reactive_ch_action = ADDITION
 
+                action_msg = _("Updated") if reactive_ch_action == CHANGE else _("Created")
                 organilab_logentry(
                     request.user,
                     reactive_ch,
                     reactive_ch_action,
                     "sustance characteristics",
                     changed_data=reactive_ch_changed_data,
+                    change_message=_("%(action)s substance characteristics for '%(name)s'")
+                    % {"action": action_msg, "name": instance.name},
                     relobj=organization,
                 )
 
@@ -1294,6 +1355,9 @@ class LaboratoryProcessViewset(AuthAllPermBaseObjectManagement):
             serializer.instance,
             ADDITION,
             "LaboratoryProcess",
+            changed_data=list(serializer.validated_data.keys()),
+            change_message=_("Created laboratory process '%(desc)s'")
+            % {"desc": serializer.instance.description[:50] if serializer.instance.description else ""},
             relobj=get_object_or_404(Laboratory, pk=self.kwargs.get("lab_pk")),
         )
         return super().perform_create(serializer)
@@ -1356,6 +1420,8 @@ class ShelfObjectHcodeViewset(AuthAllPermBaseObjectManagement):
             CHANGE,
             "shelfobject",
             changed_data=changed_fields,
+            change_message=_("Updated process condition for shelfobject '%(name)s'")
+            % {"name": str(flash.object)},
             relobj=get_object_or_404(Laboratory, pk=lab_pk),
         )
         if changed_fields:
@@ -1421,7 +1487,9 @@ class ProviderViewSet(AuthAllPermBaseObjectManagement):
             provider,
             ADDITION,
             "provider",
-            changed_data=[],  # no necesaria en create
+            changed_data=list(serializer.validated_data.keys()),
+            change_message=_("Created provider '%(name)s'")
+            % {"name": provider.name},
             relobj=get_object_or_404(Laboratory, pk=lab_pk),
         )
 
@@ -1455,13 +1523,14 @@ class ProviderViewSet(AuthAllPermBaseObjectManagement):
             CHANGE,
             "provider",
             changed_data=changed_fields,
+            change_message=_("Updated provider '%(name)s'")
+            % {"name": provider.name},
             relobj=get_object_or_404(Laboratory, pk=lab_pk),
         )
 
     def perform_destroy(self, instance):
         lab_pk = self.get_lab_pk_or_error()
 
-        provider_id = instance.pk
         provider_repr = str(instance)
 
         organilab_logentry(
@@ -1469,8 +1538,10 @@ class ProviderViewSet(AuthAllPermBaseObjectManagement):
             instance,
             DELETION,
             "provider",
-            changed_data=[],  # no aplica en delete
+            changed_data=["name", "phone_number", "email", "legal_identity"],
             object_repr=provider_repr,
+            change_message=_("Deleted provider '%(name)s'")
+            % {"name": instance.name},
             relobj=get_object_or_404(Laboratory, pk=lab_pk),
         )
 
@@ -1519,7 +1590,9 @@ class ObjectFeatureViewSet(AuthAllPermBaseObjectManagement):
             objectfeatures,
             ADDITION,
             "objectfeatures",
-            changed_data=[],  # no necesaria en create
+            changed_data=list(serializer.validated_data.keys()),
+            change_message=_("Created object feature '%(name)s'")
+            % {"name": objectfeatures.name},
             relobj=get_object_or_404(Laboratory, pk=lab_pk),
         )
 
@@ -1548,13 +1621,14 @@ class ObjectFeatureViewSet(AuthAllPermBaseObjectManagement):
             CHANGE,
             "objectfeatures",
             changed_data=changed_fields,
+            change_message=_("Updated object feature '%(name)s'")
+            % {"name": objectfeatures.name},
             relobj=get_object_or_404(Laboratory, pk=lab_pk),
         )
 
     def perform_destroy(self, instance):
         lab_pk = self.get_lab_pk_or_error()
 
-        objectfeatures_id = instance.pk
         objectfeatures_repr = str(instance)
 
         organilab_logentry(
@@ -1562,8 +1636,10 @@ class ObjectFeatureViewSet(AuthAllPermBaseObjectManagement):
             instance,
             DELETION,
             "objectfeatures",
-            changed_data=[],  # no aplica en delete
+            changed_data=["name", "description"],
             object_repr=objectfeatures_repr,
+            change_message=_("Deleted object feature '%(name)s'")
+            % {"name": instance.name},
             relobj=get_object_or_404(Laboratory, pk=lab_pk),
         )
 
@@ -1867,7 +1943,9 @@ class LabOrOrgRequestViewSet(AuthAllPermBaseObjectManagement):
             instance,
             ADDITION,
             "lab or org request",
-            changed_data=[],
+            changed_data=list(serializer.validated_data.keys()),
+            change_message=_("Created %(type)s request '%(name)s'")
+            % {"type": instance.get_entity_type_display(), "name": instance.name},
             relobj=org,
         )
         notify_request_created(instance)
@@ -1880,7 +1958,9 @@ class LabOrOrgRequestViewSet(AuthAllPermBaseObjectManagement):
             instance,
             CHANGE,
             "lab or org request",
-            changed_data=[],
+            changed_data=list(serializer.validated_data.keys()),
+            change_message=_("Updated %(type)s request '%(name)s'")
+            % {"type": instance.get_entity_type_display(), "name": instance.name},
             relobj=org,
         )
 
@@ -1893,7 +1973,9 @@ class LabOrOrgRequestViewSet(AuthAllPermBaseObjectManagement):
             instance,
             DELETION,
             "lab or org request",
-            changed_data=[],
+            changed_data=["name", "entity_type"],
+            change_message=_("Deleted %(type)s request '%(name)s'")
+            % {"type": instance.get_entity_type_display(), "name": instance.name},
             relobj=org,
         )
         instance.delete()
@@ -1972,6 +2054,8 @@ class LabOrOrgRequestReviewViewSet(AuthAllPermBaseObjectManagement):
             ADDITION,
             f"{entity_label} approved from request",
             changed_data=["status"],
+            change_message=_("Approved and created %(type)s '%(name)s' from request")
+            % {"type": entity_label, "name": instance.name},
             relobj=org,
         )
         instance.status = LabOrOrgRequest.STATUS_APPROVED
@@ -1991,6 +2075,8 @@ class LabOrOrgRequestReviewViewSet(AuthAllPermBaseObjectManagement):
             CHANGE,
             "lab or org request rejected",
             changed_data=["status"],
+            change_message=_("Rejected %(type)s request '%(name)s'")
+            % {"type": instance.get_entity_type_display(), "name": instance.name},
             relobj=org,
         )
         notify_request_status_changed(instance)

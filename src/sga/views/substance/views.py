@@ -99,6 +99,8 @@ def create_edit_sustance(request, org_pk, pk=None):
                 CHANGE,
                 "substance",
                 changed_data=objform.changed_data,
+                change_message=_("Updated substance '%(name)s'")
+                % {"name": obj.comercial_name},
             )
             organilab_logentry(
                 request.user,
@@ -106,6 +108,8 @@ def create_edit_sustance(request, org_pk, pk=None):
                 CHANGE,
                 "substance characteristics",
                 changed_data=suschacform.changed_data,
+                change_message=_("Updated characteristics of substance '%(name)s'")
+                % {"name": obj.comercial_name},
             )
 
             return redirect(
@@ -118,14 +122,29 @@ def create_edit_sustance(request, org_pk, pk=None):
         )
         rev_sub = ReviewSubstance.objects.create(substance=substance)
         charac = SubstanceCharacteristics.objects.create(substance=substance)
-        organilab_logentry(request.user, substance, ADDITION, "substance")
-        organilab_logentry(request.user, charac, ADDITION, "substance characteristics")
+        organilab_logentry(
+            request.user,
+            substance,
+            ADDITION,
+            "substance",
+            changed_data=["created_by", "organization"],
+            change_message=_("Created new substance"),
+        )
+        organilab_logentry(
+            request.user,
+            charac,
+            ADDITION,
+            "substance characteristics",
+            changed_data=["substance"],
+            change_message=_("Created substance characteristics"),
+        )
         organilab_logentry(
             request.user,
             rev_sub,
             ADDITION,
             "review substance",
             changed_data=["substance"],
+            change_message=_("Created review substance"),
         )
         return redirect(
             reverse("sga:step_one", kwargs={"org_pk": org_pk, "pk": substance.pk})
@@ -206,7 +225,9 @@ def approve_substances(request, org_pk, pk):
         review_subs,
         CHANGE,
         "review substance",
-        changed_data=["is_approved"],
+        changed_data=["is_approved", "organization", "created_by"],
+        change_message=_("Approved substance '%(name)s'")
+        % {"name": review_subs.substance.comercial_name},
     )
     return redirect(reverse("sga:approved_substance", kwargs={"org_pk": org_pk}))
 
@@ -223,9 +244,17 @@ def delete_substance(request, org_pk, pk):
     user_is_allowed_on_organization(request.user, organization)
 
     substance = get_object_or_404(Substance, pk=pk)
+    substance_name = substance.comercial_name
     Label.objects.filter(substance=substance).delete()
+    organilab_logentry(
+        request.user,
+        substance,
+        DELETION,
+        "substance",
+        changed_data=["comercial_name", "uipa_name", "cas_id_number"],
+        change_message=_("Deleted substance '%(name)s'") % {"name": substance_name},
+    )
     substance.delete()
-    organilab_logentry(request.user, substance, DELETION, "substance")
     messages.success(request, _("The substance is removed successfully"))
     return redirect(reverse("sga:get_substance", kwargs={"org_pk": org_pk}))
 
@@ -299,6 +328,8 @@ def step_two(request, org_pk, pk):
                 CHANGE,
                 "sga complement",
                 changed_data=complementform.changed_data,
+                change_message=_("Updated SGA complement for substance '%(name)s'")
+                % {"name": complement.substance.comercial_name},
             )
 
         if builderinformationform_ok:
@@ -309,6 +340,8 @@ def step_two(request, org_pk, pk):
                 CHANGE,
                 "builder information",
                 changed_data=builderinformationform.changed_data,
+                change_message=_("Updated builder information for substance '%(name)s'")
+                % {"name": complement.substance.comercial_name},
             )
 
             if display_label.label.builderInformation is None:
@@ -323,6 +356,8 @@ def step_two(request, org_pk, pk):
                 CHANGE,
                 "personal template sga",
                 changed_data=pesonalform.changed_data,
+                change_message=_("Updated personal SGA template for substance '%(name)s'")
+                % {"name": complement.substance.comercial_name},
             )
 
         if complementform_ok and builderinformationform_ok and pesonalform_ok:
@@ -386,8 +421,10 @@ def step_three(request, org_pk, template, substance):
                 user,
                 obj,
                 CHANGE,
-                "Personas template sga",
+                "personal template sga",
                 changed_data=form.changed_data,
+                change_message=_("Updated personal SGA template editor for substance '%(name)s'")
+                % {"name": display_label.label.substance.comercial_name},
             )
             return redirect(
                 reverse(
@@ -668,6 +705,8 @@ def add_observation(request, org_pk, substance):
                 ADDITION,
                 "substance observation",
                 changed_data=form.changed_data,
+                change_message=_("Added observation to substance '%(name)s'")
+                % {"name": substance_obj.comercial_name},
             )
             messages.success(request, _("Observation was saved successfully"))
         else:
@@ -702,6 +741,7 @@ def update_observation(request, org_pk):
                 CHANGE,
                 "substance observation",
                 changed_data=["description"],
+                change_message=_("Updated substance observation description"),
             )
             request.session["step"] = 2
             response["status"] = True
@@ -725,10 +765,15 @@ def delete_observation(request, org_pk):
 
         if serializer.is_valid():
             substance_obj = serializer.validated_data["pk"]
-            substance_obj.delete()
             organilab_logentry(
-                request.user, substance_obj, DELETION, "substance observation"
+                request.user,
+                substance_obj,
+                DELETION,
+                "substance observation",
+                changed_data=["description", "substance"],
+                change_message=_("Deleted substance observation"),
             )
+            substance_obj.delete()
             request.session["step"] = 2
             response["status"] = True
     return JsonResponse(response)
@@ -754,6 +799,8 @@ def change_warning_word(request, org_pk, pk):
                 CHANGE,
                 "warning word",
                 changed_data=form.changed_data,
+                change_message=_("Updated warning word '%(name)s'")
+                % {"name": obj.name},
             )
             return redirect(reverse("sga:warning_words", kwargs={"org_pk": org_pk}))
     else:
@@ -790,6 +837,8 @@ def change_prudence_advice(request, org_pk, pk, *args, **kwargs):
                 CHANGE,
                 "prudence advice",
                 changed_data=form.changed_data,
+                change_message=_("Updated prudence advice '%(code)s'")
+                % {"code": obj.code},
             )
             return redirect(
                 reverse(
@@ -838,6 +887,8 @@ def change_danger_indication(request, org_pk, pk):
                 CHANGE,
                 "danger indication",
                 changed_data=form.changed_data,
+                change_message=_("Updated danger indication '%(code)s'")
+                % {"code": obj.code},
             )
             return redirect(
                 reverse("sga:danger_indications", kwargs={"org_pk": org_pk})

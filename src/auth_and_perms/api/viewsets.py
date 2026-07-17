@@ -656,7 +656,9 @@ class DeleteUserFromContenttypeViewSet(mixins.ListModelMixin, viewsets.GenericVi
                     pp,
                     DELETION,
                     "profilepermission",
-                    changed_data=[],
+                    changed_data=["profile", "content_type", "object_id"],
+                    change_message=_("Removed laboratory permission from user '%(user)s'")
+                    % {"user": user.username},
                     relobj=organization,
                 )
             pps.delete()
@@ -673,7 +675,9 @@ class DeleteUserFromContenttypeViewSet(mixins.ListModelMixin, viewsets.GenericVi
                 pp,
                 DELETION,
                 "profilepermission",
-                changed_data=[],
+                changed_data=["profile", "content_type", "object_id"],
+                change_message=_("Removed organization permission from user '%(user)s'")
+                % {"user": user.username},
                 relobj=organization,
             )
         pps_orgs.delete()
@@ -684,7 +688,14 @@ class DeleteUserFromContenttypeViewSet(mixins.ListModelMixin, viewsets.GenericVi
                 desc_org.users.remove(user)
 
         organilab_logentry(
-            user, user, DELETION, "user", changed_data=[], relobj=organization
+            user,
+            user,
+            DELETION,
+            "user",
+            changed_data=["organizations"],
+            change_message=_("Removed user '%(user)s' from organization '%(org)s'")
+            % {"user": user.username, "org": organization.name},
+            relobj=organization,
         )
 
     def delete(self, request, *args, **kwargs):
@@ -703,7 +714,14 @@ class DeleteUserFromContenttypeViewSet(mixins.ListModelMixin, viewsets.GenericVi
                 user.is_active = False
                 user.save()
                 organilab_logentry(
-                    user, user, CHANGE, "user", changed_data=["is_active"], relobj=org
+                    user,
+                    user,
+                    CHANGE,
+                    "user",
+                    changed_data=["is_active"],
+                    change_message=_("Deactivated user '%(user)s'")
+                    % {"user": user.username},
+                    relobj=org,
                 )
 
             pps = ProfilePermission.objects.filter(
@@ -714,7 +732,14 @@ class DeleteUserFromContenttypeViewSet(mixins.ListModelMixin, viewsets.GenericVi
             )
             for pp in pps:
                 organilab_logentry(
-                    user, pp, DELETION, "profilepermission", changed_data=[], relobj=org
+                    user,
+                    pp,
+                    DELETION,
+                    "profilepermission",
+                    changed_data=["profile", "content_type", "object_id"],
+                    change_message=_("Removed profile permission from user '%(user)s'")
+                    % {"user": user.username},
+                    relobj=org,
                 )
             pps.delete()
         return Response({"result": "ok"})
