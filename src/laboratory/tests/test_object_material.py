@@ -255,11 +255,6 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
             "plaque": "RA4300",
             "type": "0",
         }
-        response = self.client.post(url, data=data)
-        new_object = Object.objects.filter(type=1).first()
-        self.assertEqual(response.status_code, 200)
-        self.assertFalse(hasattr(object, "materialcapacity"))
-        self.assertFalse(hasattr(new_object, "materialcapacity"))
         success_url = (
             reverse(
                 "laboratory:objectview_list",
@@ -267,6 +262,11 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
             )
             + "?type_id=0"
         )
+        response = self.client.post(url, data=data)
+        new_object = Object.objects.filter(type=1).first()
+        self.assertRedirects(response, success_url)
+        self.assertFalse(hasattr(object, "materialcapacity"))
+        self.assertFalse(hasattr(new_object, "materialcapacity"))
 
     def test_update_no_material_with_capacity_unit(self):
         """
@@ -292,12 +292,6 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
             "capacity": 21.54,
             "capacity_measurement_unit": 64,
         }
-        response = self.client.post(url, data=data)
-        new_object = Object.objects.filter(type=1).first()
-        self.assertEqual(response.status_code, 200)
-        self.assertFalse(hasattr(object, "materialcapacity"))
-        self.assertFalse(hasattr(new_object, "materialcapacity"))
-        """In objects different of material type the material capacity not create"""
         success_url = (
             reverse(
                 "laboratory:objectview_list",
@@ -305,6 +299,12 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
             )
             + "?type_id=0"
         )
+        response = self.client.post(url, data=data)
+        new_object = Object.objects.filter(type=1).first()
+        self.assertRedirects(response, success_url)
+        self.assertFalse(hasattr(object, "materialcapacity"))
+        self.assertFalse(hasattr(new_object, "materialcapacity"))
+        """In objects different of material type the material capacity not create"""
 
     def test_update_material(self):
         """

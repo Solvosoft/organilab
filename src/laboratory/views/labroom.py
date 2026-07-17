@@ -323,7 +323,10 @@ class LabroomCreate(CreateView):
             self.request.user,
             self.object,
             ADDITION,
+            "laboratoryroom",
             changed_data=form.changed_data,
+            change_message=_("Created laboratory room '%(name)s'")
+            % {"name": self.object.name},
             relobj=self.lab,
         )
 
@@ -369,7 +372,10 @@ class LabroomUpdate(UpdateView):
             self.request.user,
             self.object,
             CHANGE,
+            "laboratoryroom",
             changed_data=form.changed_data,
+            change_message=_("Updated laboratory room '%(name)s'")
+            % {"name": self.object.name},
             relobj=self.lab,
         )
         return HttpResponseRedirect(self.get_success_url())
@@ -405,7 +411,16 @@ class LaboratoryRoomDelete(DeleteView):
         if self.object.laboratory != self.laboratory:
             raise Http404()
         success_url = self.get_success_url()
-        organilab_logentry(self.request.user, self.object, DELETION, relobj=self.lab)
+        organilab_logentry(
+            self.request.user,
+            self.object,
+            DELETION,
+            "laboratoryroom",
+            changed_data=["name"],
+            change_message=_("Deleted laboratory room '%(name)s'")
+            % {"name": self.object.name},
+            relobj=self.lab,
+        )
         self.object.delete()
         return HttpResponseRedirect(success_url)
 

@@ -472,7 +472,13 @@ def _increase_standard_stock(user, product, amount_to_return):
         product.shelf_object.quantity += amount_to_return
         product.shelf_object.save()
         organilab_logentry(
-            user, product.shelf_object, CHANGE, relobj=product.shelf_object
+            user,
+            product.shelf_object,
+            CHANGE,
+            changed_data=["quantity"],
+            change_message=_("Returned %(amount)s units to stock from reservation")
+            % {"amount": amount_to_return},
+            relobj=product.shelf_object,
         )
     ReservedProducts.objects.filter(pk=product.pk).update(
         amount_returned=product.amount_returned + amount_to_return,

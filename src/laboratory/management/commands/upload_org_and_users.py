@@ -292,10 +292,7 @@ class Command(BaseCommand):
             object_id=object_id,
             organization=organization,
         )
-        if profile.user.email in [
-            "alonso.calvo.araya@una.cr",
-            "allan.madrigal.mata@una.cr",
-        ]:
+        if profile.user.email in [""]:
             role = Rol.objects.get(name="Solo Lectura")
             pp.rol.add(role)
             pp.save()

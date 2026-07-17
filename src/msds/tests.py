@@ -12,6 +12,9 @@ class MsdsTest(TestCase):
         self.user = User.objects.get(pk=1)
         permission = Permission.objects.get(codename="institution_can_access")
         self.user.user_permissions.add(permission)
+        for codename in ["view_msdsobject", "add_msdsobject"]:
+            perm = Permission.objects.get(codename=codename)
+            self.user.user_permissions.add(perm)
         self.url_attr = {"org_pk": 1}
         self.client.force_login(self.user)
 

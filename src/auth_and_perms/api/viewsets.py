@@ -108,6 +108,20 @@ class RolAPI(
             permissions = list(Permission.objects.filter(pk__in=perms_rols))
             serializer.instance.permissions.add(*permissions)
 
+        organilab_logentry(
+            self.request.user,
+            serializer.instance,
+            ADDITION,
+            "rol",
+            changed_data=[],
+            change_message=_("Created the role %(rol)r in %(org)r")
+            % {
+                "rol": serializer.instance.name,
+                "org": organizationstructure.name,
+            },
+            relobj=organizationstructure,
+        )
+
 
 class ProfileToContenttypeObjectAPI(mixins.CreateModelMixin, viewsets.GenericViewSet):
     queryset = UserOrganization.objects.all()
@@ -152,6 +166,24 @@ class ProfileToContenttypeObjectAPI(mixins.CreateModelMixin, viewsets.GenericVie
             ).first(),
             object_id=contenttypeobj.pk,
             organization=organization,
+        )
+
+        organilab_logentry(
+            self.request.user,
+            user,
+            ADDITION,
+            "user",
+            changed_data=[],
+            change_message=_(
+                "Linked the user %(user)r to %(objtype)s %(obj)r in organization %(org)r"
+            )
+            % {
+                "user": user.username,
+                "objtype": serializer.data["typeofcontenttype"],
+                "obj": str(contenttypeobj),
+                "org": organization.name,
+            },
+            relobj=organization,
         )
 
         if serializer.data["typeofcontenttype"] == "laboratory":
@@ -242,9 +274,33 @@ class UpdateRolOrganizationProfilePermission(
 
                     if lab and action == "append":
                         profile.laboratories.add(lab)
+                        organilab_logentry(
+                            request.user,
+                            profile.user,
+                            CHANGE,
+                            "user",
+                            changed_data=["laboratories"],
+                            change_message=_(
+                                "Linked the laboratory %(lab)r to %(user)r"
+                            )
+                            % {"lab": lab.name, "user": profile.user.username},
+                            relobj=org,
+                        )
 
                     elif lab and action == "sustract":
                         profile.laboratories.remove(lab)
+                        organilab_logentry(
+                            request.user,
+                            profile.user,
+                            CHANGE,
+                            "user",
+                            changed_data=["laboratories"],
+                            change_message=_(
+                                "Unlinked the laboratory %(lab)r from %(user)r"
+                            )
+                            % {"lab": lab.name, "user": profile.user.username},
+                            relobj=org,
+                        )
 
                 if (
                     "objectid" in serializer.data["contenttypeobj"]
@@ -266,6 +322,46 @@ class UpdateRolOrganizationProfilePermission(
                     profilepermission = ProfilePermission.objects.create(**ppdata)
 
                 self.manage_rols(action, profilepermission, rols)
+                rol_names = ", ".join(rols.values_list("name", flat=True))
+                scope_name = (
+                    lab.name
+                    if content_type["model"] == "laboratory"
+                    and content_type["appname"] == "laboratory"
+                    else org.name
+                )
+                if action == "append":
+                    change_message = _(
+                        "Assigned the roles %(rols)r to %(user)r in %(scope)r"
+                    ) % {
+                        "rols": rol_names,
+                        "user": profile.user.username,
+                        "scope": scope_name,
+                    }
+                elif action == "sustract":
+                    change_message = _(
+                        "Removed the roles %(rols)r from %(user)r in %(scope)r"
+                    ) % {
+                        "rols": rol_names,
+                        "user": profile.user.username,
+                        "scope": scope_name,
+                    }
+                else:
+                    change_message = _(
+                        "Set the roles of %(user)r to %(rols)r in %(scope)r"
+                    ) % {
+                        "user": profile.user.username,
+                        "rols": rol_names,
+                        "scope": scope_name,
+                    }
+                organilab_logentry(
+                    request.user,
+                    profile.user,
+                    CHANGE,
+                    "user",
+                    changed_data=["rol"],
+                    change_message=change_message,
+                    relobj=org,
+                )
 
             return Response(serializer.data)
         return Response(serializer.errors)
@@ -370,11 +466,15 @@ class UserInOrganization(mixins.ListModelMixin, viewsets.GenericViewSet):
             .distinct()
         )
 
-        return Profile.objects.using(settings.READONLY_DATABASE).filter(
-            user__pk__in=users,
-            profilepermission__content_type__app_label="laboratory",
-            profilepermission__content_type__model="organizationstructure",
-            profilepermission__object_id=self.organization.pk,
+        return (
+            Profile.objects.using(settings.READONLY_DATABASE)
+            .filter(
+                user__pk__in=users,
+                profilepermission__content_type__app_label="laboratory",
+                profilepermission__content_type__model="organizationstructure",
+                profilepermission__object_id=self.organization.pk,
+            )
+            .distinct()
         )
 
     def list(self, request, *args, **kwargs):
@@ -448,6 +548,23 @@ class UserInOrganization(mixins.ListModelMixin, viewsets.GenericViewSet):
                     user=serializer.validated_data["profile"].user,
                     type_in_organization=org_vinculate,
                 )
+
+            organilab_logentry(
+                request.user,
+                serializer.validated_data["profile"].user,
+                CHANGE,
+                "user",
+                changed_data=["rol"],
+                change_message=_(
+                    "Inherited the profile of %(user)r from %(org)r to its "
+                    "child organizations"
+                )
+                % {
+                    "user": serializer.validated_data["profile"].user.username,
+                    "org": organization.name,
+                },
+                relobj=organization,
+            )
 
             return Response({"result": "ok"})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -531,7 +648,7 @@ class DeleteUserFromContenttypeViewSet(mixins.ListModelMixin, viewsets.GenericVi
                 content_type__app_label="laboratory",
                 content_type__model="laboratory",
                 object_id__in=labs.values_list("pk", flat=True),
-                organization__pḱ=organization.pk,
+                organization__pk=organization.pk,
             )
             for pp in pps:
                 organilab_logentry(
@@ -539,7 +656,9 @@ class DeleteUserFromContenttypeViewSet(mixins.ListModelMixin, viewsets.GenericVi
                     pp,
                     DELETION,
                     "profilepermission",
-                    changed_data=[],
+                    changed_data=["profile", "content_type", "object_id"],
+                    change_message=_("Removed laboratory permission from user '%(user)s'")
+                    % {"user": user.username},
                     relobj=organization,
                 )
             pps.delete()
@@ -556,7 +675,9 @@ class DeleteUserFromContenttypeViewSet(mixins.ListModelMixin, viewsets.GenericVi
                 pp,
                 DELETION,
                 "profilepermission",
-                changed_data=[],
+                changed_data=["profile", "content_type", "object_id"],
+                change_message=_("Removed organization permission from user '%(user)s'")
+                % {"user": user.username},
                 relobj=organization,
             )
         pps_orgs.delete()
@@ -567,7 +688,14 @@ class DeleteUserFromContenttypeViewSet(mixins.ListModelMixin, viewsets.GenericVi
                 desc_org.users.remove(user)
 
         organilab_logentry(
-            user, user, DELETION, "user", changed_data=[], relobj=organization
+            user,
+            user,
+            DELETION,
+            "user",
+            changed_data=["organizations"],
+            change_message=_("Removed user '%(user)s' from organization '%(org)s'")
+            % {"user": user.username, "org": organization.name},
+            relobj=organization,
         )
 
     def delete(self, request, *args, **kwargs):
@@ -586,7 +714,14 @@ class DeleteUserFromContenttypeViewSet(mixins.ListModelMixin, viewsets.GenericVi
                 user.is_active = False
                 user.save()
                 organilab_logentry(
-                    user, user, CHANGE, "user", changed_data=["is_active"], relobj=org
+                    user,
+                    user,
+                    CHANGE,
+                    "user",
+                    changed_data=["is_active"],
+                    change_message=_("Deactivated user '%(user)s'")
+                    % {"user": user.username},
+                    relobj=org,
                 )
 
             pps = ProfilePermission.objects.filter(
@@ -597,7 +732,14 @@ class DeleteUserFromContenttypeViewSet(mixins.ListModelMixin, viewsets.GenericVi
             )
             for pp in pps:
                 organilab_logentry(
-                    user, pp, DELETION, "profilepermission", changed_data=[], relobj=org
+                    user,
+                    pp,
+                    DELETION,
+                    "profilepermission",
+                    changed_data=["profile", "content_type", "object_id"],
+                    change_message=_("Removed profile permission from user '%(user)s'")
+                    % {"user": user.username},
+                    relobj=org,
                 )
             pps.delete()
         return Response({"result": "ok"})
@@ -732,7 +874,8 @@ class OrganizationButtons(APIView):
                 {
                     "result": render_to_string(
                         "auth_and_perms/organization_buttons.html",
-                        context={"request": request, "organization": organization},
+                        context={"organization": organization},
+                        request=request,
                     )
                 },
                 status=status.HTTP_200_OK,
@@ -784,21 +927,47 @@ class ManageOrgLabsAPI(APIView):
         labs = request.data.get("labs", [])
         mergeaction = request.data.get("mergeaction", "append")
         ct = ContentType.objects.get(app_label="laboratory", model="laboratory")
+        lab_names = ", ".join(
+            Laboratory.objects.filter(pk__in=[int(p) for p in labs]).values_list(
+                "name", flat=True
+            )
+        )
         if mergeaction == "full":
             OrganizationStructureRelations.objects.filter(
                 organization=org, content_type=ct
             ).delete()
             for lab_pk in labs:
                 register_laboratory_contenttype(org, int(lab_pk))
+            change_message = _(
+                "Set the laboratories linked to the organization %(org)r to %(labs)r"
+            ) % {"org": org.name, "labs": lab_names}
         elif mergeaction == "append":
             for lab_pk in labs:
                 register_laboratory_contenttype(org, int(lab_pk))
+            change_message = _(
+                "Linked the laboratories %(labs)r to the organization %(org)r"
+            ) % {"labs": lab_names, "org": org.name}
         elif mergeaction == "sustract":
             OrganizationStructureRelations.objects.filter(
                 organization=org,
                 content_type=ct,
                 object_id__in=[int(p) for p in labs],
             ).delete()
+            change_message = _(
+                "Unlinked the laboratories %(labs)r from the organization %(org)r"
+            ) % {"labs": lab_names, "org": org.name}
+        else:
+            change_message = ""
+        if labs:
+            organilab_logentry(
+                request.user,
+                org,
+                CHANGE,
+                "organization structure",
+                changed_data=["laboratory"],
+                change_message=change_message,
+                relobj=org,
+            )
         return Response({"ok": True})
 
 

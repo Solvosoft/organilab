@@ -169,7 +169,13 @@ class OrganizationDeleteView(DeleteView):
     def form_valid(self, form):
         success_url = self.get_success_url()
         organilab_logentry(
-            self.request.user, self.object, DELETION, "organization structure"
+            self.request.user,
+            self.object,
+            DELETION,
+            "organization structure",
+            changed_data=["name"],
+            change_message=_("Deleted organization '%(name)s'")
+            % {"name": self.object.name},
         )
         self.object.delete()
         return HttpResponseRedirect(success_url)
@@ -197,6 +203,8 @@ class OrganizationCreateView(CreateView):
             ADDITION,
             "organization structure",
             changed_data=["organization", "users"],
+            change_message=_("Created organization '%(name)s'")
+            % {"name": self.object.name},
         )
         return response
 
@@ -237,7 +245,9 @@ class OrganizationActionsFormview(FormView):
             self.org,
             CHANGE,
             "inactive organization",
-            changed_data=["organization"],
+            changed_data=["active"],
+            change_message=_("Deactivated organization '%(name)s'")
+            % {"name": self.org.name},
         )
 
     def active_organization(self, form):
@@ -250,7 +260,9 @@ class OrganizationActionsFormview(FormView):
             self.org,
             CHANGE,
             "active organization",
-            changed_data=["organization"],
+            changed_data=["active"],
+            change_message=_("Activated organization '%(name)s'")
+            % {"name": self.org.name},
         )
 
     def clone_organization(self, form):
@@ -268,6 +280,8 @@ class OrganizationActionsFormview(FormView):
             ADDITION,
             "clone organization structure",
             changed_data=["name", "position", "level", "active", "parent", "users"],
+            change_message=_("Cloned organization '%(original)s' to '%(clone)s'")
+            % {"original": self.org.name, "clone": newinstance.name},
         )
 
         for orgrel in OrganizationStructureRelations.objects.filter(
@@ -284,6 +298,8 @@ class OrganizationActionsFormview(FormView):
                 ADDITION,
                 "organization structure relations",
                 changed_data=["organization", "content_type", "object_id"],
+                change_message=_("Created organization relation for '%(org)s'")
+                % {"org": newinstance.name},
                 relobj=newinstance,
             )
 
@@ -297,6 +313,8 @@ class OrganizationActionsFormview(FormView):
                 ADDITION,
                 "rol",
                 changed_data=["name", "color", "permissions"],
+                change_message=_("Created role '%(name)s' for organization '%(org)s'")
+                % {"name": new_role.name, "org": newinstance.name},
                 relobj=newinstance,
             )
 
@@ -321,6 +339,8 @@ class OrganizationActionsFormview(FormView):
                 ADDITION,
                 "user organization",
                 changed_data=["organization", "type_in_organization", "user", "status"],
+                change_message=_("Added user '%(user)s' to cloned organization '%(org)s'")
+                % {"user": user.user.username, "org": newinstance.name},
                 relobj=newinstance,
             )
 
@@ -332,9 +352,11 @@ class OrganizationActionsFormview(FormView):
         organilab_logentry(
             self.request.user,
             self.org,
-            ADDITION,
+            CHANGE,
             "change name organization",
-            changed_data=["organization"],
+            changed_data=["name"],
+            change_message=_("Changed organization name to '%(name)s'")
+            % {"name": self.org.name},
         )
 
     def form_valid(self, form):
@@ -390,6 +412,8 @@ class OrganizationUpdateView(UpdateView):
                 CHANGE,
                 "rol",
                 changed_data=["organizationstructure"],
+                change_message=_("Transferred role '%(role)s' to organization '%(org)s'")
+                % {"role": rol.name, "org": new_root.name},
             )
 
         for user in old_org.users.all():
@@ -405,6 +429,8 @@ class OrganizationUpdateView(UpdateView):
                 CHANGE,
                 "user",
                 changed_data=["organization"],
+                change_message=_("Transferred user '%(user)s' to organization '%(org)s'")
+                % {"user": user.username, "org": new_root.name},
             )
 
         lab_content_type = ContentType.objects.get_for_model(Laboratory)
@@ -420,6 +446,8 @@ class OrganizationUpdateView(UpdateView):
                 CHANGE,
                 "laboratory",
                 changed_data=["organization_relation"],
+                change_message=_("Created lab relation for '%(lab)s' in '%(org)s'")
+                % {"lab": lab.name, "org": new_root.name},
             )
 
     def form_valid(self, form):
@@ -437,5 +465,7 @@ class OrganizationUpdateView(UpdateView):
             CHANGE,
             "organization structure",
             changed_data=form.changed_data,
+            change_message=_("Updated organization '%(name)s'")
+            % {"name": self.object.name},
         )
         return response

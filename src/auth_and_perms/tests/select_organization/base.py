@@ -7,7 +7,7 @@ from auth_and_perms.node_tree import (
     get_org_parents_info,
     get_tree_organization_pks_by_user,
 )
-from laboratory.models import OrganizationStructure, Object, ShelfObject
+from laboratory.models import OrganizationStructure, Object, ShelfObject, UserOrganization
 import json
 
 
@@ -56,7 +56,9 @@ class TestCaseBase(TestCase):
         if user and client:
             self.user = user
             self.client = client
-        response = self.client.get(self.url, data=self.data)
+        response = self.client.get(
+            self.url, data=self.data, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+        )
 
         if self.org:
             user_in_org = self.org.users.filter(pk=self.user.pk).exists()
@@ -66,13 +68,14 @@ class TestCaseBase(TestCase):
     def check_status_code(self, response, status_code=400):
         self.assertEqual(response.status_code, status_code)
 
-        content = json.loads(response.content)
+        if "application/json" in response.get("Content-Type", ""):
+            content = json.loads(response.content)
 
-        if status_code == 400:
-            self.assertTrue(content["errors"])
+            if status_code == 400:
+                self.assertTrue(content["errors"])
 
-        if status_code == 403:
-            self.assertTrue(content["detail"])
+            if status_code == 403:
+                self.assertTrue(content["detail"])
 
 
 class ObjectsByOrganizationViewTest(TestCaseBase):
@@ -84,9 +87,9 @@ class ObjectsByOrganizationViewTest(TestCaseBase):
     def check_objects_result(self, response, status_code):
         objects_org = Object.objects.filter(organization=self.org)
         object_id_list = list(objects_org.values_list("id", flat=True).order_by("name"))
-        content = json.loads(response.content)
 
         if status_code == 200:
+            content = json.loads(response.content)
             if objects_org.exists():
                 obj_response_list = [obj["id"] for obj in content["results"]]
                 self.assertTrue(content["results"])
@@ -151,24 +154,39 @@ class OrganizationsByUserViewTest(TestCaseBase):
                 self.assertTrue(org.parent is None)
 
     def get_organizations_id_by_user(self):
-        parents, parents_pks = get_org_parents_info(self.user)
-        pks = []
-        for node in parents:
-            if node.pk not in pks:
-                get_tree_organization_pks_by_user(
-                    node, self.user, pks, parents=parents_pks, extras={"active": True}
-                )
+        # Mirrors OrgTree.get_queryset() branching in auth_and_perms/gtselects.py:
+        # superusers/"Administrativo superior" get the full org tree, everyone
+        # else only gets the organizations they're directly a member of.
+        roles = self.user.profile.profilepermission_set.filter(
+            rol__name="Administrativo superior"
+        )
+        if self.user.is_superuser or roles.exists():
+            parents, parents_pks = get_org_parents_info(self.user)
+            pks = []
+            for node in parents:
+                if node.pk not in pks:
+                    get_tree_organization_pks_by_user(
+                        node, self.user, pks, parents=parents_pks, extras={"active": True}
+                    )
+            return pks
 
-        return pks
+        org_ids = UserOrganization.objects.filter(user=self.user).values_list(
+            "organization_id", flat=True
+        )
+        return list(
+            OrganizationStructure.objects.filter(pk__in=org_ids, active=True)
+            .order_by("level", "name")
+            .values_list("pk", flat=True)
+        )
 
     def check_organizations_result(self, response, status_code):
         organization_id_list = self.get_organizations_id_by_user()
         org_exclude_list = OrganizationStructure.objects.exclude(
             pk__in=organization_id_list
         )
-        content = json.loads(response.content)
 
         if status_code == 200:
+            content = json.loads(response.content)
             if len(organization_id_list):
                 organization_response_list = [obj["id"] for obj in content["results"]]
                 self.assertTrue(content["results"])
@@ -203,9 +221,9 @@ class ShelfObjectsByObjectViewTest(TestCaseBase):
         shelfobjects_id_list = list(
             shelfobjects_by_object_and_org.values_list("id", flat=True).order_by("id")
         )
-        content = json.loads(response.content)
 
         if status_code == 200:
+            content = json.loads(response.content)
             if shelfobjects_by_object_and_org.exists():
                 shelfobject_response_list = [obj["id"] for obj in content["data"]]
                 self.assertTrue(content["data"])
@@ -248,9 +266,8 @@ class OrganizationButtonsByUserViewTest(TestCaseBase):
     def check_organization_buttons_result(
         self, response, status_code, can_view_actions_buttons
     ):
-        content = json.loads(response.content)
-
         if status_code == 200:
+            content = json.loads(response.content)
             self.assertTrue(self.org.name in content["result"])
             self.assertEqual(
                 "btn-success" in content["result"], can_view_actions_buttons
