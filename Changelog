@@ -1,3 +1,7 @@
+22/07/2026
+Command to update sds
+    - python manage.py check_security_sheets
+
 10/07/2026
 Command to update users roles
     - python manage.py update_roles
