@@ -363,7 +363,9 @@ def clasificar_establecimiento(inventario, c3, umbral_H_df, map_H_to_tipo):
                         None if pd.isna(r["umbral_c3"]) else float(r["umbral_c3"])
                     ),
                     "ratio_c3": (
-                        None if pd.isna(r["ratio_c3"]) else float(r["ratio_c3"])
+                        None
+                        if pd.isna(r["ratio_c3"])
+                        else round(float(r["ratio_c3"]), 3)
                     ),
                     "h_codes": r["h_codes"],
                     "contribuciones": {},
@@ -395,7 +397,9 @@ def clasificar_establecimiento(inventario, c3, umbral_H_df, map_H_to_tipo):
                             None if pd.isna(r["umbral_c3"]) else float(r["umbral_c3"])
                         ),
                         "ratio_c3": (
-                            None if pd.isna(r["ratio_c3"]) else float(r["ratio_c3"])
+                            None
+                            if pd.isna(r["ratio_c3"])
+                            else round(float(r["ratio_c3"]), 3)
                         ),
                         "h_codes": r["h_codes"],
                         "contribuciones": {},
@@ -443,7 +447,9 @@ def clasificar_establecimiento(inventario, c3, umbral_H_df, map_H_to_tipo):
                     None if pd.isna(fila["umbral_c3"]) else float(fila["umbral_c3"])
                 ),
                 "ratio_c3": (
-                    None if pd.isna(fila["ratio_c3"]) else float(fila["ratio_c3"])
+                    None
+                    if pd.isna(fila["ratio_c3"])
+                    else round(float(fila["ratio_c3"]), 3)
                 ),
                 "h_codes": fila["h_codes"],
                 "contribuciones": res_sust["contribuciones"],
@@ -694,21 +700,23 @@ def build_establishment_xls(res):
 
     for det in res.get("detalles", []):
         contribuciones = det.get("contribuciones", {})
-        ws_det.append([
-            det.get("nombre", ""),
-            det.get("cas", ""),
-            det.get("cantidad_t", ""),
-            det.get("nominada_c3", ""),
-            det.get("umbral_c3", ""),
-            det.get("ratio_c3", ""),
-            det.get("h_codes", ""),
-            contribuciones.get("Físico", ""),
-            contribuciones.get("Salud", ""),
-            contribuciones.get("Ambiental", ""),
-            det.get("regla_cruzada_salud", ""),
-            "\n".join(det.get("detalle_contribuciones", [])),
-            "\n".join(det.get("advertencias", [])),
-        ])
+        ws_det.append(
+            [
+                det.get("nombre", ""),
+                det.get("cas", ""),
+                det.get("cantidad_t", ""),
+                det.get("nominada_c3", ""),
+                det.get("umbral_c3", ""),
+                det.get("ratio_c3", ""),
+                det.get("h_codes", ""),
+                contribuciones.get("Físico", ""),
+                contribuciones.get("Salud", ""),
+                contribuciones.get("Ambiental", ""),
+                det.get("regla_cruzada_salud", ""),
+                "\n".join(det.get("detalle_contribuciones", [])),
+                "\n".join(det.get("advertencias", [])),
+            ]
+        )
 
     for col_idx in range(1, len(headers) + 1):
         ws_det.column_dimensions[openpyxl.utils.get_column_letter(col_idx)].width = 20
@@ -772,6 +780,6 @@ def create_estableshment_logs_data(element, day, labs):
                 environmental=0.0,
                 health=0.0,
                 physical=0.0,
-                establishment_status="riesgo menor",
+                establishment_status="Desconocido",
                 date=day,
             )

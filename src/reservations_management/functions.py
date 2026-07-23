@@ -1,5 +1,6 @@
 import importlib
 import json
+import math
 from collections import namedtuple
 from datetime import datetime, timedelta
 
@@ -10,16 +11,17 @@ from django.contrib.auth.decorators import permission_required
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 from django_celery_beat.models import ClockedSchedule, PeriodicTask
 
 from auth_and_perms.organization_utils import user_is_allowed_on_organization
-from laboratory.models import ShelfObject, OrganizationStructure
-from laboratory.utils import organilab_logentry
+from laboratory.models import ShelfObject, OrganizationStructure, ShelfObjectObservation
+from laboratory.utils import organilab_logentry, save_object_by_action
+from laboratory.logsustances import log_object_change
 from .api.serializers import (
     ValidateReservedProductsSerializer,
-    ValidateReservedProductsAmountSerializer,
 )
-from .models import ReservedProducts, ReservationTasks
+from .models import ReservedProducts, ReservationTasks, BORROWED, RETURNED
 
 app = importlib.import_module(settings.CELERY_MODULE).app
 
@@ -29,14 +31,27 @@ def get_product_name_and_quantity(request, org_pk):
     product_name = ""
     if request.method == "GET":
         product = ReservedProducts.objects.get(id=request.GET["id"])
-        product_name = product.shelf_object.object.name
-        product_quantity = product.shelf_object.quantity
-        product_unit = product.shelf_object.measurement_unit.description
+        shelf_object = product.shelf_object
+        product_name = shelf_object.object.name
+
+        if shelf_object.is_box:
+            product_quantity = len(shelf_object.quantity_units)
+            product_unit = str(_("boxes"))
+            product_is_box = True
+            reserved_boxes = product.reserved_boxes
+        else:
+            product_quantity = shelf_object.quantity
+            product_unit = shelf_object.measurement_unit.description
+            product_is_box = False
+            reserved_boxes = []
+
     return JsonResponse(
         {
             "product_name": product_name,
             "product_quantity": product_quantity,
             "product_unit": product_unit,
+            "product_is_box": product_is_box,
+            "reserved_boxes": reserved_boxes,
         }
     )
 
@@ -327,9 +342,7 @@ def validate_reservation(request, org_pk):
             requested_product = serializer.validated_data["id"]
             requested_final_date = requested_product.final_date
 
-            if requested_final_date >= pytz.UTC.localize(
-                datetime.now()
-            ):
+            if requested_final_date >= pytz.UTC.localize(datetime.now()):
 
                 requested_amount_required = requested_product.amount_required
                 requested_product_quantity = requested_product.shelf_object.quantity
@@ -418,30 +431,193 @@ def increase_stock(request, org_pk):
     )
     user_is_allowed_on_organization(request.user, organization)
 
-    # Validate if is possible to compute the sum
     if request.method == "GET":
-
-        serializer = ValidateReservedProductsAmountSerializer(
+        serializer = ValidateReservedProductsSerializer(
             data=request.GET, context={"organization_id": org_pk}
         )
 
         if serializer.is_valid():
-
             product = serializer.validated_data["id"]
-            amount_to_return = serializer.validated_data["amount_to_return"]
+            shelf_object = product.shelf_object
 
-            if product.amount_required >= amount_to_return:
-                product.shelf_object.quantity += amount_to_return
-                was_increase = True
-                product.shelf_object.save()
-                organilab_logentry(
-                    request.user,
-                    product.shelf_object,
-                    CHANGE,
-                    relobj=product.shelf_object,
+            if shelf_object.is_box:
+                try:
+                    boxes_to_return = json.loads(
+                        request.GET.get("boxes_to_return", "[]")
+                    )
+                except (json.JSONDecodeError, ValueError):
+                    return JsonResponse(
+                        {"was_increase": False, "error": str(_("Invalid data."))}
+                    )
+                if not boxes_to_return:
+                    return JsonResponse(
+                        {"was_increase": False, "error": str(_("No boxes selected."))}
+                    )
+                was_increase = _increase_box_stock(
+                    request.user, product, organization, boxes_to_return
+                )
+            else:
+                amount_to_return = float(request.GET.get("amount_to_return", 0) or 0)
+                was_increase = _increase_standard_stock(
+                    request.user, product, amount_to_return
                 )
 
     return JsonResponse({"was_increase": was_increase})
+
+
+def _increase_standard_stock(user, product, amount_to_return):
+    if amount_to_return < 0 or amount_to_return > product.amount_required:
+        return False
+    if amount_to_return > 0:
+        product.shelf_object.quantity += amount_to_return
+        product.shelf_object.save()
+        organilab_logentry(
+            user,
+            product.shelf_object,
+            CHANGE,
+            changed_data=["quantity"],
+            change_message=_("Returned %(amount)s units to stock from reservation")
+            % {"amount": amount_to_return},
+            relobj=product.shelf_object,
+        )
+    ReservedProducts.objects.filter(pk=product.pk).update(
+        amount_returned=product.amount_returned + amount_to_return,
+        status=RETURNED,
+    )
+    return True
+
+
+def _increase_box_stock(user, product, organization, boxes_to_return):
+    """
+    Restores specified units per box back into quantity_units (one-time return).
+    boxes_to_return: list of {'code': str, 'units': number}.
+    Boxes with units > 0 are restored to the shelf.
+    Boxes with units == 0 are treated as consumed — not restored, not kept.
+    After this call the product status is always set to RETURNED.
+    """
+    shelf_object = product.shelf_object
+
+    return_map = {item["code"]: item["units"] for item in boxes_to_return}
+
+    quantity_units = {
+        entry["code"]: entry["units"] for entry in shelf_object.quantity_units
+    }
+    affected_codes = []
+    total_returned = 0.0
+
+    for box in product.reserved_boxes:
+        code = box["code"]
+        reserved_units = box["units"]
+        restore_units = return_map.get(code, 0)
+
+        if restore_units > 0:
+            old_units = quantity_units.get(code, 0)
+            new_units = old_units + restore_units
+            old_quantity = shelf_object.get_box_totals()
+            new_quantity = (
+                shelf_object.get_shelfobject_conversion_from_two_units(
+                    shelf_object.shelf.measurement_unit, shelf_object.quantity
+                )
+                * new_units
+                if shelf_object.shelf.measurement_unit
+                else shelf_object.quantity * new_units
+            )
+
+            log_object_change(
+                user,
+                shelf_object.in_where_laboratory_id,
+                shelf_object,
+                old_quantity,
+                new_quantity + old_quantity,
+                str(_("Return via reservation #%(pk)d") % {"pk": product.pk}),
+                2,
+                str(_("Return")),
+                create=False,
+                organization=organization,
+            )
+            quantity_units[code] = new_units
+            affected_codes.append(code)
+            total_returned += restore_units / reserved_units
+
+    if affected_codes:
+        if shelf_object.shelf.measurement_unit:
+            shelf_object.quantity_units = [
+                {
+                    "code": code,
+                    "units": units,
+                    "quantity": shelf_object.get_shelfobject_conversion_from_two_units(
+                        shelf_object.shelf.measurement_unit, shelf_object.quantity
+                    )
+                    * units,
+                }
+                for code, units in quantity_units.items()
+            ]
+        else:
+            shelf_object.quantity_units = [
+                {
+                    "code": code,
+                    "units": units,
+                    "quantity": shelf_object.quantity * units,
+                }
+                for code, units, quantity in quantity_units
+            ]
+        shelf_object.save(update_fields=["quantity_units"])
+
+        ShelfObjectObservation.objects.create(
+            action_taken=str(_("Box units returned")),
+            description=str(
+                _("Boxes %(codes)s returned from reservation #%(pk)d")
+                % {
+                    "codes": ", ".join(affected_codes),
+                    "pk": product.pk,
+                }
+            ),
+            shelf_object=shelf_object,
+            created_by=user,
+        )
+
+    ReservedProducts.objects.filter(pk=product.pk).update(
+        status=RETURNED,
+        reserved_boxes=[],
+        amount_returned=product.amount_returned + total_returned,
+    )
+    return True
+
+
+def _allocate_boxes_if_needed(product):
+    """
+    Populates reserved_boxes if empty for a box product, using the same logic
+    as ReservedShelfObjectSerializer._select_boxes (lab/shelfobject/serializers.py).
+    Call this before scheduling the decrease_stock task.
+    """
+    shelf_object = product.shelf_object
+    if not shelf_object.is_box or product.reserved_boxes:
+        return
+
+    quantity_units = shelf_object.quantity_units or []
+    units_per_box = shelf_object.units_per_box or 1
+    amount_required = product.amount_required
+
+    full_count = int(amount_required)
+    fraction = amount_required - full_count
+    min_partial_units = math.ceil(fraction * units_per_box) if fraction > 0 else 0
+
+    complete_boxes = [b for b in quantity_units if b["units"] >= units_per_box]
+    partial_boxes = [b for b in quantity_units if b["units"] < units_per_box]
+
+    selected = [
+        {"code": b["code"], "units": units_per_box} for b in complete_boxes[:full_count]
+    ]
+
+    if min_partial_units > 0:
+        for box in complete_boxes[full_count:] + partial_boxes:
+            if box["units"] >= min_partial_units:
+                selected.append({"code": box["code"], "units": min_partial_units})
+                break
+
+    if selected:
+        product.reserved_boxes = selected
+        product.save(update_fields=["reserved_boxes"])
 
 
 def add_decrease_stock_task(reserved_product):
@@ -456,8 +632,6 @@ def add_decrease_stock_task(reserved_product):
     except Exception as error:
         pass
 
-
-
     schedule_decrease_stock(reserved_product)
 
     # new_reserved_product_task = ReservationTasks(
@@ -471,9 +645,7 @@ def schedule_decrease_stock(reserved_product):
     initial_date = reserved_product.initial_date
     if timezone.is_naive(initial_date):
         initial_date = timezone.make_aware(initial_date)
-    clocked, _ = ClockedSchedule.objects.get_or_create(
-        clocked_time=initial_date
-    )
+    clocked, _ = ClockedSchedule.objects.get_or_create(clocked_time=initial_date)
     PeriodicTask.objects.create(
         clocked=clocked,
         name=f"decrease_stock_{reserved_product.id}",

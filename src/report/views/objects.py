@@ -1,5 +1,13 @@
 from django.core.files.base import ContentFile
-from django.db.models import Sum, Min, Count
+from django.db.models import (
+    Sum,
+    Min,
+    Count,
+    Case,
+    When,
+    F,
+    FloatField,
+)
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext as _
 
@@ -58,12 +66,15 @@ def resume_queryset(queryset):
     i = 0
     for obj in objectchange_list:
         for ob in obj["values"]:
-            try:
-                user = ob.user.get_full_name()
-                if not user:
-                    user = ob.user.username
-            except Exception as e:
-                user = ""
+            if ob.deleted_user_info:
+                user = ob.deleted_user_info
+            else:
+                try:
+                    user = ob.user.get_full_name()
+                    if not user:
+                        user = ob.user.username
+                except Exception as e:
+                    user = ""
 
             object_list = ResultQueryElement(
                 {
@@ -182,10 +193,28 @@ def get_dataset_reactive_precursor(report, column_list=None):
         rpo = rpo.filter(
             type=Object.REACTIVE, sustancecharacteristics__is_precursor=True
         )
-        objects = rpo.annotate(
-            quantity_total=Sum("shelfobject__quantity"),
-            measurement_unit=Min("shelfobject__measurement_unit"),
+        # Compute per-object totals in Python to avoid PostgreSQL grouping
+        # issues with correlated jsonb_array_elements inside aggregates.
+        all_sos = ShelfObject.objects.filter(
+            object__in=rpo,
+            shelf__furniture__labroom__laboratory__pk=lab_pk,
+        ).values(
+            "object_id", "quantity", "is_box", "quantity_units", "measurement_unit"
         )
+
+        obj_totals = {}
+        obj_measurement_units = {}
+        for so in all_sos:
+            obj_id = so["object_id"]
+            if so["is_box"] and so["quantity_units"]:
+                item_total = sum(b["quantity"] for b in so["quantity_units"])
+            else:
+                item_total = so["quantity"]
+            obj_totals[obj_id] = obj_totals.get(obj_id, 0) + item_total
+            if obj_id not in obj_measurement_units:
+                obj_measurement_units[obj_id] = so["measurement_unit"]
+
+        objects = rpo.distinct()
         laboratory = Laboratory.objects.filter(pk=lab_pk).first()
 
         for object in objects:
@@ -195,9 +224,11 @@ def get_dataset_reactive_precursor(report, column_list=None):
                 "code": object.code,
                 "name": object.name,
                 "type": object.get_type_display(),
-                "quantity_total": round(object.quantity_total, 3),
-                "measurement_unit": ShelfObject.get_units(object.measurement_unit),
-                "molecular_formula": str(get_molecular_formula(object)),
+                "quantity_total": round(obj_totals.get(object.pk, 0), 3),
+                "measurement_unit": ShelfObject.get_units(
+                    obj_measurement_units.get(object.pk)
+                ),
+                "molecular_formula": str(get_molecular_formula(object, "")),
                 "cas_id_number": str(get_cas(object, "")),
                 "precursor": precursor,
                 "imdg_type": str(get_imdg(object, "")),
@@ -347,6 +378,7 @@ def get_dataset_objects(report, column_list=None):
         cas = get_cas(obj.object, "") if get_cas(obj.object, "") else ""
         data_column = {
             "laboratory": obj.in_where_laboratory.name,
+            "shelfobject_code": obj.shelfobject_code if obj.shelfobject_code else "",
             "code": obj.object.code,
             "name": obj.object.name,
             "type": obj.object.get_type_display(),
@@ -372,6 +404,7 @@ def report_objects_html(report):
 
     columns = [{"name": "laboratory", "title": _("Laboratory")}] if general else []
     columns_fields = columns + [
+        {"name": "shelfobject_code", "title": _("Unit code")},
         {"name": "code", "title": _("Code")},
         {"name": "name", "title": _("Name")},
         {"name": "type", "title": _("Type")},
@@ -395,6 +428,7 @@ def report_objects_doc(report):
     content = [
         [
             _("Laboratory"),
+            _("Unit code"),
             _("Code"),
             _("Name"),
             _("Type"),
@@ -431,9 +465,14 @@ def get_limited_shelf_objects(query):
         limits__minimum_limit__gte=0, limits__maximum_limit__gte=0.1
     ):
 
+        current = (
+            len(shelf_object.quantity_units)
+            if shelf_object.is_box
+            else shelf_object.quantity
+        )
         if (
-            shelf_object.limits.minimum_limit == shelf_object.quantity
-            or shelf_object.limits.maximum_limit == shelf_object.quantity
+            shelf_object.limits.minimum_limit == current
+            or shelf_object.limits.maximum_limit == current
         ):
 
             yield shelf_object
@@ -459,13 +498,29 @@ def get_dataset_limit_objects(report, column_list=None):
 
             shelf_objects = get_limited_shelf_objects(shelf_objects)
             for shelfobj in shelf_objects:
+                if shelfobj.is_box and shelfobj.quantity_units:
+                    obj_quantity = len(shelfobj.quantity_units)
+                    units_per_box = sum(b["units"] for b in shelfobj.quantity_units)
+                    obj_unit = _("(%(units)s) units per box") % {"units": units_per_box}
+                    obj_name = _("Box of %(name)s (%(quantity)s %(unit)s)") % {
+                        "name": shelfobj.object.name,
+                        "quantity": shelfobj.quantity,
+                        "unit": str(shelfobj.measurement_unit),
+                    }
+                else:
+                    obj_quantity = shelfobj.quantity
+                    obj_name = shelfobj.object.name
+                    obj_unit = shelfobj.get_measurement_unit_display()
                 data_column = {
                     "laboratory": lab.name,
                     "shelf": shelfobj.shelf.name,
+                    "shelfobject_code": (
+                        shelfobj.shelfobject_code if shelfobj.shelfobject_code else ""
+                    ),
                     "code": shelfobj.object.code,
-                    "object": shelfobj.object.name,
-                    "quantity": shelfobj.quantity,
-                    "measurement_unit": shelfobj.get_measurement_unit_display(),
+                    "object": obj_name,
+                    "quantity": obj_quantity,
+                    "measurement_unit": obj_unit,
                     "minimun_limit": (
                         shelfobj.limits.minimum_limit
                         if shelfobj.limits.minimum_limit > 0
@@ -494,6 +549,7 @@ def report_limit_object_html(report):
     columns = [{"name": "laboratory", "title": _("Laboratory")}] if general else []
     columns_fields = columns + [
         {"name": "shelf", "title": _("Shelf")},
+        {"name": "shelfobject_code", "title": _("Unit code")},
         {"name": "code", "title": _("Code")},
         {"name": "object", "title": _("Object")},
         {"name": "quantity", "title": _("Quantity")},
@@ -516,6 +572,7 @@ def report_limit_object_doc(report):
     content = [
         [
             _("Shelf"),
+            _("Unit code"),
             _("Code"),
             _("Object"),
             _("Quantity"),

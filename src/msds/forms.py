@@ -9,7 +9,7 @@ from sga.models import DangerIndication
 
 class SDSUploadForm(forms.Form):
     file = forms.FileField(
-        label=_("SDS File (PDF)"),
+        label=_("FDS File (PDF)"),
         validators=[FileExtensionValidator(allowed_extensions=["pdf"])],
         widget=forms.ClearableFileInput(attrs={"class": "form-control"}),
     )

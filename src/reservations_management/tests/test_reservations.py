@@ -1,6 +1,6 @@
 from django.test import TestCase, Client
 from django.urls import reverse
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Permission
 import json
 
 from reservations_management.models import Reservations
@@ -12,6 +12,9 @@ class ReservationsTest(TestCase):
     def setUp(self):
         self.client = Client()
         self.user = User.objects.get(pk=1)
+        for codename in ["view_reservations", "change_reservations"]:
+            perm = Permission.objects.get(codename=codename)
+            self.user.user_permissions.add(perm)
         self.url_attr = {"org_pk": 1}
         self.client.force_login(self.user)
 
@@ -41,7 +44,7 @@ class ReservationsTest(TestCase):
             response,
             reverse(
                 "reservations_management:reservations_list",
-                kwargs={"status": 3, "org_pk": 1},
+                kwargs={"org_pk": 1, "status": 1},
             ),
         )
 

@@ -23,7 +23,9 @@ from laboratory.models import OrganizationStructure, Laboratory
 from laboratory.utils import get_user_laboratories
 
 
-@method_decorator(permission_required("auth.change_user"), name="dispatch")
+@method_decorator(
+    permission_required("auth_and_perms.change_own_profile"), name="dispatch"
+)
 class ChangeUser(UpdateView):
     model = User
     form_class = EditUserForm
@@ -49,6 +51,7 @@ class ChangeUser(UpdateView):
         dev["address"] = self.request.user.profile.address
         dev["workplace"] = self.request.user.profile.workplace.all()
         dev["identification"] = self.request.user.profile.id_card
+        dev["job_position"] = self.request.user.profile.job_position
         return dev
 
     def get_success_url(self):
@@ -60,9 +63,9 @@ class ChangeUser(UpdateView):
         cc = ContentType.objects.filter(
             app_label="laboratory", model="laboratory"
         ).first()
-        pp = (ProfilePermission.objects.filter
-              (profile=self.object.profile, content_type=cc)
-              .values_list("object_id", flat=True))
+        pp = ProfilePermission.objects.filter(
+            profile=self.object.profile, content_type=cc
+        ).values_list("object_id", flat=True)
         context["labs"] = Laboratory.objects.filter(pk__in=pp).order_by("name")
         return context
 
@@ -73,6 +76,7 @@ class ChangeUser(UpdateView):
         profile.address = form.cleaned_data["address"]
         profile.phone_number = form.cleaned_data["phone_number"]
         profile.id_card = form.cleaned_data["identification"]
+        profile.job_position = form.cleaned_data["job_position"]
         profile.workplace.clear()
         profile.workplace.add(*form.cleaned_data["workplace"])
         profile.save()
@@ -91,7 +95,7 @@ def get_profile(request, org_pk, pk):
     return render(request, "laboratory/profile_detail.html", context=context)
 
 
-@permission_required("auth.change_user")
+@permission_required("auth_and_perms.change_own_profile")
 @sensitive_post_parameters("password", "password_confirm")
 @require_http_methods(["POST"])
 def password_change(request, pk):

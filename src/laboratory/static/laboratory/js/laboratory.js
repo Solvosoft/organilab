@@ -164,7 +164,7 @@ function transferInObjectApprove(btn, event){
     let transferListDataTable = $('#transfer-list-datatable').DataTable()
     let transfer_data = transferListDataTable.row($(btn).closest('tr')).data();
     let shelfObjectDataTable = $("#shelfobjecttable").DataTable();
-    if(transfer_data.object.type === '0'){  // type - Reactive
+    if(transfer_data.object.type === '0'&& !transfer_data.is_box){  // type - Reactive
         show_hide_container_selects("#transfer_in_approve_with_container_form", 'none');
         $("#transfer_in_approve_with_container_form #id_transfer_object").val(transfer_data.id);
         $("#transfer_in_approve_with_container_form #id_shelf").val(tableObject.get_active_shelf());
@@ -219,41 +219,39 @@ $(document).ready(function(){
 
     searchLaboratory.init();
 
-    var shelfObjectButtons = [
-        {
-            action: tableObject.addObject,
-            text: '<i class="fa fa-desktop" aria-hidden="true"></i>',
-            titleAttr: gettext('Create Equipment'),
-            className: 'btn-sm btn-success ml-4',
-            attr: {
-                'data-type': '2'
+    var shelfObjectButtons = [];
+
+    if (can_add_shelfobject) {
+        shelfObjectButtons.push(
+            {
+                action: tableObject.addObject,
+                text: '<i class="fa fa-desktop" aria-hidden="true"></i>',
+                titleAttr: gettext('Create Equipment'),
+                className: 'btn-sm btn-success ml-4',
+                attr: {'data-type': '2'}
             },
-        },
-        {
-            action: tableObject.addObject,
-            text: '<i class="fa fa-battery-quarter" aria-hidden="true"></i>',
-            titleAttr: gettext('Create Material'),
-            className: 'btn-sm btn-success ml-4',
-            attr: {
-                'data-type': '1'
+            {
+                action: tableObject.addObject,
+                text: '<i class="fa fa-battery-quarter" aria-hidden="true"></i>',
+                titleAttr: gettext('Create Material'),
+                className: 'btn-sm btn-success ml-4',
+                attr: {'data-type': '1'}
+            },
+            {
+                action: tableObject.addObject,
+                text: '<i class="fa fa-flask" aria-hidden="true"></i>',
+                titleAttr: gettext('Create Substance'),
+                className: 'btn-sm btn-success ml-4',
+                attr: {'data-type': '0'}
+            },
+            {
+                action: tableObject.redirectContainer,
+                text: '<i class="fa fa-cubes" aria-hidden="true"></i>',
+                titleAttr: gettext('Containers'),
+                className: 'btn-sm btn-success ml-4'
             }
-        },
-        {
-            action: tableObject.addObject,
-            text: '<i class="fa fa-flask" aria-hidden="true"></i>',
-            titleAttr: gettext('Create Substance'),
-            className: 'btn-sm btn-success ml-4',
-            attr: {
-                'data-type': '0'
-            }
-        },
-        {
-            action: tableObject.redirectContainer,
-            text: '<i class="fa fa-cubes" aria-hidden="true"></i>',
-            titleAttr: gettext('Containers'),
-            className: 'btn-sm btn-success ml-4'
-        },
-    ];
+        );
+    }
 
     if (has_perm) {
         shelfObjectButtons.push({
@@ -267,10 +265,11 @@ $(document).ready(function(){
     datatableelement = createDataTable('#shelfobjecttable', document.url_shelfobject, {
         columns: [
             {data: "pk", name: "pk", title: gettext("Id"), type: "string", visible: true},
+            {data: "shelfobject_code", name: "shelfobject_code", title: gettext("Code"), type: "string", visible: true},
             {data: "object_type", name: "object__type", title: gettext("Type"), type: "string", visible: true},
             {data: "object_name", name: "object__name", title: gettext("Name"), type: "string", visible: true},
             {data: "quantity", name: "quantity", title: gettext("Quantity"), type: "string", visible: true},
-            {data: "unit", name: "measurement_unit__description", title: gettext("Unit"), type: "string", visible: true},
+            {data: "unit", name: "measurement_unit__description", title: gettext("Unit"), type: "string", render: truncateTextRenderer(), visible: true},
             {data: "container", name: "container__object__name", title: gettext("Container"), type: "string", visible: true},
             {data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: true, filterable: false, sortable: false},
         ],
@@ -701,6 +700,62 @@ function updateContainerOfShelfObject(instance, event){
 }
 
 
+function editBoxShelfObject(instance, event) {
+    var modalid = $(instance).data('modalid');
+    var form = $(instance).data('form');
+    var shelfobjectPk = $(instance).data('shelfobject');
+    var updateUrl = document.urls["update_box_shelfobject"].replace('0', shelfobjectPk);
+
+    document.getElementById(form).action = updateUrl;
+
+    if (form_modals.hasOwnProperty(modalid)) {
+        delete form_modals[modalid];
+        $("#edit_box_modal").find('.formadd').off('click');
+    }
+    show_me_modal(instance, event);
+    form_modals[modalid].type = 'PUT';
+
+    // Pre-populate form fields from current box data
+    var dataUrl = document.urls["get_box_edit_data"].replace('0', shelfobjectPk);
+    $.ajax({
+        url: dataUrl,
+        type: "GET",
+        headers: {'X-CSRFToken': getCookie('csrftoken')},
+        success: function (data) {
+            // Plain inputs
+            $('#id_ubf-description').val(data.description);
+            $('#id_ubf-batch').val(data.batch);
+            $('#id_ubf-reactive_expiration_date').val(data.reactive_expiration_date).trigger('change');
+            $('#id_ubf-quantity').val(data.quantity);
+            $('#id_ubf-concentration').val(data.concentration);
+            $('#id_ubf-units_per_box').val(data.units_per_box);
+            $('#id_ubf-quantity_box').val(data.quantity_box);
+
+            // Regular select
+            $('#id_ubf-physical_status').val(data.physical_status).trigger('change');
+
+            // Select2 AJAX fields: create Option with text so it renders correctly
+            function setSelect2(selector, item) {
+                if (!item) return;
+                var $el = $(selector);
+                $el.find('option[value="' + item.id + '"]').remove();
+                $el.append(new Option(item.text, item.id, true, true)).trigger('change');
+            }
+            setSelect2('#id_ubf-object', data.object);
+            setSelect2('#id_ubf-status', data.status);
+            setSelect2('#id_ubf-measurement_unit', data.measurement_unit);
+            setSelect2('#id_ubf-type_budget', data.type_budget);
+
+            // Checkbox was_donated
+            if (data.was_donated) {
+                $('#id_ubf-was_donated').prop('checked', true).trigger('change');
+            } else {
+                $('#id_ubf-was_donated').prop('checked', false).trigger('change');
+            }
+        }
+    });
+}
+
 function editReactiveShelfObject(instance, event){
     var modalid= $(instance).data('modalid');
     form = $(instance).data('form');
@@ -734,10 +789,13 @@ function get_shelfobject_data(shelfobject){
             document.querySelector("#id_edit-maximum_limit").value = data.maximum_limit;
             document.querySelector("#id_edit-description").value = data.description;
             document.querySelector("#id_edit-batch").value = data.batch;
-            document.querySelector("#id_edit-reactive_expiration_date").value = data.reactive_expiration_date;
+            $('#id_edit-reactive_expiration_date').val(data.reactive_expiration_date).trigger('change');
             $('#id_edit-physical_status').val(data.physical_status).trigger('change');
             $('#id_edit-status').val(data.status).trigger('change');
-            $('#id_edit-type_budget').val(data.type_budget.id).trigger('change');
+            if(data.type_budget){
+                $('#id_edit-type_budget').val(data.type_budget.id).trigger('change');
+            }
+            document.querySelector("#id_edit-shelfobject_code").value = data.shelfobject_code;
             $('#id_edit-container_entry_date').val(data.container_entry_date).trigger('change');
             $('#id_edit-container_open_date').val(data.container_open_date).trigger('change');
             if(data.was_donated) {
@@ -809,6 +867,7 @@ function get_material_shelfobject_data(shelfobject){
         document.querySelector("#id_edit_material-maximum_limit").value = data.maximum_limit;
         document.querySelector("#id_edit_material-expiration_date").value = data.expiration_date;
         document.querySelector("#id_edit_material-batch").value = data.batch;
+        document.querySelector("#id_edit_material-shelfobject_code").value = data.shelfobject_code;
         $('#id_edit_material-status').val(data.status).trigger('change');
         if(data.was_donated) {
             if (!$("#id_edit_material-was_donated").parent().hasClass('checked')) {

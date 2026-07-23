@@ -18,7 +18,6 @@ language: {"url": datatables_lang },
     }
 }
 }, addfilter=false);
-    relateusertoorg
 
 datatableorpermelement=createDataTable('#orpermelement', userinorg_api_url, {
 language: {"url": datatables_lang },
@@ -347,13 +346,18 @@ function deleteuserlab(elementid, contentTypeobj){
     })
 }
 
-function newuserrol(profile){
-    var element=$("#profile_"+profile)[0]
+function newuserrol(profile, model, objectid){
+    var element=$("#profile_"+profile+"_"+model+"_"+objectid)[0]
+    if (!element) {
+        console.error("Element not found: profile_"+profile+"_"+model+"_"+objectid);
+        return;
+    }
 
     document.contextroletable.as_conttentype=false;
     document.contextroletable.as_user=false;
     document.contextroletable.user=null;
     document.contextroletable.as_role=true;
+    document.contextroletable.contenttypeobj = null;
     document.contextroletable.contenttypeobj=Object.assign({}, element.dataset);
     document.contextroletable.profile=profile;
     $("#modal"+element.dataset.org).modal('show');
@@ -514,12 +518,54 @@ $(".addOrgStructureEmpty").on('click', function(e){
 });
 
 $(".contenttyperelobjbtnadd").on('click', function(e){
-    var url = this.dataset.href;
-    var select = $("#relOrganizationmodal select");
-    var organizationinput = $('#relOrganizationmodal input[name="organization"]');
-    organizationinput.val(this.dataset.org)
-    $(select).val(null).trigger('change');
+    let orgPk = this.dataset.org;
+    let select = $("#relOrganizationmodal select");
+    let organizationinput = $('#relOrganizationmodal input[name="organization"]');
+    let saveBtn = $('#relOrganizationmodal .btnsaveorglabs');
+    let baseUrl = saveBtn.data('url');
+    let fullbaseUrl = $(select).data('url');
+
+    organizationinput.val(orgPk);
+    saveBtn.data('url', baseUrl.replace('/0/', '/' + orgPk + '/'));
+    let dataUrl = fullbaseUrl.replace('/0/', '/' + orgPk + '/');
+
+    if ($(select).hasClass('select2-hidden-accessible')) {
+        $(select).select2('destroy');
+    }
+    $(select).find('option').remove();
+    $(select).val(null);
+
+    $.ajax({
+        type: "GET",
+        url: dataUrl,
+        contentType: 'application/json',
+        headers: {'X-CSRFToken': getCookie('csrftoken')},
+        success: add_data_to_select(select),
+        dataType: 'json'
+    });
+
+    $(select).select2({theme: 'bootstrap-5', dropdownParent: $("#relOrganizationmodal")});
     $("#relOrganizationmodal").modal('show');
+});
+
+$(".btnsaveorglabs").on('click', function(e) {
+    let form = $("#relOrganizationform")[0];
+    let url = $(this).data('url');
+    let data = {
+        'labs': $(form).find('select[name="contentyperelobj"]').val(),
+        'mergeaction': $(form).find('input[name="mergeaction"]:checked').val(),
+    };
+    $.ajax({
+        type: "PUT",
+        url: url,
+        data: JSON.stringify(data),
+        contentType: 'application/json',
+        headers: {'X-CSRFToken': getCookie('csrftoken')},
+        success: function(data) {
+            $(".modal").modal('hide');
+        },
+        dataType: 'json'
+    });
 });
 
 $(".rolbtnadd").on('click', function(){
@@ -872,3 +918,49 @@ $(".nodeorg").on('ifChecked', function(e){
     let rol_url = roles_url.replace('/0', "/"+$(this).val());
     get_roles_by_organization(rol_url, is_checked=true);
 })
+
+$(".admin_users_btn").on('click', function () {
+    let orgPk = $(this).data('org');
+    let url = org_administrators_url.replace('/0/', '/' + orgPk + '/');
+    $.ajax({
+        type: "GET",
+        url: url,
+        success: function (data) {
+            let container = $("#admin_users_container");
+            container.empty();
+            if (data.users.length > 0) {
+                let html = '<ul class="list-group list-group-flush">';
+                data.users.forEach(function (u) {
+                    html += '<li class="list-group-item d-flex justify-content-between align-items-center px-0">' +
+                        '<span>' + u.name + '</span>' +
+                        '<small class="text-muted">' + u.email + '</small>' +
+                        '</li>';
+                });
+                html += '</ul>';
+                container.html(html);
+            } else {
+                container.html('<p class="text-center text-muted mt-3">' + gettext('This organization has no administrators assigned.') + '</p>');
+            }
+            $("#admin_users_modal").modal('show');
+        }
+    });
+});
+
+$("#enable_button").on('click', function(){
+$("#enable_form").submit();
+});
+
+$(".enable_child_org").on('click', function(){
+    let orgPk = $(this).data('org');
+    let enable = $(this).data('enable');
+    $("#id_organization_enable").val(orgPk);
+    $("#id_enable_field").val(enable);
+    console.log(enable);
+    if (enable == true){
+        $("#enable-msg").text(gettext("Do you want to disable the child organizations filter?"));
+        $("#enable-title").text(gettext("Disable child organizations filter?"));
+    }else{
+        $("#enable-title").text(gettext("Enable child organizations filter?"));
+        $("#enable-msg").text(gettext("Do you want to enable the child organizations filter?"));
+    }
+});

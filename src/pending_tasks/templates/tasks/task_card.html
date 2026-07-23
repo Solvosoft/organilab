@@ -1,0 +1,66 @@
+{% load i18n %}
+
+<div class="task-card card mb-3 shadow-sm border-2 {% if task.status == 0 %}border-warning{% elif task.status == 1 %}border-info{% elif task.status == 2 %}border-success{% else %}border-secondary{% endif %}"
+	 draggable="true" data-task-id="{{ task.pk }}">
+	<div class="card-body">
+		<div class="d-flex justify-content-between align-items-start mb-2 border-bottom border-3">
+			<div class="pe-2 flex-grow-1">
+				<h6 class="card-title mb-1 text-break js-name"
+					{% if task.name|length > 60 %}title="{{ task.name }}" data-bs-toggle="tooltip"{% endif %}>
+					{{ task.name|truncatechars:60 }}
+				</h6>
+			</div>
+			<button class="btn btn-sm text-muted p-0 border-0 me-3 expand-description-btn btn-card-task"
+					data-task-id="{{ task.pk }}" title="{% trans 'Expand description' %}" type="button">
+				<i class="fa fa-arrows-alt" aria-hidden="true"></i>
+			</button>
+			<div class="dropdown">
+				<button class="btn btn-sm text-muted p-0 border-0 btn-card-task" type="button"
+						title="{% trans 'Actions' %}" data-bs-toggle="dropdown" aria-expanded="false">
+					<i class="fa fa-ellipsis-v me-1" aria-hidden="true"></i>
+				</button>
+				<ul class="dropdown-menu dropdown-menu-end">
+					<li>
+						<button class="dropdown-item update-task-btn" type="button" data-task-id="{{ task.pk }}">
+							<i class="fa fa-pencil me-2 text-warning" aria-hidden="true"></i>
+							{% trans "Edit task" %}
+						</button>
+					</li>
+					<li>
+						<button class="dropdown-item delete-task-btn" type="button"
+								data-task-id="{{ task.pk }}" data-task-name="{{ task.name }}">
+							<i class="fa fa-trash me-2 text-danger" aria-hidden="true"></i>
+							{% trans "Delete task" %}
+						</button>
+					</li>
+					<li class="js-archive-item {% if task.status != 2 %}d-none{% endif %}">
+						<button class="dropdown-item archive-task-btn" type="button" data-task-id="{{ task.pk }}">
+							<i class="fa fa-archive me-2 text-secondary" aria-hidden="true"></i>
+							{% trans "Archive task" %}
+						</button>
+					</li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="mb-2 small text-secondary text-break description-text py-2 wysiwyg-preview js-description{% if not task.description %} d-none{% endif %}">
+			{{ task.description|safe }}
+		</div>
+
+		<div class="row mb-2 mx-0 gx-2 pt-1">
+			<div class="col text-muted small text-break js-profile"
+				 {% if task.profile and task.profile|length > 40 %}title="{{ task.profile }}" data-bs-toggle="tooltip"{% endif %}>
+				<i class="fa fa-user me-1" aria-hidden="true"></i>
+				<span class="js-profile-text">
+					{% if task.profile %}{{ task.profile|truncatechars:40 }}{% else %}{% trans "Unassigned" %}{% endif %}
+				</span>
+			</div>
+			<div class="col-auto small js-link{% if not task.link %} d-none{% endif %}">
+				<a class="js-link-anchor" href="{{ task.link }}" target="_blank" rel="noopener noreferrer">
+					<i class="fa fa-link" aria-hidden="true"></i>
+					{% trans "Open link" %}
+				</a>
+			</div>
+		</div>
+	</div>
+</div>

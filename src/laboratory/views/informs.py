@@ -13,7 +13,7 @@ from laboratory.models import Inform, OrganizationStructure, Laboratory
 from django.http import JsonResponse
 from django.contrib.contenttypes.models import ContentType
 import json
-
+from django.utils.translation import gettext_lazy as _
 from laboratory.utils import organilab_logentry
 
 
@@ -36,10 +36,17 @@ def get_informs(request, *args, **kwargs):
 @login_required
 @permission_required("laboratory.delete_inform", raise_exception=True)
 def remove_inform(request, *args, **kwargs):
+    lab = get_object_or_404(Laboratory, pk=kwargs.get("lab_pk"))
     informs = Inform.objects.filter(pk=int(kwargs.get("pk"))).first()
     if informs:
         organilab_logentry(
-            request.user, informs, DELETION, "informs", relobj=kwargs.get("lab_pk")
+            request.user,
+            informs,
+            DELETION,
+            "informs",
+            changed_data=["custom_form"],
+            change_message=_("Deleted inform"),
+            relobj=lab,
         )
         informs.delete()
         return redirect(
@@ -81,7 +88,17 @@ def create_informs(request, *args, **kwargs):
         inform.organization = organization
         inform.created_by = request.user
         inform.save()
-        organilab_logentry(request.user, inform, ADDITION, "informs", relobj=laboratory)
+        lab = get_object_or_404(Laboratory, pk=laboratory)
+        organilab_logentry(
+            request.user,
+            inform,
+            ADDITION,
+            "informs",
+            changed_data=["custom_form", "organization", "schema"],
+            change_message=_("Created inform from form '%(form)s'")
+            % {"form": inform.name},
+            relobj=lab,
+        )
         return redirect(
             reverse(
                 "laboratory:get_informs", kwargs={"lab_pk": laboratory, "org_pk": org}

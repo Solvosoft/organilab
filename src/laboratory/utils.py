@@ -136,7 +136,7 @@ def get_users_from_organization(rootpk, userfilters={}, org=None):
 
     users = (
         UserOrganization.objects.filter(
-            organization__in=orgs, user__isnull=False, status=True
+            organization__in=orgs, user__isnull=False, status=True, **userfilters
         )
         .values_list("user", flat=True)
         .distinct()
@@ -177,16 +177,36 @@ def get_profile_by_organization(organization):
 #     return Laboratory.objects.none()
 
 
-def get_laboratories_from_organization(rootpk):
+def get_laboratories_from_organization(rootpk, user):
     organization = OrganizationStructure.objects.filter(pk=rootpk).first()
-
-    return organization.get_my_laboratories
+    if not organization:
+        return Laboratory.objects.none()
+    pp = ProfilePermission.objects.filter(
+        profile=user.profile,
+        content_type__app_label="laboratory",
+        content_type__model="organizationstructure",
+        rol__name="Administrativo superior",
+        rol__organizationstructure=organization,
+    )
+    if pp.exists():
+        return organization.get_my_laboratories
+    else:
+        pp = ProfilePermission.objects.filter(
+            profile=user.profile,
+            content_type__app_label="laboratory",
+            content_type__model="laboratory",
+        ).values_list("object_id", flat=True)
+        return Laboratory.objects.filter(pk__in=pp).values_list("pk", flat=True)
 
 
 def get_cas(object, default=None):
     result = default
     if hasattr(object, "sustancecharacteristics") and object.sustancecharacteristics:
-        result = object.sustancecharacteristics.cas_id_number
+        result = (
+            object.sustancecharacteristics.cas_id_number
+            if object.sustancecharacteristics.cas_id_number
+            else ""
+        )
     return result
 
 
@@ -194,14 +214,18 @@ def get_imdg(object, default=None):
     result = default
     if hasattr(object, "sustancecharacteristics") and object.sustancecharacteristics:
         imdg = object.sustancecharacteristics.imdg
-        result = imdg if imdg else ""
+        result = imdg.description if imdg else ""
     return result
 
 
 def get_molecular_formula(object, default=None):
     result = default
     if hasattr(object, "sustancecharacteristics") and object.sustancecharacteristics:
-        result = object.sustancecharacteristics.molecular_formula
+        result = (
+            object.sustancecharacteristics.molecular_formula
+            if object.sustancecharacteristics.molecular_formula
+            else ""
+        )
     return result
 
 
@@ -284,6 +308,27 @@ def organilab_logentry(
             LabOrgLogEntry.objects.create(
                 log_entry=log_entry, content_type=content_type_obj, object_id=rel_obj.id
             )
+
+
+def get_changed_fields(old_values, instance):
+    """
+    Compara los valores anteriores con los actuales del objeto
+    y retorna la lista de campos que realmente cambiaron.
+
+    :param old_values: dict con {field_name: old_value} capturado ANTES de save()
+    :param instance: objeto actualizado DESPUÉS de save()
+    :return: list de nombres de campos modificados
+    """
+    changed = []
+    for field, old_value in old_values.items():
+        new_value = getattr(instance, field, None)
+        if hasattr(old_value, 'pk'):
+            old_value = old_value.pk
+        if hasattr(new_value, 'pk'):
+            new_value = new_value.pk
+        if old_value != new_value:
+            changed.append(field)
+    return changed
 
 
 def get_pk_org_ancestors(org_pk, descendants=True):
@@ -378,7 +423,7 @@ def get_organizations_register_user(organization, lab_id, org_register_pk=None):
     )
 
 
-def get_logentries_org_management(self, org):
+def get_logentries_org_management(self, org, user):
     in_org = org
     if not org:
         return self.queryset.none()
@@ -393,7 +438,7 @@ def get_logentries_org_management(self, org):
                 )
             ).values_list("log_entry", flat=True)
     laboratories = list(
-        get_laboratories_from_organization(org.pk).values_list("pk", flat=True)
+        get_laboratories_from_organization(org.pk, user).values_list("pk", flat=True)
     )
 
     log_entries = LabOrgLogEntry.objects.filter(
@@ -462,7 +507,7 @@ def user_has_pp_on_laboratory(user, lab_pk):
         profile__user=user,
         content_type=lab_content_type,
         object_id=lab_pk,
-        rol__isnull=False
+        rol__isnull=False,
     ).exists()
 
 
@@ -495,7 +540,6 @@ def check_user_access_kwargs_org_lab(org, lab, user):
                     if user_has_pp_on_laboratory(user, lab_id):
                         user_access = True
                         break
-
 
     return user_access
 
@@ -677,7 +721,7 @@ def get_lab_ids(organization, profile):
         object_id__in=org_ids,
         content_type__app_label="laboratory",
         content_type__model="organizationstructure",
-        rol__isnull=False,
+        rol__name="Administrativo superior",
     ).exists()
 
     if has_org_permission:
@@ -689,6 +733,7 @@ def get_lab_ids(organization, profile):
                 content_type__app_label="laboratory",
                 content_type__model="laboratory",
                 rol__isnull=False,
+                organization__pk__in=org_ids,
             ).values_list("object_id", flat=True)
         )
         org_lab_ids = organization.get_my_laboratories

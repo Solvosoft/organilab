@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% load urlname_tags %}
+{% load organilab_tags %}
+
+{% load gtsettings %}
+{% block pre_head %}
+	{% define_urlname_action 'objectview_list' %}
+{% endblock %}
+
+{% block title %}{% trans 'Laboratory and Organization List' %}{% endblock %}
+
+{% block content %}
+	<h1 class="text-center">{% trans 'Laboratory and Organization List' %}</h1>
+			<div class="container">
+				<ul class="nav nav-tabs">
+					<li class="nav-item">
+						<a class="nav-link active" id="navbylabs" data-bs-toggle="tab" data-bs-target="#bylabs" type="button" role="tab"
+									aria-controls="bylabs" aria-selected="true">{% trans 'By laboratory' %}</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" id="navbyorgs" data-bs-toggle="tab" data-bs-target="#byorgs" type="button" role="tab"
+									aria-controls="byorgs" aria-selected="true">{% trans 'By organization' %}</a>
+					</li>
+				</ul>
+				<div class="tab-content mt-3" id="myTabContent">
+					<div class="tab-pane fade" id="byorgs" role="tabpanel" aria-labelledby="navbyorgs">
+						<h5 class="text-center">{% trans 'Organizations List' %}</h5>
+						<div class="row">
+							<table class="table table-striped w-100 table-responsive" id="orgtable"></table>
+						</div>
+					</div>
+					<div class="tab-pane fade show active" id="bylabs" role="tabpanel" aria-labelledby="navbylabs">
+						<h5 class="text-center">{% trans 'Laboratories List' %}</h5>
+						<div class="row">
+							<table class="table table-striped w-100 table-responsive" id="labtable"></table>
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+	<div id="rol_details"  class="modal fade" tabindex="-1" aria-labelledby="rol_details_label" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title" id="rol_details_label">{% trans 'User roles list' %}</h4>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body" id="userroles">
+
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+				</div>
+			</div>
+		</div>
+</div>
+
+
+{% endblock %}
+{% block js %}
+	{{ block.super }}
+<script>
+	var org_api_url = "{% url 'auth_and_perms:api-orglablist-list' %}";
+	var lab_api_url = "{% url 'auth_and_perms:api-laborglist-list' %}";
+	var roles_api_url = "{% url 'auth_and_perms:api-laborgroles-list' %}";
+	</script>
+	<script src="{% static 'js/auth_and_perms/lab_org_list.js' %}?v={% get_organilab_version %}"></script>
+{% endblock %}

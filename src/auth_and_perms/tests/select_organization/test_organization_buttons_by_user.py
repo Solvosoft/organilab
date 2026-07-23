@@ -41,4 +41,4 @@ class ObjectsByOrganizationViewTest2(OrganizationButtonsByUserViewTest, OrgDoesN
     """
 
     def test_get_organization_buttons_by_user_case1(self):
-        self.check_tests()
+        self.check_tests(status_code=404)

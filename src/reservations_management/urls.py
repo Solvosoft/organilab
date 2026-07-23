@@ -20,6 +20,9 @@ from django.urls import path
 from .views import (
     ReservationsListView,
     ManageReservationView,
+    ProductActionView,
+    ReturnProductView,
+    CloseReservationView,
 )
 
 from .functions import (
@@ -51,4 +54,19 @@ urlpatterns = [
         name="validate_reservation",
     ),
     path("reservedproduct/increase_stock/", increase_stock, name="increase_stock"),
+    path(
+        "reservations/<int:pk>/product/<int:product_pk>/return/",
+        ReturnProductView.as_view(),
+        name="return_product",
+    ),
+    path(
+        "reservations/<int:pk>/product/<int:product_pk>/action/",
+        ProductActionView.as_view(),
+        name="product_action",
+    ),
+    path(
+        "reservations/<int:pk>/close/",
+        CloseReservationView.as_view(),
+        name="close_reservation",
+    ),
 ]

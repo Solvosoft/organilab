@@ -13,6 +13,7 @@ from django.urls import reverse
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required, permission_required
+from djgentelella.decorators.perms import any_permission_required
 from django.utils.text import slugify
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
@@ -28,6 +29,7 @@ from ..shelfobject.forms import (
     ReserveShelfObjectForm,
     ShelfObjectRefuseReactiveForm,
     ShelfObjectMaterialForm,
+    ShelfObjectBoxForm,
     ShelfObjectRefuseMaterialForm,
     ShelfObjectReactiveForm,
     ShelfObjectRefuseEquipmentForm,
@@ -233,6 +235,13 @@ class LaboratoryRoomsList(ListView):
         context["material_form"] = ShelfObjectMaterialForm(
             initial={"objecttype": 1}, org_pk=self.org, prefix="mf"
         )
+        context["box_form"] = ShelfObjectBoxForm(
+            initial={"objecttype": 0}, org_pk=self.org, prefix="bf"
+        )
+        context["update_box_form"] = ShelfObjectBoxForm(
+            initial={"objecttype": 0}, org_pk=self.org, prefix="ubf",
+            modal_id="#edit_box_form", object_readonly=True,
+        )
         context["material_refuse_form"] = ShelfObjectRefuseMaterialForm(
             initial={"objecttype": 1}, org_pk=self.org, prefix="mff"
         )
@@ -260,7 +269,7 @@ class LaboratoryRoomsList(ListView):
 
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
-    permission_required("laboratory.add_laboratoryroom", raise_exception=True),
+    any_permission_required(["laboratory.add_laboratoryroom", "laboratory.view_laboratoryroom"], raise_exception=True),
     name="dispatch",
 )
 class LabroomCreate(CreateView):
@@ -302,7 +311,10 @@ class LabroomCreate(CreateView):
             self.request.user,
             self.object,
             ADDITION,
+            "laboratoryroom",
             changed_data=form.changed_data,
+            change_message=_("Created laboratory room '%(name)s'")
+            % {"name": self.object.name},
             relobj=self.lab,
         )
 
@@ -348,7 +360,10 @@ class LabroomUpdate(UpdateView):
             self.request.user,
             self.object,
             CHANGE,
+            "laboratoryroom",
             changed_data=form.changed_data,
+            change_message=_("Updated laboratory room '%(name)s'")
+            % {"name": self.object.name},
             relobj=self.lab,
         )
         return HttpResponseRedirect(self.get_success_url())
@@ -384,7 +399,16 @@ class LaboratoryRoomDelete(DeleteView):
         if self.object.laboratory != self.laboratory:
             raise Http404()
         success_url = self.get_success_url()
-        organilab_logentry(self.request.user, self.object, DELETION, relobj=self.lab)
+        organilab_logentry(
+            self.request.user,
+            self.object,
+            DELETION,
+            "laboratoryroom",
+            changed_data=["name"],
+            change_message=_("Deleted laboratory room '%(name)s'")
+            % {"name": self.object.name},
+            relobj=self.lab,
+        )
         self.object.delete()
         return HttpResponseRedirect(success_url)
 

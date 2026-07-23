@@ -98,7 +98,7 @@ ENV/
 # Pycharm project settings
 .idea/
 
-# aptana 
+# aptana
 .project
 .pydevproject
 .settings
@@ -122,6 +122,7 @@ package-lock.json
 venv39/
 coverage.json
 backups
-
+docs/capacitacion/
 # Claude Code
+.claude/
 CLAUDE.md

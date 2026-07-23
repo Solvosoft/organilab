@@ -19,8 +19,8 @@ from auth_and_perms.api.serializers import (
 )
 from auth_and_perms.models import Rol, ProfilePermission
 from auth_and_perms.node_tree import (
-    get_tree_organization_pks_by_user,
     get_org_parents_info,
+    get_tree_organization_pks_by_user,
 )
 from auth_and_perms.organization_utils import (
     user_is_allowed_on_organization,
@@ -32,7 +32,8 @@ from laboratory.models import (
     Laboratory,
     OrganizationStructure,
     OrganizationStructureRelations,
-    Object, UserOrganization,
+    Object,
+    UserOrganization,
 )
 from laboratory.utils import (
     get_profile_by_organization,
@@ -172,7 +173,7 @@ class LabUserS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
     def get_queryset(self):
         if self.organization:
             orgByuser = OrganizationStructure.os_manager.organization_tree(
-                self.organization.pk
+                self.organization.root.pk
             )
             users = list(
                 OrganizationStructure.objects.filter(pk__in=orgByuser).values_list(
@@ -183,12 +184,15 @@ class LabUserS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
                 Q(userorganization__organization__in=orgByuser) | Q(pk__in=users)
             )
             if self.contenttypeobj:
-                profiles = get_profile_by_organization(self.organization.pk)
-                profiles = profiles.filter(
-                    profilepermission__content_type__app_label=self.contenttypeobj._meta.app_label,
-                    profilepermission__content_type__model=self.contenttypeobj._meta.model_name,
-                    profilepermission__object_id=self.contenttypeobj.pk,
-                )
+                profiles = get_profile_by_organization(self.organization.root.pk)
+                filters = {
+                    "profilepermission__content_type__app_label": self.contenttypeobj._meta.app_label,
+                    "profilepermission__content_type__model": self.contenttypeobj._meta.model_name,
+                    "profilepermission__object_id": self.contenttypeobj.pk,
+                }
+                if self.contenttypeobj._meta.model_name == "laboratory":
+                    filters["profilepermission__organization"] = self.organization
+                profiles = profiles.filter(**filters).distinct()
                 queryset = queryset.exclude(profile__in=profiles)
                 return queryset.distinct().order_by("first_name")
             return queryset.none()
@@ -235,23 +239,8 @@ class UserS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
         return super().list(request, *args, **kwargs)
 
     def get_queryset(self):
-        orgs = []
-        orgByuser = OrganizationStructure.os_manager.filter_user_orgs(
-            user=self.request.user, org=self.organization
-        )
-        for org in orgByuser:
-            orgs += list(org.descendants())
-            orgs += list(org.ancestors())
-            orgs.append(org)
-
-        users = []
-        for org in set(orgs):
-            users += list(
-                get_users_from_organization(
-                    org.pk, org=org, userfilters={"users__isnull": False}
-                )
-            )
-        return self.model.objects.filter(pk__in=set(users)).order_by("pk")
+        users = get_users_from_organization(self.organization.root.pk)
+        return self.model.objects.filter(pk__in=users).order_by("pk")
 
     def filter_queryset(self, queryset):
         queryset = super().filter_queryset(queryset)
@@ -352,6 +341,65 @@ class RelOrgBaseS2(generics.RetrieveAPIView, BaseSelect2View):
                     pk=form.cleaned_data["organization"],
                 )
 
+        if self.organization is None:
+            raise Http404("Organization not found")
+        return super().list(request, *args, **kwargs)
+
+
+@register_lookups(prefix="relorgfullbase", basename="relorgfullbase")
+class RelOrgFullS2(generics.RetrieveAPIView, BaseSelect2View):
+    """Like RelOrgBaseS2 but includes already-linked labs and marks them selected."""
+
+    model = Laboratory
+    fields = ["name"]
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [
+        IsAuthenticated,
+        AllPermissionOrganization(
+            perms=["laboratory.view_laboratory"],
+            lookup_keyword="organization",
+            as_param_method="GET",
+        ),
+    ]
+    pagination_class = GPaginatorMoreElements
+    order_by = ["name"]
+    organization = None
+
+    def get_queryset(self):
+        if self.organization.root.pk == self.organization.pk:
+            labs = OrganizationStructure.os_manager.filter_labs_by_user(
+                self.request.user, ancestors=True, org_pk=self.organization.pk
+            )
+        else:
+            labs = OrganizationStructure.os_manager.filter_labs_by_user(
+                self.request.user,
+                org_pk=self.organization.pk,
+                relate_labs_org_parent=True,
+            )
+        linked = list(
+            OrganizationStructureRelations.objects.filter(
+                organization=self.organization.pk,
+                content_type__app_label="laboratory",
+                content_type__model="laboratory",
+            ).values_list("object_id", flat=True)
+        )
+        self.selected = [str(pk) for pk in linked]
+        return labs.order_by(*self.order_by)
+
+    def retrieve(self, request, pk, **kwargs):
+        self.organization = get_object_or_404(
+            OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=pk
+        )
+        return self.list(request, pk, **kwargs)
+
+    def list(self, request, *args, **kwargs):
+        if self.organization is None:
+            form = RelOrganizationPKIntForm(self.request.GET)
+            if form.is_valid():
+                self.organization = get_object_or_404(
+                    OrganizationStructure.objects.using(settings.READONLY_DATABASE),
+                    pk=form.cleaned_data["organization"],
+                )
         if self.organization is None:
             raise Http404("Organization not found")
         return super().list(request, *args, **kwargs)
@@ -532,16 +580,21 @@ class UsersByOrganization(BaseSelect2View):
         queryset = super().get_queryset()
 
         if self.organization:
-            user_ids = UserOrganization.objects.using(
-                settings.READONLY_DATABASE
-            ).filter(
-                organization=self.organization,
-                user__isnull=False,
-            ).values_list("user", flat=True).distinct()
+            user_ids = (
+                UserOrganization.objects.using(settings.READONLY_DATABASE)
+                .filter(
+                    organization=self.organization,
+                    user__isnull=False,
+                )
+                .values_list("user", flat=True)
+                .distinct()
+            )
 
-            queryset = User.objects.using(settings.READONLY_DATABASE).filter(
-                pk__in=user_ids
-            ).distinct()
+            queryset = (
+                User.objects.using(settings.READONLY_DATABASE)
+                .filter(pk__in=user_ids)
+                .distinct()
+            )
         else:
             queryset = queryset.none()
 
@@ -582,20 +635,31 @@ class OrgTree(BaseSelect2View):
     def get_queryset(self):
         queryset = super().get_queryset()
         if self.user:
-            parents, parents_pks = get_org_parents_info(self.user)
-            pks = []
-            for node in parents:
-                if node.pk not in pks:
-                    get_tree_organization_pks_by_user(
-                        node,
-                        self.user,
-                        pks,
-                        parents=parents_pks,
-                        extras={"active": True},
-                    )
-            tree_order = Case(*[When(pk=pk, then=i) for i, pk in enumerate(pks)])
-            queryset = queryset.filter(pk__in=pks).order_by(tree_order)
-            return queryset
+            roles = self.user.profile.profilepermission_set.filter(
+                rol__name="Administrativo superior"
+            )
+            if self.user.is_superuser or roles.exists():
+                parents, parents_pks = get_org_parents_info(self.user)
+                pks = []
+                for node in parents:
+                    if node.pk not in pks:
+                        get_tree_organization_pks_by_user(
+                            node,
+                            self.user,
+                            pks,
+                            parents=parents_pks,
+                            extras={"active": True},
+                        )
+                tree_order = Case(*[When(pk=pk, then=i) for i, pk in enumerate(pks)])
+                queryset = queryset.filter(pk__in=pks).order_by(tree_order)
+                return queryset
+
+            org_ids = UserOrganization.objects.filter(user=self.user).values_list(
+                "organization_id", flat=True
+            )
+            return queryset.filter(pk__in=org_ids, active=True).order_by(
+                "level", "name"
+            )
         return queryset.none()
 
     def list(self, request, *args, **kwargs):

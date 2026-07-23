@@ -516,6 +516,7 @@
       "profile": 1,
       "content_type": ["laboratory", "laboratory"],
       "object_id": 1,
+      "organization": 1,
       "rol": [
         2,
         3
@@ -529,6 +530,7 @@
       "profile": 3,
       "content_type": ["laboratory", "laboratory"],
       "object_id": 1,
+      "organization": 1,
       "rol": [
         2
       ]

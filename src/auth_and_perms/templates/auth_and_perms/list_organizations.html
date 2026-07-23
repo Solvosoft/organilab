@@ -33,7 +33,7 @@
 						<div class="bs-callout bs-callout-{{ node.1.1 }}">
 							<div class="row" id="rols">
 								<div class="row">
-									<div class="col-11">
+									<div class="col-12 col-md-10">
 										<h6 {% if node.0.active %} data-bs-toggle="collapse" data-bs-target="#collapse{{ node.0.pk }}" class="w-100"
 										{% else %}
 																																					class="disabled text-decoration-line-through"
@@ -41,10 +41,14 @@
 																																					role="button" aria-expanded="false" aria-controls="collapse{{ node.0.pk }}"
 										>{{ node.0 }}</h6>
 									</div>
-									<div class="col-1">
+									<div class="col-12 col-md-2 d-flex">
 										{% if node.0.active %}
-											<input data-widget="CheckboxInput" class="nodeorg" type="radio" name="nodes" value="{{ node.0.pk }}"
-												{% if not forloop0 %} selected {% endif %}/>
+											<div class="d-flex">
+												<label for="node_{{ node.0.pk }}" class="mx-2 small text-muted"
+																			title="{% trans 'Click to manage this organization' %}">{% trans 'Choose' %}</label>
+												<input id="node_{{ node.0.pk }}" data-widget="CheckboxInput" class="nodeorg" type="radio" name="nodes"
+																			value="{{ node.0.pk }}" {% if not forloop0 %} selected {% endif %}/>
+											</div>
 										{% endif %}
 									</div>
 								</div>
@@ -83,13 +87,14 @@
 														<i class="fa fa-plus"></i> {% trans 'Laboratory' %}</a></li>
 												{% endif %}
 												{% if node.0.parent != None %}
-													<li class="rolcontainer" title="{% trans 'Related Users' %}"><a
+													<li class="rolcontainer" title="{% trans 'Related Laboratory' %}"><a
 														data-href="{% url 'relorgbase-detail' node.0.pk %}"
 														data-org="{{ node.0.pk }}" class="btn btn-sm btn-warning contenttyperelobjbtnadd"
 														type="button" data-id="{{ node.0.pk }}"><i class="fa fa-university"></i> {% trans 'Related Laboratory' %}
 													</a></li>
 												{% endif %}
 											{% endif %}
+
 										</ul>
 									</div>
 								</div>
@@ -101,6 +106,20 @@
 										{% include 'auth_and_perms/organization_permission_table.html' with object=node.0 %}
 									</div>
 									{% if perms.laboratory.change_organizationstructure %}
+										<li class="list-group-item">
+											{% if node.0.enable_child_organizations %}
+																					<a class="enable_child_org" data-bs-toggle="modal" data-bs-target="#enable_filter_modal"
+																								data-org="{{ node.0.pk }}"
+																								data-enable="false"
+															title="{% trans 'Disable child organizations filter' %}"> <i class="fa fa-ban"></i>
+												</a>
+											{% else %}
+																					<a class="enable_child_org" data-bs-toggle="modal" data-bs-target="#enable_filter_modal" data-org="{{ node.0.pk }}"
+																								data-enable="true"
+															title="{% trans 'Enable child organizations filter' %}"> <i class="fa fa-cog"></i>
+												</a>
+											{% endif %}
+										</li>
 										<li class="list-group-item">
 											{% if not node.0.active %}
 												<a class="orgactions" data-modal="#actionclonemodal" data-prefix="clone-" data-org="{{ node.0.pk }}"
@@ -125,6 +144,14 @@
 										<li class="list-group-item">
 											<a class="rol_details_btn" data-org="{{ node.0.pk }}" title="{% trans 'Show Roles information' %}"> <i
 												class="fa fa-info-circle"></i></a>
+										</li>
+									{% endif %}
+									{% if perms.auth_and_perms.view_rol %}
+										<li class="list-group-item">
+											<a class="admin_users_btn" data-org="{{ node.0.pk }}" title="{% trans 'View administrators' %}"
+														style="cursor:pointer;">
+												<i class="fa fa-user-circle-o"></i>
+											</a>
 										</li>
 									{% endif %}
 									{% user_has_roles_in_organization node.0.pk as has_roles_in_org %}
@@ -162,14 +189,11 @@
 						</div>
 					</div>
 				</div>
-
 			{% endfor %}
 
 		</div>
 		<div class="col">
-
 			<div class="container">
-
 				<ul class="nav nav-tabs">
 					<li class="nav-item">
 						<a class="nav-link active" id="navbylabs" data-bs-toggle="tab" data-bs-target="#bylabs" type="button" role="tab"
@@ -213,6 +237,7 @@
 						<button type="button" class="btn float-start open_rol_detail_modal"><i aria-hidden="true"
 																																																																													class="fa fa-info-circle"></i></button>
 						<h5 class="float-end">{% trans "Rol used when you don't have rol set on laboratory" %}</h5>
+
 						<div class="clearfix"></div>
 
 						<div class="role table-responsive">
@@ -222,6 +247,7 @@
 							<table id="orpermelement" class="compact nowrap w-100"></table>
 						</div>
 					</div>
+
 					<div class="tab-pane fade" id="byprofile" role="tabpanel" aria-labelledby="navbyprofile">
 						<div class="jumbotron">
 							<h6>{% trans 'Help Text' %}</h6>
@@ -251,8 +277,6 @@
 							</div>
 						</div>
 					</div>
-
-
 				</div>
 			</div>
 		</div>
@@ -332,9 +356,9 @@
 	</div>
 	<div id="relOrganizationmodal" class="modal fade" tabindex="-1" aria-labelledby="relOrganizationmodalLabel"
 						aria-hidden="true">
-		<div class="modal-dialog">
+		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
-				<form method="post" action="{% url 'auth_and_perms:add_contenttype_to_org' %}">
+				<form id="relOrganizationform">
 					{% csrf_token %}
 					<div class="modal-header">
 						<h4 class="modal-title"
@@ -342,13 +366,20 @@
 						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
 					<div class="modal-body">
-						{{ relorgform.as_p }}
-
+						<select autocomplete="off" name="contentyperelobj" multiple
+										data-url="{% url 'relorgfullbase-detail' 0 %}"></select>
 						<input type="hidden" id="relorg_organization" name="organization" value=""/>
+						<div class="mt-2">
+							<label class="mt-2 mb-2">{% trans 'How to deal with permission merge' %}</label><br>
+							<input type="radio" class="iCheck" name="mergeaction" value="append" checked> {% trans 'Append' %} &nbsp;
+							<input type="radio" class="iCheck" name="mergeaction" value="sustract"> {% trans 'Sustract' %} &nbsp;
+							<input type="radio" class="iCheck" name="mergeaction" value="full"> {% trans 'Only labs selected' %}
+						</div>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-						<button type="submit" class="btn btn-primary">{% trans 'Save changes' %}</button>
+						<button type="button" class="btn btn-primary btnsaveorglabs"
+										data-url="{% url 'auth_and_perms:manage_org_labs' 0 %}">{% trans 'Save changes' %}</button>
 					</div>
 				</form>
 			</div>
@@ -487,11 +518,51 @@
 			</div>
 		</div>
 	</div>
+<div id="enable_filter_modal" class="modal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="enable-title"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+							<p id="enable-msg">{% trans 'Do you want to enable the child organizations filter?' %}</p>
+							<form id="enable_form" method="post" action="{% url 'auth_and_perms:enable_child_organizations' %}">
+								{% csrf_token %}
+								<input type="hidden" name="organization" value="" id="id_organization_enable">
+								<input type="hidden" name="enable" value="" id="id_enable_field">
+							</form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="fa fa-ban" aria-hidden="true"></i> {% trans 'Close' %}</button>
+        <button id="enable_button" type="button" class="btn btn-success"><i class="fa fa-check" aria-hidden="true"></i> {% trans 'Save changes' %}</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 	{% url 'laboratory:organization_actions' as action_clone_url %}
 	{% trans 'Actions for Organization' as action_clone_org %}
 	{% include 'modal_template_submit_form.html' with form=actionwiform id="actionwimodal" title=action_clone_org form_id="actionwiform" url=action_clone_url %}
 	{% include 'modal_template_submit_form.html' with form=actioncloneform id="actionclonemodal" title=action_clone_org form_id="actioncloneform" url=action_clone_url %}
+
+	<div id="admin_users_modal" class="modal fade" tabindex="-1" aria-labelledby="admin_users_modal_label"
+						aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title" id="admin_users_modal_label">{% trans 'Administrators' %}</h4>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div id="admin_users_container"></div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
 
 {% endblock %}
@@ -507,6 +578,7 @@
 		groups_by_profile = "{% url 'groupsbyprofile-list' %}";
 		inerit_profile_url = "{% url 'auth_and_perms:api-userinorg-inerit-profile' %}";
 		roles_url = "{% url 'auth_and_perms:get_roles_by_organization' 0 %}";
+		org_administrators_url = "{% url 'auth_and_perms:get_org_administrators' 0 %}";
 	</script>
 	<script src="{% static 'js/auth_and_perms/organization_manager.js' %}?v={% get_organilab_version %}"></script>
 {% endblock %}

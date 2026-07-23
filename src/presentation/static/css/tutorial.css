@@ -1,0 +1,178 @@
+/* ============================================================
+   OrganiLab Tutorial — Banner below navbar
+   ============================================================ */
+
+/* Banner container */
+.tutorial-banner {
+    position: relative;
+    z-index: 9998;
+    background: #2A3F54;
+    color: #fff;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+    animation: tutorialBannerIn 0.3s ease;
+    margin-bottom: 5px;
+}
+
+.tutorial-banner-inner {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.tutorial-banner-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.tutorial-banner-title {
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 4px;
+    color: #1ABB9C;
+    letter-spacing: 0.02em;
+}
+
+.tutorial-banner-content {
+    font-size: 13px;
+    line-height: 1.55;
+    color: #d8e4ee;
+}
+
+.tutorial-banner-content strong {
+    color: #fff;
+}
+
+.tutorial-banner-img {
+    display: block;
+    max-width: 100%;
+    border-radius: 4px;
+    margin-top: 8px;
+}
+
+/* Controls: counter + buttons */
+.tutorial-banner-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    padding-top: 2px;
+}
+
+.tutorial-banner-counter {
+    font-size: 12px;
+    color: #8aaec8;
+    white-space: nowrap;
+}
+
+.tutorial-banner-controls .btn {
+    font-size: 12px;
+    padding: 4px 14px;
+    white-space: nowrap;
+}
+
+/* Highlighted element (HIGHLIGHT steps) */
+.tutorial-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 9997;
+}
+
+.tutorial-highlighted {
+    position: relative !important;
+    z-index: 9999 !important;
+    box-shadow: 0 0 0 4px #1ABB9C, 0 0 20px rgba(26, 187, 156, 0.4) !important;
+    border-radius: 4px;
+    transition: box-shadow 0.3s ease;
+}
+
+/* FAB button */
+.tutorial-fab {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: #1ABB9C;
+    color: #fff;
+    border: none;
+    font-size: 20px;
+    font-weight: 700;
+    cursor: pointer;
+    z-index: 9999;
+    box-shadow: 0 2px 12px rgba(26, 187, 156, 0.45);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tutorial-fab:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 16px rgba(26, 187, 156, 0.65);
+}
+
+/* FAB expanded menu */
+.tutorial-menu {
+    position: fixed;
+    bottom: 78px;
+    right: 24px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    min-width: 270px;
+    max-width: 340px;
+    max-height: 400px;
+    overflow-y: auto;
+    animation: tutorialFadeIn 0.2s ease;
+}
+
+.tutorial-menu .tutorial-menu-header {
+    padding: 11px 16px;
+    border-bottom: 1px solid #eee;
+    font-weight: 600;
+    font-size: 13px;
+    color: #2A3F54;
+}
+
+.tutorial-menu .tutorial-menu-item {
+    display: block;
+    width: 100%;
+    padding: 9px 16px;
+    border: none;
+    background: none;
+    text-align: left;
+    cursor: pointer;
+    font-size: 13px;
+    color: #555;
+    transition: background 0.15s;
+}
+
+.tutorial-menu .tutorial-menu-item:hover {
+    background: #f5f5f5;
+}
+
+.tutorial-menu .tutorial-menu-title {
+    font-weight: 500;
+    color: #2A3F54;
+}
+
+.tutorial-menu .tutorial-menu-desc {
+    font-size: 11px;
+    color: #999;
+    margin-top: 2px;
+}
+
+/* Animations */
+@keyframes tutorialBannerIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes tutorialFadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}

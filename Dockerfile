@@ -77,6 +77,7 @@ COPY docker/nginx_personalize.py /organilab/nginx_personalize.py
 # Copy application and static files with correct ownership
 COPY --from=builder --chown=organilab:organilab /organilab /organilab
 COPY --from=builder --chown=organilab:organilab /run/static/ /run/static/
+COPY --chown=organilab:organilab docs/source/_extra/capacitacion/ /run/docs/capacitacion/
 
 WORKDIR /organilab
 

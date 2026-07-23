@@ -1,7 +1,9 @@
 from django.contrib import admin
+from django.db.models import Q
 from django.http import HttpResponse
 from django.utils.translation import gettext_lazy as _
 
+from auth_and_perms.admin import DELETED_USER_TAG_MARKERS
 from laboratory import models
 from laboratory.task_utils import create_informsperiods
 from presentation.utils import update_qr_instance
@@ -207,7 +209,10 @@ class OrganizationStructureRelationsAdmin(OrganizationInfoAdminMixin, admin.Mode
         "object_id",
         "content_object_display",
     ]
-    list_filter = ["content_type", "organization"]
+    list_filter = [
+        ("content_type", admin.RelatedOnlyFieldListFilter),
+        ("organization", admin.RelatedOnlyFieldListFilter),
+    ]
     search_fields = ["organization__name", "object_id"]
 
     def content_object_display(self, obj):
@@ -218,13 +223,33 @@ class OrganizationStructureRelationsAdmin(OrganizationInfoAdminMixin, admin.Mode
 
 class SDSTraceabilityAdmin(admin.ModelAdmin):
     list_display = [
-        "sustance_characteristics",
+        "sustance_characteristics__obj__name",
         "source",
         "revision_date",
         "creation_date",
     ]
     list_filter = ["source"]
     search_fields = ["sustance_characteristics__cas_id_number"]
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "sustance_characteristics":
+            kwargs["queryset"] = models.SustanceCharacteristics.objects.order_by("-id")
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+
+class SustanceCharacteristicsAdmin(admin.ModelAdmin):
+    list_display = [
+        "pk",
+        "obj__name",
+        "obj__code",
+        "cas_id_number",
+    ]
+    list_filter = ["obj__name", "cas_id_number", "h_code"]
+    search_fields = [
+        "obj__name",
+        "obj__code",
+        "cas_id_number",
+    ]
 
 
 @admin.register(models.UserOrganization)
@@ -257,7 +282,7 @@ class UserOrganizationAdmin(OrganizationInfoAdminMixin, admin.ModelAdmin):
 class LaboratoryAdmin(OrganizationInfoAdminMixin, admin.ModelAdmin):
     actions = [export_laboratory]
     search_fields = ["name", "organization__name"]
-    list_filter = ["organization"]
+    list_filter = [("organization", admin.RelatedOnlyFieldListFilter)]
     list_display = (
         "id",
         "name",
@@ -282,7 +307,12 @@ class ObjectAdmin(OrganizationInfoAdminMixin, admin.ModelAdmin):
         "is_precursor",
         "is_public",
     )
-    list_filter = ("type", "is_public", "is_dangerous", "organization")
+    list_filter = (
+        "type",
+        "is_public",
+        "is_dangerous",
+        ("organization", admin.RelatedOnlyFieldListFilter),
+    )
 
 
 @admin.register(models.ShelfObjectEquipmentCharacteristics)
@@ -305,7 +335,11 @@ class ShelfObjectEquipmentCharacteristicsAdmin(
         "organization__name",
         "provider__name",
     )
-    list_filter = ("available_to_use", "have_guarantee", "organization")
+    list_filter = (
+        "available_to_use",
+        "have_guarantee",
+        ("organization", admin.RelatedOnlyFieldListFilter),
+    )
 
 
 @admin.register(models.ShelfObjectMaintenance)
@@ -423,7 +457,11 @@ class InformAdmin(OrganizationInfoAdminMixin, admin.ModelAdmin):
         "custom_form__name",
         "object_id",
     )
-    list_filter = ("status", "organization", "content_type")
+    list_filter = (
+        "status",
+        ("organization", admin.RelatedOnlyFieldListFilter),
+        ("content_type", admin.RelatedOnlyFieldListFilter),
+    )
 
 
 class PeriodScheduledAdmin(admin.TabularInline):
@@ -453,7 +491,7 @@ class InformSchedulerAdmin(OrganizationInfoAdminMixin, admin.ModelAdmin):
         "period_on_days",
         "active",
     ]
-    list_filter = ("active", "organization")
+    list_filter = ("active", ("organization", admin.RelatedOnlyFieldListFilter))
     actions = [create_informs]
     inlines = [PeriodScheduledAdmin]
 
@@ -464,7 +502,7 @@ class ObjectLogAdmin(OrganizationWhereActionAdminMixin, admin.ModelAdmin):
         "id",
         "object",
         "laboratory",
-        "user",
+        "user_display",
         "organization_id_display",
         "organization_name_display",
         "old_value",
@@ -473,18 +511,27 @@ class ObjectLogAdmin(OrganizationWhereActionAdminMixin, admin.ModelAdmin):
         "measurement_unit",
         "update_time",
     ]
+
+    @admin.display(description=_("User"), ordering="user")
+    def user_display(self, obj):
+        if obj.deleted_user_info:
+            return f"{obj.user} ({obj.deleted_user_info})"
+        return str(obj.user)
+
     search_fields = [
         "object__name",
         "object__code",
         "laboratory__name",
         "user__username",
         "organization_where_action_taken__name",
+        "deleted_user_info",
     ]
     list_filter = [
         "update_time",
         "organization_where_action_taken",
         "precursor",
         "type_action",
+        ("deleted_user_info", admin.EmptyFieldListFilter),
     ]
 
 
@@ -547,6 +594,8 @@ class ShelfObjectAdmin(admin.ModelAdmin):
         "id",
         "object",
         "quantity",
+        "is_box",
+        "quantity_units",
         "measurement_unit",
         "laboratory_name_display",
         "organization_id_display",
@@ -607,14 +656,14 @@ class ProtocolAdmin(admin.ModelAdmin):
         "laboratory__name",
         "upload_by__username",
     )
-    list_filter = ("laboratory", "creation_date")
+    list_filter = (("laboratory", admin.RelatedOnlyFieldListFilter), "creation_date")
 
 
 @admin.register(models.LaboratoryRoom)
 class LaboratoryRoomAdmin(admin.ModelAdmin):
     list_display = ("id", "name", "laboratory", "created_by", "creation_date")
     search_fields = ("name", "laboratory__name")
-    list_filter = ("laboratory",)
+    list_filter = (("laboratory", admin.RelatedOnlyFieldListFilter),)
 
 
 @admin.register(models.Furniture)
@@ -670,7 +719,7 @@ class ProviderAdmin(admin.ModelAdmin):
         "laboratory",
     )
     search_fields = ("name", "email", "legal_identity", "laboratory__name")
-    list_filter = ("laboratory",)
+    list_filter = (("laboratory", admin.RelatedOnlyFieldListFilter),)
 
 
 @admin.register(models.TranferObject)
@@ -696,8 +745,8 @@ class TranferObjectAdmin(admin.ModelAdmin):
         "status",
         "state",
         "mark_as_discard",
-        "laboratory_send",
-        "laboratory_received",
+        ("laboratory_send", admin.RelatedOnlyFieldListFilter),
+        ("laboratory_received", admin.RelatedOnlyFieldListFilter),
     )
 
 
@@ -729,7 +778,12 @@ class ObjectMaximumLimitAdmin(admin.ModelAdmin):
         "object__name",
         "object__code",
     )
-    list_filter = ("laboratory", "measurement_unit", "process_condition", "created_at")
+    list_filter = (
+        ("laboratory", admin.RelatedOnlyFieldListFilter),
+        "measurement_unit",
+        "process_condition",
+        "created_at",
+    )
 
 
 @admin.register(models.ReactiveLimit)
@@ -750,8 +804,82 @@ class ReactiveLimitAdmin(admin.ModelAdmin):
     list_filter = ("laboratory", "measurement_unit")
 
 
+class UserOrganizationInline(admin.TabularInline):
+    model = models.UserOrganization
+    fields = ("user", "type_in_organization", "status")
+    extra = 1
+    autocomplete_fields = ("user",)
+
+
+@admin.register(models.OrganizationStructure)
+class OrganizationStructureAdmin(admin.ModelAdmin):
+    list_display = ("indented_name", "parent", "level", "position", "active")
+    list_filter = ("active", "level")
+    search_fields = ("name",)
+    list_editable = ("active",)
+    ordering = ("level", "position", "name")
+    fields = ("name", "parent", "position", "level", "active", "rol")
+    readonly_fields = ("level", "position")
+    filter_horizontal = ("rol",)
+    autocomplete_fields = ("parent",)
+    inlines = [UserOrganizationInline]
+
+    def indented_name(self, obj):
+        indent = "—" * obj.level
+        return f"{indent} {obj.name}" if obj.level else obj.name
+
+    indented_name.short_description = "Name"
+
+
+@admin.register(models.LabOrOrgRequest)
+class LabOrOrgRequestAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "name",
+        "entity_type",
+        "status",
+        "requested_by",
+        "requested_at",
+        "organization",
+    )
+    list_filter = ("entity_type", "status", "organization")
+    search_fields = (
+        "name",
+        "requested_by__username",
+        "requested_by__first_name",
+        "requested_by__last_name",
+        "organization__name",
+    )
+    readonly_fields = ("requested_at", "requested_by")
+    list_select_related = ("requested_by", "organization")
+
+
+class LabOrgReassignedOnUserDeleteFilter(admin.SimpleListFilter):
+    title = _("Reassigned on user delete")
+    parameter_name = "reassigned_on_user_delete"
+
+    def lookups(self, request, model_admin):
+        return (("yes", _("Yes")),)
+
+    def queryset(self, request, queryset):
+        if self.value() == "yes":
+            marker_query = Q()
+            for marker in DELETED_USER_TAG_MARKERS:
+                marker_query |= Q(log_entry__object_repr__icontains=marker)
+            return queryset.filter(marker_query)
+        return queryset
+
+
+class LabOrgLogEntryAdmin(admin.ModelAdmin):
+    list_display = ["log_entry", "content_object"]
+    search_fields = ["log_entry__object_repr", "log_entry__user__username"]
+    list_filter = [LabOrgReassignedOnUserDeleteFilter]
+
+
 admin.site.register(models.PrecursorReport, PrecursorReportAdmin)
 admin.site.register(models.PrecursorReportValues, PrecursorReportValuesAdmin)
 admin.site.register(models.SDSTraceability, SDSTraceabilityAdmin)
 admin.site.register(models.ShelfObjectLimits)
+admin.site.register(models.LabOrgLogEntry, LabOrgLogEntryAdmin)
+admin.site.register(models.SustanceCharacteristics, SustanceCharacteristicsAdmin)
 admin.site.site_header = _("Organilab Administration site")

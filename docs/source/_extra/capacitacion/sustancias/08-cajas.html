@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Cajas - Capacitación Organilab</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="../img/favicon.png">
+</head>
+<body>
+    <button class="sidebar-toggle" aria-label="Abrir menú"><i class="bi bi-list"></i></button>
+    <div class="sidebar-overlay"></div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header"><h5>Organilab</h5><small>Capacitación</small></div>
+        <div class="sidebar-nav">
+            <div class="nav-section">Inicio</div>
+            <a href="../index.html" class="nav-link">
+                <i class="bi bi-house-door"></i> Página Principal
+            </a>
+
+            <div class="nav-section">Cap 1: Permisos</div>
+            <a href="../permisos/index.html" class="nav-link">
+                <i class="bi bi-shield-lock"></i> Sistema de Permisos
+            </a>
+
+            <div class="nav-section">Cap 2: Laboratorios</div>
+            <a href="../laboratorios/index.html" class="nav-link">
+                <i class="bi bi-box-seam"></i> Gestión de Laboratorios
+            </a>
+
+            <div class="nav-section">Cap 3: Sustancias</div>
+            <a href="index.html" class="nav-link">
+                <i class="bi bi-journal-text"></i> Índice del Capítulo
+            </a>
+            <a href="01-reactivos.html" class="nav-link sub-item">
+                1. Reactivos y Sustancias
+            </a>
+            <a href="02-clasificacion.html" class="nav-link sub-item">
+                2. Clasificación SGA
+            </a>
+            <a href="03-etiquetado.html" class="nav-link sub-item">
+                3. Etiquetado
+            </a>
+            <a href="04-msds.html" class="nav-link sub-item">
+                4. Hojas de Seguridad
+            </a>
+            <a href="05-precursores.html" class="nav-link sub-item">
+                5. Precursores Químicos
+            </a>
+            <a href="06-seguridad.html" class="nav-link sub-item">
+                6. Seguridad y Almacenamiento
+            </a>
+            <a href="07-reorden-consumo.html" class="nav-link sub-item">
+                7. Reorden de Consumo
+            </a>
+            <a href="08-cajas.html" class="nav-link sub-item active">
+                8. Gestión de Cajas
+            </a>
+
+            <div class="nav-section">Cap 4: Procedimientos</div>
+            <a href="../procedimientos/index.html" class="nav-link">
+                <i class="bi bi-list-check"></i> Procedimientos
+            </a>
+
+            <div class="nav-section">Cap 5: Reservaciones</div>
+            <a href="../reservaciones/index.html" class="nav-link">
+                <i class="bi bi-calendar-check"></i> Reservaciones
+            </a>
+
+            <div class="nav-section">Cap 6: Tareas</div>
+            <a href="../tareas/index.html" class="nav-link">
+                <i class="bi bi-clock-history"></i> Tareas Programadas
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+
+            <nav class="breadcrumb-nav" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../index.html">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="index.html">Sustancias</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Gestión de Cajas</li>
+                </ol>
+            </nav>
+
+            <h1><i class="bi bi-box-seam"></i> 8. Gestión de Cajas</h1>
+
+            <p class="lead">
+                Las cajas son un mecanismo especial del inventario que permite agrupar unidades de una sustancia o reactivo
+                bajo un mismo lote o fecha de vencimiento. Organilab gestiona el ciclo completo de las cajas:
+                creación, agrupación por vencimiento, disminución de unidades y reserva por cantidad de cajas.
+            </p>
+
+            <div class="info-box">
+                <strong><i class="bi bi-info-circle"></i> ¿Qué es una caja?</strong>
+                Una caja representa un conjunto de unidades de una misma sustancia (objeto de tipo Reactivo)
+                que comparten fecha de vencimiento y están físicamente agrupadas. Cada caja puede contener
+                múltiples unidades y su cantidad se controla de forma independiente dentro del estante.
+            </div>
+
+            <!-- ============================================================
+                 SECCIÓN 1: CREAR UNA CAJA
+                 ============================================================ -->
+            <h2>1. Crear una Caja</h2>
+
+            <p>
+                Las cajas se crean desde el formulario <strong>Crear material</strong>, que se muestra en la
+                <strong>segunda ventana</strong> del proceso de creación de caja. Este formulario permite
+                registrar el material junto con los datos específicos de la caja y de la sustancia(reactivo): cantidad de unidades por caja,
+																cantidad de cajas, fecha de vencimiento y los datos de reactivo como lo es la la cantidad de litros, mililitros
+															contenidos en un unidad de la caja y la unidad de medida por la cual se rige el empaque.
+            </p>
+
+            <h3>Pasos para crear una caja</h3>
+
+            <ol class="step-list">
+                <li>
+                    Acceda al estante donde desea agregar la caja dentro del laboratorio.
+                </li>
+                <li>
+                    Haga clic en el botón <strong>Crear material</strong>.
+                </li>
+															<li>
+																    Luego da click en el botón <strong>Crear caja</strong>.
+                <li>
+                    Ingrese los datos específicosde la caja: cantidad de unidades por caja cantidad de cajas
+													       y la fecha de vencimiento correspondiente; a su vez se ingresan los datos de la sustancia(reactivo)
+																    que contiene cada unidad de la caja.
+                </li>
+                <li>
+                    Confirme la creación. El sistema registrará la caja que contiene las unidades de la sustancia(reactivo) en el estante.
+                </li>
+            </ol>
+
+            <div class="screenshot-container">
+                <!-- GIF: proceso completo de creación de caja (segunda ventana Crear material) -->
+                <img src="../img/cap3_create_box.gif" alt="Segunda ventana de creación de caja — formulario Crear material" loading="lazy">
+                <p class="screenshot-caption">Segunda ventana de creación de caja — formulario <em>Crear material</em></p>
+            </div>
+
+            <!-- ============================================================
+                 SECCIÓN 2: AGRUPACIÓN POR FECHA DE VENCIMIENTO
+                 ============================================================ -->
+            <h2>2. Agrupación por Fecha de Vencimiento</h2>
+
+            <p>
+                Cuando se agregan cajas de un mismo material en distintos momentos, es fundamental
+                <strong>agruparlas por fecha de vencimiento</strong>. Esto permite mantener la trazabilidad
+                del inventario y aplicar correctamente la política FEFO
+                (<em>First Expired, First Out</em> — primero en vencer, primero en salir).
+            </p>
+
+            <div class="info-box warning">
+                <strong><i class="bi bi-exclamation-triangle"></i> Regla de agrupación</strong>
+                Cajas del mismo material con la <strong>misma fecha de vencimiento</strong> deben registrarse
+                dentro del mismo lote. Si una nueva remesa tiene una fecha de vencimiento diferente,
+                debe crearse como un lote separado para preservar la trazabilidad.
+            </div>
+
+            <h3>Cómo agrupar cajas por fecha de vencimiento</h3>
+
+            <ol class="step-list">
+                <li>
+                    Si ya existe una caja del material con la <strong>misma fecha de vencimiento</strong>,
+                    selecciónela y utilice la opción <strong>Agregar unidades</strong> para sumar las
+                    nuevas unidades al lote existente.
+                </li>
+            </ol>
+
+            <div class="screenshot-container">
+                <img src="../img/cap3_increase_box.gif" alt="Agregar cajas a un lote existente — formulario de ingreso" loading="lazy">
+                <p class="screenshot-caption">Agregar cajas a un lote existente — formulario de ingreso con cantidad, factura y uso</p>
+            </div>
+
+            <!-- ============================================================
+                 SECCIÓN 3: DISMINUIR UNIDADES (CONSUMO)
+                 ============================================================ -->
+            <h2>3. Disminuir Unidades de una Caja</h2>
+
+            <p>
+                Existen dos formas de registrar el consumo o salida de unidades de una caja, según el
+                alcance de la operación:
+            </p>
+
+            <h3>Opción A — Consumo parcial: disminuir por unidades</h3>
+
+            <p>
+                Use esta opción cuando desea retirar una cantidad específica de unidades de la caja
+                sin eliminarla del inventario.
+            </p>
+
+            <ol class="step-list">
+                <li>
+                    Ubique la caja en el estante y selecciónela haciendo clic sobre ella.
+                </li>
+                <li>
+                    En el panel de la caja, seleccione la opción <strong>Disminuir cantidad</strong>
+                    o <strong>Consumo de unidades</strong>.
+                </li>
+                <li>
+                    Ingrese la cantidad de unidades a retirar y confirme la operación.
+                </li>
+                <li>
+                    El sistema actualizará el conteo de la caja y registrará el movimiento en el
+                    historial de inventario.
+                </li>
+            </ol>
+
+            <h3>Opción B — Eliminación total: seleccionar todas las unidades</h3>
+
+            <p>
+                Use esta opción cuando la caja está completamente consumida o debe retirarse del
+                inventario en su totalidad.
+            </p>
+
+            <ol class="step-list">
+                <li>
+                    Ubique la caja en el estante.
+                </li>
+                <li>
+                    Seleccione <strong>todas las unidades</strong> de la caja mediante la opción
+                    correspondiente en el panel.
+                </li>
+                <li>
+                    Confirme la eliminación. El sistema retirará completamente la caja del inventario
+                    y registrará el movimiento.
+                </li>
+            </ol>
+
+            <div class="screenshot-container">
+                <img src="../img/cap3_decrease_box.gif" alt="Disminuir unidades de una caja — formulario de consumo" loading="lazy">
+                <p class="screenshot-caption">Disminuir unidades de una caja — selección de caja, cantidad y descripción</p>
+            </div>
+
+            <div class="info-box">
+                <strong><i class="bi bi-info-circle"></i> Trazabilidad</strong>
+                Tanto el consumo parcial como la eliminación total quedan registrados en el historial
+                de movimientos del inventario, lo que permite auditar cualquier cambio en las existencias.
+            </div>
+
+            <!-- ============================================================
+                 SECCIÓN 4: RESERVAR CAJAS
+                 ============================================================ -->
+            <h2>4. Reservar Cajas</h2>
+
+            <p>
+                Cuando un material gestionado en cajas necesita reservarse para una práctica, evento o
+                protocolo, la reserva se realiza indicando la <strong>cantidad en términos de cajas</strong>,
+                pudiendo ser un valor entero o decimal.
+            </p>
+
+            <div class="info-box success">
+                <strong><i class="bi bi-check-circle"></i> Ejemplo de reserva</strong>
+                Si cada caja contiene 10 unidades y se necesitan 25 unidades para una práctica,
+                se deben reservar <strong>2.5 cajas</strong>. El sistema interpreta la fracción
+                como la proporción de la caja que será utilizada.
+            </div>
+
+            <h3>Pasos para reservar cajas</h3>
+
+            <ol class="step-list">
+                <li>
+                    Acceda al módulo de <strong>Reservaciones</strong> desde el menú principal
+                    del laboratorio.
+                </li>
+                <li>
+                    Cree o edite una reservación y agregue el material gestionado en cajas.
+                </li>
+                <li>
+                    En el campo de cantidad, ingrese el número de cajas a reservar. Se admiten
+                    valores decimales, por ejemplo: <strong>2.5</strong>, <strong>0.5</strong>, <strong>3</strong>.
+                </li>
+                <li>
+                    Confirme la reservación. El sistema bloqueará la cantidad indicada del inventario
+                    disponible durante el período de la reserva.
+                </li>
+            </ol>
+
+            <div class="page-navigation">
+                <a href="07-reorden-consumo.html" class="prev-page">
+                    <i class="bi bi-arrow-left"></i> Reorden de Consumo
+                </a>
+                <a href="../procedimientos/index.html" class="next-page">
+                    Procedimientos <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

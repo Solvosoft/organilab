@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db.models import Q, Value
 from django.db.models.functions import Concat
 from django.shortcuts import get_object_or_404
@@ -39,6 +40,7 @@ from report.utils import filter_period, format_date
 from laboratory.models import PrecursorReportValues
 from django.contrib.admin.models import LogEntry, DELETION, CHANGE, ADDITION
 from laboratory.utils import organilab_logentry
+from django.utils.translation import gettext as _
 
 
 class ReportDataViewSet(viewsets.ViewSet):
@@ -429,7 +431,8 @@ class PrecursorReportValuesViewSet(AuthAllPermBaseObjectManagement):
             precusor_value,
             ADDITION,
             "precursorreportvalues",
-            changed_data=[],
+            changed_data=list(serializer.validated_data.keys()),
+            change_message=_("Created precursor report value"),
             relobj=precusor_pk,
         )
 
@@ -475,6 +478,7 @@ class PrecursorReportValuesViewSet(AuthAllPermBaseObjectManagement):
             CHANGE,
             "precursorreportvalues",
             changed_data=changed_fields,
+            change_message=_("Updated precursor report value"),
             relobj=precusor_pk,
         )
 
@@ -488,7 +492,8 @@ class PrecursorReportValuesViewSet(AuthAllPermBaseObjectManagement):
             instance,
             DELETION,
             "precursorreportvalues",
-            changed_data=[],
+            changed_data=["object", "quantity"],
+            change_message=_("Deleted precursor report value"),
             object_repr=precusor_value_repr,
             relobj=precusor_pk,
         )

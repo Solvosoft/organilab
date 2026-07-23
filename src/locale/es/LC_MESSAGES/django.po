@@ -15,6 +15,12 @@ msgstr ""
 msgid "No user found"
 msgstr "Usuario no encontrado"
 
+msgid "Deleted user: %(full_name)s (%(username)s)"
+msgstr "Usuario eliminado: %(full_name)s (%(username)s)"
+
+msgid "Reassigned on user delete"
+msgstr "Reasignado por borrado de usuario"
+
 msgid "Edit"
 msgstr "Editar"
 
@@ -652,6 +658,9 @@ msgstr "Eliminar"
 msgid "Only rols selected"
 msgstr "Solo usar roles seleccionados"
 
+msgid "Only labs selected"
+msgstr "Solo usar laboratorios seleccionados"
+
 msgid "Manage Users"
 msgstr "Administrar Usuarios"
 
@@ -1110,8 +1119,14 @@ msgstr "Reactivo"
 msgid "Material"
 msgstr "Materiales"
 
+msgid "Materials"
+msgstr "Materiales"
+
 msgid "Equipment"
 msgstr "Equipo"
+
+msgid "Available for use"
+msgstr "A disposición de uso"
 
 msgid "New status"
 msgstr "Nuevo Estado"
@@ -2196,8 +2211,6 @@ msgstr "Eliminar el elemento seleccionado"
 msgid "Do you want to delete this item?"
 msgstr "¿Desea eliminar este elemento?"
 
-msgid "Accept"
-msgstr "Aceptar"
 
 msgid "Delete All Selected Items"
 msgstr "Borrar todos los elementos seleccionados"
@@ -2207,6 +2220,18 @@ msgstr "¿Desea eliminar todos los elementos seleccionados?"
 
 msgid "My reservations"
 msgstr "Mis reservaciones"
+
+msgid "Pending Reservations"
+msgstr "Reservaciones Pendientes"
+
+msgid "Reservation History"
+msgstr "Historial de Reservaciones"
+
+msgid "No pending reservations."
+msgstr "No hay reservaciones pendientes."
+
+msgid "No reservation history found."
+msgstr "No se encontró historial de reservaciones."
 
 msgid "Cancel all selected products"
 msgstr "Cancelar todos los productos seleccionados"
@@ -3346,6 +3371,15 @@ msgstr "Reservaciones Denegadas"
 msgid "Closed Reservations"
 msgstr "Reservaciones Cerradas"
 
+msgid "Are you sure you want to close this reservation?"
+msgstr "¿Está seguro de que desea cerrar esta reserva?"
+
+msgid "Close reservation"
+msgstr "Cerrar reserva"
+
+msgid "Yes, close it"
+msgstr "Sí, cerrarla"
+
 msgid "Risk Management"
 msgstr "Manejo de Riesgo"
 
@@ -3388,8 +3422,8 @@ msgstr "Etiquetas SGA"
 msgid "SGA Editor"
 msgstr "Editor SGA"
 
-msgid "MSDS: Security sheets"
-msgstr "MSDS: Hojas de seguridad"
+msgid "FDS: Security sheets"
+msgstr "FDS: Hojas de seguridad"
 
 msgid "Companies Managment"
 msgstr "Gestión de Compañías"
@@ -4753,9 +4787,6 @@ msgstr "Unidad a Unidad Base"
 msgid "Measurement Unit Base"
 msgstr "Unidad de Medida Base"
 
-msgid "Added the user %(user)r in the organization %(org)r"
-msgstr "Se agrego el usuario %(user)r en la organización %(org)r"
-
 msgid "Added the groups %(groups)r to the profile %(profile)r"
 msgstr "Se agregaron los grupos %(groups)r al perfil %(profile)r"
 
@@ -5235,14 +5266,11 @@ msgstr "Categoría de peligro"
 msgid "Intitution can access"
 msgstr "Institución puede acceder"
 
-msgid "Consumption record"
-msgstr "Registro de consumo"
-
 msgid "List Reagents"
 msgstr "Listar Reactivos"
 
-msgid "Reorder Reactives"
-msgstr "Reordenar Reactivos"
+msgid "Consumption reorder"
+msgstr "Reorden de consumo"
 
 msgid "Quantity cannot be less than the container object minimun limit: %(limit)s."
 msgstr "La cantidad no puede ser menor que el límite mínimo del contenedor: %(limit)s."
@@ -5655,20 +5683,20 @@ msgstr "Lugares conocidos"
 msgid "Density"
 msgstr "Densidad"
 
-msgid "Search SDS"
-msgstr "Buscar SDS"
+msgid "Search FDS"
+msgstr "Buscar FDS"
 
-msgid "Upload SDS"
-msgstr "Subir SDS"
+msgid "Upload FDS"
+msgstr "Subir FDS"
 
 msgid "Analyze"
 msgstr "Analizar"
 
-msgid "Upload SDS File"
-msgstr "Subir archivo SDS"
+msgid "Upload FDS File"
+msgstr "Subir archivo FDS"
 
-msgid "SDS File (PDF)"
-msgstr "Archivo SDS (PDF)"
+msgid "FDS File (PDF)"
+msgstr "Archivo FDS (PDF)"
 
 msgid "Diagnostic"
 msgstr "Diagnóstico"
@@ -5697,5 +5725,2549 @@ msgstr "Códigos H únicos"
 msgid "Review extracted data"
 msgstr "Revisar datos extraídos"
 
-msgid "SDS Coverage"
-msgstr "Cobertura SDS"
+msgid "FDS Coverage"
+msgstr "Cobertura FDS"
+
+msgid "Interactive guides to help you use the system. Click on a tutorial to start it."
+msgstr "Guías interactivas para ayudarte a usar el sistema. Haz clic en un tutorial para iniciarlo."
+
+msgid "Enable tutorials"
+msgstr "Activar tutoriales"
+
+msgid "Restart"
+msgstr "Reiniciar"
+
+msgid "steps"
+msgstr "pasos"
+
+msgid "Completed"
+msgstr "Completado"
+
+msgid "In progress"
+msgstr "En proceso"
+
+msgid "Not started"
+msgstr "No iniciado"
+
+msgid "Management system for risk management in warehouses and laboratories where reagents and chemicals are stored"
+msgstr "Sistema regencial para la gestión de riesgo en bodegas y laboratorios en los que se almacena reactivos y productos químicos"
+
+msgid "Workers"
+msgstr "Trabajadores"
+
+msgid "Pending Tasks"
+msgstr "Tareas Pendientes"
+
+msgid "Add Pending Task"
+msgstr "Agregar tarea pendiente"
+
+msgid "Change Pending Task"
+msgstr "Modificar tarea pendiente"
+
+msgid "Delete Pending Task"
+msgstr "Eliminar tarea pendiente"
+
+msgid "View Pending Task"
+msgstr "Ver tarea pendiente"
+
+msgid "Pending Task"
+msgstr "Tarea pendiente"
+
+msgid "Create task"
+msgstr "Crear tarea"
+
+msgid "Edit task"
+msgstr "Editar tarea"
+
+msgid "Delete task"
+msgstr "Eliminar tarea"
+
+msgid "Open link"
+msgstr "Abrir enlace"
+
+msgid "Pending"
+msgstr "Pendiente"
+
+msgid "In process"
+msgstr "En proceso"
+
+msgid "Finished"
+msgstr "Finalizada"
+
+msgid "No pending tasks"
+msgstr "No hay tareas pendientes"
+
+msgid "No tasks in process"
+msgstr "No hay tareas en proceso"
+
+msgid "No finished tasks"
+msgstr "No hay tareas finalizadas"
+
+msgid "Archive all finished tasks"
+msgstr "Archivar todas las tareas terminadas"
+
+msgid "Archive task"
+msgstr "Archivar tarea"
+
+msgid "Expand description"
+msgstr "Expandir descripción"
+
+msgid "New pending task: %s"
+msgstr "Nueva tarea pendiente: %s"
+
+msgid "Day shift"
+msgstr "Jornada diurna"
+
+msgid "Mixed shift"
+msgstr "Jornada mixta"
+
+msgid "Night shift"
+msgstr "Jornada nocturna"
+
+msgid "Workday"
+msgstr "Jornada Laboral"
+
+msgid "Number of workers"
+msgstr "Número de trabajadores"
+
+msgid "Start Time"
+msgstr "Hora de inicio"
+
+msgid "End Time"
+msgstr "Hora de salida"
+
+msgid "Workdays of the risk zone"
+msgstr "Jornadas Laborales de la zona de riesgo"
+
+msgid "Workdays"
+msgstr "Jornadas Laborales"
+
+msgid "Update Workday"
+msgstr "Actualizar Jornada Laboral"
+
+msgid "Register Workday"
+msgstr "Registrar Jornada Laboral"
+
+msgid "View Workdays"
+msgstr "Ver Jornadas Laborales"
+
+msgid "Delete Workday"
+msgstr "Eliminar Jornada Laboral"
+
+msgid "Register Workdays"
+msgstr "Registrar Jornadas Laborales"
+
+msgid "Update Workdays"
+msgstr "Actualizar Jornadas Laborales"
+
+msgid "environmental"
+msgstr "ambiental"
+
+msgid "health"
+msgstr "salud"
+
+msgid "physical"
+msgstr "físico"
+
+msgid "ShelfObject expiration"
+msgstr "Vencimiento de objetos de estante"
+
+msgid "List of ShelfObject in limits"
+msgstr "Lista de objetos de estante con límites"
+
+msgid "You have been assigned a task because you have a change in a laboratory that you are responsible in the Organilab system."
+msgstr "Usted se le ha asignado una tarea porque tiene un cambio en un laboratorio que eres responsable en el sistema Organilab."
+
+msgid "This message is to notify you that one or more objects in the laboratory"
+msgstr "Este mensaje es para notificarle que uno o más objetos en el laboratorio"
+
+msgid "are at the minimum quota."
+msgstr "están en las cuotas mínimas."
+
+msgid "Detail of objects at the limit"
+msgstr "Detalle de objetos al límite"
+
+msgid "This message is to notify you that one or more reactives in the laboratory"
+msgstr "Este mensaje es para notificarle que uno o más reactivos en el laboratorio"
+
+msgid "will expire tomorrow."
+msgstr "vencerán mañana."
+
+msgid "Reagents nearing their expiration date"
+msgstr "Reactivos próximos a vencer"
+
+msgid "New period inform"
+msgstr "Nuevo informe de periodo"
+
+msgid "New period inform was created in the laboratory %s with the name %s"
+msgstr "Se creó un nuevo informe de periodo en el laboratorio %s con el nombre %s"
+
+msgid "Update Reactive"
+msgstr "Actualizar Reactivo"
+
+msgid "Available objects"
+msgstr "Objetos disponibles"
+
+msgid "Nominated"
+msgstr "Nominada"
+
+msgid "Ratio"
+msgstr "Ratio"
+
+msgid "Area/Volume"
+msgstr "Área/Volumen"
+
+msgid "New Structure type"
+msgstr "Nuevo Tipo Estructura"
+
+msgid "Create Box"
+msgstr "Crear caja"
+
+msgid "Quantity of boxes"
+msgstr "Cantidad de cajas"
+
+msgid "Quantity Units per box"
+msgstr "Unidades por caja"
+
+msgid "Is box?"
+msgstr "Es caja?"
+
+msgid "Box"
+msgstr "Caja"
+
+msgid "Number of boxes"
+msgstr "Número de cajas"
+
+msgid "Box detail"
+msgstr "Detalle de cajas"
+
+msgid "Units per box"
+msgstr "Unidades por caja"
+
+msgid "List of integer unit quantities indexed by box position"
+msgstr "Lista de cantidades enteras de unidades indexadas por posición de caja"
+
+msgid "Quantity Box"
+msgstr "Cantidad de cajas"
+
+msgid "Number of box"
+msgstr "Número de cajas"
+
+msgid "%(quantity)s %(unit)s"
+msgstr "%(quantity)s %(unit)s"
+
+msgid "%(boxes)s box(es) x %(units)s units"
+msgstr "%(boxes)s caja(s) x %(units)s unidades"
+
+msgid "%(count)d box(es) created successfully."
+msgstr "%(count)d caja(s) creada(s) exitosamente."
+
+msgid "%(name)s (%(quantity)s %(unit)s)"
+msgstr "%(name)s (%(quantity)s %(unit)s)"
+
+msgid "%(units)s unit(s)"
+msgstr "%(units)s unidad(es)"
+
+msgid "%(boxes)s box(es)"
+msgstr "%(boxes)s caja(s)"
+
+msgid "Select box"
+msgstr "Seleccionar caja"
+
+msgid "unit(s)"
+msgstr "unidad(es)"
+
+msgid "Box units decreased"
+msgstr "Unidades de caja disminuidas"
+
+msgid "Box %(box)s: %(units)d unit(s) remaining"
+msgstr "Caja %(box)s: %(units)d unidad(es) restante(s)"
+
+msgid "No boxes"
+msgstr "Sin cajas"
+
+msgid "Box updated"
+msgstr "Caja actualizada"
+
+msgid "Box was updated successfully."
+msgstr "La caja fue actualizada exitosamente."
+
+msgid "Edit Box"
+msgstr "Editar caja"
+
+msgid "(%(units)s) units per box"
+msgstr "(%(units)s) unidades por caja"
+
+msgid "Box of %(name)s (%(quantity)s %(unit)s)"
+msgstr "Caja de %(name)s (%(quantity)s %(unit)s)"
+
+msgid "Cannot change the number of boxes or units per box because one or more boxes have already been modified. Use the decrease or increase actions instead."
+msgstr "No se puede cambiar el número de cajas ni las unidades por caja porque una o más cajas ya fueron modificadas. Use las acciones de disminuir o aumentar."
+
+msgid "Box selection is required for box objects."
+msgstr "La selección de caja es requerida para objetos de tipo caja."
+
+msgid "Invalid box selection."
+msgstr "Selección de caja inválida."
+
+msgid "Subtract amount cannot be greater than the available box units."
+msgstr "La cantidad a restar no puede ser mayor que las unidades disponibles de la caja."
+
+msgid "Added the box %(box)s: %(units)d unit(s) remaining"
+msgstr "Se agregó la caja %(box)s: %(units)d unidad(es) restante(s)"
+
+msgid "Box was increased successfully."
+msgstr "La caja fue incrementada exitosamente."
+
+msgid "boxes"
+msgstr "cajas"
+
+msgid "Boxes to return"
+msgstr "Cajas para devolver"
+
+msgid "The transfer out cannot be performed since the boxes available for the source object is less than the amount to transfer."
+msgstr "La transferencia no puede realizarse porque la cantidad de cajas disponibles para el objeto de origen es menor que la cantidad a transferir."
+
+msgid "Laboratories map"
+msgstr "Mapa de laboratorios"
+
+
+msgid "Move in the boxes %(boxes)s from the laboratory %(lab)s."
+msgstr "Movió las cajas %(boxes)s desde el laboratorio %(lab)s."
+
+msgid "Box of"
+msgstr "Caja de"
+
+msgid "Your reservation #%(pk)d was denied: not enough box stock to fulfill the request (%(units)d units short)."
+msgstr "Su reserva #%(pk)d fue denegada: no hay suficiente stock de cajas para cumplir la solicitud (%(units)d unidades faltantes)."
+
+msgid "Not enough complete boxes available. %(needed)d complete box(es) required but only %(available)d available."
+msgstr "No hay suficientes cajas completas disponibles. Se requieren %(needed)d caja(s) completa(s) pero solo hay %(available)d disponible(s)."
+
+msgid "This item cannot be deleted because it has active reservations. Please close all reservations first."
+msgstr "Este artículo no puede eliminarse porque tiene reservas activas. Por favor, cierre todas las reservas primero."
+
+
+msgid "Select at least one box to return."
+msgstr "Seleccione al menos una caja para devolver."
+
+msgid "Units must be greater than 0 for box %(code)s."
+msgstr "Las unidades deben ser mayores a 0 para la caja %(code)s."
+
+msgid "Units must be between 0 and the reserved amount for each box."
+msgstr "Las unidades deben estar entre 0 y la cantidad reservada para cada caja."
+
+msgid "Amount to return must be greater than 0."
+msgstr "La cantidad a devolver debe ser mayor a 0."
+
+msgid "Amount to return cannot exceed the required amount (%(max)s)."
+msgstr "La cantidad a devolver no puede superar la cantidad requerida (%(max)s)."
+
+msgid "Could not process the return. Please verify the values."
+msgstr "No se pudo procesar la devolución. Por favor verifique los valores."
+
+msgid "Amount to return"
+msgstr "Cantidad a devolver"
+
+msgid "Reserved units"
+msgstr "Unidades reservadas"
+
+msgid "Units to return"
+msgstr "Unidades a devolver"
+
+msgid "Confirm Return"
+msgstr "Confirmar devolución"
+
+msgid "Accept"
+msgstr "Aceptar"
+
+msgid "Reject"
+msgstr "Rechazar"
+
+msgid "No products in this reservation."
+msgstr "No hay productos en esta reserva."
+
+msgid "Already Returned"
+msgstr "Ya devuelto"
+
+msgid "The reservation has not started yet. Returns are not allowed before the initial date."
+msgstr "La reserva aún no ha iniciado. No se permiten devoluciones antes de la fecha de inicio."
+
+msgid "Return"
+msgstr "Devolver"
+
+msgid "Training Resources"
+msgstr "Capacitaciones"
+
+msgid "Access learning resources to understand how to use the system step by step."
+msgstr "Accede a material de capacitación para aprender a usar el sistema paso a paso."
+
+msgid "The unverification was performed successfully."
+msgstr "La desverificación se ha realizado con éxito."
+
+msgid "The verification was performed successfully."
+msgstr "La verificación se ha realizado con éxito."
+
+msgid "Unverify FDS"
+msgstr "Desverificar FDS"
+
+msgid "Verify FDS"
+msgstr "Verificar FDS"
+
+msgid "No file"
+msgstr "No hay archivo"
+
+msgid "List of FDS"
+msgstr "Listado de FDS"
+
+msgid "Register Incident"
+msgstr "Registrar Incidente"
+
+msgid "Update Incident"
+msgstr "Actualizar Incidente"
+
+msgid "Delete Incident"
+msgstr "Eliminar Incidente"
+
+msgid "The reservation start date cannot be later than the current date."
+msgstr "La fecha de inicio de la reserva no puede ser pasada la fecha actual"
+
+msgid "Enter a valid amount."
+msgstr "Valor ingresado invalido"
+
+msgid "View administrators"
+msgstr "Ver administradores"
+
+msgid "Administrators"
+msgstr "Administradores"
+
+msgid "Single Sign-On"
+msgstr "Inicio Único"
+
+msgid "User List"
+msgstr "Lista de Usuarios"
+
+msgid "Organizations List"
+msgstr "Lista de Organizaciones"
+
+msgid "Laboratories List"
+msgstr "Lista de Laboratorios"
+
+msgid "Laboratory and Organization List"
+msgstr "Lista de Laboratorios y Organizaciones"
+
+msgid "No roles assigned"
+msgstr "No se asignaron roles"
+
+msgid "User roles list"
+msgstr "Lista de roles por usuario"
+
+msgid "Filter by roles"
+msgstr "Filtrar por roles"
+
+msgid "User roles in laboratory"
+msgstr "Roles de usuario en laboratorio"
+
+msgid "User roles in organization"
+msgstr "Roles de usuario en organización"
+
+msgid "Clear filters"
+msgstr "Limpiar filtros"
+
+msgid "Filter by organization"
+msgstr "Filtrar por organización"
+
+msgid "Enable child organizations filter?"
+msgstr "Habilitar filtro de organizaciones hijas"
+
+msgid "Disable child organizations filter?"
+msgstr "Deshabilitar filtro de organizaciones hijas"
+
+msgid "Do you want to enable the child organizations filter?"
+msgstr "¿Desea habilitar el filtro de organizaciones hijas?"
+
+msgid "Do you want to disable the child organizations filter?"
+msgstr "¿Desea deshabilitar el filtro de organizaciones hijas?"
+
+msgid "Unit code"
+msgstr "Código de unidad"
+
+msgid "Revision date"
+msgstr "Fecha de revisión"
+
+msgid "EU codes"
+msgstr "Códigos UE"
+
+msgid "Precursor type"
+msgstr "Tipo de precursor"
+
+msgid "Seveso list"
+msgstr "Lista Seveso"
+
+msgid "Target organs"
+msgstr "Órganos afectados"
+
+msgid "Risks"
+msgstr "Riesgos"
+
+msgid "Confirm and create substance"
+msgstr "Confirmar y crear sustancia"
+
+msgid "My lab or organization requests"
+msgstr "Mis solicitudes de laboratorio u organización"
+
+msgid "My Requests"
+msgstr "Mis Solicitudes"
+
+msgid "New Request"
+msgstr "Nueva Solicitud"
+
+msgid "Update Request"
+msgstr "Actualizar Solicitud"
+
+msgid "New %(type)s request: %(name)s"
+msgstr "Nueva solicitud de %(type)s: %(name)s"
+
+msgid ""
+"Hi,\n"
+"\n"
+"A new %(type)s request has been submitted and requires your review.\n"
+"\n"
+"Name: %(name)s\n"
+"Requested by: %(user)s\n"
+"\n"
+"Please log in to review this request.\n"
+"\n"
+"Thanks,\n"
+"Organilab system"
+msgstr ""
+"Hola,\n"
+"\n"
+"Se ha enviado una nueva solicitud de %(type)s y requiere su revisión.\n"
+"\n"
+"Nombre: %(name)s\n"
+"Solicitado por: %(user)s\n"
+"\n"
+"Por favor inicie sesión para revisar esta solicitud.\n"
+"\n"
+"Gracias,\n"
+"Sistema Organilab"
+
+msgid "Your request '%(name)s' has been %(status)s"
+msgstr "Su solicitud '%(name)s' ha sido %(status)s"
+
+msgid ""
+"Hi %(user)s,\n"
+"\n"
+"Your %(type)s request '%(name)s' has been %(status)s.\n"
+"\n"
+"Thanks,\n"
+"Organilab system"
+msgstr ""
+"Hola %(user)s,\n"
+"\n"
+"Su solicitud de %(type)s '%(name)s' ha sido %(status)s.\n"
+"\n"
+"Gracias,\n"
+"Sistema Organilab"
+
+msgid "Request approved."
+msgstr "Solicitud aprobada."
+
+msgid "Request rejected."
+msgstr "Solicitud rechazada."
+
+msgid "Delete Request"
+msgstr "Eliminar Solicitud"
+
+msgid "Review lab or organization requests"
+msgstr "Revisar solicitudes de laboratorio u organización"
+
+msgid "Pending Requests"
+msgstr "Solicitudes Pendientes"
+
+msgid "Is organization?"
+msgstr "¿Es organización?"
+
+msgid "Review notes"
+msgstr "Notas de revisión"
+
+msgid "Water resources affected"
+msgstr "Recursos hídricos afectados"
+
+msgid "Nearby sites"
+msgstr "Sitios cercanos"
+
+msgid "Entity type"
+msgstr "Tipo de entidad"
+
+msgid "Rejected"
+msgstr "Rechazado"
+
+msgid "Lab or organization request"
+msgstr "Solicitud de laboratorio u organización"
+
+msgid "Lab or organization requests"
+msgstr "Solicitudes de laboratorio u organización"
+
+msgid "Requested at"
+msgstr "Solicitado el"
+
+msgid "Requested by"
+msgstr "Solicitado por"
+
+msgid "Parent organization"
+msgstr "Organización padre"
+
+msgid "Parent organization (for org)"
+msgstr "Organización padre (para org)"
+
+msgid "Can approve lab or organization request"
+msgstr "Puede aprobar solicitud de laboratorio u organización"
+
+msgid "Lab or Organization Request"
+msgstr "Solicitud de Laboratorio u Organización"
+
+msgid "View Lab or Organization Request"
+msgstr "Ver solicitud de laboratorio u organización"
+
+msgid "Add Lab or Organization Request"
+msgstr "Agregar solicitud de laboratorio u organización"
+
+msgid "Change Lab or Organization Request"
+msgstr "Cambiar solicitud de laboratorio u organización"
+
+msgid "Delete Lab or Organization Request"
+msgstr "Eliminar solicitud de laboratorio u organización"
+
+msgid "Can Approve Lab or Organization Request"
+msgstr "Puede aprobar solicitud de laboratorio u organización"
+
+msgid "Show resolved requests"
+msgstr "Mostrar solicitudes resueltas"
+
+msgid "Create organization/laboratory"
+msgstr "Crear organización/laboratorio"
+
+msgid "Review Requests"
+msgstr "Revisar Solicitudes"
+
+msgid "Version"
+msgstr "Versión"
+
+msgid "Clear"
+msgstr "Limpiar"
+
+msgid "Current"
+msgstr "Actual"
+
+msgid "From"
+msgstr "Desde"
+
+msgid "To"
+msgstr "Hasta"
+
+msgid "Is active"
+msgstr "Está activo"
+
+msgid "Source"
+msgstr "Origen"
+
+msgid "Author"
+msgstr "Autor"
+
+msgid "Dashboard"
+msgstr "Tablero"
+
+msgid "Anonymous"
+msgstr "Anónimo"
+
+msgid "Open"
+msgstr "Abrir"
+
+msgid "Hazard"
+msgstr "Peligro"
+
+msgid "Risk"
+msgstr "Riesgo"
+
+msgid "P"
+msgstr "P"
+
+msgid "C"
+msgstr "C"
+
+msgid "Controls"
+msgstr "Controles"
+
+msgid "Excel"
+msgstr "Excel"
+
+msgid "Assessment"
+msgstr "Evaluación"
+
+msgid "Probability"
+msgstr "Probabilidad"
+
+msgid "Consequence"
+msgstr "Consecuencia"
+
+msgid "Risk level"
+msgstr "Nivel de riesgo"
+
+msgid "Hazards"
+msgstr "Peligros"
+
+msgid "IPER assessments"
+msgstr "Evaluaciones IPER"
+
+msgid "IPER — Risk follow-up"
+msgstr "IPER — Seguimiento de riesgos"
+
+msgid "New assessment"
+msgstr "Nueva evaluación"
+
+msgid "Next update"
+msgstr "Próxima actualización"
+
+msgid "Laboratory name hidden"
+msgstr "Nombre del laboratorio oculto"
+
+msgid "Laboratory name visible"
+msgstr "Nombre del laboratorio visible"
+
+msgid "No assessments yet."
+msgstr "Aún no hay evaluaciones."
+
+msgid "Delete IPER assessment"
+msgstr "Eliminar evaluación IPER"
+
+msgid "Delete permanently"
+msgstr "Eliminar permanentemente"
+
+msgid "IPER dashboard"
+msgstr "Tablero IPER"
+
+msgid "IPER assessment"
+msgstr "Evaluación IPER"
+
+msgid "IPER"
+msgstr "IPER"
+
+msgid "Make laboratory name visible in listings"
+msgstr "Hacer visible el nombre del laboratorio en los listados"
+
+msgid "Make public"
+msgstr "Hacer público"
+
+msgid "Hide laboratory name in listings"
+msgstr "Ocultar el nombre del laboratorio en los listados"
+
+msgid "Make anonymous"
+msgstr "Hacer anónimo"
+
+msgid "Reopen as draft to keep editing hazards"
+msgstr "Reabrir como borrador para seguir editando peligros"
+
+msgid "Back to draft"
+msgstr "Volver a borrador"
+
+msgid "Mark as completed (locks hazards, only observations allowed)"
+msgstr "Marcar como completado (bloquea peligros, solo permite observaciones)"
+
+msgid "Mark as completed"
+msgstr "Marcar como completado"
+
+msgid "Obsolete IPER assessments cannot change status."
+msgstr "Las evaluaciones IPER obsoletas no pueden cambiar de estado."
+
+msgid "Cannot modify hazards while the IPER assessment is completed."
+msgstr "No se pueden modificar peligros mientras la evaluación IPER esté completada."
+
+msgid "Reopen this completed IPER assessment before creating a new version."
+msgstr "Reabra esta evaluación IPER completada antes de crear una nueva versión."
+
+msgid "A new observation was added to the IPER assessment of %s"
+msgstr "Se agregó una nueva observación a la evaluación IPER de %s"
+
+msgid "Create a new version pre-filled with this one"
+msgstr "Crear una nueva versión prellenada con esta"
+
+msgid "Update (new version)"
+msgstr "Actualizar (nueva versión)"
+
+msgid "New version with empty hazards"
+msgstr "Nueva versión sin peligros"
+
+msgid "Start clean"
+msgstr "Empezar de cero"
+
+msgid "Identified hazards"
+msgstr "Peligros identificados"
+
+msgid "No hazards registered yet."
+msgstr "Aún no hay peligros registrados."
+
+msgid "Add hazard"
+msgstr "Agregar peligro"
+
+msgid "Risk matrix (INTE T55)"
+msgstr "Matriz de riesgo (INTE T55)"
+
+msgid "Analyst observations"
+msgstr "Observaciones del analista"
+
+msgid "No observations."
+msgstr "Sin observaciones."
+
+msgid "Laboratory help"
+msgstr "Ayuda del laboratorio"
+
+msgid "Loading inventory and hazards…"
+msgstr "Cargando inventario y peligros…"
+
+msgid "Items in"
+msgstr "Artículos en"
+
+msgid "Could not load help."
+msgstr "No se pudo cargar la ayuda."
+
+msgid "IPER history"
+msgstr "Historial IPER"
+
+msgid "IPER — Hazard history"
+msgstr "IPER — Historial de peligros"
+
+msgid "No records."
+msgstr "Sin registros."
+
+msgid "Identification of Hazards and Risk Assessment (INTE T55)"
+msgstr "Identificación de Peligros y Evaluación de Riesgos (INTE T55)"
+
+msgid "IPER — Risk dashboard"
+msgstr "IPER — Tablero de riesgos"
+
+msgid "Hazards by risk level"
+msgstr "Peligros por nivel de riesgo"
+
+msgid "Hazards by category"
+msgstr "Peligros por categoría"
+
+msgid "IPER compliance"
+msgstr "Cumplimiento IPER"
+
+msgid "Update the IPER risk assessment"
+msgstr "Actualizar la evaluación de riesgo IPER"
+
+msgid "Please fill or update the IPER for laboratory %(lab)s"
+msgstr "Por favor complete o actualice el IPER del laboratorio %(lab)s"
+
+msgid "IPER update requested to %(count)d laboratory responsibles."
+msgstr "Se solicitó actualización del IPER a %(count)d responsables de laboratorio."
+
+msgid "Not allowed"
+msgstr "No permitido"
+
+msgid "Only the root organization can manage the IPER catalog."
+msgstr "Solo la organización raíz puede administrar el catálogo IPER."
+
+msgid "Add IPER catalog value"
+msgstr "Agregar valor de catálogo IPER"
+
+msgid "Overdue"
+msgstr "Vencido"
+
+msgid "Missing"
+msgstr "Faltante"
+
+msgid "The IPER for laboratory %(lab)s is due on %(date)s."
+msgstr "El IPER del laboratorio %(lab)s vence el %(date)s."
+
+msgid "Hazard classification"
+msgstr "Clasificación de peligro"
+
+msgid "IPER risk matrix"
+msgstr "Matriz de riesgo IPER"
+
+msgid "Update period (months)"
+msgstr "Periodo de actualización (meses)"
+
+msgid "Remind days before due date"
+msgstr "Días de recordatorio antes del vencimiento"
+
+msgid "IPER configuration"
+msgstr "Configuración IPER"
+
+msgid "IPER configurations"
+msgstr "Configuraciones IPER"
+
+msgid "Obsolete"
+msgstr "Obsoleto"
+
+msgid "Periodic"
+msgstr "Periódico"
+
+msgid "On demand"
+msgstr "Bajo demanda"
+
+msgid "Risk zone request"
+msgstr "Solicitud de zona de riesgo"
+
+msgid "Assessment date"
+msgstr "Fecha de evaluación"
+
+msgid "Previous version"
+msgstr "Versión anterior"
+
+msgid "Next update due date"
+msgstr "Fecha de vencimiento de la próxima actualización"
+
+msgid "When enabled, the laboratory name is hidden in public listings."
+msgstr "Cuando está habilitado, el nombre del laboratorio se oculta en los listados públicos."
+
+msgid "Can view all IPER assessments in the organization"
+msgstr "Puede ver todas las evaluaciones IPER de la organización"
+
+msgid "Can request laboratories to fill the IPER"
+msgstr "Puede solicitar a los laboratorios completar el IPER"
+
+msgid "Can view the IPER risk dashboard"
+msgstr "Puede ver el tablero de riesgo IPER"
+
+msgid "Can manage IPER catalog and risk matrix (root org)"
+msgstr "Puede administrar el catálogo IPER y la matriz de riesgo (organización raíz)"
+
+msgid "Hazard description"
+msgstr "Descripción del peligro"
+
+msgid "Hazard location"
+msgstr "Ubicación del peligro"
+
+msgid "Risk priority"
+msgstr "Prioridad de riesgo"
+
+msgid "Implemented controls"
+msgstr "Controles implementados"
+
+msgid "Recommended controls"
+msgstr "Controles recomendados"
+
+msgid "Related inventory items"
+msgstr "Artículos de inventario relacionados"
+
+msgid "IPER hazard"
+msgstr "Peligro IPER"
+
+msgid "IPER hazards"
+msgstr "Peligros IPER"
+
+msgid "IPER observation"
+msgstr "Observación IPER"
+
+msgid "IPER observations"
+msgstr "Observaciones IPER"
+
+msgid "Add Blog Category"
+msgstr "Agregar categoría de blog"
+
+msgid "Add Blog Entry"
+msgstr "Agregar entrada de blog"
+
+msgid "Add Building"
+msgstr "Agregar edificio"
+
+msgid "Add Buildings"
+msgstr "Agregar edificios"
+
+msgid "Add Danger Indication"
+msgstr "Agregar indicación de peligro"
+
+msgid "Add Danger Substance"
+msgstr "Agregar sustancia peligrosa"
+
+msgid "Add Danger Substance Category"
+msgstr "Agregar categoría de sustancia peligrosa"
+
+msgid "Add Disposal"
+msgstr "Agregar desecho"
+
+msgid "Add Equipment Type"
+msgstr "Agregar tipo de equipo"
+
+msgid "Add External User in Organization"
+msgstr "Agregar usuario externo en la organización"
+
+msgid "Add Furniture"
+msgstr "Agregar mobiliario"
+
+msgid "Add H Code Category"
+msgstr "Agregar categoría de código H"
+
+msgid "Add IPER assessment"
+msgstr "Agregar evaluación IPER"
+
+msgid "Add IPER hazard"
+msgstr "Agregar peligro IPER"
+
+msgid "Add IPER observation"
+msgstr "Agregar observación IPER"
+
+msgid "Add Incident Report"
+msgstr "Agregar reporte de incidente"
+
+msgid "Add Inform"
+msgstr "Agregar informe"
+
+msgid "Add Inform Observation"
+msgstr "Agregar observación de informe"
+
+msgid "Add Instrumental Family"
+msgstr "Agregar familia instrumental"
+
+msgid "Add Label"
+msgstr "Agregar etiqueta"
+
+msgid "Add Label SGA"
+msgstr "Agregar etiqueta SGA"
+
+msgid "Add Laboratory Process"
+msgstr "Agregar proceso de laboratorio"
+
+msgid "Add Laboratory Room"
+msgstr "Agregar sala de laboratorio"
+
+msgid "Add MSDS Object"
+msgstr "Agregar objeto MSDS"
+
+msgid "Add My Procedure"
+msgstr "Agregar mi procedimiento"
+
+msgid "Add Object Features"
+msgstr "Agregar características de objeto"
+
+msgid "Add Organization Structure"
+msgstr "Agregar estructura de organización"
+
+msgid "Add Organization Structure Relations"
+msgstr "Agregar relaciones de estructura de organización"
+
+msgid "Add Organization User Management"
+msgstr "Agregar gestión de usuarios de organización"
+
+msgid "Add Period Inform Scheduler"
+msgstr "Agregar programador de informes periódicos"
+
+msgid "Add Precursor Report Value"
+msgstr "Agregar valor de reporte de precursores"
+
+msgid "Add Procedure"
+msgstr "Agregar procedimiento"
+
+msgid "Add Procedure Observations"
+msgstr "Agregar observaciones de procedimiento"
+
+msgid "Add Procedure Required Object"
+msgstr "Agregar objeto requerido de procedimiento"
+
+msgid "Add Procedure Step"
+msgstr "Agregar paso de procedimiento"
+
+msgid "Add Profile"
+msgstr "Agregar perfil"
+
+msgid "Add Profile Permission"
+msgstr "Agregar permiso de perfil"
+
+msgid "Add Protocol"
+msgstr "Agregar protocolo"
+
+msgid "Add Provider Laboratory"
+msgstr "Agregar proveedor de laboratorio"
+
+msgid "Add Provider SGA"
+msgstr "Agregar proveedor SGA"
+
+msgid "Add Prudence Advice"
+msgstr "Agregar consejo de prudencia"
+
+msgid "Add Recipient Size"
+msgstr "Agregar tamaño de recipiente"
+
+msgid "Add Regent"
+msgstr "Agregar regente"
+
+msgid "Add Register User QR Code"
+msgstr "Agregar código QR de registro de usuario"
+
+msgid "Add Report"
+msgstr "Agregar reporte"
+
+msgid "Add Report Template"
+msgstr "Agregar plantilla de reporte"
+
+msgid "Add Reservation"
+msgstr "Agregar reserva"
+
+msgid "Add Reserved Products"
+msgstr "Agregar productos reservados"
+
+msgid "Add ReservedProducts"
+msgstr "Agregar productos reservados"
+
+msgid "Add Risk Zone"
+msgstr "Agregar zona de riesgo"
+
+msgid "Add Role"
+msgstr "Agregar rol"
+
+msgid "Add SGA Complement"
+msgstr "Agregar complemento SGA"
+
+msgid "Add Shelf Object"
+msgstr "Agregar objeto en estante"
+
+msgid "Add Shelf Object Calibration"
+msgstr "Agregar calibración de objeto en estante"
+
+msgid "Add Shelf Object Guarantee"
+msgstr "Agregar garantía de objeto en estante"
+
+msgid "Add Shelf Object Log"
+msgstr "Agregar registro de objeto en estante"
+
+msgid "Add Shelf Object Observations"
+msgstr "Agregar observaciones de objeto en estante"
+
+msgid "Add Shelf Object Status"
+msgstr "Agregar estado de objeto en estante"
+
+msgid "Add Shelf Object Training"
+msgstr "Agregar capacitación de objeto en estante"
+
+msgid "Add ShelfObject Status"
+msgstr "Agregar estado de objeto en estante"
+
+msgid "Add Step Comment"
+msgstr "Agregar comentario de paso"
+
+msgid "Add Structure"
+msgstr "Agregar estructura"
+
+msgid "Add Substance"
+msgstr "Agregar sustancia"
+
+msgid "Add Substance Characteristics"
+msgstr "Agregar características de sustancia"
+
+msgid "Add Substance Observation"
+msgstr "Agregar observación de sustancia"
+
+msgid "Add Template SGA"
+msgstr "Agregar plantilla SGA"
+
+msgid "Add Transfer"
+msgstr "Agregar transferencia"
+
+msgid "Add Warning Word"
+msgstr "Agregar palabra de advertencia"
+
+msgid "Add ZoneType"
+msgstr "Agregar tipo de zona"
+
+msgid "Blog Category"
+msgstr "Categoría de blog"
+
+msgid "Blog Entry"
+msgstr "Entrada de blog"
+
+msgid "Building"
+msgstr "Edificio"
+
+msgid "Can Request Reservations"
+msgstr "Puede solicitar reservas"
+
+msgid "Catalog"
+msgstr "Catálogo"
+
+msgid "Change Blog Entry"
+msgstr "Modificar entrada de blog"
+
+msgid "Change Building"
+msgstr "Modificar edificio"
+
+msgid "Change Danger Indication"
+msgstr "Modificar indicación de peligro"
+
+msgid "Change Danger Substance"
+msgstr "Modificar sustancia peligrosa"
+
+msgid "Change Danger Substance Category"
+msgstr "Modificar categoría de sustancia peligrosa"
+
+msgid "Change Display Label"
+msgstr "Modificar etiqueta de visualización"
+
+msgid "Change Equipment Type"
+msgstr "Modificar tipo de equipo"
+
+msgid "Change Furniture"
+msgstr "Modificar mobiliario"
+
+msgid "Change H Code Category"
+msgstr "Modificar categoría de código H"
+
+msgid "Change IPER assessment"
+msgstr "Modificar evaluación IPER"
+
+msgid "Change IPER hazard"
+msgstr "Modificar peligro IPER"
+
+msgid "Change IPER observation"
+msgstr "Modificar observación IPER"
+
+msgid "Change Incident Report"
+msgstr "Modificar reporte de incidente"
+
+msgid "Change Inform"
+msgstr "Modificar informe"
+
+msgid "Change Inform Observation"
+msgstr "Modificar observación de informe"
+
+msgid "Change Instrumental Family"
+msgstr "Modificar familia instrumental"
+
+msgid "Change Label SGA"
+msgstr "Modificar etiqueta SGA"
+
+msgid "Change Laboratory"
+msgstr "Modificar laboratorio"
+
+msgid "Change Laboratory Process"
+msgstr "Modificar proceso de laboratorio"
+
+msgid "Change Laboratory Room"
+msgstr "Modificar sala de laboratorio"
+
+msgid "Change MSDS Object"
+msgstr "Modificar objeto MSDS"
+
+msgid "Change My Procedure"
+msgstr "Modificar mi procedimiento"
+
+msgid "Change Object"
+msgstr "Modificar objeto"
+
+msgid "Change Object Features"
+msgstr "Modificar características de objeto"
+
+msgid "Change Organization Structure"
+msgstr "Modificar estructura de organización"
+
+msgid "Change Organization User Management"
+msgstr "Modificar gestión de usuarios de organización"
+
+msgid "Change Precursor Report Value"
+msgstr "Modificar valor de reporte de precursores"
+
+msgid "Change Procedure"
+msgstr "Modificar procedimiento"
+
+msgid "Change Procedure Step"
+msgstr "Modificar paso de procedimiento"
+
+msgid "Change Profile Permission"
+msgstr "Modificar permiso de perfil"
+
+msgid "Change Protocol"
+msgstr "Modificar protocolo"
+
+msgid "Change Provider Laboratory"
+msgstr "Modificar proveedor de laboratorio"
+
+msgid "Change Prudence Advice"
+msgstr "Modificar consejo de prudencia"
+
+msgid "Change Recipient Size"
+msgstr "Modificar tamaño de recipiente"
+
+msgid "Change Regent"
+msgstr "Modificar regente"
+
+msgid "Change Register User QR Code"
+msgstr "Modificar código QR de registro de usuario"
+
+msgid "Change Report Template"
+msgstr "Modificar plantilla de reporte"
+
+msgid "Change Reserved Products"
+msgstr "Modificar productos reservados"
+
+msgid "Change Risk Zone"
+msgstr "Modificar zona de riesgo"
+
+msgid "Change Role"
+msgstr "Modificar rol"
+
+msgid "Change SGA Complement"
+msgstr "Modificar complemento SGA"
+
+msgid "Change Security Leaf"
+msgstr "Modificar hoja de seguridad"
+
+msgid "Change Shelf"
+msgstr "Modificar estante"
+
+msgid "Change Shelf Object"
+msgstr "Modificar objeto en estante"
+
+msgid "Change Shelf Object Calibration"
+msgstr "Modificar calibración de objeto en estante"
+
+msgid "Change Shelf Object Guarantee"
+msgstr "Modificar garantía de objeto en estante"
+
+msgid "Change Shelf Object Log"
+msgstr "Modificar registro de objeto en estante"
+
+msgid "Change Shelf Object Training"
+msgstr "Modificar capacitación de objeto en estante"
+
+msgid "Change Step Comment"
+msgstr "Modificar comentario de paso"
+
+msgid "Change Structure"
+msgstr "Modificar estructura"
+
+msgid "Change Substance"
+msgstr "Modificar sustancia"
+
+msgid "Change Substance Characteristics"
+msgstr "Modificar características de sustancia"
+
+msgid "Change Substance Observation"
+msgstr "Modificar observación de sustancia"
+
+msgid "Change Template SGA"
+msgstr "Modificar plantilla SGA"
+
+msgid "Change User"
+msgstr "Modificar usuario"
+
+msgid "Change Warning Word"
+msgstr "Modificar palabra de advertencia"
+
+msgid "Contracts"
+msgstr "Contratos"
+
+msgid "Custom template"
+msgstr "Plantilla personalizada"
+
+msgid "Danger Substance Category"
+msgstr "Categoría de sustancia peligrosa"
+
+msgid "Delete Blog Entry"
+msgstr "Eliminar entrada de blog"
+
+msgid "Delete Building"
+msgstr "Eliminar edificio"
+
+msgid "Delete Buildings"
+msgstr "Eliminar edificios"
+
+msgid "Delete Danger Indication"
+msgstr "Eliminar indicación de peligro"
+
+msgid "Delete Danger Substance Category"
+msgstr "Eliminar categoría de sustancia peligrosa"
+
+msgid "Delete Equipment Type"
+msgstr "Eliminar tipo de equipo"
+
+msgid "Delete Furniture"
+msgstr "Eliminar mobiliario"
+
+msgid "Delete IPER hazard"
+msgstr "Eliminar peligro IPER"
+
+msgid "Delete IPER observation"
+msgstr "Eliminar observación IPER"
+
+msgid "Delete Incident Report"
+msgstr "Eliminar reporte de incidente"
+
+msgid "Delete Inform"
+msgstr "Eliminar informe"
+
+msgid "Delete Inform Observation"
+msgstr "Eliminar observación de informe"
+
+msgid "Delete Instrumental Family"
+msgstr "Eliminar familia instrumental"
+
+msgid "Delete Label SGA"
+msgstr "Eliminar etiqueta SGA"
+
+msgid "Delete Laboratory"
+msgstr "Eliminar laboratorio"
+
+msgid "Delete Laboratory Process"
+msgstr "Eliminar proceso de laboratorio"
+
+msgid "Delete Laboratory Room"
+msgstr "Eliminar sala de laboratorio"
+
+msgid "Delete MSDS Object"
+msgstr "Eliminar objeto MSDS"
+
+msgid "Delete My Procedure"
+msgstr "Eliminar mi procedimiento"
+
+msgid "Delete Object Features"
+msgstr "Eliminar características de objeto"
+
+msgid "Delete Organization Structure"
+msgstr "Eliminar estructura de organización"
+
+msgid "Delete Organization User Management"
+msgstr "Eliminar gestión de usuarios de organización"
+
+msgid "Delete Precursor Report Value"
+msgstr "Eliminar valor de reporte de precursores"
+
+msgid "Delete Procedure"
+msgstr "Eliminar procedimiento"
+
+msgid "Delete Procedure Observations"
+msgstr "Eliminar observaciones de procedimiento"
+
+msgid "Delete Procedure Required Object"
+msgstr "Eliminar objeto requerido de procedimiento"
+
+msgid "Delete Procedure Step"
+msgstr "Eliminar paso de procedimiento"
+
+msgid "Delete Profile Permission"
+msgstr "Eliminar permiso de perfil"
+
+msgid "Delete Provider Laboratory"
+msgstr "Eliminar proveedor de laboratorio"
+
+msgid "Delete Prudence Advice"
+msgstr "Eliminar consejo de prudencia"
+
+msgid "Delete Recipient Size"
+msgstr "Eliminar tamaño de recipiente"
+
+msgid "Delete Regent"
+msgstr "Eliminar regente"
+
+msgid "Delete Register User QR Code"
+msgstr "Eliminar código QR de registro de usuario"
+
+msgid "Delete Report Template"
+msgstr "Eliminar plantilla de reporte"
+
+msgid "Delete Reserved Products"
+msgstr "Eliminar productos reservados"
+
+msgid "Delete Risk Zone"
+msgstr "Eliminar zona de riesgo"
+
+msgid "Delete Role"
+msgstr "Eliminar rol"
+
+msgid "Delete Shelf"
+msgstr "Eliminar estante"
+
+msgid "Delete Shelf Object"
+msgstr "Eliminar objeto en estante"
+
+msgid "Delete Shelf Object Calibration"
+msgstr "Eliminar calibración de objeto en estante"
+
+msgid "Delete Shelf Object Guarantee"
+msgstr "Eliminar garantía de objeto en estante"
+
+msgid "Delete Shelf Object Log"
+msgstr "Eliminar registro de objeto en estante"
+
+msgid "Delete Shelf Object Training"
+msgstr "Eliminar capacitación de objeto en estante"
+
+msgid "Delete Step Comment"
+msgstr "Eliminar comentario de paso"
+
+msgid "Delete Structure"
+msgstr "Eliminar estructura"
+
+msgid "Delete Substance"
+msgstr "Eliminar sustancia"
+
+msgid "Delete Substance Observation"
+msgstr "Eliminar observación de sustancia"
+
+msgid "Delete Warning Word"
+msgstr "Eliminar palabra de advertencia"
+
+msgid "Delete structure"
+msgstr "Eliminar estructura"
+
+msgid "Display Label"
+msgstr "Etiqueta de visualización"
+
+msgid "Equipment Type"
+msgstr "Tipo de equipo"
+
+msgid "H Code Category"
+msgstr "Categoría de código H"
+
+msgid "Inform Observation"
+msgstr "Observación de informe"
+
+msgid "Instrumental Family"
+msgstr "Familia instrumental"
+
+msgid "Label SGA"
+msgstr "Etiqueta SGA"
+
+msgid "Laboratory Process"
+msgstr "Proceso de laboratorio"
+
+msgid "List my reservations"
+msgstr "Listar mis reservas"
+
+msgid "List reservations"
+msgstr "Listar reservas"
+
+msgid "Manage Disposal"
+msgstr "Administrar desecho"
+
+msgid "Manage IPER catalog"
+msgstr "Administrar catálogo IPER"
+
+msgid "Manage Permissions"
+msgstr "Administrar permisos"
+
+msgid "Manage status Inform"
+msgstr "Administrar estado de informe"
+
+msgid "My Procedure"
+msgstr "Mi procedimiento"
+
+msgid "Object Features"
+msgstr "Características de objeto"
+
+msgid "Organization Structure"
+msgstr "Estructura de organización"
+
+msgid "Organization Structure Relations"
+msgstr "Relaciones de estructura de organización"
+
+msgid "Organization User Management"
+msgstr "Gestión de usuarios de organización"
+
+msgid "Precursor Report Value"
+msgstr "Valor de reporte de precursores"
+
+msgid "Procedure Step"
+msgstr "Paso de procedimiento"
+
+msgid "Procedure Template"
+msgstr "Plantilla de procedimiento"
+
+msgid "Profile Permission"
+msgstr "Permiso de perfil"
+
+msgid "Provider Laboratory"
+msgstr "Proveedor de laboratorio"
+
+msgid "Provider SGA"
+msgstr "Proveedor SGA"
+
+msgid "Regent"
+msgstr "Regente"
+
+msgid "Register User QR Code"
+msgstr "Código QR de registro de usuario"
+
+msgid "Regulation Document"
+msgstr "Documento de regulación"
+
+msgid "Report Template"
+msgstr "Plantilla de reporte"
+
+msgid "Request IPER fill"
+msgstr "Solicitar llenado de IPER"
+
+msgid "Reserved Products"
+msgstr "Productos reservados"
+
+msgid "ReservedProducts"
+msgstr "Productos reservados"
+
+msgid "Risk Zone"
+msgstr "Zona de riesgo"
+
+msgid "SGA Complement"
+msgstr "Complemento SGA"
+
+msgid "Shelf Object Calibration"
+msgstr "Calibración de objeto en estante"
+
+msgid "Shelf Object Guarantee"
+msgstr "Garantía de objeto en estante"
+
+msgid "Shelf Object Log"
+msgstr "Registro de objeto en estante"
+
+msgid "Shelf Object Observations"
+msgstr "Observaciones de objeto en estante"
+
+msgid "Shelf Object Training"
+msgstr "Capacitación de objeto en estante"
+
+msgid "Step Comment"
+msgstr "Comentario de paso"
+
+msgid "Structure"
+msgstr "Estructura"
+
+msgid "Substance Characteristics"
+msgstr "Características de sustancia"
+
+msgid "Substance Observation"
+msgstr "Observación de sustancia"
+
+msgid "Switch to other user"
+msgstr "Cambiar a otro usuario"
+
+msgid "Transfer"
+msgstr "Transferencia"
+
+msgid "Unit Measurement"
+msgstr "Unidad de medida"
+
+msgid "Update Shelf Object"
+msgstr "Actualizar objeto en estante"
+
+msgid "Verify SDS"
+msgstr "Verificar SDS"
+
+msgid "View Blog Entry"
+msgstr "Ver entrada de blog"
+
+msgid "View Building"
+msgstr "Ver edificio"
+
+msgid "View Buildings"
+msgstr "Ver edificios"
+
+msgid "View Catalog"
+msgstr "Ver catálogo"
+
+msgid "View Contracts"
+msgstr "Ver contratos"
+
+msgid "View Custom template"
+msgstr "Ver plantilla personalizada"
+
+msgid "View Danger Indication"
+msgstr "Ver indicación de peligro"
+
+msgid "View Danger Substance"
+msgstr "Ver sustancia peligrosa"
+
+msgid "View Danger Substance Category"
+msgstr "Ver categoría de sustancia peligrosa"
+
+msgid "View Disposal"
+msgstr "Ver desecho"
+
+msgid "View Equipment Type"
+msgstr "Ver tipo de equipo"
+
+msgid "View Furniture"
+msgstr "Ver mobiliario"
+
+msgid "View H Code Category"
+msgstr "Ver categoría de código H"
+
+msgid "View IPER assessment"
+msgstr "Ver evaluación IPER"
+
+msgid "View IPER dashboard"
+msgstr "Ver tablero IPER"
+
+msgid "View IPER hazard"
+msgstr "Ver peligro IPER"
+
+msgid "View IPER observation"
+msgstr "Ver observación IPER"
+
+msgid "View Incident Report"
+msgstr "Ver reporte de incidente"
+
+msgid "View Inform"
+msgstr "Ver informe"
+
+msgid "View Inform Observation"
+msgstr "Ver observación de informe"
+
+msgid "View Instrumental Family"
+msgstr "Ver familia instrumental"
+
+msgid "View Label"
+msgstr "Ver etiqueta"
+
+msgid "View Label SGA"
+msgstr "Ver etiqueta SGA"
+
+msgid "View Laboratory"
+msgstr "Ver laboratorio"
+
+msgid "View Laboratory Process"
+msgstr "Ver proceso de laboratorio"
+
+msgid "View Laboratory Room"
+msgstr "Ver sala de laboratorio"
+
+msgid "View MSDS"
+msgstr "Ver MSDS"
+
+msgid "View MSDS Object"
+msgstr "Ver objeto MSDS"
+
+msgid "View My Procedure"
+msgstr "Ver mi procedimiento"
+
+msgid "View Object"
+msgstr "Ver objeto"
+
+msgid "View Object Features"
+msgstr "Ver características de objeto"
+
+msgid "View Organization Structure"
+msgstr "Ver estructura de organización"
+
+msgid "View Organization Structure Relations"
+msgstr "Ver relaciones de estructura de organización"
+
+msgid "View Organization User Management"
+msgstr "Ver gestión de usuarios de organización"
+
+msgid "View Precursor Report"
+msgstr "Ver reporte de precursores"
+
+msgid "View Precursor Report Value"
+msgstr "Ver valor de reporte de precursores"
+
+msgid "View Procedure"
+msgstr "Ver procedimiento"
+
+msgid "View Procedure Observations"
+msgstr "Ver observaciones de procedimiento"
+
+msgid "View Procedure Required Object"
+msgstr "Ver objeto requerido de procedimiento"
+
+msgid "View Procedure Step"
+msgstr "Ver paso de procedimiento"
+
+msgid "View Procedure Template"
+msgstr "Ver plantilla de procedimiento"
+
+msgid "View Profile"
+msgstr "Ver perfil"
+
+msgid "View Profile Permission"
+msgstr "Ver permiso de perfil"
+
+msgid "View Protocol"
+msgstr "Ver protocolo"
+
+msgid "View Provider Laboratory"
+msgstr "Ver proveedor de laboratorio"
+
+msgid "View Provider SGA"
+msgstr "Ver proveedor SGA"
+
+msgid "View Prudence Advice"
+msgstr "Ver consejo de prudencia"
+
+msgid "View Recipient Size"
+msgstr "Ver tamaño de recipiente"
+
+msgid "View Regent"
+msgstr "Ver regente"
+
+msgid "View Register User"
+msgstr "Ver registro de usuario"
+
+msgid "View Register User QR Code"
+msgstr "Ver código QR de registro de usuario"
+
+msgid "View Regulation Document"
+msgstr "Ver documento de regulación"
+
+msgid "View Report"
+msgstr "Ver reporte"
+
+msgid "View Report Template"
+msgstr "Ver plantilla de reporte"
+
+msgid "View Reserved Products"
+msgstr "Ver productos reservados"
+
+msgid "View Risk Management"
+msgstr "Ver gestión de riesgos"
+
+msgid "View Risk Zone"
+msgstr "Ver zona de riesgo"
+
+msgid "View Role"
+msgstr "Ver rol"
+
+msgid "View SGA"
+msgstr "Ver SGA"
+
+msgid "View SGA Complement"
+msgstr "Ver complemento SGA"
+
+msgid "View SGA Label"
+msgstr "Ver etiqueta SGA"
+
+msgid "View Security Leaf"
+msgstr "Ver hoja de seguridad"
+
+msgid "View Shelf"
+msgstr "Ver estante"
+
+msgid "View Shelf Object"
+msgstr "Ver objeto en estante"
+
+msgid "View Shelf Object Calibration"
+msgstr "Ver calibración de objeto en estante"
+
+msgid "View Shelf Object Guarantee"
+msgstr "Ver garantía de objeto en estante"
+
+msgid "View Shelf Object Log"
+msgstr "Ver registro de objeto en estante"
+
+msgid "View Shelf Object Observations"
+msgstr "Ver observaciones de objeto en estante"
+
+msgid "View Shelf Object Training"
+msgstr "Ver capacitación de objeto en estante"
+
+msgid "View Step Comment"
+msgstr "Ver comentario de paso"
+
+msgid "View Structure"
+msgstr "Ver estructura"
+
+msgid "View Substance"
+msgstr "Ver sustancia"
+
+msgid "View Substance Characteristics"
+msgstr "Ver características de sustancia"
+
+msgid "View Substance Observation"
+msgstr "Ver observación de sustancia"
+
+msgid "View Template SGA"
+msgstr "Ver plantilla SGA"
+
+msgid "View Transfer"
+msgstr "Ver transferencia"
+
+msgid "View Unit Measurement"
+msgstr "Ver unidad de medida"
+
+msgid "View User"
+msgstr "Ver usuario"
+
+msgid "View Users"
+msgstr "Ver usuarios"
+
+msgid "View Warning Word"
+msgstr "Ver palabra de advertencia"
+
+msgid "View all IPER assessments"
+msgstr "Ver todas las evaluaciones IPER"
+
+msgid "View structure"
+msgstr "Ver estructura"
+
+msgid "ZoneType"
+msgstr "Tipo de zona"
+
+msgid "Linked the user %(user)r to the organization %(org)r"
+msgstr "Se vinculó el usuario %(user)r a la organización %(org)r"
+
+msgid "Unlinked the user %(user)r from the organization %(org)r"
+msgstr "Se desvinculó el usuario %(user)r de la organización %(org)r"
+
+msgid "Assigned the roles %(rols)r to %(user)r on laboratory %(lab)r"
+msgstr "Se asignaron los roles %(rols)r a %(user)r en el laboratorio %(lab)r"
+
+msgid "Linked the laboratory %(lab)r to the organization %(org)r"
+msgstr "Se vinculó el laboratorio %(lab)r a la organización %(org)r"
+
+msgid "Linked the user %(user)r to %(objtype)s %(obj)r in organization %(org)r"
+msgstr "Se vinculó el usuario %(user)r a %(objtype)s %(obj)r en la organización %(org)r"
+
+msgid "Linked the laboratory %(lab)r to %(user)r"
+msgstr "Se vinculó el laboratorio %(lab)r a %(user)r"
+
+msgid "Unlinked the laboratory %(lab)r from %(user)r"
+msgstr "Se desvinculó el laboratorio %(lab)r de %(user)r"
+
+msgid "Assigned the roles %(rols)r to %(user)r"
+msgstr "Se asignaron los roles %(rols)r a %(user)r"
+
+msgid "Removed the roles %(rols)r from %(user)r"
+msgstr "Se eliminaron los roles %(rols)r de %(user)r"
+
+msgid "Set the roles of %(user)r to %(rols)r"
+msgstr "Se establecieron los roles de %(user)r a %(rols)r"
+
+msgid "Inherited the profile of %(user)r from %(org)r to its child organizations"
+msgstr "Se heredó el perfil de %(user)r desde %(org)r a sus organizaciones hijas"
+
+msgid "Set the laboratories linked to the organization %(org)r to %(labs)r"
+msgstr "Se establecieron los laboratorios vinculados a la organización %(org)r a %(labs)r"
+
+msgid "Linked the laboratories %(labs)r to the organization %(org)r"
+msgstr "Se vincularon los laboratorios %(labs)r a la organización %(org)r"
+
+msgid "Unlinked the laboratories %(labs)r from the organization %(org)r"
+msgstr "Se desvincularon los laboratorios %(labs)r de la organización %(org)r"
+
+msgid "Updated the role %(rol)r (%(fields)s)"
+msgstr "Se actualizó el rol %(rol)r (%(fields)s)"
+
+msgid "Enabled child organizations for %(org)r"
+msgstr "Se habilitaron las organizaciones hijas de %(org)r"
+
+msgid "Disabled child organizations for %(org)r"
+msgstr "Se deshabilitaron las organizaciones hijas de %(org)r"
+
+msgid "Assigned the roles %(rols)r to %(user)r in %(scope)r"
+msgstr "Se asignaron los roles %(rols)r a %(user)r en %(scope)r"
+
+msgid "Removed the roles %(rols)r from %(user)r in %(scope)r"
+msgstr "Se eliminaron los roles %(rols)r de %(user)r en %(scope)r"
+
+msgid "Set the roles of %(user)r to %(rols)r in %(scope)r"
+msgstr "Se establecieron los roles de %(user)r a %(rols)r en %(scope)r"
+
+msgid "no role"
+msgstr "sin rol"
+
+msgid "not found"
+msgstr "no encontrado"
+
+msgid "no target"
+msgstr "sin objeto asociado"
+
+msgid "Deleted risk zone '%(name)s'"
+msgstr "Zona de riesgo '%(name)s' eliminada"
+
+msgid "Created precursor report value"
+msgstr "Valor de reporte de precursor creado"
+
+msgid "Updated precursor report value"
+msgstr "Valor de reporte de precursor actualizado"
+
+msgid "Deleted precursor report value"
+msgstr "Valor de reporte de precursor eliminado"
+
+msgid "%(action)s equipment characteristics for '%(name)s'"
+msgstr "%(action)s características de equipo para '%(name)s'"
+
+msgid "%(action)s hazard '%(desc)s' in IPER assessment"
+msgstr "%(action)s peligro '%(desc)s' en evaluación IPER"
+
+msgid "%(action)s register user QR for organization '%(org)s'"
+msgstr "%(action)s registro de usuario QR para organización '%(org)s'"
+
+msgid "%(action)s substance characteristics for '%(name)s'"
+msgstr "%(action)s características de sustancia para '%(name)s'"
+
+msgid "Activated organization '%(name)s'"
+msgstr "Organización '%(name)s' activada"
+
+msgid "Deactivated organization '%(name)s'"
+msgstr "Organización '%(name)s' desactivada"
+
+msgid "Added observation to IPER assessment"
+msgstr "Observación agregada a evaluación IPER"
+
+msgid "Added observation to procedure step '%(title)s'"
+msgstr "Observación agregada al paso de procedimiento '%(title)s'"
+
+msgid "Added observation to shelfobject"
+msgstr "Observación agregada al objeto de estante"
+
+msgid "Added observation to shelfobject '%(name)s'"
+msgstr "Observación agregada al objeto de estante '%(name)s'"
+
+msgid "Added required object '%(obj)s' (%(qty)s %(unit)s) to procedure step"
+msgstr "Objeto requerido '%(obj)s' (%(qty)s %(unit)s) agregado al paso de procedimiento"
+
+msgid "Added step to procedure '%(name)s'"
+msgstr "Paso agregado al procedimiento '%(name)s'"
+
+msgid "Added user '%(user)s' to cloned organization '%(org)s'"
+msgstr "Usuario '%(user)s' agregado a la organización clonada '%(org)s'"
+
+msgid "Added user '%(user)s' to organization '%(org)s'"
+msgstr "Usuario '%(user)s' agregado a la organización '%(org)s'"
+
+msgid "Added user '%(user)s' to root organization '%(org)s'"
+msgstr "Usuario '%(user)s' agregado a la organización raíz '%(org)s'"
+
+msgid "Approved and created %(type)s '%(name)s' from request"
+msgstr "Aprobado y creado %(type)s '%(name)s' desde solicitud"
+
+msgid "Approved transfer - created shelfobject '%(name)s'"
+msgstr "Transferencia aprobada - objeto de estante '%(name)s' creado"
+
+msgid "Approved transfer request for '%(name)s'"
+msgstr "Solicitud de transferencia aprobada para '%(name)s'"
+
+msgid "Changed IPER assessment status to '%(status)s'"
+msgstr "Estado de evaluación IPER cambiado a '%(status)s'"
+
+msgid "Changed organization name to '%(name)s'"
+msgstr "Nombre de organización cambiado a '%(name)s'"
+
+msgid "Changed shelfobject status from '%(from)s' to '%(to)s'"
+msgstr "Estado de objeto de estante cambiado de '%(from)s' a '%(to)s'"
+
+msgid "Cloned IPER assessment to version %(version)s"
+msgstr "Evaluación IPER clonada a versión %(version)s"
+
+msgid "Cloned organization '%(original)s' to '%(clone)s'"
+msgstr "Organización '%(original)s' clonada a '%(clone)s'"
+
+msgid "Cloned shelfobject limits"
+msgstr "Límites de objeto de estante clonados"
+
+msgid "Cloned shelfobject '%(name)s' to shelf '%(shelf)s'"
+msgstr "Objeto de estante '%(name)s' clonado al estante '%(shelf)s'"
+
+msgid "Created box reservation for '%(obj)s' (%(boxes)s boxes)"
+msgstr "Reserva de caja creada para '%(obj)s' (%(boxes)s cajas)"
+
+msgid "Created box shelfobject '%(name)s' with %(boxes)s boxes"
+msgstr "Objeto de estante en caja '%(name)s' creado con %(boxes)s cajas"
+
+msgid "Created calibration record for shelfobject '%(name)s'"
+msgstr "Registro de calibración creado para objeto de estante '%(name)s'"
+
+msgid "Created guarantee record for shelfobject '%(name)s'"
+msgstr "Registro de garantía creado para objeto de estante '%(name)s'"
+
+msgid "Created log entry for shelfobject '%(name)s'"
+msgstr "Entrada de log creada para objeto de estante '%(name)s'"
+
+msgid "Created maintenance record for shelfobject '%(name)s'"
+msgstr "Registro de mantenimiento creado para objeto de estante '%(name)s'"
+
+msgid "Created training record for shelfobject '%(name)s'"
+msgstr "Registro de capacitación creado para objeto de estante '%(name)s'"
+
+msgid "Created catalog entry '%(desc)s'"
+msgstr "Entrada de catálogo '%(desc)s' creada"
+
+msgid "Created danger indication '%(code)s'"
+msgstr "Indicación de peligro '%(code)s' creada"
+
+msgid "Created equipment type '%(name)s'"
+msgstr "Tipo de equipo '%(name)s' creado"
+
+msgid "Created prudence advice '%(code)s'"
+msgstr "Consejo de prudencia '%(code)s' creado"
+
+msgid "Created recipient size '%(name)s'"
+msgstr "Tamaño de recipiente '%(name)s' creado"
+
+msgid "Created warning word '%(name)s'"
+msgstr "Palabra de advertencia '%(name)s' creada"
+
+msgid "Created custom form '%(name)s'"
+msgstr "Formulario personalizado '%(name)s' creado"
+
+msgid "Created custom form '%(name)s' for procedure step"
+msgstr "Formulario personalizado '%(name)s' creado para paso de procedimiento"
+
+msgid "Created equipment characteristics"
+msgstr "Características de equipo creadas"
+
+msgid "Created equipment characteristics for '%(name)s'"
+msgstr "Características de equipo creadas para '%(name)s'"
+
+msgid "Created furniture '%(name)s'"
+msgstr "Mobiliario '%(name)s' creado"
+
+msgid "Created incident report '%(desc)s'"
+msgstr "Reporte de incidente '%(desc)s' creado"
+
+msgid "Created inform from form '%(form)s'"
+msgstr "Informe creado desde formulario '%(form)s'"
+
+msgid "Created IPER assessment for laboratory '%(lab)s'"
+msgstr "Evaluación IPER creada para laboratorio '%(lab)s'"
+
+msgid "Created lab relation for '%(lab)s' in '%(org)s'"
+msgstr "Relación de laboratorio creada para '%(lab)s' en '%(org)s'"
+
+msgid "Created laboratory '%(name)s'"
+msgstr "Laboratorio '%(name)s' creado"
+
+msgid "Created laboratory process '%(desc)s'"
+msgstr "Proceso de laboratorio '%(desc)s' creado"
+
+msgid "Created laboratory room '%(name)s'"
+msgstr "Sala de laboratorio '%(name)s' creada"
+
+msgid "Created my procedure '%(name)s'"
+msgstr "Mi procedimiento '%(name)s' creado"
+
+msgid "Created object feature '%(name)s'"
+msgstr "Característica de objeto '%(name)s' creada"
+
+msgid "Created object '%(name)s'"
+msgstr "Objeto '%(name)s' creado"
+
+msgid "Created organization '%(name)s'"
+msgstr "Organización '%(name)s' creada"
+
+msgid "Created organization relation for '%(org)s'"
+msgstr "Relación de organización creada para '%(org)s'"
+
+msgid "Created partial shelfobject '%(name)s'"
+msgstr "Objeto de estante parcial '%(name)s' creado"
+
+msgid "Created shelfobject equipment '%(name)s'"
+msgstr "Equipo de estante '%(name)s' creado"
+
+msgid "Created shelfobject limits"
+msgstr "Límites de objeto de estante creados"
+
+msgid "Created shelfobject material '%(name)s' with quantity %(qty)s"
+msgstr "Material de estante '%(name)s' creado con cantidad %(qty)s"
+
+msgid "Created shelfobject '%(name)s' from transfer"
+msgstr "Objeto de estante '%(name)s' creado desde transferencia"
+
+msgid "Created shelfobject '%(name)s' in shelf '%(shelf)s'"
+msgstr "Objeto de estante '%(name)s' creado en estante '%(shelf)s'"
+
+msgid "Created shelfobject reactive '%(name)s' with quantity %(qty)s"
+msgstr "Reactivo de estante '%(name)s' creado con cantidad %(qty)s"
+
+msgid "Created refuse equipment shelfobject '%(name)s'"
+msgstr "Equipo de desecho '%(name)s' creado"
+
+msgid "Created refuse material shelfobject '%(name)s'"
+msgstr "Material de desecho '%(name)s' creado"
+
+msgid "Created refuse reactive shelfobject '%(name)s'"
+msgstr "Reactivo de desecho '%(name)s' creado"
+
+msgid "Created procedure '%(name)s'"
+msgstr "Procedimiento '%(name)s' creado"
+
+msgid "Created procedure step '%(title)s'"
+msgstr "Paso de procedimiento '%(title)s' creado"
+
+msgid "Created profile for user '%(user)s'"
+msgstr "Perfil creado para usuario '%(user)s'"
+
+msgid "Created profile permission for user '%(user)s'"
+msgstr "Permiso de perfil creado para usuario '%(user)s'"
+
+msgid "Created provider '%(name)s'"
+msgstr "Proveedor '%(name)s' creado"
+
+msgid "Created reactive '%(name)s'"
+msgstr "Reactivo '%(name)s' creado"
+
+msgid "Created reservation for '%(obj)s' (%(amount)s units)"
+msgstr "Reserva creada para '%(obj)s' (%(amount)s unidades)"
+
+msgid "Created reservation for shelfobject '%(name)s'"
+msgstr "Reserva creada para objeto de estante '%(name)s'"
+
+msgid "Created role '%(name)s' for organization '%(org)s'"
+msgstr "Rol '%(name)s' creado para organización '%(org)s'"
+
+msgid "Created SGA template '%(name)s' from editor"
+msgstr "Plantilla SGA '%(name)s' creada desde editor"
+
+msgid "Created shelf '%(name)s'"
+msgstr "Estante '%(name)s' creado"
+
+msgid "Created substance characteristics for '%(name)s'"
+msgstr "Características de sustancia creadas para '%(name)s'"
+
+msgid "Created transfer request for '%(name)s' from '%(from)s' to '%(to)s'"
+msgstr "Solicitud de transferencia creada para '%(name)s' de '%(from)s' a '%(to)s'"
+
+msgid "Created %(type)s request '%(name)s'"
+msgstr "Solicitud de %(type)s '%(name)s' creada"
+
+msgid "Created user '%(user)s' via QR registration"
+msgstr "Usuario '%(user)s' creado vía registro QR"
+
+msgid "Created risk zone '%(name)s'"
+msgstr "Zona de riesgo '%(name)s' creada"
+
+msgid "Deleted calibration record for shelfobject '%(name)s'"
+msgstr "Registro de calibración eliminado para objeto de estante '%(name)s'"
+
+msgid "Deleted guarantee record for shelfobject '%(name)s'"
+msgstr "Registro de garantía eliminado para objeto de estante '%(name)s'"
+
+msgid "Deleted log entry for shelfobject '%(name)s'"
+msgstr "Entrada de log eliminada para objeto de estante '%(name)s'"
+
+msgid "Deleted maintenance record for shelfobject '%(name)s'"
+msgstr "Registro de mantenimiento eliminado para objeto de estante '%(name)s'"
+
+msgid "Deleted training record for shelfobject '%(name)s'"
+msgstr "Registro de capacitación eliminado para objeto de estante '%(name)s'"
+
+msgid "Deleted catalog entry '%(desc)s'"
+msgstr "Entrada de catálogo '%(desc)s' eliminada"
+
+msgid "Deleted danger indication '%(code)s'"
+msgstr "Indicación de peligro '%(code)s' eliminada"
+
+msgid "Deleted equipment type '%(name)s'"
+msgstr "Tipo de equipo '%(name)s' eliminado"
+
+msgid "Deleted prudence advice '%(code)s'"
+msgstr "Consejo de prudencia '%(code)s' eliminado"
+
+msgid "Deleted recipient size '%(name)s'"
+msgstr "Tamaño de recipiente '%(name)s' eliminado"
+
+msgid "Deleted warning word '%(name)s'"
+msgstr "Palabra de advertencia '%(name)s' eliminada"
+
+msgid "Deleted custom form '%(name)s'"
+msgstr "Formulario personalizado '%(name)s' eliminado"
+
+msgid "Deleted equipment characteristics for '%(name)s'"
+msgstr "Características de equipo eliminadas para '%(name)s'"
+
+msgid "Deleted equipment '%(name)s'"
+msgstr "Equipo '%(name)s' eliminado"
+
+msgid "Deleted equipment '%(name)s' (cascade from equipment type)"
+msgstr "Equipo '%(name)s' eliminado (en cascada desde tipo de equipo)"
+
+msgid "Deleted shelfobject equipment (cascade from equipment type)"
+msgstr "Equipo de estante eliminado (en cascada desde tipo de equipo)"
+
+msgid "Deleted furniture '%(name)s'"
+msgstr "Mobiliario '%(name)s' eliminado"
+
+msgid "Deleted hazard '%(desc)s' from IPER assessment"
+msgstr "Peligro '%(desc)s' eliminado de evaluación IPER"
+
+msgid "Deleted incident report '%(desc)s'"
+msgstr "Reporte de incidente '%(desc)s' eliminado"
+
+msgid "Deleted inform"
+msgstr "Informe eliminado"
+
+msgid "Deleted IPER assessment for laboratory '%(lab)s'"
+msgstr "Evaluación IPER eliminada para laboratorio '%(lab)s'"
+
+msgid "Deleted laboratory '%(name)s'"
+msgstr "Laboratorio '%(name)s' eliminado"
+
+msgid "Deleted laboratory room '%(name)s'"
+msgstr "Sala de laboratorio '%(name)s' eliminada"
+
+msgid "Deleted my procedure '%(name)s'"
+msgstr "Mi procedimiento '%(name)s' eliminado"
+
+msgid "Deleted object feature '%(name)s'"
+msgstr "Característica de objeto '%(name)s' eliminada"
+
+msgid "Deleted object '%(name)s'"
+msgstr "Objeto '%(name)s' eliminado"
+
+msgid "Deleted procedure '%(name)s'"
+msgstr "Procedimiento '%(name)s' eliminado"
+
+msgid "Deleted procedure step '%(title)s'"
+msgstr "Paso de procedimiento '%(title)s' eliminado"
+
+msgid "Deleted organization '%(name)s'"
+msgstr "Organización '%(name)s' eliminada"
+
+msgid "Deleted provider '%(name)s'"
+msgstr "Proveedor '%(name)s' eliminado"
+
+msgid "Deleted reactive '%(name)s'"
+msgstr "Reactivo '%(name)s' eliminado"
+
+msgid "Deleted register user QR"
+msgstr "Registro de usuario QR eliminado"
+
+msgid "Deleted SGA substance '%(name)s'"
+msgstr "Sustancia SGA '%(name)s' eliminada"
+
+msgid "Deleted shelf '%(name)s'"
+msgstr "Estante '%(name)s' eliminado"
+
+msgid "Deleted shelfobject '%(name)s'"
+msgstr "Objeto de estante '%(name)s' eliminado"
+
+msgid "Deleted shelfobject '%(name)s' from shelf '%(shelf)s'"
+msgstr "Objeto de estante '%(name)s' eliminado del estante '%(shelf)s'"
+
+msgid "Deleted shelfobject '%(name)s' with no quantity left"
+msgstr "Objeto de estante '%(name)s' eliminado sin cantidad restante"
+
+msgid "Deleted substance characteristics for '%(name)s'"
+msgstr "Características de sustancia eliminadas para '%(name)s'"
+
+msgid "Deleted %(type)s request '%(name)s'"
+msgstr "Solicitud de %(type)s '%(name)s' eliminada"
+
+msgid "Denied transfer request for '%(name)s'"
+msgstr "Solicitud de transferencia denegada para '%(name)s'"
+
+msgid "Rejected %(type)s request '%(name)s'"
+msgstr "Solicitud de %(type)s '%(name)s' rechazada"
+
+msgid "Moved shelfobject '%(name)s' to shelf '%(shelf)s'"
+msgstr "Objeto de estante '%(name)s' movido al estante '%(shelf)s'"
+
+msgid "Registered user '%(user)s' via QR code"
+msgstr "Usuario '%(user)s' registrado vía código QR"
+
+msgid "User '%(user)s' logged in via QR code"
+msgstr "Usuario '%(user)s' inició sesión vía código QR"
+
+msgid "Removed observation from procedure step"
+msgstr "Observación eliminada del paso de procedimiento"
+
+msgid "Removed required object '%(obj)s' from procedure step"
+msgstr "Objeto requerido '%(obj)s' eliminado del paso de procedimiento"
+
+msgid "Returned %(amount)s units to stock from reservation"
+msgstr "%(amount)s unidades devueltas al stock desde reserva"
+
+msgid "Toggled anonymous mode for IPER assessment"
+msgstr "Modo anónimo alternado para evaluación IPER"
+
+msgid "Transferred role '%(role)s' to organization '%(org)s'"
+msgstr "Rol '%(role)s' transferido a organización '%(org)s'"
+
+msgid "Transferred user '%(user)s' to organization '%(org)s'"
+msgstr "Usuario '%(user)s' transferido a organización '%(org)s'"
+
+msgid "Updated box shelfobject '%(name)s'"
+msgstr "Objeto de estante en caja '%(name)s' actualizado"
+
+msgid "Updated calibration record for shelfobject '%(name)s'"
+msgstr "Registro de calibración actualizado para objeto de estante '%(name)s'"
+
+msgid "Updated guarantee record for shelfobject '%(name)s'"
+msgstr "Registro de garantía actualizado para objeto de estante '%(name)s'"
+
+msgid "Updated log entry for shelfobject '%(name)s'"
+msgstr "Entrada de log actualizada para objeto de estante '%(name)s'"
+
+msgid "Updated maintenance record for shelfobject '%(name)s'"
+msgstr "Registro de mantenimiento actualizado para objeto de estante '%(name)s'"
+
+msgid "Updated training record for shelfobject '%(name)s'"
+msgstr "Registro de capacitación actualizado para objeto de estante '%(name)s'"
+
+msgid "Updated catalog entry '%(desc)s'"
+msgstr "Entrada de catálogo '%(desc)s' actualizada"
+
+msgid "Updated custom form '%(name)s' schema"
+msgstr "Esquema de formulario personalizado '%(name)s' actualizado"
+
+msgid "Updated name of custom form to '%(name)s'"
+msgstr "Nombre de formulario personalizado actualizado a '%(name)s'"
+
+msgid "Updated schema of custom form '%(name)s'"
+msgstr "Esquema de formulario personalizado '%(name)s' actualizado"
+
+msgid "Updated equipment characteristics for shelfobject '%(name)s'"
+msgstr "Características de equipo actualizadas para objeto de estante '%(name)s'"
+
+msgid "Updated equipment '%(name)s'"
+msgstr "Equipo '%(name)s' actualizado"
+
+msgid "Updated equipment shelfobject '%(name)s'"
+msgstr "Equipo de estante '%(name)s' actualizado"
+
+msgid "Updated equipment type '%(name)s'"
+msgstr "Tipo de equipo '%(name)s' actualizado"
+
+msgid "Updated furniture '%(name)s'"
+msgstr "Mobiliario '%(name)s' actualizado"
+
+msgid "Updated incident report '%(desc)s'"
+msgstr "Reporte de incidente '%(desc)s' actualizado"
+
+msgid "Updated IPER assessment for laboratory '%(lab)s'"
+msgstr "Evaluación IPER actualizada para laboratorio '%(lab)s'"
+
+msgid "Updated laboratory '%(name)s'"
+msgstr "Laboratorio '%(name)s' actualizado"
+
+msgid "Updated laboratory room '%(name)s'"
+msgstr "Sala de laboratorio '%(name)s' actualizada"
+
+msgid "Updated object feature '%(name)s'"
+msgstr "Característica de objeto '%(name)s' actualizada"
+
+msgid "Updated object '%(name)s'"
+msgstr "Objeto '%(name)s' actualizado"
+
+msgid "Updated procedure '%(name)s'"
+msgstr "Procedimiento '%(name)s' actualizado"
+
+msgid "Updated procedure step '%(title)s'"
+msgstr "Paso de procedimiento '%(title)s' actualizado"
+
+msgid "Updated process condition for shelfobject '%(name)s'"
+msgstr "Condición de proceso actualizada para objeto de estante '%(name)s'"
+
+msgid "Updated organization '%(name)s'"
+msgstr "Organización '%(name)s' actualizada"
+
+msgid "Updated profile permission for user '%(user)s'"
+msgstr "Permiso de perfil actualizado para usuario '%(user)s'"
+
+msgid "Updated provider '%(name)s'"
+msgstr "Proveedor '%(name)s' actualizado"
+
+msgid "Updated reactive '%(name)s'"
+msgstr "Reactivo '%(name)s' actualizado"
+
+msgid "Updated reactive shelfobject '%(name)s'"
+msgstr "Reactivo de estante '%(name)s' actualizado"
+
+msgid "Updated recipient size '%(name)s'"
+msgstr "Tamaño de recipiente '%(name)s' actualizado"
+
+msgid "Updated shelf '%(name)s'"
+msgstr "Estante '%(name)s' actualizado"
+
+msgid "Updated shelfobject '%(name)s'"
+msgstr "Objeto de estante '%(name)s' actualizado"
+
+msgid "Updated shelfobject '%(name)s' quantity"
+msgstr "Cantidad de objeto de estante '%(name)s' actualizada"
+
+msgid "Updated substance '%(name)s'"
+msgstr "Sustancia '%(name)s' actualizada"
+
+msgid "Updated %(type)s request '%(name)s'"
+msgstr "Solicitud de %(type)s '%(name)s' actualizada"
+
+msgid "Updated risk zone '%(name)s'"
+msgstr "Zona de riesgo '%(name)s' actualizada"
+
+msgid "Added observation to substance '%(name)s'"
+msgstr "Observación agregada a sustancia '%(name)s'"
+
+msgid "Added the user %(user)r in the organization %(org)r"
+msgstr "Usuario %(user)r agregado a la organización %(org)r"
+
+msgid "Approved substance '%(name)s'"
+msgstr "Sustancia '%(name)s' aprobada"
+
+msgid "Closed reservation"
+msgstr "Reserva cerrada"
+
+msgid "Copied the roles %(rols)r to the organization %(org)r"
+msgstr "Roles %(rols)r copiados a la organización %(org)r"
+
+msgid "Created equipment '%(name)s'"
+msgstr "Equipo '%(name)s' creado"
+
+msgid "Created new substance"
+msgstr "Nueva sustancia creada"
+
+msgid "Created pending task '%(name)s'"
+msgstr "Tarea pendiente '%(name)s' creada"
+
+msgid "Created review substance"
+msgstr "Sustancia de revisión creada"
+
+msgid "Created substance characteristics"
+msgstr "Características de sustancia creadas"
+
+msgid "Created the role %(rol)r in %(org)r"
+msgstr "Rol %(rol)r creado en %(org)r"
+
+msgid "Deactivated user '%(user)s'"
+msgstr "Usuario '%(user)s' desactivado"
+
+msgid "Deleted substance '%(name)s'"
+msgstr "Sustancia '%(name)s' eliminada"
+
+msgid "Deleted substance observation"
+msgstr "Observación de sustancia eliminada"
+
+msgid "Deleted the role %(rol)r"
+msgstr "Rol %(rol)r eliminado"
+
+msgid "Removed laboratory permission from user '%(user)s'"
+msgstr "Permiso de laboratorio removido del usuario '%(user)s'"
+
+msgid "Removed organization permission from user '%(user)s'"
+msgstr "Permiso de organización removido del usuario '%(user)s'"
+
+msgid "Removed profile permission from user '%(user)s'"
+msgstr "Permiso de perfil removido del usuario '%(user)s'"
+
+msgid "Removed user '%(user)s' from organization '%(org)s'"
+msgstr "Usuario '%(user)s' removido de la organización '%(org)s'"
+
+msgid "Updated builder information for substance '%(name)s'"
+msgstr "Información del constructor actualizada para sustancia '%(name)s'"
+
+msgid "Updated characteristics of substance '%(name)s'"
+msgstr "Características de sustancia '%(name)s' actualizadas"
+
+msgid "Updated danger indication '%(code)s'"
+msgstr "Indicación de peligro '%(code)s' actualizada"
+
+msgid "Updated personal SGA template editor for substance '%(name)s'"
+msgstr "Editor de plantilla SGA personal actualizado para sustancia '%(name)s'"
+
+msgid "Updated personal SGA template for substance '%(name)s'"
+msgstr "Plantilla SGA personal actualizada para sustancia '%(name)s'"
+
+msgid "Updated prudence advice '%(code)s'"
+msgstr "Consejo de prudencia '%(code)s' actualizado"
+
+msgid "Updated reservation status to '%(status)s'"
+msgstr "Estado de reserva actualizado a '%(status)s'"
+
+msgid "Updated SGA complement for substance '%(name)s'"
+msgstr "Complemento SGA actualizado para sustancia '%(name)s'"
+
+msgid "Updated substance observation description"
+msgstr "Descripción de observación de sustancia actualizada"
+
+msgid "Updated warning word '%(name)s'"
+msgstr "Palabra de advertencia '%(name)s' actualizada"

@@ -1,0 +1,45 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<style>
+		body { font-family: sans-serif; font-size: 10px; }
+		h2 { text-align: center; }
+		table { width: 100%; border-collapse: collapse; }
+		th, td { border: 1px solid #999; padding: 3px; text-align: left; }
+		th { background: #eee; }
+	</style>
+</head>
+<body>
+	<h2>{% trans 'IPER — Hazard history' %}</h2>
+	<table>
+		<thead><tr>
+			<th>{% trans 'Date' %}</th>
+			<th>{% trans 'Laboratory' %}</th>
+			<th>{% trans 'Classification' %}</th>
+			<th>{% trans 'Hazard' %}</th>
+			<th>{% trans 'Location' %}</th>
+			<th>{% trans 'P' %}</th>
+			<th>{% trans 'C' %}</th>
+			<th>{% trans 'Risk' %}</th>
+			<th>{% trans 'Controls' %}</th>
+		</tr></thead>
+		<tbody>
+			{% for hazard in object_list %}
+				<tr>
+					<td>{{ hazard.assessment.assessment_date }}</td>
+					<td>{% if hazard.assessment.is_anonymous %}<em>{% trans 'Anonymous' %}</em>{% else %}{{ hazard.assessment.laboratory.name }}{% endif %}</td>
+					<td>{{ hazard.category }}</td>
+					<td>{{ hazard.description }}</td>
+					<td>{{ hazard.location }}</td>
+					<td>{{ hazard.probability }}</td>
+					<td>{{ hazard.consequence }}</td>
+					<td>{{ hazard.risk_level }}</td>
+					<td>{{ hazard.controls }}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</body>
+</html>

@@ -7014,7 +7014,7 @@
     "fields": {
         "code": "New feedback",
         "subject": "New Feedback to Organilab",
-        "message": " ",
+        "message": "<h2>New Feedback Received</h2>\n<p><strong>Title:</strong> {{ feedback.title }}</p>\n{% if feedback.user %}<p><strong>User:</strong> {{ feedback.user.get_full_name }} ({{ feedback.user.email }})</p>{% endif %}\n<hr>\n<p><strong>Explanation:</strong></p>\n<div>{{ explanation|safe }}</div>\n{% if file_url %}<br><p><strong>Archivo adjunto:</strong> <a href=\"{{ file_url }}\">{{ feedback.related_file.name }}</a></p>{% endif %}\n<br>\n<p><a href=\"{{ admin_url }}\">Ver en el administrador</a></p>",
         "bcc": null,
         "cc": null
     }

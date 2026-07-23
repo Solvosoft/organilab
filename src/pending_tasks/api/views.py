@@ -1,88 +1,130 @@
 import logging
 
-from django.contrib.admin.models import CHANGE
+from django.contrib.admin.models import ADDITION
+from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
+from django.utils.translation import gettext_lazy as _
 
-from pending_tasks.api.model_viewset_without_create import AuthAllPermBaseObjectWithoutCreate
+from django_filters.rest_framework import DjangoFilterBackend
+from djgentelella.permission_management import AllPermissionByAction
+from rest_framework import mixins, status
+from rest_framework.authentication import TokenAuthentication, SessionAuthentication
 from rest_framework.decorators import action
+from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework.viewsets import GenericViewSet
 
+from auth_and_perms.models import Profile, Rol
+from laboratory.models import OrganizationStructure, Laboratory
 from laboratory.utils import organilab_logentry
 from pending_tasks.api import filterset
 from pending_tasks.models import PendingTask
-from pending_tasks.api.serializers import PendingTaskSerializer, \
-    PendingTaskListSerializer, PendingTaskValidateSerializer, ProfileValidateSerializer, \
-    CurrentStatusValidateSerializer, NewStatusValidateSerializer
+from pending_tasks.utils import notify_task_created
+from pending_tasks.api.serializers import (
+    PendingTaskSerializer,
+    PendingTaskListSerializer,
+    PendingTaskValidateSerializer,
+    PendingTaskGetValuesSerializer,
+)
+from risk_management.api.serializer import RiskZoneSerializer
+from risk_management.models import RiskZone
 
 logger = logging.getLogger("organilab")
 
 
-class PendingTaskViewSet(AuthAllPermBaseObjectWithoutCreate):
+class PendingTaskViewSet(
+    mixins.CreateModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    mixins.ListModelMixin,
+    GenericViewSet,
+):
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+    permission_classes = (AllPermissionByAction,)
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+
     serializer_class = {
-        'list': PendingTaskListSerializer,
-        'destroy': PendingTaskSerializer,
-        'update': PendingTaskValidateSerializer,
+        "list": PendingTaskListSerializer,
+        "create": PendingTaskValidateSerializer,
+        "destroy": PendingTaskSerializer,
+        "update": PendingTaskValidateSerializer,
+        "partial_update": PendingTaskValidateSerializer,
+        "retrieve": PendingTaskGetValuesSerializer,
+        "get_values_for_update": PendingTaskGetValuesSerializer,
     }
 
     perms = {
-        'list': ["pending_tasks.view_pendingtask"],
-        'update': ["pending_tasks.change_pendingtask"],
-        'destroy': ["pending_tasks.delete_pendingtask"],
-        'task_assign': ["pending_tasks.change_pendingtask"],
-        'task_unassign': ["pending_tasks.change_pendingtask"],
-        'updated_task_status': ["pending_tasks.change_pendingtask"],
+        "list": ["pending_tasks.view_pendingtask"],
+        "create": ["pending_tasks.add_pendingtask"],
+        "retrieve": ["pending_tasks.view_pendingtask"],
+        "get_values_for_update": ["pending_tasks.view_pendingtask"],
+        "update": ["pending_tasks.change_pendingtask"],
+        "partial_update": ["pending_tasks.change_pendingtask"],
+        "destroy": ["pending_tasks.delete_pendingtask"],
+        "archive_finished": ["pending_tasks.change_pendingtask"],
     }
 
     queryset = PendingTask.objects.all()
-    search_fields = ['description']
+    search_fields = ["description"]
     filterset_class = filterset.PendingTaskFilterSet
-    ordering_fields = ['creation_date']
-    ordering = ('-creation_date',)
+    ordering_fields = ["creation_date"]
+    ordering = ("-creation_date",)
+
+    def get_serializer_class(self):
+        if self.action in self.serializer_class:
+            return self.serializer_class[self.action]
+        return super().get_serializer_class()
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        data = self.paginate_queryset(queryset)
+        response = {
+            "data": data,
+            "recordsTotal": self.queryset.count(),
+            "recordsFiltered": queryset.count(),
+            "draw": request.GET.get("draw", 1),
+        }
+        return Response(self.get_serializer(response).data)
+
+    @action(detail=True, methods=["get"])
+    def get_values_for_update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        return Response(self.get_serializer(instance).data)
+
+    def perform_create(self, serializer):
+        instance = serializer.save(created_by=self.request.user)
+        organilab_logentry(
+            self.request.user,
+            instance,
+            ADDITION,
+            changed_data=list(serializer.validated_data.keys()),
+            change_message=_("Created pending task '%(name)s'") % {"name": instance.name},
+        )
+        notify_task_created(instance, self.request.user)
 
     def filter_queryset(self, queryset):
         queryset = super().filter_queryset(queryset)
         profile = self.request.user.profile
-        rols = profile.profilepermission_set.all().values_list('rol', flat=True)
-        queryset = queryset.filter(
-            Q(profile=profile) |
-            Q(profile__isnull=True, rols__in=rols)
-        ).distinct()
-        return queryset
+        rols = profile.profilepermission_set.all().values_list("rol", flat=True)
+        return (
+            queryset.filter(
+                Q(profile=profile) | Q(rols__in=rols) | Q(created_by=self.request.user)
+            )
+            .filter(is_archived=False)
+            .distinct()
+        )
 
-    def _get_task_and_data(self, request):
-        task = self.get_object()
-        data = {'profile': request.user.profile.id}
-        data.update(request.data)
-        return task, data
-
-    def _execute_task_action(self, request, serializer_class, apply_changes):
-        task, data = self._get_task_and_data(request)
-        serializer = serializer_class(data=data, context={'task': task})
-        if serializer.is_valid():
-            changed_data = apply_changes(task, serializer)
-            task.save()
-            organilab_logentry(request.user, task, CHANGE, changed_data=changed_data)
-            return Response(PendingTaskSerializer(task).data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    @action(detail=True)
-    def task_assign(self, request, *args, **kwargs):
-        def apply_changes(task, serializer):
-            task.profile = serializer.validated_data['profile']
-            return ['profile']
-        return self._execute_task_action(request, ProfileValidateSerializer, apply_changes)
-
-    @action(detail=True)
-    def task_unassign(self, request, *args, **kwargs):
-        def apply_changes(task, serializer):
-            task.profile = None
-            return ['profile']
-        return self._execute_task_action(request, CurrentStatusValidateSerializer, apply_changes)
-
-    @action(detail=True, methods=['patch'])
-    def updated_task_status(self, request, *args, **kwargs):
-        def apply_changes(task, serializer):
-            task.status = serializer.validated_data.get('status')
-            return ['status']
-        return self._execute_task_action(request, NewStatusValidateSerializer, apply_changes)
+    @action(detail=False, methods=["post"], url_path="archive_finished")
+    def archive_finished(self, request, *args, **kwargs):
+        profile = request.user.profile
+        rols = profile.profilepermission_set.all().values_list("rol", flat=True)
+        updated = (
+            PendingTask.objects.filter(status=PendingTask.FINISHED, is_archived=False)
+            .filter(Q(profile=profile) | Q(rols__in=rols) | Q(created_by=request.user))
+            .distinct()
+            .update(is_archived=True)
+        )
+        return Response({"archived": updated}, status=status.HTTP_200_OK)

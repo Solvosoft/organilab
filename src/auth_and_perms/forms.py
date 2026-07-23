@@ -158,6 +158,7 @@ class LaboratoryOfOrganizationForm(GTForm):
         widget=AutocompleteSelect(
             "laborgbase", attrs={"data-s2filter-organization": ".nodeorg:checked"}
         ),
+        label=_("Laboratories"),
     )
 
 
@@ -189,6 +190,7 @@ class ProfileListForm(GTForm):
                 "data-dropdownparent": "#relprofilelabmodal",
             },
         ),
+        label=_("User"),
     )
     addlaboratories = forms.ModelMultipleChoiceField(
         queryset=Laboratory.objects.all(),
@@ -201,12 +203,12 @@ class ProfileListForm(GTForm):
                 "data-dropdownparent": "#relprofilelabmodal",
             },
         ),
-        label=_("Laboratories"),
+        label=_("Laboratory"),
     )
 
 
 class IncludeEmailExternalUserForm(GTForm):
-    email = forms.EmailField(widget=genwidgets.EmailInput)
+    email = forms.EmailField(widget=genwidgets.EmailInput, label=_("Email"))
 
 
 class OrganizationActions(GTForm):
@@ -321,3 +323,16 @@ class RolForm(GTForm, forms.ModelForm):
             "name": genwidgets.TextInput,
             "description": genwidgets.Textarea(attrs={"rows": 10}),
         }
+
+
+class RolListForm(GTForm, forms.Form):
+    rol = forms.ModelMultipleChoiceField(
+        queryset=Rol.objects.all().order_by("pk"),
+        widget=genwidgets.SelectMultiple,
+        label=_("Filter by roles"),
+    )
+    organization = forms.ModelChoiceField(
+        queryset=OrganizationStructure.objects.all().order_by("pk"),
+        widget=genwidgets.Select,
+        label=_("Filter by organization"),
+    )

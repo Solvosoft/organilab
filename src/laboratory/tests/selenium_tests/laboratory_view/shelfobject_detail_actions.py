@@ -14,6 +14,15 @@ class ShelfObjectInfoButtonsActions(ButtonsActionsTableColumnBase):
         self.path_shelfobject_info = self.buttons_actions_path + [
             {"path": "//*[@id='shelfobjecttable']/tbody/tr/td[7]/a[6]"}
         ]
+        self.path_shelfobject_equipment = self.buttons_actions_path + [
+            {"path": "//*[@id='shelfobjecttable']/tbody/tr[2]/td[7]/a[6]"}
+        ]
+
+    def test_view_equipment_details(self):
+        # laboratory/tests/selenium_tests/laboratory_view/shelfobject_detail_actions.py
+        self.create_gif_process(
+            self.path_shelfobject_equipment, "view_shelfobject_equipment"
+        )
 
     def test_change_shelfobject_status(self):
         path_list = [
