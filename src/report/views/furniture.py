@@ -29,10 +29,13 @@ def get_dataset(report, column_list=None):
             obj_type = shelfobject.object.get_type_display()
             furniture = shelfobject.shelf.furniture
             data_column = {
+                "shelfobject_code": (
+                    shelfobject.shelfobject_code if shelfobject.shelfobject_code else ""
+                ),
                 "code": shelfobject.object.code,
                 "object": shelfobject.object.name,
                 "type": obj_type,
-                "quantity": f"{round(shelfobject.quantity, 3)} {shelf_unit}",
+                "quantity": f"{round(shelfobject.total_quantity, 3)} {shelf_unit}",
                 "laboratory": shelfobject.in_where_laboratory.name,
                 "laboratory_room": furniture.labroom.name,
                 "furniture": furniture.name,
@@ -96,6 +99,9 @@ def get_dataset_report_reactive(report, column_list=None):
                 else ""
             )
             data_column = {
+                "shelfobject_code": (
+                    reactive.shelfobject_code if reactive.shelfobject_code else ""
+                ),
                 "name": reactive.object.name,
                 "cas_id": cas_id,
                 "location": location,
@@ -104,7 +110,7 @@ def get_dataset_report_reactive(report, column_list=None):
                 "health": health,
                 "environment": enviroment,
                 "concentration": reactive.concentration,
-                "quantity": round(reactive.quantity, 3),
+                "quantity": round(reactive.total_quantity, 3),
                 "measurement_unit": reactive.get_measurement_unit_display(),
                 "laboratory_room": furniture.labroom.name,
                 "furniture": furniture.name,
@@ -121,6 +127,7 @@ def get_dataset_report_reactive(report, column_list=None):
 
 def report_reactive_html(report):
     columns_fields = [
+        {"name": "shelfobject_code", "title": _("Unit code")},
         {"name": "name", "title": _("Name")},
         {"name": "cas_id", "title": _("CAS")},
         {"name": "location", "title": _("Location")},
@@ -148,6 +155,7 @@ def report_reactive_html(report):
 def furniture_html(report):
     if report.data["object_type"] != "0":
         columns_fields = [
+            {"name": "shelfobject_code", "title": _("Unit code")},
             {"name": "code", "title": _("Code")},
             {"name": "object", "title": _("Object")},
             {"name": "type", "title": _("Type")},
@@ -211,6 +219,7 @@ def furniture_doc(report):
         builder = ExcelGraphBuilder()
         content = [
             [
+                _("Unit code"),
                 _("Code"),
                 _("Object"),
                 _("Type"),

@@ -8,14 +8,16 @@ from djgentelella.models import ChunkedUpload
 from django.test import TestCase
 from django.test import Client
 
-from auth_and_perms.models import Rol, ProfilePermission
+from auth_and_perms.models import Rol, ProfilePermission, Profile
 from laboratory.models import (
     OrganizationStructure,
     Laboratory,
     UserOrganization,
     Provider,
     ObjectFeatures,
+    Object,
 )
+from reservations_management.models import ReservedProducts
 import base64
 
 from laboratory.tests.file_b64 import FILE_B64
@@ -68,6 +70,24 @@ class BaseLaboratorySetUpTest(BaseSetUpTest):
             content_type=ct3, codename="change_objectfeatures"
         )
         self.user.user_permissions.add(perm4)
+
+        ct4 = ContentType.objects.get_for_model(Profile)
+        for codename in ["view_profile", "change_own_profile"]:
+            perm5 = Permission.objects.get(content_type=ct4, codename=codename)
+            self.user.user_permissions.add(perm5)
+
+        ct5 = ContentType.objects.get_for_model(Object)
+        perm6 = Permission.objects.get(content_type=ct5, codename="change_object")
+        self.user.user_permissions.add(perm6)
+
+        ct6 = ContentType.objects.get_for_model(ReservedProducts)
+        for codename in [
+            "view_reservedproducts",
+            "change_reservedproducts",
+            "delete_reservedproducts",
+        ]:
+            perm7 = Permission.objects.get(content_type=ct6, codename=codename)
+            self.user.user_permissions.add(perm7)
 
         self.client.force_login(self.user)
 

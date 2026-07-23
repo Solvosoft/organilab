@@ -93,6 +93,7 @@ urlpatterns = (
         path(
             "pending_tasks/", include("pending_tasks.urls", namespace="pending_tasks")
         ),
+        path("oidc/", include("mozilla_django_oidc.urls")),
     ]
 )
 

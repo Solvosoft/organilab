@@ -32,6 +32,7 @@ from auth_and_perms.organization_utils import (
     organization_can_change_laboratory,
 )
 from laboratory import utils
+from laboratory.shelfobject.utils import has_active_reservations
 from laboratory.forms import (
     ReservationModalForm,
     ShelfObjectListForm,
@@ -354,12 +355,16 @@ class ShelfObjectCreate(AJAXMixin, CreateView):
             "Create",
             create=True,
             organization=self.org,
+            is_box=self.object.is_box,
         )
         utils.organilab_logentry(
             self.request.user,
             self.object,
             ADDITION,
+            "shelfobject",
             changed_data=form.changed_data,
+            change_message=_("Created shelfobject '%(name)s' in shelf '%(shelf)s'")
+            % {"name": str(self.object.object), "shelf": self.object.shelf.name},
             relobj=self.lab,
         )
 
@@ -432,12 +437,16 @@ class ShelfObjectEdit(AJAXMixin, UpdateView):
             "Edit",
             create=False,
             organization=self.org,
+            is_box=self.object.is_box,
         )
         utils.organilab_logentry(
             self.request.user,
             self.object,
             CHANGE,
+            "shelfobject",
             changed_data=form.changed_data,
+            change_message=_("Updated shelfobject '%(name)s'")
+            % {"name": str(self.object.object)},
             relobj=self.lab,
         )
 
@@ -513,6 +522,7 @@ class ShelfObjectSearchUpdate(AJAXMixin, UpdateView):
             "Update",
             create=False,
             organization=self.org,
+            is_box=self.object.is_box,
         )
         return response
 
@@ -547,8 +557,23 @@ class ShelfObjectDelete(AJAXMixin, DeleteView):
     success_url = "/"
 
     def form_valid(self, form):
+        if has_active_reservations(self.object):
+            msg = str(_("This item cannot be deleted because it has active reservations. Please close all reservations first."))
+            data = {
+                "inner-fragments": {
+                    "#closemodal": f'<script>$("#object_delete").modal("hide"); Swal.fire({{title: "{str(_("Error"))}", text: "{msg}", icon: "error"}});</script>'
+                }
+            }
+            return data
         utils.organilab_logentry(
-            self.request.user, self.object, DELETION, relobj=self.lab
+            self.request.user,
+            self.object,
+            DELETION,
+            "shelfobject",
+            changed_data=["object", "shelf", "quantity"],
+            change_message=_("Deleted shelfobject '%(name)s' from shelf '%(shelf)s'")
+            % {"name": str(self.object.object), "shelf": self.object.shelf.name},
+            relobj=self.lab,
         )
         self.object.delete()
         data = {
@@ -656,6 +681,7 @@ def objects_transfer(request, org_pk, lab_pk, transfer_pk, shelf_pk):
                 "Transfer",
                 create=False,
                 organization=organization,
+                is_box=transfer.object.is_box,
             )
 
         else:
@@ -700,6 +726,7 @@ def objects_transfer(request, org_pk, lab_pk, transfer_pk, shelf_pk):
                 "Transfer",
                 create=False,
                 organization=organization,
+                is_box=transfer.object.is_box,
             )
 
             changed_data = [
@@ -713,7 +740,10 @@ def objects_transfer(request, org_pk, lab_pk, transfer_pk, shelf_pk):
                 request.user,
                 new_object,
                 ADDITION,
+                "shelfobject",
                 changed_data=changed_data,
+                change_message=_("Created shelfobject '%(name)s' from transfer")
+                % {"name": str(new_object.object)},
                 relobj=[transfer.laboratory_received, transfer.laboratory_send],
             )
 
@@ -734,6 +764,7 @@ def objects_transfer(request, org_pk, lab_pk, transfer_pk, shelf_pk):
             "Transfer",
             create=False,
             organization=organization,
+            is_box=transfer.object.is_box,
         )
         messages.success(request, _("Transfer done successfully"))
     else:
@@ -919,7 +950,7 @@ def view_equipment_shelfobject_detail(request, org_pk, lab_pk, pk):
 
 
 @login_required()
-@permission_required("laboratory.change_shelfobject", raise_exception=True)
+@permission_required("laboratory.can_manage_reorder", raise_exception=True)
 def shelf_object_reagents(request, org_pk, lab_pk):
     org = get_object_or_404(OrganizationStructure, pk=org_pk)
     lab = get_object_or_404(Laboratory, pk=lab_pk)

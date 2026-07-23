@@ -66,15 +66,16 @@ def get_stock_dataset(lab_pk, column_list=None):
                 amount = sum(
                     [
                         get_conversion_units(
-                            shelfobj.measurement_unit, shelfobj.quantity
+                            shelfobj.measurement_unit, shelfobj.total_quantity
                         )
                         for shelfobj in shelfobjects
                     ]
                 )
                 # if reactive.object.is_pure:
                 cas_id = reactive.object.cas_code
+                sc = getattr(reactive.object, "sustancecharacteristics", None)
                 molecular_formula = (
-                    reactive.object.sustancecharacteristics.molecular_formula
+                    sc.molecular_formula if sc and sc.molecular_formula else ""
                 )
                 expiration_date = reactive.reactive_expiration_date
                 if expiration_date:
@@ -103,7 +104,7 @@ def get_stock_dataset(lab_pk, column_list=None):
                     "physical_status": status,
                     "quantity": round(amount, 3),
                     "reactive_unit": base_unit,
-                    "container_capacity": round(capacity, 3),
+                    "container_capacity": capacity,
                     "container_unit": capacity_measurement_unit,
                     "container_quantity": shelfobjects.count(),
                     "container": container_object.object.name,
@@ -125,13 +126,21 @@ def get_stock_dataset(lab_pk, column_list=None):
     for obj in object_no_containers:
         data_column = {}
         reactive = ShelfObject.objects.filter(
-            object__pk=obj, container__isnull=True
+            object__pk=obj, container__isnull=True, **filters
         ).first()
+
         amount = sum(
             [
-                get_conversion_units(shelfobj.measurement_unit, shelfobj.quantity)
+                get_conversion_units(
+                    shelfobj.measurement_unit,
+                    (
+                        shelfobj.total_quantity
+                        if not shelfobj.is_box
+                        else shelfobj.get_box_totals()
+                    ),
+                )
                 for shelfobj in ShelfObject.objects.filter(
-                    object__pk=obj, container__isnull=True
+                    object__pk=obj, container__isnull=True, **filters
                 ).distinct("pk")
             ]
         )
@@ -141,7 +150,10 @@ def get_stock_dataset(lab_pk, column_list=None):
 
         if reactive.object.is_pure:
             cas_id = reactive.object.cas_code
-            molecular_formula = reactive.object.molecular_formula
+            sc = getattr(reactive.object, "sustancecharacteristics", None)
+            molecular_formula = (
+                sc.molecular_formula if sc and sc.molecular_formula else ""
+            )
         expiration_date = reactive.reactive_expiration_date
         if expiration_date:
             expiration_date = expiration_date.strftime("%d/%m/%Y")
@@ -223,7 +235,6 @@ def report_stock(report):
         try:
             laboratory = Laboratory.objects.get(pk=lab_id)
         except Laboratory.DoesNotExist:
-            print("LAB NOT FOUND:", lab_id)
             continue
 
         headers = [
@@ -316,7 +327,7 @@ def get_stock_cartel_dataset(report, column_list=None):
                 amount = sum(
                     [
                         get_conversion_units(
-                            shelfobj.measurement_unit, shelfobj.quantity
+                            shelfobj.measurement_unit, shelfobj.total_quantity
                         )
                         for shelfobj in ShelfObject.objects.filter(
                             object__pk=obj, **filters

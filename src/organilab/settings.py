@@ -55,6 +55,8 @@ if os.getenv("ALLOWED_HOSTS", ""):
 else:
     ALLOWED_HOSTS = ["*"]
     CORS_ALLOW_ALL_ORIGINS = True
+
+SECURE_REFERRER_POLICY = "origin-when-cross-origin"
 ADMINS = [
     ("Solvo", "sitio@solvosoft.com"),
 ]
@@ -98,6 +100,7 @@ INSTALLED_APPS = [
     "django_otp.plugins.otp_totp",
     "report",
     "pending_tasks",
+    "mozilla_django_oidc",
 ]
 
 
@@ -111,6 +114,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "mozilla_django_oidc.middleware.SessionRefresh",
     "django_otp.middleware.OTPMiddleware",
     "auth_and_perms.middleware.ImpostorMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
@@ -135,6 +139,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.template.context_processors.i18n",
                 "django.contrib.messages.context_processors.messages",
+                "authentication.context_processors.oidc_enabled",
             ],
         },
     },
@@ -163,6 +168,14 @@ DATABASES = {
             "PORT": os.getenv("DBPORT", "5432"),
         },
     },
+    "oldDB": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv("DBNAME_OLD", "oldOrganilab"),
+        "USER": os.getenv("DBUSER", "organilab_user"),
+        "PASSWORD": os.getenv("DBPASSWORD", "0rg4n1l4b"),
+        "HOST": os.getenv("DBHOST", "127.0.0.1"),
+        "PORT": os.getenv("DBPORT", "5432"),
+    },
 }
 
 
@@ -170,10 +183,13 @@ READONLY_DATABASE = os.getenv("READONLY_DATABASE", "default")
 
 # TEST - DJANGO
 
-AUTHENTICATION_BACKENDS = (
+_backends = [
     "django.contrib.auth.backends.ModelBackend",  # default
     # 'auth_and_perms.authBackend.BCCRBackend',  # Digital signature
-)
+]
+if os.getenv("OIDC_RP_CLIENT_ID"):
+    _backends.append("authentication.oidc_backend.OrganiLabOIDCBackend")
+AUTHENTICATION_BACKENDS = tuple(_backends)
 
 # END TEST
 
@@ -231,7 +247,7 @@ FIXTURE_DIRS = os.getenv("FIXTURE_DIRS", str(BASE_DIR.parent / "fixtures/")).spl
 DOCS_SOURCE_DIR = os.getenv("DOCS_STATIC_DIR", str(BASE_DIR.parent / "docs/source/"))
 
 # Authentication settings
-LOGIN_REDIRECT_URL = reverse_lazy("auth_and_perms:select_organization_by_user")
+LOGIN_REDIRECT_URL = reverse_lazy("pending_tasks:view_task")
 LOGOUT_REDIRECT_URL = reverse_lazy("index")
 
 # Email development settings
@@ -249,6 +265,10 @@ EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", None)  # a real email
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", None)
 SERVER_EMAIL = os.getenv("SERVER_EMAIL", "sitio@organilab.org")
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+
+# Username to reassign audit trail (LogEntry/ObjectLogChange) to when a User is deleted.
+# If unset or the user doesn't exist, deletion proceeds without reassignment (history is lost).
+DELETED_USER_SENTINEL_USERNAME = os.getenv("DELETED_USER_SENTINEL_USERNAME", "solvoadmin")
 
 # Celery settings
 BROKER_URL = os.getenv("BROKER_URL", "amqp://guest:guest@localhost:5672/organilabvhost")
@@ -306,6 +326,10 @@ CELERYBEAT_SCHEDULE = {
         "task": "laboratory.tasks.remove_relation_organization_laboratory",
         "schedule": crontab(minute=0, hour=6),
     },
+    "send_iper_update_reminders": {
+        "task": "risk_management.tasks.send_iper_update_reminders",
+        "schedule": crontab(minute=0, hour=8),
+    },
 }
 
 INTERNAL_IPS = ("127.0.0.1",)
@@ -344,6 +368,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 GT_GROUP_MODEL = "auth_and_perms.models.Rol"
 DEFAULT_BUSSINESS = int(os.getenv("DEFAULT_BUSSINESS", 1))
 DEFAULT_ENTITY = int(os.getenv("DEFAULT_ENTITY", 1))
+DEFAULT_ORG_PK = int(os.getenv("DEFAULT_ORG_PK", 0))
+DEFAULT_ROL_NAME = os.getenv("DEFAULT_ROL_NAME", "")
 DEFAULT_SUCCESS_BCCR = 0
 
 REST_FRAMEWORK = {
@@ -403,6 +429,14 @@ LOGGING = {
             "level": DJANGO_LOG_LEVEL,
             "propagate": True,
         },
+        "mozilla_django_oidc": {
+            "handlers": ["console"],
+            "level": "DEBUG",
+        },
+        "authentication": {
+            "handlers": ["console"],
+            "level": "DEBUG",
+        },
         "celery": {
             "handlers": ["console"],
             "level": DJANGO_LOG_LEVEL,
@@ -446,3 +480,38 @@ FIRMADOR_SIGN_URL = FIRMADOR_DOMAIN + "/firma/firme"
 FIRMADOR_SIGN_COMPLETE = FIRMADOR_DOMAIN + "/firma/completa"
 FIRMADOR_DELETE_FILE_URL = FIRMADOR_DOMAIN + "/firma/delete"
 REGISTER_DEFAULT_USER_API = False
+
+TINYMCE_UPLOAD_PATH = "editorupload/"
+
+# --- WSO2 OIDC ---
+_WSO2_BASE = os.getenv("OIDC_WSO2_BASE_URL", "https://localhost:9443")
+OIDC_RP_CLIENT_ID = os.getenv("OIDC_RP_CLIENT_ID", "")
+OIDC_RP_CLIENT_SECRET = os.getenv("OIDC_RP_CLIENT_SECRET", "")
+OIDC_OP_AUTHORIZATION_ENDPOINT = os.getenv(
+    "OIDC_OP_AUTHORIZATION_ENDPOINT", f"{_WSO2_BASE}/oauth2/authorize"
+)
+OIDC_OP_TOKEN_ENDPOINT = os.getenv(
+    "OIDC_OP_TOKEN_ENDPOINT", f"{_WSO2_BASE}/oauth2/token"
+)
+OIDC_OP_USER_ENDPOINT = os.getenv(
+    "OIDC_OP_USER_ENDPOINT", f"{_WSO2_BASE}/oauth2/userinfo"
+)
+OIDC_OP_JWKS_ENDPOINT = os.getenv("OIDC_OP_JWKS_ENDPOINT", f"{_WSO2_BASE}/oauth2/jwks")
+OIDC_OP_LOGOUT_ENDPOINT = os.getenv(
+    "OIDC_OP_LOGOUT_ENDPOINT", f"{_WSO2_BASE}/oidc/logout"
+)
+OIDC_RP_SIGN_ALGO = os.getenv("OIDC_RP_SIGN_ALGO", "RS256")
+OIDC_RP_SCOPES = "openid email profile"
+OIDC_VERIFY_SSL = os.getenv("OIDC_VERIFY_SSL", "True").lower() == "true"
+OIDC_USE_PKCE = os.getenv("OIDC_USE_PKCE", "False").lower() == "true"
+OIDC_PKCE_METHOD = "S256"
+ALLOW_LOGOUT_GET_METHOD = True
+OIDC_STORE_ID_TOKEN = True
+OIDC_STORE_ACCESS_TOKEN = True
+OIDC_OP_LOGOUT_URL_METHOD = "authentication.views.oidc_logout_url"
+OIDC_POST_LOGOUT_REDIRECT_URL = os.getenv("OIDC_POST_LOGOUT_REDIRECT_URL", "")
+
+# Capacitation
+CAPACITATION_URL = os.getenv(
+    "CAPACITATION_URL", "https://organilab.una.ac.cr/docs/capacitacion/"
+)

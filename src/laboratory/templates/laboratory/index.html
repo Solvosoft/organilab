@@ -87,7 +87,7 @@
 					</div>
 				</div>
 			{% endif %}
-			{% if perms.laboratory.add_laboratoryroom or perms.laboratory.change_laboratory or perms.laboratory.add_furniture or perms.laboratory.add_object or perms.laboratory.add_objectfeatures %}
+			{% if perms.laboratory.view_laboratoryroom or perms.laboratory.change_laboratory or perms.laboratory.add_furniture or perms.laboratory.view_object or perms.laboratory.add_objectfeatures %}
 				<div class="col-md-6 text-center">
 					<div class="row">
 						<img src="{% static 'images/management.png' %}"
@@ -98,7 +98,7 @@
 					<div class="row">
 
 						<ul class="list-group">
-							{% if perms.laboratory.add_laboratoryroom %}
+							{% if perms.laboratory.view_laboratoryroom %}
 								<li class="list-group-item">
 									<a href="{% url 'laboratory:rooms_create' org_pk laboratory %}">
 										<strong>{% trans 'Laboratory' %}</strong>
@@ -119,15 +119,17 @@
 								</li>
 							{% endif %}
 
-							{% if perms.laboratory.view_shelfobject and perms.laboratory.change_shelfobject %}
+							{% if perms.laboratory.can_manage_reorder %}
 								<li class="list-group-item">
 									<a
-										href="{% url 'laboratory:shel_objects_reactives' org_pk laboratory %}"><strong>{% trans 'Reorder Reactives' %}</strong></a>
+										href="{% url 'laboratory:shel_objects_reactives' org_pk laboratory %}"><strong>{% trans 'Consumption reorder' %}</strong></a>
 								</li>
+							{% if perms.laboratory.can_view_process_condition %}
 								<li class="list-group-item">
 									<a
 										href="{% url 'laboratory:shelf_object_hcode' org_pk laboratory %}"><strong>{% trans 'Update process condition of reagents' %}</strong></a>
 								</li>
+							{% endif %}
 							{% endif %}
 
 							{% if perms.laboratory.view_objectfeatures %}

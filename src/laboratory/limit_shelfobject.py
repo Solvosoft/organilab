@@ -1,37 +1,62 @@
+from django.template.loader import render_to_string
+
+from auth_and_perms.models import Profile
 from django.conf import settings
-from djgentelella.async_notification.backends import get_backend
-from djgentelella.async_notification.sending import send_email_from_template
+from async_notifications.utils import send_email_from_template
 from laboratory.models import BlockedListNotification
 from django.contrib.sites.models import Site
+from django.utils.translation import gettext_lazy as _
+
+from pending_tasks.models import PendingTask
+from pending_tasks.utils import create_pending_task
 
 
 def send_email_limit_objs(lab, shelfobjects, enqueued=True):
+    allowed_emails = []
+    responsable = None
     if len(shelfobjects) > 0:
         for shelfobject in shelfobjects:
-            BlockedListNotification.objects.filter(
+            blocked = BlockedListNotification.objects.filter(
                 laboratory=lab, object=shelfobject.object
             )
-        print(f"lab {lab.id}")
+
         responsable = lab.responsible
         if responsable:
-            schema = "https"
-            if settings.DEBUG:
-                schema = "http"
-            domain = Site.objects.get_current().domain
-            url = f"/lab/{lab.pk}/blocknotifications/"
-            context = {
-                "laboratory": lab,
-                "shelf_object": shelfobjects,
-                "domain": domain,
-                "blockurl": f"{schema}://{domain}{url}",
-            }
-            print(context)
-            notification = send_email_from_template(
-                "shelf-object-in-limit",
-                responsable.email,
-                context=context,
-                enqueued=enqueued,
-                user=None,
-                upfile=None,
+            create_pending_task(
+                responsable,
+                _("ShelfObject expiration"),
+                [],
+                description=render_to_string(
+                    "laboratory/limit_shelfobject_notify.html",
+                    {
+                        "shelf_objects": shelfobjects,
+                        "laboratory": lab,
+                        "date": today,
+                    },
+                ),
+                status=PendingTask.PENDING,
+                profile=responsable.profile,
+                link="",
+                notify=True,
             )
-            get_backend().sesend_email_from_templatesend_email_from_templatesend_email_from_templatend(notification.pk)
+
+            # emails = [responsable.email]
+            # context = {
+            #     "laboratory": lab,
+            #     "shelf_object": shelfobjects,
+            # }
+            # schema = "https"
+            # if settings.DEBUG:
+            #     schema = "http"
+            # url = f"/lab/{lab.pk}/blocknotifications/"
+            # domain = Site.objects.get_current().domain
+            # context["blockurl"] = f"{schema}://{domain}{url}"
+            # context["domain"] = domain
+            # send_email_from_template(
+            #     _("Shelf object in limit"),
+            #     emails,
+            #     context=context,
+            #     enqueued=enqueued,
+            #     user=None,
+            #     upfile=None,
+            # )

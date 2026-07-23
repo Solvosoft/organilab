@@ -4,12 +4,13 @@
 {% block pre_head %}
 	{% define_urlname_action 'riskzone_list' %}
 	{% define_urlname_action 'riskzone_detail' %}
+	{% define_urlname_action 'workdays_list' %}
 {% endblock %}
 {% block content %}
 	{% has_perms "risk_management.change_riskzone" as perm_change_riskzone %}
 	{% has_perms "risk_management.add_riskzone" as perm_add_riskzone %}
 	{% has_perms "risk_management.delete_riskzone" as perm_delete_riskzone %}
-
+	{% has_perms "risk_management.view_workday" as perm_view_workday %}
 
 	<div class="clearfix">
 		<div class="row float-start">
@@ -68,12 +69,37 @@
 							<div class="col-md-4 mb-4 px-2">
 								<div class="card">
 									<div class="card-header">
-										<span class="fs-6 prior_{{ object.priority }} badge">{{ object.laboratories.all.count }}</span>
+										<span class="fs-6 prior_{{ object.priority }} badge">{{ object.incidentreport_set.count }}</span>
 										{% if perms.risk_management.view_riskzone %}
 											<a href="{% url 'riskmanagement:riskzone_detail' org_pk object.pk %}">{{ object }}</a>
 										{% endif %}
 									</div>
 									<div class="card-body">
+										<div class="mb-2">
+											<small class="text-muted"><i class="fa fa-tag"></i> {% trans 'Zone Type' %}:</small>
+											<span class="badge bg-secondary">{{ object.zone_type }}</span>
+										</div>
+										<div class="mb-2">
+											<small class="text-muted"><i class="fa fa-flask"></i> {% trans 'Laboratories' %}:</small>
+											{% for lab in object.laboratories.all %}
+												<span class="badge bg-info text-dark">{{ lab.name }}</span>
+											{% empty %}
+												<span class="text-muted"><small>{% trans 'None' %}</small></span>
+											{% endfor %}
+										</div>
+										<div class="mb-2">
+											<small class="text-muted"><i class="fa fa-building"></i> {% trans 'Buildings' %}:</small>
+											{% for building in object.buildings.all %}
+												<span class="badge bg-warning text-dark">{{ building.name }}</span>
+											{% empty %}
+												<span class="text-muted"><small>{% trans 'None' %}</small></span>
+											{% endfor %}
+										</div>
+										<div class="mb-2">
+											<small class="text-muted"><i class="fa fa-users"></i> {% trans 'Workers' %}:</small>
+											<span>{{ object.num_workers }}</span>
+										</div>
+										<hr class="my-2">
 										<div style="width: 100%; height: 300px;">
 											{% with zone_pk=object.pk|stringformat:"s" %}
 												{% with dataparams='data-zone="'|add:zone_pk|add:'"' %}
@@ -96,6 +122,11 @@
 												<a class="btn btn-sm btn-outline-warning"
 															href="{% url 'riskmanagement:riskzone_update' org_pk object.pk %}">
 													<i class="fa fa-edit" aria-hidden="true"></i> {% trans 'Update' %}
+												</a>
+											{% endif %}
+											{% if perm_view_workday %}
+												<a class="btn btn-sm btn-outline-success" href="{% url 'riskmanagement:workday_list' org_pk object.pk %}">
+													<i class="fa fa-calendar" aria-hidden="true"></i> {% trans 'Workdays' %}
 												</a>
 											{% endif %}
 											{% if perm_delete_riskzone %}

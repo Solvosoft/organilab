@@ -93,6 +93,9 @@ def template_editor(request, org_pk):
                 ADDITION,
                 "SGA Template from editor",
                 relobj=[organization],
+                changed_data=["name", "json_representation", "barcode", "recipient_size"],
+                change_message=_("Created SGA template '%(name)s' from editor")
+                % {"name": instance.name},
             )
             messages.add_message(
                 request, messages.INFO, _("Tag Template saved successfully")

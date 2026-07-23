@@ -40,9 +40,14 @@
 					<div class="clearfix"></div>
 					<ul class="nav nav-pills" role="tablist">
 						<li class="nav-item" role="presentation">
-							<button class="nav-link active" id="pills-di" data-bs-toggle="pill"
+							<button class="nav-link active" id="pills-tons" data-bs-toggle="pill" data-bs-target="#substancetons" type="button"
+															role="tab" aria-controls="pills-tons" aria-selected="true">
+								{% trans 'Tons per Substance' %}</button>
+						</li>
+						<li class="nav-item" role="presentation">
+							<button class="nav-link" id="pills-di" data-bs-toggle="pill"
 															data-bs-target="#dangerindication"
-															type="button" role="tab" aria-controls="pills-di" aria-selected="true">
+															type="button" role="tab" aria-controls="pills-di">
 								{% trans 'Danger Indication' %}
 							</button>
 						</li>
@@ -74,7 +79,12 @@
 						</li>
 					</ul>
 					<div class="tab-content" id="pills-tabContent">
-						<div id="dangerindication" class="tab-pane fade show active">
+						<div id="substancetons" class="tab-pane fade show active">
+							<div id="substancetons-container" style="position: relative; width: 100%;">
+								<canvas id="substancetons-canvas"></canvas>
+							</div>
+						</div>
+						<div id="dangerindication" class="tab-pane fade">
 							{% include 'gentelella/widgets/chartjs.html' with graph_url=dangerindicationchart %}
 						</div>
 						<div id="whiteorgan" class="tab-pane fade">
@@ -102,4 +112,23 @@
 {% block js %}
 	<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
 	<script src="{% static 'js/graphics_callback.js' %}?v={% get_organilab_version %}"></script>
+	<script>
+	$(document).ready(function() {
+		$.ajax({
+			url: "{{ substancetonschart }}",
+			type: "GET",
+			dataType: "json",
+			success: function(result) {
+				var numLabels = result.data.labels.length;
+				var chartHeight = Math.max(400, numLabels * 25);
+				var container = document.getElementById("substancetons-container");
+				container.style.height = chartHeight + "px";
+				result.options.maintainAspectRatio = false;
+				result.options.responsive = true;
+				var ctx = document.getElementById("substancetons-canvas").getContext("2d");
+				new Chart(ctx, result);
+			}
+		});
+	});
+	</script>
 {% endblock %}

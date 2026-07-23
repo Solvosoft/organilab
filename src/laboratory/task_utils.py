@@ -16,6 +16,8 @@ from laboratory.models import (
 from laboratory.utils_base_unit import get_base_unit
 from django.utils.translation import gettext_lazy as _
 
+from pending_tasks.models import PendingTask
+from pending_tasks.utils import create_pending_task
 from report.utils import create_notification
 
 
@@ -32,9 +34,6 @@ def create_informsperiods(informscheduler, now=timezone.now()):
 
     last_close = last_close + timezone.timedelta(days=informscheduler.period_on_days)
     if next_update == now.today().date():
-        labs = Laboratory.objects.filter(
-            pk__in=informscheduler.organization.get_my_laboratories
-        )
         ip = InformsPeriod.objects.create(
             scheduler=informscheduler,
             organization=informscheduler.organization,
@@ -42,7 +41,7 @@ def create_informsperiods(informscheduler, now=timezone.now()):
             start_application_date=next_update,
             close_application_date=last_close,
         )
-        for lab in labs:
+        for lab in informscheduler.laboratories.all():
             inform = Inform.objects.create(
                 organization=informscheduler.organization,
                 name="%s -- %s" % (informscheduler.name, lab.name),
@@ -63,6 +62,25 @@ def create_informsperiods(informscheduler, now=timezone.now()):
                         },
                     ),
                 )
+                create_pending_task(
+                    lab.responsible,
+                    _("New period inform"),
+                    [],
+                    description=_(
+                        "New period inform was created in the laboratory %s with the name %s"
+                    )
+                    % (lab.name, informscheduler.name),
+                    status=PendingTask.PENDING,
+                    profile=lab.responsible.profile,
+                    link=reverse(
+                        "laboratory:get_informs",
+                        kwargs={
+                            "org_pk": informscheduler.organization.pk,
+                            "lab_pk": lab.pk,
+                        },
+                    ),
+                    notify=False,
+                )
 
 
 def save_object_report_precursor(report):
@@ -77,7 +95,7 @@ def save_object_report_precursor(report):
         ).first()
 
         if obj:
-            add_quantity = precursor.quantity_base_unit
+            add_quantity = precursor.total_quantity
             obj.quantity += add_quantity
             if reports.count() > 1:
                 if reports[1].report_values.count() == 0:

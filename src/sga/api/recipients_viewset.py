@@ -88,7 +88,9 @@ class RecipientSizeAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
                 ADDITION,
                 "recipient size",
                 relobj=[self.organization],
-                changed_data=["name", "heigth", "height_unit", "width", "width_unit"],
+                changed_data=list(serializer.validated_data.keys()),
+                change_message=_("Created recipient size '%(name)s'")
+                % {"name": recipient.name},
             )
 
             return JsonResponse(
@@ -131,6 +133,8 @@ class RecipientSizeAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
                     "recipient size",
                     relobj=[self.organization],
                     changed_data=form.changed_data,
+                    change_message=_("Updated recipient size '%(name)s'")
+                    % {"name": recipient.name},
                 )
 
                 return JsonResponse(
@@ -160,6 +164,9 @@ class RecipientSizeAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
                     DELETION,
                     "recipient size",
                     relobj=[self.organization],
+                    changed_data=["name", "height", "height_unit", "width", "width_unit"],
+                    change_message=_("Deleted recipient size '%(name)s'")
+                    % {"name": recipient.name},
                 )
                 recipient.delete()
 

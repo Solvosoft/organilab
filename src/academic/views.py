@@ -1,4 +1,5 @@
 import json
+import math
 
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.contrib.auth.decorators import permission_required, login_required
@@ -68,7 +69,15 @@ def add_steps_wrapper(request, org_pk, pk):
     user_is_allowed_on_organization(request.user, organization)
     procedure = get_object_or_404(Procedure, pk=pk)
     proc_step = ProcedureStep.objects.create(procedure=procedure)
-    organilab_logentry(request.user, proc_step, ADDITION, relobj=org_pk)
+    organilab_logentry(
+        request.user,
+        proc_step,
+        ADDITION,
+        changed_data=["procedure"],
+        change_message=_("Added step to procedure '%(name)s'")
+        % {"name": procedure.title},
+        relobj=org_pk,
+    )
     return redirect(
         reverse("academic:update_step", kwargs={"pk": proc_step.pk, "org_pk": org_pk})
     )
@@ -111,7 +120,14 @@ def create_my_procedures(request, org_pk, lab_pk, content_type, model):
         my_procedure.created_by = request.user
         my_procedure.save()
         organilab_logentry(
-            request.user, my_procedure, ADDITION, "myprocedures", relobj=lab_pk
+            request.user,
+            my_procedure,
+            ADDITION,
+            "myprocedures",
+            changed_data=form.changed_data,
+            change_message=_("Created my procedure '%(name)s'")
+            % {"name": my_procedure.name},
+            relobj=lab_pk,
         )
         return redirect(
             reverse(
@@ -139,7 +155,14 @@ def remove_my_procedure(request, org_pk, lab_pk, pk):
     my_procedure = get_object_or_404(MyProcedure, pk=pk)
     if my_procedure:
         organilab_logentry(
-            request.user, my_procedure, DELETION, "myprocedures", relobj=lab_pk
+            request.user,
+            my_procedure,
+            DELETION,
+            "myprocedures",
+            changed_data=["name", "procedure", "organization"],
+            change_message=_("Deleted my procedure '%(name)s'")
+            % {"name": my_procedure.name},
+            relobj=lab_pk,
         )
         my_procedure.delete()
         return redirect(
@@ -298,6 +321,8 @@ class ProcedureCreateView(DJCreateView):
             procedure,
             ADDITION,
             changed_data=form.changed_data,
+            change_message=_("Created procedure '%(name)s'")
+            % {"name": procedure.title},
             relobj=self.lab,
         )
         return super(ProcedureCreateView, self).form_valid(form)
@@ -330,6 +355,8 @@ class ProcedureUpdateView(DJUpdateView):
             procedure,
             CHANGE,
             changed_data=form.changed_data,
+            change_message=_("Updated procedure '%(name)s'")
+            % {"name": procedure.title},
             relobj=self.lab,
         )
         return super(ProcedureUpdateView, self).form_valid(form)
@@ -360,6 +387,7 @@ class ProcedureStepCreateView(FormView):
         context["object_form"] = ObjectForm
         context["observation_form"] = ObservationForm
         context["form_schema"] = json.dumps({})
+        context["org_pk"] = self.kwargs.get("org_pk")
         return context
 
     def form_valid(self, form):
@@ -387,7 +415,17 @@ class ProcedureStepCreateView(FormView):
                 )
                 step.form = custom_form
                 step.save()
-                organilab_logentry(self.request.user, custom_form, ADDITION, "custom form")
+                organilab_logentry(
+                    self.request.user,
+                    custom_form,
+                    ADDITION,
+                    "custom form",
+                    changed_data=["name", "status", "schema", "organization"],
+                    change_message=_(
+                        "Created custom form '%(name)s' for procedure step"
+                    )
+                    % {"name": custom_form.name},
+                )
             except (json.JSONDecodeError, KeyError):
                 pass
 
@@ -396,6 +434,8 @@ class ProcedureStepCreateView(FormView):
             step,
             ADDITION,
             changed_data=form.changed_data,
+            change_message=_("Created procedure step '%(title)s'")
+            % {"title": step.title},
             relobj=procedure.content_object,
         )
 
@@ -424,6 +464,7 @@ class ProcedureStepUpdateView(DJUpdateView):
         step = ProcedureStep.objects.get(pk=int(self.kwargs["pk"]))
         context["step"] = step
         context["form_schema"] = json.dumps(step.form.schema if step.form else {})
+        context["org_pk"] = self.kwargs.get("org_pk")
         return context
 
     def get_success_url(self, **kwargs):
@@ -445,8 +486,13 @@ class ProcedureStepUpdateView(DJUpdateView):
                     procedurestep.form.name = schema["name"]
                     procedurestep.form.save()
                     organilab_logentry(
-                        self.request.user, procedurestep.form, CHANGE,
-                        "custom form", changed_data=["schema"],
+                        self.request.user,
+                        procedurestep.form,
+                        CHANGE,
+                        "custom form",
+                        changed_data=["schema", "name"],
+                        change_message=_("Updated custom form '%(name)s' schema")
+                        % {"name": procedurestep.form.name},
                     )
                 else:
                     org = get_object_or_404(OrganizationStructure, pk=self.org)
@@ -458,7 +504,17 @@ class ProcedureStepUpdateView(DJUpdateView):
                     )
                     procedurestep.form = custom_form
                     procedurestep.save()
-                    organilab_logentry(self.request.user, custom_form, ADDITION, "custom form")
+                    organilab_logentry(
+                        self.request.user,
+                        custom_form,
+                        ADDITION,
+                        "custom form",
+                        changed_data=["name", "status", "schema", "organization"],
+                        change_message=_(
+                            "Created custom form '%(name)s' for procedure step"
+                        )
+                        % {"name": custom_form.name},
+                    )
             except (json.JSONDecodeError, KeyError):
                 pass
 
@@ -467,6 +523,8 @@ class ProcedureStepUpdateView(DJUpdateView):
             procedurestep,
             CHANGE,
             changed_data=form.changed_data,
+            change_message=_("Updated procedure step '%(title)s'")
+            % {"title": procedurestep.title},
             relobj=self.lab,
         )
         return super(ProcedureStepUpdateView, self).form_valid(form)
@@ -495,14 +553,19 @@ def save_object(request, org_pk, pk):
             measurement_unit=unit,
         )
 
-        str_obj = f"{objects.object} {objects.quantity} {str(objects.measurement_unit)}"
-        change_message = str_obj + " procedure required object has been added"
         organilab_logentry(
             request.user,
             objects,
             ADDITION,
             changed_data=form.changed_data,
-            change_message=change_message,
+            change_message=_(
+                "Added required object '%(obj)s' (%(qty)s %(unit)s) to procedure step"
+            )
+            % {
+                "obj": str(objects.object),
+                "qty": objects.quantity,
+                "unit": str(objects.measurement_unit),
+            },
             relobj=org_pk,
         )
     else:
@@ -522,7 +585,12 @@ def delete_step(request, org_pk):
     user_is_allowed_on_organization(request.user, organization)
     step = ProcedureStep.objects.get(pk=int(request.POST["pk"]))
     organilab_logentry(
-        request.user, step, DELETION, relobj=step.procedure.content_object
+        request.user,
+        step,
+        DELETION,
+        changed_data=["title", "description", "procedure"],
+        change_message=_("Deleted procedure step '%(title)s'") % {"title": step.title},
+        relobj=step.procedure.content_object,
     )
     step.delete()
     return JsonResponse({"data": True})
@@ -536,8 +604,15 @@ def remove_object(request, org_pk, pk):
     )
     user_is_allowed_on_organization(request.user, organization)
     obj = ProcedureRequiredObject.objects.get(pk=int(request.POST["pk"]))
+    organilab_logentry(
+        request.user,
+        obj,
+        DELETION,
+        changed_data=["object", "quantity", "measurement_unit", "step"],
+        change_message=_("Removed required object '%(obj)s' from procedure step")
+        % {"obj": str(obj.object)},
+    )
     obj.delete()
-    organilab_logentry(request.user, obj, DELETION)
     return JsonResponse({"data": get_objects(pk)})
 
 
@@ -575,7 +650,12 @@ def save_observation(request, org_pk, pk):
         )
         objects.save()
         organilab_logentry(
-            request.user, objects, ADDITION, changed_data=["description"]
+            request.user,
+            objects,
+            ADDITION,
+            changed_data=["description", "step"],
+            change_message=_("Added observation to procedure step '%(title)s'")
+            % {"title": step.title},
         )
     else:
         form_errors = form.errors
@@ -603,8 +683,14 @@ def remove_observation(request, org_pk, pk):
     user_is_allowed_on_organization(request.user, organization)
 
     obj = get_object_or_404(ProcedureObservations, pk=int(request.POST["pk"]))
+    organilab_logentry(
+        request.user,
+        obj,
+        DELETION,
+        changed_data=["description", "step"],
+        change_message=_("Removed observation from procedure step"),
+    )
     obj.delete()
-    organilab_logentry(request.user, obj, DELETION)
     return JsonResponse({"data": get_observations(pk)})
 
 
@@ -629,6 +715,7 @@ def get_procedure(request, org_pk, pk):
         {"title": procedure.title, "pk": procedure.pk, "msg": msg}, status=result_status
     )
 
+
 @login_required
 @permission_required("academic.view_myprocedure", raise_exception=True)
 def download_myprocedure(request, org_pk, pk):
@@ -647,8 +734,14 @@ def delete_procedure(request, org_pk):
     )
     user_is_allowed_on_organization(request.user, organization)
     procedure = get_object_or_404(Procedure, pk=int(request.POST["pk"]))
+    organilab_logentry(
+        request.user,
+        procedure,
+        DELETION,
+        changed_data=["name", "title", "description"],
+        change_message=_("Deleted procedure '%(name)s'") % {"name": procedure.title},
+    )
     procedure.delete()
-    organilab_logentry(request.user, procedure, DELETION)
     return JsonResponse({"data": True})
 
 
@@ -679,14 +772,28 @@ def generate_reservation(request, org_pk, lab_pk):
         if procedure_obj.exists():
 
             for obj in procedure_obj:
-                shelfobjects = ShelfObject.objects.filter(
+                box_qs = ShelfObject.objects.filter(
                     in_where_laboratory=lab,
                     object=obj.object,
+                    is_box=True,
                     measurement_unit=obj.measurement_unit,
-                ).aggregate(total=Coalesce(Sum("quantity"), 0.0))
-
-                if shelfobjects["total"] < obj.quantity:
-                    obj_unknown.append(obj.object.__str__())
+                )
+                if box_qs.exists():
+                    # Each quantity_units entry stores its remaining units in the
+                    # shelf object's measurement_unit (same unit as obj.quantity).
+                    total_material_units = sum(
+                        item["units"] for so in box_qs for item in so.quantity_units
+                    )
+                    if total_material_units < obj.quantity:
+                        obj_unknown.append(obj.object.__str__())
+                else:
+                    shelfobjects = ShelfObject.objects.filter(
+                        in_where_laboratory=lab,
+                        object=obj.object,
+                        measurement_unit=obj.measurement_unit,
+                    ).aggregate(total=Coalesce(Sum("quantity"), 0.0))
+                    if shelfobjects["total"] < obj.quantity:
+                        obj_unknown.append(obj.object.__str__())
 
             if obj_unknown:
                 result = status.HTTP_400_BAD_REQUEST
@@ -722,38 +829,166 @@ def generate_reservation(request, org_pk, lab_pk):
 
 def add_procedure_reservation(request, objects, form, lab, org):
     for obj in objects:
-        shelf_objects = (
+        box_shelf_objects = list(
             ShelfObject.objects.filter(
                 in_where_laboratory=lab,
                 object=obj.object,
+                is_box=True,
                 measurement_unit=obj.measurement_unit,
-            )
-            .distinct()
-            .order_by("quantity")
+            ).order_by("pk")
         )
-        obj_quantity = obj.quantity
-        total = 0
-        for shelf_object in shelf_objects:
-            shelf_object_total = shelf_object.quantity
-            result = 0
+        if box_shelf_objects:
+            _add_box_reservation(request, obj, box_shelf_objects, form, lab, org)
+        else:
+            _add_non_box_reservation(request, obj, form, lab, org)
 
-            if total < obj_quantity:
-                if obj_quantity <= shelf_object_total:
-                    result = obj_quantity - total
-                elif total + shelf_object_total > obj_quantity:
-                    result = obj_quantity - total
-                else:
-                    result += shelf_object_total
-                total += result
-                reserved = ReservedProducts.objects.create(
-                    shelf_object=shelf_object,
-                    user=request.user,
-                    initial_date=form.cleaned_data["initial_date"],
-                    final_date=form.cleaned_data["final_date"],
-                    amount_required=result,
-                    laboratory=lab,
-                    organization=org
-                )
-                organilab_logentry(
-                    request.user, reserved, ADDITION, changed_data=form.changed_data
-                )
+
+def _add_non_box_reservation(request, obj, form, lab, org):
+    shelf_objects = (
+        ShelfObject.objects.filter(
+            in_where_laboratory=lab,
+            object=obj.object,
+            measurement_unit=obj.measurement_unit,
+        )
+        .distinct()
+        .order_by("quantity")
+    )
+    obj_quantity = obj.quantity
+    total = 0
+    for shelf_object in shelf_objects:
+        shelf_object_total = shelf_object.quantity
+        result = 0
+        if total < obj_quantity:
+            if obj_quantity <= shelf_object_total:
+                result = obj_quantity - total
+            elif total + shelf_object_total > obj_quantity:
+                result = obj_quantity - total
+            else:
+                result += shelf_object_total
+            total += result
+            reserved = ReservedProducts.objects.create(
+                shelf_object=shelf_object,
+                user=request.user,
+                initial_date=form.cleaned_data["initial_date"],
+                final_date=form.cleaned_data["final_date"],
+                amount_required=result,
+                laboratory=lab,
+                organization=org,
+            )
+            organilab_logentry(
+                request.user,
+                reserved,
+                ADDITION,
+                changed_data=[
+                    "shelf_object",
+                    "user",
+                    "initial_date",
+                    "final_date",
+                    "amount_required",
+                    "laboratory",
+                    "organization",
+                ],
+                change_message=_("Created reservation for '%(obj)s' (%(amount)s units)")
+                % {"obj": str(shelf_object.object), "amount": result},
+            )
+
+
+def _select_boxes_for_shelf(shelf_object, amount_required):
+    """
+    Select boxes from shelf_object.quantity_units for a reservation.
+    Full boxes (integer part) take units_per_box units each.
+    Fractional part always rounds up (ceil) when selecting partial units.
+    Returns a list of {"code": ..., "units": ...} dicts.
+    """
+    quantity_units = shelf_object.quantity_units or []
+    units_per_box = shelf_object.units_per_box or 1
+
+    full_count = int(amount_required)
+    fraction = amount_required - full_count
+    min_partial_units = math.ceil(fraction * units_per_box) if fraction > 0 else 0
+
+    complete_boxes = [b for b in quantity_units if b["units"] >= units_per_box]
+    partial_boxes = [b for b in quantity_units if b["units"] < units_per_box]
+
+    selected = []
+    for box in complete_boxes[:full_count]:
+        selected.append({"code": box["code"], "units": units_per_box})
+
+    if min_partial_units > 0:
+        candidates = complete_boxes[full_count:] + partial_boxes
+        for box in candidates:
+            if box["units"] >= min_partial_units:
+                selected.append({"code": box["code"], "units": min_partial_units})
+                break
+
+    return selected
+
+
+def _add_box_reservation(request, obj, box_shelf_objects, form, lab, org):
+    remaining_units = obj.quantity  # material units (grams, mL, etc.)
+    for shelf_object in box_shelf_objects:
+        if remaining_units <= 0:
+            break
+        units_per_box = shelf_object.units_per_box or 1
+
+        if remaining_units < units_per_box:
+            # Need less than one full box entry: find any single box that has
+            # at least remaining_units available and take only that fraction.
+            available_box = next(
+                (
+                    b
+                    for b in (shelf_object.quantity_units or [])
+                    if b["units"] >= remaining_units
+                ),
+                None,
+            )
+            if available_box is None:
+                continue
+            boxes_amount = remaining_units / units_per_box  # fraction < 1
+            selected = _select_boxes_for_shelf(shelf_object, boxes_amount)
+            if not selected:
+                continue
+            units_from_this = (
+                remaining_units  # requirement fully satisfied by this shelf
+            )
+        else:
+            # Need one or more full box entries
+            available_units = sum(
+                item["units"] for item in (shelf_object.quantity_units or [])
+            )
+            if available_units <= 0:
+                continue
+            units_from_this = min(available_units, remaining_units)
+            boxes_amount = units_from_this / units_per_box
+            selected = _select_boxes_for_shelf(shelf_object, boxes_amount)
+            if not selected:
+                continue
+
+        reserved = ReservedProducts.objects.create(
+            shelf_object=shelf_object,
+            user=request.user,
+            initial_date=form.cleaned_data["initial_date"],
+            final_date=form.cleaned_data["final_date"],
+            amount_required=boxes_amount,
+            reserved_boxes=selected,
+            laboratory=lab,
+            organization=org,
+        )
+        organilab_logentry(
+            request.user,
+            reserved,
+            ADDITION,
+            changed_data=[
+                "shelf_object",
+                "user",
+                "initial_date",
+                "final_date",
+                "amount_required",
+                "reserved_boxes",
+                "laboratory",
+                "organization",
+            ],
+            change_message=_("Created box reservation for '%(obj)s' (%(boxes)s boxes)")
+            % {"obj": str(shelf_object.object), "boxes": boxes_amount},
+        )
+        remaining_units -= units_from_this

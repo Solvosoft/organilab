@@ -1,6 +1,7 @@
 import datetime
 import json
 import uuid
+from gc import enable
 from pathlib import Path
 
 from django.conf import settings
@@ -27,7 +28,7 @@ import calendar
 
 
 class BaseCreationObj(models.Model):
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     creation_date = models.DateTimeField(auto_now_add=True)
     last_update = models.DateTimeField(auto_now=True)
 
@@ -50,7 +51,7 @@ class CLInventory(models.Model):
 
 class Catalog(models.Model):
     key = models.CharField(max_length=150)
-    description = models.CharField(max_length=500)
+    description = models.CharField(max_length=500, verbose_name=_("Description"))
 
     class Meta:
         ordering = ["pk"]
@@ -122,6 +123,8 @@ class Object(AbstractOrganizationRef):
         default=0.0,
         verbose_name=_("Threshold"),
         help_text=_("It belongs to the regulations of decree 44741"),
+        null=True,
+        blank=True,
     )
     is_pure = models.BooleanField(
         default=False,
@@ -304,6 +307,18 @@ class SDSTraceability(BaseCreationObj):
     security_sheet = models.FileField(
         _("Security sheet"), upload_to=upload_files, null=True, blank=True
     )
+    verified_by = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        verbose_name=_("Verified by"),
+        related_name="sds_verified_by",
+    )
+    verified_date = models.DateField(
+        null=True, blank=True, verbose_name=_("Verified date")
+    )
+    is_verified = models.BooleanField(default=False, verbose_name=_("Is verified"))
 
     class Meta:
         verbose_name = _("SDS traceability")
@@ -413,7 +428,7 @@ class ShelfObject(models.Model):
     )
     quantity = models.FloatField(
         _("Quantity"), help_text=_("Use dot like 0.344 on decimal")
-    )
+    )  # cantidad de x unidad de medida
     quantity_base_unit = models.FloatField(
         default=0,
         verbose_name=_("Quantity Base Unit"),
@@ -510,6 +525,23 @@ class ShelfObject(models.Model):
         key_name="key",
         key_value="process_condition",
     )
+    is_box = models.BooleanField(default=False, verbose_name=_("Is box?"))
+    quantity_units = models.JSONField(
+        default=list,
+        verbose_name=_("Units per box"),
+        help_text=_(
+            'List of box entries, each with "code" (e.g. "b-0001") and "units" (integer count)'
+        ),
+    )
+    units_per_box = models.IntegerField(
+        default=0,
+        verbose_name=_("Units per box (reference)"),
+        help_text=_("Original number of units per box at creation time"),
+    )
+
+    shelfobject_code = models.CharField(
+        max_length=30, verbose_name=_("Unit code"), null=True, blank=True
+    )
 
     @staticmethod
     def get_units(unit):
@@ -518,8 +550,15 @@ class ShelfObject(models.Model):
         return str(unit)
 
     @property
+    def total_quantity(self):
+        if self.is_box and self.quantity_units:
+            return sum(b.get("units", 0) for b in self.quantity_units) * self.quantity
+        return self.quantity
+
+    @property
     def limit_reached(self):
-        return self.quantity < self.limit_quantity
+        current = len(self.quantity_units) if self.is_box else self.quantity
+        return current < self.limit_quantity
 
     def get_measurement_unit_display(self):
         return (
@@ -532,6 +571,8 @@ class ShelfObject(models.Model):
         ordering = ["pk", "object__name"]
         permissions = [
             ("can_view_contract", "Can view contract"),
+            ("can_view_process_condition", "Can view process condition"),
+            ("can_manage_reorder", "Can manage reactive consumption reorder"),
         ]
 
     def __str__(self):
@@ -544,6 +585,52 @@ class ShelfObject(models.Model):
             self.quantity,
             str(self.measurement_unit),
         )
+
+    def get_box_code(self):
+        return self.quantity_units
+
+    def get_box_totals(self):
+        # Retorna la cantidad total de objetos en cajas
+        total = sum(item.get("quantity", 0) for item in list(self.quantity_units))
+        return total
+
+    def order_by_boxes(self, order=False):
+        # Retorna los objetos ordenados por cantidad de cajas
+        return sorted(
+            list(self.quantity_units), key=lambda x: x["units"], reverse=order
+        )
+
+    def get_shelfobject_conversion_from_two_units(self, shelf_unit, amount):
+        query = BaseUnitValues.objects.filter(measurement_unit=self.measurement_unit)
+        query2 = BaseUnitValues.objects.filter(measurement_unit=shelf_unit)
+        if shelf_unit is None:
+            return amount
+        if query.exists() and query2.exists():
+            unit1 = query.first()
+            value1 = unit1.si_value
+
+            unit2 = query2.first()
+            value2 = unit2.si_value
+
+            if unit1.measurement_unit.description == "Unidades":
+                return amount
+
+            if value1 > value2:
+                result = amount / (value1 / value2)
+            else:
+                result = amount * (value2 / value1)
+            return result
+        else:
+            return None
+
+    def get_obj_conversion_from_two_units(self):
+        # Retorna la conversion de unidades de medida
+        if self.shelf.measurement_unit:
+            return self.get_shelfobject_conversion_from_two_units(
+                self.shelf.measurement_unit, self.quantity
+            )
+        else:
+            return self.quantity
 
 
 class ShelfObjectEquipmentCharacteristics(AbstractOrganizationRef):
@@ -1073,7 +1160,10 @@ class OrganizationStructureManager(models.Manager):
 
         for org in organizations:
             if org.pk in orgs_with_permissions:
-                if descendants:
+                enable_child = (
+                    org.parent.enable_child_organizations if org.parent else False
+                )
+                if descendants and enable_child == False:
                     descendant_pks = org.descendants(include_self=False).values_list(
                         "pk", flat=True
                     )
@@ -1167,6 +1257,7 @@ class OrganizationStructure(TreeNode):
     active = models.BooleanField(default=True)
     objects = TreeQuerySet.as_manager()
     os_manager = OrganizationStructureManager()
+    enable_child_organizations = models.BooleanField(default=False)
 
     class Meta:
         ordering = ["position"]
@@ -1203,7 +1294,7 @@ class OrganizationStructure(TreeNode):
         if has_direct_permission:
             return self
 
-        for ancestor in reversed(list(self.ancestors())):
+        for ancestor in reversed(list(self.ancestors(include_self=True))):
             has_ancestor_permission = ProfilePermission.objects.filter(
                 profile=profile,
                 object_id=ancestor.pk,
@@ -1247,9 +1338,12 @@ class OrganizationStructure(TreeNode):
 
     @property
     def root(self):
-        ancestors = self.ancestors()
-        if ancestors.exists():
-            return ancestors.first()
+        try:
+            ancestors = self.ancestors()
+            if ancestors.exists():
+                return ancestors.first()
+        except self.__class__.DoesNotExist:
+            pass
         return self
 
     @property
@@ -1260,8 +1354,9 @@ class OrganizationStructure(TreeNode):
             return OrganizationStructureRelations.objects.filter(
                 organization=self, content_type=lab_content_type
             ).values_list("object_id", flat=True)
-
-        org_ids = list(self.descendants().values_list("pk", flat=True))
+        org_ids = []
+        if not self.enable_child_organizations:
+            org_ids = list(self.descendants().values_list("pk", flat=True))
         org_ids.append(self.pk)
 
         return (
@@ -1295,7 +1390,11 @@ class UserOrganization(models.Model):
     )
 
     def __str__(self):
-        return "%s" % self.user
+        return "%s · %s (%s)" % (
+            self.user,
+            self.organization,
+            self.get_type_in_organization_display(),
+        )
 
     class Meta:
         ordering = ("pk",)
@@ -1304,7 +1403,6 @@ class UserOrganization(models.Model):
 
 
 # FIXME: Delete this model
-
 # class OrganizationUserManagement(models.Model):
 #    organization = models.ForeignKey(
 #        OrganizationStructure, verbose_name=_("Organization"), on_delete=models.CASCADE)
@@ -1335,7 +1433,9 @@ class Laboratory(BaseCreationObj):
 
     location = models.CharField(_("Location"), default="", max_length=255)
     geolocation = PlainLocationField(
-        default="9.895804362670006,-84.1552734375", zoom=15
+        default="9.895804362670006,-84.1552734375",
+        zoom=15,
+        verbose_name=_("Geolocation"),
     )
     email = models.EmailField(_("Email"), blank=True)
     coordinator = models.CharField(
@@ -1448,7 +1548,8 @@ class ObjectLogChange(models.Model):
         key_name="key",
         key_value="units",
     )
-    subject = models.CharField(max_length=100, blank=True, null=True)
+    subject = models.TextField(default="", blank=True, null=True)
+    deleted_user_info = models.CharField(max_length=200, blank=True, null=True)
     provider = models.ForeignKey(
         Provider,
         blank=True,
@@ -1458,10 +1559,11 @@ class ObjectLogChange(models.Model):
     )
     bill = models.CharField(max_length=100, blank=True, null=True)
     type_action = models.IntegerField(default=0)
-    note = models.CharField(default="", blank=True, null=True, max_length=255)
+    note = models.TextField(default="", blank=True, null=True)
     organization_where_action_taken = models.ForeignKey(
         OrganizationStructure, on_delete=models.SET_NULL, null=True
     )
+    is_box = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         is_new = self.pk is None
@@ -1539,6 +1641,10 @@ class TranferObject(BaseCreationObj):
     state = models.BooleanField(default=True)
     status = models.SmallIntegerField(choices=TRANFEROBJECT_STATUS, default=REQUESTED)
     mark_as_discard = models.BooleanField(default=False)
+    # indices de las cajas a transferir []
+    quantity_box = models.IntegerField(default=0)
+    is_box = models.BooleanField(default=False)
+    quantity_units = models.JSONField(default=list)
 
     def get_object_detail(self):
         return "%s %s %s" % (
@@ -1546,6 +1652,14 @@ class TranferObject(BaseCreationObj):
             self.quantity,
             str(self.object.measurement_unit),
         )
+
+    def get_box_totals(self):
+        total = sum(item["units"] for item in self.quantity_units)
+        total = total * self.object.quantity
+        return total
+
+    def order_by_boxes(self, order=False):
+        return sorted(self.quantity_units, key=lambda x: x["units"], reverse=order)
 
 
 MONTHS = (
@@ -1720,6 +1834,9 @@ class InformScheduler(AbstractOrganizationRef):
         "derb.CustomForm", verbose_name=_("Inform template"), on_delete=models.CASCADE
     )
     active = models.BooleanField(default=True, verbose_name=_("Active"))
+    laboratories = models.ManyToManyField(
+        Laboratory, verbose_name=_("Laboratories"), blank=True
+    )
 
     def __str__(self):
         return self.name
@@ -1758,7 +1875,7 @@ class RegisterUserQR(models.Model):
     creation_date = models.DateTimeField(auto_now_add=True)
     last_update = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(
-        User, on_delete=models.DO_NOTHING, verbose_name=_("Created by")
+        User, on_delete=models.SET_NULL, null=True, verbose_name=_("Created by")
     )
     activate_user = models.BooleanField(default=True, verbose_name=_("Activate user"))
     url = models.TextField(verbose_name=_("Url"))
@@ -1873,6 +1990,114 @@ class LaboratoryProcess(BaseCreationObj):
         related_name="laboratory_proccess",
     )
     description = models.TextField(_("Description"), null=True, blank=True)
+
+
+class LabOrOrgRequest(models.Model):
+    TYPE_ORGANIZATION = "org"
+    TYPE_LABORATORY = "lab"
+    TYPE_CHOICES = [
+        (TYPE_ORGANIZATION, _("Organization")),
+        (TYPE_LABORATORY, _("Laboratory")),
+    ]
+
+    STATUS_PENDING = "pending"
+    STATUS_APPROVED = "approved"
+    STATUS_REJECTED = "rejected"
+    STATUS_CHOICES = [
+        (STATUS_PENDING, _("Pending")),
+        (STATUS_APPROVED, _("Approved")),
+        (STATUS_REJECTED, _("Rejected")),
+    ]
+
+    entity_type = models.CharField(_("Entity type"), max_length=3, choices=TYPE_CHOICES)
+    status = models.CharField(
+        _("Status"), max_length=10, default=STATUS_PENDING, choices=STATUS_CHOICES
+    )
+    name = models.CharField(_("Name"), max_length=255)
+
+    # Laboratory fields
+    phone_number = models.CharField(_("Phone"), max_length=25, blank=True)
+    location = models.CharField(_("Location"), max_length=255, blank=True)
+    geolocation = PlainLocationField(
+        default="9.895804362670006,-84.1552734375",
+        zoom=15,
+        verbose_name=_("Geolocation"),
+        null=True,
+        blank=True,
+    )
+    email = models.EmailField(_("Email"), blank=True)
+    coordinator = models.CharField(_("Coordinator"), max_length=255, blank=True)
+    unit = models.CharField(_("Unit"), max_length=50, blank=True)
+    description = models.TextField(_("Description"), null=True, blank=True)
+    area = models.FloatField(_("Area"), default=0.0)
+    faculty_dispatch = models.CharField(
+        _("Faculty or dispatch"), max_length=255, null=True, blank=True
+    )
+    organization = models.ForeignKey(
+        OrganizationStructure,
+        verbose_name=_("Parent organization"),
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="lab_requests",
+    )
+    responsible = models.ForeignKey(
+        User,
+        verbose_name=_("Responsible"),
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="responsible_lab_requests",
+    )
+    nearby_sites = models.FileField(
+        verbose_name=_("Nearby sites"),
+        upload_to=upload_files,
+        null=True,
+        blank=True,
+    )
+    water_resources_affected = models.FileField(
+        verbose_name=_("Water resources affected"),
+        upload_to=upload_files,
+        null=True,
+        blank=True,
+    )
+    workplace = models.ManyToManyField(
+        OrganizationStructure,
+        blank=True,
+        related_name="lab_requests_workplace",
+        verbose_name=_("Workplace"),
+    )
+
+    # OrganizationStructure fields
+    parent_org = models.ForeignKey(
+        OrganizationStructure,
+        verbose_name=_("Parent organization (for org)"),
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="child_org_requests",
+    )
+
+    # Request metadata
+    requested_by = models.ForeignKey(
+        User,
+        verbose_name=_("Requested by"),
+        on_delete=models.CASCADE,
+        related_name="lab_org_requests",
+    )
+    requested_at = models.DateTimeField(_("Requested at"), auto_now_add=True)
+    review_notes = models.TextField(_("Review notes"), blank=True)
+
+    class Meta:
+        verbose_name = _("Lab or organization request")
+        verbose_name_plural = _("Lab or organization requests")
+        ordering = ["-requested_at"]
+        permissions = [
+            ("can_approve_labororgrequest", "Can approve lab or organization request"),
+        ]
+
+    def __str__(self):
+        return self.name
 
 
 class TemporalUploadReactive(BaseCreationObj):

@@ -65,10 +65,11 @@
                         <div class="representation_obj furniture_color" title="{% trans 'Furniture' %}"></div>
                         {% get_laboratory_view_url LaboratoryRoom furniture as furnutureurl %}
                         {% get_qr_svg_img furniture organization=org_pk icon=True url=furnutureurl style="color: {{furniture.color}}" %}
-
+												        {% if perms.laboratory.do_report %}
                         <a href="{% url 'report:reports_furniture_detail' org_pk=org_pk %}?laboratory={{laboratory}}&furniture={{furniture.pk}}"
                            target="_blank" style="color: {{furniture.color}}"> <i class="fa fa-file-pdf-o"
                                                                                   aria-hidden="true"></i> </a>
+																					{% endif %}
 
                         <span class="box furnitureroot" id="furniture_{{furniture.pk}}"
                               style="color: {{furniture.color}}">{{furniture.pk}}: {{furniture}}</span>
@@ -116,6 +117,7 @@
 {{suggestions_tag|json_script:"suggestions_tag"}}
 <script>
 const has_perm = {{ perms.laboratory.view_tranferobject|yesno:"true,false" }};
+const can_add_shelfobject = {{ perms.laboratory.add_shelfobject|yesno:"true,false" }};
 document.urls = {
     shelfobject_create: "{% url 'laboratory:shelfobject_create' lab_pk=laboratory org_pk=org_pk  %}",
     shelf_availability_information: '{% url "laboratory:api-shelfobject-shelf-availability-information" lab_pk=laboratory org_pk=org_pk %}',
@@ -126,7 +128,9 @@ document.urls = {
     edit_shelfobject: '{% url "laboratory:api-shelfobject-edit-reactive-shelfobject" org_pk=org_pk lab_pk=laboratory pk=0 %}',
     get_shelfobject_data: '{% url "laboratory:api-shelfobject-get-reactive-edit-data" org_pk=org_pk lab_pk=laboratory pk=0 %}',
     edit_material_shelfobject: '{% url "laboratory:api-shelfobject-edit-material-shelfobject" org_pk=org_pk lab_pk=laboratory pk=0 %}',
-    get_shelfobject_limits: '{% url "laboratory:api-shelfobject-get-shelfobject-limits" org_pk=org_pk lab_pk=laboratory pk=0 %}'
+    get_shelfobject_limits: '{% url "laboratory:api-shelfobject-get-shelfobject-limits" org_pk=org_pk lab_pk=laboratory pk=0 %}',
+    update_box_shelfobject: '{% url "laboratory:api-shelfobject-update-box-shelfobject" org_pk=org_pk lab_pk=laboratory pk=0 %}',
+    get_box_edit_data: '{% url "laboratory:api-shelfobject-get-box-edit-data" org_pk=org_pk lab_pk=laboratory pk=0 %}'
 }
 document.furniture_list = '{% url "laboratory:furniture_list" lab_pk=laboratory org_pk=org_pk %}';
 document.shelfobject_list = '{% url "laboratory:list_shelfobject" lab_pk=laboratory org_pk=org_pk %}';

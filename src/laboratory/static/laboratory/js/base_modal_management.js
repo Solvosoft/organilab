@@ -142,11 +142,12 @@ function BaseFormModal(modalid,  data_extras={})  {
         "prefix": prefix,
         "type": "POST",
         "data_extras": data_extras,
+        "_lastBtn": null,
         "init": function(btninstance){
             var myModalEl = this.instance[0];
-            myModalEl.addEventListener('hidden.bs.modal', this.hidemodalevent(this))
+            myModalEl.addEventListener('hidden.bs.modal', this.hidemodalevent(this));
+            myModalEl.addEventListener('shown.bs.modal', this.shownmodalevent(this));
             this.instance.find('.formadd').on('click', this.addBtnForm(this));
-
         },
         "addBtnForm": function(instance){
 
@@ -190,7 +191,7 @@ function BaseFormModal(modalid,  data_extras={})  {
                 });
             }
         },
-        "showShelfInfo": function(div, id_shelf, position='top'){
+        "showShelfInfo": function(div, id_shelf, position='top', expiration_date=null){
             $.ajax({
                 url: document.urls.shelf_availability_information,
                 type: 'GET',
@@ -201,7 +202,8 @@ function BaseFormModal(modalid,  data_extras={})  {
                         div.find('div.shelfinfocontainer').remove();
                     }
                     div.prepend(data.shelf_info);
-                },
+                    div.find('#shelfobject_expiration_date').text(expiration_date!="None" ? expiration_date : gettext("Unknown"));
+                                    },
                 error: function(xhr, resp, text){
                     Swal.fire({
                         icon: 'error',
@@ -215,8 +217,15 @@ function BaseFormModal(modalid,  data_extras={})  {
         },
         "error": function(instance, xhr, resp, text){
         },
+        "shown": function(instance){
+        },
+        "hidden": function(instance){
+        },
         "hidemodal": function(){
             this.instance.modal('hide');
+        },
+        "shownmodalevent": function(instance){
+            return function(event){ instance.shown(instance); }
         },
         "hidemodalevent": function(instance){
             return function(event){
@@ -225,13 +234,29 @@ function BaseFormModal(modalid,  data_extras={})  {
                 if(instance.data_extras.hasOwnProperty('shelf_object')){
                     delete instance.data_extras.shelf_object;
                 }
+                instance.hidden(instance);
             }
         },
         "showmodal": function(btninstance){
+            this._lastBtn = btninstance;
             var shelf_object = $(btninstance).data('shelfobject');
             var shelf = $(btninstance).data('shelf');
             var add_creation_help = $(btninstance).data('add_creation_help');
             var objecttype = $(btninstance).data('objecttype');
+            var expiration_date = $(btninstance).data('expiration');
+            var is_box = $(btninstance).data('box');
+            var id_modal_data = $(btninstance).data('modalid');
+            if(is_box=="True" && id_modal_data=="increasesomodal"){
+                $("#"+id_modal_data).find('#id_expiration_date_info').remove();
+                $("#"+id_modal_data).find('.modal-body').append(`<div id="id_expiration_date_info" class="alert alert-warning text-center" role="alert">
+                ${gettext("If you wish to add a new box, please note that it will be subject to the expiration date of")} ${expiration_date}.
+                </div>`);
+                $("#"+id_modal_data).find('#id_increase-measurement_unit').parent().parent().hide();
+            }else if(id_modal_data=="increasesomodal"){
+                $("#"+id_modal_data).find('#id_increase-measurement_unit').parent().parent().show();
+                $("#"+id_modal_data).find('#id_expiration_date_info').remove();
+
+            }
 
             if (shelf_object != undefined){
                 this.data_extras['shelf_object'] = shelf_object;
@@ -243,7 +268,7 @@ function BaseFormModal(modalid,  data_extras={})  {
             var position = this.instance.find('input[name="position"]');
 
             if (info_shelf != undefined && shelf != undefined && position != undefined){
-                this.showShelfInfo($(info_shelf[0]), shelf, position=$(position[0]).val());
+                this.showShelfInfo($(info_shelf[0]), shelf, position=$(position[0]).val(), expiration_date);
                 if(add_creation_help && !$(info_shelf[0]).find("div.creation_help").length){
                    add_creation_help_func($(info_shelf[0]), objecttype);
                 }
@@ -286,6 +311,63 @@ function show_update_status_modal(instance, event){
     return false;
 }
 
+/**
+ * Tab-aware form submit handler for modals using modal_template_tab.html.
+ * Submits only the form in the currently active tab pane.
+ */
+$(document).on('click', '.formadd-tab', function () {
+    var btn = $(this);
+    var tabContentId = btn.data('tab-content');
+    var tabContent = $('#' + tabContentId);
+
+    var activePane = tabContent.find('.tab-pane.active');
+    var form = activePane.find('form');
+    if (!form.length) return;
+
+    var url = form[0].action;
+    var prefix = form.find('.form_prefix').val() || '';
+    if (prefix.length) prefix = prefix + '-';
+
+    // Reuse data_extras from form_modals (contains shelf and other context values)
+    var modal = btn.closest('.modal');
+    var modalId = modal.attr('id');
+    var extras = (form_modals[modalId] && form_modals[modalId].data_extras) || {};
+
+    $.ajax({
+        url: url,
+        type: 'POST',
+        data: convertToStringJson(form, prefix, extras),
+        headers: {'X-CSRFToken': getCookie('csrftoken'), 'Content-Type': 'application/json'},
+        success: function (data) {
+            if (typeof datatableelement !== 'undefined') {
+                datatableelement.ajax.reload();
+            }
+            bootstrap.Modal.getInstance(modal[0]).hide();
+            Swal.fire({
+                icon: 'success',
+                title: gettext('Success'),
+                text: data.detail,
+                timer: 1500
+            });
+        },
+        error: function (xhr) {
+            var errors = xhr.responseJSON && xhr.responseJSON.errors;
+            if (errors) {
+                form.find('ul.form_errors').remove();
+                form_field_errors(form, errors, prefix);
+            } else {
+                var error_msg = gettext('There was a problem performing your request. Please try again later or contact the administrator.');
+                if (xhr.status === 403) {
+                    error_msg = gettext('You do not have permission to perform this action.');
+                } else if (xhr.responseJSON && xhr.responseJSON.detail) {
+                    error_msg = xhr.responseJSON.detail;
+                }
+                Swal.fire({icon: 'error', title: gettext('Error'), text: error_msg});
+            }
+        }
+    });
+});
+
 $('#id_move-lab_room').on('change', function(){
     $('#id_move-furniture').val(null).trigger('change');
 });
@@ -293,3 +375,65 @@ $('#id_move-lab_room').on('change', function(){
 $('#id_move-furniture').on('change', function(){
     $('#id_move-shelf').val(null).trigger('change');
 });
+
+function show_decrease_modal(instance, event) {
+    var modalid = $(instance).data('modalid');
+
+    if (!form_modals.hasOwnProperty(modalid)) {
+        var formmodal = BaseFormModal("#" + modalid);
+
+        formmodal.shown = function (inst) {
+            var modal = inst.instance;
+            var form = inst.form;
+            var isBox = $(inst._lastBtn).data('is-box');
+
+            if (isBox === true || isBox === 'true') {
+                var raw = $(inst._lastBtn).attr('data-quantity-units') || '[]';
+                var quantityUnits;
+                try { quantityUnits = JSON.parse(raw.replace(/'/g, '"')); } catch (e) { quantityUnits = []; }
+
+                var $container = modal.find('#decrease_box_selection_container');
+                if (!$container.length) {
+                    form.prepend(
+                        '<div id="decrease_box_selection_container" class="form-group row mb-3">' +
+                        '<label class="col-sm-2 control-label">' + gettext("Select box") + '</label>' +
+                        '<div class="col-sm-10"><select id="decrease_box_select" class="form-control"></select></div>' +
+                        '</div>'
+                    );
+                    $container = modal.find('#decrease_box_selection_container');
+                    $(document).on('change', '#decrease_box_select', function () {
+                        form.find('input[name$="box_index"]').val($(this).val());
+                    });
+                }
+
+                var $select = $container.find('#decrease_box_select');
+                $select.empty();
+                quantityUnits.forEach(function (box, idx) {
+                    $select.append($('<option>', {
+                        value: idx,
+                        text: box.code + ' (' + box.units + ' ' + gettext("unit(s)") + ')'
+                    }));
+                });
+                $container.removeClass('d-none');
+                form.find('input[name$="box_index"]').val($select.val());
+                form.find('[name$="measurement_unit"]').closest('.form-group').addClass('d-none');
+            } else {
+                modal.find('#decrease_box_selection_container').addClass('d-none');
+                form.find('[name$="measurement_unit"]').closest('.form-group').removeClass('d-none');
+                form.find('input[name$="box_index"]').val('');
+            }
+        };
+
+        formmodal.hidden = function (inst) {
+            inst.instance.find('#decrease_box_selection_container').addClass('d-none');
+            inst.form.find('[name$="measurement_unit"]').closest('.form-group').removeClass('d-none');
+            inst.form.find('input[name$="box_index"]').val('');
+        };
+
+        formmodal.init(instance);
+        form_modals[modalid] = formmodal;
+    }
+
+    form_modals[modalid].showmodal(instance);
+    return false;
+}

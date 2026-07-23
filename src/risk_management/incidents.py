@@ -82,6 +82,10 @@ class IncidentReportCreate(djgeneric.CreateView):
             self.request.user,
             self.object,
             ADDITION,
+            "incidentreport",
+            changed_data=["short_description", "laboratories"],
+            change_message=_("Created incident report '%(desc)s'")
+            % {"desc": self.object.short_description[:50]},
             relobj=list(self.object.laboratories.all()),
         )
         return dev
@@ -114,6 +118,10 @@ class IncidentReportEdit(djgeneric.UpdateView):
             self.request.user,
             self.object,
             CHANGE,
+            "incidentreport",
+            changed_data=form.changed_data,
+            change_message=_("Updated incident report '%(desc)s'")
+            % {"desc": self.object.short_description[:50]},
             relobj=list(self.object.laboratories.all()),
         )
         return dev
@@ -138,6 +146,10 @@ class IncidentReportDelete(djgeneric.DeleteView):
             self.request.user,
             self.object,
             DELETION,
+            "incidentreport",
+            changed_data=["short_description"],
+            change_message=_("Deleted incident report '%(desc)s'")
+            % {"desc": self.object.short_description[:50]},
             relobj=list(self.object.laboratories.all()),
         )
         self.object.delete()

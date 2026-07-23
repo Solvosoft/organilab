@@ -1,6 +1,7 @@
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse
+from djgentelella.decorators.perms import any_permission_required
 from djgentelella.widgets import core as genwidgets
 from presentation.utils import build_qr_instance
 from ..forms import FurnitureForm, CatalogForm, FurnitureLabRoomForm
@@ -56,6 +57,8 @@ class FurnitureCreateView(CreateView):
             ADDITION,
             "furniture",
             changed_data=form.changed_data,
+            change_message=_("Created furniture '%(name)s'")
+            % {"name": self.object.name},
             relobj=self.lab,
         )
         return redirect(self.get_success_url())
@@ -84,7 +87,11 @@ class FurnitureCreateView(CreateView):
 
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
-    permission_required("laboratory.change_furniture", raise_exception=True),
+    any_permission_required(
+        ["laboratory.view_furniture", "laboratory.change_furniture"],
+        raise_exception=True,
+    ),
+    # permission_required("laboratory.change_furniture", raise_exception=True),
     name="dispatch",
 )
 class FurnitureUpdateView(UpdateView):
@@ -126,9 +133,7 @@ class FurnitureUpdateView(UpdateView):
 
     def form_valid(self, form):
         shelfs = form.cleaned_data["shelfs"]
-        print(shelfs)
         if shelfs:
-            print(44)
             Shelf.objects.filter(pk__in=shelfs).delete()
         self.object = form.save()
 
@@ -138,6 +143,8 @@ class FurnitureUpdateView(UpdateView):
             CHANGE,
             "furniture",
             changed_data=form.changed_data,
+            change_message=_("Updated furniture '%(name)s'")
+            % {"name": self.object.name},
             relobj=self.lab,
         )
         return redirect(self.get_success_url())
@@ -158,7 +165,14 @@ class FurnitureDelete(DeleteView):
     def form_valid(self, form):
         success_url = self.get_success_url()
         organilab_logentry(
-            self.request.user, self.object, DELETION, "furniture", relobj=self.lab
+            self.request.user,
+            self.object,
+            DELETION,
+            "furniture",
+            changed_data=["name"],
+            change_message=_("Deleted furniture '%(name)s'")
+            % {"name": self.object.name},
+            relobj=self.lab,
         )
         self.object.delete()
         return HttpResponseRedirect(success_url)

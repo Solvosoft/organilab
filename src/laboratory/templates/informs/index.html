@@ -52,9 +52,10 @@
             <li class="list-group-item">
                 <a href="{% url 'laboratory:detail_period_scheduler' org_pk=org_pk pk=scheduler.pk %}">
                 {{scheduler}}</a>
-
-                    <a class="float-end badge bg-secondary" href="{% url 'laboratory:edit_period_scheduler' org_pk=org_pk pk=scheduler.pk %}">
+																{% if perms.laboratory.change_informscheduler %}
+ 															<a class="float-end badge bg-secondary" href="{% url 'laboratory:edit_period_scheduler' org_pk=org_pk pk=scheduler.pk %}">
                         <i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+																{% endif %}
 
             </li>
           {% endfor %}

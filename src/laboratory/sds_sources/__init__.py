@@ -11,26 +11,25 @@ from .pubchem import PubChemSource
 logger = logging.getLogger("organilab")
 
 SOURCES = {
-    'merck': MerckSource,
-    'pubchem': PubChemSource,
+    "merck": MerckSource,
 }
 
 SOURCE_NAME_TO_KEY = {
-    'Merck': 'merck',
-    'Sigma-Aldrich': 'merck',
-    'Fisher/Thermo': 'fisher',
-    'Panreac': 'panreac',
-    'Carlo Erba': 'carlo_erba',
-    'JT Baker': 'jt_baker',
-    'PubChem': 'pubchem',
-    'Honeywell': 'honeywell',
-    'Sin identificar': 'unknown',
+    "Merck": "merck",
+    "Sigma-Aldrich": "merck",
+    "Fisher/Thermo": "fisher",
+    "Panreac": "panreac",
+    "Carlo Erba": "carlo_erba",
+    "JT Baker": "jt_baker",
+    "PubChem": "pubchem",
+    "Honeywell": "honeywell",
+    "Sin identificar": "unknown",
 }
 
 
 def get_sources(source_names=None):
     """Return a list of SDSSource instances filtered by name."""
-    if source_names is None or source_names == ['all']:
+    if source_names is None or source_names == ["all"]:
         return [cls() for cls in SOURCES.values()]
     return [SOURCES[name]() for name in source_names if name in SOURCES]
 
@@ -49,15 +48,16 @@ def check_needs_update(pdf_path, max_years=5):
 
     text = _extract_text(pdf_path)
     if not text.strip():
-        return True, ''
+        return True, ""
 
     revision_date = _extract_revision_date(text)
     status = _needs_update(revision_date, max_years)
-    return status != 'no', revision_date
+    return status != "no", revision_date
 
 
-def update_sds_for_substance(sc, sources=None, max_years=5, dry_run=False,
-                             force=False, existing_pdf_path=None):
+def update_sds_for_substance(
+    sc, sources=None, max_years=5, dry_run=False, force=False, existing_pdf_path=None
+):
     """Try to update the SDS for a SustanceCharacteristics instance.
 
     Args:
@@ -77,22 +77,22 @@ def update_sds_for_substance(sc, sources=None, max_years=5, dry_run=False,
         sources = get_sources()
 
     name = str(sc.obj) if sc.obj else f"PK={sc.pk}"
-    cas = (sc.cas_id_number or '').strip()
-    substance_name = str(sc.obj.name) if sc.obj else ''
+    cas = (sc.cas_id_number or "").strip()
+    substance_name = str(sc.obj.name) if sc.obj else ""
 
     result = {
-        'pk': sc.pk,
-        'name': name,
-        'cas': cas,
-        'status': 'skipped',
-        'source': None,
-        'old_date': '',
-        'error': None,
+        "pk": sc.pk,
+        "name": name,
+        "cas": cas,
+        "status": "skipped",
+        "source": None,
+        "old_date": "",
+        "error": None,
     }
 
     if not cas:
-        result['status'] = 'error'
-        result['error'] = 'no CAS number'
+        result["status"] = "error"
+        result["error"] = "no CAS number"
         return result
 
     # Check if current SDS needs update
@@ -100,13 +100,13 @@ def update_sds_for_substance(sc, sources=None, max_years=5, dry_run=False,
         full_path = os.path.join(settings.MEDIA_ROOT, sc.security_sheet.name)
         if os.path.exists(full_path):
             needs_update, revision_date = check_needs_update(full_path, max_years)
-            result['old_date'] = revision_date
+            result["old_date"] = revision_date
             if not needs_update:
-                result['status'] = 'skipped'
+                result["status"] = "skipped"
                 return result
 
     if dry_run:
-        result['status'] = 'dry_run'
+        result["status"] = "dry_run"
         return result
 
     # Resolve existing PDF path for sources that can extract metadata
@@ -118,18 +118,22 @@ def update_sds_for_substance(sc, sources=None, max_years=5, dry_run=False,
     # Try each source in order
     for source in sources:
         try:
-            search_result = source.search(cas, substance_name, pdf_path=existing_pdf_path)
+            search_result = source.search(
+                cas, substance_name, pdf_path=existing_pdf_path
+            )
             if not search_result:
                 logger.info("[%s] No results for %s (CAS: %s)", source.name, name, cas)
                 continue
 
             # Download to temp file first
-            with tempfile.NamedTemporaryFile(suffix='.pdf', delete=False) as tmp:
+            with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
                 tmp_path = tmp.name
 
             success = source.download(search_result, tmp_path)
             if not success:
-                logger.info("[%s] Download failed for %s (CAS: %s)", source.name, name, cas)
+                logger.info(
+                    "[%s] Download failed for %s (CAS: %s)", source.name, name, cas
+                )
                 if os.path.exists(tmp_path):
                     os.remove(tmp_path)
                 continue
@@ -144,7 +148,8 @@ def update_sds_for_substance(sc, sources=None, max_years=5, dry_run=False,
 
             # Save new file to the model
             from laboratory.models_utils import upload_files
-            with open(tmp_path, 'rb') as f:
+
+            with open(tmp_path, "rb") as f:
                 content = f.read()
             filename = f"sds_{cas.replace('-', '_')}.pdf"
             sc.security_sheet.save(filename, ContentFile(content), save=True)
@@ -153,18 +158,22 @@ def update_sds_for_substance(sc, sources=None, max_years=5, dry_run=False,
             if os.path.exists(tmp_path):
                 os.remove(tmp_path)
 
-            result['status'] = 'updated'
-            result['source'] = source.name
+            result["status"] = "updated"
+            result["source"] = source.name
             logger.info("[%s] Updated SDS for %s (CAS: %s)", source.name, name, cas)
 
             # Create traceability record
             try:
                 from laboratory.models import SDSTraceability
-                from laboratory.management.commands.identify_sds_sources import _extract_revision_date, _extract_text, _parse_date
+                from laboratory.management.commands.identify_sds_sources import (
+                    _extract_revision_date,
+                    _extract_text,
+                    _parse_date,
+                )
 
                 rev_date = None
                 # First try to get date from search_result metadata (e.g. PubChem provides 'retrieved')
-                retrieved = (search_result.get('metadata') or {}).get('retrieved', '')
+                retrieved = (search_result.get("metadata") or {}).get("retrieved", "")
                 if retrieved:
                     rev_date = _parse_date(retrieved)
 
@@ -178,13 +187,15 @@ def update_sds_for_substance(sc, sources=None, max_years=5, dry_run=False,
                 SDSTraceability.objects.update_or_create(
                     sustance_characteristics=sc,
                     defaults={
-                        'source': source.name,
-                        'revision_date': rev_date,
-                        'download_url': search_result.get('url', '') or '',
+                        "source": source.name,
+                        "revision_date": rev_date,
+                        "download_url": search_result.get("url", "") or "",
                     },
                 )
             except Exception as e:
-                logger.warning("Could not create SDS traceability record for %s: %s", name, e)
+                logger.warning(
+                    "Could not create SDS traceability record for %s: %s", name, e
+                )
 
             return result
 
@@ -194,6 +205,6 @@ def update_sds_for_substance(sc, sources=None, max_years=5, dry_run=False,
                 os.remove(tmp_path)
             continue
 
-    result['status'] = 'no_source'
-    result['error'] = 'no source could provide an SDS'
+    result["status"] = "no_source"
+    result["error"] = "no source could provide an SDS"
     return result

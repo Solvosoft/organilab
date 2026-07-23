@@ -1,3 +1,8 @@
+from urllib.parse import urlencode
+
+from async_notifications.register import update_template_context
+from django.conf import settings
+from django.urls import reverse_lazy
 from django.views.generic.base import TemplateView
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
@@ -11,9 +16,25 @@ class PermissionDeniedView(TemplateView):
     template_name = "laboratory/permission_denied.html"
 
 
-# TODO: migrate to djgentelella.async_notification.registry.register_context
-# context = [("data.name", "name"), ("data.business_email", "Business email"), ...]
-# update_template_context("Request demo", "New demo request", context, message=...)
+context = [
+    ("data.name", "name"),
+    ("data.business_email", "Business email"),
+    ("data.company_name", "Company name"),
+    ("data.country", "Country"),
+    ("data.phone_number", "Phone number"),
+]
+update_template_context(
+    "Request demo",
+    "New demo request",
+    context,
+    message="""User information:<br>
+                        {{data.name}}<br>
+                        {{data.business_email}}<br>
+                        {{data.company_name}}<br>
+                        {{data.country}}<br>
+                        {{data.phone_number}}
+                        """,
+)
 
 
 class SignDataRequestViewSet(viewsets.ViewSet):
@@ -31,3 +52,20 @@ class SignDataRequestViewSet(viewsets.ViewSet):
                     serializer.save()
             return Response({"data": True})
         return Response({"data": None})
+
+
+def oidc_logout_url(request):
+    login_url = str(reverse_lazy("login"))
+    id_token = request.session.get("oidc_id_token")
+    if not id_token:
+        return login_url
+
+    logout_endpoint = getattr(settings, "OIDC_OP_LOGOUT_ENDPOINT", "")
+    if not logout_endpoint:
+        return login_url
+
+    params = {"id_token_hint": id_token}
+    post_logout_uri = getattr(settings, "OIDC_POST_LOGOUT_REDIRECT_URL", "")
+    if post_logout_uri:
+        params["post_logout_redirect_uri"] = post_logout_uri
+    return f"{logout_endpoint}?{urlencode(params)}"

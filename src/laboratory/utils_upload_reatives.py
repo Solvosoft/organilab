@@ -40,7 +40,7 @@ def validate_shelf(shelf, shelfobject_unit, quantity):
     return None
 
 
-def get_reactive_by_cas_or_name(cas, name, molecular_formula, organization):
+def get_reactive_by_cas_or_name(user, cas, name, molecular_formula, organization):
     substace_char = SustanceCharacteristics.objects.filter(
         cas_id_number=cas, molecular_formula=molecular_formula
     )
@@ -56,16 +56,32 @@ def get_reactive_by_cas_or_name(cas, name, molecular_formula, organization):
     new_obj = Object.objects.create(
         name=name.capitalize(),
         type=0,
-        organization=organization,
+        organization=organization.root,
         is_pure=True if len(cas) > 0 else False,
     )
-    SustanceCharacteristics.objects.create(
+    organilab_logentry(
+        user,
+        new_obj,
+        ADDITION,
+        "object",
+        changed_data=["name", "type", "is_pure"],
+        relobj=organization.root,
+    )
+    sus = SustanceCharacteristics.objects.create(
         obj=new_obj, cas_id_number=cas, molecular_formula=molecular_formula
+    )
+    organilab_logentry(
+        user,
+        sus,
+        ADDITION,
+        "sustancecharacteristics",
+        changed_data=["cas_id_number", "molecular_formula"],
+        relobj=organization.root,
     )
     return new_obj
 
 
-def get_or_create_material(name, capacity, unit, organization):
+def get_or_create_material(user, name, capacity, unit, organization):
     obj = Object.objects.filter(
         type=1,
         name=name.capitalize(),
@@ -76,12 +92,31 @@ def get_or_create_material(name, capacity, unit, organization):
         return obj.first()
 
     container = Object.objects.create(
-        name=name.capitalize(), type=1, is_container=True, organization=organization
+        name=name.capitalize(),
+        type=1,
+        is_container=True,
+        organization=organization.root,
     )
-    MaterialCapacity.objects.create(
+    organilab_logentry(
+        user,
+        container,
+        ADDITION,
+        "object",
+        changed_data=["name", "type", "is_container"],
+        relobj=organization.root,
+    )
+    mc = MaterialCapacity.objects.create(
         object=container,
         capacity=capacity,
         capacity_measurement_unit=get_units(unit).first(),
+    )
+    organilab_logentry(
+        user,
+        mc,
+        ADDITION,
+        "materialcapacity",
+        changed_data=["capacity", "capacity_measurement_unit"],
+        relobj=organization.root,
     )
     return container
 

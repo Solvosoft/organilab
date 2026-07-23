@@ -48,7 +48,8 @@ from laboratory.utils import (
     get_laboratories_by_user_profile,
     register_laboratory_contenttype,
     delete_profile_roles_related_to_laboratory,
-    delete_relation_between_laboratory_with_other_models, get_lab_ids,
+    delete_relation_between_laboratory_with_other_models,
+    get_lab_ids,
 )
 from laboratory.views.djgeneric import CreateView, UpdateView, ListView, DeleteView
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
@@ -82,7 +83,10 @@ class LaboratoryEdit(UpdateView):
             self.request.user,
             laboratory,
             CHANGE,
+            "laboratory",
             changed_data=form.changed_data,
+            change_message=_("Updated laboratory '%(name)s'")
+            % {"name": laboratory.name},
             relobj=self.object,
         )
         return super(LaboratoryEdit, self).form_valid(form)
@@ -147,8 +151,9 @@ class CreateLaboratoryFormView(FormView):
     success_url = ""
 
     def get_form_kwargs(self):
-        kwargs = super(CreateLaboratoryFormView, self).get_form_kwargs()
+        kwargs = super().get_form_kwargs()
         kwargs["initial"] = {"organization": self.kwargs["org_pk"]}
+        kwargs["org"] = self.kwargs["org_pk"]
         return kwargs
 
     def get_context_data(self, **kwargs):
@@ -165,7 +170,10 @@ class CreateLaboratoryFormView(FormView):
             self.request.user,
             self.object,
             ADDITION,
+            "laboratory",
             changed_data=form.changed_data,
+            change_message=_("Created laboratory '%(name)s'")
+            % {"name": self.object.name},
             relobj=self.object,
         )
 
@@ -332,7 +340,14 @@ class LaboratoryDeleteView(DeleteView):
         orgrel_filters.update(relations_filters)
         if self.org == self.object.organization.pk:
             utils.organilab_logentry(
-                user, self.object, DELETION, "laboratory", relobj=self.organization
+                user,
+                self.object,
+                DELETION,
+                "laboratory",
+                changed_data=["name"],
+                change_message=_("Deleted laboratory '%(name)s'")
+                % {"name": self.object.name},
+                relobj=self.organization,
             )
             FeedbackEntry.objects.filter(laboratory_id=self.object.pk).delete()
             for ro in cc._meta.related_objects:
@@ -544,12 +559,15 @@ def manage_register_qr(request, org_pk, lab_pk, pk=None):
             instance.save()
             file.close()
             messages.success(request, _("Element saved successfully"))
+            action_msg = _("Created") if action == ADDITION else _("Updated")
             utils.organilab_logentry(
                 request.user,
                 instance,
                 action,
                 "register user QR",
                 changed_data=form.changed_data,
+                change_message=_("%(action)s register user QR for organization '%(org)s'")
+                % {"action": action_msg, "org": organization_register.name},
                 relobj=lab_pk,
             )
             return redirect(
@@ -612,7 +630,13 @@ class RegisterUserQRDeleteView(DeleteView):
     def form_valid(self, form):
         success_url = self.get_success_url()
         utils.organilab_logentry(
-            self.request.user, self.object, DELETION, "register user QR"
+            self.request.user,
+            self.object,
+            DELETION,
+            "register user QR",
+            changed_data=["organization_register", "role"],
+            change_message=_("Deleted register user QR"),
+            relobj=self.lab,
         )
         self.object.delete()
         messages.success(self.request, _("Element was deleted successfully"))
@@ -673,16 +697,19 @@ def add_user_to_rel_obj(request, user, org_pk, lab_pk, qr_obj, id_card=None):
             ADDITION,
             "profile",
             changed_data=["user", "phone_number", "id_card", "job_position"],
+            change_message=_("Created profile for user '%(user)s'")
+            % {"user": user.username},
             relobj=org_pk,
         )
 
-        # Register Log - relobj(USER) - action(ADDITION)
         organilab_logentry(
             user,
             user,
             ADDITION,
             "user",
             changed_data=["Register", qr_obj.pk],
+            change_message=_("Registered user '%(user)s' via QR code")
+            % {"user": user.username},
             relobj=org,
         )
     else:
@@ -706,12 +733,21 @@ def add_user_to_rel_obj(request, user, org_pk, lab_pk, qr_obj, id_card=None):
             ADDITION,
             "profile permission",
             changed_data=["profile", "content_type", "object_id"],
+            change_message=_("Created profile permission for user '%(user)s'")
+            % {"user": user.username},
             relobj=org_pk,
         )
     else:
         pp = pp.first()
         organilab_logentry(
-            user, pp, CHANGE, "profile permission", changed_data=["rol"], relobj=org_pk
+            user,
+            pp,
+            CHANGE,
+            "profile permission",
+            changed_data=["rol"],
+            change_message=_("Updated profile permission for user '%(user)s'")
+            % {"user": user.username},
+            relobj=org_pk,
         )
     pp.rol.add(qr_obj.role)
 
@@ -725,12 +761,40 @@ def add_user_to_rel_obj(request, user, org_pk, lab_pk, qr_obj, id_card=None):
             ADDITION,
             "user organization",
             changed_data=["organization", "user"],
+            change_message=_("Added user '%(user)s' to organization '%(org)s'")
+            % {"user": user.username, "org": org.name},
             relobj=org_pk,
         )
 
-    # Login Log - relobj(USER) - action(CHANGE)
+    root_org = org.root
+    if root_org.pk != org.pk:
+        root_user_org = UserOrganization.objects.filter(
+            organization=root_org, user=user
+        )
+        if not root_user_org.exists():
+            root_user_org = UserOrganization.objects.create(
+                organization=root_org, user=user
+            )
+            organilab_logentry(
+                user,
+                root_user_org,
+                ADDITION,
+                "user organization",
+                changed_data=["organization", "user"],
+                change_message=_("Added user '%(user)s' to root organization '%(org)s'")
+                % {"user": user.username, "org": root_org.name},
+                relobj=root_org.pk,
+            )
+
     organilab_logentry(
-        user, user, CHANGE, "user", changed_data=["Login", qr_obj.pk], relobj=org
+        user,
+        user,
+        CHANGE,
+        "user",
+        changed_data=["Login", qr_obj.pk],
+        change_message=_("User '%(user)s' logged in via QR code")
+        % {"user": user.username},
+        relobj=org,
     )
 
 
@@ -774,6 +838,8 @@ def create_user_qr(request, org_pk, lab_pk, pk, user=None):
                         "email",
                         "password",
                     ],
+                    change_message=_("Created user '%(user)s' via QR registration")
+                    % {"user": instance.username},
                     relobj=org_pk,
                 )
 

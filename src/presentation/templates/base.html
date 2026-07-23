@@ -1,5 +1,5 @@
 {% extends 'gentelella/base.html' %}
-{% load organilab_tags %}
+{% load organilab_tags tutorial_tags %}
 
 {% load static i18n shelf_position %}
 
@@ -8,6 +8,7 @@
 {% block extra_css %}
   <link href="{% static 'css/organilab.css' %}?v={% get_organilab_version %}" rel="stylesheet">
   <link href="{% static 'css/themify-icons.css' %}?v={% get_organilab_version %}" rel="stylesheet">
+  <link href="{% static 'css/tutorial.css' %}?v={% get_organilab_version %}" rel="stylesheet">
   {% block css %}{% endblock %}
 
 {% endblock %}
@@ -77,4 +78,6 @@
   })();
   </script>
   {% endif %}
+  <script src="{% static 'js/tutorial_engine.js' %}?v={% get_organilab_version %}"></script>
+  {% tutorial_launcher %}
 {% endblock %}

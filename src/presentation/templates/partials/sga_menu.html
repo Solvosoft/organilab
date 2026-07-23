@@ -1,5 +1,5 @@
 {% load i18n %}
-{% if perms.sga.view_label and perms.auth_and_perms.institution_can_access %}
+{% if perms.auth_and_perms.institution_can_access or perms.msds.view_msdsobject %}
 	<li>
 		<a>
 			<i class="fa fa-tags"></i>
@@ -8,11 +8,13 @@
     </span>
 		</a>
 		<ul class="nav child_menu">
+			{% if perms.sga.change_templatesga %}
 			<li>
 				<a href="{% url 'sga:add_personal' org_pk=org_pk %}">
 					{% trans 'SGA Labeling' %}
 				</a>
 			</li>
+			{% endif %}
 
 			{% if perms.sga.change_templatesga %}
 				<li>
@@ -25,7 +27,14 @@
 			{% if perms.msds.view_msdsobject %}
 				<li>
 					<a href="{% url 'msds:index_msds' org_pk=org_pk %}">
-						{% trans 'MSDS: Security sheets' %}
+						{% trans 'FDS: Security sheets' %}
+					</a>
+				</li>
+			{% endif %}
+			{% if perms.laboratory.change_sdstraceability %}
+				<li>
+					<a href="{% url 'msds:verified_sds' org_pk=org_pk %}">
+						{% trans 'Verify FDS' %}
 					</a>
 				</li>
 			{% endif %}

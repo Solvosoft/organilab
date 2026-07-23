@@ -46,19 +46,26 @@
 {% include 'modal_template.html' with add_shelf_info=True shelf_info_position='top' form=transfer_out_object_form id="transfer_out_obj_id_modal" title=transfer_out_title form_id="transfer_out_form" url=transfer_out_url %}
 
 {% url 'laboratory:api-shelfobject-create-shelfobject' lab_pk=laboratory org_pk=org_pk  as create_shelfobject_url %}
+{% url 'laboratory:api-shelfobject-create-box-shelfobject' lab_pk=laboratory org_pk=org_pk as create_box_shelfobject_url %}
 {% trans "Create Reactive" as reactive_title %}
 {% trans "Create Equipment" as equipment_title %}
 {% trans "Create Material" as material_title %}
+{% trans "Create Box" as box_title %}
 {% trans "Edit Reactive" as edit_reactive_title %}
 {% trans "Edit Material" as edit_material_title %}
+{% trans "Edit Box" as edit_box_title %}
 
+{% include 'modal_template.html' with id='edit_box_modal' form_id='edit_box_form' title=edit_box_title form=update_box_form url=create_box_shelfobject_url modal_class="modal-xl" %}
 {% include 'modal_template.html' with id='edit_reactive_modal' form_id='edit_reactive_form' title=edit_reactive_title form=edit_form url=create_shelfobject_url modal_class="modal-lg" %}
 {% include 'modal_template.html' with id='edit_material_modal' form_id='edit_material_form' title=edit_material_title form=edit_material_form url=create_shelfobject_url modal_class="modal-lg" %}
 {% include 'modal_template.html' with add_shelf_info=True shelf_info_position='left' id='reactive_modal' form_id='reactive_form' title=reactive_title form=reactive_form url=create_shelfobject_url modal_class="modal-xl" %}
 {% include 'modal_template.html' with add_shelf_info=True shelf_info_position='left' id='reactive_refuse_modal' form_id='reactive_refuse_form' title=reactive_title form=reactive_refuse_form url=create_shelfobject_url modal_class="modal-xl"%}
 {% include 'modal_template.html' with add_shelf_info=True shelf_info_position='left' id='equipment_modal' form_id='equipment_form' title=equipment_title form=equipment_form url=create_shelfobject_url modal_class="modal-xl" %}
 {% include 'modal_template.html' with add_shelf_info=True shelf_info_position='left' id='equipment_refuse_modal' form_id='equipment_refuse_form' title=equipment_title  form=equipment_refuse_form url=create_shelfobject_url modal_class="modal-xl" %}
-{% include 'modal_template.html' with add_shelf_info=True shelf_info_position='left' id='material_modal' form_id='material_form' title=material_title form=material_form url=create_shelfobject_url modal_class="modal-xl" %}
+
+{#{% include 'modal_template.html' with add_shelf_info=True shelf_info_position='left' id='material_modal' form_id='material_form' title=material_title form=material_form url=create_shelfobject_url modal_class="modal-xl" %}#}
+{% include 'modal_template_tab.html' with add_shelf_info=True shelf_info_position='left' id='material_modal' form_id='material_form' form_id2='box_form' title1=material_title form1=material_form url1=create_shelfobject_url title2=box_title form2=box_form url2=create_box_shelfobject_url modal_class="modal-xl" %}
+
 {% include 'modal_template.html' with add_shelf_info=True shelf_info_position='left' id='material_refuse_modal' form_id='material_refuse_form' title=material_title form=material_refuse_form url=create_shelfobject_url modal_class="modal-xl" %}
 
 {% url "laboratory:api-shelfobject-transfer-in-approve" lab_pk=laboratory org_pk=org_pk as transfer_in_approve_url %}

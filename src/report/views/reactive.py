@@ -63,6 +63,9 @@ def get_dataset_report_reactive(report, column_list=None):
         )
         data_column = {
             "in_where_laboratory__name": lab_name,
+            "shelfobject_code": (
+                reactive.shelfobject_code if reactive.shelfobject_code else ""
+            ),
             "name": reactive.object.name,
             "cas_id": cas_id,
             "location": location,
@@ -71,7 +74,7 @@ def get_dataset_report_reactive(report, column_list=None):
             "health": health,
             "environment": enviroment,
             "concentration": reactive.concentration,
-            "quantity": round(reactive.quantity, 3),
+            "quantity": round(reactive.total_quantity, 3),
             "measurement_unit": reactive.get_measurement_unit_display(),
         }
         obj_item = list(data_column.values())
@@ -85,6 +88,7 @@ def get_dataset_report_reactive(report, column_list=None):
 def report_reactive_html(report):
     columns_fields = [
         {"name": "in_where_laboratory__name", "title": _("Laboratory")},
+        {"name": "shelfobject_code", "title": _("Unit code")},
         {"name": "name", "title": _("Name")},
         {"name": "cas_id", "title": _("CAS")},
         {"name": "location", "title": _("Location")},
@@ -111,6 +115,7 @@ def report_reactive_list_doc(report):
     content = [
         [
             _("Laboratory"),
+            _("Unit code"),
             _("Name"),
             _("CAS"),
             _("Location"),

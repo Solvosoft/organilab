@@ -30,6 +30,7 @@ from risk_management.forms import (
     DocFormatForm,
     UpdateRegentForm,
     RiskZoneListForm,
+    WorkdayForm,
 )
 
 from risk_management.models import (
@@ -92,15 +93,10 @@ class ListZone(ListView):
 
         org_pk = self.kwargs["org_pk"]
 
-        x = ""
-        i = 0
+        x = f"?org_pk={org_pk}"
         for key in self.request.GET:
             for data in self.request.GET.getlist(key):
-                if i > 0:
-                    x += f"&{key}={data}"
-                else:
-                    x += f"?{key}={data}"
-                i += 1
+                x += f"&{key}={data}"
 
         context["eslochart"] = reverse("eslochart-detail", kwargs={"pk": org_pk}) + x
         for object in context["object_list"]:
@@ -113,8 +109,15 @@ class ListZone(ListView):
                 .first()
             )
             if latest_log:
-                object.status = latest_log.establishment_status
-                object.xls_url = latest_log.xls_content.url if latest_log.xls_content else None
+                all_zero = (
+                    latest_log.health == 0.0
+                    and latest_log.environmental == 0.0
+                    and latest_log.physical == 0.0
+                )
+                object.status = "Desconocido" if all_zero else latest_log.establishment_status
+                object.xls_url = (
+                    latest_log.xls_content.url if latest_log.xls_content else None
+                )
             else:
                 object.status = "Desconocido"
                 object.xls_url = None
@@ -149,6 +152,10 @@ class ZoneCreate(CreateView):
             self.request.user,
             self.object,
             ADDITION,
+            "riskzone",
+            changed_data=["name", "laboratories"],
+            change_message=_("Created risk zone '%(name)s'")
+            % {"name": self.object.name},
             relobj=list(self.object.laboratories.all()),
         )
         return dev
@@ -182,6 +189,10 @@ class ZoneEdit(UpdateView):
             self.request.user,
             self.object,
             CHANGE,
+            "riskzone",
+            changed_data=form.changed_data,
+            change_message=_("Updated risk zone '%(name)s'")
+            % {"name": self.object.name},
             relobj=list(self.object.laboratories.all()),
         )
         return dev
@@ -208,6 +219,10 @@ class ZoneDelete(DeleteView):
             self.request.user,
             self.object,
             DELETION,
+            "riskzone",
+            changed_data=["name"],
+            change_message=_("Deleted risk zone '%(name)s'")
+            % {"name": self.object.name},
             relobj=list(self.object.laboratories.all()),
         )
         self.object.delete()
@@ -400,39 +415,39 @@ class ZoneDashboard(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(ZoneDashboard, self).get_context_data()
-        context["org_pk"] = self.kwargs["org_pk"]
-        x = ""
-        i = 0
+        org_pk = self.kwargs["org_pk"]
+        context["org_pk"] = org_pk
+        x = f"?org_pk={org_pk}"
         for key in self.request.GET:
             for data in self.request.GET.getlist(key):
-                if i > 0:
-                    x += f"&{key}={data}"
-                else:
-                    x += f"?{key}={data}"
-                i += 1
+                x += f"&{key}={data}"
         urls = {
             "dangerindicationchart": reverse(
-                "dangerindicationchart-detail", kwargs={"pk": self.kwargs["org_pk"]}
+                "dangerindicationchart-detail", kwargs={"pk": org_pk}
             )
             + x,
             "whiteorganchart": reverse(
-                "whiteorganchart-detail", kwargs={"pk": self.kwargs["org_pk"]}
+                "whiteorganchart-detail", kwargs={"pk": org_pk}
             )
             + x,
             "precursortypechart": reverse(
-                "precursortypechart-detail", kwargs={"pk": self.kwargs["org_pk"]}
+                "precursortypechart-detail", kwargs={"pk": org_pk}
             )
             + x,
             "storageclasschart": reverse(
-                "storageclasschart-detail", kwargs={"pk": self.kwargs["org_pk"]}
+                "storageclasschart-detail", kwargs={"pk": org_pk}
             )
             + x,
             "uecodechart": reverse(
-                "uecodechart-detail", kwargs={"pk": self.kwargs["org_pk"]}
+                "uecodechart-detail", kwargs={"pk": org_pk}
             )
             + x,
             "nfpachart": reverse(
-                "nfpachart-detail", kwargs={"pk": self.kwargs["org_pk"]}
+                "nfpachart-detail", kwargs={"pk": org_pk}
+            )
+            + x,
+            "substancetonschart": reverse(
+                "substancetonschart-detail", kwargs={"pk": org_pk}
             )
             + x,
         }
@@ -473,3 +488,19 @@ class RiskZoneReport(ListView):
             }
         )
         return context
+
+
+@login_required
+@permission_required("risk_management.view_workday", raise_exception=True)
+def workday_view(request, org_pk, risk_zone):
+    user_is_allowed_on_organization(request.user, org_pk)
+    risk = get_object_or_404(RiskZone, pk=risk_zone)
+    context = {
+        "org_pk": org_pk,
+        "risk": risk,
+        "form_create": WorkdayForm(
+            prefix="create",
+        ),
+        "form_update": WorkdayForm(prefix="update"),
+    }
+    return render(request, "risk_management/workday_list.html", context=context)

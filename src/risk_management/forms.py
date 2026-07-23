@@ -7,14 +7,31 @@ from djgentelella.forms.forms import GTForm
 from djgentelella.widgets.files import FileChunkedUpload
 from djgentelella.widgets.wysiwyg import TextareaWysiwyg
 
-from .models import Regent, Structure
+from .models import Regent, Structure, Workday
 from laboratory.models import (
     OrganizationStructureRelations,
     Laboratory,
     OrganizationStructure,
+    Catalog,
 )
-from laboratory.utils import get_user_laboratories, get_users_from_organization
-from risk_management.models import RiskZone, IncidentReport, ZoneType, Buildings
+from laboratory.utils import (
+    get_laboratories_from_organization,
+    get_user_laboratories,
+    get_users_from_organization,
+)
+from risk_management.models import (
+    RiskZone,
+    IncidentReport,
+    ZoneType,
+    Buildings,
+    IPERAssessment,
+    IPERHazard,
+    IPERObservation,
+)
+from risk_management.iper_defaults import (
+    KEY_HAZARD_CATEGORY,
+    KEY_RISK_LEVEL,
+)
 from djgentelella.widgets import core as djgentelella
 from djgentelella.widgets import core as genwidgets
 from urllib.parse import quote
@@ -30,9 +47,15 @@ class RiskZoneCreateForm(forms.ModelForm, GTForm):
         org_pk = kwargs.pop("org_pk", None)
         super().__init__(*args, **kwargs)
         queryset = get_user_laboratories(user)
+        labs = []
         if org_pk:
             self.fields["buildings"].queryset = Buildings.objects.filter(
                 organization__pk=org_pk
+            )
+            labs = list(
+                Buildings.objects.filter(organization__pk=org_pk).values_list(
+                    "laboratories", flat=True
+                )
             )
         if queryset.exists() and org_pk:
             extra_labs = OrganizationStructureRelations.objects.filter(
@@ -51,6 +74,9 @@ class RiskZoneCreateForm(forms.ModelForm, GTForm):
             + "?tipo="
             + quote("zone_type")
         )
+        if self.instance.pk:
+            labs += list(self.instance.laboratories.all().values_list("pk", flat=True))
+            self.fields["laboratories"].initial = Laboratory.objects.filter(pk__in=labs)
 
     def save(self, commit=True):
         priority = self.instance.zone_type.get_priority(self.instance.num_workers)
@@ -59,7 +85,7 @@ class RiskZoneCreateForm(forms.ModelForm, GTForm):
 
     class Meta:
         model = RiskZone
-        exclude = ["priority", "organization", "created_by", "laboratories"]
+        exclude = ["priority", "organization", "created_by"]
         widgets = {
             "name": djgentelella.TextInput,
             "buildings": djgentelella.SelectMultiple,
@@ -67,6 +93,7 @@ class RiskZoneCreateForm(forms.ModelForm, GTForm):
             "zone_type": djgentelella.SelectWithAdd(
                 attrs={"add_url": "#", "data-otrono": 1}
             ),
+            "laboratories": djgentelella.SelectMultiple(),
         }
 
 
@@ -361,3 +388,109 @@ class RiskZoneListForm(GTForm, forms.Form):
             self.fields["buildings"].queryset = Buildings.objects.filter(
                 organization__pk=organization
             )
+
+
+class WorkdayForm(forms.ModelForm):
+    class Meta:
+        model = Workday
+        fields = ["workday", "num_workers", "start_time", "end_time"]
+        exclude = ["organization", "risk_zone", "created_by"]
+        widgets = {
+            "workday": genwidgets.Select(attrs={"class": "form-control"}),
+            "num_workers": djgentelella.NumberInput,
+            "start_time": djgentelella.TimeInput,
+            "end_time": djgentelella.TimeInput,
+        }
+
+
+# ---------------------------------------------------------------------------
+# IPER (Identificación de Peligros y Evaluación de Riesgos)
+# ---------------------------------------------------------------------------
+
+
+class IPERAssessmentForm(GTForm, forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        org_pk = kwargs.pop("org_pk", None)
+        user = kwargs.pop("user", None)
+        super().__init__(*args, **kwargs)
+        labs = Laboratory.objects.none()
+        if user is not None and org_pk:
+            labs = Laboratory.objects.filter(
+                pk__in=get_laboratories_from_organization(org_pk, user)
+            )
+        self.fields["laboratory"].queryset = labs
+
+    class Meta:
+        model = IPERAssessment
+        fields = ["laboratory", "assessment_date"]
+        widgets = {
+            "laboratory": AutocompleteSelect(
+                "labs_by_org",
+                attrs={"data-s2filter-organization": "#org"},
+            ),
+            "assessment_date": genwidgets.DateInput,
+        }
+
+
+class IPERHazardForm(GTForm, forms.ModelForm):
+    class Meta:
+        model = IPERHazard
+        fields = [
+            "category",
+            "description",
+            "location",
+            "probability",
+            "consequence",
+            "controls",
+            "recommended_controls",
+        ]
+        widgets = {
+            "category": genwidgets.Select,
+            "description": genwidgets.Textarea(attrs={"rows": 2}),
+            "location": genwidgets.TextInput,
+            "probability": genwidgets.Select,
+            "consequence": genwidgets.Select,
+            "controls": genwidgets.Textarea(attrs={"rows": 2}),
+            "recommended_controls": genwidgets.Textarea(attrs={"rows": 2}),
+        }
+
+
+class IPERObservationForm(GTForm, forms.ModelForm):
+    class Meta:
+        model = IPERObservation
+        fields = ["text"]
+        widgets = {
+            "text": genwidgets.Textarea(attrs={"rows": 2}),
+        }
+
+
+class IPERHistoryFilterForm(GTForm, forms.Form):
+    category = forms.ModelChoiceField(
+        queryset=Catalog.objects.filter(key=KEY_HAZARD_CATEGORY),
+        required=False,
+        widget=genwidgets.Select(attrs={"class": "form-control"}),
+        label=_("Hazard classification"),
+    )
+    risk_level = forms.ModelChoiceField(
+        queryset=Catalog.objects.filter(key=KEY_RISK_LEVEL),
+        required=False,
+        widget=genwidgets.Select(attrs={"class": "form-control"}),
+        label=_("Risk level"),
+    )
+    date_from = forms.DateField(
+        required=False,
+        widget=genwidgets.DateInput(attrs={"class": "form-control"}),
+        label=_("From"),
+        input_formats=["%d/%m/%Y", "%Y-%m-%d"],
+    )
+    date_to = forms.DateField(
+        required=False,
+        widget=genwidgets.DateInput(attrs={"class": "form-control"}),
+        label=_("To"),
+        input_formats=["%d/%m/%Y", "%Y-%m-%d"],
+    )
+
+    default_render_type = "as_grid"
+    grid_representation = [
+        [["category"], ["risk_level"], ["date_from"], ["date_to"]],
+    ]

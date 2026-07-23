@@ -66,8 +66,6 @@ def get_inform_index(request, org_pk):
     schedulers = InformScheduler.objects.filter(organization__pk=org_pk).order_by(
         "active"
     )
-    print(labs, schedulers)
-
     return render(
         request,
         "informs/index.html",

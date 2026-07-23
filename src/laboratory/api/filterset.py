@@ -1,6 +1,7 @@
 from django.contrib.admin.models import LogEntry
 from django.db.models import Q
 from django_filters import FilterSet, DateFromToRangeFilter, CharFilter
+import django_filters
 from django.db.models.functions import Concat
 from djgentelella.fields.drfdatetime import DateRangeTextWidget
 
@@ -13,6 +14,7 @@ from laboratory.models import (
     ObjectFeatures,
     Object,
     ShelfObject,
+    LabOrOrgRequest,
 )
 from sga.models import Substance
 from django.db.models.expressions import Value
@@ -165,10 +167,26 @@ class ShelObjectReactiveFilter(FilterSet):
     measurement_key = CharFilter(
         field_name="measurement_unit__key", lookup_expr="exact", distinct=True
     )
+    cas_code = CharFilter(
+        field_name="object__sustancecharacteristics__cas_id_number",
+        lookup_expr="icontains",
+        distinct=True,
+    )
 
     class Meta:
         model = ShelfObject
         fields = {
             "id": ["exact"],
             "quantity": ["exact", "gte", "lte"],
+        }
+
+
+class LabOrOrgRequestFilter(FilterSet):
+    status = django_filters.ChoiceFilter(choices=LabOrOrgRequest.STATUS_CHOICES)
+
+    class Meta:
+        model = LabOrOrgRequest
+        fields = {
+            "id": ["exact"],
+            "name": ["icontains"],
         }

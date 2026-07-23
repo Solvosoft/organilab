@@ -4,7 +4,10 @@ import re
 import subprocess
 import time
 
-from curl_cffi import requests as cffi_requests
+try:
+    from curl_cffi import requests as cffi_requests
+except ImportError:
+    cffi_requests = None
 
 from .base import DEFAULT_HEADERS, SDSSource
 
