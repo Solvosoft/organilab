@@ -8271,3 +8271,15 @@ msgstr "Descripción de observación de sustancia actualizada"
 
 msgid "Updated warning word '%(name)s'"
 msgstr "Palabra de advertencia '%(name)s' actualizada"
+
+msgid "Send to Review"
+msgstr "Enviar a revisión"
+
+msgid "Approved Substance"
+msgstr "Sustancia aprobada"
+
+msgid "Approved substance"
+msgstr "Sustancia aprobada"
+
+msgid "Approved substance '%(name)s' from request"
+msgstr "Sustancia aprobada '%(name)s' desde solicitud"

@@ -17,30 +17,12 @@
             <div class="col-sm-7"><p>{{object.synonymous|default:default_value}}</p></div>
         </div>
         <hr>
-        <div class="row">
-            <div class="col-sm-5"><label>{% trans 'UIPA name' %}: </label></div>
-            <div class="col-sm-7"><p>{{object.uipa_name|default:default_value}}</p></div>
-        </div>
-        <hr>
+
         <div class="row">
             <div class="col-sm-5"><label>{% trans 'Brand' %}: </label></div>
             <div class="col-sm-7"><p>{{object.brand|default:default_value}}</p></div>
         </div>
-        <hr>
-        <div class="row">
-            <div class="col-sm-5"><label>{% trans 'Components' %}: </label></div>
-            <div class="col-sm-7">
-                {% if object.components %}
-                <ul>
-                    {% for component in object.components_sga.all %}
-                    <li>{{component.name}}({{component.cas_number}})</li>
-                    {% endfor %}
-                </ul>
-                {% else %}
-                <p>{{default_value}}</p>
-                {% endif %}
-            </div>
-        </div>
+
         <hr>
         <div class="row">
             <div class="col-sm-5"><label>{% trans 'Molecular Weight' %}: </label></div>
@@ -119,16 +101,6 @@
         <div class="row">
             <div class="col-sm-5"><label>{% trans 'CAS number' %}: </label></div>
             <div class="col-sm-7"><p>{{object.cas_id_number|default:default_value}}</p></div>
-        </div>
-        <hr>
-        <div class="row">
-            <div class="col-sm-5"><label>{% trans 'Number Index' %}: </label></div>
-            <div class="col-sm-7"><p>{{object.number_index|default:default_value}}</p></div>
-        </div>
-        <hr>
-        <div class="row">
-            <div class="col-sm-5"><label>{% trans 'Number CE' %}: </label></div>
-            <div class="col-sm-7"><p>{{object.number_ce|default:default_value}}</p></div>
         </div>
         <hr>
         <div class="row">

@@ -28,7 +28,12 @@ from sga.models import Substance, DisplayLabel, SGAComplement, SecurityLeaf
 from sga.models import SubstanceCharacteristics, TemplateSGA, Label, ReviewSubstance
 from sga.models import SubstanceObservation
 from sga.models import WarningWord, DangerIndication, PrudenceAdvice
-from .forms import DangerIndicationForm, WarningWordForm, PrudenceAdviceForm
+from .forms import (
+    DangerIndicationForm,
+    WarningWordForm,
+    PrudenceAdviceForm,
+    SendToReviewForm,
+)
 from .forms import (
     ObservationForm,
     SecurityLeafForm,
@@ -67,7 +72,6 @@ def create_edit_sustance(request, org_pk, pk=None):
 
     objform = SustanceObjectForm(postdata, instance=instance)
     suschacform = SustanceCharacteristicsForm(postdata, instance=suscharobj)
-
     if request.method == "POST":
 
         if objform.is_valid() and suschacform.is_valid():
@@ -120,7 +124,6 @@ def create_edit_sustance(request, org_pk, pk=None):
         substance = Substance.objects.create(
             created_by=request.user, organization=organization
         )
-        rev_sub = ReviewSubstance.objects.create(substance=substance)
         charac = SubstanceCharacteristics.objects.create(substance=substance)
         organilab_logentry(
             request.user,
@@ -138,24 +141,17 @@ def create_edit_sustance(request, org_pk, pk=None):
             changed_data=["substance"],
             change_message=_("Created substance characteristics"),
         )
-        organilab_logentry(
-            request.user,
-            rev_sub,
-            ADDITION,
-            "review substance",
-            changed_data=["substance"],
-            change_message=_("Created review substance"),
-        )
-        return redirect(
-            reverse("sga:step_one", kwargs={"org_pk": org_pk, "pk": substance.pk})
-        )
 
+        return redirect(
+            reverse(
+                "sga:update_substance", kwargs={"org_pk": org_pk, "pk": substance.pk}
+            )
+        )
     label, created_label = Label.objects.get_or_create(substance=instance)
     template = TemplateSGA.objects.get(is_default=True)
     personal, created = DisplayLabel.objects.get_or_create(
         label=label, template=template, created_by=request.user
     )
-    complement, sga_created = SGAComplement.objects.get_or_create(substance=instance)
     leaf, leaf_created = SecurityLeaf.objects.get_or_create(substance=instance)
 
     return render(
@@ -168,7 +164,6 @@ def create_edit_sustance(request, org_pk, pk=None):
             "step": 1,
             "template": personal.pk,
             "substance": instance.pk,
-            "complement": complement.pk,
             "pk": instance.pk,
             "org_pk": org_pk,
         },
@@ -217,16 +212,25 @@ def approve_substances(request, org_pk, pk):
     user_is_allowed_on_organization(request.user, organization)
     review_subs = get_object_or_404(ReviewSubstance, pk=pk)
     review_subs.is_approved = True
-    review_subs.organization = organization
     review_subs.created_by = request.user
     review_subs.save()
+
+    if review_subs.substance:
+        review_subs.substance.status = Substance.APPROVED
+        review_subs.substance.save(update_fields=["status"])
+
     organilab_logentry(
         request.user,
         review_subs,
         CHANGE,
         "review substance",
-        changed_data=["is_approved", "organization", "created_by"],
+        changed_data=["is_approved", "created_by", "status"],
         change_message=_("Approved substance '%(name)s'")
+        % {"name": review_subs.substance.comercial_name},
+    )
+    messages.success(
+        request,
+        _("Substance '%(name)s' has been approved.")
         % {"name": review_subs.substance.comercial_name},
     )
     return redirect(reverse("sga:approved_substance", kwargs={"org_pk": org_pk}))
@@ -356,7 +360,9 @@ def step_two(request, org_pk, pk):
                 CHANGE,
                 "personal template sga",
                 changed_data=pesonalform.changed_data,
-                change_message=_("Updated personal SGA template for substance '%(name)s'")
+                change_message=_(
+                    "Updated personal SGA template for substance '%(name)s'"
+                )
                 % {"name": complement.substance.comercial_name},
             )
 
@@ -423,7 +429,9 @@ def step_three(request, org_pk, template, substance):
                 CHANGE,
                 "personal template sga",
                 changed_data=form.changed_data,
-                change_message=_("Updated personal SGA template editor for substance '%(name)s'")
+                change_message=_(
+                    "Updated personal SGA template editor for substance '%(name)s'"
+                )
                 % {"name": display_label.label.substance.comercial_name},
             )
             return redirect(
@@ -508,7 +516,11 @@ def step_four(request, org_pk, substance):
                 "security leaf",
                 changed_data=form.changed_data,
             )
-            return redirect(reverse("sga:get_substance", kwargs={"org_pk": org_pk}))
+            return redirect(
+                reverse(
+                    "sga:send_to_review", kwargs={"org_pk": org_pk, "pk": substance}
+                )
+            )
 
     form = SecurityLeafForm(instance=security_leaf)
 
@@ -520,6 +532,7 @@ def step_four(request, org_pk, substance):
         "provider_form": ProviderSGAForm(),
         "substance": substance,
         "org_pk": org_pk,
+        "pk": substance,
     }
     return render(request, "sga/substance/step_four.html", context=context)
 
@@ -935,3 +948,98 @@ def add_sga_provider(request, org_pk):
                 {"result": True, "provider_pk": provider.pk, "provider": provider.name}
             )
     return JsonResponse(response)
+
+
+@login_required
+@permission_required(
+    ("sga.change_displaylabel", "auth_and_perms.institution_can_access"),
+    raise_exception=True,
+)
+def sent_to_review(request, org_pk, substance):
+    organization = get_object_or_404(
+        OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
+    )
+    user_is_allowed_on_organization(request.user, organization)
+    substance = get_object_or_404(Substance, pk=substance)
+    user = request.user
+
+    has_security_sheet = False
+    if (
+        hasattr(substance, "substancecharacteristics")
+        and substance.substancecharacteristics
+    ):
+        has_security_sheet = bool(substance.substancecharacteristics.security_sheet)
+
+    if request.method == "POST":
+        if not has_security_sheet:
+            messages.error(
+                request,
+                _(
+                    "You must upload a security sheet (SDS) before sending the substance for review."
+                ),
+            )
+            return redirect(
+                reverse(
+                    "sga:step_three",
+                    kwargs={"substance": substance.pk, "org_pk": org_pk},
+                )
+            )
+
+        form = SendToReviewForm(request.POST, instance=substance)
+        if form.is_valid():
+            obj = form.save(commit=False)
+            obj.status = Substance.UNDER_REVIEW
+            obj.save()
+            form.save_m2m()
+
+            rev_sub = ReviewSubstance.objects.create(
+                substance=obj,
+                organization=form.cleaned_data["organization"],
+                created_by=request.user,
+            )
+            organilab_logentry(
+                user,
+                obj,
+                CHANGE,
+                "substance",
+                changed_data=form.changed_data + ["status"],
+                change_message=_("Sent substance '%(name)s' for review")
+                % {"name": substance.comercial_name},
+            )
+            organilab_logentry(
+                request.user,
+                rev_sub,
+                ADDITION,
+                "review substance",
+                changed_data=["substance", "organization", "create_by"],
+                change_message=_("Created review substance"),
+            )
+
+            messages.success(
+                request,
+                _("Substance '%(name)s' has been sent for review.")
+                % {"name": substance.comercial_name},
+            )
+            return redirect(
+                reverse(
+                    "sga:get_substance",
+                    kwargs={
+                        "org_pk": org_pk,
+                    },
+                )
+            )
+
+    if not has_security_sheet:
+        messages.warning(
+            request,
+            _("Security sheet (SDS) is required to send this substance for review."),
+        )
+
+    context = {
+        "form": SendToReviewForm(instance=substance),
+        "organization": org_pk,
+        "substance": substance.pk,
+        "org_pk": org_pk,
+        "has_security_sheet": has_security_sheet,
+    }
+    return render(request, "sga/substance/send_to_review.html", context)

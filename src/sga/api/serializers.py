@@ -113,8 +113,10 @@ class RecipientSizeSerializer(serializers.ModelSerializer):
 
 class SubstanceSerializer(serializers.ModelSerializer):
     actions = serializers.SerializerMethodField()
-    cas_id_number = serializers.CharField(source="cas_id")
+    cas_id_number = serializers.SerializerMethodField()
     created_by = serializers.SerializerMethodField()
+    laboratory = serializers.SerializerMethodField()
+    organization = serializers.SerializerMethodField()
 
     def get_created_by(self, obj):
         try:
@@ -138,6 +140,21 @@ class SubstanceSerializer(serializers.ModelSerializer):
             context=context,
         )
 
+    def get_laboratory(self, obj):
+        if obj.laboratory:
+            return obj.laboratory.name
+        return ""
+
+    def get_organization(self, obj):
+        if obj.organization:
+            return obj.organization.name
+        return ""
+
+    def get_cas_id_number(self, obj):
+        if obj.substancecharacteristics:
+            return obj.substancecharacteristics.cas_id_number
+        return ""
+
     class Meta:
         model = Substance
         fields = [
@@ -145,9 +162,10 @@ class SubstanceSerializer(serializers.ModelSerializer):
             "creation_date",
             "created_by",
             "comercial_name",
-            "agrochemical",
             "uipa_name",
             "cas_id_number",
+            "laboratory",
+            "organization",
             "actions",
         ]
 
@@ -185,6 +203,8 @@ class ReviewSubstanceSerializer(serializers.ModelSerializer):
     actions = serializers.SerializerMethodField()
     created_by = serializers.SerializerMethodField()
     comercial_name = serializers.SerializerMethodField()
+    laboratory = serializers.SerializerMethodField()
+    organization = serializers.SerializerMethodField()
 
     def get_created_by(self, obj):
         name = None
@@ -197,6 +217,16 @@ class ReviewSubstanceSerializer(serializers.ModelSerializer):
     def get_comercial_name(self, obj):
         if obj.substance:
             return obj.substance.comercial_name
+        return ""
+
+    def get_laboratory(self, obj):
+        if obj.substance.laboratory:
+            return obj.substance.laboratory.name
+        return ""
+
+    def get_organization(self, obj):
+        if obj.substance.organization:
+            return obj.substance.organization.name
         return ""
 
     def get_actions(self, obj):
@@ -238,7 +268,14 @@ class ReviewSubstanceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ReviewSubstance
-        fields = ["creation_date", "created_by", "comercial_name", "actions"]
+        fields = [
+            "creation_date",
+            "created_by",
+            "comercial_name",
+            "laboratory",
+            "organization",
+            "actions",
+        ]
 
 
 class ReviewSubstanceDataTableSerializer(serializers.Serializer):

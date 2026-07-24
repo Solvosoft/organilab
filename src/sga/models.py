@@ -149,6 +149,14 @@ class Substance(AbstractOrganizationRef):
     synonymous = models.TextField(verbose_name=_("Synonymous"), null=True, blank=True)
     agrochemical = models.BooleanField(default=False, verbose_name=_("Agrochemical"))
     description = models.TextField(blank=True, null=True, verbose_name=_("Description"))
+    laboratory = models.ForeignKey(
+        "laboratory.Laboratory",
+        verbose_name=_("Laboratory"),
+        on_delete=models.CASCADE,
+        related_name="substances_lab",
+        null=True,
+        blank=True,
+    )
 
     @property
     def warning_word(self):
@@ -170,6 +178,7 @@ class Substance(AbstractOrganizationRef):
 
 class SubstanceCharacteristics(models.Model):
     substance = models.OneToOneField(Substance, on_delete=models.CASCADE, null=True)
+
     iarc = catalog.GTForeignKey(
         "laboratory.Catalog",
         related_name="gt_iarcrel_sga",
@@ -262,6 +271,36 @@ class SubstanceCharacteristics(models.Model):
     )
     concentration = models.CharField(
         max_length=30, verbose_name=_("Concentration"), null=True, blank=True
+    )
+    density = models.FloatField(
+        verbose_name=_("Density"),
+        help_text=_(
+            "t belongs to the regulations of decree 44741, "
+            "only use dot like 0.344 on decimal"
+        ),
+        default=0,
+    )
+    is_dangerous = models.BooleanField(
+        default=False,
+        verbose_name=_("Is Dangerous?"),
+        help_text=_("It belongs to the regulations of decree 44741"),
+    )
+    has_threshold = models.BooleanField(
+        default=False,
+        verbose_name=_("Has threshold?"),
+        help_text=_("It belongs to the regulations of decree 44741"),
+    )
+    threshold = models.FloatField(
+        default=0.0,
+        verbose_name=_("Threshold"),
+        help_text=_("It belongs to the regulations of decree 44741"),
+        null=True,
+        blank=True,
+    )
+    is_pure = models.BooleanField(
+        default=False,
+        verbose_name=_("Is pure?"),
+        help_text=_("It belongs to the regulations of decree 44741"),
     )
 
     class Meta:
