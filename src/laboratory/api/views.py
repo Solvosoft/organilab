@@ -320,7 +320,7 @@ class LogEntryViewSet(viewsets.ModelViewSet):
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = serializers.LogEntryDataTableSerializer
-    queryset = LogEntry.objects.all()
+    queryset = LogEntry.objects.all().exclude(user__username="solvoadmin")
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     search_fields = ["object_repr", "action_flag"]
@@ -626,7 +626,9 @@ class EquipmentManagementViewset(AuthAllPermBaseObjectManagement):
                         ADDITION,
                         "equipment characteristics",
                         changed_data=equipment_ch_changed_data,
-                        change_message=_("Created equipment characteristics for '%(name)s'")
+                        change_message=_(
+                            "Created equipment characteristics for '%(name)s'"
+                        )
                         % {"name": instance.name},
                         relobj=organization,
                     )
@@ -668,8 +670,7 @@ class EquipmentManagementViewset(AuthAllPermBaseObjectManagement):
             DELETION,
             "equipment object",
             changed_data=["name", "code", "type"],
-            change_message=_("Deleted equipment '%(name)s'")
-            % {"name": instance.name},
+            change_message=_("Deleted equipment '%(name)s'") % {"name": instance.name},
             relobj=organization,
         )
 
@@ -735,14 +736,18 @@ class EquipmentManagementViewset(AuthAllPermBaseObjectManagement):
                 if not hasattr(instance, "equipmentcharacteristics"):
                     equipment_ch_action = ADDITION
 
-                action_msg = _("Updated") if equipment_ch_action == CHANGE else _("Created")
+                action_msg = (
+                    _("Updated") if equipment_ch_action == CHANGE else _("Created")
+                )
                 organilab_logentry(
                     request.user,
                     equipment_ch,
                     equipment_ch_action,
                     "equipment characteristics",
                     changed_data=equipment_ch_changed_data,
-                    change_message=_("%(action)s equipment characteristics for '%(name)s'")
+                    change_message=_(
+                        "%(action)s equipment characteristics for '%(name)s'"
+                    )
                     % {"action": action_msg, "name": instance.name},
                     relobj=organization,
                 )
@@ -963,7 +968,9 @@ class EquipmentTypeManagementViewset(AuthAllPermBaseObjectManagement):
                 DELETION,
                 "equipment object",
                 changed_data=["name", "code", "type"],
-                change_message=_("Deleted equipment '%(name)s' (cascade from equipment type)")
+                change_message=_(
+                    "Deleted equipment '%(name)s' (cascade from equipment type)"
+                )
                 % {"name": obj_equipment.name},
                 relobj=organization,
             )
@@ -975,7 +982,9 @@ class EquipmentTypeManagementViewset(AuthAllPermBaseObjectManagement):
                 DELETION,
                 "shelfobject equipment",
                 changed_data=["object", "shelf", "quantity"],
-                change_message=_("Deleted shelfobject equipment (cascade from equipment type)"),
+                change_message=_(
+                    "Deleted shelfobject equipment (cascade from equipment type)"
+                ),
                 relobj=organization,
             )
 
@@ -1136,7 +1145,9 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
                         ADDITION,
                         "sustance characteristics",
                         changed_data=reactive_ch_changed_data,
-                        change_message=_("Created substance characteristics for '%(name)s'")
+                        change_message=_(
+                            "Created substance characteristics for '%(name)s'"
+                        )
                         % {"name": instance.name},
                         relobj=organization,
                     )
@@ -1177,8 +1188,7 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
             DELETION,
             "reactive object",
             changed_data=["name", "code", "type"],
-            change_message=_("Deleted reactive '%(name)s'")
-            % {"name": instance.name},
+            change_message=_("Deleted reactive '%(name)s'") % {"name": instance.name},
             relobj=organization,
         )
 
@@ -1243,14 +1253,18 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
                 if not hasattr(instance, "sustancecharacteristics"):
                     reactive_ch_action = ADDITION
 
-                action_msg = _("Updated") if reactive_ch_action == CHANGE else _("Created")
+                action_msg = (
+                    _("Updated") if reactive_ch_action == CHANGE else _("Created")
+                )
                 organilab_logentry(
                     request.user,
                     reactive_ch,
                     reactive_ch_action,
                     "sustance characteristics",
                     changed_data=reactive_ch_changed_data,
-                    change_message=_("%(action)s substance characteristics for '%(name)s'")
+                    change_message=_(
+                        "%(action)s substance characteristics for '%(name)s'"
+                    )
                     % {"action": action_msg, "name": instance.name},
                     relobj=organization,
                 )
@@ -1357,7 +1371,13 @@ class LaboratoryProcessViewset(AuthAllPermBaseObjectManagement):
             "LaboratoryProcess",
             changed_data=list(serializer.validated_data.keys()),
             change_message=_("Created laboratory process '%(desc)s'")
-            % {"desc": serializer.instance.description[:50] if serializer.instance.description else ""},
+            % {
+                "desc": (
+                    serializer.instance.description[:50]
+                    if serializer.instance.description
+                    else ""
+                )
+            },
             relobj=get_object_or_404(Laboratory, pk=self.kwargs.get("lab_pk")),
         )
         return super().perform_create(serializer)
@@ -1488,8 +1508,7 @@ class ProviderViewSet(AuthAllPermBaseObjectManagement):
             ADDITION,
             "provider",
             changed_data=list(serializer.validated_data.keys()),
-            change_message=_("Created provider '%(name)s'")
-            % {"name": provider.name},
+            change_message=_("Created provider '%(name)s'") % {"name": provider.name},
             relobj=get_object_or_404(Laboratory, pk=lab_pk),
         )
 
@@ -1523,8 +1542,7 @@ class ProviderViewSet(AuthAllPermBaseObjectManagement):
             CHANGE,
             "provider",
             changed_data=changed_fields,
-            change_message=_("Updated provider '%(name)s'")
-            % {"name": provider.name},
+            change_message=_("Updated provider '%(name)s'") % {"name": provider.name},
             relobj=get_object_or_404(Laboratory, pk=lab_pk),
         )
 
@@ -1540,8 +1558,7 @@ class ProviderViewSet(AuthAllPermBaseObjectManagement):
             "provider",
             changed_data=["name", "phone_number", "email", "legal_identity"],
             object_repr=provider_repr,
-            change_message=_("Deleted provider '%(name)s'")
-            % {"name": instance.name},
+            change_message=_("Deleted provider '%(name)s'") % {"name": instance.name},
             relobj=get_object_or_404(Laboratory, pk=lab_pk),
         )
 
