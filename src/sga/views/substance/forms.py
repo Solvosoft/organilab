@@ -3,8 +3,10 @@ from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
+from djgentelella.widgets.selects import AutocompleteSelect
 from djgentelella.widgets.tagging import TaggingInput
 
+from laboratory.models import Laboratory, OrganizationStructure
 from sga.models import (
     Substance,
     SubstanceCharacteristics,
@@ -22,13 +24,13 @@ class SustanceObjectForm(GTForm, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(SustanceObjectForm, self).__init__(*args, **kwargs)
         self.fields["components_sga"].required = False
+        self.fields["comercial_name"].label = _("Substance name")
 
     class Meta:
         model = Substance
         fields = [
             "comercial_name",
             "synonymous",
-            "uipa_name",
             "components_sga",
             "agrochemical",
             "description",
@@ -37,7 +39,6 @@ class SustanceObjectForm(GTForm, forms.ModelForm):
         ]
         widgets = {
             "comercial_name": genwidgets.TextInput,
-            "uipa_name": genwidgets.TextInput,
             "synonymous": TaggingInput,
             "components_sga": genwidgets.SelectMultiple,
             "agrochemical": genwidgets.YesNoInput,
@@ -50,7 +51,7 @@ class SustanceObjectForm(GTForm, forms.ModelForm):
 class SustanceCharacteristicsForm(GTForm, forms.ModelForm):
     class Meta:
         model = SubstanceCharacteristics
-        exclude = ["substance", "valid_molecular_formula", "security_sheet"]
+        exclude = ["substance", "valid_molecular_formula", "number_index", "number_ce"]
         widgets = {
             "iarc": genwidgets.Select,
             "imdg": genwidgets.Select,
@@ -65,11 +66,17 @@ class SustanceCharacteristicsForm(GTForm, forms.ModelForm):
             "nfpa": genwidgets.SelectMultiple,
             "storage_class": genwidgets.SelectMultiple,
             "seveso_list": genwidgets.YesNoInput,
-            "number_index": genwidgets.TextInput,
-            "number_ce": genwidgets.TextInput,
             "molecular_weight": genwidgets.TextInput,
             "concentration": genwidgets.TextInput,
-            # 'security_sheet': genwidgets.FileInput
+            "security_sheet": genwidgets.FileInput,
+            "density": genwidgets.TextInput,
+            "is_dangerous": genwidgets.YesNoInput,
+            "has_threshold": genwidgets.YesNoInput(
+                shparent=".form-group",
+                attrs={"rel": ["#id_threshold"]},
+            ),
+            "threshold": genwidgets.TextInput,
+            "is_pure": genwidgets.YesNoInput,
         }
 
 
@@ -167,3 +174,43 @@ class RecipientSizeForm(GTForm, forms.ModelForm):
             "width": genwidgets.NumberInput,
             "width_unit": genwidgets.Select,
         }
+
+
+class SendToReviewForm(forms.ModelForm, GTForm):
+    organization = forms.ModelChoiceField(
+        queryset=OrganizationStructure.objects.all(),
+        label=_("Organization"),
+        widget=AutocompleteSelect(
+            "user_organization_loop",
+            attrs={
+                "data-related": "true",
+                "data-pos": 0,
+                "data-groupname": "send_to_review",
+                "data-s2filter-organization": "#id_organization",
+                "data-s2filter-org_pk": "#id_organization",
+            },
+        ),
+    )
+    laboratory = forms.ModelChoiceField(
+        queryset=Laboratory.objects.all(),
+        label=_("Laboratory"),
+        widget=AutocompleteSelect(
+            "user_laboratory_loop",
+            attrs={
+                "data-related": "true",
+                "data-pos": 1,
+                "data-groupname": "send_to_review",
+                "data-s2filter-organization": "#id_organization",
+                "data-s2filter-org_pk": "#id_organization",
+            },
+        ),
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(SendToReviewForm, self).__init__(*args, **kwargs)
+        self.fields["laboratory"].required = True
+        self.fields["organization"].required = True
+
+    class Meta:
+        model = Substance
+        fields = ["organization", "laboratory"]

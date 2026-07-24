@@ -59,8 +59,9 @@ datatableelement=createDataTable("#substance_table", document.urls.substance_tab
             {data: "creation_date", name: "creation_date", title: gettext("Creation Date"), type: "date",  render: DataTable.render.datetime(), visible: true},
             {data: "created_by", name: "created_by", title: gettext("User"), type: "string", visible: true},
             {data: "comercial_name", name: "comercial_name", title: gettext("Comercial Name"), type: "string", visible: true },
-            {data: "agrochemical", name: "agrochemical", title: gettext("Agrochemical"), type: "boolean", render: objShowBool, visible: true},
-            {data: "uipa_name", name: "uipa_name", title: gettext("UIPA Name"), type: "string", visible: true},
+            {data: "cas_id_number", name: "cas_id_number", title: gettext("CAS ID"), type: "string", visible: true},
+            {data: "organization", name: "organization", title: gettext("Organization"), type: "string", visible: true},
+            {data: "laboratory", name: "laboratory", title: gettext("Laboratory"), type: "string", visible: true},
             {data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: true, filterable: false, sortable: false},
         ],
         buttons: [

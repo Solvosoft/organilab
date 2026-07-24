@@ -113,8 +113,8 @@ urlpatterns = [
     ),
     path("substance/step_two/<int:pk>/", substance.step_two, name="step_two"),
     path(
-        "substance/step_three/<int:template>/<int:substance>/",
-        substance.step_three,
+        "substance/step_three/<int:substance>/",
+        substance.sent_to_review,
         name="step_three",
     ),
     path("substance/step_four/<int:substance>/", substance.step_four, name="step_four"),

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_urlname_action 'step_one' %}
+    {% define_urlname_action 'step_two' %}
+    {% define_urlname_action 'step_three' %}
+    {% define_urlname_action 'step_four' %}
+    {% define_urlname_action 'update_substance' %}
+{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            {% include 'sga/substance/steps.html' %}
+            <br>
+        </div>
+    </div>
+    <form class="form-horizontal" action="{% url 'sga:step_three' org_pk substance %}" method="POST">
+        {% csrf_token %}
+        <h2 style="color:#337ab7">{% trans 'Send to Review' %}</h2>
+        <div class="card">
+            <div class="card-body">
+                {% if not has_security_sheet %}
+                <div class="alert alert-warning">
+                    <i class="fa fa-exclamation-triangle"></i>
+                    {% trans 'Security sheet (SDS) is required to send this substance for review. Please upload it in the previous step.' %}
+                </div>
+                {% endif %}
+                {{ form.as_horizontal }}
+                <div class="col-md-12 text-center mt-2" style="display:inline-block">
+                    <button type="submit" class="btn btn-success" {% if not has_security_sheet %}disabled{% endif %}>
+                        {% trans 'Send' %}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
