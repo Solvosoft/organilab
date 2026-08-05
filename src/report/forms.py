@@ -625,7 +625,7 @@ class PrecursorReportValuesViewForm(GTForm, forms.ModelForm):
     object = forms.ModelChoiceField(
         queryset=Object.objects.filter(
             type=0,
-            sustancecharacteristics__is_precursor=True,
+            substancharacteristics_object__is_precursor=True,
         ),
         required=True,
         widget=genwidgets.Select,
@@ -641,7 +641,7 @@ class PrecursorReportValuesViewForm(GTForm, forms.ModelForm):
             self.fields["object"].queryset = Object.objects.filter(
                 organization__pk=org_pk,
                 type=0,
-                sustancecharacteristics__is_precursor=True,
+                substancharacteristics_object__is_precursor=True,
             )
 
     class Meta:

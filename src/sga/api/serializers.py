@@ -117,6 +117,7 @@ class SubstanceSerializer(serializers.ModelSerializer):
     created_by = serializers.SerializerMethodField()
     laboratory = serializers.SerializerMethodField()
     organization = serializers.SerializerMethodField()
+    status = serializers.SerializerMethodField()
 
     def get_created_by(self, obj):
         try:
@@ -155,6 +156,11 @@ class SubstanceSerializer(serializers.ModelSerializer):
             return obj.substancecharacteristics.cas_id_number
         return ""
 
+    def get_status(self, obj):
+        if obj.status:
+            return obj.get_status_display()
+        return ""
+
     class Meta:
         model = Substance
         fields = [
@@ -166,6 +172,7 @@ class SubstanceSerializer(serializers.ModelSerializer):
             "cas_id_number",
             "laboratory",
             "organization",
+            "status",
             "actions",
         ]
 

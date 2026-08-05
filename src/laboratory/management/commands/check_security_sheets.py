@@ -40,8 +40,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         sustances = SDSTraceability.objects.exclude(
-            sustance_characteristics__security_sheet__isnull=True
-        ).exclude(sustance_characteristics__security_sheet="")
+            sga_substance_characteristics__security_sheet__isnull=True
+        ).exclude(sga_substance_characteristics__security_sheet="")
 
         total = sustances.count()
 
@@ -67,26 +67,25 @@ class Command(BaseCommand):
 
         listado = []
         for sc in sustances:
-            file_name = os.path.basename(
-                sc.sustance_characteristics.security_sheet.name
-            )
+            sga_char = sc.sga_substance_characteristics
+            if not sga_char or not sga_char.security_sheet:
+                continue
+
+            file_name = os.path.basename(sga_char.security_sheet.name)
 
             # Verificar si el archivo actual tiene PubChem
-            has_pubchem = self.contains_pubchem_source(
-                sc.sustance_characteristics.security_sheet.path
-            )
+            has_pubchem = self.contains_pubchem_source(sga_char.security_sheet.path)
 
             if has_pubchem:
-                listado.append(sc.sustance_characteristics.cas_id_number)
-                print(sc.sustance_characteristics.cas_id_number)
+                listado.append(sga_char.cas_id_number)
+                print(sga_char.cas_id_number)
             elif not has_pubchem:
                 continue
 
             # Buscar reemplazo en el índice
             for full_path in file_index.get(file_name, []):
                 file_path = os.path.relpath(full_path, settings.MEDIA_ROOT)
-                ss = sc.sustance_characteristics
-                ss.security_sheet = file_path
-                ss.save()
+                sga_char.security_sheet = file_path
+                sga_char.save()
 
         print(f"Total con PubChem: {len(listado)}")

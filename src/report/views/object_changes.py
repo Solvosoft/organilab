@@ -144,8 +144,9 @@ def resume_queryset_doc(report, queryset, objs, log_filters):
 
             if object_log:
                 cas = ""
-                if hasattr(obj_using, "sustancecharacteristics"):
-                    cas = obj_using.cas_code if (obj_using.cas_code) else ""
+                sga_char = obj_using.substancharacteristics_object.first()
+                if sga_char:
+                    cas = obj_using.cas_code if obj_using.cas_code else ""
                 doc_list.append([f"{lab.name} | {obj_using.name} {cas}"])
                 doc_list.append([f": {object_diff} {catalog.description}"])
                 doc_list.append(

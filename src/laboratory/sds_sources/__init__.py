@@ -185,7 +185,7 @@ def update_sds_for_substance(
                     rev_date = _parse_date(rev_date_str)
 
                 SDSTraceability.objects.update_or_create(
-                    sustance_characteristics=sc,
+                    sga_substance_characteristics=sc,
                     defaults={
                         "source": source.name,
                         "revision_date": rev_date,

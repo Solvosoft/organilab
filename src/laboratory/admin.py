@@ -223,18 +223,19 @@ class OrganizationStructureRelationsAdmin(OrganizationInfoAdminMixin, admin.Mode
 
 class SDSTraceabilityAdmin(admin.ModelAdmin):
     list_display = [
-        "sustance_characteristics__obj__name",
+        "get_object_name",
         "source",
         "revision_date",
         "creation_date",
     ]
     list_filter = ["source"]
-    search_fields = ["sustance_characteristics__cas_id_number"]
+    search_fields = ["sga_substance_characteristics__cas_id_number"]
 
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == "sustance_characteristics":
-            kwargs["queryset"] = models.SustanceCharacteristics.objects.order_by("-id")
-        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+    def get_object_name(self, obj):
+        if obj.sga_substance_characteristics and obj.sga_substance_characteristics.object_related:
+            return obj.sga_substance_characteristics.object_related.name
+        return "-"
+    get_object_name.short_description = _("Object name")
 
 
 class SustanceCharacteristicsAdmin(admin.ModelAdmin):

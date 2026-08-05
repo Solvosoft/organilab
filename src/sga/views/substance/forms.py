@@ -31,8 +31,7 @@ class SustanceObjectForm(GTForm, forms.ModelForm):
         fields = [
             "comercial_name",
             "synonymous",
-            "components_sga",
-            "agrochemical",
+            "features",
             "description",
             "brand",
             "organization",
@@ -45,6 +44,7 @@ class SustanceObjectForm(GTForm, forms.ModelForm):
             "description": genwidgets.Textarea,
             "brand": genwidgets.TextInput,
             "organization": genwidgets.HiddenInput,
+            "features": genwidgets.SelectMultiple,
         }
 
 

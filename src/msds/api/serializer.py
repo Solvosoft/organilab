@@ -1,7 +1,8 @@
 from djgentelella.serializers import GTDateField
 from rest_framework import serializers
 
-from laboratory.models import SDSTraceability, SustanceCharacteristics
+from laboratory.models import SDSTraceability
+from sga.models import SubstanceCharacteristics
 from django.utils.translation import gettext_lazy as _
 
 
@@ -26,13 +27,13 @@ class SDSTraceabilitySerializer(serializers.ModelSerializer):
         }
 
     def get_sustance_characteristics_name(self, obj):
-        if obj.sustance_characteristics:
-            return obj.sustance_characteristics.obj.name
+        if obj.sga_substance_characteristics:
+            return obj.sga_substance_characteristics.object_related.name
         return ""
 
     def get_sustance_characteristics_cas_id_number(self, obj):
-        if obj.sustance_characteristics:
-            return obj.sustance_characteristics.cas_id_number
+        if obj.sga_substance_characteristics:
+            return obj.sga_substance_characteristics.cas_id_number
         return ""
 
     def get_verified_by_name(self, obj):
@@ -41,14 +42,14 @@ class SDSTraceabilitySerializer(serializers.ModelSerializer):
         return ""
 
     def get_security_sheet_url(self, obj):
-        if obj.sustance_characteristics.security_sheet:
-            return obj.sustance_characteristics.security_sheet.url
+        if obj.sga_substance_characteristics and obj.sga_substance_characteristics.security_sheet:
+            return obj.sga_substance_characteristics.security_sheet.url
         return ""
 
     def get_hcodes(self, obj):
-        if obj.sustance_characteristics.h_code.all():
+        if obj.sga_substance_characteristics and obj.sga_substance_characteristics.h_code.all():
             codes = set(
-                [hc.code.__str__() for hc in obj.sustance_characteristics.h_code.all()]
+                [hc.code.__str__() for hc in obj.sga_substance_characteristics.h_code.all()]
             )
             return ", ".join(codes) if len(codes) > 0 else ""
         return ""
@@ -57,7 +58,7 @@ class SDSTraceabilitySerializer(serializers.ModelSerializer):
         model = SDSTraceability
         fields = [
             "id",
-            "sustance_characteristics",
+            "sga_substance_characteristics",
             "sustance_characteristics_name",
             "source",
             "verified_by",
@@ -89,7 +90,7 @@ class SDSTraceabilityValidateSerializer(serializers.ModelSerializer):
         ]
 
 
-class SustanceCharacteristicsSerializer(serializers.ModelSerializer):
+class SGASubstanceCharacteristicsSerializer(serializers.ModelSerializer):
     obj_name = serializers.SerializerMethodField()
     iarc_name = serializers.SerializerMethodField()
     imdg_name = serializers.SerializerMethodField()
@@ -120,7 +121,7 @@ class SustanceCharacteristicsSerializer(serializers.ModelSerializer):
         return ""
 
     def get_obj_name(self, obj):
-        return obj.obj.name if obj.obj else ""
+        return obj.object_related.name if obj.object_related else ""
 
     def get_iarc_name(self, obj):
         return str(obj.iarc) if obj.iarc else ""
@@ -152,7 +153,7 @@ class SustanceCharacteristicsSerializer(serializers.ModelSerializer):
         return ""
 
     class Meta:
-        model = SustanceCharacteristics
+        model = SubstanceCharacteristics
         fields = [
             "id",
             "obj_name",

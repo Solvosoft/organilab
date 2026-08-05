@@ -87,7 +87,7 @@ def save_object_report_precursor(report):
     lab = report.laboratory
     reports = PrecursorReport.objects.filter(laboratory=lab).order_by("-pk")
     for precursor in ShelfObject.objects.filter(
-        in_where_laboratory=lab, object__sustancecharacteristics__is_precursor=True
+        in_where_laboratory=lab, object__substancharacteristics_object__is_precursor=True
     ):
         unit = get_base_unit(precursor.measurement_unit)
         obj = PrecursorReportValues.objects.filter(

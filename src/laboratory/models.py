@@ -138,30 +138,25 @@ class Object(AbstractOrganizationRef):
 
     @property
     def is_precursor(self):
-        if hasattr(self, "sustancecharacteristics") and self.sustancecharacteristics:
-            return self.sustancecharacteristics.is_precursor
+        sga_char = self.substancharacteristics_object.first()
+        if sga_char:
+            return sga_char.is_precursor
         return False
 
     @property
     def cas_code(self):
-        if hasattr(self, "sustancecharacteristics") and self.sustancecharacteristics:
-            if self.sustancecharacteristics.cas_id_number:
-                return self.sustancecharacteristics.cas_id_number
-            else:
-                return ""
-        return False
+        sga_char = self.substancharacteristics_object.first()
+        if sga_char and sga_char.cas_id_number:
+            return sga_char.cas_id_number
+        return ""
 
     @property
     def get_storage_class(self):
-        if hasattr(self, "sustancecharacteristics") and self.sustancecharacteristics:
-            if self.sustancecharacteristics.storage_class:
-                return ", ".join(
-                    self.sustancecharacteristics.storage_class.values_list(
-                        "description", flat=True
-                    )
-                )
-            else:
-                return ""
+        sga_char = self.substancharacteristics_object.first()
+        if sga_char and sga_char.storage_class:
+            return ", ".join(
+                sga_char.storage_class.values_list("description", flat=True)
+            )
         return ""
 
     class Meta:
@@ -292,10 +287,12 @@ class SDSTraceability(BaseCreationObj):
         ("manual", _("Manual upload")),
     ]
 
-    sustance_characteristics = models.ForeignKey(
-        SustanceCharacteristics,
+    sga_substance_characteristics = models.ForeignKey(
+        "sga.SubstanceCharacteristics",
         on_delete=models.CASCADE,
         related_name="sds_traceability",
+        null=True,
+        blank=True,
     )
     source = models.CharField(
         _("SDS source"), max_length=50, choices=SDS_SOURCE_CHOICES, default="unknown"
@@ -326,9 +323,7 @@ class SDSTraceability(BaseCreationObj):
         ordering = ["-creation_date"]
 
     def __str__(self):
-        return (
-            f"{self.sustance_characteristics_id} - {self.source} ({self.creation_date})"
-        )
+        return f"{self.sga_substance_characteristics_id} - {self.source} ({self.creation_date})"
 
 
 class ShelfObjectLimits(models.Model):

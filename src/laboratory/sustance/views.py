@@ -18,7 +18,7 @@ def create_edit_sustance(request, org_pk, lab_pk, pk=None):
     laboratory = get_object_or_404(Laboratory, pk=lab_pk)
     suscharobj = None
     if instance:
-        suscharobj = instance.sustancecharacteristics
+        suscharobj = instance.substancharacteristics_object.first()
     postdata = None
     filesdata = None
     if request.method == "POST":

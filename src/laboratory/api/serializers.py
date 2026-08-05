@@ -46,7 +46,7 @@ from laboratory.utils import get_actions_by_perms, get_users_from_organization
 from organilab.settings import DATETIME_INPUT_FORMATS
 from reservations_management.models import ReservedProducts, Reservations
 from sga.api.serializers import ChoicesGTS2Serializer
-from sga.models import DangerIndication
+from sga.models import DangerIndication, SubstanceCharacteristics
 
 logger = logging.getLogger("organilab")
 
@@ -929,7 +929,7 @@ class ValidateReactiveSerializer(serializers.ModelSerializer):
 
 
 class ValidateReactiveCharacteristicsSerializer(serializers.ModelSerializer):
-    obj = serializers.PrimaryKeyRelatedField(
+    object_related = serializers.PrimaryKeyRelatedField(
         queryset=Object.objects.using(settings.READONLY_DATABASE),
         allow_empty=True,
         allow_null=True,
@@ -1025,7 +1025,7 @@ class ValidateReactiveCharacteristicsSerializer(serializers.ModelSerializer):
     density = serializers.FloatField(default=0.0, required=False)
 
     class Meta:
-        model = SustanceCharacteristics
+        model = SubstanceCharacteristics
         fields = "__all__"
 
 
@@ -1098,8 +1098,9 @@ class ReactiveSerializer(serializers.ModelSerializer):
         return ""
 
     def get_iarc(self, obj):
-        if hasattr(obj, "sustancecharacteristics") and obj.sustancecharacteristics:
-            iarc = obj.sustancecharacteristics.iarc
+        sga_char = obj.substancharacteristics_object.first()
+        if sga_char:
+            iarc = sga_char.iarc
             if iarc:
                 return {
                     "id": iarc.pk,
@@ -1110,8 +1111,9 @@ class ReactiveSerializer(serializers.ModelSerializer):
         return None
 
     def get_imdg(self, obj):
-        if hasattr(obj, "sustancecharacteristics") and obj.sustancecharacteristics:
-            imdg = obj.sustancecharacteristics.imdg
+        sga_char = obj.substancharacteristics_object.first()
+        if sga_char:
+            imdg = sga_char.imdg
             if imdg:
                 return {
                     "id": imdg.pk,
@@ -1122,8 +1124,9 @@ class ReactiveSerializer(serializers.ModelSerializer):
         return None
 
     def get_white_organ(self, obj):
-        if hasattr(obj, "sustancecharacteristics") and obj.sustancecharacteristics:
-            white_organs = obj.sustancecharacteristics.white_organ.all()
+        sga_char = obj.substancharacteristics_object.first()
+        if sga_char:
+            white_organs = sga_char.white_organ.all()
             if white_organs:
                 return [
                     {
@@ -1137,35 +1140,41 @@ class ReactiveSerializer(serializers.ModelSerializer):
         return None
 
     def get_bioaccumulable(self, obj):
-        if hasattr(obj, "sustancecharacteristics") and obj.sustancecharacteristics:
-            return obj.sustancecharacteristics.bioaccumulable
+        sga_char = obj.substancharacteristics_object.first()
+        if sga_char:
+            return sga_char.bioaccumulable
         return False
 
     def get_molecular_formula(self, obj):
-        if hasattr(obj, "sustancecharacteristics") and obj.sustancecharacteristics:
-            return obj.sustancecharacteristics.molecular_formula
+        sga_char = obj.substancharacteristics_object.first()
+        if sga_char:
+            return sga_char.molecular_formula
         return ""
 
     def get_cas_id_number(self, obj):
-        if hasattr(obj, "sustancecharacteristics") and obj.sustancecharacteristics:
-            return obj.sustancecharacteristics.cas_id_number
+        sga_char = obj.substancharacteristics_object.first()
+        if sga_char:
+            return sga_char.cas_id_number
         return ""
 
     def get_security_sheet(self, obj):
-        if hasattr(obj, "sustancecharacteristics") and obj.sustancecharacteristics:
-            file_value = obj.sustancecharacteristics.security_sheet
+        sga_char = obj.substancharacteristics_object.first()
+        if sga_char:
+            file_value = sga_char.security_sheet
             if file_value:
                 return ChunkedFileField().to_representation(file_value)
-            return None
+        return None
 
     def get_is_precursor(self, obj):
-        if hasattr(obj, "sustancecharacteristics") and obj.sustancecharacteristics:
-            return obj.sustancecharacteristics.is_precursor
+        sga_char = obj.substancharacteristics_object.first()
+        if sga_char:
+            return sga_char.is_precursor
         return False
 
     def get_precursor_type(self, obj):
-        if hasattr(obj, "sustancecharacteristics") and obj.sustancecharacteristics:
-            precursor_type = obj.sustancecharacteristics.precursor_type
+        sga_char = obj.substancharacteristics_object.first()
+        if sga_char:
+            precursor_type = sga_char.precursor_type
             if precursor_type:
                 return {
                     "id": precursor_type.pk,
@@ -1176,8 +1185,9 @@ class ReactiveSerializer(serializers.ModelSerializer):
         return None
 
     def get_h_code(self, obj):
-        if hasattr(obj, "sustancecharacteristics") and obj.sustancecharacteristics:
-            h_codes = obj.sustancecharacteristics.h_code.all()
+        sga_char = obj.substancharacteristics_object.first()
+        if sga_char:
+            h_codes = sga_char.h_code.all()
             if h_codes:
                 return [
                     {
@@ -1191,8 +1201,9 @@ class ReactiveSerializer(serializers.ModelSerializer):
         return None
 
     def get_ue_code(self, obj):
-        if hasattr(obj, "sustancecharacteristics") and obj.sustancecharacteristics:
-            ue_codes = obj.sustancecharacteristics.ue_code.all()
+        sga_char = obj.substancharacteristics_object.first()
+        if sga_char:
+            ue_codes = sga_char.ue_code.all()
             if ue_codes:
                 return [
                     {
@@ -1206,8 +1217,9 @@ class ReactiveSerializer(serializers.ModelSerializer):
         return None
 
     def get_nfpa(self, obj):
-        if hasattr(obj, "sustancecharacteristics") and obj.sustancecharacteristics:
-            nfpas = obj.sustancecharacteristics.nfpa.all()
+        sga_char = obj.substancharacteristics_object.first()
+        if sga_char:
+            nfpas = sga_char.nfpa.all()
             if nfpas:
                 return [
                     {
@@ -1221,8 +1233,9 @@ class ReactiveSerializer(serializers.ModelSerializer):
         return None
 
     def get_storage_class(self, obj):
-        if hasattr(obj, "sustancecharacteristics") and obj.sustancecharacteristics:
-            storage_classes = obj.sustancecharacteristics.storage_class.all()
+        sga_char = obj.substancharacteristics_object.first()
+        if sga_char:
+            storage_classes = sga_char.storage_class.all()
             if storage_classes:
                 return [
                     {
@@ -1236,36 +1249,55 @@ class ReactiveSerializer(serializers.ModelSerializer):
         return None
 
     def get_seveso_list(self, obj):
-        if hasattr(obj, "sustancecharacteristics") and obj.sustancecharacteristics:
-            return obj.sustancecharacteristics.seveso_list
+        sga_char = obj.substancharacteristics_object.first()
+        if sga_char:
+            return sga_char.seveso_list
         return False
 
     def get_img_representation(self, obj):
-        if hasattr(obj, "sustancecharacteristics") and obj.sustancecharacteristics:
-            file_value = obj.sustancecharacteristics.img_representation
+        sga_char = obj.substancharacteristics_object.first()
+        if sga_char:
+            file_value = sga_char.img_representation
             if file_value:
                 return ChunkedFileField().to_representation(file_value)
-            return None
+        return None
 
     def get_density(self, obj):
-        if hasattr(obj, "sustancecharacteristics") and obj.sustancecharacteristics:
-            return obj.sustancecharacteristics.density
+        sga_char = obj.substancharacteristics_object.first()
+        if sga_char:
+            return sga_char.density
         return None
 
     def get_combined_booleans(self, obj):
         is_public = (
-            '<i class="fa fa-users fa-fw text-success"></i>'
-            if obj.is_public
-            else '<i class="fa fa-user-times fa-fw text-warning"></i>'
+            '<i class="fa fa-user-times fa-fw text-warning" title="%s"></i>'
+            % _("Not public")
         )
-        precursor = '<i class="fa fa-times-circle fa-fw text-warning"></i>'
-        bioaccumulable = '<i class="fa fa-flask fa-fw text-warning"></i>'
 
         if obj.is_public:
-            precursor = '<i class="fa fa-check-circle fa-fw text-success"></i>'
-        if hasattr(obj, "sustancecharacteristics"):
-            if hasattr(obj.sustancecharacteristics, "bioaccumulable"):
-                bioaccumulable = '<i class="fa fa-leaf fa-fw text-success"></i>'
+            is_public = '<i class="fa fa-users fa-fw text-success" title="%s"></i>' % _(
+                "Is public"
+            )
+        precursor = (
+            '<i class="fa fa-times-circle fa-fw text-warning" title="%s"></i>'
+            % _("Not is precursor")
+        )
+        bioaccumulable = (
+            '<i class="fa fa-flask fa-fw text-warning" title="%s"></i>'
+            % _("Not is bioaccomulable")
+        )
+
+        if obj.is_public:
+            precursor = (
+                '<i class="fa fa-check-circle fa-fw text-success" title="%s"></i>'
+                % _("Is precursor")
+            )
+        sga_char = obj.substancharacteristics_object.first()
+        if sga_char and sga_char.bioaccumulable:
+            bioaccumulable = (
+                '<i class="fa fa-leaf fa-fw text-success" title="%s"></i>'
+                % _("Is bioaccumulable")
+            )
 
         return f"{is_public} {precursor} {bioaccumulable}"
 
@@ -1405,7 +1437,7 @@ class SustanceCharacteristicsDetailSerializer(serializers.ModelSerializer):
         return None
 
     class Meta:
-        model = SustanceCharacteristics
+        model = SubstanceCharacteristics
         fields = [
             "id",
             "iarc",
@@ -1445,10 +1477,9 @@ class ReactiveDetailSerializer(serializers.ModelSerializer):
         return None
 
     def get_sustance_characteristics(self, obj):
-        if hasattr(obj, "sustancecharacteristics") and obj.sustancecharacteristics:
-            return SustanceCharacteristicsDetailSerializer(
-                obj.sustancecharacteristics
-            ).data
+        sga_char = obj.substancharacteristics_object.first()
+        if sga_char:
+            return SustanceCharacteristicsDetailSerializer(sga_char).data
         return None
 
     class Meta:
@@ -1985,8 +2016,9 @@ class ShelfObjectHcodeSerializer(serializers.ModelSerializer):
     actions = serializers.SerializerMethodField()
 
     def get_h_code(self, obj):
-        if hasattr(obj.object, "sustancecharacteristics"):
-            hcode = obj.object.sustancecharacteristics.h_code
+        sga_char = obj.object.substancharacteristics_object.first()
+        if sga_char:
+            hcode = sga_char.h_code
             if hcode:
                 return ", ".join(hcode.values_list("code", flat=True))
         return None

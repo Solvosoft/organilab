@@ -73,7 +73,7 @@ def get_stock_dataset(lab_pk, column_list=None):
                 )
                 # if reactive.object.is_pure:
                 cas_id = reactive.object.cas_code
-                sc = getattr(reactive.object, "sustancecharacteristics", None)
+                sc = reactive.object.substancharacteristics_object.first()
                 molecular_formula = (
                     sc.molecular_formula if sc and sc.molecular_formula else ""
                 )
@@ -150,7 +150,7 @@ def get_stock_dataset(lab_pk, column_list=None):
 
         if reactive.object.is_pure:
             cas_id = reactive.object.cas_code
-            sc = getattr(reactive.object, "sustancecharacteristics", None)
+            sc = reactive.object.substancharacteristics_object.first()
             molecular_formula = (
                 sc.molecular_formula if sc and sc.molecular_formula else ""
             )

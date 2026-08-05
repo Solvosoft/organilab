@@ -35,19 +35,20 @@ def get_dataset_report_reactive(report, column_list=None):
         lab_name = (
             reactive.in_where_laboratory.name if reactive.in_where_laboratory else ""
         )
-        if hasattr(reactive.object, "sustancecharacteristics"):
+        sga_char = reactive.object.substancharacteristics_object.first()
+        if sga_char:
             physical = " ".join(
-                reactive.object.sustancecharacteristics.h_code.filter(
+                sga_char.h_code.filter(
                     category_h_code__danger_category="physical"
                 ).values_list("description", flat=True)
             )
             health = " ".join(
-                reactive.object.sustancecharacteristics.h_code.filter(
+                sga_char.h_code.filter(
                     category_h_code__danger_category="health"
                 ).values_list("description", flat=True)
             )
             enviroment = " ".join(
-                reactive.object.sustancecharacteristics.h_code.filter(
+                sga_char.h_code.filter(
                     category_h_code__danger_category="environment"
                 ).values_list("description", flat=True)
             )

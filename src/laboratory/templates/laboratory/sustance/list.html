@@ -236,7 +236,7 @@ function buildReactiveDetailModal(data) {
 
 	// Features
 	if (data.features && data.features.length > 0) {
-		html += '<h6 class="mt-3">' + gettext('Features') + '</h6>';
+		html += '<h6 class="mt-3">' + gettext('Object Features') + '</h6>';
 		html += '<ul class="list-group list-group-flush">';
 		data.features.forEach(function(feature) {
 			html += '<li class="list-group-item py-1">' + feature.name + '</li>';

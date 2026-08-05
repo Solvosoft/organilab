@@ -250,16 +250,15 @@ def format_datetime(value, position):
 def get_danger_categories(reactive, total=0):
     danger_categories_list = []
     category_h_total = {"environment": 0, "health": 0, "physical": 0}
+    sga_char = reactive.substancharacteristics_object.first()
     code_h = HCodeCategory.objects.filter(
         h_code__isnull=False,
-        h_code__pk__in=reactive.sustancecharacteristics.h_code.values_list(
-            "pk", flat=True
-        ),
+        h_code__pk__in=(sga_char.h_code.values_list("pk", flat=True) if sga_char else []),
     ).distinct()
     for code in code_h:
         codes = set(code.h_code.values_list("pk", flat=True))
         obj_hcodes = set(
-            reactive.sustancecharacteristics.h_code.values_list("pk", flat=True)
+            sga_char.h_code.values_list("pk", flat=True) if sga_char else []
         )
         intersection = codes.intersection(obj_hcodes)
         if len(intersection) == code.count():
@@ -294,7 +293,8 @@ def get_inventory(objs, units, extra_filters={}):
     dict_objs = []
     for obj in objs:
         total_shelfobjects = 0
-        density = getattr(obj.sustancecharacteristics, "density", None)
+        sga_char = obj.substancharacteristics_object.first()
+        density = getattr(sga_char, "density", None) if sga_char else None
         data = {}
         for unit in units:
             quantity = (
@@ -311,9 +311,7 @@ def get_inventory(objs, units, extra_filters={}):
                 )
         h_codes = [
             h_codes
-            for h_code in obj.sustancecharacteristics.h_code.values_list(
-                "code", flat=True
-            )
+            for h_code in (sga_char.h_code.values_list("code", flat=True) if sga_char else [])
         ]
         data = {
             "name": obj.name,

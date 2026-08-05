@@ -23,8 +23,8 @@ class Command(BaseCommand):
 
         if options['dry_run']:
             self.stdout.write(f"Would update {count} PubChem record(s):")
-            for record in qs.select_related('sustance_characteristics'):
-                self.stdout.write(f"  ID={record.pk}, SC={record.sustance_characteristics_id}, created={record.creation_date}")
+            for record in qs.select_related('sga_substance_characteristics'):
+                self.stdout.write(f"  ID={record.pk}, SC={record.sga_substance_characteristics_id}, created={record.creation_date}")
             return
 
         updated = qs.update(revision_date=F('creation_date'))

@@ -157,6 +157,9 @@ class Substance(AbstractOrganizationRef):
         null=True,
         blank=True,
     )
+    features = models.ManyToManyField(
+        "laboratory.ObjectFeatures", verbose_name=_("Object features")
+    )
 
     @property
     def warning_word(self):
@@ -178,7 +181,13 @@ class Substance(AbstractOrganizationRef):
 
 class SubstanceCharacteristics(models.Model):
     substance = models.OneToOneField(Substance, on_delete=models.CASCADE, null=True)
-
+    object_related = models.ForeignKey(
+        "laboratory.Object",
+        on_delete=models.SET_NULL,
+        related_name="substancharacteristics_object",
+        null=True,
+        blank=True,
+    )
     iarc = catalog.GTForeignKey(
         "laboratory.Catalog",
         related_name="gt_iarcrel_sga",
@@ -301,6 +310,12 @@ class SubstanceCharacteristics(models.Model):
         default=False,
         verbose_name=_("Is pure?"),
         help_text=_("It belongs to the regulations of decree 44741"),
+    )
+    img_representation = models.ImageField(
+        upload_to="sustances_images/",
+        verbose_name=_("Image representation"),
+        null=True,
+        blank=True,
     )
 
     class Meta:

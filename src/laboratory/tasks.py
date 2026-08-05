@@ -21,7 +21,6 @@ from laboratory.models import (
     Catalog,
     SDSTraceability,
     ShelfObject,
-    SustanceCharacteristics,
     Laboratory,
     PrecursorReport,
     InformScheduler,
@@ -32,6 +31,7 @@ from laboratory.models import (
     OrganizationStructure,
     OrganizationStructureRelations,
 )
+from sga.models import SubstanceCharacteristics
 from pending_tasks.models import PendingTask
 from pending_tasks.utils import create_pending_task
 from .limit_shelfobject import send_email_limit_objs
@@ -239,7 +239,7 @@ def _get_sources_for_substance(sc, force_pubchem_replacement):
     from laboratory.sds_sources import get_sources
 
     is_pubchem = SDSTraceability.objects.filter(
-        sustance_characteristics=sc, source="pubchem"
+        sga_substance_characteristics=sc, source="pubchem"
     ).exists()
 
     if force_pubchem_replacement and is_pubchem:
@@ -250,7 +250,7 @@ def _get_sources_for_substance(sc, force_pubchem_replacement):
 
 
 def _resolve_pdf_path(sc):
-    """Resolve the PDF path for a SustanceCharacteristics in MEDIA_ROOT."""
+    """Resolve the PDF path for a SubstanceCharacteristics in MEDIA_ROOT."""
     if not sc.security_sheet or not sc.security_sheet.name:
         return None
     local_path = os.path.join(settings.MEDIA_ROOT, sc.security_sheet.name)
@@ -351,7 +351,7 @@ def update_sds_and_extract_data(
     3. H-codes are set (replaced) exactly as found in the PDF
 
     Args:
-        sc_ids: list of SustanceCharacteristics PKs (None = all with CAS)
+        sc_ids: list of SubstanceCharacteristics PKs (None = all with CAS)
         force_pubchem_replacement: if True, try Merck for PubChem SDSs
         max_years: max age before considering SDS outdated
         delay: seconds between downloads (rate limiting)
@@ -359,9 +359,9 @@ def update_sds_and_extract_data(
     from laboratory.sds_sources import check_needs_update, update_sds_for_substance
 
     qs = (
-        SustanceCharacteristics.objects.filter(cas_id_number__isnull=False)
+        SubstanceCharacteristics.objects.filter(cas_id_number__isnull=False)
         .exclude(cas_id_number="")
-        .select_related("obj")
+        .select_related("object_related")
     )
     if sc_ids:
         qs = qs.filter(pk__in=sc_ids)
@@ -373,7 +373,7 @@ def update_sds_and_extract_data(
     task_logger.info("Starting SDS update for %d substances", total)
 
     for i, sc in enumerate(qs.iterator(), 1):
-        name = str(sc.obj) if sc.obj else f"PK={sc.pk}"
+        name = str(sc.object_related) if sc.object_related else f"PK={sc.pk}"
         cas = sc.cas_id_number.strip()
         task_logger.info("[%d/%d] Processing %s (CAS: %s)", i, total, name, cas)
 

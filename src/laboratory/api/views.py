@@ -1057,14 +1057,14 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
         return response_data, reactive_changed_data, reactive_ch_changed_data
 
     def get_reactive_ch_serializer(self, instance, request, partial):
-        if hasattr(instance, "sustancecharacteristics"):
-            reactive_ch_instance = instance.sustancecharacteristics
+        sga_char = instance.substancharacteristics_object.first()
+        if sga_char:
             reactive_ch_serializer = ValidateReactiveCharacteristicsSerializer(
-                reactive_ch_instance, data=request.data, partial=partial
+                sga_char, data=request.data, partial=partial
             )
         else:
-            data = request.data
-            data.update({"object": instance.pk})
+            data = request.data.copy()
+            data.update({"object_related": instance.pk})
             reactive_ch_serializer = ValidateReactiveCharacteristicsSerializer(
                 data=data, partial=partial
             )
@@ -1105,7 +1105,7 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
         if reactive_serializer.is_valid():
             if reactive_ch_serializer.is_valid():
                 instance = reactive_serializer.save()
-                reactive_ch_serializer.save(obj=instance)
+                reactive_ch_serializer.save(object_related=instance)
                 instance.organization = organization
 
                 response_data, reactive_changed_data, reactive_ch_changed_data = (
@@ -1129,12 +1129,13 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
                     relobj=organization,
                 )
 
-                if hasattr(instance, "sustancecharacteristics"):
+                sga_char = instance.substancharacteristics_object.first()
+                if sga_char:
                     organilab_logentry(
                         request.user,
-                        instance.sustancecharacteristics,
+                        sga_char,
                         ADDITION,
-                        "sustance characteristics",
+                        "substance characteristics",
                         changed_data=reactive_ch_changed_data,
                         change_message=_("Created substance characteristics for '%(name)s'")
                         % {"name": instance.name},
@@ -1155,18 +1156,13 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
             raise ValidationError(errors)
 
     def destroy(self, request, *args, **kwargs):
-        # ReactiveCharacteristics has OnetoOne relation with Object(Equipment) -->
-        # ON DELETE CASCADE
         self.org_pk = kwargs["org_pk"]
         organization = get_object_or_404(
             OrganizationStructure.objects.using(settings.READONLY_DATABASE),
             pk=self.org_pk,
         )
         instance = self.get_object()
-        reactive_ch_instance = None
-
-        if hasattr(instance, "sustancecharacteristics"):
-            reactive_ch_instance = instance.sustancecharacteristics
+        sga_char = instance.substancharacteristics_object.first()
 
         destroy = super().destroy(request, *args, **kwargs)
 
@@ -1182,17 +1178,18 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
             relobj=organization,
         )
 
-        if reactive_ch_instance:
+        if sga_char:
             organilab_logentry(
                 request.user,
-                reactive_ch_instance,
+                sga_char,
                 DELETION,
-                "sustance characteristics",
+                "substance characteristics",
                 changed_data=["cas_id_number", "molecular_formula"],
                 change_message=_("Deleted substance characteristics for '%(name)s'")
                 % {"name": instance.name},
                 relobj=organization,
             )
+            sga_char.delete()
         return destroy
 
     def update(self, request, *args, **kwargs):
@@ -1240,7 +1237,7 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
                     relobj=organization,
                 )
 
-                if not hasattr(instance, "sustancecharacteristics"):
+                if not instance.substancharacteristics_object.exists():
                     reactive_ch_action = ADDITION
 
                 action_msg = _("Updated") if reactive_ch_action == CHANGE else _("Created")
@@ -1248,7 +1245,7 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
                     request.user,
                     reactive_ch,
                     reactive_ch_action,
-                    "sustance characteristics",
+                    "substance characteristics",
                     changed_data=reactive_ch_changed_data,
                     change_message=_("%(action)s substance characteristics for '%(name)s'")
                     % {"action": action_msg, "name": instance.name},
@@ -1377,7 +1374,7 @@ class ShelfObjectHcodeViewset(AuthAllPermBaseObjectManagement):
 
     queryset = ShelfObject.objects.filter(
         object__type=Object.REACTIVE,
-        object__sustancecharacteristics__h_code__code__in=[
+        object__substancharacteristics_object__h_code__code__in=[
             "H220",
             "H222",
             "H223",
@@ -1388,7 +1385,7 @@ class ShelfObjectHcodeViewset(AuthAllPermBaseObjectManagement):
     ).distinct()
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-    search_fields = ["object__name", "object__sustancecharacteristics__h_code__code"]
+    search_fields = ["object__name", "object__substancharacteristics_object__h_code__code"]
     ordering_fields = ["pk"]
     filterset_class = None
 
@@ -1795,7 +1792,7 @@ class ShelObjectReactiveViewset(AuthAllPermBaseObjectManagement):
         "quantity",
         "measurement_unit__description",
         "measurement_unit__key",
-        "object__sustancecharacteristics__cas_id_number",
+        "object__substancharacteristics_object__cas_id_number",
     ]
     filterset_class = filterset.ShelObjectReactiveFilter
     ordering_fields = ["id"]

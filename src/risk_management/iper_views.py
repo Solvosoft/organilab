@@ -832,7 +832,7 @@ def iper_lab_help(request, org_pk, lab_pk):
             continue
         hcodes = []
         try:
-            chars = obj.sustancecharacteristics
+            chars = obj.substancharacteristics_object.first()
             if chars is not None:
                 hcodes = list(chars.h_code.values_list("code", flat=True))
         except Exception:

@@ -37,7 +37,6 @@ from laboratory.models import (
     Provider,
     Furniture,
     LaboratoryRoom,
-    SustanceCharacteristics,
     REQUESTED,
     ShelfObjectMaintenance,
     OrganizationStructure,
@@ -67,7 +66,7 @@ from laboratory.shelfobject.utils import (
     get_selected_container,
     group_object_errors_for_serializer,
 )
-from sga.models import Pictogram
+from sga.models import Pictogram, SubstanceCharacteristics
 
 logger = logging.getLogger("organilab")
 
@@ -1235,7 +1234,7 @@ class SubstanceCharacteristicsDetailSerializer(serializers.ModelSerializer):
     nfpa = CatalogDetailSerializer(many=True)
 
     class Meta:
-        model = SustanceCharacteristics
+        model = SubstanceCharacteristics
         fields = "__all__"
 
 
@@ -1276,11 +1275,12 @@ class ShelfObjectDetailSerializer(
         fields = "__all__"
 
     def get_substance_characteristics(self, obj):
-        if hasattr(obj.object, "sustancecharacteristics"):
-            characteristics = SubstanceCharacteristicsDetailSerializer(
-                obj.object.sustancecharacteristics
-            )
+        sga_char = obj.object.substancharacteristics_object.first()
+        if sga_char:
+            characteristics = SubstanceCharacteristicsDetailSerializer(sga_char)
+            print(characteristics.data)
             return characteristics.data
+        return None
 
     def get_object_detail(self, obj):
         return obj.get_object_detail()

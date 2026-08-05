@@ -158,30 +158,31 @@
 			</tbody>
 		</table>
 
-		{% if obj.object.sustancecharacteristics %}
+		{% with sustancecharacteristics=obj.object.substancharacteristics_object.first %}
+		{% if sustancecharacteristics %}
 			<table class="infoshelfobject">
 
 				<thead class="tborder">
 				<tr>
 					<th class="bold">{% trans "Molecular formula" %}:</th>
-					<th class="thead">{{ obj.object.sustancecharacteristics.molecular_formula|default_if_none:"" }}</th>
+					<th class="thead">{{ sustancecharacteristics.molecular_formula|default_if_none:"" }}</th>
 					<th class="bold">{% trans "IMDG" %}:</th>
-					<th class="thead">{{ obj.object.sustancecharacteristics.imdg|default_if_none:"" }}</th>
+					<th class="thead">{{ sustancecharacteristics.imdg|default_if_none:"" }}</th>
 				</tr>
 
 				<tr>
 					<th class="bold">{% trans "Bioaccumulable" %}:</th>
-					<th class="thead">{{ obj.object.sustancecharacteristics.bioaccumulable|yesnotext }}</th>
+					<th class="thead">{{ sustancecharacteristics.bioaccumulable|yesnotext }}</th>
 					<th class="bold">{% trans "Is Seveso list III?" %}:</th>
-					<th class="thead">{{ obj.object.sustancecharacteristics.seveso_list|yesnotext }}</th>
+					<th class="thead">{{ sustancecharacteristics.seveso_list|yesnotext }}</th>
 				</tr>
 
 				<tr>
 					<th class="bold">{% trans "CAS Number" %}:</th>
-					<th class="thead">{{ obj.object.sustancecharacteristics.cas_id_number|default_if_none:"" }}</th>
+					<th class="thead">{{ sustancecharacteristics.cas_id_number|default_if_none:"" }}</th>
 					<th class="bold">{% trans "White Organ" %}:</th>
 					<th class="thead">
-						{% for worgan in obj.object.sustancecharacteristics.white_organ.all %}
+						{% for worgan in sustancecharacteristics.white_organ.all %}
 							<div>* {{ worgan }}</div>
 						{% endfor %}
 					</th>
@@ -190,13 +191,13 @@
 				<tr>
 					<th class="bold">{% trans "Storage Classes" %}:</th>
 					<th class="thead">
-						{% for stoclass in obj.object.sustancecharacteristics.storage_class.all %}
+						{% for stoclass in sustancecharacteristics.storage_class.all %}
 							<div>* {{ stoclass }}</div>
 						{% endfor %}
 					</th>
 					<th class="bold">{% trans "NFPA Codes" %}:</th>
 					<th class="thead">
-						{% for nfpa in obj.object.sustancecharacteristics.nfpa.all %}
+						{% for nfpa in sustancecharacteristics.nfpa.all %}
 							<div>* {{ nfpa }}</div>
 						{% endfor %}
 					</th>
@@ -210,19 +211,19 @@
 						{% endfor %}
 					</th>
 					<th class="bold">{% trans "IARC" %}:</th>
-					<th class="thead">{{ obj.object.sustancecharacteristics.iarc|default_if_none:"" }}</th>
+					<th class="thead">{{ sustancecharacteristics.iarc|default_if_none:"" }}</th>
 				</tr>
 
 				<tr>
 					<th class="bold">{% trans "H Codes" %}:</th>
 					<th class="thead">
-						{% for hcode in obj.object.sustancecharacteristics.h_code.all %}
+						{% for hcode in sustancecharacteristics.h_code.all %}
 							<div>* {{ hcode }}</div>
 						{% endfor %}
 					</th>
 					<th class="bold">{% trans "UE Codes" %}:</th>
 					<th class="thead">
-						{% for uecode in obj.object.sustancecharacteristics.ue_code.all %}
+						{% for uecode in sustancecharacteristics.ue_code.all %}
 							<div>* {{ uecode }}</div>
 						{% endfor %}
 					</th>
@@ -230,17 +231,18 @@
 
 				<tr>
 					<th class="bold">{% trans "Is precursor?" %}:</th>
-					<th class="thead">{{ obj.object.sustancecharacteristics.is_precursor|yesnotext }}</th>
-					{% if obj.object.sustancecharacteristics.is_precursor %}
+					<th class="thead">{{ sustancecharacteristics.is_precursor|yesnotext }}</th>
+					{% if sustancecharacteristics.is_precursor %}
 
 						<th class="bold">{% trans "Precursor Type" %}:</th>
-						<th class="thead">{{ obj.object.sustancecharacteristics.precursor_type }}</th>
+						<th class="thead">{{ sustancecharacteristics.precursor_type }}</th>
 
 					{% endif %}
 				</tr>
 				</thead>
 			</table>
 		{% endif %}
+		{% endwith %}
 		{% if obj.shelfobjectequipmentcharacteristics %}
 			<table class="infoshelfobject">
 
