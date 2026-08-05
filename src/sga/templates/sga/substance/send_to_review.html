@@ -16,9 +16,9 @@
             <br>
         </div>
     </div>
-    <form class="form-horizontal" action="{% url 'sga:step_three' org_pk substance %}" method="POST">
+    <form class="form-horizontal" action="{% url 'sga:step_three' org_pk=org_pk substance=substance %}" method="POST">
         {% csrf_token %}
-        <h2 style="color:#337ab7">{% trans 'Send to Review' %}</h2>
+        <h2 style="color:#337ab7" class="text-center">{% trans 'Send to Review' %}</h2>
         <div class="card">
             <div class="card-body">
                 {% if not has_security_sheet %}

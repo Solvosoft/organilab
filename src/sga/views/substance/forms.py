@@ -23,7 +23,6 @@ from sga.models import SubstanceObservation
 class SustanceObjectForm(GTForm, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(SustanceObjectForm, self).__init__(*args, **kwargs)
-        self.fields["components_sga"].required = False
         self.fields["comercial_name"].label = _("Substance name")
 
     class Meta:
@@ -39,8 +38,6 @@ class SustanceObjectForm(GTForm, forms.ModelForm):
         widgets = {
             "comercial_name": genwidgets.TextInput,
             "synonymous": TaggingInput,
-            "components_sga": genwidgets.SelectMultiple,
-            "agrochemical": genwidgets.YesNoInput,
             "description": genwidgets.Textarea,
             "brand": genwidgets.TextInput,
             "organization": genwidgets.HiddenInput,
@@ -51,7 +48,13 @@ class SustanceObjectForm(GTForm, forms.ModelForm):
 class SustanceCharacteristicsForm(GTForm, forms.ModelForm):
     class Meta:
         model = SubstanceCharacteristics
-        exclude = ["substance", "valid_molecular_formula", "number_index", "number_ce"]
+        exclude = [
+            "substance",
+            "valid_molecular_formula",
+            "number_index",
+            "number_ce",
+            "object_related",
+        ]
         widgets = {
             "iarc": genwidgets.Select,
             "imdg": genwidgets.Select,

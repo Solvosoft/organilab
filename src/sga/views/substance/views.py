@@ -95,7 +95,7 @@ def create_edit_sustance(request, org_pk, pk=None):
             molecular_formula = suschacform.cleaned_data["molecular_formula"]
             # if isValidate_molecular_formula(molecular_formula):
             # #suscharinst.valid_molecular_formula = True
-
+            instance = obj
             suscharinst.save()
             suschacform.save_m2m()
             organilab_logentry(
@@ -118,7 +118,9 @@ def create_edit_sustance(request, org_pk, pk=None):
             )
 
             return redirect(
-                reverse("sga:step_two", kwargs={"org_pk": org_pk, "pk": complement.pk})
+                reverse(
+                    "sga:step_four", kwargs={"org_pk": org_pk, "substance": instance.pk}
+                )
             )
 
     elif instance is None and request.method == "GET":
@@ -502,11 +504,6 @@ def step_four(request, org_pk, substance):
     )
     user_is_allowed_on_organization(request.user, organization)
     security_leaf = get_object_or_404(SecurityLeaf, substance__pk=substance)
-    display_label = DisplayLabel.objects.filter(
-        label__substance__pk=substance, created_by=request.user
-    ).first()
-    complement = SGAComplement.objects.filter(substance__pk=substance).first()
-    context = {}
     if request.method == "POST":
         form = SecurityLeafForm(request.POST, instance=security_leaf)
         if form.is_valid():
@@ -518,9 +515,10 @@ def step_four(request, org_pk, substance):
                 "security leaf",
                 changed_data=form.changed_data,
             )
+
             return redirect(
                 reverse(
-                    "sga:send_to_review", kwargs={"org_pk": org_pk, "pk": substance}
+                    "sga:step_three", kwargs={"org_pk": org_pk, "substance": substance}
                 )
             )
 
@@ -528,8 +526,6 @@ def step_four(request, org_pk, substance):
 
     context = {
         "step": 4,
-        "complement": complement.pk,
-        "template": display_label.pk,
         "form": form,
         "provider_form": ProviderSGAForm(),
         "substance": substance,
