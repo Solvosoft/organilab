@@ -88,8 +88,9 @@ class ReportForm(ReportBase):
 
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop("org_pk", None)
-        self.user = kwargs.pop("user", None)
-        user = self.user
+        user = kwargs.pop("user", None)
+        if not hasattr(self, "user") or self.user is None:
+            self.user = user
         super(ReportForm, self).__init__(*args, **kwargs)
 
         if org_pk:
@@ -413,7 +414,7 @@ class RiskZoneReportForm(ReportForm):
 
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop("org_pk", None)
-        kwargs.pop("user", None)
+        self.user = kwargs.pop("user", None)
         super(RiskZoneReportForm, self).__init__(*args, **kwargs)
 
         if org_pk:
@@ -461,9 +462,9 @@ class RegencyReportForm(ReportForm):
         user = kwargs.pop("user", None)
 
         super(RegencyReportForm, self).__init__(*args, **kwargs)
-
+        self.user = user
         if org_pk:
-            lab_ids = get_laboratories_from_organization(org_pk, user)
+            lab_ids = get_laboratories_from_organization(org_pk, self.user)
             self.fields["laboratory"].queryset = Laboratory.objects.filter(
                 pk__in=lab_ids
             )

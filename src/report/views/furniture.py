@@ -54,17 +54,24 @@ def get_dataset_report_reactive(report, column_list=None):
     furniture_list = get_furniture_queryset_by_filters(report)
     i = 0
     objects = []
+    extra_filter = {
+        "object__substancharacteristics_object__is_precursor": report.data.get(
+            "is_precursor", False
+        )
+    }
     for furniture in furniture_list:
         if report.data["object_type"] != "":
-            objects = (
-                furniture.get_objects()
-                .filter(object__type=report.data["object_type"])
-                .distinct("pk")
-                .order_by("pk")
+            objects = furniture.get_objects().filter(
+                object__type=report.data["object_type"]
             )
+            if (
+                extra_filter["object__substancharacteristics_object__is_precursor"]
+                == True
+            ):
+                objects = objects.filter(**extra_filter)
         else:
-            objects = furniture.get_objects().distinct("pk").order_by("pk")
-        for reactive in objects:
+            objects = furniture.get_objects()
+        for reactive in objects.distinct("pk").order_by("pk"):
             physical = ""
             health = ""
             enviroment = ""
@@ -182,6 +189,7 @@ def report_reactive_list_doc(report):
     builder = ExcelGraphBuilder()
     content = [
         [
+            _("Code"),
             _("Name"),
             _("CAS"),
             _("Location"),
