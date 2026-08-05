@@ -23,12 +23,11 @@ from laboratory.models import (
     Object,
     OrganizationStructure,
     SDSTraceability,
-    SustanceCharacteristics,
 )
 from laboratory.utils_pdf import extract_catalog_fields, extract_msds_data
 from msds.forms import SDSUploadForm, SDSConfirmForm
 from msds.models import RegulationDocument
-from sga.models import DangerIndication
+from sga.models import DangerIndication, SubstanceCharacteristics
 
 logger = logging.getLogger("organilab")
 
@@ -39,7 +38,7 @@ def index_msds(request, org_pk):
     source_labels = dict(SDSTraceability.SDS_SOURCE_CHOICES)
     existing_sources = (
         SDSTraceability.objects.filter(
-            sustance_characteristics__obj__organization__pk=org_pk
+            sga_substance_characteristics__object_related__organization__pk=org_pk
         )
         .order_by("source")
         .values_list("source", flat=True)
@@ -59,8 +58,8 @@ def index_msds(request, org_pk):
 @permission_required("msds.view_msdsobject", raise_exception=True)
 def get_list_msds(request, org_pk):
     objs = SDSTraceability.objects.filter(
-        sustance_characteristics__obj__organization__pk=org_pk
-    ).select_related("sustance_characteristics__obj")
+        sga_substance_characteristics__object_related__organization__pk=org_pk
+    ).select_related("sga_substance_characteristics__object_related")
 
     records_total = objs.count()
 
@@ -68,8 +67,8 @@ def get_list_msds(request, org_pk):
     q = request.GET.get("search[value]") or request.GET.get("q")
     if q:
         objs = objs.filter(
-            Q(sustance_characteristics__obj__name__icontains=q)
-            | Q(sustance_characteristics__cas_id_number__icontains=q)
+            Q(sga_substance_characteristics__object_related__name__icontains=q)
+            | Q(sga_substance_characteristics__cas_id_number__icontains=q)
         )
 
     # Column filters (sent by formatDataTableParams)
@@ -78,13 +77,13 @@ def get_list_msds(request, org_pk):
     )
     if substance_filter:
         objs = objs.filter(
-            sustance_characteristics__obj__name__icontains=substance_filter
+            sga_substance_characteristics__object_related__name__icontains=substance_filter
         )
 
     cas_filter = request.GET.get("cas_code__icontains") or request.GET.get("cas_code")
     if cas_filter:
         objs = objs.filter(
-            sustance_characteristics__cas_id_number__icontains=cas_filter
+            sga_substance_characteristics__cas_id_number__icontains=cas_filter
         )
 
     source_filter = request.GET.get("source")
@@ -132,8 +131,8 @@ def get_list_msds(request, org_pk):
 
     data = []
     for trace in page.object_list:
-        sc = trace.sustance_characteristics
-        obj_name = sc.obj.name if sc and sc.obj else ""
+        sc = trace.sga_substance_characteristics
+        obj_name = sc.object_related.name if sc and sc.object_related else ""
         cas = sc.cas_id_number or "" if sc else ""
         source = trace.get_source_display()
         revision = str(trace.revision_date) if trace.revision_date else ""
@@ -297,8 +296,8 @@ def _sds_create_confirm(request, org_pk, context):
     full_path = default_storage.path(temp_file_name)
     file_name = "%s.pdf" % (cd.get("cas_id_number") or obj.pk)
 
-    sc = SustanceCharacteristics(
-        obj=obj,
+    sc = SubstanceCharacteristics(
+        object_related=obj,
         cas_id_number=cd.get("cas_id_number") or None,
         molecular_formula=cd.get("molecular_formula") or None,
         density=cd.get("density") or 0,
@@ -326,7 +325,7 @@ def _sds_create_confirm(request, org_pk, context):
         sc.storage_class.set(cd["storage_class"])
 
     trace = SDSTraceability(
-        sustance_characteristics=sc,
+        sga_substance_characteristics=sc,
         source="manual",
         revision_date=cd.get("revision_date"),
         created_by=request.user,

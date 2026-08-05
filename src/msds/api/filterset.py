@@ -11,6 +11,6 @@ class SDSTraceabilityFilterSet(filters.FilterSet):
             "is_verified": ["exact"],
             "source": ["icontains"],
             "verified_date": ["exact"],
-            "sustance_characteristics__cas_id_number": ["icontains"],
-            "sustance_characteristics__obj__name": ["icontains"],
+            "sga_substance_characteristics__cas_id_number": ["icontains"],
+            "sga_substance_characteristics__object_related__name": ["icontains"],
         }

@@ -17,7 +17,7 @@ from msds.api.filterset import SDSTraceabilityFilterSet
 from msds.api.serializer import (
     SDSTraceabilityDataTableSerializer,
     SDSTraceabilityValidateSerializer,
-    SustanceCharacteristicsSerializer,
+    SGASubstanceCharacteristicsSerializer,
 )
 from django.utils.translation import gettext as _
 
@@ -29,7 +29,7 @@ class SDSTraceabilityViewSet(AuthAllPermBaseObjectManagement):
         "create": None,
         "update": None,
         "destroy": None,
-        "get_sustance_characteristics_info": SustanceCharacteristicsSerializer,
+        "get_sustance_characteristics_info": SGASubstanceCharacteristicsSerializer,
     }
     perms = {
         "list": ["laboratory.view_sdstraceability"],
@@ -40,7 +40,7 @@ class SDSTraceabilityViewSet(AuthAllPermBaseObjectManagement):
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     filterset_class = SDSTraceabilityFilterSet
-    search_fields = ["sustance_characteristics__obj__name", "source"]
+    search_fields = ["sga_substance_characteristics__object_related__name", "source"]
     ordering_fields = ["source", "is_verified", "creation_date"]
     ordering = ("-creation_date",)
 
@@ -93,11 +93,11 @@ class SDSTraceabilityViewSet(AuthAllPermBaseObjectManagement):
         user_is_allowed_on_organization(request.user, self.organization)
         sds = get_object_or_404(SDSTraceability, pk=request.query_params.get("pk", 0))
 
-        if not sds.sustance_characteristics:
+        if not sds.sga_substance_characteristics:
             return Response(
                 {"detail": _("No substance characteristics found.")},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        serializer = SustanceCharacteristicsSerializer(sds.sustance_characteristics)
+        serializer = SGASubstanceCharacteristicsSerializer(sds.sga_substance_characteristics)
         return Response(serializer.data, status=status.HTTP_200_OK)

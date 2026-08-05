@@ -45,6 +45,7 @@ from ...api.serializers import (
     SubstanceObservationSerializer,
     SubstanceObservationDescriptionSerializer,
 )
+from ...utils import notify_request_created, create_object_notification
 
 
 @login_required
@@ -219,6 +220,7 @@ def approve_substances(request, org_pk, pk):
         review_subs.substance.status = Substance.APPROVED
         review_subs.substance.save(update_fields=["status"])
 
+        create_object_notification(review_subs.substance)
     organilab_logentry(
         request.user,
         review_subs,
@@ -996,6 +998,11 @@ def sent_to_review(request, org_pk, substance):
                 substance=obj,
                 organization=form.cleaned_data["organization"],
                 created_by=request.user,
+            )
+            notify_request_created(
+                {"name": rev_sub.substance.comercial_name},
+                request.user,
+                url=reverse("sga:approved_substance", kwargs={"org_pk": org_pk}),
             )
             organilab_logentry(
                 user,

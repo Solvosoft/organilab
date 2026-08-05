@@ -20,7 +20,7 @@ def get_dataset(report, column_list=None):
         if report.data["object_type"]:
             attrs["object__type"] = report.data["object_type"]
             if report.data["is_precursor"] and report.data["object_type"] == "0":
-                attrs["object__sustancecharacteristics__is_precursor"] = (report.data)[
+                attrs["object__substancharacteristics_object__is_precursor"] = (report.data)[
                     "is_precursor"
                 ]
 

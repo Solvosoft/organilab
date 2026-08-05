@@ -47,13 +47,15 @@ ul, li{
 
       <li><label class="bold">{% trans "Description:" %}</label> {{ obj.description }}</li>
       {% if obj.is_reactive %}
-        <li><label class="bold">{% trans 'Molecular formula:' %}</label> <code>{{ obj.sustancecharacteristics.molecular_formula | default:'-' }}</code></li>
-        <li><label class="bold">{% trans 'CAS ID Number:' %}</label> {{ obj.sustancecharacteristics.cas_id_number | default:'Undefined' }}</li>
+        {% with sustancecharacteristics=obj.substancharacteristics_object.first %}
+        <li><label class="bold">{% trans 'Molecular formula:' %}</label> <code>{{ sustancecharacteristics.molecular_formula | default:'-' }}</code></li>
+        <li><label class="bold">{% trans 'CAS ID Number:' %}</label> {{ sustancecharacteristics.cas_id_number | default:'Undefined' }}</li>
         {% if obj.clinventory_entry %}
           <li><label class="bold">{% trans 'Inventario C&L:' %}</label> {{ obj.clinventory_entry.name | safe }} (<a
               href="{{ obj.clinventory_entry.url }}">{% trans 'Reference link' %}</a>)
           </li>
         {% endif %}
+        {% endwith %}
       {% endif %}
     </ul>
   {% empty %}

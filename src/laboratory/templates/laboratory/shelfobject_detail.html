@@ -40,7 +40,7 @@
 <tr><td>{% trans 'Serie' %}</td><td>{{object.object.serie|default:"" }} </td></tr>
 <tr><td>{% trans 'Plaque' %}</td><td>{{object.object.plaque|default:"" }} </td></tr>
 
-{% with sustancecharacteristics=object.object.sustancecharacteristics %}
+{% with sustancecharacteristics=object.object.substancharacteristics_object.first %}
 
 {% if sustancecharacteristics %}
 <tr><td>{% trans 'Cas Number' %}</td><td>{{sustancecharacteristics.cas_id_number|default:""}} </td></tr>

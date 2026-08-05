@@ -8283,3 +8283,37 @@ msgstr "Sustancia aprobada"
 
 msgid "Approved substance '%(name)s' from request"
 msgstr "Sustancia aprobada '%(name)s' desde solicitud"
+
+msgid "New substance request: %(name)s"
+msgstr "Nueva solicitud de sustancia: %(name)s"
+
+msgid "New substance request"
+msgstr "Nueva solicitud de sustancia"
+
+msgid "Hi,\n\n"
+        "A new substance request has been submitted and requires your review.\n\n"
+        "Name: %(name)s\n"
+        "Requested by: %(user)s\n\n"
+        "Please log in to review this request.\n\n"
+        "Thanks,\nOrganilab system"
+msgstr "Hola,\n\n"
+        "Se ha enviado una nueva solicitud de sustancia y requiere su revisión.\n\n"
+        "Nombre: %(name)s\n"
+        "Solicitado por: %(user)s\n\n"
+        "Por favor inicie sesión para revisar esta solicitud.\n\n"
+        "Gracias,\nSistema Organilab"
+
+msgid "Is public"
+msgstr "Es público"
+
+msgid "Not public"
+msgstr "No es público"
+
+msgid "Not is bioaccomulable"
+msgstr "No es Bioacumulable"
+
+msgid "Is bioaccomulable"
+msgstr "Es Bioacumulable"
+
+msgid "Not is precursor"
+msgstr "No es precursor"

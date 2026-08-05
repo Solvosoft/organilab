@@ -8,7 +8,7 @@ from datetime import datetime
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from laboratory.models import SustanceCharacteristics
+from sga.models import SubstanceCharacteristics
 
 SOURCE_KEYWORDS = {
     'Merck': ['merck', 'supelco', 'milliporesigma', 'millipore'],
@@ -117,7 +117,7 @@ class Command(BaseCommand):
             '--ids',
             nargs='+',
             type=int,
-            help='Specific SustanceCharacteristics PKs to process',
+            help='Specific SubstanceCharacteristics PKs to process',
         )
 
     def handle(self, *args, **options):
@@ -126,7 +126,7 @@ class Command(BaseCommand):
         max_years = options['max_years']
         ids = options.get('ids')
 
-        qs = SustanceCharacteristics.objects.using(db).select_related('obj', 'obj__organization').exclude(
+        qs = SubstanceCharacteristics.objects.using(db).select_related('object_related', 'object_related__organization').exclude(
             security_sheet=''
         ).exclude(
             security_sheet__isnull=True
@@ -145,9 +145,9 @@ class Command(BaseCommand):
         no_file = 0
 
         for i, sc in enumerate(qs.iterator(), 1):
-            name = str(sc.obj) if sc.obj else f"PK={sc.pk}"
+            name = str(sc.object_related) if sc.object_related else f"PK={sc.pk}"
             cas = sc.cas_id_number or ''
-            org_name = sc.obj.organization.name if sc.obj and sc.obj.organization else ''
+            org_name = sc.object_related.organization.name if sc.object_related and sc.object_related.organization else ''
             sheet_path = sc.security_sheet.name
 
             full_path = os.path.join(settings.MEDIA_ROOT, sheet_path)

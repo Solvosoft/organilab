@@ -21,7 +21,7 @@ def convert_hcodereport_list(data):
         result["units"] = ShelfObject.get_units(result["units"])
         result["h_codes"] = ",".join(
             Object.objects.filter(pk=reactive_id).values_list(
-                "sustancecharacteristics__h_code__code", flat=True
+                "substancharacteristics_object__h_code__code", flat=True
             )
         )
         context.append(
@@ -46,8 +46,8 @@ def convert_hcodereport_table(data):
         reactive_id = result["reactive_id"]
         result["units"] = ShelfObject.get_units(result["units"])
         result["h_codes"] = Object.objects.filter(pk=reactive_id).values_list(
-            "sustancecharacteristics__h_code__code",
-            "sustancecharacteristics__h_code__description",
+            "substancharacteristics_object__h_code__code",
+            "substancharacteristics_object__h_code__description",
         )
         if name not in context:
             context[name] = len(reactive_list)
@@ -67,7 +67,7 @@ def filter_by_user_and_hcode(user, q, function="convert_hcodereport_table"):
     functiont = get_function(function)
     user_labs = get_user_laboratories(user)
     labs = user_labs.filter(
-        laboratoryroom__furniture__shelf__shelfobject__object__sustancecharacteristics__h_code__in=q
+        laboratoryroom__furniture__shelf__shelfobject__object__substancharacteristics_object__h_code__in=q
     )
     # 'rooms__furniture__shelf__shelfobject__object__h_code__code'
     result = labs.annotate(

@@ -41,7 +41,7 @@ def collect_room_shelf_hcodes(room):
     ).select_related(
         'object', 'shelf', 'shelf__furniture'
     ).prefetch_related(
-        'object__sustancecharacteristics__h_code'
+        'object__substancharacteristics_object__h_code'
     )
 
     for so in shelf_objects:
@@ -56,10 +56,9 @@ def collect_room_shelf_hcodes(room):
                 "labroom_pk": shelf.furniture.labroom_id,
             }
 
-        if hasattr(obj, 'sustancecharacteristics') and obj.sustancecharacteristics:
-            h_codes = list(
-                obj.sustancecharacteristics.h_code.values_list('code', flat=True)
-            )
+        sga_char = obj.substancharacteristics_object.first()
+        if sga_char:
+            h_codes = list(sga_char.h_code.values_list('code', flat=True))
             if h_codes:
                 shelf_data[shelf.pk]["h_codes"].update(h_codes)
                 codes_str = ", ".join(sorted(h_codes))
