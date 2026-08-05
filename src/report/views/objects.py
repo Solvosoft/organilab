@@ -191,7 +191,7 @@ def get_dataset_reactive_precursor(report, column_list=None):
             rpo = Object.objects.all()
 
         rpo = rpo.filter(
-            type=Object.REACTIVE, substancharacteristics_object__is_precursor=True
+            type=Object.REACTIVE, substancharacteristics_object__is_precursor=False
         )
         # Compute per-object totals in Python to avoid PostgreSQL grouping
         # issues with correlated jsonb_array_elements inside aggregates.
