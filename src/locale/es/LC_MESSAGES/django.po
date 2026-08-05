@@ -8317,3 +8317,9 @@ msgstr "Es Bioacumulable"
 
 msgid "Not is precursor"
 msgstr "No es precursor"
+
+msgid "Image representation"
+msgstr "Imagen representativa"
+
+msgid "Do you want to approve the substance"
+msgstr "¿Quieres aprobar la sustancia?"
