@@ -117,7 +117,6 @@
 {{search_by_url|json_script:"search_by_url"}}
 {{suggestions_tag|json_script:"suggestions_tag"}}
 <script>
-const has_perm = {{ perms.laboratory.view_tranferobject|yesno:"true,false" }};
 const can_add_shelfobject = {{ perms.laboratory.add_shelfobject|yesno:"true,false" }};
 document.urls = {
     shelfobject_create: "{% url 'laboratory:shelfobject_create' lab_pk=laboratory org_pk=org_pk  %}",
@@ -146,6 +145,7 @@ document.delete_recipient_url = "{% url 'laboratory:api-shelfobject-delete-recip
 		const has_perm = {
 			"create": {{ perms.sga.add_recipientsize|yesno:"true,false" }},
 			"remove": {{ perms.sga.delete_recipientsize|yesno:"true,false" }},
+			"transfer": {{ perms.laboratory.view_tranferobject|yesno:"true,false" }}
 		}
 </script>
 
