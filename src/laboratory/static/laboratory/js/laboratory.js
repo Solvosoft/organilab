@@ -253,7 +253,7 @@ $(document).ready(function(){
         );
     }
 
-    if (has_perm) {
+    if (has_perm.transfer) {
         shelfObjectButtons.push({
             action: tableObject.showTransfers,
             text: '<i class="fa fa-exchange" aria-hidden="true"></i>',
