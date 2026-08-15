@@ -121,7 +121,7 @@ def _process_one(sc_pk, catalog_data, dry_run, only_empty, update_sds=False, sds
 
     # Create traceability record for existing PDFs if none exists
     try:
-        from laboratory.models import SDSTraceability
+        from sga.models import SDSTraceability
         from laboratory.management.commands.identify_sds_sources import _identify_source, _extract_revision_date, _parse_date
         from laboratory.sds_sources import SOURCE_NAME_TO_KEY
 

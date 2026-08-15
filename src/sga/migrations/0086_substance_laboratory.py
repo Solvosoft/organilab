@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(
                 blank=True,
                 null=True,
-                on_delete=django.db.models.deletion.CASCADE,
+                on_delete=django.db.models.deletion.SET_NULL,
                 related_name="substances_lab",
                 to="laboratory.laboratory",
                 verbose_name="Laboratory",

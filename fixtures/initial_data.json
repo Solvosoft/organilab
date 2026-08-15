@@ -6963,6 +6963,28 @@
   }
 },
 {
+  "model": "async_notifications.emailtemplate",
+  "pk": 6,
+  "fields": {
+    "code": "lab_or_org_request_created",
+    "subject": "{{ subject|safe }}",
+    "message": "{{ body|linebreaksbr }}",
+    "bcc": null,
+    "cc": null
+  }
+},
+{
+  "model": "async_notifications.emailtemplate",
+  "pk": 7,
+  "fields": {
+    "code": "lab_or_org_request_status_changed",
+    "subject": "{{ subject|safe }}",
+    "message": "{{ body|linebreaksbr }}",
+    "bcc": null,
+    "cc": null
+  }
+},
+{
   "model": "async_notifications.templatecontext",
   "pk": 1,
   "fields": {

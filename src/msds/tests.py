@@ -27,10 +27,14 @@ class MsdsTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, template_name="index_msds.html")
 
-    def test_sds_create_get(self):
+    def test_sds_create_redirects_to_the_sga_wizard(self):
+        """El alta de sustancias vive solo en el asistente de SGA."""
         response = self.client.get(reverse("msds:sds_create", kwargs=self.url_attr))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, template_name="msds/sds_create.html")
+        self.assertRedirects(
+            response,
+            reverse("sga:create_sustance", kwargs=self.url_attr),
+            fetch_redirect_response=False,
+        )
 
     def test_get_regulations(self):
         response = self.client.get(reverse("regulation_docs"))

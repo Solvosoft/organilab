@@ -15,6 +15,7 @@ from sga.models import (
     BuilderInformation,
     RecipientSize,
     Substance,
+    SubstanceCharacteristics,
     SubstanceObservation,
     SecurityLeaf,
     ReviewSubstance,
@@ -115,7 +116,7 @@ class SubstanceSerializer(serializers.ModelSerializer):
     actions = serializers.SerializerMethodField()
     cas_id_number = serializers.SerializerMethodField()
     created_by = serializers.SerializerMethodField()
-    laboratory = serializers.SerializerMethodField()
+    laboratories = serializers.SerializerMethodField()
     organization = serializers.SerializerMethodField()
     status = serializers.SerializerMethodField()
 
@@ -141,10 +142,8 @@ class SubstanceSerializer(serializers.ModelSerializer):
             context=context,
         )
 
-    def get_laboratory(self, obj):
-        if obj.laboratory:
-            return obj.laboratory.name
-        return ""
+    def get_laboratories(self, obj):
+        return ", ".join(obj.laboratories.values_list("name", flat=True))
 
     def get_organization(self, obj):
         if obj.organization:
@@ -152,8 +151,13 @@ class SubstanceSerializer(serializers.ModelSerializer):
         return ""
 
     def get_cas_id_number(self, obj):
-        if obj.substancecharacteristics:
-            return obj.substancecharacteristics.cas_id_number
+        # El accesor inverso de un OneToOne lanza RelatedObjectDoesNotExist si no
+        # hay fila, así que un `if` sobre él nunca da False y tumbaría la tabla.
+        characteristics = SubstanceCharacteristics.objects.filter(
+            substance=obj
+        ).first()
+        if characteristics:
+            return characteristics.cas_id_number
         return ""
 
     def get_status(self, obj):
@@ -170,7 +174,7 @@ class SubstanceSerializer(serializers.ModelSerializer):
             "comercial_name",
             "uipa_name",
             "cas_id_number",
-            "laboratory",
+            "laboratories",
             "organization",
             "status",
             "actions",
@@ -210,7 +214,7 @@ class ReviewSubstanceSerializer(serializers.ModelSerializer):
     actions = serializers.SerializerMethodField()
     created_by = serializers.SerializerMethodField()
     comercial_name = serializers.SerializerMethodField()
-    laboratory = serializers.SerializerMethodField()
+    laboratories = serializers.SerializerMethodField()
     organization = serializers.SerializerMethodField()
 
     def get_created_by(self, obj):
@@ -226,10 +230,10 @@ class ReviewSubstanceSerializer(serializers.ModelSerializer):
             return obj.substance.comercial_name
         return ""
 
-    def get_laboratory(self, obj):
-        if obj.substance.laboratory:
-            return obj.substance.laboratory.name
-        return ""
+    def get_laboratories(self, obj):
+        if not obj.substance:
+            return ""
+        return ", ".join(obj.substance.laboratories.values_list("name", flat=True))
 
     def get_organization(self, obj):
         if obj.substance.organization:
@@ -279,7 +283,7 @@ class ReviewSubstanceSerializer(serializers.ModelSerializer):
             "creation_date",
             "created_by",
             "comercial_name",
-            "laboratory",
+            "laboratories",
             "organization",
             "actions",
         ]

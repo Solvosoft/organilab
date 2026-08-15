@@ -85,9 +85,9 @@ class CapacitacionSeleniumBase(SeleniumBase):
         )
         self.selenium.get(url)
 
-    def navigate_to_sga_step_two(self, org_pk, pk):
+    def navigate_to_sga_update_substance(self, org_pk, pk):
         url = self.live_server_url + str(
-            reverse("sga:step_two", kwargs={"org_pk": org_pk, "pk": pk})
+            reverse("sga:update_substance", kwargs={"org_pk": org_pk, "pk": pk})
         )
         self.selenium.get(url)
 

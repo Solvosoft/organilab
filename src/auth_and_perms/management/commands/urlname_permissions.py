@@ -2233,7 +2233,7 @@ URLNAME_PERMISSIONS = {
             "permission": "sga.change_displaylabel",
         },
     ],
-    "step_two": [
+    "sgalabel_step_one": [
         {
             "name": "Add SGA Complement",
             "category": "SGA Complement",
@@ -2255,7 +2255,7 @@ URLNAME_PERMISSIONS = {
             "permission": "sga.change_displaylabel",
         },
     ],
-    "step_three": [
+    "sgalabel_step_two": [
         {
             "name": "View SGA Complement",
             "category": "SGA Complement",
@@ -3213,7 +3213,7 @@ URLNAME_PERMISSIONS = {
         {
             "name": "Verify SDS",
             "category": "Verify SDS",
-            "permission": "laboratory.change_sdstraceability",
+            "permission": "sga.change_sdstraceability",
         }
     ],
     "lab_or_org_request": [
@@ -3245,4 +3245,78 @@ URLNAME_PERMISSIONS = {
             "permission": "laboratory.can_approve_labororgrequest",
         },
     ],
+    "send_to_review": [
+        {
+            "name": "Change Substance",
+            "category": "Substance",
+            "permission": "sga.change_substance",
+        },
+        {
+            "name": "View Substance",
+            "category": "Substance",
+            "permission": "sga.view_substance",
+        },
+        {
+            "name": "Add Review Substance",
+            "category": "Review Substance",
+            "permission": "sga.add_reviewsubstance",
+        },
+        {
+            "name": "View Review Substance",
+            "category": "Review Substance",
+            "permission": "sga.view_reviewsubstance",
+        },
+    ],
+    "upload_sds": [
+        {
+            "name": "Change Substance Characteristics",
+            "category": "Substance Characteristics",
+            "permission": "sga.change_substancecharacteristics",
+        },
+        {
+            "name": "Add SDS Traceability",
+            "category": "SDS Traceability",
+            "permission": "sga.add_sdstraceability",
+        },
+        {
+            "name": "Add Substance",
+            "category": "Substance",
+            "permission": "sga.add_substance",
+        },
+    ],
+    "sds_task_status": [
+        {
+            "name": "View Substance Characteristics",
+            "category": "Substance Characteristics",
+            "permission": "sga.view_substancecharacteristics",
+        },
+    ],
+    "accept_substance": [
+        {
+            "name": "Change Substance",
+            "category": "Substance",
+            "permission": "sga.change_substance",
+        },
+        {
+            "name": "Change Review Substance",
+            "category": "Review Substance",
+            "permission": "sga.change_reviewsubstance",
+        },
+        {
+            "name": "View Review Substance",
+            "category": "Review Substance",
+            "permission": "sga.view_reviewsubstance",
+        },
+        {
+            # Aprobar una sustancia crea su Object de inventario.
+            "name": "Add Object",
+            "category": "Object",
+            "permission": "laboratory.add_object",
+        },
+    ],
 }
+
+# create_sustance, update_substance y step_one son la misma vista, así que
+# comparten exigencias de permisos; se declaran una vez y se replican.
+URLNAME_PERMISSIONS["create_sustance"] = URLNAME_PERMISSIONS["step_one"]
+URLNAME_PERMISSIONS["update_substance"] = URLNAME_PERMISSIONS["step_one"]

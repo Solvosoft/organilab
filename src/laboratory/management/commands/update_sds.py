@@ -31,7 +31,7 @@ class Command(BaseCommand):
             '--ids',
             nargs='+',
             type=int,
-            help='Specific SustanceCharacteristics PKs to process',
+            help='Specific SubstanceCharacteristics PKs to process',
         )
         parser.add_argument(
             '--batch-size',
@@ -105,7 +105,7 @@ class Command(BaseCommand):
             qs = qs.filter(Q(security_sheet='') | Q(security_sheet__isnull=True))
 
         if only_pubchem:
-            from laboratory.models import SDSTraceability
+            from sga.models import SDSTraceability
             pubchem_sc_ids = SDSTraceability.objects.filter(
                 source='pubchem'
             ).values_list('sga_substance_characteristics_id', flat=True).distinct()

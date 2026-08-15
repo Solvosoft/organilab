@@ -2,8 +2,14 @@ import openpyxl
 from django.core.management import CommandError
 from django.core.management.base import BaseCommand
 
-from laboratory.models import Object, SustanceCharacteristics
-from sga.models import DangerIndication, WarningClass, WarningWord, PrudenceAdvice
+from laboratory.models import Object
+from sga.models import (
+    DangerIndication,
+    WarningClass,
+    WarningWord,
+    PrudenceAdvice,
+    SubstanceCharacteristics,
+)
 import re
 
 
@@ -109,7 +115,9 @@ class Command(BaseCommand):
             resultado = self.parsear_instruccion(fila[4])
             h_codes = [h_code.strip() for h_code in h_codes]
             for obj in objs:
-                susta = SustanceCharacteristics.objects.filter(obj=obj).first()
+                susta = SubstanceCharacteristics.objects.filter(
+                    object_related=obj
+                ).first()
                 if susta:
 
                     i += 1
@@ -138,9 +146,12 @@ class Command(BaseCommand):
             obj = Object.objects.filter(name=fila[0])
             if obj.exists():
                 for obj_susta in obj:
-                    susta = SustanceCharacteristics.objects.filter(
-                        obj=obj_susta
+                    susta = SubstanceCharacteristics.objects.filter(
+                        object_related=obj_susta
                     ).first()
+                    if susta is None:
+                        print(f"No encontro caracteristicas de {fila[0]}")
+                        continue
                     if fila[1] != None:
                         hcode = fila[1].split(",")
                         susta.h_code.add(*hcode)

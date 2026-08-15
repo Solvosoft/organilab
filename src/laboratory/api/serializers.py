@@ -31,7 +31,6 @@ from laboratory.models import (
     Catalog,
     EquipmentType,
     EquipmentCharacteristics,
-    SustanceCharacteristics,
     ReactiveLimit,
     ObjectMaximumLimit,
     LaboratoryProcess,

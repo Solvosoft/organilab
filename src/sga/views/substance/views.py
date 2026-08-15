@@ -1,8 +1,13 @@
+import json
+
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION
+from django_celery_results.models import TaskResult
+from djgentelella.models import ChunkedUpload
 from django.contrib.auth.decorators import permission_required, login_required
 from django.core.exceptions import PermissionDenied
+from django.db import transaction
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import get_template
@@ -17,11 +22,7 @@ from auth_and_perms.organization_utils import user_is_allowed_on_organization
 from laboratory.models import OrganizationStructure
 from laboratory.utils import organilab_logentry
 from sga.forms import (
-    BuilderInformationForm,
-    SGAComplementsForm,
     ProviderSGAForm,
-    PersonalSGAAddForm,
-    PersonalEditorForm,
     RecipientSizeForm,
 )
 from sga.models import Substance, DisplayLabel, SGAComplement, SecurityLeaf
@@ -45,6 +46,7 @@ from ...api.serializers import (
     SubstanceObservationSerializer,
     SubstanceObservationDescriptionSerializer,
 )
+from ...tasks import extract_sds_for_characteristics
 from ...utils import notify_request_created, create_object_notification
 
 
@@ -61,18 +63,24 @@ def create_edit_sustance(request, org_pk, pk=None):
     instance = None
     suscharobj = None
     postdata = None
+    filesdata = None
 
     if pk:
         instance = Substance.objects.filter(pk=pk, organization=organization).first()
 
     if instance:
-        suscharobj = instance.substancecharacteristics
+        suscharobj = SubstanceCharacteristics.objects.filter(
+            substance=instance
+        ).first()
 
     if request.method == "POST":
         postdata = request.POST
+        filesdata = request.FILES
 
     objform = SustanceObjectForm(postdata, instance=instance)
-    suschacform = SustanceCharacteristicsForm(postdata, instance=suscharobj)
+    suschacform = SustanceCharacteristicsForm(
+        postdata, files=filesdata, instance=suscharobj
+    )
     if request.method == "POST":
 
         if objform.is_valid() and suschacform.is_valid():
@@ -123,39 +131,18 @@ def create_edit_sustance(request, org_pk, pk=None):
                 )
             )
 
-    elif instance is None and request.method == "GET":
-        substance = Substance.objects.create(
-            created_by=request.user, organization=organization
+    # Abrir el asistente no crea nada: la sustancia nace en el primer POST válido
+    # o al subir la ficha. Crearla al entrar dejaría una fila muerta por cada
+    # persona que mira el formulario y se va sin guardar.
+    template_pk = None
+    if instance:
+        label, created_label = Label.objects.get_or_create(substance=instance)
+        template = TemplateSGA.objects.filter(is_default=True).first()
+        personal, created = DisplayLabel.objects.get_or_create(
+            label=label, template=template, created_by=request.user
         )
-        charac = SubstanceCharacteristics.objects.create(substance=substance)
-        organilab_logentry(
-            request.user,
-            substance,
-            ADDITION,
-            "substance",
-            changed_data=["created_by", "organization"],
-            change_message=_("Created new substance"),
-        )
-        organilab_logentry(
-            request.user,
-            charac,
-            ADDITION,
-            "substance characteristics",
-            changed_data=["substance"],
-            change_message=_("Created substance characteristics"),
-        )
-
-        return redirect(
-            reverse(
-                "sga:update_substance", kwargs={"org_pk": org_pk, "pk": substance.pk}
-            )
-        )
-    label, created_label = Label.objects.get_or_create(substance=instance)
-    template = TemplateSGA.objects.get(is_default=True)
-    personal, created = DisplayLabel.objects.get_or_create(
-        label=label, template=template, created_by=request.user
-    )
-    leaf, leaf_created = SecurityLeaf.objects.get_or_create(substance=instance)
+        SecurityLeaf.objects.get_or_create(substance=instance)
+        template_pk = personal.pk
 
     return render(
         request,
@@ -165,9 +152,9 @@ def create_edit_sustance(request, org_pk, pk=None):
             "suschacform": suschacform,
             "instance": instance,
             "step": 1,
-            "template": personal.pk,
-            "substance": instance.pk,
-            "pk": instance.pk,
+            "template": template_pk,
+            "substance": instance.pk if instance else None,
+            "pk": instance.pk if instance else None,
             "org_pk": org_pk,
         },
     )
@@ -214,28 +201,41 @@ def approve_substances(request, org_pk, pk):
     )
     user_is_allowed_on_organization(request.user, organization)
     review_subs = get_object_or_404(ReviewSubstance, pk=pk)
-    review_subs.is_approved = True
-    review_subs.created_by = request.user
-    review_subs.save()
+    substance_name = (
+        review_subs.substance.comercial_name if review_subs.substance else ""
+    )
 
-    if review_subs.substance:
-        review_subs.substance.status = Substance.APPROVED
-        review_subs.substance.save(update_fields=["status"])
+    # La vista es alcanzable por GET, así que un doble clic o una precarga del
+    # navegador la ejecutarían dos veces y crearían dos objetos de inventario
+    # para la misma sustancia.
+    if review_subs.is_approved:
+        messages.info(
+            request,
+            _("Substance '%(name)s' was already approved.") % {"name": substance_name},
+        )
+        return redirect(reverse("sga:approved_substance", kwargs={"org_pk": org_pk}))
 
-        create_object_notification(review_subs.substance)
+    with transaction.atomic():
+        review_subs.is_approved = True
+        review_subs.created_by = request.user
+        review_subs.save()
+
+        if review_subs.substance:
+            review_subs.substance.status = Substance.APPROVED
+            review_subs.substance.save(update_fields=["status"])
+            create_object_notification(review_subs.substance, user=request.user)
+
     organilab_logentry(
         request.user,
         review_subs,
         CHANGE,
         "review substance",
         changed_data=["is_approved", "created_by", "status"],
-        change_message=_("Approved substance '%(name)s'")
-        % {"name": review_subs.substance.comercial_name},
+        change_message=_("Approved substance '%(name)s'") % {"name": substance_name},
     )
     messages.success(
         request,
-        _("Substance '%(name)s' has been approved.")
-        % {"name": review_subs.substance.comercial_name},
+        _("Substance '%(name)s' has been approved.") % {"name": substance_name},
     )
     return redirect(reverse("sga:approved_substance", kwargs={"org_pk": org_pk}))
 
@@ -303,198 +303,6 @@ def detail_substance(request, org_pk, pk):
 
 @login_required
 @permission_required(
-    ("sga.change_sgacomplement", "auth_and_perms.institution_can_access"),
-    raise_exception=True,
-)
-def step_two(request, org_pk, pk):
-    organization = get_object_or_404(
-        OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
-    )
-    user_is_allowed_on_organization(request.user, organization)
-    complement = get_object_or_404(SGAComplement, pk=pk)
-    display_label = DisplayLabel.objects.filter(
-        created_by=request.user, label__substance__pk=complement.substance.pk
-    ).first()
-    context = {}
-    if request.method == "POST":
-        pesonalform = PersonalSGAAddForm(
-            request.POST, request.FILES, instance=display_label
-        )
-        complementform = SGAComplementsForm(request.POST, instance=complement)
-        builderinformationform = BuilderInformationForm(
-            request.POST, instance=display_label.label.builderInformation
-        )
-        complementform_ok = complementform.is_valid()
-        builderinformationform_ok = builderinformationform.is_valid()
-        pesonalform_ok = pesonalform.is_valid()
-
-        if complementform_ok:
-            obj = complementform.save()
-            organilab_logentry(
-                request.user,
-                obj,
-                CHANGE,
-                "sga complement",
-                changed_data=complementform.changed_data,
-                change_message=_("Updated SGA complement for substance '%(name)s'")
-                % {"name": complement.substance.comercial_name},
-            )
-
-        if builderinformationform_ok:
-            instance = builderinformationform.save()
-            organilab_logentry(
-                request.user,
-                instance,
-                CHANGE,
-                "builder information",
-                changed_data=builderinformationform.changed_data,
-                change_message=_("Updated builder information for substance '%(name)s'")
-                % {"name": complement.substance.comercial_name},
-            )
-
-            if display_label.label.builderInformation is None:
-                display_label.label.builderInformation = instance
-                display_label.label.save()
-
-        if pesonalform_ok:
-            personal_obj = pesonalform.save()
-            organilab_logentry(
-                request.user,
-                personal_obj,
-                CHANGE,
-                "personal template sga",
-                changed_data=pesonalform.changed_data,
-                change_message=_(
-                    "Updated personal SGA template for substance '%(name)s'"
-                )
-                % {"name": complement.substance.comercial_name},
-            )
-
-        if complementform_ok and builderinformationform_ok and pesonalform_ok:
-            return redirect(
-                reverse(
-                    "sga:step_three",
-                    kwargs={
-                        "template": display_label.pk,
-                        "substance": display_label.label.substance.pk,
-                        "org_pk": org_pk,
-                    },
-                )
-            )
-        else:
-            messages.error(request, _("Invalid form"))
-            context = {
-                "form": SGAComplementsForm(instance=complement),
-                "builderinformationform": builderinformationform,
-                "pesonalform": pesonalform,
-                "step": 2,
-                "template": display_label.pk,
-                "complement": complement.pk,
-                "substance": complement.substance.pk,
-                "org_pk": org_pk,
-            }
-            return render(request, "sga/substance/step_two.html", context)
-    context = {
-        "form": SGAComplementsForm(instance=complement),
-        "builderinformationform": BuilderInformationForm(
-            instance=display_label.label.builderInformation
-        ),
-        "pesonalform": PersonalSGAAddForm(instance=display_label),
-        "step": 2,
-        "complement": complement.pk,
-        "template": display_label.pk,
-        "substance": complement.substance.pk,
-        "org_pk": org_pk,
-    }
-    return render(request, "sga/substance/step_two.html", context)
-
-
-@login_required
-@permission_required(
-    ("sga.change_displaylabel", "auth_and_perms.institution_can_access"),
-    raise_exception=True,
-)
-def step_three(request, org_pk, template, substance):
-    organization = get_object_or_404(
-        OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
-    )
-    user_is_allowed_on_organization(request.user, organization)
-    display_label = get_object_or_404(DisplayLabel, pk=template)
-    complement = get_object_or_404(SGAComplement, substance__pk=substance)
-    user = request.user
-
-    if request.method == "POST":
-        form = PersonalEditorForm(request.POST, instance=display_label)
-        if form.is_valid():
-            obj = form.save()
-            organilab_logentry(
-                user,
-                obj,
-                CHANGE,
-                "personal template sga",
-                changed_data=form.changed_data,
-                change_message=_(
-                    "Updated personal SGA template editor for substance '%(name)s'"
-                )
-                % {"name": display_label.label.substance.comercial_name},
-            )
-            return redirect(
-                reverse(
-                    "sga:step_four",
-                    kwargs={
-                        "substance": display_label.label.substance.pk,
-                        "org_pk": org_pk,
-                    },
-                )
-            )
-
-    initial = {
-        "name": display_label.name,
-        "template": display_label.template,
-        "barcode": display_label.barcode,
-        "json_representation": display_label.json_representation,
-    }
-
-    if display_label.label:
-        bi_info = display_label.label.builderInformation
-        initial.update(
-            {
-                "substance": display_label.label.substance.pk,
-                "commercial_information": (
-                    display_label.label.builderInformation.commercial_information
-                    if display_label.label.builderInformation
-                    else ""
-                ),
-            }
-        )
-
-        if bi_info:
-            initial.update(
-                {
-                    "company_name": bi_info.name,
-                    "phone": bi_info.phone,
-                    "address": bi_info.address,
-                }
-            )
-
-    context = {
-        "editorform": PersonalEditorForm(initial=initial, instance=display_label),
-        "instance": display_label,
-        "sgalabel": display_label,
-        "complement": complement.pk,
-        "sga_elements": complement,
-        "step": 3,
-        "templateinstance": display_label.template,
-        "template": display_label.pk,
-        "label": display_label.label,
-        "substance": display_label.label.substance.pk,
-        "org_pk": org_pk,
-    }
-    return render(request, "sga/substance/step_three.html", context)
-
-
-@login_required
-@permission_required(
     ("sga.change_securityleaf", "auth_and_perms.institution_can_access"),
     raise_exception=True,
 )
@@ -518,14 +326,15 @@ def step_four(request, org_pk, substance):
 
             return redirect(
                 reverse(
-                    "sga:step_three", kwargs={"org_pk": org_pk, "substance": substance}
+                    "sga:send_to_review",
+                    kwargs={"org_pk": org_pk, "substance": substance},
                 )
             )
 
     form = SecurityLeafForm(instance=security_leaf)
 
     context = {
-        "step": 4,
+        "step": 2,
         "form": form,
         "provider_form": ProviderSGAForm(),
         "substance": substance,
@@ -699,7 +508,11 @@ def add_observation(request, org_pk, substance):
     )
     user_is_allowed_on_organization(request.user, organization)
 
-    substance_obj = get_object_or_404(Substance, pk=substance)
+    substance_obj = get_object_or_404(
+        Substance, pk=substance, organization__pk=org_pk
+    )
+    # Ojo: este "step" es la pestaña del detalle de la sustancia (1=Detalle,
+    # 2=Observaciones), no un paso del asistente. Lo consume detail_substance.
     request.session["step"] = 2
 
     if substance and request.method == "POST":
@@ -950,7 +763,7 @@ def add_sga_provider(request, org_pk):
 
 @login_required
 @permission_required(
-    ("sga.change_displaylabel", "auth_and_perms.institution_can_access"),
+    ("sga.change_substance", "auth_and_perms.institution_can_access"),
     raise_exception=True,
 )
 def sent_to_review(request, org_pk, substance):
@@ -958,15 +771,14 @@ def sent_to_review(request, org_pk, substance):
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
     )
     user_is_allowed_on_organization(request.user, organization)
-    substance = get_object_or_404(Substance, pk=substance)
+    substance = get_object_or_404(Substance, pk=substance, organization__pk=org_pk)
     user = request.user
 
-    has_security_sheet = False
-    if (
-        hasattr(substance, "substancecharacteristics")
-        and substance.substancecharacteristics
-    ):
-        has_security_sheet = bool(substance.substancecharacteristics.security_sheet)
+    characteristics = SubstanceCharacteristics.objects.filter(
+        substance=substance
+    ).first()
+    has_security_sheet = bool(characteristics and characteristics.security_sheet)
+    form = None
 
     if request.method == "POST":
         if not has_security_sheet:
@@ -976,14 +788,18 @@ def sent_to_review(request, org_pk, substance):
                     "You must upload a security sheet (SDS) before sending the substance for review."
                 ),
             )
+            # La ficha se sube en el paso 1, no aquí: se devuelve al usuario al
+            # sitio donde puede aportarla.
             return redirect(
                 reverse(
-                    "sga:step_three",
-                    kwargs={"substance": substance.pk, "org_pk": org_pk},
+                    "sga:update_substance",
+                    kwargs={"pk": substance.pk, "org_pk": org_pk},
                 )
             )
 
-        form = SendToReviewForm(request.POST, instance=substance)
+        form = SendToReviewForm(
+            request.POST, instance=substance, user=request.user, org_pk=org_pk
+        )
         if form.is_valid():
             obj = form.save(commit=False)
             obj.status = Substance.UNDER_REVIEW
@@ -1039,10 +855,132 @@ def sent_to_review(request, org_pk, substance):
         )
 
     context = {
-        "form": SendToReviewForm(instance=substance),
+        # Si el POST no validó se reutiliza el formulario ligado, para que el
+        # usuario vea los errores en lugar de una página recargada en blanco.
+        "form": form
+        or SendToReviewForm(
+            instance=substance, user=request.user, org_pk=org_pk
+        ),
         "organization": org_pk,
         "substance": substance.pk,
         "org_pk": org_pk,
+        "step": 3,
         "has_security_sheet": has_security_sheet,
     }
     return render(request, "sga/substance/send_to_review.html", context)
+
+
+def _resolve_uploaded_sheet(request):
+    """Obtiene la ficha tanto del widget de gentelella como de un envío directo.
+
+    El widget `genwidgets.FileInput` sube el archivo por trozos a su propio
+    endpoint y deja en el POST un token JSON que apunta al `ChunkedUpload`; ese
+    es el camino normal desde el asistente. Se acepta además un fichero directo
+    en `request.FILES` para poder llamar al endpoint sin pasar por el widget.
+    """
+    token = request.POST.get("security_sheet") or request.POST.get("token")
+    if token:
+        try:
+            upload_id = json.loads(token).get("token")
+        except (TypeError, ValueError):
+            upload_id = token
+        chunked = ChunkedUpload.objects.filter(upload_id=upload_id).first()
+        if chunked:
+            uploaded = chunked.get_uploaded_file()
+            chunked.delete()
+            return uploaded
+
+    return request.FILES.get("security_sheet")
+
+
+@login_required
+@permission_required(
+    ("sga.change_substancecharacteristics", "auth_and_perms.institution_can_access"),
+    raise_exception=True,
+)
+def upload_sds(request, org_pk, pk=None):
+    """Recibe la ficha de seguridad del paso 1 y encola su extracción.
+
+    Si todavía no hay sustancia, se crea aquí. La ficha necesita colgar de algo
+    para guardarse, y subirla es un acto deliberado: por eso es uno de los dos
+    momentos —junto al primer guardado— en que la sustancia nace.
+    """
+    if request.method != "POST":
+        return JsonResponse({"ok": False, "message": _("Method not allowed")}, status=405)
+
+    organization = get_object_or_404(
+        OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
+    )
+    user_is_allowed_on_organization(request.user, organization)
+
+    uploaded = _resolve_uploaded_sheet(request)
+    if not uploaded:
+        return JsonResponse(
+            {"ok": False, "message": _("No security sheet was received.")}, status=400
+        )
+
+    substance = None
+    if pk:
+        substance = get_object_or_404(Substance, pk=pk, organization=organization)
+
+    with transaction.atomic():
+        if substance is None:
+            substance = Substance.objects.create(
+                created_by=request.user, organization=organization
+            )
+            organilab_logentry(
+                request.user,
+                substance,
+                ADDITION,
+                "substance",
+                changed_data=["created_by", "organization"],
+                change_message=_("Created new substance"),
+            )
+
+        characteristics, _created = SubstanceCharacteristics.objects.get_or_create(
+            substance=substance
+        )
+        characteristics.security_sheet = uploaded
+        characteristics.save(update_fields=["security_sheet"])
+
+    task = extract_sds_for_characteristics.delay(
+        characteristics.pk, user_pk=request.user.pk
+    )
+
+    return JsonResponse(
+        {
+            "ok": True,
+            "substance_pk": substance.pk,
+            "sc_pk": characteristics.pk,
+            "task_id": task.task_id,
+        }
+    )
+
+
+@login_required
+@permission_required(
+    ("sga.view_substancecharacteristics", "auth_and_perms.institution_can_access"),
+    raise_exception=True,
+)
+def sds_task_status(request, org_pk):
+    """Estado de la extracción encolada, para que el paso 1 pueda sondearla."""
+    organization = get_object_or_404(
+        OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
+    )
+    user_is_allowed_on_organization(request.user, organization)
+
+    task_id = request.GET.get("task_id")
+    if not task_id:
+        return JsonResponse({"state": "PENDING", "end": False})
+
+    result = TaskResult.objects.filter(task_id=task_id).first()
+    state = result.status if result else "PENDING"
+    response = {"state": state, "end": state in ("SUCCESS", "FAILURE", "REVOKED")}
+
+    if state == "SUCCESS" and result:
+        try:
+            response["result"] = json.loads(result.result)
+        except (TypeError, ValueError):
+            response["result"] = None
+
+    return JsonResponse(response)

@@ -6,14 +6,13 @@ from django.utils.text import slugify
 
 from laboratory.models import (
     ShelfObject,
-    SustanceCharacteristics,
     Protocol,
     RegisterUserQR,
 )
 from msds.models import RegulationDocument
 from report.models import TaskReport
 from risk_management.models import IncidentReport
-from sga.models import DisplayLabel
+from sga.models import DisplayLabel, SubstanceCharacteristics
 from pathlib import Path
 
 
@@ -37,7 +36,7 @@ class Command(BaseCommand):
         return [new_name, initial_path, new_path]
 
     def set_substance_img_representation(self):
-        substances = SustanceCharacteristics.objects.all()
+        substances = SubstanceCharacteristics.objects.all()
 
         for substance in substances:
             if substance.img_representation:
@@ -52,7 +51,7 @@ class Command(BaseCommand):
                     substance.save()
 
     def set_substance_security_sheet(self):
-        substances = SustanceCharacteristics.objects.all()
+        substances = SubstanceCharacteristics.objects.all()
 
         for substance in substances:
 

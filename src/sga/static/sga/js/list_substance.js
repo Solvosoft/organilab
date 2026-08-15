@@ -62,7 +62,7 @@ datatableelement=createDataTable("#substance_table", document.urls.substance_tab
             {data: "cas_id_number", name: "cas_id_number", title: gettext("CAS"), type: "string", visible: true},
             {data: "status", name: "status", title: gettext("Status"), type: "string", visible: true},
             {data: "organization", name: "organization", title: gettext("Organization"), type: "string", visible: true},
-            {data: "laboratory", name: "laboratory", title: gettext("Laboratory"), type: "string", visible: true},
+            {data: "laboratories", name: "laboratories", title: gettext("Laboratories"), type: "string", visible: true, sortable: false},
             {data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: true, filterable: false, sortable: false},
         ],
         buttons: [

@@ -239,7 +239,7 @@ def _donut_arc_path(cx, cy, r_outer, r_inner, start_angle, end_angle):
 
 @login_required
 def sds_coverage_svg(request, org_pk):
-    from laboratory.models import SDSTraceability
+    from sga.models import SDSTraceability
     from sga.models import SubstanceCharacteristics
     from django.db.models import Subquery, OuterRef
 

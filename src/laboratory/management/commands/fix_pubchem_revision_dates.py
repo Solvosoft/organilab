@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.db.models import F
 
-from laboratory.models import SDSTraceability
+from sga.models import SDSTraceability
 
 
 class Command(BaseCommand):

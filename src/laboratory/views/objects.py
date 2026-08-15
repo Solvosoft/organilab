@@ -10,7 +10,6 @@ from django.contrib import messages
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.contrib.auth.decorators import login_required, permission_required
 from django.db.models.query_utils import Q
-from django.forms import ModelForm
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.urls import path
@@ -32,7 +31,6 @@ from laboratory.models import (
     OrganizationStructure,
     MaterialCapacity,
     Object,
-    SustanceCharacteristics,
 )
 from laboratory.utils import organilab_logentry, get_pk_org_ancestors_decendants
 from laboratory.views.djgeneric import CreateView, DeleteView, UpdateView, ListView
@@ -267,12 +265,6 @@ class ObjectView(object):
             path("edit/<int:pk>", self.edit, name="objectview_update"),
             path("delete/<int:pk>", self.delete, name="objectview_delete"),
         ]
-
-
-class SustanceCharacteristicsForm(ModelForm):
-    class Meta:
-        model = SustanceCharacteristics
-        fields = "__all__"
 
 
 @login_required

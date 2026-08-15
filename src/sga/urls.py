@@ -111,13 +111,19 @@ urlpatterns = [
     path(
         "substance/step_one/<int:pk>/", substance.create_edit_sustance, name="step_one"
     ),
-    path("substance/step_two/<int:pk>/", substance.step_two, name="step_two"),
-    path(
-        "substance/step_three/<int:substance>/",
-        substance.sent_to_review,
-        name="step_three",
-    ),
     path("substance/step_four/<int:substance>/", substance.step_four, name="step_four"),
+    path(
+        "substance/send_to_review/<int:substance>/",
+        substance.sent_to_review,
+        name="send_to_review",
+    ),
+    path("substance/upload_sds/", substance.upload_sds, name="upload_sds"),
+    path("substance/upload_sds/<int:pk>/", substance.upload_sds, name="upload_sds_pk"),
+    path(
+        "substance/sds_task_status/",
+        substance.sds_task_status,
+        name="sds_task_status",
+    ),
     path(
         "substance/get_security_leaf/<int:substance>/",
         substance.security_leaf_pdf,

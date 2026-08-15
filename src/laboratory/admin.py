@@ -221,38 +221,6 @@ class OrganizationStructureRelationsAdmin(OrganizationInfoAdminMixin, admin.Mode
     content_object_display.short_description = _("Related object")
 
 
-class SDSTraceabilityAdmin(admin.ModelAdmin):
-    list_display = [
-        "get_object_name",
-        "source",
-        "revision_date",
-        "creation_date",
-    ]
-    list_filter = ["source"]
-    search_fields = ["sga_substance_characteristics__cas_id_number"]
-
-    def get_object_name(self, obj):
-        if obj.sga_substance_characteristics and obj.sga_substance_characteristics.object_related:
-            return obj.sga_substance_characteristics.object_related.name
-        return "-"
-    get_object_name.short_description = _("Object name")
-
-
-class SustanceCharacteristicsAdmin(admin.ModelAdmin):
-    list_display = [
-        "pk",
-        "obj__name",
-        "obj__code",
-        "cas_id_number",
-    ]
-    list_filter = ["obj__name", "cas_id_number", "h_code"]
-    search_fields = [
-        "obj__name",
-        "obj__code",
-        "cas_id_number",
-    ]
-
-
 @admin.register(models.UserOrganization)
 class UserOrganizationAdmin(OrganizationInfoAdminMixin, admin.ModelAdmin):
     list_display = (
@@ -879,8 +847,10 @@ class LabOrgLogEntryAdmin(admin.ModelAdmin):
 
 admin.site.register(models.PrecursorReport, PrecursorReportAdmin)
 admin.site.register(models.PrecursorReportValues, PrecursorReportValuesAdmin)
-admin.site.register(models.SDSTraceability, SDSTraceabilityAdmin)
 admin.site.register(models.ShelfObjectLimits)
 admin.site.register(models.LabOrgLogEntry, LabOrgLogEntryAdmin)
-admin.site.register(models.SustanceCharacteristics, SustanceCharacteristicsAdmin)
+# OBSOLETO: SustanceCharacteristics se migró a sga.SubstanceCharacteristics.
+# Se retira del admin para que nadie escriba en el modelo antiguo; sus filas se
+# conservan un ciclo como respaldo de la migración y se eliminarán en la
+# siguiente entrega. No volver a registrarlo.
 admin.site.site_header = _("Organilab Administration site")

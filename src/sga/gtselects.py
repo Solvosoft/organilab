@@ -9,6 +9,40 @@ from laboratory.models import Catalog, OrganizationStructure, Laboratory
 from sga.models import DangerIndication, PrudenceAdvice
 
 
+def get_user_organizations_queryset(user):
+    """Organizaciones sobre las que el usuario tiene ProfilePermission.
+
+    Fuente única compartida por el lookup del widget y por la validación del
+    formulario: si divergieran, el desplegable ofrecería opciones que el `clean`
+    rechazaría.
+    """
+    profile = getattr(user, "profile", None)
+    if profile is None:
+        return OrganizationStructure.objects.none()
+
+    allowed = ProfilePermission.objects.filter(
+        profile=profile,
+        content_type__app_label="laboratory",
+        content_type__model="organizationstructure",
+    ).values_list("object_id", flat=True)
+    return OrganizationStructure.objects.filter(pk__in=allowed).distinct()
+
+
+def get_user_laboratories_queryset(user, org_pk):
+    """Laboratorios de `org_pk` sobre los que el usuario tiene ProfilePermission."""
+    profile = getattr(user, "profile", None)
+    if profile is None or not org_pk:
+        return Laboratory.objects.none()
+
+    allowed = ProfilePermission.objects.filter(
+        profile=profile,
+        organization__pk=org_pk,
+        content_type__app_label="laboratory",
+        content_type__model="laboratory",
+    ).values_list("object_id", flat=True)
+    return Laboratory.objects.filter(pk__in=allowed).distinct()
+
+
 @register_lookups(prefix="prudence", basename="prudencesearch")
 class PrudenceGModelLookup(BaseSelect2View):
     model = PrudenceAdvice
@@ -56,17 +90,8 @@ class OrganizationUserLookup(BaseSelect2View):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        queryset = super().get_queryset()
-        pp_organization = ProfilePermission.objects.filter(
-            profile=self.request.user.profile,
-            content_type__app_label="laboratory",
-            content_type__model="organizationstructure",
-        ).values_list("object_id", flat=True)
-        queryset = queryset.filter(pk__in=pp_organization).distinct()
-        return queryset
-
-    def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
+        allowed = get_user_organizations_queryset(self.request.user)
+        return super().get_queryset().filter(pk__in=allowed)
 
 
 @register_lookups(prefix="user_laboratory_loop", basename="user_laboratory_loop")
@@ -80,15 +105,8 @@ class UserLaboratoryLookup(BaseSelect2View):
     serializer, org = None, None
 
     def get_queryset(self):
-        queryset = super().get_queryset()
-        pp_labs = ProfilePermission.objects.filter(
-            profile=self.request.user.profile,
-            organization__pk=self.org,
-            content_type__app_label="laboratory",
-            content_type__model="laboratory",
-        ).values_list("object_id", flat=True)
-        queryset = queryset.filter(pk__in=pp_labs).distinct()
-        return queryset
+        allowed = get_user_laboratories_queryset(self.request.user, self.org)
+        return super().get_queryset().filter(pk__in=allowed)
 
     def list(self, request, *args, **kwargs):
         self.org = self.request.GET.get("org_pk", None)

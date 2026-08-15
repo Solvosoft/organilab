@@ -50,8 +50,13 @@ LOGGING = {
     },
 }
 
-CELERY_TASK_ALWAYS_EAGER = True
-CELERY_TASK_EAGER_PROPAGATES = True
+# `organilab/celery.py` llama a config_from_object sin `namespace="CELERY"`, así
+# que Celery no reconoce los nombres tipo CELERY_TASK_*: hay que usar los
+# heredados que sí mapea (CELERY_ALWAYS_EAGER -> task_always_eager). Con los
+# nombres equivocados las tareas intentaban conectarse al broker en los tests.
+CELERY_ALWAYS_EAGER = True
+CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
+CELERY_STORE_EAGER_RESULT = True
 
 TESTING_MODE = True
 GENERATE_SCREENSHOTS = os.getenv("GENERATE_SCREENSHOTS", "True") == "True"

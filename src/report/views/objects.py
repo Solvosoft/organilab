@@ -18,8 +18,8 @@ from laboratory.models import (
     ShelfObject,
     Laboratory,
     OrganizationStructure,
-    SustanceCharacteristics,
 )
+from sga.models import SubstanceCharacteristics
 from laboratory.report_utils import ExcelGraphBuilder
 from laboratory.utils import (
     get_user_laboratories,
@@ -191,7 +191,7 @@ def get_dataset_reactive_precursor(report, column_list=None):
             rpo = Object.objects.all()
 
         rpo = rpo.filter(
-            type=Object.REACTIVE, substancharacteristics_object__is_precursor=False
+            type=Object.REACTIVE, substancharacteristics_object__is_precursor=True
         )
         # Compute per-object totals in Python to avoid PostgreSQL grouping
         # issues with correlated jsonb_array_elements inside aggregates.
@@ -625,14 +625,29 @@ def get_dataset_report_organization_reactive(report, column_list=None):
             )
             .annotate(count=Count("object"))
         )
+        # Una consulta para todas las filas en vez de una por fila. Un objeto
+        # puede no tener características —el filtro las exige, pero la relación
+        # es opcional— así que el bucle contempla su ausencia en lugar de fallar.
+        characteristics_by_object = {
+            characteristics.object_related_id: characteristics
+            for characteristics in SubstanceCharacteristics.objects.filter(
+                object_related__pk__in=[reactive["object"] for reactive in objs]
+            ).prefetch_related("white_organ", "iarc")
+        }
+
         for reactive in objs:
-            caracteristics = SustanceCharacteristics.objects.filter(
-                obj__pk=reactive["object"]
-            ).first()
-            white_organ = ", ".join(
-                caracteristics.white_organ.all().values_list("description", flat=True)
-            )
-            iarc = str(caracteristics.iarc) if caracteristics.iarc else ""
+            caracteristics = characteristics_by_object.get(reactive["object"])
+            white_organ = ""
+            iarc = ""
+            cas = ""
+            if caracteristics:
+                white_organ = ", ".join(
+                    caracteristics.white_organ.all().values_list(
+                        "description", flat=True
+                    )
+                )
+                iarc = str(caracteristics.iarc) if caracteristics.iarc else ""
+                cas = caracteristics.cas_id_number or ""
             data_column = {
                 "laboratory_name": reactive["laboratory__name"],
                 "name": reactive["user__first_name"]
@@ -640,7 +655,7 @@ def get_dataset_report_organization_reactive(report, column_list=None):
                 + reactive["user__last_name"],
                 "code": reactive["object__code"],
                 "substance": reactive["object__name"],
-                "cas": caracteristics.cas_id_number,
+                "cas": cas,
                 "white_organ": white_organ,
                 "carcinogenic": iarc,
                 "id_card": "",

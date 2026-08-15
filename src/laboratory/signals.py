@@ -10,7 +10,7 @@ from django.contrib.sites.models import Site
 from decimal import Decimal
 from laboratory.utils_base_unit import get_conversion_units
 
-from laboratory.utils_base_unit import get_conversion_units
+from laboratory.shelfobject_codes import assign_lot_code
 
 
 @receiver(post_save, sender=ShelfObject)
@@ -20,6 +20,23 @@ def notify_shelf_object_reach_limit(sender, **kwargs):
     if instance.quantity < instance.limit_quantity:
         # send email notification
         send_email_to_ptech_limitobjs(instance)
+
+
+@receiver(post_save, sender=ShelfObject)
+def assign_shelfobject_code(sender, **kwargs):
+    """Completa el código de la etiqueta con el lote del envase.
+
+    Va en una señal y no en las vistas porque los ShelfObject nacen por al menos
+    cuatro caminos distintos (la API, los traslados, las cargas masivas) y no hay
+    un punto único por el que pasen todos.
+    """
+    if not kwargs.get("created"):
+        return
+    instance = kwargs.get("instance")
+    # Lo escrito a mano manda: el formulario permite teclear el código.
+    if instance.shelfobject_code:
+        return
+    assign_lot_code(instance)
 
 
 @receiver(pre_save, sender=ShelfObject)

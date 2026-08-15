@@ -1,6 +1,6 @@
 from django_filters import rest_framework as filters
 
-from laboratory.models import SDSTraceability
+from sga.models import SDSTraceability
 
 
 class SDSTraceabilityFilterSet(filters.FilterSet):

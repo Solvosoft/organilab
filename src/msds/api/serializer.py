@@ -1,7 +1,7 @@
 from djgentelella.serializers import GTDateField
 from rest_framework import serializers
 
-from laboratory.models import SDSTraceability
+from sga.models import SDSTraceability
 from sga.models import SubstanceCharacteristics
 from django.utils.translation import gettext_lazy as _
 
@@ -18,8 +18,8 @@ class SDSTraceabilitySerializer(serializers.ModelSerializer):
     def get_actions(self, obj):
         user = self.context["request"].user
         return {
-            "list": user.has_perm("laboratory.view_sdstraceability"),
-            "verify": user.has_perm("laboratory.change_sdstraceability"),
+            "list": user.has_perm("sga.view_sdstraceability"),
+            "verify": user.has_perm("sga.change_sdstraceability"),
             "create": False,
             "update": False,
             "destroy": False,

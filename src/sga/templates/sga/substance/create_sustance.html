@@ -4,8 +4,7 @@
 {% load organilab_tags %}
 {% block pre_head %}
 {% define_urlname_action 'step_one' %}
-{% define_urlname_action 'step_two' %}
-{% define_urlname_action 'step_three' %}
+{% define_urlname_action 'send_to_review' %}
 {% define_urlname_action 'step_four' %}
 {% define_urlname_action 'add_danger_indication' %}
 {% define_urlname_action 'update_substance' %}
@@ -22,7 +21,7 @@
         <h2 style="color:#337ab7">{% trans 'Substance Management' %}</h2>
     </div>
     <br>
-    <form class="form-horizontal" action="{% url 'sga:step_one' org_pk pk %}" method="POST">
+    <form class="form-horizontal" action="{% if pk %}{% url 'sga:step_one' org_pk pk %}{% else %}{% url 'sga:create_sustance' org_pk %}{% endif %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="row">
             <div class="col-md-1"></div>
@@ -61,4 +60,24 @@
 
 {% block js %}
 <script src="{% static 'laboratory/js/substance_creation.js' %}?v={% get_organilab_version %}"></script>
+<script>
+    window.sdsAutofill = {
+        uploadUrl: "{% if pk %}{% url 'sga:upload_sds_pk' org_pk=org_pk pk=pk %}{% else %}{% url 'sga:upload_sds' org_pk=org_pk %}{% endif %}",
+        statusUrl: "{% url 'sga:sds_task_status' org_pk=org_pk %}",
+        stepOneUrlTemplate: "{% url 'sga:step_one' org_pk 0 %}".replace("/0/", "/__pk__/"),
+        csrfToken: "{{ csrf_token }}",
+        messages: {
+            uploading: "{% trans 'Uploading the safety data sheet…' %}",
+            processing: "{% trans 'Reading the safety data sheet. You can keep filling in the form.' %}",
+            extracted: "{% trans 'Data found. Loading it into the form…' %}",
+            extractedNeedsReload: "{% trans 'Data found in the sheet. Loading it will discard what you have typed.' %}",
+            loadExtracted: "{% trans 'Load extracted data' %}",
+            nothingExtracted: "{% trans 'The sheet was saved, but no data could be read from it. Fill in the fields manually.' %}",
+            extractionFailed: "{% trans 'The sheet was saved, but it could not be read. Fill in the fields manually.' %}",
+            uploadFailed: "{% trans 'The safety data sheet could not be uploaded.' %}",
+            timedOut: "{% trans 'Reading the sheet is taking too long. Reload the page in a moment to see the result.' %}"
+        }
+    };
+</script>
+<script src="{% static 'sga/js/sds_autofill.js' %}?v={% get_organilab_version %}"></script>
 {% endblock %}
