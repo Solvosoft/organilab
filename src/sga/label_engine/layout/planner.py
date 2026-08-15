@@ -24,7 +24,7 @@ from sga.label_engine.models import LabelBlueprint, LabelTooSmallError
 from sga.label_engine.resources import ResourceCache
 from sga.label_engine.layout.box import Box, LayoutResult
 from sga.label_engine.layout.measurer import Measurer
-from sga.label_engine.phrases_catalog import expand_item, group_codes
+from sga.label_engine.phrases_catalog import expand_item, group_codes, normalize_code
 from sga.label_engine.utils import normalize_text
 
 
@@ -66,8 +66,16 @@ def _combine_codes(text: str) -> str:
     return " ".join(resultado)
 
 
+# Un código H/P suelto o una combinación oficial. El ``+`` admite espacios
+# alrededor porque así se registran en la base de datos ("P370 + P378").
+_PHRASE_TOKEN = r"[HP]\d+[A-Za-z]*(?:\s*\+\s*[HP]\d+[A-Za-z]*)*"
+
+
 def _split_phrase_items(text: str) -> list[str]:
-    """Separa un bloque de frases en frases individuales."""
+    """Separa un bloque de frases en frases individuales.
+
+    Una combinación ("P305 + P351 + P338") es una frase única, no tres.
+    """
     if not text or not text.strip():
         return []
     text = text.replace("\r", "")
@@ -75,20 +83,24 @@ def _split_phrase_items(text: str) -> list[str]:
     if len(parts) > 1:
         return parts
     blob = parts[0] if parts else text.strip()
-    if re.fullmatch(r"(\s*[HP]\d+[A-Za-z+]*\s*[,;]?\s*)+", blob):
-        return re.findall(r"[HP]\d+[A-Za-z+]*", blob)
+    if re.fullmatch(rf"(\s*{_PHRASE_TOKEN}\s*[,;]?\s*)+", blob):
+        return [normalize_code(t) for t in re.findall(_PHRASE_TOKEN, blob)]
     return [blob]
 
 
 def _phrase_codes_str(items: list[str]) -> str:
-    """Compacta una lista de frases a sus códigos (P280 P305-P310)."""
+    """Compacta una lista de frases a sus códigos (P280 P305+P351+P338)."""
     codes = []
     for it in items:
-        m = re.match(r"\s*([HP]\d+[A-Za-z+]*)", it)
+        m = re.match(rf"\s*({_PHRASE_TOKEN})", it)
         if m:
-            codes.append(m.group(1))
+            codes.append(normalize_code(m.group(1)))
     if not codes:
         return ""
+    # Los rangos sólo se comprimen si todos son códigos sueltos: fusionar una
+    # combinación con sus vecinos rompería la frase (P305+P351+P338 es una sola).
+    if any("+" in c for c in codes):
+        return " ".join(codes)
     return _combine_codes(" ".join(codes))
 
 
@@ -375,12 +387,8 @@ class LabelPlanner:
         font_n = m.font(fs_n, bold=False)
         h_main = m.text_size("A", font_n)[1]
 
-        suffix = ""
-        if bp.estado_fisico == "l":
-            suffix = normalize_text("(líq)")
-        elif bp.estado_fisico:
-            suffix = normalize_text(f"({bp.estado_fisico})")
-
+        # El estado físico ya se pinta junto al nombre (_plan_name); repetirlo
+        # aquí lo solapaba con la fórmula en tamaños pequeños.
         if not (bp.formula or bp.cas or bp.concentracion):
             return y
 
@@ -395,7 +403,7 @@ class LabelPlanner:
                     "formula": bp.formula,
                     "cas": bp.cas,
                     "concentracion": bp.concentracion,
-                    "estado_suffix": suffix if bp.formula else "",
+                    "estado_suffix": "",
                     "font_size_main": fs_n,
                     "font_size_sub": fs_s,
                     "font_size_sup": fs_s,

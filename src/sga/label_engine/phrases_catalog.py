@@ -186,16 +186,69 @@ P_COMBINATIONS: dict[tuple[str, ...], str] = {
 }
 
 
-_CODE_RE = re.compile(r'^([HP]\d{3})([A-Za-z+]*)$')
+# Un código suelto (``H314``, ``H360D``) o una combinación oficial escrita con
+# ``+``. El separador admite espacios porque así se registran en la base de datos
+# (``"P370 + P378"``, ``"H311+ H331"``) y así se escriben en las fichas SGA.
+_CODE_PART = r'[HP]\d{3}[A-Za-z]*'
+_CODE_PART_RE = re.compile(_CODE_PART, re.IGNORECASE)
+_CODE_RE = re.compile(rf'^{_CODE_PART}(?:\s*\+\s*{_CODE_PART})*$', re.IGNORECASE)
+
+# Resolvedor externo de frases (lo inyecta la app con los textos de la base de
+# datos). Recibe el código ya normalizado y devuelve su texto o None. El motor
+# se mantiene agnóstico del ORM: si nadie lo inyecta, se usa el catálogo local.
+_phrase_resolver = None
+
+
+def set_phrase_resolver(resolver) -> None:
+    """Registra el resolvedor consultado antes del catálogo local.
+
+    ``resolver(code: str) -> str | None``, con ``code`` normalizado
+    (mayúsculas, sin espacios: ``'P305+P351+P338'``).
+    """
+    global _phrase_resolver
+    _phrase_resolver = resolver
+
+
+def normalize_code(code: str) -> str:
+    """Forma canónica de un código: mayúsculas y sin espacios en el ``+``."""
+    return re.sub(r'\s+', '', (code or '')).upper()
+
+
+def parse_codes(item: str) -> tuple[str, ...]:
+    """Códigos que compone un ítem, o ``()`` si es texto libre.
+
+    ``'H314'`` → ``('H314',)``; ``'P305 + P351+P338'`` → ``('P305', 'P351', 'P338')``.
+    """
+    s = (item or '').strip()
+    if not s or not _CODE_RE.match(s):
+        return ()
+    return tuple(p.upper() for p in _CODE_PART_RE.findall(s))
 
 
 def lookup(code: str) -> str | None:
-    """Texto completo de un código H/P, o None si no está en el catálogo."""
-    code = code.strip().upper()
+    """Texto completo de un código H/P (suelto o combinado), o None.
+
+    Consulta primero el resolvedor externo (base de datos) y cae al catálogo
+    local, que sólo cubre las frases y combinaciones más frecuentes.
+    """
+    code = normalize_code(code)
+    if not code:
+        return None
+    if _phrase_resolver is not None:
+        try:
+            texto = _phrase_resolver(code)
+        except Exception:  # noqa: BLE001 - la etiqueta no debe caer por el catálogo
+            texto = None
+        if texto:
+            return texto
     if code in H_PHRASES:
         return H_PHRASES[code]
     if code in P_PHRASES:
         return P_PHRASES[code]
+    parts = parse_codes(code)
+    if len(parts) > 1:
+        combos = H_COMBINATIONS if parts[0][0].upper() == 'H' else P_COMBINATIONS
+        return combos.get(parts)
     return None
 
 
@@ -203,22 +256,27 @@ def expand_item(item: str, with_code: bool = True) -> str:
     """Expande un ítem a su texto completo si es un código conocido.
 
     - ``'H314'`` → ``'H314 Provoca quemaduras graves...'`` (with_code=True).
+    - ``'P302+P352'`` → texto de la combinación, nunca sólo el de ``P302``.
     - Código desconocido o texto libre → se devuelve sin cambios.
     """
-    s = item.strip()
-    m = _CODE_RE.match(s)
-    if not m:
+    s = (item or '').strip()
+    parts = parse_codes(s)
+    if not parts:
         return s
-    code = m.group(1)
+    code = "+".join(parts)
     texto = lookup(code)
+    if not texto and len(parts) > 1:
+        # Sin texto conjunto: expandir cada parte para no perder la acción.
+        trozos = [t for t in (lookup(p) for p in parts) if t]
+        texto = " ".join(trozos) if len(trozos) == len(parts) else None
     if not texto:
         return s
     return f"{code} {texto}" if with_code else texto
 
 
 def is_code(item: str) -> bool:
-    """True si el ítem es un único código H/P (no texto libre)."""
-    return bool(_CODE_RE.match(item.strip()))
+    """True si el ítem es un código H/P suelto o combinado (no texto libre)."""
+    return bool(parse_codes(item))
 
 
 def group_codes(items: list[str], kind: str) -> list[tuple[str | None, str]]:
@@ -237,18 +295,26 @@ def group_codes(items: list[str], kind: str) -> list[tuple[str | None, str]]:
     # Orden canónico SGA: si todos los ítems son códigos, ordenarlos por número
     # ascendente (p.ej. P305 antes de P310 = encabezado antes de la acción). El
     # texto libre se respeta tal cual (no se reordena).
-    if items and all(_CODE_RE.match(it.strip()) for it in items):
-        items = sorted(items, key=lambda it: int(_CODE_RE.match(it.strip()).group(1)[1:]))
+    if items and all(parse_codes(it) for it in items):
+        items = sorted(items, key=lambda it: int(parse_codes(it)[0][1:4]))
 
+    # Un ítem que ya viene combinado ("P305+P351+P338") se emite tal cual: es
+    # una frase única, no tres códigos sueltos que haya que reagrupar.
     parsed = []          # (codigo|None, raw)
     present = set()
+    preformed: list[tuple[str, str]] = []
     for it in items:
-        mobj = _CODE_RE.match(it.strip())
-        if mobj:
-            parsed.append((mobj.group(1), it))
-            present.add(mobj.group(1))
+        parts = parse_codes(it)
+        if len(parts) > 1:
+            codes_str = "+".join(parts)
+            preformed.append((codes_str, expand_item(it, with_code=True)))
+            parsed.append((codes_str, it))
+        elif parts:
+            parsed.append((parts[0], it))
+            present.add(parts[0])
         else:
             parsed.append((None, it))
+    preformed_by_code = dict(preformed)
 
     # Combinaciones aplicables (todas sus partes presentes); las más largas primero.
     used: set[str] = set()
@@ -264,6 +330,9 @@ def group_codes(items: list[str], kind: str) -> list[tuple[str | None, str]]:
     for code, raw in parsed:
         if code is None:
             out.append((None, raw.strip()))
+            continue
+        if code in preformed_by_code:
+            out.append((code, preformed_by_code[code]))
             continue
         if code in applicable:
             combo, texto = applicable[code]

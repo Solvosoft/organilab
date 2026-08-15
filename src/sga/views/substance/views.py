@@ -993,8 +993,9 @@ def sds_task_status(request, org_pk):
 )
 def generate_label(request, org_pk, pk):
     """Genera una etiqueta GHS/SGA para una sustancia del catálogo (PNG/SVG/PDF)."""
-    from sga.label_blueprint import blueprint_from_substance
+    from sga.label_blueprint import blueprint_from_substance, recipient_size_to_mm
     from sga.label_render import render_label
+    from sga.models import RecipientSize
 
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -1002,14 +1003,31 @@ def generate_label(request, org_pk, pk):
     user_is_allowed_on_organization(request.user, organization)
     substance = get_object_or_404(Substance, pk=pk)
 
+    def _dim(param, default):
+        """Dimensión en mm desde los params GET, tolerante a basura."""
+        try:
+            value = float(request.GET.get(param, default))
+        except (TypeError, ValueError):
+            return default
+        return value if value > 0 else default
+
+    # El recipiente, si se indica, manda sobre ancho/alto: son las medidas
+    # reales de la cara etiquetable.
+    ancho_mm, alto_mm = _dim("ancho_mm", 70), _dim("alto_mm", 40)
+    recipient_pk = request.GET.get("recipient_size")
+    if recipient_pk:
+        recipient = RecipientSize.objects.filter(pk=recipient_pk).first()
+        if recipient is not None:
+            ancho_mm, alto_mm = recipient_size_to_mm(recipient)
+
     # Overrides opcionales (params GET). El tamaño por defecto es mediano.
     overrides = {
         "lote": request.GET.get("lote", ""),
         "fecha_caducidad": request.GET.get("fecha_caducidad", ""),
         "cantidad": request.GET.get("cantidad", ""),
         "qr_url": request.GET.get("qr_url", ""),
-        "ancho_mm": float(request.GET.get("ancho_mm", 70)),
-        "alto_mm": float(request.GET.get("alto_mm", 40)),
+        "ancho_mm": ancho_mm,
+        "alto_mm": alto_mm,
     }
     blueprint = blueprint_from_substance(
         substance, organization=organization, **overrides
