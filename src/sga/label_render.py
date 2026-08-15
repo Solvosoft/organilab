@@ -35,11 +35,15 @@ def render_label(blueprint, formato="png", filename="etiqueta"):
 
         img = engine.generate(blueprint)
     except LabelTooSmallError as exc:
-        return HttpResponse(str(exc), status=400, content_type="text/plain; charset=utf-8")
+        return HttpResponse(
+            str(exc), status=400, content_type="text/plain; charset=utf-8"
+        )
     except ValueError as exc:
         # Blueprint inválido: es un dato incompleto del usuario, no un fallo del
         # servidor. Se responde 400 para que la UI lo muestre como corrección.
-        return HttpResponse(str(exc), status=400, content_type="text/plain; charset=utf-8")
+        return HttpResponse(
+            str(exc), status=400, content_type="text/plain; charset=utf-8"
+        )
 
     if formato == "pdf":
         from reportlab.pdfgen import canvas as pdf_canvas
@@ -52,9 +56,14 @@ def render_label(blueprint, formato="png", filename="etiqueta"):
         c = pdf_canvas.Canvas(buf, pagesize=letter)
         with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as tmp:
             img.save(tmp.name, "PNG")
-            c.drawImage(tmp.name, 20, letter[1] - blueprint.alto_mm * mm - 20,
-                        width=blueprint.ancho_mm * mm, height=blueprint.alto_mm * mm,
-                        preserveAspectRatio=True)
+            c.drawImage(
+                tmp.name,
+                20,
+                letter[1] - blueprint.alto_mm * mm - 20,
+                width=blueprint.ancho_mm * mm,
+                height=blueprint.alto_mm * mm,
+                preserveAspectRatio=True,
+            )
             os.unlink(tmp.name)
         c.save()
         buf.seek(0)

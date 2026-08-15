@@ -100,9 +100,11 @@ def _normalize_code(code):
 
 def _same_words(a, b):
     """Los dos textos coinciden salvo tildes, mayúsculas y puntuación."""
+
     def skeleton(text):
         plain = "".join(
-            c for c in unicodedata.normalize("NFD", text or "")
+            c
+            for c in unicodedata.normalize("NFD", text or "")
             if unicodedata.category(c) != "Mn"
         )
         return re.sub(r"[^a-z0-9]", "", plain.lower())
