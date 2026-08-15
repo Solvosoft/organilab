@@ -8,13 +8,19 @@ más frecuentes. La fuente de verdad son ``DangerIndication`` y
 
 El motor no conoce el ORM: la app le inyecta este resolvedor en
 ``SgaConfig.ready()`` y él lo consulta antes de su catálogo local.
+
+La caché es un diccionario en memoria del proceso, no el framework de caché:
+la caché por defecto del proyecto es ``DatabaseCache`` y una consulta suya
+fallida (tabla ausente) abortaría la transacción en curso de quien esté
+generando la etiqueta. El catálogo GHS es pequeño y cambia rara vez, así que
+basta con rehacerlo al arrancar cada proceso.
 """
-from django.core.cache import cache
+import threading
 
 from sga.label_engine.phrases_catalog import normalize_code
 
-CACHE_KEY = "sga_label_phrases_map"
-CACHE_TIMEOUT = 60 * 60  # 1 h: el catálogo GHS cambia muy rara vez.
+_lock = threading.Lock()
+_phrase_map = None
 
 
 def build_phrase_map() -> dict[str, str]:
@@ -34,17 +40,20 @@ def build_phrase_map() -> dict[str, str]:
 
 
 def get_phrase_map() -> dict[str, str]:
-    """Mapa cacheado de frases. Se reconstruye al expirar la caché."""
-    mapping = cache.get(CACHE_KEY)
-    if mapping is None:
-        mapping = build_phrase_map()
-        cache.set(CACHE_KEY, mapping, CACHE_TIMEOUT)
-    return mapping
+    """Mapa de frases, construido una vez por proceso."""
+    global _phrase_map
+    if _phrase_map is None:
+        with _lock:
+            if _phrase_map is None:
+                _phrase_map = build_phrase_map()
+    return _phrase_map
 
 
 def invalidate() -> None:
-    """Descarta el mapa cacheado (tras editar el catálogo GHS)."""
-    cache.delete(CACHE_KEY)
+    """Descarta el mapa en memoria (tras editar el catálogo GHS)."""
+    global _phrase_map
+    with _lock:
+        _phrase_map = None
 
 
 def resolve(code: str) -> str | None:
