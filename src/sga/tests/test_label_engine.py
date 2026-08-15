@@ -41,9 +41,13 @@ class LabelEnginePureTest(SimpleTestCase):
 
     def _full_blueprint(self, **over):
         data = {
-            "nombre": "Ácido Clorhídrico", "formula": "HCl", "cas": "7647-01-0",
-            "simbolos": ["Corrosivo"], "palabra_advertencia": "PELIGRO",
-            "frases_peligro": "H314", "consejos_prudencia": "P280",
+            "nombre": "Ácido Clorhídrico",
+            "formula": "HCl",
+            "cas": "7647-01-0",
+            "simbolos": ["Corrosivo"],
+            "palabra_advertencia": "PELIGRO",
+            "frases_peligro": "H314",
+            "consejos_prudencia": "P280",
         }
         data.update(over)
         bp = LabelBlueprint.from_dict(data)
@@ -60,7 +64,9 @@ class LabelEnginePureTest(SimpleTestCase):
         self.assertIn("<svg", svg)
 
     def test_container_color_accent_in_svg(self):
-        bp = self._full_blueprint(recipiente_nombre="Estante A", recipiente_color="#1ABB9C")
+        bp = self._full_blueprint(
+            recipiente_nombre="Estante A", recipiente_color="#1ABB9C"
+        )
         svg = LabelEngine().generate_svg(bp)
         self.assertIn("#1ABB9C", svg)
 
@@ -102,29 +108,53 @@ class LabelEnginePureTest(SimpleTestCase):
 class BlueprintFromShelfObjectTest(SimpleTestCase):
     """Verifica herencia de color del contenedor y tamaño por capacidad (sin DB)."""
 
-    def _shelfobject(self, *, shelf_color="#123456", furniture_color="#999999",
-                     capacity=250, capacity_unit="mL"):
+    def _shelfobject(
+        self,
+        *,
+        shelf_color="#123456",
+        furniture_color="#999999",
+        capacity=250,
+        capacity_unit="mL"
+    ):
         chars = SimpleNamespace(
-            molecular_formula="HCl", cas_id_number="7647-01-0",
-            h_code=_qs([_danger("H314", "Provoca quemaduras",
-                                warning=SimpleNamespace(name="Peligro"),
-                                prudence=[SimpleNamespace(code="P280", name="Use guantes")])]),
+            molecular_formula="HCl",
+            cas_id_number="7647-01-0",
+            h_code=_qs(
+                [
+                    _danger(
+                        "H314",
+                        "Provoca quemaduras",
+                        warning=SimpleNamespace(name="Peligro"),
+                        prudence=[SimpleNamespace(code="P280", name="Use guantes")],
+                    )
+                ]
+            ),
         )
         material_capacity = SimpleNamespace(
             capacity=capacity,
             capacity_measurement_unit=SimpleNamespace(description=capacity_unit),
         )
-        obj = SimpleNamespace(name="Ácido Clorhídrico",
-                              substancharacteristics_object=_related([chars]),
-                              materialcapacity=material_capacity)
+        obj = SimpleNamespace(
+            name="Ácido Clorhídrico",
+            substancharacteristics_object=_related([chars]),
+            materialcapacity=material_capacity,
+        )
         furniture = SimpleNamespace(color=furniture_color)
-        shelf = SimpleNamespace(name="Estante A-3", color=shelf_color, furniture=furniture)
+        shelf = SimpleNamespace(
+            name="Estante A-3", color=shelf_color, furniture=furniture
+        )
         return SimpleNamespace(
-            object=obj, shelf=shelf, quantity=200,
+            object=obj,
+            shelf=shelf,
+            quantity=200,
             measurement_unit=SimpleNamespace(description="mL"),
-            batch="L-2026", reactive_expiration_date=None, physical_status="liquid",
+            batch="L-2026",
+            reactive_expiration_date=None,
+            physical_status="liquid",
             in_where_laboratory=SimpleNamespace(name="Lab Química"),
-            container_id=None, container=None, shelf_object_url="https://x/1",
+            container_id=None,
+            container=None,
+            shelf_object_url="https://x/1",
         )
 
     def test_inherits_shelf_color(self):
@@ -214,13 +244,15 @@ class PhysicalStateTest(SimpleTestCase):
         from sga.label_engine.layout.planner import LabelPlanner
 
         bp = LabelBlueprint(
-            nombre="Acetona", formula="C3H6O", cas="67-64-1",
-            estado_fisico="Líquido", frases_peligro="H225",
-            ancho_mm=70, alto_mm=40,
+            nombre="Acetona",
+            formula="C3H6O",
+            cas="67-64-1",
+            estado_fisico="Líquido",
+            frases_peligro="H225",
+            ancho_mm=70,
+            alto_mm=40,
         )
-        layout = LabelPlanner().plan(
-            bp, int(70 * 300 / 25.4), int(40 * 300 / 25.4)
-        )
+        layout = LabelPlanner().plan(bp, int(70 * 300 / 25.4), int(40 * 300 / 25.4))
         formula = [b for b in layout.boxes if b.element_type == "formula"]
         self.assertTrue(formula)
         self.assertEqual(formula[0].content_ref["estado_suffix"], "")
@@ -232,15 +264,20 @@ class LabelSizeSourceTest(SimpleTestCase):
     """El recipiente manda sobre la capacidad y respeta su unidad."""
 
     def test_recipient_size_converts_from_its_unit(self):
-        recipient = SimpleNamespace(width=7, height=4, width_unit="cm", height_unit="cm")
+        recipient = SimpleNamespace(
+            width=7, height=4, width_unit="cm", height_unit="cm"
+        )
         self.assertEqual(recipient_size_to_mm(recipient), (70.0, 40.0))
 
     def test_recipient_takes_precedence_over_capacity(self):
         from sga.label_blueprint import _label_size_mm
 
-        recipient = SimpleNamespace(width=7, height=4, width_unit="cm", height_unit="cm")
+        recipient = SimpleNamespace(
+            width=7, height=4, width_unit="cm", height_unit="cm"
+        )
         shelfobject = SimpleNamespace(
-            object=SimpleNamespace(materialcapacity=None), quantity=None,
+            object=SimpleNamespace(materialcapacity=None),
+            quantity=None,
             measurement_unit=None,
         )
         self.assertEqual(_label_size_mm(shelfobject, recipient), (70.0, 40.0))
@@ -266,7 +303,9 @@ class SubstanceNameFallbackTest(SimpleTestCase):
         substance = SimpleNamespace(
             comercial_name="Acetona", uipa_name="", organization=None
         )
-        self.assertEqual(_substance_name(substance, SimpleNamespace(name="UNA")), "Acetona")
+        self.assertEqual(
+            _substance_name(substance, SimpleNamespace(name="UNA")), "Acetona"
+        )
 
 
 class RenderLabelErrorsTest(SimpleTestCase):
@@ -281,6 +320,7 @@ class RenderLabelErrorsTest(SimpleTestCase):
     def test_too_small_label_returns_400(self):
         from sga.label_render import render_label
 
-        bp = LabelBlueprint(nombre="Acetona", frases_peligro="H225",
-                            ancho_mm=20, alto_mm=12)
+        bp = LabelBlueprint(
+            nombre="Acetona", frases_peligro="H225", ancho_mm=20, alto_mm=12
+        )
         self.assertEqual(render_label(bp, "png").status_code, 400)

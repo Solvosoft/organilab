@@ -3,8 +3,8 @@ from django.db.models.signals import post_delete, post_save
 
 
 class SgaConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'sga'
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "sga"
 
     def ready(self):
         # El motor de etiquetas resuelve las frases H/P contra la base de datos

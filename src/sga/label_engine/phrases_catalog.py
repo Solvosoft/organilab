@@ -14,6 +14,9 @@ import re
 # ─────────────────────────────────────────────────────────────────────────────
 # Indicaciones de peligro (H)
 # ─────────────────────────────────────────────────────────────────────────────
+# Tabla de datos alineada a mano: black la partiría en una línea por código
+# y la volvería ilegible.
+# fmt: off
 H_PHRASES: dict[str, str] = {
     "H200": "Explosivo inestable.",
     "H201": "Explosivo; peligro de explosión en masa.",
@@ -77,10 +80,14 @@ H_PHRASES: dict[str, str] = {
     "H412": "Nocivo para los organismos acuáticos, con efectos nocivos duraderos.",
     "H413": "Puede ser nocivo para los organismos acuáticos, con efectos nocivos duraderos.",
 }
+# fmt: on
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Consejos de prudencia (P)
 # ─────────────────────────────────────────────────────────────────────────────
+# Tabla de datos alineada a mano: black la partiría en una línea por código
+# y la volvería ilegible.
+# fmt: off
 P_PHRASES: dict[str, str] = {
     "P210": "Mantener alejado del calor, de superficies calientes, de chispas, de llamas abiertas y de cualquier otra fuente de ignición. No fumar.",
     "P220": "Mantener alejado de la ropa y otros materiales combustibles.",
@@ -141,6 +148,7 @@ P_PHRASES: dict[str, str] = {
     "P420": "Almacenar separadamente.",
     "P501": "Eliminar el contenido y el recipiente conforme a la reglamentación vigente.",
 }
+# fmt: on
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -149,6 +157,9 @@ P_PHRASES: dict[str, str] = {
 # conjunto. El motor agrupa los códigos presentes en una de estas combinaciones y
 # muestra el texto combinado (p.ej. P305+P351+P338).
 # ─────────────────────────────────────────────────────────────────────────────
+# Tabla de datos alineada a mano: black la partiría en una línea por código
+# y la volvería ilegible.
+# fmt: off
 H_COMBINATIONS: dict[tuple[str, ...], str] = {
     ("H300", "H310"): "Mortal en caso de ingestión o en contacto con la piel.",
     ("H300", "H330"): "Mortal en caso de ingestión o en caso de inhalación.",
@@ -163,7 +174,11 @@ H_COMBINATIONS: dict[tuple[str, ...], str] = {
     ("H312", "H332"): "Nocivo en contacto con la piel o si se inhala.",
     ("H302", "H312", "H332"): "Nocivo en caso de ingestión, en contacto con la piel o si se inhala.",
 }
+# fmt: on
 
+# Tabla de datos alineada a mano: black la partiría en una línea por código
+# y la volvería ilegible.
+# fmt: off
 P_COMBINATIONS: dict[tuple[str, ...], str] = {
     ("P301", "P310"): "EN CASO DE INGESTIÓN: Llamar inmediatamente a un CENTRO DE TOXICOLOGÍA o a un médico.",
     ("P301", "P312"): "EN CASO DE INGESTIÓN: Llamar a un CENTRO DE TOXICOLOGÍA o a un médico en caso de malestar.",
@@ -184,14 +199,15 @@ P_COMBINATIONS: dict[tuple[str, ...], str] = {
     ("P410", "P412"): "Proteger de la luz del sol. No exponer a temperaturas superiores a 50 °C.",
     ("P411", "P235"): "Almacenar a una temperatura controlada. Mantener en lugar fresco.",
 }
+# fmt: on
 
 
 # Un código suelto (``H314``, ``H360D``) o una combinación oficial escrita con
 # ``+``. El separador admite espacios porque así se registran en la base de datos
 # (``"P370 + P378"``, ``"H311+ H331"``) y así se escriben en las fichas SGA.
-_CODE_PART = r'[HP]\d{3}[A-Za-z]*'
+_CODE_PART = r"[HP]\d{3}[A-Za-z]*"
 _CODE_PART_RE = re.compile(_CODE_PART, re.IGNORECASE)
-_CODE_RE = re.compile(rf'^{_CODE_PART}(?:\s*\+\s*{_CODE_PART})*$', re.IGNORECASE)
+_CODE_RE = re.compile(rf"^{_CODE_PART}(?:\s*\+\s*{_CODE_PART})*$", re.IGNORECASE)
 
 # Resolvedor externo de frases (lo inyecta la app con los textos de la base de
 # datos). Recibe el código ya normalizado y devuelve su texto o None. El motor
@@ -211,7 +227,7 @@ def set_phrase_resolver(resolver) -> None:
 
 def normalize_code(code: str) -> str:
     """Forma canónica de un código: mayúsculas y sin espacios en el ``+``."""
-    return re.sub(r'\s+', '', (code or '')).upper()
+    return re.sub(r"\s+", "", (code or "")).upper()
 
 
 def parse_codes(item: str) -> tuple[str, ...]:
@@ -219,7 +235,7 @@ def parse_codes(item: str) -> tuple[str, ...]:
 
     ``'H314'`` → ``('H314',)``; ``'P305 + P351+P338'`` → ``('P305', 'P351', 'P338')``.
     """
-    s = (item or '').strip()
+    s = (item or "").strip()
     if not s or not _CODE_RE.match(s):
         return ()
     return tuple(p.upper() for p in _CODE_PART_RE.findall(s))
@@ -247,7 +263,7 @@ def lookup(code: str) -> str | None:
         return P_PHRASES[code]
     parts = parse_codes(code)
     if len(parts) > 1:
-        combos = H_COMBINATIONS if parts[0][0].upper() == 'H' else P_COMBINATIONS
+        combos = H_COMBINATIONS if parts[0][0].upper() == "H" else P_COMBINATIONS
         return combos.get(parts)
     return None
 
@@ -259,7 +275,7 @@ def expand_item(item: str, with_code: bool = True) -> str:
     - ``'P302+P352'`` → texto de la combinación, nunca sólo el de ``P302``.
     - Código desconocido o texto libre → se devuelve sin cambios.
     """
-    s = (item or '').strip()
+    s = (item or "").strip()
     parts = parse_codes(s)
     if not parts:
         return s
@@ -290,7 +306,7 @@ def group_codes(items: list[str], kind: str) -> list[tuple[str | None, str]]:
     Solo se agrupa cuando TODOS los códigos de una combinación están presentes
     (así el texto siempre se corresponde con la agrupación).
     """
-    combos = H_COMBINATIONS if kind == 'H' else P_COMBINATIONS
+    combos = H_COMBINATIONS if kind == "H" else P_COMBINATIONS
 
     # Orden canónico SGA: si todos los ítems son códigos, ordenarlos por número
     # ascendente (p.ej. P305 antes de P310 = encabezado antes de la acción). El
@@ -300,7 +316,7 @@ def group_codes(items: list[str], kind: str) -> list[tuple[str | None, str]]:
 
     # Un ítem que ya viene combinado ("P305+P351+P338") se emite tal cual: es
     # una frase única, no tres códigos sueltos que haya que reagrupar.
-    parsed = []          # (codigo|None, raw)
+    parsed = []  # (codigo|None, raw)
     present = set()
     preformed: list[tuple[str, str]] = []
     for it in items:

@@ -69,9 +69,7 @@ def create_edit_sustance(request, org_pk, pk=None):
         instance = Substance.objects.filter(pk=pk, organization=organization).first()
 
     if instance:
-        suscharobj = SubstanceCharacteristics.objects.filter(
-            substance=instance
-        ).first()
+        suscharobj = SubstanceCharacteristics.objects.filter(substance=instance).first()
 
     if request.method == "POST":
         postdata = request.POST
@@ -508,9 +506,7 @@ def add_observation(request, org_pk, substance):
     )
     user_is_allowed_on_organization(request.user, organization)
 
-    substance_obj = get_object_or_404(
-        Substance, pk=substance, organization__pk=org_pk
-    )
+    substance_obj = get_object_or_404(Substance, pk=substance, organization__pk=org_pk)
     # Ojo: este "step" es la pestaña del detalle de la sustancia (1=Detalle,
     # 2=Observaciones), no un paso del asistente. Lo consume detail_substance.
     request.session["step"] = 2
@@ -858,9 +854,7 @@ def sent_to_review(request, org_pk, substance):
         # Si el POST no validó se reutiliza el formulario ligado, para que el
         # usuario vea los errores en lugar de una página recargada en blanco.
         "form": form
-        or SendToReviewForm(
-            instance=substance, user=request.user, org_pk=org_pk
-        ),
+        or SendToReviewForm(instance=substance, user=request.user, org_pk=org_pk),
         "organization": org_pk,
         "substance": substance.pk,
         "org_pk": org_pk,
@@ -906,7 +900,9 @@ def upload_sds(request, org_pk, pk=None):
     momentos —junto al primer guardado— en que la sustancia nace.
     """
     if request.method != "POST":
-        return JsonResponse({"ok": False, "message": _("Method not allowed")}, status=405)
+        return JsonResponse(
+            {"ok": False, "message": _("Method not allowed")}, status=405
+        )
 
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk

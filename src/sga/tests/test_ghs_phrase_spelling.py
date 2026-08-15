@@ -81,7 +81,9 @@ class FixSpellingTest(TestCase):
         self.assertEqual(indication.description, "Líquido y vapores muy inflamables.")
 
     def test_fixes_typo(self):
-        indication = self._indication("H205", "Peligro de expasión en masa en caso de incendio")
+        indication = self._indication(
+            "H205", "Peligro de expasión en masa en caso de incendio"
+        )
         self._run()
         indication.refresh_from_db()
         self.assertIn("explosión", indication.description)
