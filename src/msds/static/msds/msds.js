@@ -7,14 +7,14 @@ datatable_inits = {
         {data: "id", name: "id", title: "ID", type: "string", visible: false},
         {
             data: "sustance_characteristics_name",
-            name: "sustance_characteristics__obj__name",
+            name: "sga_substance_characteristics__object_related__name",
             title: gettext("Substance"),
             type: "string",
             visible: true
         },
         {
             data: "sustance_characteristics_cas_id_number",
-            name: "sustance_characteristics__cas_id_number",
+            name: "sga_substance_characteristics__cas_id_number",
             title: gettext("CAS"),
             type: "string",
             visible: true

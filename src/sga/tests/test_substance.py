@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.test import TestCase, Client
 from django.urls import reverse
 
-from sga.models import Substance, ReviewSubstance, SGAComplement
+from sga.models import Substance, ReviewSubstance, SubstanceCharacteristics
 from sga.models import SubstanceObservation
 
 
@@ -20,12 +20,12 @@ class SGAAcademicTest(TestCase):
     def test_add_substance(self):
         data = {
             "comercial_name": "h20",
-            "uipa_name": "Aqua",
             "synonymous": '[{"value":"s"},{"value":"a"}]',
-            "agrochemical": True,
+            "features": [1],
             "organization": 1,
             "description": "Agua hidratante",
             "brand": "Limon",
+            "density": 1.5,
             "iarc": 2,
             "imdg": 79,
             "white_organ": [5, 9, 11],
@@ -38,8 +38,6 @@ class SGAAcademicTest(TestCase):
             "nfpa": [114, 120],
             "storage_class": [135, 140, 154],
             "seveso_list": True,
-            "number_index": "156",
-            "number_ce": "464",
             "molecular_weight": "20g",
             "concentration": "20%",
         }
@@ -50,21 +48,25 @@ class SGAAcademicTest(TestCase):
 
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Substance.objects.count() > count)
-        sga_complement = SGAComplement.objects.last()
+        created = Substance.objects.latest("pk")
         self.assertRedirects(
             response,
-            reverse("sga:step_two", kwargs={"org_pk": 1, "pk": sga_complement.pk}),
+            reverse("sga:step_four", kwargs={"org_pk": 1, "substance": created.pk}),
+        )
+        self.assertEqual(list(created.features.values_list("pk", flat=True)), [1])
+        self.assertEqual(
+            SubstanceCharacteristics.objects.get(substance=created).density, 1.5
         )
 
     def test_update_substance(self):
         data = {
             "comercial_name": "h20",
-            "uipa_name": "Aqua",
             "synonymous": '[{"value":"s"},{"value":"a"}]',
-            "agrochemical": True,
+            "features": [1],
             "organization": 1,
             "description": "Agua hidratante",
             "brand": "Limon",
+            "density": 1.5,
             "iarc": 2,
             "imdg": 79,
             "white_organ": [5, 9, 11],
@@ -77,8 +79,6 @@ class SGAAcademicTest(TestCase):
             "nfpa": [114, 120],
             "storage_class": [135, 140, 154],
             "seveso_list": True,
-            "number_index": "156",
-            "number_ce": "464",
             "molecular_weight": "20g",
             "concentration": "20%",
         }
@@ -92,9 +92,11 @@ class SGAAcademicTest(TestCase):
 
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Substance.objects.count() == count)
-        c = SGAComplement.objects.last().pk
         self.assertRedirects(
-            response, reverse("sga:step_two", kwargs={"org_pk": 1, "pk": c})
+            response, reverse("sga:step_four", kwargs={"org_pk": 1, "substance": 134})
+        )
+        self.assertEqual(
+            SubstanceCharacteristics.objects.get(substance__pk=134).density, 1.5
         )
 
     def test_get_substance(self):
@@ -102,11 +104,22 @@ class SGAAcademicTest(TestCase):
         url["pk"] = 134
 
         response = self.client.get(reverse("sga:update_substance", kwargs=url))
-        sgaComplement = SGAComplement.objects.get(substance__pk=134)
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.context["substance"] == 134)
-        self.assertTrue(response.context["complement"] == sgaComplement.pk)
+        self.assertTrue(response.context["pk"] == 134)
         self.assertTrue(response.context["step"] == 1)
+        # El complemento SGA se edita desde el editor, no en el alta.
+        self.assertNotIn("complement", response.context)
+
+    def test_get_substance_does_not_create_draft(self):
+        """Abrir el asistente sin pk no debe dejar una sustancia vacía detrás."""
+        count = Substance.objects.count()
+        response = self.client.get(
+            reverse("sga:create_sustance", kwargs=self.url_attr)
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Substance.objects.count(), count)
+        self.assertIsNone(response.context["substance"])
 
     def test_get_substances(self):
         response = self.client.get(reverse("sga:get_substance", kwargs=self.url_attr))
@@ -207,12 +220,12 @@ class SGAAcademicTest(TestCase):
     def test_step_one_substance(self):
         data = {
             "comercial_name": "h20",
-            "uipa_name": "Aqua",
             "synonymous": '[{"value":"s"},{"value":"a"}]',
-            "agrochemical": True,
+            "features": [1],
             "organization": 1,
             "description": "Agua hidratante",
             "brand": "Limon",
+            "density": 1.5,
             "iarc": 2,
             "imdg": 79,
             "white_organ": [5, 9, 11],
@@ -225,8 +238,6 @@ class SGAAcademicTest(TestCase):
             "nfpa": [114, 120],
             "storage_class": [135, 140, 154],
             "seveso_list": True,
-            "number_index": "156",
-            "number_ce": "464",
             "molecular_weight": "20g",
             "concentration": "20%",
         }
@@ -238,7 +249,6 @@ class SGAAcademicTest(TestCase):
 
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Substance.objects.count() == count)
-        c = SGAComplement.objects.last().pk
         self.assertRedirects(
-            response, reverse("sga:step_two", kwargs={"org_pk": 1, "pk": c})
+            response, reverse("sga:step_four", kwargs={"org_pk": 1, "substance": 134})
         )

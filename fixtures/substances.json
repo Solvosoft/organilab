@@ -232,6 +232,10 @@
         "creation_date": "2023-01-26T15:44:16.101Z",
         "last_update": "2023-01-26T15:44:16.277Z",
         "comercial_name": "zzzz",
+      "features": [
+        1
+      ],
+      "status": 0,
         "uipa_name": "",
         "brand": "",
         "synonymous": "",
@@ -270,6 +274,54 @@
       "ue_code": [],
       "nfpa": [],
       "storage_class": []
+    }
+  },
+  {
+    "model": "laboratory.objectfeatures",
+    "pk": 1,
+    "fields": {
+      "name": "Reactivo",
+      "description": "Es un reactivo en la industria química."
+    }
+  },
+  {
+    "model": "laboratory.laboratory",
+    "pk": 1,
+    "fields": {
+      "name": "Laboratorio de Química",
+      "creation_date": "2023-01-26T15:44:16.101Z",
+      "last_update": "2023-01-26T15:44:16.277Z",
+      "phone_number": "2222-2222",
+      "location": "Edificio A",
+      "geolocation": "9.9,-84.0",
+      "organization": 1,
+      "created_by": 1,
+      "email": "",
+      "coordinator": "",
+      "unit": "",
+      "workplace": "",
+      "area": 0.0
+    }
+  },
+  {
+    "model": "auth_and_perms.profilepermission",
+    "pk": 2,
+    "fields": {
+      "profile": 1,
+      "content_type": [
+        "laboratory",
+        "laboratory"
+      ],
+      "object_id": 1,
+      "organization": 1,
+      "rol": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ]
     }
   }
 ]

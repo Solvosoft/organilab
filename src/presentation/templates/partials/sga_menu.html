@@ -31,7 +31,7 @@
 					</a>
 				</li>
 			{% endif %}
-			{% if perms.laboratory.change_sdstraceability %}
+			{% if perms.sga.change_sdstraceability %}
 				<li>
 					<a href="{% url 'msds:verified_sds' org_pk=org_pk %}">
 						{% trans 'Verify FDS' %}

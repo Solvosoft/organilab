@@ -1278,7 +1278,6 @@ class ShelfObjectDetailSerializer(
         sga_char = obj.object.substancharacteristics_object.first()
         if sga_char:
             characteristics = SubstanceCharacteristicsDetailSerializer(sga_char)
-            print(characteristics.data)
             return characteristics.data
         return None
 

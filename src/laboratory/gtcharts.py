@@ -20,7 +20,6 @@ from rest_framework.response import Response
 from laboratory.api.serializers import ReactiveLimitSerializer, ReactiveLimitsSerializer
 from laboratory.models import (
     Laboratory,
-    SustanceCharacteristics,
     ShelfObject,
     Catalog,
     Object,

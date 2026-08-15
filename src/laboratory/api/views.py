@@ -1163,6 +1163,12 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
         )
         instance = self.get_object()
         sga_char = instance.substancharacteristics_object.first()
+        # object_related es SET_NULL, así que borrar el objeto no arrastra sus
+        # características: hay que hacerlo aquí. Pero si la fila está compartida
+        # con una Substance de SGA (la comparten tras aprobar una sustancia),
+        # borrarla se llevaría por delante CAS, códigos H y la ficha de esa
+        # sustancia, que no tiene nada que ver con este objeto de inventario.
+        sga_char_is_shared = bool(sga_char and sga_char.substance_id)
 
         destroy = super().destroy(request, *args, **kwargs)
 
@@ -1178,7 +1184,7 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
             relobj=organization,
         )
 
-        if sga_char:
+        if sga_char and not sga_char_is_shared:
             organilab_logentry(
                 request.user,
                 sga_char,

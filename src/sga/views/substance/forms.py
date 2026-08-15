@@ -3,10 +3,17 @@ from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
-from djgentelella.widgets.selects import AutocompleteSelect
+from djgentelella.widgets.selects import (
+    AutocompleteSelect,
+    AutocompleteSelectMultiple,
+)
 from djgentelella.widgets.tagging import TaggingInput
 
 from laboratory.models import Laboratory, OrganizationStructure
+from sga.gtselects import (
+    get_user_laboratories_queryset,
+    get_user_organizations_queryset,
+)
 from sga.models import (
     Substance,
     SubstanceCharacteristics,
@@ -71,7 +78,11 @@ class SustanceCharacteristicsForm(GTForm, forms.ModelForm):
             "seveso_list": genwidgets.YesNoInput,
             "molecular_weight": genwidgets.TextInput,
             "concentration": genwidgets.TextInput,
+            # genwidgets.FileInput sube por trozos a `upload_file_view` y deja en
+            # el POST un token JSON que el widget resuelve contra ChunkedUpload;
+            # por eso no mira request.FILES.
             "security_sheet": genwidgets.FileInput,
+            "img_representation": genwidgets.FileInput,
             "density": genwidgets.TextInput,
             "is_dangerous": genwidgets.YesNoInput,
             "has_threshold": genwidgets.YesNoInput(
@@ -132,7 +143,7 @@ class ObservationForm(GTForm, forms.ModelForm):
         widgets = {"description": genwidgets.Textarea}
 
 
-class SecurityLeafForm(forms.ModelForm, GTForm):
+class SecurityLeafForm(GTForm, forms.ModelForm):
 
     def __init__(self, *arg, **kwargs):
         super(SecurityLeafForm, self).__init__(*arg, **kwargs)
@@ -153,7 +164,7 @@ class SecurityLeafForm(forms.ModelForm, GTForm):
         widgets = {"provider": genwidgets.Select}
 
 
-class ReviewSubstanceForm(forms.ModelForm, GTForm):
+class ReviewSubstanceForm(GTForm, forms.ModelForm):
     class Meta:
         model = ReviewSubstance
         fields = "__all__"
@@ -179,9 +190,9 @@ class RecipientSizeForm(GTForm, forms.ModelForm):
         }
 
 
-class SendToReviewForm(forms.ModelForm, GTForm):
+class SendToReviewForm(GTForm, forms.ModelForm):
     organization = forms.ModelChoiceField(
-        queryset=OrganizationStructure.objects.all(),
+        queryset=OrganizationStructure.objects.none(),
         label=_("Organization"),
         widget=AutocompleteSelect(
             "user_organization_loop",
@@ -194,10 +205,12 @@ class SendToReviewForm(forms.ModelForm, GTForm):
             },
         ),
     )
-    laboratory = forms.ModelChoiceField(
-        queryset=Laboratory.objects.all(),
-        label=_("Laboratory"),
-        widget=AutocompleteSelect(
+    # Una sustancia se solicita a la vez para todos los laboratorios que la
+    # necesitan, así que se eligen varios en un solo envío.
+    laboratories = forms.ModelMultipleChoiceField(
+        queryset=Laboratory.objects.none(),
+        label=_("Laboratories"),
+        widget=AutocompleteSelectMultiple(
             "user_laboratory_loop",
             attrs={
                 "data-related": "true",
@@ -209,11 +222,18 @@ class SendToReviewForm(forms.ModelForm, GTForm):
         ),
     )
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, user=None, org_pk=None, **kwargs):
         super(SendToReviewForm, self).__init__(*args, **kwargs)
-        self.fields["laboratory"].required = True
+        self.fields["laboratories"].required = True
         self.fields["organization"].required = True
+        # Los lookups solo restringen lo que muestra el desplegable; sin acotar
+        # también el queryset, la validación aceptaría cualquier pk y permitiría
+        # enviar una sustancia a una organización o laboratorio ajenos.
+        self.fields["organization"].queryset = get_user_organizations_queryset(user)
+        self.fields["laboratories"].queryset = get_user_laboratories_queryset(
+            user, org_pk
+        )
 
     class Meta:
         model = Substance
-        fields = ["organization", "laboratory"]
+        fields = ["organization", "laboratories"]

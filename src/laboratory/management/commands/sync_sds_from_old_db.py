@@ -3,7 +3,24 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand
 
-from laboratory.models import SDSTraceability, SustanceCharacteristics
+from sga.models import SDSTraceability, SubstanceCharacteristics
+
+
+def build_sga_map_by_object():
+    """Índice `Object` → característica SGA.
+
+    La base antigua apunta a las características de `laboratory`, que ya no son
+    la fuente de verdad. La traducción es la misma que usó la migración
+    `laboratory.0211`: se pasa por el `Object` que comparten la fila antigua y la
+    nueva, no por los pks, que no coinciden entre bases. El `obj_id` de cada fila
+    antigua se lee de la propia base de origen, así que esto no depende de que la
+    tabla obsoleta siga existiendo aquí.
+    """
+    return dict(
+        SubstanceCharacteristics.objects.exclude(object_related=None).values_list(
+            "object_related_id", "pk"
+        )
+    )
 
 
 class Command(BaseCommand):
@@ -51,23 +68,28 @@ class Command(BaseCommand):
 
         with old_conn:
             with old_conn.cursor() as cur:
+                # El JOIN trae el `obj_id` de la característica antigua: es la
+                # llave con la que se localiza su equivalente en SGA.
                 cur.execute(
                     """
                     SELECT
-                        id,
-                        sustance_characteristics_id,
-                        source,
-                        revision_date,
-                        download_url,
-                        security_sheet,
-                        verified_by_id,
-                        verified_date,
-                        is_verified,
-                        created_by_id,
-                        creation_date,
-                        last_update
-                    FROM laboratory_sdstraceability
-                    ORDER BY id
+                        t.id,
+                        t.sustance_characteristics_id,
+                        sc.obj_id,
+                        t.source,
+                        t.revision_date,
+                        t.download_url,
+                        t.security_sheet,
+                        t.verified_by_id,
+                        t.verified_date,
+                        t.is_verified,
+                        t.created_by_id,
+                        t.creation_date,
+                        t.last_update
+                    FROM laboratory_sdstraceability t
+                    JOIN laboratory_sustancecharacteristics sc
+                      ON sc.id = t.sustance_characteristics_id
+                    ORDER BY t.id
                     """
                 )
                 rows = cur.fetchall()
@@ -76,9 +98,7 @@ class Command(BaseCommand):
 
         self.stdout.write(f"Found {len(rows)} records in old database")
 
-        existing_sc_ids = set(
-            SustanceCharacteristics.objects.values_list("pk", flat=True)
-        )
+        sga_pk_by_object = build_sga_map_by_object()
         existing_sds_ids = set(
             SDSTraceability.objects.values_list("pk", flat=True)
         )
@@ -95,9 +115,11 @@ class Command(BaseCommand):
             pk = row["id"]
             sc_id = row["sustance_characteristics_id"]
 
-            if sc_id not in existing_sc_ids:
+            sga_sc_id = sga_pk_by_object.get(row["obj_id"])
+            if sga_sc_id is None:
                 self.stderr.write(
-                    f"[SKIP] id={pk}: SustanceCharacteristics pk={sc_id} not found"
+                    f"[SKIP] id={pk}: no SGA equivalent for legacy "
+                    f"SustanceCharacteristics pk={sc_id} (obj={row['obj_id']})"
                 )
                 skipped_no_sc += 1
                 continue
@@ -106,7 +128,7 @@ class Command(BaseCommand):
             created_by_id = self.resolve_user_id(row["created_by_id"], existing_user_ids)
 
             fields = {
-                "sustance_characteristics_id": sc_id,
+                "sga_substance_characteristics_id": sga_sc_id,
                 "source": row["source"],
                 "revision_date": row["revision_date"],
                 "download_url": row["download_url"] or "",

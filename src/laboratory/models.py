@@ -176,6 +176,14 @@ class Object(AbstractOrganizationRef):
 
 
 class SustanceCharacteristics(models.Model):
+    """OBSOLETO: sustituido por sga.SubstanceCharacteristics.
+
+    Sus filas se conservan un ciclo como respaldo de la migración de datos
+    (laboratory.0209) y de su reversa. No escribir aquí ni añadir consumidores
+    nuevos: la fuente de verdad es sga.SubstanceCharacteristics, accesible desde
+    un Object mediante `substancharacteristics_object`.
+    """
+
     obj = models.OneToOneField(Object, on_delete=models.CASCADE)
     iarc = catalog.GTForeignKey(
         Catalog,
@@ -272,58 +280,6 @@ class SustanceCharacteristics(models.Model):
     class Meta:
         verbose_name = _("Sustance characteristic")
         verbose_name_plural = _("Sustance characteristics")
-
-
-class SDSTraceability(BaseCreationObj):
-    SDS_SOURCE_CHOICES = [
-        ("merck", "Merck/Sigma-Aldrich"),
-        ("pubchem", "PubChem"),
-        ("fisher", "Fisher/Thermo"),
-        ("panreac", "Panreac"),
-        ("carlo_erba", "Carlo Erba"),
-        ("jt_baker", "JT Baker"),
-        ("honeywell", "Honeywell/Fluka"),
-        ("unknown", _("Unknown")),
-        ("manual", _("Manual upload")),
-    ]
-
-    sga_substance_characteristics = models.ForeignKey(
-        "sga.SubstanceCharacteristics",
-        on_delete=models.CASCADE,
-        related_name="sds_traceability",
-        null=True,
-        blank=True,
-    )
-    source = models.CharField(
-        _("SDS source"), max_length=50, choices=SDS_SOURCE_CHOICES, default="unknown"
-    )
-    revision_date = models.DateField(_("SDS revision date"), null=True, blank=True)
-    download_url = models.URLField(
-        _("Download URL"), max_length=500, blank=True, default=""
-    )
-    security_sheet = models.FileField(
-        _("Security sheet"), upload_to=upload_files, null=True, blank=True
-    )
-    verified_by = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-        verbose_name=_("Verified by"),
-        related_name="sds_verified_by",
-    )
-    verified_date = models.DateField(
-        null=True, blank=True, verbose_name=_("Verified date")
-    )
-    is_verified = models.BooleanField(default=False, verbose_name=_("Is verified"))
-
-    class Meta:
-        verbose_name = _("SDS traceability")
-        verbose_name_plural = _("SDS traceability records")
-        ordering = ["-creation_date"]
-
-    def __str__(self):
-        return f"{self.sga_substance_characteristics_id} - {self.source} ({self.creation_date})"
 
 
 class ShelfObjectLimits(models.Model):
@@ -534,8 +490,11 @@ class ShelfObject(models.Model):
         help_text=_("Original number of units per box at creation time"),
     )
 
+    # Holgura deliberada: el código completo concatena las siglas, el
+    # identificador de la sustancia, el periodo y el consecutivo, así que su
+    # longitud crece con los datos y ajustarla al caso actual la dejaría corta.
     shelfobject_code = models.CharField(
-        max_length=30, verbose_name=_("Unit code"), null=True, blank=True
+        max_length=50, verbose_name=_("Unit code"), null=True, blank=True
     )
 
     @staticmethod
@@ -1238,6 +1197,13 @@ class OrganizationStructureManager(models.Manager):
 
 class OrganizationStructure(TreeNode):
     name = models.CharField(_("Name"), max_length=255)
+    # Sigla que identifica a la organización dentro del código de las
+    # sustancias. Se deriva del nombre pero es editable: quien la lee en una
+    # etiqueta debe reconocer la unidad, y eso lo sabe la unidad misma.
+    code = models.CharField(
+        _("Code"), max_length=3, null=True, blank=True,
+        help_text=_("Three-letter code used in substance codes"),
+    )
     position = models.IntegerField(default=0)
     # No debe usarse para validar permisos, su intención es permitir relacionarlos en la
     # vista de administración, para los permisos usar ProfilePermission
@@ -1424,6 +1390,13 @@ class OrganizationStructureRelations(models.Model):
 
 class Laboratory(BaseCreationObj):
     name = models.CharField(_("Laboratory name"), default="", max_length=255)
+    # Sigla que identifica al laboratorio dentro del código de las sustancias.
+    # Única en todo el sistema: dos laboratorios con la misma sigla harían
+    # ambiguo el código impreso en una etiqueta, que es justo lo que evita.
+    code = models.CharField(
+        _("Code"), max_length=3, null=True, blank=True, unique=True,
+        help_text=_("Three-letter code used in substance codes"),
+    )
     phone_number = models.CharField(_("Phone"), default="", max_length=25)
 
     location = models.CharField(_("Location"), default="", max_length=255)
@@ -2104,3 +2077,34 @@ class TemporalUploadReactive(BaseCreationObj):
         related_name="shelf_temp",
     )
     data = JSONField()
+
+
+class ShelfObjectCodeCounter(models.Model):
+    """Consecutivo del lote, por sustancia-laboratorio y mes.
+
+    El contador se guarda en vez de calcularse contando envases porque un envase
+    puede borrarse o trasladarse, y el número ya está impreso en una etiqueta: si
+    se recalculara, dos envases distintos acabarían compartiéndolo.
+
+    La clave incluye la sustancia y el laboratorio porque el consecutivo debe
+    responder «cuántos envases de este reactivo se prepararon aquí este mes»; el
+    reinicio mensual mantiene el número corto y lo ata a su periodo.
+    """
+
+    substance_laboratory = models.ForeignKey(
+        "sga.SubstanceLaboratory",
+        on_delete=models.CASCADE,
+        verbose_name=_("Substance laboratory"),
+        related_name="code_counters",
+    )
+    year = models.PositiveIntegerField(verbose_name=_("Year"))
+    month = models.PositiveSmallIntegerField(verbose_name=_("Month"))
+    counter = models.PositiveIntegerField(default=0, verbose_name=_("Counter"))
+
+    class Meta:
+        unique_together = ("substance_laboratory", "year", "month")
+        verbose_name = _("Shelf object code counter")
+        verbose_name_plural = _("Shelf object code counters")
+
+    def __str__(self):
+        return f"{self.substance_laboratory_id} {self.year}-{self.month:02d}: {self.counter}"

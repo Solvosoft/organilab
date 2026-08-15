@@ -5,13 +5,13 @@ from collections import Counter
 
 from django.core.management.base import BaseCommand
 
-from laboratory.models import SDSTraceability, SustanceCharacteristics
+from sga.models import SubstanceCharacteristics
 from laboratory.sds_sources.pubchem import PubChemSource
 
 
 class Command(BaseCommand):
     help = (
-        "Validate PubChem SDS data against stored SustanceCharacteristics. "
+        "Validate PubChem SDS data against stored SubstanceCharacteristics. "
         "Generates a CSV report with discrepancies and optionally fixes data."
     )
 
@@ -30,7 +30,7 @@ class Command(BaseCommand):
             '--ids',
             nargs='+',
             type=int,
-            help='Specific SustanceCharacteristics PKs to process',
+            help='Specific SubstanceCharacteristics PKs to process',
         )
         parser.add_argument(
             '--delay',
@@ -77,14 +77,14 @@ class Command(BaseCommand):
         no_input = options['no_input']
 
         qs = (
-            SustanceCharacteristics.objects
+            SubstanceCharacteristics.objects
             .using(db)
             .filter(
                 sds_traceability__source='pubchem',
                 cas_id_number__isnull=False,
             )
             .exclude(cas_id_number='')
-            .select_related('obj', 'obj__organization')
+            .select_related('object_related', 'object_related__organization', 'substance')
             .distinct()
         )
         if ids:
@@ -107,9 +107,16 @@ class Command(BaseCommand):
         fixable_rows = []
 
         for i, sc in enumerate(qs.iterator(), 1):
-            name = str(sc.obj) if sc.obj else f"PK={sc.pk}"
+            # Una fila SGA puede colgar de un objeto de inventario o de una
+            # sustancia del catálogo; ambas conviven en la misma tabla.
+            owner = sc.object_related or sc.substance
+            name = str(owner) if owner else f"PK={sc.pk}"
             cas = (sc.cas_id_number or '').strip()
-            org_name = sc.obj.organization.name if sc.obj and sc.obj.organization else ''
+            org_name = (
+                sc.object_related.organization.name
+                if sc.object_related and sc.object_related.organization
+                else ''
+            )
 
             row = {
                 'pk': sc.pk,
@@ -281,7 +288,7 @@ class Command(BaseCommand):
         fixed_count = 0
 
         for sc_pk, fixes, row, pubchem_formula, pubchem_h_codes in fixable_rows:
-            sc = SustanceCharacteristics.objects.using(db).get(pk=sc_pk)
+            sc = SubstanceCharacteristics.objects.using(db).get(pk=sc_pk)
             applied = []
 
             if 'formula' in fixes and pubchem_formula:

@@ -2,14 +2,12 @@ import json
 import logging
 import os
 import zipfile
-from uuid import uuid4
 
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
-from django.core.files.base import File
-from django.core.files.storage import default_storage
 from django.core.paginator import Paginator
+from django.db.models import OuterRef, Subquery
 from django.db.models.query_utils import Q
 from django.http import HttpResponse, HttpResponseRedirect
 from django.http.response import JsonResponse
@@ -18,16 +16,9 @@ from django.urls.base import reverse
 from django.utils.translation import gettext as _
 
 from auth_and_perms.organization_utils import user_is_allowed_on_organization
-from laboratory.models import (
-    Catalog,
-    Object,
-    OrganizationStructure,
-    SDSTraceability,
-)
-from laboratory.utils_pdf import extract_catalog_fields, extract_msds_data
-from msds.forms import SDSUploadForm, SDSConfirmForm
+from laboratory.models import OrganizationStructure
 from msds.models import RegulationDocument
-from sga.models import DangerIndication, SubstanceCharacteristics
+from sga.models import SDSTraceability
 
 logger = logging.getLogger("organilab")
 
@@ -57,9 +48,23 @@ def index_msds(request, org_pk):
 @login_required
 @permission_required("msds.view_msdsobject", raise_exception=True)
 def get_list_msds(request, org_pk):
-    objs = SDSTraceability.objects.filter(
-        sga_substance_characteristics__object_related__organization__pk=org_pk
-    ).select_related("sga_substance_characteristics__object_related")
+    # La trazabilidad es un historial: una sustancia puede acumular varias fichas
+    # a lo largo del tiempo. Esta pantalla busca sustancias, así que muestra solo
+    # la vigente de cada una; el historial completo vive en «verified_sds».
+    latest_per_substance = (
+        SDSTraceability.objects.filter(
+            sga_substance_characteristics=OuterRef("sga_substance_characteristics")
+        )
+        .order_by("-creation_date")
+        .values("pk")[:1]
+    )
+    objs = (
+        SDSTraceability.objects.filter(
+            sga_substance_characteristics__object_related__organization__pk=org_pk
+        )
+        .filter(pk=Subquery(latest_per_substance))
+        .select_related("sga_substance_characteristics__object_related")
+    )
 
     records_total = objs.count()
 
@@ -167,179 +172,16 @@ def get_list_msds(request, org_pk):
 @login_required
 @permission_required("msds.add_msdsobject", raise_exception=True)
 def sds_create(request, org_pk):
-    context = {"org_pk": org_pk}
+    """Redirige al asistente de sustancias de SGA.
 
-    if request.method == "POST" and "confirm" in request.POST:
-        return _sds_create_confirm(request, org_pk, context)
-
-    if request.method == "POST":
-        return _sds_create_upload(request, org_pk, context)
-
-    # GET — step 1: upload form
-    context["step"] = 1
-    context["upload_form"] = SDSUploadForm()
-    return render(request, "msds/sds_create.html", context)
-
-
-def _build_catalog_dict():
-    """Build the catalogs dict expected by extract_catalog_fields."""
-    catalog_keys = [
-        "IARC",
-        "IDMG",
-        "white_organ",
-        "ue_code",
-        "nfpa",
-        "storage_class",
-        "Precursor",
-    ]
-    catalogs = {}
-    for key in catalog_keys:
-        catalogs[key] = list(
-            Catalog.objects.filter(key=key).values_list("pk", "description")
-        )
-    return catalogs
-
-
-def _sds_create_upload(request, org_pk, context):
-    upload_form = SDSUploadForm(request.POST, request.FILES)
-    if not upload_form.is_valid():
-        context["step"] = 1
-        context["upload_form"] = upload_form
-        return render(request, "msds/sds_create.html", context)
-
-    uploaded_file = request.FILES["file"]
-    temp_name = "tmp/sds/%s.pdf" % uuid4()
-    saved_name = default_storage.save(temp_name, uploaded_file)
-    full_path = default_storage.path(saved_name)
-
-    extracted = extract_msds_data(full_path)
-    if extracted is None:
-        extracted = {}
-        messages.warning(
-            request,
-            _(
-                "Could not extract data from the PDF. Please fill in the fields manually."
-            ),
-        )
-
-    h_codes = extracted.get("h_codes", [])
-    text = extracted.get("_text", "")
-    request.session["sds_temp_file"] = saved_name
-
-    # Extract catalog fields from PDF text
-    catalog_fields = {}
-    if text:
-        catalogs = _build_catalog_dict()
-        catalog_fields = extract_catalog_fields(
-            text, catalogs, extracted.get("_lang", "es")
-        )
-
-    # Pre-select h_code DangerIndication objects by code
-    h_code_pks = list(
-        DangerIndication.objects.filter(code__in=h_codes).values_list("pk", flat=True)
+    El alta de sustancias vive en un solo sitio, el asistente de SGA, que sube la
+    ficha, encola su extracción y registra la trazabilidad. Mantener aquí un
+    segundo camino obligaría a duplicar esa lógica y a que ambas versiones
+    divergieran; la ruta se conserva para no romper enlaces guardados.
+    """
+    return HttpResponseRedirect(
+        reverse("sga:create_sustance", kwargs={"org_pk": org_pk})
     )
-
-    revision_date = extracted.get("revision_date")
-
-    initial = {
-        "name": extracted.get("product_name", ""),
-        "cas_id_number": extracted.get("cas_id_number", ""),
-        "molecular_formula": extracted.get("molecular_formula", ""),
-        "density": extracted.get("density"),
-        "bioaccumulable": extracted.get("bioaccumulable"),
-        "is_precursor": extracted.get("is_precursor", False),
-        "seveso_list": extracted.get("seveso_list", False),
-        "revision_date": revision_date,
-        # Catalog FK fields (single PK or None)
-        "iarc": catalog_fields.get("iarc"),
-        "imdg": catalog_fields.get("imdg"),
-        "precursor_type": catalog_fields.get("precursor_type"),
-        # Catalog M2M fields (lists of PKs)
-        "h_code": h_code_pks,
-        "white_organ": catalog_fields.get("white_organ", []),
-        "ue_code": catalog_fields.get("ue_code", []),
-        "nfpa": catalog_fields.get("nfpa", []),
-        "storage_class": catalog_fields.get("storage_class", []),
-    }
-
-    context["step"] = 2
-    context["confirm_form"] = SDSConfirmForm(initial=initial)
-    return render(request, "msds/sds_create.html", context)
-
-
-def _sds_create_confirm(request, org_pk, context):
-    confirm_form = SDSConfirmForm(request.POST)
-    if not confirm_form.is_valid():
-        context["step"] = 2
-        context["confirm_form"] = confirm_form
-        return render(request, "msds/sds_create.html", context)
-
-    temp_file_name = request.session.get("sds_temp_file")
-
-    if not temp_file_name or not default_storage.exists(temp_file_name):
-        messages.error(request, _("Temporary file not found. Please upload again."))
-        context["step"] = 1
-        context["upload_form"] = SDSUploadForm()
-        return render(request, "msds/sds_create.html", context)
-
-    organization = get_object_or_404(OrganizationStructure, pk=org_pk)
-    cd = confirm_form.cleaned_data
-
-    obj = Object(
-        name=cd["name"],
-        type=Object.REACTIVE,
-        organization=organization,
-        created_by=request.user,
-    )
-    obj.save()
-
-    full_path = default_storage.path(temp_file_name)
-    file_name = "%s.pdf" % (cd.get("cas_id_number") or obj.pk)
-
-    sc = SubstanceCharacteristics(
-        object_related=obj,
-        cas_id_number=cd.get("cas_id_number") or None,
-        molecular_formula=cd.get("molecular_formula") or None,
-        density=cd.get("density") or 0,
-        bioaccumulable=cd.get("bioaccumulable"),
-        is_precursor=cd.get("is_precursor", False),
-        seveso_list=cd.get("seveso_list", False),
-        iarc=cd.get("iarc"),
-        imdg=cd.get("imdg"),
-        precursor_type=cd.get("precursor_type"),
-    )
-    with open(full_path, "rb") as f:
-        sc.security_sheet.save(file_name, File(f), save=False)
-    sc.save()
-
-    # M2M fields
-    if cd.get("h_code"):
-        sc.h_code.set(cd["h_code"])
-    if cd.get("white_organ"):
-        sc.white_organ.set(cd["white_organ"])
-    if cd.get("ue_code"):
-        sc.ue_code.set(cd["ue_code"])
-    if cd.get("nfpa"):
-        sc.nfpa.set(cd["nfpa"])
-    if cd.get("storage_class"):
-        sc.storage_class.set(cd["storage_class"])
-
-    trace = SDSTraceability(
-        sga_substance_characteristics=sc,
-        source="manual",
-        revision_date=cd.get("revision_date"),
-        created_by=request.user,
-    )
-    with open(full_path, "rb") as f:
-        trace.security_sheet.save(file_name, File(f), save=False)
-    trace.save()
-
-    # Clean up temp file and session
-    default_storage.delete(temp_file_name)
-    request.session.pop("sds_temp_file", None)
-
-    messages.success(request, _("SDS uploaded and substance created successfully"))
-    return HttpResponseRedirect(reverse("msds:index_msds", kwargs={"org_pk": org_pk}))
 
 
 def regulation_view(request):
@@ -370,7 +212,7 @@ def download_all_regulations(request):
 
 
 @login_required
-@permission_required("laboratory.view_sdstraceability", raise_exception=True)
+@permission_required("sga.view_sdstraceability", raise_exception=True)
 def verified_sds(request, org_pk):
     organization = get_object_or_404(OrganizationStructure, pk=org_pk)
     user_is_allowed_on_organization(request.user, organization)

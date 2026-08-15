@@ -31,7 +31,7 @@ function get_columns_logentry(){
         render: DataTable.render.datetime(), visible: true,  "dateformat":  document.datetime_format},
         {data: "created_by", name: "created_by", title: gettext('Creator'), type: "string", visible: true},
         {data: "comercial_name", name: "comercial_name", title: gettext('Substance'), type: "string", visible: true,  sortable: false},
-        {data: "laboratory", name: "laboratory", title: gettext('Laboratory'), type: "string", visible: true,  sortable: false},
+        {data: "laboratories", name: "laboratories", title: gettext('Laboratories'), type: "string", visible: true,  sortable: false},
         {data: "organization", name: "organization", title: gettext('Organization'), type: "string", visible: true,  sortable: false},
         {data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: true, filterable: false, sortable: false},
     ];

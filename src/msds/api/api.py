@@ -10,7 +10,8 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 
 from auth_and_perms.organization_utils import user_is_allowed_on_organization
-from laboratory.models import SDSTraceability, OrganizationStructure
+from laboratory.models import OrganizationStructure
+from sga.models import SDSTraceability
 from laboratory.utils import organilab_logentry
 from laboratory.views import logentry
 from msds.api.filterset import SDSTraceabilityFilterSet
@@ -32,9 +33,9 @@ class SDSTraceabilityViewSet(AuthAllPermBaseObjectManagement):
         "get_sustance_characteristics_info": SGASubstanceCharacteristicsSerializer,
     }
     perms = {
-        "list": ["laboratory.view_sdstraceability"],
-        "verify": ["laboratory.change_sdstraceability"],
-        "get_sustance_characteristics_info": ["laboratory.view_sdstraceability"],
+        "list": ["sga.view_sdstraceability"],
+        "verify": ["sga.change_sdstraceability"],
+        "get_sustance_characteristics_info": ["sga.view_sdstraceability"],
     }
     queryset = SDSTraceability.objects.all()
     pagination_class = LimitOffsetPagination

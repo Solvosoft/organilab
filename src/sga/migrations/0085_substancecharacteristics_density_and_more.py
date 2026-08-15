@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
             name="density",
             field=models.FloatField(
                 default=0,
-                help_text="t belongs to the regulations of decree 44741, only use dot like 0.344 on decimal",
+                help_text="It belongs to the regulations of decree 44741, only use dot like 0.344 on decimal",
                 verbose_name="Density",
             ),
         ),

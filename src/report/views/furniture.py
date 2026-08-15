@@ -10,15 +10,30 @@ from report.utils import (
 from report.utils import get_furniture_queryset_by_filters
 
 
+def get_object_type(report):
+    """Tipo de objeto pedido; la cadena vacía significa «todos».
+
+    El payload de un reporte se guarda tal como estaba el día que se pidió, así
+    que puede no traer todas las claves que el código espera hoy. Un reporte
+    debe poder regenerarse siempre: leer la clave directamente haría que un
+    payload incompleto tumbara la tarea entera en vez de producir el informe.
+    Ausencia se interpreta como «sin filtro», que es el comportamiento neutro.
+
+    Mismo resguardo que usan `report.views.lab_room` y `report.views.objects`.
+    """
+    return report.data.get("object_type", "")
+
+
 def get_dataset(report, column_list=None):
     dataset = []
     objects = []
+    object_type = get_object_type(report)
     furniture_list = get_furniture_queryset_by_filters(report)
     for furniture in furniture_list:
-        if report.data["object_type"] != "":
+        if object_type != "":
             objects = (
                 furniture.get_objects()
-                .filter(object__type=report.data["object_type"])
+                .filter(object__type=object_type)
                 .distinct("pk")
                 .order_by("pk")
             )
@@ -36,7 +51,14 @@ def get_dataset(report, column_list=None):
                 "object": shelfobject.object.name,
                 "type": obj_type,
                 "quantity": f"{round(shelfobject.total_quantity, 3)} {shelf_unit}",
-                "laboratory": shelfobject.in_where_laboratory.name,
+                # `in_where_laboratory` es opcional en el modelo, así que un
+                # informe no puede darlo por hecho: una celda vacía informa,
+                # una excepción deja al usuario sin informe.
+                "laboratory": (
+                    shelfobject.in_where_laboratory.name
+                    if shelfobject.in_where_laboratory
+                    else ""
+                ),
                 "laboratory_room": furniture.labroom.name,
                 "furniture": furniture.name,
                 "shelf": shelfobject.shelf.name,
@@ -54,16 +76,15 @@ def get_dataset_report_reactive(report, column_list=None):
     furniture_list = get_furniture_queryset_by_filters(report)
     i = 0
     objects = []
+    object_type = get_object_type(report)
     extra_filter = {
         "object__substancharacteristics_object__is_precursor": report.data.get(
             "is_precursor", False
         )
     }
     for furniture in furniture_list:
-        if report.data["object_type"] != "":
-            objects = furniture.get_objects().filter(
-                object__type=report.data["object_type"]
-            )
+        if object_type != "":
+            objects = furniture.get_objects().filter(object__type=object_type)
             if (
                 extra_filter["object__substancharacteristics_object__is_precursor"]
                 == True
@@ -161,7 +182,7 @@ def report_reactive_html(report):
 
 
 def furniture_html(report):
-    if report.data["object_type"] != "0":
+    if get_object_type(report) != "0":
         columns_fields = [
             {"name": "shelfobject_code", "title": _("Unit code")},
             {"name": "code", "title": _("Code")},
@@ -223,7 +244,7 @@ def report_reactive_list_doc(report):
 
 
 def furniture_doc(report):
-    if report.data["object_type"] != "0":
+    if get_object_type(report) != "0":
 
         builder = ExcelGraphBuilder()
         content = [

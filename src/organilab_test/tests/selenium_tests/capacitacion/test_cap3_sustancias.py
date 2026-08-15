@@ -83,7 +83,7 @@ class Cap3ClassificationAndMSDSTest(CapacitacionSeleniumBase):
 
     def test_sga_classification_form(self):
         """Escenario 3.4: Ver formulario de clasificacion SGA con codigos H y P."""
-        self.navigate_to_sga_step_two(org_pk=4, pk=1)
+        self.navigate_to_sga_update_substance(org_pk=4, pk=1)
 
         path_list = [
             # Capturar formulario de clasificacion SGA
@@ -136,7 +136,7 @@ class Cap3ClassificationAndMSDSTest(CapacitacionSeleniumBase):
         self.create_gif_process(path_list, "cap3_precursor_report")
 
         # Ver configuracion de precursor en caracteristicas de sustancia
-        self.navigate_to_sga_step_two(org_pk=4, pk=1)
+        self.navigate_to_sga_update_substance(org_pk=4, pk=1)
 
         path_list_config = [
             # Capturar la seccion de precursor en el formulario
