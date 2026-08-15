@@ -12,7 +12,7 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django.utils.translation import gettext_lazy as _
 
-from sga.models import WarningWord, DangerIndication, PrudenceAdvice
+from sga.models import WarningWord, DangerIndication, PrudenceAdvice, SGAComplement
 from sga.api.serializers import (
     WarningWordSerializer,
     WarningWordDataTableSerializer,
@@ -122,7 +122,9 @@ class WarningWordAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
                 status=status.HTTP_201_CREATED,
             )
 
-        return JsonResponse(status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse(
+            {"errors": form.errors}, status=status.HTTP_400_BAD_REQUEST
+        )
 
     def list(self, request, org_pk, *args, **kwargs):
         self._check_permission_on_organization(request, org_pk, "list")
@@ -163,6 +165,10 @@ class WarningWordAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
                     status=status.HTTP_200_OK,
                 )
 
+            return JsonResponse(
+                {"errors": form.errors}, status=status.HTTP_400_BAD_REQUEST
+            )
+
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, org_pk, pk=None, *args, **kwargs):
@@ -170,6 +176,23 @@ class WarningWordAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
 
         if pk:
             warning_word = get_object_or_404(WarningWord, pk=pk)
+
+            in_use = DangerIndication.objects.filter(
+                warning_words=warning_word
+            ).exists() or SGAComplement.objects.filter(
+                warningword=warning_word
+            ).exists()
+
+            if in_use:
+                return JsonResponse(
+                    {
+                        "detail": _(
+                            "This item can't be deleted because it is being used by a danger indication."
+                        )
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
             organilab_logentry(
                 request.user,
                 warning_word,

@@ -399,6 +399,13 @@ class RecipientSize(models.Model):
     width_unit = models.CharField(
         max_length=5, default="cm", verbose_name=_("Width Unit"), choices=CHOICES
     )
+    laboratory = models.ForeignKey(
+        "laboratory.laboratory",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        verbose_name=_("Laboratory"),
+    )
 
     def __str__(self):
         return "{0} | height={1} {2}, width={3} {4}".format(

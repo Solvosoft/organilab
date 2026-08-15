@@ -66,7 +66,7 @@ from laboratory.shelfobject.utils import (
     get_selected_container,
     group_object_errors_for_serializer,
 )
-from sga.models import Pictogram, SubstanceCharacteristics
+from sga.models import Pictogram, RecipientSize, SubstanceCharacteristics
 
 logger = logging.getLogger("organilab")
 
@@ -3498,3 +3498,53 @@ class DecreaseReactiveShelfObjectSerializer(serializers.Serializer):
             raise serializers.ValidationError(decrease_errors)
 
         return data
+
+
+class RecipientSizeSerializer(serializers.ModelSerializer):
+    height = serializers.FloatField(required=False, allow_null=True)
+    width = serializers.FloatField(required=False, allow_null=True)
+    unit = serializers.SerializerMethodField()
+
+    def get_unit(self, obj):
+        return _("Centimeters")
+
+    class Meta:
+        model = RecipientSize
+        fields = ["id", "name", "height", "width", "unit"]
+
+
+class RecipientSizeDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=RecipientSizeSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+
+class RecipientSizeCreateSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(max_length=150, required=True)
+    height = serializers.FloatField(min_value=0, required=True)
+    width = serializers.FloatField(min_value=0, required=True)
+    height_unit = serializers.ChoiceField(
+        choices=RecipientSize.CHOICES, default="cm", required=False
+    )
+    width_unit = serializers.ChoiceField(
+        choices=RecipientSize.CHOICES, default="cm", required=False
+    )
+
+    class Meta:
+        model = RecipientSize
+        fields = ["name", "height", "height_unit", "width", "width_unit"]
+
+
+class RecipientSizeDeleteSerializer(serializers.Serializer):
+    recipient_size = serializers.PrimaryKeyRelatedField(
+        queryset=RecipientSize.objects.using(settings.READONLY_DATABASE)
+    )
+
+    def validate_recipient_size(self, value):
+        laboratory_id = self.context.get("laboratory_id")
+        if value.laboratory_id != laboratory_id:
+            raise serializers.ValidationError(
+                _("The recipient size does not belong to this laboratory.")
+            )
+        return value

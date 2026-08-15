@@ -984,3 +984,36 @@ def sds_task_status(request, org_pk):
             response["result"] = None
 
     return JsonResponse(response)
+
+
+@login_required
+@permission_required(
+    ("sga.view_substance", "auth_and_perms.institution_can_access"),
+    raise_exception=True,
+)
+def generate_label(request, org_pk, pk):
+    """Genera una etiqueta GHS/SGA para una sustancia del catálogo (PNG/SVG/PDF)."""
+    from sga.label_blueprint import blueprint_from_substance
+    from sga.label_render import render_label
+
+    organization = get_object_or_404(
+        OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
+    )
+    user_is_allowed_on_organization(request.user, organization)
+    substance = get_object_or_404(Substance, pk=pk)
+
+    # Overrides opcionales (params GET). El tamaño por defecto es mediano.
+    overrides = {
+        "lote": request.GET.get("lote", ""),
+        "fecha_caducidad": request.GET.get("fecha_caducidad", ""),
+        "cantidad": request.GET.get("cantidad", ""),
+        "qr_url": request.GET.get("qr_url", ""),
+        "ancho_mm": float(request.GET.get("ancho_mm", 70)),
+        "alto_mm": float(request.GET.get("alto_mm", 40)),
+    }
+    blueprint = blueprint_from_substance(
+        substance, organization=organization, **overrides
+    )
+
+    formato = request.GET.get("formato", "png")
+    return render_label(blueprint, formato, filename=f"etiqueta_{substance.pk}")

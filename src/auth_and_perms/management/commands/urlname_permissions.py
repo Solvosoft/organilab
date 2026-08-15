@@ -2495,6 +2495,27 @@ URLNAME_PERMISSIONS = {
             "permission": "sga.view_displaylabel",
         }
     ],
+    # El motor renderiza la etiqueta al vuelo: no persiste nada, así que basta
+    # con leer la sustancia y el tamaño de recipiente que fija sus dimensiones.
+    "generate_label": [
+        {
+            "name": "View Substance",
+            "category": "Substance",
+            "permission": "sga.view_substance",
+        },
+        {
+            "name": "View Recipient Size",
+            "category": "Recipient Size",
+            "permission": "sga.view_recipientsize",
+        },
+    ],
+    "engine_label_preview": [
+        {
+            "name": "View Label SGA",
+            "category": "Label SGA",
+            "permission": "sga.view_displaylabel",
+        }
+    ],
     "get_recipient_size": [
         {
             "name": "View Recipient Size",
@@ -3312,6 +3333,23 @@ URLNAME_PERMISSIONS = {
             "name": "Add Object",
             "category": "Object",
             "permission": "laboratory.add_object",
+        },
+    ],
+    "recipient_size": [
+        {
+            "name": "Add Recipient Size",
+            "category": "Recipient Size",
+            "permission": "sga.add_recipientsize",
+        },
+        {
+            "name": "Delete Recipient Size",
+            "category": "Recipient Size",
+            "permission": "sga.delete_recipientsize",
+        },
+        {
+            "name": "View Recipient Size",
+            "category": "Recipient Size",
+            "permission": "sga.view_recipientsize",
         },
     ],
 }

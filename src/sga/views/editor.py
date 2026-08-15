@@ -312,6 +312,51 @@ def get_preview(request, org_pk, pk):
 
 
 @login_required
+def engine_label_preview(request, org_pk, pk):
+    """Previsualización en vivo de la etiqueta con el motor (SVG vectorial)."""
+    from sga.label_blueprint import blueprint_from_displaylabel
+    from sga.label_engine import LabelEngine, LabelTooSmallError
+
+    organization = get_object_or_404(
+        OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
+    )
+    user_is_allowed_on_organization(request.user, organization)
+    display_label = get_object_or_404(DisplayLabel, pk=pk)
+
+    blueprint = blueprint_from_displaylabel(display_label, organization=organization)
+    try:
+        svg = LabelEngine().generate_svg(blueprint)
+    except LabelTooSmallError as exc:
+        return HttpResponse(str(exc), status=400,
+                            content_type="text/plain; charset=utf-8")
+    return HttpResponse(svg, content_type="image/svg+xml")
+
+
+def _store_engine_png(display_label, organization):
+    """Genera el PNG del motor y lo guarda en ``DisplayLabel.label_in_png`` (B64).
+
+    Silencioso ante etiquetas demasiado pequeñas: el preview SVG ya informa al
+    usuario; no se debe bloquear el guardado del editor por ello.
+    """
+    import base64
+    import io
+
+    from sga.label_blueprint import blueprint_from_displaylabel
+    from sga.label_engine import LabelEngine, LabelTooSmallError
+
+    blueprint = blueprint_from_displaylabel(display_label, organization=organization)
+    try:
+        img = LabelEngine().generate(blueprint)
+    except LabelTooSmallError:
+        return
+    buf = io.BytesIO()
+    img.save(buf, "PNG")
+    b64 = base64.b64encode(buf.getvalue()).decode("ascii")
+    display_label.label_in_png = f"data:image/png;base64,{b64}"
+    display_label.save(update_fields=["label_in_png"])
+
+
+@login_required
 def create_recipient(request, org_pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -452,7 +497,8 @@ def sgalabel_step_two(request, org_pk, pk):
     if request.method == "POST":
         form = PersonalSGAForm(request.POST, instance=sgalabel)
         if form.is_valid():
-            form.save()
+            instance = form.save()
+            _store_engine_png(instance, organization)
             return redirect(reverse("sga:add_personal", args=(org_pk,)))
 
     context = {

@@ -4687,6 +4687,12 @@ msgstr "Hojas de Seguridad"
 msgid "Warning word"
 msgstr "Palabra de advertencia"
 
+msgid "Engine preview"
+msgstr "Vista previa del motor"
+
+msgid "Preview not available"
+msgstr "Vista previa no disponible"
+
 msgid "Edit your label"
 msgstr "Edita tu etiqueta"
 
@@ -6351,6 +6357,18 @@ msgstr "Crear organización/laboratorio"
 
 msgid "Review Requests"
 msgstr "Revisar Solicitudes"
+
+msgid "Generate Label"
+msgstr "Generado"
+
+msgid "Click \"Generate Label\" to preview"
+msgstr ""
+
+msgid "List of Recipients"
+msgstr "Lista de Recipientes"
+
+msgid "Create Recipient"
+msgstr "Crear Recipiente"
 
 msgid "Version"
 msgstr "Versión"

@@ -18,7 +18,12 @@ from django.utils.text import slugify
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 
-from laboratory.forms import LaboratoryRoomForm, FurnitureCreateForm, RoomCreateForm
+from laboratory.forms import (
+    LaboratoryRoomForm,
+    FurnitureCreateForm,
+    RoomCreateForm,
+    RecipientSizeForm,
+)
 from laboratory.models import LaboratoryRoom, Laboratory
 from presentation.utils import build_qr_instance, update_qr_instance
 from report.forms import LaboratoryRoomReportForm
@@ -239,8 +244,11 @@ class LaboratoryRoomsList(ListView):
             initial={"objecttype": 0}, org_pk=self.org, prefix="bf"
         )
         context["update_box_form"] = ShelfObjectBoxForm(
-            initial={"objecttype": 0}, org_pk=self.org, prefix="ubf",
-            modal_id="#edit_box_form", object_readonly=True,
+            initial={"objecttype": 0},
+            org_pk=self.org,
+            prefix="ubf",
+            modal_id="#edit_box_form",
+            object_readonly=True,
         )
         context["material_refuse_form"] = ShelfObjectRefuseMaterialForm(
             initial={"objecttype": 1}, org_pk=self.org, prefix="mff"
@@ -257,6 +265,7 @@ class LaboratoryRoomsList(ListView):
         context["edit_material_form"] = EditMaterialForm(
             prefix="edit_material",
         )
+        context["recipient_form"] = RecipientSizeForm(prefix="recipient")
         context["options"] = ["Reservation", "Add", "Transfer", "Substract"]
         context["user"] = self.request.user
         context["search_by_url"] = self.search_by_url(self.request.GET)
@@ -269,7 +278,10 @@ class LaboratoryRoomsList(ListView):
 
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
-    any_permission_required(["laboratory.add_laboratoryroom", "laboratory.view_laboratoryroom"], raise_exception=True),
+    any_permission_required(
+        ["laboratory.add_laboratoryroom", "laboratory.view_laboratoryroom"],
+        raise_exception=True,
+    ),
     name="dispatch",
 )
 class LabroomCreate(CreateView):

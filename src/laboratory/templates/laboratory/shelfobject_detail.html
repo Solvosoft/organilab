@@ -21,6 +21,19 @@
         </div>
     {% endif %}
 
+    <div class="form-group row justify-content-center mb-3">
+        <div class="col-12 text-center">
+            <a href="{% url 'laboratory:shelfobject_label' org_pk laboratory object.pk %}"
+               target="_blank" rel="noopener" class="btn btn-primary">
+                <i class="fa fa-tag"></i> {% trans 'Print label' %}
+            </a>
+            <a href="{% url 'laboratory:shelfobject_label' org_pk laboratory object.pk %}?formato=pdf"
+               target="_blank" rel="noopener" class="btn btn-outline-primary">
+                <i class="fa fa-file-pdf-o"></i> {% trans 'Label PDF' %}
+            </a>
+        </div>
+    </div>
+
 <table class="table table-striped">
     <tbody>
 <tr><td>{% trans 'Code' %}</td><td>{{object.object.code|default:"" }} </td></tr>
