@@ -55,6 +55,11 @@ urlpatterns = [
     path("template_editor", editor.template_editor, name="editor"),
     # FIXME: It's necessary this preview ?
     path("get_preview/<int:pk>", editor.get_preview, name="get_preview"),
+    path(
+        "engine_label_preview/<int:pk>",
+        editor.engine_label_preview,
+        name="engine_label_preview",
+    ),
     # my templates
     path("sustance/create/", substance.create_edit_sustance, name="create_sustance"),
     path(
@@ -71,6 +76,11 @@ urlpatterns = [
         "detail_substance/<int:pk>/",
         substance.detail_substance,
         name="detail_substance",
+    ),
+    path(
+        "generate_label/<int:pk>/",
+        substance.generate_label,
+        name="generate_label",
     ),
     # sga/get_get_templateList
     path("labels/", editor.create_personal_template, name="add_personal"),

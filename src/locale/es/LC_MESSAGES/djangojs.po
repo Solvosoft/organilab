@@ -612,9 +612,6 @@ msgstr "Detalle del Contenedor"
 msgid "Is Container"
 msgstr "Es Contenedor"
 
-msgid "Container Detail"
-msgstr "Detalle del Contenedor"
-
 msgid "No material capacity defined"
 msgstr "No se ha definido la capacidad de material"
 
@@ -1011,6 +1008,84 @@ msgstr "Eliminar palabra de advertencia"
 
 msgid "Do you want to remove the warning word?"
 msgstr "¿Desea eliminar esta palabra de advertencia?"
+
+msgid "Is Dangerous"
+msgstr "¿Es peligroso?"
+
+msgid "Has Threshold"
+msgstr "Tiene Umbral"
+
+msgid "Is Pure"
+msgstr "Es Puro"
+
+msgid "CAS Number"
+msgstr "Número CAS"
+
+msgid "Density"
+msgstr "Densidad"
+
+msgid "Storage Class"
+msgstr "Clase de Almacenamiento"
+
+msgid "Seveso List III?"
+msgstr "¿Lista de Seveso III?"
+
+msgid "Substance Characteristics"
+msgstr "Características de sustancia"
+
+msgid "Bioaccumulable"
+msgstr "Bioaccumulable"
+
+msgid "Download Security Sheet"
+msgstr "Descargar hoja de Seguridad"
+
+msgid "Substance Representation"
+msgstr "Representación de la sustancia"
+
+msgid "Container Detail"
+msgstr "Detalle del Contenedor"
+
+msgid "Equipment Characteristics"
+msgstr "Características del Equipo"
+
+msgid "Download Use Manual"
+msgstr "Descargar manual de uso"
+
+msgid "No equipment characteristics available"
+msgstr "No hay características de equipo disponibles"
+
+msgid "Calibration Required"
+msgstr "Calibración Requerida"
+
+msgid "Operation Voltage"
+msgstr "Voltaje de Operación"
+
+msgid "Operation Amperage"
+msgstr "Amperaje de Operación"
+
+msgid "Use Specials Conditions"
+msgstr "Condiciones Especiales de Uso"
+
+msgid "Generate Pathological Waste"
+msgstr "Generar Residuos Pathológicos"
+
+msgid "Clean Period According to Provider"
+msgstr "Período de Limpieza Según Proveedor"
+
+msgid "Instrumental Family"
+msgstr "Familia Instrumental"
+
+msgid "Location"
+msgstr "Ubicación"
+
+msgid "Are you sure you want to delete this recipient size?"
+msgstr "¿Está seguro/a de que desea eliminar esta tamaño de recipiente?"
+
+msgid "Recipient size was deleted successfully."
+msgstr "Se eliminó con éxito el tamaño de recipiente."
+
+msgid "Recipient size was created successfully."
+msgstr "Se creó con éxito el tamaño de recipiente."
 
 msgid "Weight"
 msgstr "Peso"

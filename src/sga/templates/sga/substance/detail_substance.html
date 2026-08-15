@@ -165,3 +165,77 @@
         <hr>
     </div>
 </div>
+
+<div class="row p-3">
+    <div class="col-12">
+        <hr>
+        <h5>{% trans 'Generate GHS Label' %}</h5>
+        <div class="row align-items-end">
+            <div class="col-auto">
+                <label class="form-label">{% trans 'Width' %} (mm)</label>
+                <input type="number" class="form-control" id="label_ancho" value="70" min="30" max="200" style="width:100px">
+            </div>
+            <div class="col-auto">
+                <label class="form-label">{% trans 'Height' %} (mm)</label>
+                <input type="number" class="form-control" id="label_alto" value="40" min="20" max="150" style="width:100px">
+            </div>
+            <div class="col-auto">
+                <label class="form-label">{% trans 'Format' %}</label>
+                <select class="form-select" id="label_formato" style="width:100px">
+                    <option value="png">PNG</option>
+                    <option value="pdf">PDF</option>
+                </select>
+            </div>
+            <div class="col-auto">
+                <a id="btn_generate_label" class="btn btn-primary"
+                   href="{% url 'sga:generate_label' org_pk object.pk %}"
+                   target="_blank">
+                    <i class="fas fa-tag"></i> {% trans 'Generate Label' %}
+                </a>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-12">
+                <div id="label_preview" class="border p-2 text-center" style="min-height:100px; background:#f8f9fa;">
+                    <small class="text-muted">{% trans 'Click "Generate Label" to preview' %}</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var btn = document.getElementById('btn_generate_label');
+    var baseUrl = btn.href;
+
+    function updateUrl() {
+        var ancho = document.getElementById('label_ancho').value;
+        var alto = document.getElementById('label_alto').value;
+        var formato = document.getElementById('label_formato').value;
+        btn.href = baseUrl + '?ancho_mm=' + ancho + '&alto_mm=' + alto + '&formato=' + formato;
+    }
+
+    document.getElementById('label_ancho').addEventListener('change', updateUrl);
+    document.getElementById('label_alto').addEventListener('change', updateUrl);
+    document.getElementById('label_formato').addEventListener('change', updateUrl);
+
+    btn.addEventListener('click', function(e) {
+        updateUrl();
+        var formato = document.getElementById('label_formato').value;
+        if (formato === 'png') {
+            e.preventDefault();
+            var preview = document.getElementById('label_preview');
+            var img = new Image();
+            img.src = btn.href;
+            img.style.maxWidth = '100%';
+            img.onload = function() {
+                preview.innerHTML = '';
+                preview.appendChild(img);
+            };
+        }
+    });
+
+    updateUrl();
+});
+</script>

@@ -18,6 +18,18 @@
 	<div class="row">
 		<div class="col-3">
 			{% include 'editor/sga_live.html' %}
+			<div class="card mt-3">
+				<div class="card-header">
+					<i class="fa fa-tag"></i> {% trans 'Engine preview' %}
+				</div>
+				<div class="card-body text-center p-2">
+					<object type="image/svg+xml"
+							data="{% url 'sga:engine_label_preview' org_pk sgalabel.pk %}"
+							style="max-width: 100%; height: auto;">
+						{% trans 'Preview not available' %}
+					</object>
+				</div>
+			</div>
 		</div>
 
 		<div class="col-9">

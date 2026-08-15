@@ -123,6 +123,24 @@ class WarningWordForm(GTForm, forms.ModelForm):
             "weigth": genwidgets.NumberInput,
         }
 
+    def clean(self):
+        cleaned_data = super().clean()
+        name = cleaned_data.get("name")
+        weigth = cleaned_data.get("weigth")
+
+        if name is not None and weigth is not None:
+            queryset = WarningWord.objects.filter(name=name, weigth=weigth)
+
+            if self.instance.pk:
+                queryset = queryset.exclude(pk=self.instance.pk)
+
+            if queryset.exists():
+                raise forms.ValidationError(
+                    _("A warning word with this name and weight already exists.")
+                )
+
+        return cleaned_data
+
 
 class PrudenceAdviceForm(GTForm, forms.ModelForm):
     class Meta:

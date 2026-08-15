@@ -40,7 +40,7 @@ from laboratory.models import (
 )
 from reservations_management.models import ReservedProducts
 from risk_management.models import Regent
-from sga.models import DangerIndication
+from sga.models import DangerIndication, RecipientSize
 from .models import (
     Laboratory,
     Object,
@@ -1917,22 +1917,24 @@ class LabOrOrgRequestForm(GTForm, forms.ModelForm):
 
         p = (self.prefix + "-") if self.prefix else ""
         self.fields["is_org"].widget.attrs["data-rel"] = f"#id_{p}parent_org"
-        self.fields["is_org"].widget.attrs["data-relhidden"] = ";".join([
-            f"#id_{p}phone_number",
-            f"#id_{p}location",
-            f"#id_{p}geolocation",
-            f"#id_{p}email",
-            f"#id_{p}coordinator",
-            f"#id_{p}unit",
-            f"#id_{p}description",
-            f"#id_{p}area",
-            f"#id_{p}faculty_dispatch",
-            f"#id_{p}organization",
-            f"#id_{p}responsible",
-            f"#id_{p}workplace",
-            f"#id_{p}nearby_sites",
-            f"#id_{p}water_resources_affected",
-        ])
+        self.fields["is_org"].widget.attrs["data-relhidden"] = ";".join(
+            [
+                f"#id_{p}phone_number",
+                f"#id_{p}location",
+                f"#id_{p}geolocation",
+                f"#id_{p}email",
+                f"#id_{p}coordinator",
+                f"#id_{p}unit",
+                f"#id_{p}description",
+                f"#id_{p}area",
+                f"#id_{p}faculty_dispatch",
+                f"#id_{p}organization",
+                f"#id_{p}responsible",
+                f"#id_{p}workplace",
+                f"#id_{p}nearby_sites",
+                f"#id_{p}water_resources_affected",
+            ]
+        )
 
         if org_pk:
             root = OrganizationStructure.objects.filter(pk=org_pk).first()
@@ -2009,3 +2011,23 @@ class LabOrOrgRequestFilterForm(GTForm, forms.Form):
         required=False,
         widget=forms.Select(attrs={"class": "form-control"}),
     )
+
+
+class RecipientSizeForm(GTForm, forms.ModelForm):
+    unit = forms.CharField(
+        initial=_("Centimeters"),
+        label=_("Measurement unit"),
+        widget=genwidgets.TextInput(
+            attrs={"disabled": True},
+        ),
+    )
+
+    class Meta:
+        model = RecipientSize
+        fields = ["name", "height", "width"]
+        widgets = {
+            "name": genwidgets.TextInput,
+            "height": genwidgets.TextInput,
+            "width": genwidgets.TextInput,
+        }
+        exclude = ["laboratory"]

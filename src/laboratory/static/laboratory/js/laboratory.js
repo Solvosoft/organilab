@@ -253,7 +253,7 @@ $(document).ready(function(){
         );
     }
 
-    if (has_perm) {
+    if (has_perm.transfer) {
         shelfObjectButtons.push({
             action: tableObject.showTransfers,
             text: '<i class="fa fa-exchange" aria-hidden="true"></i>',
@@ -893,4 +893,152 @@ function get_material_shelfobject_data(shelfobject){
     });
     }
 
+
+function displayShelfobjectLabels(data) {
+     if ($.fn.DataTable.isDataTable('#recipient_datatable')) {
+      $('#recipient_datatable').DataTable().destroy();
+      $('#recipient_datatable').empty(); // Limpia el thead/tbody generado
+  }
+  let reagent_id = $(data).data('object');
+  createDataTable('#recipient_datatable', $(data).data('url'), {
+        columns: [
+            {data: "id", name: "id", title: gettext("Id"), type: "string", visible: false},
+            {data: "name", name: "name", title: gettext("Object"), type: "string", visible: true},
+            {data: "height", name: "height", title: gettext("Height"), type: "string", visible: true},
+            {data: "width", name: "width", title: gettext("Width"), type: "string", visible: true},
+            {data: "unit", name: "unit", title: gettext("Unit"), type: "string", visible: true},
+            {data: null, title: gettext('Actions'), sortable: false, filterable: false,
+             render: function(rowData, type, row) {
+                 let url = $(data).data('recipient').replace('0', row.id);
+                 let buttons_actions= `<a class='btn btn-sm btn-outline-success' download href='${url}' title='${gettext('Download')}'><i class="fa fa-download"></i></a>`;
+                 if(has_perm.remove){
+                         buttons_actions+=`<a class='btn btn-sm btn-outline-danger delete_recipient' title='${gettext('Delete')}'><i class="fa fa-trash"></i></a>`;
+                 }
+                 return buttons_actions;
+             }
+            }
+        ],
+        paging: true,
+        buttons: [],
+        deferLoading: true,
+        dom: "<'row'<'col-sm-4 col-md-4 d-flex justify-content-start'l>" +
+        "<'col-sm-7 col-md-7 mt-1 d-flex justify-content-end'f>>" +
+        "<'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 m-auto'p>>",
+        ajax: {
+           url: $(data).data('url'),
+           type: 'GET',
+           data: function(dataTableParams, settings) {
+               var data= formatDataTableParams(dataTableParams, settings);
+               data['organization'] = $('#id_organization').val();
+               data['laboratory'] = $('#id_laboratory').val();
+               return data;
+           }
+       }
+    },
+    addfilter=false);
+    setTimeout(function(){
+        $('#recipient_datatable').DataTable().ajax.reload();
+                 $('#recipient_modal').modal('show')
+
+    }
+    , 100);
+
+}
+$(document).on('click', '.add_recipient', function(e) {
+    e.preventDefault();
+    let formId = $(this).data('form');
+    let form = $('#' + formId);
+    let url = form.attr('action');
+    let formData = form.serialize();
+    formData = convertToStringJson(form, "recipient-")
+
+    $.ajax({
+        url: url,
+        type: 'POST',
+        data: formData,
+        contentType: 'application/json',
+        headers: {'X-CSRFToken': getCookie('csrftoken')},
+        success: function(response) {
+            Swal.fire({
+                icon: 'success',
+                title: gettext('Success'),
+                text: response.detail || gettext('Recipient size was created successfully.'),
+                timer: 1500
+            });
+            form[0].reset();
+            $('#recipient_datatable').DataTable().ajax.reload();
+            $('#recipient_modal_tab1_btn').tab('show');
+        },
+        error: function(xhr) {
+            let errorMsg = gettext('There was a problem performing your request.');
+            if (xhr.responseJSON && xhr.responseJSON.errors) {
+                let errors = xhr.responseJSON.errors;
+                let errorList = [];
+                for (let field in errors) {
+                    errorList.push(field + ': ' + errors[field].join(', '));
+                }
+                errorMsg = errorList.join('\n');
+            }
+            Swal.fire({
+                icon: 'error',
+                title: gettext('Error'),
+                text: errorMsg
+            });
+        }
+    });
+});
+
+$(document).on('click', '.delete_recipient', function(e) {
+    e.preventDefault();
+    let btn = $(this);
+    let row = $('#recipient_datatable').DataTable().row(btn.closest('tr'));
+    let rowData = row.data();
+    let recipient_url = document.delete_recipient_url.replace("/0/", "/"+rowData.id+"/")
+    Swal.fire({
+        icon: 'warning',
+        title: gettext('Are you sure?'),
+        text: gettext('Are you sure you want to delete this recipient size?'),
+        confirmButtonText: gettext('Confirm'),
+        showCloseButton: true,
+        denyButtonText: gettext('Cancel'),
+        showDenyButton: true,
+    }).then(function(result) {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: recipient_url,
+                type: 'DELETE',
+                data: JSON.stringify({recipient_size: rowData.id}),
+                contentType: 'application/json',
+                headers: {'X-CSRFToken': getCookie('csrftoken')},
+                success: function(response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: gettext('Success'),
+                        text: response.detail || gettext('Recipient size was deleted successfully.'),
+                        timer: 1500
+                    });
+                    $('#recipient_datatable').DataTable().ajax.reload();
+                },
+                error: function(xhr) {
+                    let errorMsg = gettext('There was a problem performing your request.');
+                    if (xhr.responseJSON && xhr.responseJSON.errors) {
+                        let errors = xhr.responseJSON.errors;
+                        let errorList = [];
+                        for (let field in errors) {
+                            errorList.push(errors[field].join(', '));
+                        }
+                        errorMsg = errorList.join('\n');
+                    } else if (xhr.responseJSON && xhr.responseJSON.detail) {
+                        errorMsg = xhr.responseJSON.detail;
+                    }
+                    Swal.fire({
+                        icon: 'error',
+                        title: gettext('Error'),
+                        text: errorMsg
+                    });
+                }
+            });
+        }
+    });
+});
 
