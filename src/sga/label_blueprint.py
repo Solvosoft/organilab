@@ -273,6 +273,21 @@ def _apply_overrides(blueprint, overrides):
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Constructores de blueprint
+def _substance_name(substance, organization=None):
+    """Nombre a imprimir en la etiqueta.
+
+    Las sustancias en borrador pueden no tener nombre comercial todavía. En ese
+    caso se hereda el de la organización padre en vez de dejar el blueprint sin
+    nombre, que lo invalida y tumba la generación de la etiqueta.
+    """
+    return (
+        (substance.comercial_name or "").strip()
+        or (substance.uipa_name or "").strip()
+        or (getattr(organization, "name", "") or "").strip()
+        or (getattr(getattr(substance, "organization", None), "name", "") or "").strip()
+    )
+
+
 # ──────────────────────────────────────────────────────────────────────────────
 def blueprint_from_substance(substance, *, organization=None, **overrides):
     """Construye un ``LabelBlueprint`` desde un ``sga.Substance`` del catálogo."""
@@ -292,7 +307,7 @@ def blueprint_from_substance(substance, *, organization=None, **overrides):
     chars = getattr(substance, "substancecharacteristics", None)
 
     blueprint = LabelBlueprint(
-        nombre=substance.comercial_name or substance.uipa_name or "",
+        nombre=_substance_name(substance, organization),
         formula=getattr(chars, "molecular_formula", "") or "",
         cas=getattr(chars, "cas_id_number", "") or "",
         institucion=getattr(organization, "name", "") or "",
@@ -337,6 +352,17 @@ def blueprint_from_displaylabel(display_label, *, organization=None, **overrides
     return _apply_overrides(blueprint, overrides)
 
 
+def _label_size_mm(shelfobject, recipient=None):
+    """Tamaño de etiqueta ``(ancho_mm, alto_mm)`` para un ``ShelfObject``.
+
+    Precedencia: el ``RecipientSize`` explícito (medidas reales, convertidas
+    desde su unidad) y, si no hay, los escalones por capacidad.
+    """
+    if recipient is not None:
+        return recipient_size_to_mm(recipient)
+    return capacity_to_size_mm(_shelfobject_capacity_ml(shelfobject))
+
+
 def blueprint_from_shelfobject(
     shelfobject, *, organization=None, recipient=None, **overrides
 ):
@@ -353,12 +379,11 @@ def blueprint_from_shelfobject(
     danger_qs = chars.h_code.all() if chars else []
     fields = _fields_from_danger_indications(danger_qs)
 
-    # Tamaño coherente con la capacidad del envase.
-    if recipient is None:
-        ancho_mm, alto_mm = capacity_to_size_mm(_shelfobject_capacity_ml(shelfobject))
-    else:
-        ancho_mm = recipient.width
-        alto_mm = recipient.height
+    # El tamaño lo manda el recipiente cuando está definido: son las medidas
+    # reales de la cara etiquetable. La capacidad sólo aproxima el tamaño (la
+    # superficie crece con la potencia 2/3 del volumen y depende de la forma),
+    # así que se usa nada más como respaldo.
+    ancho_mm, alto_mm = _label_size_mm(shelfobject, recipient)
     # Cantidad almacenada (con unidad).
     cantidad = ""
     if shelfobject.quantity is not None:

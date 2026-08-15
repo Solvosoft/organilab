@@ -19,8 +19,9 @@ def render_label(blueprint, formato="png", filename="etiqueta"):
     """Genera la etiqueta y devuelve un ``HttpResponse`` en el formato pedido.
 
     ``formato`` ∈ {``png``, ``svg``, ``pdf``}. Si la etiqueta es demasiado
-    pequeña para el contenido obligatorio SGA, devuelve un 400 con el mensaje
-    del motor (que sugiere un tamaño mínimo).
+    pequeña para el contenido obligatorio SGA, o el blueprint no es válido
+    (datos incompletos, dimensiones no positivas), devuelve un 400 con el
+    mensaje correspondiente en vez de propagar el error.
     """
     formato = (formato or "png").lower()
     engine = LabelEngine()
@@ -34,6 +35,10 @@ def render_label(blueprint, formato="png", filename="etiqueta"):
 
         img = engine.generate(blueprint)
     except LabelTooSmallError as exc:
+        return HttpResponse(str(exc), status=400, content_type="text/plain; charset=utf-8")
+    except ValueError as exc:
+        # Blueprint inválido: es un dato incompleto del usuario, no un fallo del
+        # servidor. Se responde 400 para que la UI lo muestre como corrección.
         return HttpResponse(str(exc), status=400, content_type="text/plain; charset=utf-8")
 
     if formato == "pdf":
