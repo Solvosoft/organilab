@@ -40,69 +40,69 @@ class CapacitacionSeleniumBase(SeleniumBase):
         url = self.live_server_url + str(
             reverse("auth_and_perms:organizationManager")
         )
-        self.selenium.get(url)
+        self.open_url(url)
 
     def navigate_to_my_labs(self, org_pk):
         url = self.live_server_url + str(
             reverse("laboratory:mylabs", kwargs={"org_pk": org_pk})
         )
-        self.selenium.get(url)
+        self.open_url(url)
 
     def navigate_to_lab_index(self, org_pk, lab_pk):
         url = self.live_server_url + str(
             reverse("laboratory:labindex", kwargs={"org_pk": org_pk, "lab_pk": lab_pk})
         )
-        self.selenium.get(url)
+        self.open_url(url)
 
     def navigate_to_rooms(self, org_pk, lab_pk):
         url = self.live_server_url + str(
             reverse("laboratory:rooms_list", kwargs={"org_pk": org_pk, "lab_pk": lab_pk})
         )
-        self.selenium.get(url)
+        self.open_url(url)
 
     def navigate_to_furniture(self, org_pk, lab_pk):
         url = self.live_server_url + str(
             reverse("laboratory:furniture_list", kwargs={"org_pk": org_pk, "lab_pk": lab_pk})
         )
-        self.selenium.get(url)
+        self.open_url(url)
 
     def navigate_to_shelfobject_list(self, org_pk, lab_pk):
         url = self.live_server_url + str(
             reverse("laboratory:list_shelfobject", kwargs={"org_pk": org_pk, "lab_pk": lab_pk})
         )
-        self.selenium.get(url)
+        self.open_url(url)
 
     def navigate_to_procedure_list(self, org_pk):
         url = self.live_server_url + str(
             reverse("academic:procedure_list", kwargs={"org_pk": org_pk})
         )
-        self.selenium.get(url)
+        self.open_url(url)
         self.wait_for_page_ready()
 
     def navigate_to_sga_create_substance(self, org_pk):
         url = self.live_server_url + str(
             reverse("sga:create_sustance", kwargs={"org_pk": org_pk})
         )
-        self.selenium.get(url)
+        self.open_url(url)
 
     def navigate_to_sga_update_substance(self, org_pk, pk):
         url = self.live_server_url + str(
             reverse("sga:update_substance", kwargs={"org_pk": org_pk, "pk": pk})
         )
-        self.selenium.get(url)
+        self.open_url(url)
 
     def navigate_to_sga_label_create(self, org_pk):
         url = self.live_server_url + str(
             reverse("sga:add_personal", kwargs={"org_pk": org_pk})
         )
-        self.selenium.get(url)
+        self.open_url(url)
         self.wait_for_page_ready()
 
     def navigate_to_substance_detail(self, org_pk, pk):
         url = self.live_server_url + str(
             reverse("sga:detail_substance", kwargs={"org_pk": org_pk, "pk": pk})
         )
-        self.selenium.get(url)
+        self.open_url(url)
         self.wait_for_page_ready()
 
     def navigate_to_generate_label(self, org_pk, pk, **params):
@@ -114,60 +114,57 @@ class CapacitacionSeleniumBase(SeleniumBase):
         )
         if params:
             url = "%s?%s" % (url, urlencode(params))
-        self.selenium.get(url)
+        self.open_url(url)
 
     def navigate_to_msds(self, org_pk):
         url = self.live_server_url + str(
             reverse("msds:index_msds", kwargs={"org_pk": org_pk})
         )
-        self.selenium.get(url)
+        self.open_url(url)
         self.wait_for_page_ready()
 
     def navigate_to_reservations(self, org_pk, status=0):
         url = self.live_server_url + str(
             reverse("reservations_management:reservations_list", kwargs={"org_pk": org_pk, "status": status})
         )
-        self.selenium.get(url)
+        self.open_url(url)
 
     def navigate_to_create_lab(self, org_pk):
         url = self.live_server_url + str(
             reverse("laboratory:create_lab", kwargs={"org_pk": org_pk})
         )
-        self.selenium.get(url)
+        self.open_url(url)
 
     def navigate_to_risk_zone_list(self, org_pk):
         url = self.live_server_url + str(
             reverse("riskmanagement:riskzone_list", kwargs={"org_pk": org_pk})
         )
-        self.selenium.get(url)
+        self.open_url(url)
         self.wait_for_page_ready()
 
     def navigate_to_reports(self, org_pk):
         url = self.live_server_url + str(
             reverse("laboratory:reports", kwargs={"org_pk": org_pk})
         )
-        self.selenium.get(url)
+        self.open_url(url)
         self.wait_for_page_ready()
 
     def navigate_to_precursor_report(self, org_pk):
         url = self.live_server_url + str(
             reverse("report:precursor_report", kwargs={"org_pk": org_pk})
         )
-        self.selenium.get(url)
+        self.open_url(url)
         self.wait_for_page_ready()
 
-    def navigate_to_msds_create(self, org_pk):
-        url = self.live_server_url + str(
-            reverse("msds:msds_msdsobject_create", kwargs={"org_pk": org_pk})
-        )
-        self.selenium.get(url)
-        self.wait_for_page_ready()
+    # La pantalla propia de alta de MSDS desaparecio al rediseñar el modulo:
+    # la ficha se sube desde el paso 1 del asistente de sustancias, asi que se
+    # navega con navigate_to_sga_create_substance.
 
     def navigate_to_my_reservations(self, org_pk, lab_pk):
         url = self.live_server_url + str(
             reverse("laboratory:my_reservations", kwargs={"org_pk": org_pk, "lab_pk": lab_pk})
         )
-        self.selenium.get(url)
+        self.open_url(url)
         self.wait_for_page_ready()
 
     def navigate_to_manage_reservation(self, org_pk, reservation_pk):
@@ -177,7 +174,7 @@ class CapacitacionSeleniumBase(SeleniumBase):
                 kwargs={"org_pk": org_pk, "pk": reservation_pk},
             )
         )
-        self.selenium.get(url)
+        self.open_url(url)
         self.wait_for_page_ready()
 
     def navigate_to_block_notification(self, lab_pk, obj_pk):
@@ -187,31 +184,31 @@ class CapacitacionSeleniumBase(SeleniumBase):
                 kwargs={"lab_pk": lab_pk, "obj_pk": obj_pk},
             )
         )
-        self.selenium.get(url)
+        self.open_url(url)
         self.wait_for_page_ready()
 
     def navigate_to_admin(self, path=""):
         url = self.live_server_url + "/admin/" + path
-        self.selenium.get(url)
+        self.open_url(url)
 
     def navigate_to_rooms_create(self, org_pk, lab_pk):
         url = self.live_server_url + str(
             reverse("laboratory:rooms_create", kwargs={"org_pk": org_pk, "lab_pk": lab_pk})
         )
-        self.selenium.get(url)
+        self.open_url(url)
 
     def navigate_to_procedure_create(self, org_pk):
         url = self.live_server_url + str(
             reverse("academic:procedure_create", kwargs={"org_pk": org_pk})
         )
-        self.selenium.get(url)
+        self.open_url(url)
         self.wait_for_page_ready()
 
     def navigate_to_my_procedures(self, org_pk, lab_pk):
         url = self.live_server_url + str(
             reverse("academic:get_my_procedures", kwargs={"org_pk": org_pk, "lab_pk": lab_pk})
         )
-        self.selenium.get(url)
+        self.open_url(url)
         self.wait_for_page_ready()
 
     # --- Common XPath patterns ---

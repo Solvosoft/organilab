@@ -357,7 +357,9 @@ class IncreaseShelfObjectSerializer(serializers.Serializer):
                 related_units = get_related_units(64, query_unit)
             elif related_units is None:
                 related_units = get_related_units(measurement_unit.pk, query_unit)
-            if increase_unit not in related_units:
+            # Sin unidades relacionadas la unidad no es convertible: se rechaza
+            # el incremento en vez de comparar contra None, que rompía la vista.
+            if related_units is None or increase_unit not in related_units:
                 updated_errors["measurement_unit"] = _("Measurement unit is not valid")
 
         if errors or updated_errors:
@@ -469,7 +471,9 @@ class DecreaseShelfObjectSerializer(serializers.Serializer):
             elif related_units is None:
                 related_units = get_related_units(measurement_unit.pk, query_unit)
 
-            if decreased_unit not in related_units:
+            # Igual que en el incremento: sin unidades relacionadas la unidad no
+            # es convertible y se rechaza, en vez de comparar contra None.
+            if related_units is None or decreased_unit not in related_units:
                 decrease_errors["measurement_unit"] = _("Measurement unit is not valid")
 
         if shelf_object.quantity < converted_amount:

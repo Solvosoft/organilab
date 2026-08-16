@@ -55,6 +55,57 @@ class SeleniumBase(StaticLiveServerTestCase):
         if delay > 0:
             sleep(delay)
 
+    def diagnose_page(self, tag=""):
+        """Vuelca el estado del navegador cuando una página no termina de cargar.
+
+        Un `TimeoutException` en `get()` no dice nada por sí solo. Esto responde
+        a las tres preguntas que lo explican: si hay un diálogo abierto (que
+        impide el evento `load`), en qué punto se quedó el documento y qué
+        peticiones siguen sin respuesta.
+        """
+        prefix = "[diag %s]" % tag
+        try:
+            print(prefix, "url:", self.selenium.current_url)
+            print(
+                prefix,
+                "readyState:",
+                self.selenium.execute_script("return document.readyState"),
+            )
+        except Exception as exc:  # noqa: BLE001
+            print(prefix, "no se pudo interrogar la página:", type(exc).__name__)
+            return
+
+        try:
+            print(prefix, "ALERTA:", repr(self.selenium.switch_to.alert.text))
+        except Exception as exc:  # noqa: BLE001
+            print(prefix, "sin alerta abierta (%s)" % type(exc).__name__)
+
+        try:
+            pending = self.selenium.execute_script(
+                "return (performance.getEntriesByType('resource') || [])"
+                ".filter(r => r.responseEnd === 0).map(r => r.name);"
+            )
+            print(prefix, "peticiones sin respuesta:", pending)
+        except Exception:  # noqa: BLE001
+            pass
+
+        if getattr(self, "collect_browser_logs", False):
+            try:
+                for entry in self.selenium.get_log("browser"):
+                    print(prefix, "consola:", entry.get("level"), entry.get("message"))
+            except Exception as exc:  # noqa: BLE001
+                print(prefix, "sin log de consola:", type(exc).__name__)
+
+    def open_url(self, url, tag=""):
+        """Navega a `url`, dejando un diagnóstico si la carga no termina."""
+        from selenium.common.exceptions import TimeoutException
+
+        try:
+            self.selenium.get(url)
+        except TimeoutException:
+            self.diagnose_page(tag or url)
+            raise
+
     def find_element_waiting(self, xpath):
         """Busca por XPath esperando a que aparezca.
 
@@ -100,6 +151,10 @@ class SeleniumBase(StaticLiveServerTestCase):
         # Descartarlas automáticamente evita que un aviso de DataTables
         # convierta un fallo instantáneo en dos minutos de bloqueo.
         prompt_behavior = os.getenv("SELENIUM_PROMPT_BEHAVIOR", "dismiss")
+        # Con SELENIUM_BROWSER_LOGS=1 se puede leer la consola del navegador
+        # (driver.get_log("browser")), que es lo único que explica una página
+        # que no termina de cargar. Chrome exige pedirlo al crear el driver.
+        cls.collect_browser_logs = os.getenv("SELENIUM_BROWSER_LOGS") == "1"
 
         if is_docker:
             driverpath = os.getenv("CHROMEDRIVER_DIR", "/usr/bin/chromedriver")
@@ -110,11 +165,15 @@ class SeleniumBase(StaticLiveServerTestCase):
             options.add_argument("--disable-gpu")
             options.add_argument("--remote-debugging-port=9222")
             options.unhandled_prompt_behavior = prompt_behavior
+            if cls.collect_browser_logs:
+                options.set_capability("goog:loggingPrefs", {"browser": "ALL"})
             service = Service(executable_path=driverpath)
             cls.selenium = webdriver.Chrome(options=options, service=service)
         else:
             options = webdriver.ChromeOptions()
             options.unhandled_prompt_behavior = prompt_behavior
+            if cls.collect_browser_logs:
+                options.set_capability("goog:loggingPrefs", {"browser": "ALL"})
             cls.selenium = webdriver.Chrome(options=options)
 
         # El cliente HTTP contra el chromedriver espera 120 s por respuesta: un
@@ -667,7 +726,8 @@ class SeleniumBase(StaticLiveServerTestCase):
         from django.conf import settings
 
         SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
-        driver.get(base_url)
+        # Sólo hace falta estar en el dominio para poder dejar la cookie.
+        self.open_url(base_url, tag="force_login.get")
 
         session = SessionStore()
         session[SESSION_KEY] = user._meta.pk.value_to_string(user)
@@ -681,7 +741,13 @@ class SeleniumBase(StaticLiveServerTestCase):
             "path": "/",
         }
         driver.add_cookie(cookie)
-        driver.refresh()
+        from selenium.common.exceptions import TimeoutException
+
+        try:
+            driver.refresh()
+        except TimeoutException:
+            self.diagnose_page("force_login.refresh")
+            raise
 
     @classmethod
     def tearDownClass(cls):
