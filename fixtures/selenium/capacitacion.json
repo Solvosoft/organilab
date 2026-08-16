@@ -555,6 +555,21 @@
           "add_reservations",
           "reservations_management",
           "reservations"
+        ],
+        [
+          "view_reservations",
+          "reservations_management",
+          "reservations"
+        ],
+        [
+          "view_reservedproducts",
+          "reservations_management",
+          "reservedproducts"
+        ],
+        [
+          "change_reservedproducts",
+          "reservations_management",
+          "reservedproducts"
         ]
       ]
     }

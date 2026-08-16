@@ -28,14 +28,14 @@ class ReservationsViewsRespondTest(TestCase):
         )
         self.assertEqual(response.status_code, 200)
 
-    def test_my_reservations_redirects_without_permission(self):
-        # El docente no tiene permiso sobre las reservaciones del laboratorio:
-        # la vista redirige al aviso de error, no revienta ni se cuelga.
+    def test_my_reservations_responds_for_teacher(self):
+        # El docente reserva productos, así que su rol lleva los permisos de
+        # reservación: sin view_reservations la vista respondía 403 y la prueba
+        # Selenium buscaba el botón Reservar en una página de error.
         response = self._get_as(
             4, reverse("laboratory:my_reservations", kwargs={"org_pk": 4, "lab_pk": 1})
         )
-        self.assertEqual(response.status_code, 302)
-        self.assertIn("error", response["Location"])
+        self.assertEqual(response.status_code, 200)
 
     def test_my_labs_responds_for_student(self):
         response = self._get_as(
