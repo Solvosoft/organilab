@@ -113,6 +113,10 @@ test-selenium-fast: ## Run Selenium tests without GIF generation (fast mode, opt
 test-selenium-single-fast: ## Run a single Selenium test without GIF generation (TEST=path.to.test)
 	cd src && GENERATE_SCREENSHOTS=False python manage.py test $(TEST) --tag=selenium --no-input -v 2
 
+test-selenium-dev: ## Run Selenium tests fast, headless and reusing the DB (optional: TEST=path.to.test)
+	xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" \
+		sh -c "cd src && GENERATE_SCREENSHOTS=False python manage.py test $(or $(TEST),) --tag=selenium --no-input --keepdb --parallel -v 2"
+
 
 docs: clean ##  - generate Sphinx HTML documentation, including API docs
 	pip install 'sphinx==8.2.3' sphinx-rtd-theme==3.0.2 sphinxcontrib-video==0.4.2
