@@ -156,6 +156,12 @@ class SeleniumBase(StaticLiveServerTestCase):
         # que no termina de cargar. Chrome exige pedirlo al crear el driver.
         cls.collect_browser_logs = os.getenv("SELENIUM_BROWSER_LOGS") == "1"
 
+        # "normal" espera al evento `load`; "eager" devuelve el control en
+        # DOMContentLoaded. Se deja configurable porque es lo primero que se
+        # prueba cuando una página no termina de cargar, aunque para el cuelgue
+        # de las pruebas de reservaciones se comprobó que no cambia nada.
+        page_load_strategy = os.getenv("SELENIUM_PAGE_LOAD_STRATEGY", "normal")
+
         if is_docker:
             driverpath = os.getenv("CHROMEDRIVER_DIR", "/usr/bin/chromedriver")
             options = webdriver.ChromeOptions()
@@ -165,6 +171,7 @@ class SeleniumBase(StaticLiveServerTestCase):
             options.add_argument("--disable-gpu")
             options.add_argument("--remote-debugging-port=9222")
             options.unhandled_prompt_behavior = prompt_behavior
+            options.page_load_strategy = page_load_strategy
             if cls.collect_browser_logs:
                 options.set_capability("goog:loggingPrefs", {"browser": "ALL"})
             service = Service(executable_path=driverpath)
@@ -172,6 +179,7 @@ class SeleniumBase(StaticLiveServerTestCase):
         else:
             options = webdriver.ChromeOptions()
             options.unhandled_prompt_behavior = prompt_behavior
+            options.page_load_strategy = page_load_strategy
             if cls.collect_browser_logs:
                 options.set_capability("goog:loggingPrefs", {"browser": "ALL"})
             cls.selenium = webdriver.Chrome(options=options)
