@@ -98,6 +98,24 @@ class CapacitacionSeleniumBase(SeleniumBase):
         self.selenium.get(url)
         self.wait_for_page_ready()
 
+    def navigate_to_substance_detail(self, org_pk, pk):
+        url = self.live_server_url + str(
+            reverse("sga:detail_substance", kwargs={"org_pk": org_pk, "pk": pk})
+        )
+        self.selenium.get(url)
+        self.wait_for_page_ready()
+
+    def navigate_to_generate_label(self, org_pk, pk, **params):
+        """Abre directamente la etiqueta generada (PNG/SVG/PDF)."""
+        from urllib.parse import urlencode
+
+        url = self.live_server_url + str(
+            reverse("sga:generate_label", kwargs={"org_pk": org_pk, "pk": pk})
+        )
+        if params:
+            url = "%s?%s" % (url, urlencode(params))
+        self.selenium.get(url)
+
     def navigate_to_msds(self, org_pk):
         url = self.live_server_url + str(
             reverse("msds:index_msds", kwargs={"org_pk": org_pk})

@@ -24,9 +24,53 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 
 class SeleniumBase(StaticLiveServerTestCase):
+    # Retardo entre capturas. Sólo aplica al generar el GIF: le da al navegador
+    # tiempo de pintar la transición para que la animación no salte.
     screenshot_delay = 3
+
+    # Las esperas fijas de los path_list existen sobre todo para que el GIF
+    # tenga fluidez. Cuando no se generan capturas basta con esperar a que el
+    # elemento esté presente, y de eso se encarga find_element_waiting(), así
+    # que se escalan a una fracción en vez de dormir el tiempo completo.
+    # Ajustable con SELENIUM_SLEEP_FACTOR (1 = comportamiento original).
+    sleep_factor = None
+    element_timeout = 10
+
     _server_exceptions = []
     _server_exceptions_lock = threading.Lock()
+
+    @classmethod
+    def get_sleep_factor(cls):
+        if cls.sleep_factor is not None:
+            return cls.sleep_factor
+        default = "1" if getattr(settings, "GENERATE_SCREENSHOTS", True) else "0.1"
+        try:
+            return float(os.getenv("SELENIUM_SLEEP_FACTOR", default))
+        except ValueError:
+            return float(default)
+
+    def scaled_sleep(self, seconds):
+        """Duerme `seconds` escalados por el factor configurado."""
+        delay = seconds * self.get_sleep_factor()
+        if delay > 0:
+            sleep(delay)
+
+    def find_element_waiting(self, xpath):
+        """Busca por XPath esperando a que aparezca.
+
+        Sustituye la espera fija por una condicional: el test avanza en cuanto
+        el elemento existe, en vez de dormir un tiempo fijo estimado a ojo.
+        """
+        from selenium.webdriver.support import expected_conditions as EC
+
+        try:
+            return WebDriverWait(self.selenium, self.element_timeout).until(
+                EC.presence_of_element_located((By.XPATH, xpath))
+            )
+        except Exception:
+            # Se deja fallar a find_element para conservar el error original,
+            # que es el que identifica el selector roto.
+            return self.selenium.find_element(By.XPATH, xpath)
 
     @classmethod
     def _on_request_exception(cls, sender, request, **kwargs):
@@ -50,6 +94,13 @@ class SeleniumBase(StaticLiveServerTestCase):
         cls.options = webdriver.FirefoxOptions()
         is_docker = os.getenv("DOCKER_ACTIVE", "false").lower() == "true"
 
+        # Un test que deja abierta una alerta JS bloquea el driver: todos los
+        # comandos siguientes esperan hasta agotar el timeout del cliente (120 s
+        # por defecto), y esa espera se paga en cada paso restante del test.
+        # Descartarlas automáticamente evita que un aviso de DataTables
+        # convierta un fallo instantáneo en dos minutos de bloqueo.
+        prompt_behavior = os.getenv("SELENIUM_PROMPT_BEHAVIOR", "dismiss")
+
         if is_docker:
             driverpath = os.getenv("CHROMEDRIVER_DIR", "/usr/bin/chromedriver")
             options = webdriver.ChromeOptions()
@@ -58,10 +109,27 @@ class SeleniumBase(StaticLiveServerTestCase):
             options.add_argument("--disable-dev-shm-usage")
             options.add_argument("--disable-gpu")
             options.add_argument("--remote-debugging-port=9222")
+            options.unhandled_prompt_behavior = prompt_behavior
             service = Service(executable_path=driverpath)
             cls.selenium = webdriver.Chrome(options=options, service=service)
         else:
-            cls.selenium = webdriver.Chrome()
+            options = webdriver.ChromeOptions()
+            options.unhandled_prompt_behavior = prompt_behavior
+            cls.selenium = webdriver.Chrome(options=options)
+
+        # El cliente HTTP contra el chromedriver espera 120 s por respuesta: un
+        # test bloqueado no falla, se queda dos minutos esperando en cada paso.
+        # Se recorta para que el fallo llegue pronto y con su error real.
+        client_config = getattr(cls.selenium.command_executor, "_client_config", None)
+        if client_config is not None:
+            client_config.timeout = int(os.getenv("SELENIUM_COMMAND_TIMEOUT", "60"))
+
+        cls.selenium.set_page_load_timeout(
+            int(os.getenv("SELENIUM_PAGE_LOAD_TIMEOUT", "45"))
+        )
+        cls.selenium.set_script_timeout(
+            int(os.getenv("SELENIUM_SCRIPT_TIMEOUT", "30"))
+        )
         cls.ob = Screenshot(cls.selenium)
         cls.selenium.set_window_size(1280, 720)
 
@@ -356,7 +424,7 @@ class SeleniumBase(StaticLiveServerTestCase):
         element.click();
         """
         )
-        sleep(obj.get("active_hidden_timeout", 5))
+        self.scaled_sleep(obj.get("active_hidden_timeout", 5))
         self.selenium.execute_script(move_cursor)
 
     def extra_action(self, obj, element):
@@ -387,9 +455,9 @@ class SeleniumBase(StaticLiveServerTestCase):
         """
         self.action.move_to_element(element).perform()
         element.click()
-        sleep(1)
+        self.scaled_sleep(1)
         self.selenium.execute_script(obj["comfirm"])
-        sleep(1)
+        self.scaled_sleep(1)
         self.selenium.execute_script(obj["comfirm"])
 
     def do_action(self, obj, element):
@@ -423,10 +491,7 @@ class SeleniumBase(StaticLiveServerTestCase):
             timeout = obj["wait_ready"] if isinstance(obj["wait_ready"], int) else 10
             self.wait_for_page_ready(timeout=timeout)
         elif "sleep" in obj:
-            if isinstance(obj["sleep"], int):
-                sleep(obj["sleep"])
-            else:
-                sleep(15)
+            self.scaled_sleep(obj["sleep"] if isinstance(obj["sleep"], int) else 15)
 
     def assert_no_server_error(self, context_msg=''):
         try:
@@ -502,7 +567,7 @@ class SeleniumBase(StaticLiveServerTestCase):
             self.assert_no_server_error(
                 context_msg='before finding element: %s' % obj.get('path', '?')
             )
-            element = self.selenium.find_element(By.XPATH, obj["path"])
+            element = self.find_element_waiting(obj["path"])
             if generate:
                 order = self.create_screenshot(order=order)
                 x, y = self.get_x_y_element(element)
