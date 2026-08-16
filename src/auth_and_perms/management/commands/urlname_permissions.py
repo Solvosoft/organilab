@@ -1097,18 +1097,10 @@ URLNAME_PERMISSIONS = {
             "permission": "msds.view_msdsobject",
         },
     ],
-    "msds_msdsobject_create": [
-        {
-            "name": "Add MSDS Object",
-            "category": "MSDS Object",
-            "permission": "msds.add_msdsobject",
-        },
-        {
-            "name": "View MSDS Object",
-            "category": "MSDS Object",
-            "permission": "msds.view_msdsobject",
-        },
-    ],
+    # "msds_msdsobject_create" se retiró: el alta de fichas ya no tiene pantalla
+    # propia, se hace en el paso 1 del asistente de sustancias. Las vecinas
+    # msds_msdsobject_upate/delete/detail tampoco resuelven a ninguna URL y
+    # habría que revisarlas junto al resto del catálogo.
     "msds_msdsobject_upate": [
         {
             "name": "Change MSDS Object",

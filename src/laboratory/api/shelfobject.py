@@ -575,6 +575,22 @@ class ShelfObjectCreateMethods:
             "in_where_laboratory",
         ]
 
+        # La cantidad de cada caja se expresa en la unidad del estante. Si las
+        # unidades no son convertibles entre sí, la conversión no existe y no
+        # hay caja que crear: se comprueba antes de guardar para no dejar el
+        # objeto a medias.
+        object_unit = serializer.validated_data.get("measurement_unit")
+        shelf = serializer.validated_data.get("shelf")
+        shelf_unit = getattr(shelf, "measurement_unit", None)
+        if object_unit and shelf_unit:
+            converted = get_conversion_from_two_units(
+                object_unit, shelf_unit, serializer.validated_data.get("quantity")
+            )
+            if converted is None:
+                return {
+                    "measurement_unit": [_("Measurement unit is not valid")]
+                }, None
+
         shelfobject = serializer.save(**extra_kwargs)
 
         # Generate unique codes now that we have the pk
@@ -582,6 +598,12 @@ class ShelfObjectCreateMethods:
         quantity = shelfobject.quantity
         if shelfobject.measurement_unit and shelfobject.shelf.measurement_unit:
             quantity = shelfobject.get_obj_conversion_from_two_units()
+
+        if quantity is None:
+            # Sin cantidad utilizable no se puede repartir entre las cajas. Se
+            # informa en vez de multiplicar por None, que devolvía un 500.
+            shelfobject.delete()
+            return {"quantity": [_("Quantity is not valid")]}, None
 
         for _i in range(box_count):
             existing_codes = [b["code"] for b in quantity_units]

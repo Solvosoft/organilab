@@ -22,11 +22,13 @@ class Cap3SubstancesTest(CapacitacionSeleniumBase):
                 "wait_ready": True,
                 "scroll": "window.scrollTo(0, 0)",
             },
-            # Establecer nombre IUPAC
+            # Establecer marca comercial. El asistente ya no pide el nombre
+            # IUPAC en el paso 1: SustanceObjectForm expone nombre, sinonimos,
+            # caracteristicas, descripcion, marca y organizacion.
             {
-                "path": ".//input[@id='id_uipa_name']",
+                "path": ".//input[@id='id_brand']",
                 "extra_action": "script",
-                "value": "document.getElementById('id_uipa_name').value = 'Sulfuric Acid';",
+                "value": "document.getElementById('id_brand').value = 'Merck';",
             },
             # Establecer descripcion
             {
@@ -103,14 +105,21 @@ class Cap3ClassificationAndMSDSTest(CapacitacionSeleniumBase):
         self.create_gif_process(path_list, "cap3_sga_classification")
 
     def test_upload_msds_form(self):
-        """Escenario 3.5: Ver formulario para subir hoja de seguridad."""
-        self.navigate_to_msds_create(org_pk=4)
+        """Escenario 3.5: Ver el campo para subir la hoja de seguridad.
+
+        La ficha ya no se sube desde una pantalla propia de MSDS: forma parte
+        del paso 1 del asistente de sustancias, en el campo de hoja de
+        seguridad, que al subirla encola su lectura automatica.
+        """
+        self.navigate_to_sga_create_substance(org_pk=4)
 
         path_list = [
-            # Capturar formulario de subida de MSDS
+            # Capturar el formulario con el campo de la ficha de seguridad
             {
-                "path": "//body",
+                "path": "//input[@id='id_security_sheet']",
                 "wait_ready": True,
+                "scroll": "document.getElementById('id_security_sheet')"
+                ".scrollIntoView({block:'center'});",
                 "screenshot_name": "cap3_msds_upload_form",
                 "extra_action": "script",
                 "value": "",
