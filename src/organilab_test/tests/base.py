@@ -95,6 +95,58 @@ class SeleniumBase(StaticLiveServerTestCase):
                     print(prefix, "consola:", entry.get("level"), entry.get("message"))
             except Exception as exc:  # noqa: BLE001
                 print(prefix, "sin log de consola:", type(exc).__name__)
+            self._dump_network_log(prefix)
+
+    def _dump_network_log(self, prefix):
+        """Resume el log de red de Chrome: qué se pidió y qué se respondió.
+
+        `performance.getEntriesByType` sólo ve los recursos del documento ya
+        cargado, así que no muestra la navegación que no llegó a completarse.
+        El log de red del navegador sí la registra, y es lo que distingue
+        "el navegador nunca emitió la petición" de "la emitió y no obtuvo
+        respuesta".
+        """
+        import json as json_module
+
+        try:
+            entries = self.selenium.get_log("performance")
+        except Exception as exc:  # noqa: BLE001
+            print(prefix, "sin log de red:", type(exc).__name__)
+            return
+
+        sent, answered, failed = {}, set(), []
+        for entry in entries:
+            try:
+                message = json_module.loads(entry["message"])["message"]
+            except (KeyError, ValueError):
+                continue
+            method = message.get("method", "")
+            params = message.get("params", {})
+            request_id = params.get("requestId")
+            if method == "Network.requestWillBeSent":
+                sent[request_id] = params.get("request", {}).get("url", "")
+            elif method in ("Network.responseReceived", "Network.loadingFinished"):
+                answered.add(request_id)
+            elif method == "Network.loadingFailed":
+                answered.add(request_id)
+                failed.append(
+                    (
+                        sent.get(request_id, "?"),
+                        params.get("errorText"),
+                        params.get("blockedReason"),
+                    )
+                )
+
+        pending = [url for rid, url in sent.items() if rid not in answered]
+        print(
+            prefix,
+            "red: %d peticiones emitidas, %d sin respuesta, %d fallidas"
+            % (len(sent), len(pending), len(failed)),
+        )
+        for url in pending[:10]:
+            print(prefix, "  emitida SIN respuesta:", url[:160])
+        for url, error, blocked in failed[:10]:
+            print(prefix, "  FALLÓ:", error, blocked or "", url[:120])
 
     def open_url(self, url, tag=""):
         """Navega a `url`, dejando un diagnóstico si la carga no termina."""
@@ -116,7 +168,11 @@ class SeleniumBase(StaticLiveServerTestCase):
 
         try:
             return WebDriverWait(self.selenium, self.element_timeout).until(
-                EC.presence_of_element_located((By.XPATH, xpath))
+                EC.presence_of_element_located((By.XPATH, xpath)),
+                # Sin esto el TimeoutException llega con el mensaje vacío y no
+                # se sabe qué selector falló ni en qué página.
+                message="no apareció %s en %s s (url: %s)"
+                % (xpath, self.element_timeout, self.selenium.current_url),
             )
         except Exception:
             # Se deja fallar a find_element para conservar el error original,
@@ -151,10 +207,20 @@ class SeleniumBase(StaticLiveServerTestCase):
         # Descartarlas automáticamente evita que un aviso de DataTables
         # convierta un fallo instantáneo en dos minutos de bloqueo.
         prompt_behavior = os.getenv("SELENIUM_PROMPT_BEHAVIOR", "dismiss")
-        # Con SELENIUM_BROWSER_LOGS=1 se puede leer la consola del navegador
-        # (driver.get_log("browser")), que es lo único que explica una página
-        # que no termina de cargar. Chrome exige pedirlo al crear el driver.
+        # SELENIUM_BROWSER_LOGS=1 vuelca consola y red en el diagnóstico. Las
+        # capacidades de logging, en cambio, se piden SIEMPRE: pedirlas hace que
+        # chromedriver habilite el dominio Network de DevTools, y con él las
+        # navegaciones dejan de colgarse.
+        #
+        # Medido sobre Cap5ManageReservationsTest, dos corridas de cada caso:
+        #   sin las capacidades -> 310 s, 6 errores
+        #   con las capacidades ->  91 s, todo en verde
+        # Sin ellas, el navegador se quedaba sin respuesta en la segunda prueba
+        # de cada clase mientras el servidor contestaba a curl en milisegundos.
+        # No está claro por qué lo arregla, así que se deja documentado y con
+        # una salida para desactivarlo si alguna vez estorba.
         cls.collect_browser_logs = os.getenv("SELENIUM_BROWSER_LOGS") == "1"
+        enable_devtools_logging = os.getenv("SELENIUM_DEVTOOLS_LOGGING", "1") == "1"
 
         # "normal" espera al evento `load`; "eager" devuelve el control en
         # DOMContentLoaded. Se deja configurable porque es lo primero que se
@@ -172,16 +238,20 @@ class SeleniumBase(StaticLiveServerTestCase):
             options.add_argument("--remote-debugging-port=9222")
             options.unhandled_prompt_behavior = prompt_behavior
             options.page_load_strategy = page_load_strategy
-            if cls.collect_browser_logs:
-                options.set_capability("goog:loggingPrefs", {"browser": "ALL"})
+            if enable_devtools_logging:
+                options.set_capability(
+                    "goog:loggingPrefs", {"browser": "ALL", "performance": "ALL"}
+                )
             service = Service(executable_path=driverpath)
             cls.selenium = webdriver.Chrome(options=options, service=service)
         else:
             options = webdriver.ChromeOptions()
             options.unhandled_prompt_behavior = prompt_behavior
             options.page_load_strategy = page_load_strategy
-            if cls.collect_browser_logs:
-                options.set_capability("goog:loggingPrefs", {"browser": "ALL"})
+            if enable_devtools_logging:
+                options.set_capability(
+                    "goog:loggingPrefs", {"browser": "ALL", "performance": "ALL"}
+                )
             cls.selenium = webdriver.Chrome(options=options)
 
         # El cliente HTTP contra el chromedriver espera 120 s por respuesta: un
