@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.test import tag
+from organilab_test.tests.selenium_xpaths import select2_result
 from django.urls import reverse
 
 from organilab_test.tests.base import OptimizedSeleniumBase, modifies_db
@@ -78,14 +79,14 @@ class RegisterUserQRSeleniumTest(LaboratorySeleniumBase):
                 "sleep": 1,
             },
             {
-                "path": "//ul[contains(@class, 'select2-results__options')]/li[1]",
+                "path": select2_result(1),
             },
             {
                 "path": "//select[@id='id_organization_register']/..//span[contains(@class, 'select2-selection')]",
                 "sleep": 1,
             },
             {
-                "path": "//ul[contains(@class, 'select2-results__options')]/li[1]",
+                "path": select2_result(1),
             },
             {
                 "path": "//*[@id='id_code']",
@@ -122,14 +123,14 @@ class RegisterUserQRSeleniumTest(LaboratorySeleniumBase):
                 "sleep": 1,
             },
             {
-                "path": "//ul[contains(@class, 'select2-results__options')]/li[2]",
+                "path": select2_result(2),
             },
             {
                 "path": "//select[@id='id_organization_register']/..//span[contains(@class, 'select2-selection')]",
                 "sleep": 1,
             },
             {
-                "path": "//ul[contains(@class, 'select2-results__options')]/li[2]",
+                "path": select2_result(2),
             },
             {
                 "path": "//input[@type='submit' and contains(@class, 'btn-success')]",

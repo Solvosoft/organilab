@@ -3,6 +3,7 @@ from django.test import tag
 from laboratory.tests.selenium_tests.manage_organizations.base import (
     ManageOrganizationsSeleniumTest,
 )
+from organilab_test.tests.selenium_xpaths import select2_result
 
 
 @tag("selenium")
@@ -27,14 +28,14 @@ class ProfileTabTest(ManageOrganizationsSeleniumTest):
                 "sleep": 1,
             },
             {
-                "path": "//ul[contains(@class, 'select2-results__options')]/li[2]",
+                "path": select2_result(2),
             },
             {
                 "path": "(//*[@id='byprofile']//span[contains(@class, 'select2-selection')])[last()]",
                 "sleep": 1,
             },
             {
-                "path": "//ul[contains(@class, 'select2-results__options')]/li[3]",
+                "path": select2_result(3),
             },
             {
                 "path": "//*[@id='savegroupsbyprofile']",

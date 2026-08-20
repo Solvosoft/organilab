@@ -19,7 +19,14 @@ from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
 from dateutil.relativedelta import relativedelta
 from selenium.webdriver.chrome.service import Service
-from selenium.common.exceptions import ElementClickInterceptedException, ElementNotInteractableException
+from selenium.common.exceptions import (
+    ElementClickInterceptedException,
+    ElementNotInteractableException,
+    MoveTargetOutOfBoundsException,
+    NoSuchElementException,
+    StaleElementReferenceException,
+    TimeoutException,
+)
 from selenium.webdriver.support.ui import WebDriverWait
 
 
@@ -35,6 +42,24 @@ class SeleniumBase(StaticLiveServerTestCase):
     # Ajustable con SELENIUM_SLEEP_FACTOR (1 = comportamiento original).
     sleep_factor = None
     element_timeout = 10
+
+    # Segunda espera, corta y best-effort: si el elemento nunca llega a ser
+    # clicable se sigue con el localizado por presencia y do_action aplica el
+    # fallback por JS. Sólo acota cuánto se espera de más.
+    interactable_timeout = int(os.getenv("SELENIUM_INTERACTABLE_TIMEOUT", "5"))
+
+    # extra_actions que manipulan el WebElement localizado. El resto ("script",
+    # "hover", "drag_and_drop", "move_cursor_end") actúan por JS o sobre otros
+    # XPath, así que no requieren que el elemento sea clicable.
+    ELEMENT_DRIVEN_ACTIONS = frozenset({"setvalue", "clearinput", "sweetalert_comfirm"})
+
+    # Excepciones que indican que el DOM cambió bajo los pies o que el elemento
+    # aún no estaba listo: merecen relocalizar y reintentar una vez.
+    RETRY_EXCEPTIONS = (
+        StaleElementReferenceException,
+        ElementNotInteractableException,
+        MoveTargetOutOfBoundsException,
+    )
 
     _server_exceptions = []
     _server_exceptions_lock = threading.Lock()
@@ -158,26 +183,64 @@ class SeleniumBase(StaticLiveServerTestCase):
             self.diagnose_page(tag or url)
             raise
 
-    def find_element_waiting(self, xpath):
+    def step_needs_interaction(self, obj):
+        """Indica si el paso va a manipular el WebElement que se localice.
+
+        Los pasos que actúan por JS o sobre otros XPath no necesitan que el
+        elemento sea clicable, así que esperarlo sólo les costaría tiempo.
+        """
+        if obj.get("presence_only"):
+            return False
+        extra = obj.get("extra_action")
+        if extra is None:
+            return True  # sin extra_action el paso hace click
+        return extra in self.ELEMENT_DRIVEN_ACTIONS
+
+    def find_element_waiting(self, xpath, obj=None):
         """Busca por XPath esperando a que aparezca.
 
         Sustituye la espera fija por una condicional: el test avanza en cuanto
         el elemento existe, en vez de dormir un tiempo fijo estimado a ojo.
+
+        Si el paso va a interactuar con el elemento se espera además a que sea
+        clicable. Esa segunda espera es best-effort: si vence se devuelve el
+        elemento localizado por presencia y do_action se encarga del fallback,
+        de modo que este método nunca falla por algo que antes pasaba.
         """
         from selenium.webdriver.support import expected_conditions as EC
 
+        # Sin esto el TimeoutException llega con el mensaje vacío y no se sabe
+        # qué selector falló ni en qué página.
+        message = "no apareció %s en %s s (url: %s)" % (
+            xpath,
+            self.element_timeout,
+            self.selenium.current_url,
+        )
         try:
-            return WebDriverWait(self.selenium, self.element_timeout).until(
+            element = WebDriverWait(self.selenium, self.element_timeout).until(
                 EC.presence_of_element_located((By.XPATH, xpath)),
-                # Sin esto el TimeoutException llega con el mensaje vacío y no
-                # se sabe qué selector falló ni en qué página.
-                message="no apareció %s en %s s (url: %s)"
-                % (xpath, self.element_timeout, self.selenium.current_url),
+                message=message,
             )
-        except Exception:
-            # Se deja fallar a find_element para conservar el error original,
-            # que es el que identifica el selector roto.
-            return self.selenium.find_element(By.XPATH, xpath)
+        except TimeoutException:
+            # El respaldo cubre el caso de que el nodo aparezca justo al vencer
+            # la espera. Si tampoco está, se conserva el mensaje con XPath y URL:
+            # es el único dato que permite clasificar el fallo después.
+            try:
+                return self.selenium.find_element(By.XPATH, xpath)
+            except NoSuchElementException as exc:
+                raise NoSuchElementException(message) from exc
+
+        if obj is not None and self.step_needs_interaction(obj):
+            try:
+                # element_to_be_clickable re-localiza por XPath, así que además
+                # de esperar visibilidad devuelve una referencia fresca: evita
+                # el StaleElementReference del caso común.
+                element = WebDriverWait(self.selenium, self.interactable_timeout).until(
+                    EC.element_to_be_clickable((By.XPATH, xpath))
+                )
+            except Exception:
+                pass  # nunca llegó a ser clicable: sigue el de presencia
+        return element
 
     @classmethod
     def _on_request_exception(cls, sender, request, **kwargs):
@@ -307,6 +370,10 @@ class SeleniumBase(StaticLiveServerTestCase):
 
     def setUp(self):
         super().setUp()
+        # Pasos que necesitaron el click por JS. No hacen fallar el test, pero
+        # se avisan: cada uno es una interacción que el usuario real no podría
+        # completar tal cual.
+        self.js_click_fallbacks = []
         with self._server_exceptions_lock:
             self._server_exceptions.clear()
         from django.core.signals import got_request_exception
@@ -320,6 +387,11 @@ class SeleniumBase(StaticLiveServerTestCase):
         got_request_exception.disconnect(
             dispatch_uid='selenium_test_exception_handler'
         )
+        if getattr(self, 'js_click_fallbacks', None):
+            print(
+                "\n[selenium] %s usó click por JS en: %s"
+                % (self.id(), ', '.join(self.js_click_fallbacks))
+            )
         with self._server_exceptions_lock:
             exceptions = list(self._server_exceptions)
             self._server_exceptions.clear()
@@ -507,9 +579,36 @@ class SeleniumBase(StaticLiveServerTestCase):
         """
         This is an action responsible to set value in an element.
         Value can be quotation marks this is equal to clear an input.
+
+        No se limpia por defecto: hay flujos que escriben el valor por partes
+        (move_cursor_end, máscaras con reduce_length) y se romperían. Para
+        limpiar antes, usar "clear": True.
         """
-        if "value" in obj:
+        if "value" not in obj:
+            return
+
+        if obj.get("clear"):
+            element.clear()
+
+        try:
             element.send_keys(obj["value"])
+        except self.RETRY_EXCEPTIONS:
+            fresh = self.relocate(obj)
+            if fresh is None:
+                raise
+            try:
+                fresh.send_keys(obj["value"])
+            except ElementNotInteractableException:
+                # Input tapado por un widget (select2, iCheck, editores): se
+                # asigna el valor por JS y se notifican los eventos, que es lo
+                # que escucha jQuery.
+                self.selenium.execute_script(
+                    "arguments[0].value = arguments[1];"
+                    "arguments[0].dispatchEvent(new Event('input', {bubbles: true}));"
+                    "arguments[0].dispatchEvent(new Event('change', {bubbles: true}));",
+                    fresh,
+                    obj["value"],
+                )
 
     def move_cursor_end(self, obj):
         """
@@ -551,6 +650,24 @@ class SeleniumBase(StaticLiveServerTestCase):
             "document.body.removeAttribute('data-organilab-ready');"
         )
 
+    def wait_for_datatables_idle(self, timeout=10):
+        """Espera a que no queden peticiones AJAX de DataTables en vuelo.
+
+        Complementa a wait_for_page_ready(), que sólo cubre la carga inicial:
+        tras un ajax.reload() el <tbody> se reemplaza entero y el elemento que
+        ya se había localizado queda obsoleto. Best-effort: en páginas sin
+        DataTables la variable es undefined y retorna de inmediato.
+        """
+        try:
+            WebDriverWait(self.selenium, timeout).until(
+                lambda driver: driver.execute_script(
+                    "return window.__organilabPendingDT === undefined"
+                    " || window.__organilabPendingDT === 0;"
+                )
+            )
+        except Exception:
+            pass
+
     def active_hidden_elements(self, obj):
         """
         Display hidden elements, for example in dropdowns or elements that are hidden.
@@ -581,10 +698,52 @@ class SeleniumBase(StaticLiveServerTestCase):
         elif obj["extra_action"] == "hover":
             self.selenium.execute_script(self.set_css_element(".component-btn-group"))
         elif obj["extra_action"] == "drag_and_drop":
-            self.action.drag_and_drop(
-                self.selenium.find_element(By.XPATH, obj["x"]),
-                self.selenium.find_element(By.XPATH, obj["y"]),
-            ).perform()
+            self.drag_and_drop_action(obj)
+
+    def drag_and_drop_action(self, obj, attempts=3):
+        """Arrastra obj["x"] hasta obj["y"] simulando el gesto paso a paso.
+
+        ActionChains.drag_and_drop() emite mousedown y mouseup casi seguidos y
+        sin mousemove intermedios. Las librerías de arrastre basadas en eventos
+        de ratón (dragula, que es la que usa el constructor de formularios de
+        formio) nunca llegan a considerar iniciado el arrastre y el elemento se
+        queda donde estaba, así que el diálogo del componente no se abre y el
+        paso siguiente falla como si su selector fuese incorrecto.
+
+        Aun con los movimientos intermedios el gesto es sensible al ritmo del
+        navegador, así que se reintenta: `expect` (si se indica) es el XPath de
+        lo que debe aparecer al soltar, y sirve para saber si hizo efecto.
+        """
+        expect = obj.get("expect")
+
+        for attempt in range(attempts):
+            source = self.selenium.find_element(By.XPATH, obj["x"])
+            target = self.selenium.find_element(By.XPATH, obj["y"])
+
+            self.action.move_to_element(source).click_and_hold().perform()
+            self.scaled_sleep(0.2)
+            # El primer desplazamiento es el que marca el inicio del arrastre.
+            self.action.move_by_offset(10, 10).perform()
+            self.scaled_sleep(0.2)
+            self.action.move_to_element(target).perform()
+            self.scaled_sleep(0.2)
+            # Un segundo movimiento sobre el destino asegura que se calcule la
+            # posición de inserción antes de soltar.
+            self.action.move_by_offset(0, 5).perform()
+            self.scaled_sleep(0.2)
+            self.action.release().perform()
+
+            if not expect:
+                return
+            try:
+                WebDriverWait(self.selenium, self.interactable_timeout).until(
+                    lambda driver: driver.find_elements(By.XPATH, expect)
+                )
+                return
+            except Exception:
+                if attempt == attempts - 1:
+                    raise
+                self.scaled_sleep(1)
 
     def do_sweetaler_comfirm_action(self, obj, element):
         """
@@ -597,18 +756,70 @@ class SeleniumBase(StaticLiveServerTestCase):
         self.scaled_sleep(1)
         self.selenium.execute_script(obj["comfirm"])
 
+    def relocate(self, obj):
+        """Vuelve a localizar el elemento del paso tras un cambio del DOM."""
+        from selenium.webdriver.support import expected_conditions as EC
+
+        try:
+            return WebDriverWait(self.selenium, self.interactable_timeout).until(
+                EC.element_to_be_clickable((By.XPATH, obj["path"]))
+            )
+        except Exception:
+            try:
+                return self.selenium.find_element(By.XPATH, obj["path"])
+            except NoSuchElementException:
+                return None
+
+    def js_click(self, obj, element):
+        """Click por JS. Último recurso, sólo sobre elementos visibles.
+
+        Un click por JS sobre un nodo oculto dejaría el test en verde ejecutando
+        una acción que el usuario no podría realizar: eso es un falso verde, no
+        una reparación.
+        """
+        if not (element.is_displayed() or obj.get("force_click")):
+            raise ElementNotInteractableException(
+                "el elemento de %s existe pero no es visible; si es intencional "
+                "usa force_click=True o extra_action='script'" % obj["path"]
+            )
+        self.js_click_fallbacks.append(obj["path"])
+        self.selenium.execute_script(
+            "arguments[0].scrollIntoView({block: 'center'});arguments[0].click();",
+            element,
+        )
+
+    def click_element(self, obj, element, retried=False):
+        try:
+            self.action.move_to_element(element).perform()
+            element.click()
+        except ElementClickInterceptedException:
+            self.js_click(obj, element)
+        except self.RETRY_EXCEPTIONS:
+            # El DOM cambió bajo los pies (típicamente una recarga de DataTable)
+            # o el elemento todavía no estaba pintado: se relocaliza y se
+            # reintenta una sola vez antes de caer al click por JS.
+            if not retried:
+                fresh = self.relocate(obj)
+                if fresh is not None:
+                    return self.click_element(obj, fresh, retried=True)
+            self.js_click(obj, element)
+
     def do_action(self, obj, element):
         """
         This function applies the respective action by obj path.
         """
-        if "extra_action" in obj:
+        if "extra_action" not in obj:
+            return self.click_element(obj, element)
+
+        try:
             self.extra_action(obj, element)
-        else:
-            try:
-                self.action.move_to_element(element).perform()
-                element.click()
-            except ElementClickInterceptedException:
-                self.selenium.execute_script("arguments[0].click();", element)
+        except self.RETRY_EXCEPTIONS:
+            if not self.step_needs_interaction(obj):
+                raise  # actúa por JS: el fallo es real, no de sincronía
+            fresh = self.relocate(obj)
+            if fresh is None:
+                raise
+            self.extra_action(obj, fresh)
 
     def apply_utils(self, obj):
 
@@ -616,13 +827,18 @@ class SeleniumBase(StaticLiveServerTestCase):
             self.selenium.execute_script(obj["scroll"])
 
         if "modalscroll" in obj:
-            self.selenium.execute_script(obj["scroll"])
+            self.selenium.execute_script(obj["modalscroll"])
 
         if "active_hidden_elements" in obj:
             self.active_hidden_elements(obj)
 
         if "hover" in obj:
             self.selenium.execute_script(self.set_css_element(obj["element"]))
+
+        if "wait_dt" in obj:
+            self.wait_for_datatables_idle(
+                obj["wait_dt"] if isinstance(obj["wait_dt"], int) else 10
+            )
 
         if "wait_ready" in obj:
             timeout = obj["wait_ready"] if isinstance(obj["wait_ready"], int) else 10
@@ -699,25 +915,49 @@ class SeleniumBase(StaticLiveServerTestCase):
         if generate:
             self.create_directory_path(folder_name=folder_name)
             self.create_screenshot(order=order)
-        for obj in path_list:
-            self.apply_utils(obj)
-            self.assert_no_server_error(
-                context_msg='before finding element: %s' % obj.get('path', '?')
-            )
-            element = self.find_element_waiting(obj["path"])
-            if generate:
-                order = self.create_screenshot(order=order)
-                x, y = self.get_x_y_element(element)
-                self.activate_move_cursor(element, cursor, hover)
-                order = self.take_screenshot_by_obj(obj, order)
-                self.hide_show_cursor(cursor, show_cursor=False)
-            self.do_action(obj, element)
-            if generate:
-                self.hide_show_cursor(cursor, x=x, y=y)
-                order = self.create_screenshot(order=order)
-            self.assert_no_server_error(
-                context_msg='after action on: %s' % obj.get('path', '?')
-            )
+        for index, obj in enumerate(path_list, start=1):
+            step_error = None
+            try:
+                self.apply_utils(obj)
+                self.assert_no_server_error(
+                    context_msg='before finding element: %s' % obj.get('path', '?')
+                )
+                element = self.find_element_waiting(obj["path"], obj)
+                if generate:
+                    order = self.create_screenshot(order=order)
+                    x, y = self.get_x_y_element(element)
+                    self.activate_move_cursor(element, cursor, hover)
+                    order = self.take_screenshot_by_obj(obj, order)
+                    self.hide_show_cursor(cursor, show_cursor=False)
+                self.do_action(obj, element)
+                if generate:
+                    self.hide_show_cursor(cursor, x=x, y=y)
+                    order = self.create_screenshot(order=order)
+                self.assert_no_server_error(
+                    context_msg='after action on: %s' % obj.get('path', '?')
+                )
+            except Exception as exc:
+                # Sin saber qué paso del path_list falló, clasificar el error
+                # obliga a releer el test entero. El tipo de excepción se
+                # conserva porque es lo que distingue un selector roto de un
+                # problema de sincronía.
+                context = "paso %d/%d de '%s' | xpath=%s | url=%s" % (
+                    index,
+                    len(path_list),
+                    folder_name,
+                    obj.get("path"),
+                    self.selenium.current_url,
+                )
+                if getattr(exc, "msg", None) is not None:
+                    exc.msg = "%s\n%s" % (context, exc.msg)
+                    raise
+                step_error = "%s\n%s: %s" % (context, type(exc).__name__, exc)
+            # Fuera del except a propósito: encadenar la excepción deja un
+            # __cause__ con su traceback, y con --parallel Django tiene que
+            # serializar el fallo entre procesos (falla con "cannot pickle
+            # 'traceback' object" salvo que tblib esté instalado).
+            if step_error is not None:
+                raise AssertionError(step_error)
         return order
 
     def create_gif_process(

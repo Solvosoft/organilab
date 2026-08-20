@@ -88,6 +88,34 @@ class ManageOrganizationsSeleniumTest(SeleniumBase):
         """Return XPath for the 'Delete organization' link."""
         return "//a[contains(@href, '/organization/%d/delete')]" % pk
 
+    # --- Profile table selectors ---
+
+    def rol_btn(self, table_id="orpermelement", row=1):
+        """Return XPath for the manage-roles button (fa-user-md) of a row.
+
+        It used to be <span class="applyasrole">, rendered by
+        auth_and_perms.utils.get_roles_in_html().  Since 71aae5e6 the cell is
+        built by ProfileSerializer.get_rols() as a button whose id is
+        profile_<profile>_<model>_<objpk>; its sibling dropdown-toggle carries
+        no id, so starts-with() is enough to tell them apart.  It opens #modal1,
+        same as the old markup.
+        """
+        return (
+            "//*[@id='%s']//tbody/tr[%d]//button[starts-with(@id, 'profile_')]"
+            % (table_id, row)
+        )
+
+    def delete_profile_btn(self, table_id="userpermelement", row=1):
+        """Return XPath for the delete (fa-trash) icon of a profile row.
+
+        Requiring the <i> keeps this from matching DataTables' "No data
+        available in table" placeholder row.
+        """
+        return (
+            "//*[@id='%s']//tbody/tr[%d]//i[starts-with(@id, 'ndel_')]"
+            % (table_id, row)
+        )
+
     # --- Modal selectors ---
 
     def get_submit_button_path(self, id_modal, button_type="submit"):
@@ -95,6 +123,17 @@ class ManageOrganizationsSeleniumTest(SeleniumBase):
         return (
             "//*[@id='%s']//div[contains(@class, 'modal-footer')]"
             "//button[@type='%s']" % (id_modal, button_type)
+        )
+
+    def org_rel_lab_save_btn(self):
+        """Return XPath for the save button of the link-laboratories modal.
+
+        It is not a submit: since ef74755c both footer buttons are
+        type="button" and saving goes through AJAX bound to .btnsaveorglabs.
+        """
+        return (
+            "//*[@id='relOrganizationmodal']"
+            "//button[contains(@class, 'btnsaveorglabs')]"
         )
 
     def get_modal_save_btn(self, id_modal):

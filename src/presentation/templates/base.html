@@ -75,6 +75,19 @@
               checkReady();
           }, 0);
       });
+
+      // pendingDT sólo cubre la carga inicial (init.dt) y data-organilab-ready
+      // se consume una vez. Este contador queda vivo para que las pruebas
+      // puedan esperar también a los ajax.reload() posteriores, que
+      // reemplazan el <tbody> y dejan obsoletos los elementos ya localizados.
+      window.__organilabPendingDT = 0;
+      $(document).on('preXhr.dt', function() {
+          window.__organilabPendingDT++;
+      });
+      $(document).on('xhr.dt', function() {
+          window.__organilabPendingDT = Math.max(0, window.__organilabPendingDT - 1);
+          checkReady();
+      });
   })();
   </script>
   {% endif %}
