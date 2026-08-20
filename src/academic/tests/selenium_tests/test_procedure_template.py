@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.test import tag
+from organilab_test.tests.selenium_xpaths import select2_result
 from django.urls import reverse
 
 from organilab_test.tests.base import OptimizedSeleniumBase, modifies_db
@@ -285,7 +286,7 @@ class ProcedureTemplateSeleniumTest(OptimizedSeleniumBase):
                 "sleep": 1,
             },
             {
-                "path": "//ul[contains(@class, 'select2-results__options')]/li[2]",
+                "path": select2_result(2),
             },
             {
                 "path": "//input[@id='id_quantity']",

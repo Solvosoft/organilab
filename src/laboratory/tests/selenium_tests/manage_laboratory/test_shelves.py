@@ -3,6 +3,7 @@ from django.test import tag
 from django.urls import reverse
 from laboratory.models import OrganizationStructure
 from organilab_test.tests.base import OptimizedSeleniumBase, modifies_db
+from organilab_test.tests.selenium_xpaths import select2_result
 
 
 @tag("selenium")
@@ -173,9 +174,17 @@ class ShelvesSeleniumTest(OptimizedSeleniumBase):
         )
         path_list = [
             {"path": ".//div[1]/div/div[3]/div/div/div/div[1]/div/div/span"},
-            {"path": ".//span/span/span[2]/ul/li[1]"},
-            {"path": ".//div[1]/div/div[3]/div/div/div/div[2]/div/div/div/a[1]"},
-            {"path": ".//div[1]/div/div[3]/div/div/div/div[1]/div[1]/div/div/div[1]/a"},
+            {"path": select2_result(1)},
+            # Botón "My laboratories", inyectado por AJAX en #orginfo.
+            {"path": "//div[@id='orginfo']//a[contains(@href, '/my_labs/')]", "sleep": 1},
+            # Primera tarjeta de laboratorio del listado. La ruta posicional
+            # anterior dejó de cuadrar cuando laboratory_list.html pasó a
+            # empezar por el formulario de búsqueda en vez de por un <div>.
+            # wait_ready porque el paso anterior navega a otra página.
+            {
+                "path": "(//div[contains(@class, 'card-title')]//a[contains(@href, '/labindex/')])[1]",
+                "wait_ready": True,
+            },
             {"path": ".//div[1]/div/div[3]/div/div/div[2]/div[2]/div[2]/ul/li[1]/a"},
             {
                 "path": ".//div[1]/div/div[3]/div/div/div[2]/div[1]/div/ul/li/div/div[1]/div/div[3]/div/button[1]"

@@ -2,6 +2,7 @@ from django.test import tag
 from laboratory.tests.selenium_tests.manage_organizations.base import (
     ManageOrganizationsSeleniumTest,
 )
+from organilab_test.tests.selenium_xpaths import select2_result
 
 
 @tag("selenium")
@@ -22,7 +23,15 @@ class LaboratoryTabTest(ManageOrganizationsSeleniumTest):
                 "sleep": 1,
             },
             {
-                "path": "//ul[contains(@class, 'select2-results__options')]/li[1]",
+                "path": select2_result(1),
+            },
+            # Picking the lab fires select2:select, which triggers
+            # ajax.reload() on #userpermelement.  Without this wait the next
+            # step finds the stale (or empty) table.
+            {
+                "path": "//*[@id='userpermelement']",
+                "presence_only": True,
+                "wait_dt": True,
             },
         ]
 
@@ -42,7 +51,7 @@ class LaboratoryTabTest(ManageOrganizationsSeleniumTest):
                 "sleep": 1,
             },
             {
-                "path": "//ul[contains(@class, 'select2-results__options')]/li[1]",
+                "path": select2_result(1),
             },
             {
                 "path": "//*[@id='relateusertolab']",
@@ -76,7 +85,7 @@ class LaboratoryTabTest(ManageOrganizationsSeleniumTest):
                 "sleep": 1,
             },
             {
-                "path": "//ul[contains(@class, 'select2-results__options')]/li",
+                "path": select2_result(1),
             },
             {
                 "path": "//*[@id='relprofilewithlaboratorybtn']",
@@ -94,7 +103,7 @@ class LaboratoryTabTest(ManageOrganizationsSeleniumTest):
         """
         path_list = (
             self.select_laboratory_tab_lab
-            + [{"path": "//span[contains(@class,'applyasrole')]", "sleep": 2}]
+            + [{"path": self.rol_btn("userpermelement"), "wait_dt": True, "sleep": 2}]
             + self.add_permission_rol
         )
         self.create_gif_process(path_list, "add_permission_rol_to_user_from_tab_lab")
@@ -109,7 +118,7 @@ class LaboratoryTabTest(ManageOrganizationsSeleniumTest):
         """
         path_list = (
             self.select_laboratory_tab_lab
-            + [{"path": "//span[contains(@class,'applyasrole')]", "sleep": 2}]
+            + [{"path": self.rol_btn("userpermelement"), "wait_dt": True, "sleep": 2}]
             + self.remove_and_save_permission_rol
         )
         self.create_gif_process(path_list, "remove_permission_rol_to_user_from_tab_lab")
@@ -126,13 +135,13 @@ class LaboratoryTabTest(ManageOrganizationsSeleniumTest):
         path_list = (
             self.select_laboratory_tab_lab
             + [
-                {"path": "//span[contains(@class,'applyasrole')]", "sleep": 2},
+                {"path": self.rol_btn("userpermelement"), "wait_dt": True, "sleep": 2},
                 {
                     "path": "//*[@id='modal1']//span[contains(@class, 'select2-selection')]",
                     "sleep": 1,
                 },
                 {
-                    "path": "//ul[contains(@class, 'select2-results__options')]/li[2]",
+                    "path": select2_result(2),
                 },
             ]
             + self.use_and_save_permission_rol
@@ -151,13 +160,21 @@ class LaboratoryTabTest(ManageOrganizationsSeleniumTest):
         """
         path_list = self.select_laboratory_tab_lab + [
             {
-                "path": "//*[@id='userpermelement']//tbody/tr[1]//i[contains(@class, 'fa-trash')]",
+                "path": self.delete_profile_btn("userpermelement"),
                 "scroll": "window.scrollTo(0, 250)",
+                "wait_dt": True,
                 "sleep": 3,
             },
             {
                 "path": "//button[contains(@class, 'swal2-confirm')]",
                 "sleep": 2,
+            },
+            # Confirming only closes the dialog; without waiting for the table
+            # to reload the test would pass even if nothing was deleted.
+            {
+                "path": "//*[@id='userpermelement']",
+                "presence_only": True,
+                "wait_dt": True,
             },
         ]
         self.create_gif_process(path_list, "delete_relation_user_lab_from_tab_lab")
@@ -173,8 +190,9 @@ class LaboratoryTabTest(ManageOrganizationsSeleniumTest):
         """
         path_list = self.select_laboratory_tab_lab + [
             {
-                "path": "//*[@id='userpermelement']//tbody/tr[1]//i[contains(@class, 'fa-trash')]",
+                "path": self.delete_profile_btn("userpermelement"),
                 "scroll": "window.scrollTo(0, 250)",
+                "wait_dt": True,
                 "sleep": 3,
             },
             {
@@ -183,6 +201,11 @@ class LaboratoryTabTest(ManageOrganizationsSeleniumTest):
             },
             {
                 "path": "//button[contains(@class, 'swal2-confirm')]",
+            },
+            {
+                "path": "//*[@id='userpermelement']",
+                "presence_only": True,
+                "wait_dt": True,
             },
         ]
         self.create_gif_process(

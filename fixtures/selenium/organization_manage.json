@@ -295,6 +295,7 @@
     "pk": 1,
     "fields": {
       "profile": 1,
+      "organization": 1,
       "content_type": [
       "laboratory",
       "organizationstructure"
@@ -308,6 +309,7 @@
     "pk": 2,
     "fields": {
       "profile": 1,
+      "organization": 1,
       "content_type": [
       "laboratory",
       "laboratory"
@@ -321,6 +323,7 @@
     "pk": 3,
     "fields": {
       "profile": 3,
+      "organization": 1,
       "content_type": [
       "laboratory",
       "laboratory"

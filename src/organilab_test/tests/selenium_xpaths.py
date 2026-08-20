@@ -9,8 +9,32 @@ only require updates here rather than across dozens of test files.
 # Select2 selectors (org selection page)
 # ---------------------------------------------------------------------------
 SELECT2_ORG_PICKER = "//span[contains(@class, 'select2-selection')]"
-SELECT2_FIRST_RESULT = "//ul[contains(@class, 'select2-results__options')]/li[1]"
 SELECT2_RESULTS = "//ul[contains(@class, 'select2-results__options')]"
+
+# Un <li> de resultados de select2 puede ser tres cosas distintas: un resultado
+# real, el "Searching…" que se pinta mientras vuelve el AJAX (.loading-results)
+# o un aviso como "No results found" (.select2-results__message).  Hacer click
+# en los dos últimos no selecciona nada: el evento select2:select nunca dispara
+# y el paso siguiente falla con un error que aparenta ser un selector roto.  Por
+# eso nunca debe usarse un `/li[N]` posicional sobre los resultados.
+# Los <li> de cabecera de un optgroup tampoco son seleccionables y se
+# distinguen porque contienen el <ul> con sus hijos.
+SELECT2_REAL_RESULT = (
+    "//li[contains(@class, 'select2-results__option')]"
+    "[not(contains(@class, 'loading-results'))]"
+    "[not(contains(@class, 'select2-results__message'))]"
+    "[not(ul)]"
+)
+
+
+def select2_result(index=1):
+    """N-ésimo resultado real de un select2 (1-based).
+
+    Los paréntesis son obligatorios: `//li[...][1]` filtra por posición dentro
+    de cada padre, mientras que `(//li[...])[1]` opera sobre el conjunto ya
+    aplanado, que es lo que se quiere.
+    """
+    return "(%s)[%d]" % (SELECT2_REAL_RESULT, index)
 
 # ---------------------------------------------------------------------------
 # Common buttons

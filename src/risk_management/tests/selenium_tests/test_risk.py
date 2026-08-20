@@ -669,8 +669,12 @@ class RiskSeleniumTest(RiskSeleniumBase):
             {
                 "path": "//button[@type='submit' or @id='btnsave']",
             },
+            # Al guardar se redirige al listado, que es un DataTable con <h1>:
+            # el heading-1 sólo existe en el formulario. Comprobar la tabla es
+            # además la prueba de que el guardado terminó bien.
             {
-                "path": "//h3[contains(@class, 'heading-1')]/span",
+                "path": "//table[@id='table-building']",
+                "presence_only": True,
                 "wait_ready": True,
             },
         ]
@@ -911,8 +915,11 @@ class RiskSeleniumTest(RiskSeleniumBase):
             {
                 "path": "//button[@type='submit' or @id='btnsave']",
             },
+            # Igual que en add_building: tras guardar se vuelve al listado, que
+            # ya no usa heading-1.
             {
-                "path": "//h3[contains(@class, 'heading-1')]/span",
+                "path": "//table[@id='table-structure']",
+                "presence_only": True,
                 "wait_ready": True,
             },
         ]

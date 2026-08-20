@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.test import tag
+from organilab_test.tests.selenium_xpaths import select2_result
 from django.urls import reverse
 from organilab_test.tests.base import OptimizedSeleniumBase, modifies_db
 
@@ -68,7 +69,10 @@ class ObjectDropdowmSeleniumTest(ObjectSeleniumBase):
         self.navigate_to_lab_index()
         path_list = [
             {
-                "path": "//a[contains(@href, '/object/list')]",
+                # Acotado a la lista de administración: el mismo href aparece
+                # antes en el DOM dentro del dropdown colapsado del navbar, y
+                # ese no es clicable.
+                "path": "//li[contains(@class, 'list-group-item')]//a[contains(@href, '/object/list')]",
             },
         ]
         self.create_gif_process(path_list, "view_material_dropdown")
@@ -103,7 +107,10 @@ class ObjectSeleniumTest(ObjectSeleniumBase):
         self.navigate_to_lab_index()
         path_list = [
             {
-                "path": "//a[contains(@href, '/object/list')]",
+                # Acotado a la lista de administración: el mismo href aparece
+                # antes en el DOM dentro del dropdown colapsado del navbar, y
+                # ese no es clicable.
+                "path": "//li[contains(@class, 'list-group-item')]//a[contains(@href, '/object/list')]",
             },
         ]
         self.create_gif_process(path_list, "view_materials")
@@ -278,7 +285,7 @@ class ObjectSeleniumTest(ObjectSeleniumBase):
                 "scroll": "$('#create_obj_modal .modal-body').scrollTop(350)",
             },
             {
-                "path": "//ul[contains(@class, 'select2-results__options')]/li[1]",
+                "path": select2_result(1),
             },
             {
                 "path": "//*[@id='create_obj_modal']//button[contains(@class, 'btn-primary')]",
@@ -408,22 +415,9 @@ class ObjectSeleniumTest(ObjectSeleniumBase):
                 "extra_action": "setvalue",
                 "value": "12633468",
             },
-            {
-                "path": "//input[@id='id_create-model']",
-                "extra_action": "setvalue",
-                "value": "CA-546",
-                "scroll": "$('#create_obj_modal .modal-body').scrollTop(600)",
-            },
-            {
-                "path": "//input[@id='id_create-serie']",
-                "extra_action": "setvalue",
-                "value": "B54897",
-            },
-            {
-                "path": "//input[@id='id_create-plaque']",
-                "extra_action": "setvalue",
-                "value": "5634646465",
-            },
+            # model, serie y plaque son campos de equipo: ReactiveForm los
+            # excluye (laboratory/forms.py), así que el formulario de reactivo
+            # no los renderiza y no hay nada que rellenar aquí.
             {
                 "path": "//*[@id='create_obj_modal']//button[contains(@class, 'btn-primary')]",
                 "scroll": "$('#create_obj_modal .modal-body').scrollTop(800)",
@@ -466,12 +460,8 @@ class ObjectSeleniumTest(ObjectSeleniumBase):
                 "scroll": "$('#create_obj_modal .modal-body').scrollTop(300)",
                 "sleep": 0.4,
             },
-            {
-                "path": "//input[@id='id_create-model']",
-                "extra_action": "setvalue",
-                "value": "CA-546",
-                "sleep": 0.3,
-            },
+            # model es campo de equipo y ReactiveForm lo excluye
+            # (laboratory/forms.py): el formulario de reactivo no lo renderiza.
             # ¿Es peligroso? (toggle)
             {
                 "path": "//*[@id='id_create-is_dangerous']/ancestor::*[self::div or self::li or self::p][1]//*[contains(@class,'switch') or contains(@class,'slider') or self::label]",
@@ -594,12 +584,8 @@ class ObjectSeleniumTest(ObjectSeleniumBase):
                 "scroll": "$('#create_obj_modal .modal-body').scrollTop(300)",
                 "sleep": 0.4,
             },
-            {
-                "path": "//input[@id='id_create-model']",
-                "extra_action": "setvalue",
-                "value": "CA-546",
-                "sleep": 0.3,
-            },
+            # model es campo de equipo y ReactiveForm lo excluye
+            # (laboratory/forms.py): el formulario de reactivo no lo renderiza.
             # Tiene umbral
             {
                 "path": "//*[@id='id_create-has_threshold']/ancestor::*[self::div or self::li or self::p][1]//label | //*[@id='id_create-has_threshold']/ancestor::*[self::div or self::li or self::p][1]//*[contains(@class,'switch') or contains(@class,'slider')]",
