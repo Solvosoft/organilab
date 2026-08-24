@@ -3,6 +3,7 @@ import logging
 from django.conf import settings
 from django.contrib.admin.models import LogEntry, DELETION, CHANGE, ADDITION
 from django.contrib.auth.decorators import permission_required, login_required
+from django.contrib.contenttypes.models import ContentType
 from django.db.models import Value, DateField, Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
@@ -84,6 +85,7 @@ from laboratory.models import (
     ObjectFeatures,
     ShelfObjectObservation,
     LabOrOrgRequest,
+    OrganizationStructureRelations,
 )
 from laboratory.qr_utils import get_or_create_qr_shelf_object
 from laboratory.shelfobject.forms import ShelfObjectStatusForm
@@ -2036,7 +2038,7 @@ class LabOrOrgRequestReviewViewSet(AuthAllPermBaseObjectManagement):
                 description=instance.description,
                 area=instance.area,
                 faculty_dispatch=instance.faculty_dispatch,
-                organization=instance.organization,
+                organization=instance.organization.root,
                 responsible=instance.responsible,
                 nearby_sites=instance.nearby_sites,
                 water_resources_affected=instance.water_resources_affected,
@@ -2044,6 +2046,16 @@ class LabOrOrgRequestReviewViewSet(AuthAllPermBaseObjectManagement):
             )
             if instance.workplace.exists():
                 lab.workplace.set(instance.workplace.all())
+            content_type = ContentType.objects.get_for_model(Laboratory)
+            relations = {
+                "organization": instance.organization,
+                "object_id": lab.pk,
+                "content_type": content_type,
+            }
+            OrganizationStructureRelations.objects.create(**relations)
+            relations["organization"] = instance.organization.root
+            OrganizationStructureRelations.objects.create(**relations)
+
             return lab, "laboratory"
         else:
             parent = instance.parent_org
@@ -2058,6 +2070,14 @@ class LabOrOrgRequestReviewViewSet(AuthAllPermBaseObjectManagement):
             profile = getattr(instance.requested_by, "profile", None)
             if profile:
                 set_rol_administrator_on_org(profile, org)
+            content_type = ContentType.objects.get_for_model(OrganizationStructure)
+            relations = {
+                "organization": parent.root,
+                "object_id": org.pk,
+                "content_type": content_type,
+            }
+            OrganizationStructureRelations.objects.create(**relations)
+
             return org, "organization"
 
     @action(detail=True, methods=["post"])
