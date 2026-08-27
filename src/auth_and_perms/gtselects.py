@@ -366,16 +366,16 @@ class RelOrgFullS2(generics.RetrieveAPIView, BaseSelect2View):
     organization = None
 
     def get_queryset(self):
-        if self.organization.root.pk == self.organization.pk:
-            labs = OrganizationStructure.os_manager.filter_labs_by_user(
-                self.request.user, ancestors=True, org_pk=self.organization.pk
-            )
+        if self.request.user.groups.filter(name="RegisterOrganization").exists():
+            labs = OrganizationStructureRelations.objects.filter(
+                organization__pk=self.organization.root.pk
+            ).values_list("object_id", flat=True)
+            labs = Laboratory.objects.filter(pk__in=labs).distinct()
         else:
             labs = OrganizationStructure.os_manager.filter_labs_by_user(
-                self.request.user,
-                org_pk=self.organization.pk,
-                relate_labs_org_parent=True,
+                self.request.user, ancestors=True, org_pk=self.organization.root.pk
             )
+
         linked = list(
             OrganizationStructureRelations.objects.filter(
                 organization=self.organization.pk,
@@ -384,7 +384,12 @@ class RelOrgFullS2(generics.RetrieveAPIView, BaseSelect2View):
             ).values_list("object_id", flat=True)
         )
         self.selected = [str(pk) for pk in linked]
+
         return labs.order_by(*self.order_by)
+
+    def paginate_queryset(self, queryset):
+        self.paginator.page_size = queryset.count() or 1
+        return super().paginate_queryset(queryset)
 
     def retrieve(self, request, pk, **kwargs):
         self.organization = get_object_or_404(
