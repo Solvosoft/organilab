@@ -62,7 +62,7 @@ class Command(BaseCommand):
             f"Archivos indexados (sin PubChem): {sum(len(v) for v in file_index.values())}"
         )
 
-        self.save_file_index_json(file_index)
+        # self.save_file_index_json(file_index)
         self.stdout.write("Índice guardado en file_index.json")
 
         listado = []
