@@ -90,6 +90,19 @@
 
 
 {% block js %}
+{{ block.super }}
 <script>
+    $(document).ready(function () {
+        $('#form_table').DataTable({
+            layout: {
+                topStart: 'pageLength',
+                topEnd: 'search',
+                bottomStart: 'info',
+                bottomEnd: 'paging'
+            },
+            columnDefs: [{targets: -1, orderable: false, searchable: false}],
+            language: {url: datatables_lang}
+        });
+    });
 </script>
 {% endblock %}

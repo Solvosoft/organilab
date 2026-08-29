@@ -26,6 +26,7 @@ from laboratory import utils
 from laboratory.forms import (
     LaboratoryCreate,
     H_CodeForm,
+    LaboratorySearchForm,
     LaboratoryEdit,
     OrganizationUserManagementForm,
     RegisterUserQRForm,
@@ -262,6 +263,11 @@ class LaboratoryListView(ListView):
         if q != "":
             queryset = queryset.filter(name__icontains=q)
         return queryset.order_by(*self.ordering)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["search_form"] = LaboratorySearchForm(self.request.GET or None)
+        return context
 
 
 @method_decorator(login_required, name="dispatch")

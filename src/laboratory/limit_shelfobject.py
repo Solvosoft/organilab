@@ -2,7 +2,7 @@ from django.template.loader import render_to_string
 
 from auth_and_perms.models import Profile
 from django.conf import settings
-from async_notifications.utils import send_email_from_template
+from djgentelella.async_notification.sending import send_email_from_template
 from laboratory.models import BlockedListNotification
 from django.contrib.sites.models import Site
 from django.utils.translation import gettext_lazy as _
@@ -53,7 +53,7 @@ def send_email_limit_objs(lab, shelfobjects, enqueued=True):
             # context["blockurl"] = f"{schema}://{domain}{url}"
             # context["domain"] = domain
             # send_email_from_template(
-            #     _("Shelf object in limit"),
+            #     "shelf-object-in-limit",
             #     emails,
             #     context=context,
             #     enqueued=enqueued,

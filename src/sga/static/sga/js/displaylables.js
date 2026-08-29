@@ -71,9 +71,13 @@ datatableelement=createDataTable("#substance_table", document.urls.displaylabel_
                 className: 'btn-sm btn-success ml-4',
             },
         ],
-        dom: "<'d-flex justify-content-between'<'m-2'l>" +
-        "<'m-2'B><'m-2 d-flex justify-content-start'f>>" +
-        "<'row'tr><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 m-auto'p>>",
+        layout: {
+            topStart: 'pageLength',
+            top: 'buttons',
+            topEnd: 'search',
+            bottomStart: 'info',
+            bottomEnd: 'paging'
+        },
         ajax: {
             url: document.urls.displaylabel_table_url,
             type: 'GET',

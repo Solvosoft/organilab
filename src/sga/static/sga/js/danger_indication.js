@@ -44,9 +44,13 @@ var datatableConfig = {
         {data: "warning_words", name: "warning_words", title: gettext("Warning Words"), type: "string", visible: true},
         {data: "actions", name:"actions", title: gettext("Actions"), type: "string", visible: true, sortable: false},
     ],
-    dom: "<'d-flex justify-content-between'<'m-2'l>" +
-    "<'m-2'B><'m-2 d-flex justify-content-start'f>>" +
-    "<'row'tr><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 m-auto'p>>",
+    layout: {
+        topStart: 'pageLength',
+        top: 'buttons',
+        topEnd: 'search',
+        bottomStart: 'info',
+        bottomEnd: 'paging'
+    },
 };
 
 if (has_perm) {

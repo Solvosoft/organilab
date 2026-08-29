@@ -2,7 +2,12 @@ from django.db import migrations
 
 
 def create_email_templates(apps, schema_editor):
-    EmailTemplate = apps.get_model("async_notifications", "EmailTemplate")
+    # La app externa async_notifications fue reemplazada por
+    # djgentelella.async_notification; en instalaciones nuevas no existe.
+    try:
+        EmailTemplate = apps.get_model("async_notifications", "EmailTemplate")
+    except LookupError:
+        return
     EmailTemplate.objects.get_or_create(
         code="lab_or_org_request_created",
         defaults={
@@ -20,7 +25,12 @@ def create_email_templates(apps, schema_editor):
 
 
 def delete_email_templates(apps, schema_editor):
-    EmailTemplate = apps.get_model("async_notifications", "EmailTemplate")
+    # La app externa async_notifications fue reemplazada por
+    # djgentelella.async_notification; en instalaciones nuevas no existe.
+    try:
+        EmailTemplate = apps.get_model("async_notifications", "EmailTemplate")
+    except LookupError:
+        return
     EmailTemplate.objects.filter(
         code__in=["lab_or_org_request_created", "lab_or_org_request_status_changed"]
     ).delete()
@@ -30,7 +40,6 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("laboratory", "0202_remove_labororgrequest_enable_child_organizations_and_more"),
-        ("async_notifications", "0008_remove_newslettertemplate_file_path"),
     ]
 
     operations = [

@@ -9,10 +9,13 @@ const render_file = (data) => {
     }
     return data;
 }
-table_default_dom = "<'row mb-1'<'col-sm-4 col-md-4 d-flex align-items-center justify-content-start'f>" +
-                    "<'col-sm-4 col-md-4 d-flex align-items-center justify-content-center'B>" +
-                    "<'col-sm-3 col-md-3 d-flex align-items-center justify-content-end 'l>>" +
-                    "<'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>";
+table_default_layout = {
+    topStart: 'search',
+    top: 'buttons',
+    topEnd: 'pageLength',
+    bottomStart: 'info',
+    bottomEnd: 'paging'
+};
 
 maintenance_datatable_inits = {
 				columns: [
@@ -27,7 +30,7 @@ maintenance_datatable_inits = {
 						{data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: true}
 						],
 		    	addfilter: true,
-			    dom: table_default_dom
+			    layout: table_default_layout
 			    }
 
 var logs_datatable_inits = {
@@ -41,7 +44,7 @@ var logs_datatable_inits = {
 						{data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: true}
 						],
 		    	addfilter: true,
-			    dom: table_default_dom
+			    layout: table_default_layout
 			    }
 
 
@@ -57,7 +60,7 @@ var calibrate_datatable_inits = {
 						{data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: true}
 						],
 		    	addfilter: true,
-			    dom: table_default_dom
+			    layout: table_default_layout
 			    }
 
 var training_datatable_inits = {
@@ -76,7 +79,7 @@ var training_datatable_inits = {
 						{data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: true}
 						],
 		    	addfilter: true,
-			    dom: table_default_dom
+			    layout: table_default_layout
 			    }
 
 var guarantee_datatable_inits = {
@@ -92,7 +95,7 @@ var guarantee_datatable_inits = {
 						{data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: true}
 						],
 		    	addfilter: true,
-			    dom: table_default_dom
+			    layout: table_default_layout
 			    }
 
 var maintenance_modalids = {

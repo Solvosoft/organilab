@@ -137,8 +137,7 @@ function show_refuse_elements(){
         $('#id_shelf--description').parent().parent().show();
         $('#id_shelf--quantity').parent().parent().show();
         $('#id_shelf--infinity_quantity').parent().parent().parent().hide();
-        $(infinity_quantity).parent().removeClass('checked');
-        $(infinity_quantity).iCheck('uncheck');
+        $(infinity_quantity).prop('checked', false).trigger('change');
      }else{
         $('#id_shelf--description').parent().parent().hide();
         $('#id_shelf--infinity_quantity').parent().parent().parent().show();
@@ -242,11 +241,11 @@ function hide_quantity(){
 save_form();
 do_sortable();
 
-$(document).on('ifChanged','#id_shelf--discard', function(event){
+$(document).on('change','#id_shelf--discard', function(event){
     show_refuse_elements('#id_shelf--discard');
 });
 
-$(document).on('ifChanged','#id_shelf--limit_only_objects', function(event){
+$(document).on('change','#id_shelf--limit_only_objects', function(event){
     show_refuse_elements_limit_only_objects('#id_shelf--limit_only_objects');
 });
 
@@ -254,6 +253,6 @@ $(document).on('click','#cancel_modal', function(event){
     cancelRemoveShelfs()
 });
 
-$(document).on('ifChanged','#id_shelf--infinity_quantity', function(event){
+$(document).on('change','#id_shelf--infinity_quantity', function(event){
     hide_quantity();
 });

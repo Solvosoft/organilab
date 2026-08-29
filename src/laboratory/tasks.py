@@ -7,7 +7,6 @@ import time
 from collections import defaultdict
 from datetime import date, timedelta
 
-from async_notifications.utils import send_email_from_template
 from celery.utils.log import get_task_logger
 from django.conf import settings
 from django.contrib.auth.models import User

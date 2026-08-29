@@ -3,7 +3,7 @@ Created on 10 mar. 2018
 @author: luisza
 """
 
-from async_notifications.utils import send_email_from_template
+from djgentelella.async_notification.sending import send_email_from_template
 from django.contrib.auth.models import Group
 from django.db import transaction
 from django.utils.translation import gettext_lazy as _

@@ -62,7 +62,9 @@
       $(document).on('init.dt', function(e, settings) {
           if (settings.ajax) {
               pendingDT++;
-              $(settings.nTable).one('xhr.dt', function() {
+              // init.dt se dispara sobre la tabla; e.target funciona igual en
+              // DataTables 1.x y 2.x (settings.nTable es API interna legada).
+              $(e.target).one('xhr.dt', function() {
                   pendingDT--;
                   checkReady();
               });

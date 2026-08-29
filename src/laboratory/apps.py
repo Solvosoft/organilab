@@ -1,5 +1,4 @@
 from django.apps import AppConfig
-from django.template.loader import render_to_string
 
 
 class LaboratoryConfig(AppConfig):
@@ -8,23 +7,49 @@ class LaboratoryConfig(AppConfig):
 
     def ready(self):
         import laboratory.signals
-        from async_notifications.register import update_template_context
-        from async_notifications.register import DummyContextObject
+        from djgentelella.async_notification.registry import register_context
 
         super(LaboratoryConfig, self).ready()
-        context = [
-            ('shelf_object', 'Object in limit'),
-            ('labroom', 'Labroom where is the object'),
-            ('laboratory', 'Laboratory where is the object'),
-            ('domain', 'url to block notifications')
-        ]
-        message = render_to_string('email/shelf_object_quantity_limit.html',
-                                   context={
-                                       'shelf_object': DummyContextObject('shelf_object'),
-                                       'domain': DummyContextObject('domain')
-                                   }
-                                   )
-        update_template_context(
-            "Shelf object in limit",
-            'The shelf object called {{shelf_object.object.name}} reached its limit quantity',
-            context, message=message)
+        register_context(
+            code='shelf-object-in-limit',
+            subject='The shelf object called {{shelf_object.object.name}} '
+                    'reached its limit quantity',
+            models={
+                'shelf_object': 'laboratory.ShelfObject',
+                'labroom': 'laboratory.LaboratoryRoom',
+                'laboratory': 'laboratory.Laboratory',
+            },
+            extra_variables={
+                'domain': 'Site domain, used to build links',
+                'blockurl': 'URL to block these notifications',
+            },
+        )
+        register_context(
+            code='expiring-reactives',
+            subject='Expiring reactives - {{ laboratory.name }}',
+            models={
+                'laboratory': 'laboratory.Laboratory',
+            },
+            extra_variables={
+                'shelf_objects': 'List of expiring shelf objects',
+                'domain': 'Site domain, used to build links',
+            },
+        )
+        register_context(
+            code='lab_or_org_request_created',
+            subject='{{ subject|safe }}',
+            models={},
+            extra_variables={
+                'subject': 'Rendered subject of the request',
+                'body': 'Rendered body of the request',
+            },
+        )
+        register_context(
+            code='lab_or_org_request_status_changed',
+            subject='{{ subject|safe }}',
+            models={},
+            extra_variables={
+                'subject': 'Rendered subject of the request',
+                'body': 'Rendered body of the request',
+            },
+        )

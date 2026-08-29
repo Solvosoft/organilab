@@ -4,7 +4,7 @@ from django.db.models.signals import post_save, pre_save
 from auth_and_perms.models import Profile
 from laboratory.models import ShelfObject, OrganizationStructure, BaseUnitValues
 from django.conf import settings
-from async_notifications.utils import send_email_from_template
+from djgentelella.async_notification.sending import send_email_from_template
 from laboratory.models import BlockedListNotification
 from django.contrib.sites.models import Site
 from decimal import Decimal
@@ -87,7 +87,7 @@ def send_email_to_ptech_limitobjs(shelf_object, enqueued=True):
         context["blockurl"] = f"{schema}://{domain}{url}"
         context["domain"] = domain
         send_email_from_template(
-            "Shelf object in limit",
+            "shelf-object-in-limit",
             email,
             context=context,
             enqueued=enqueued,

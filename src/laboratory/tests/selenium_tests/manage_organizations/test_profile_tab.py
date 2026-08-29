@@ -12,7 +12,7 @@ class ProfileTabTest(ManageOrganizationsSeleniumTest):
     def test_change_profile_permission_group_by_org(self):
         """Test changing permission groups for a profile in an organization.
 
-        Flow: Select org via iCheck -> Click 'By profile' tab -> Select
+        Flow: Select org -> Click 'By profile' tab -> Select
         profile in first Select2 -> Select permission group in second
         Select2 -> Save changes.
 

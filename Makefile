@@ -101,8 +101,8 @@ single-test: ## Run Django tests (optional: TEST=path.to.test, example: make sin
 test-selenium: ## Run Selenium tests (optional: TEST=path.to.test, example: make test-selenium TEST=laboratory.tests.selenium_tests)
 	cd src && python manage.py test $(or $(TEST),) --tag=selenium --no-input --parallel -v 2
 
-test-selenium-parallel: ## Run Selenium tests with 4 workers (optional: TEST=path.to.test)
-	cd src && python manage.py test $(or $(TEST),) --tag=selenium --no-input --parallel 20 -v 2
+test-selenium-parallel: ## Run Selenium tests with 12 workers (optional: TEST=path.to.test)
+	cd src && python manage.py test $(or $(TEST),) --tag=selenium --no-input --parallel 12 -v 2
 
 test-selenium-xvfb: ## Run Selenium tests with virtual display via xvfb-run (optional: TEST=path.to.test)
 	xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" sh -c "cd src && python manage.py test $(or $(TEST),) --tag=selenium --no-input --parallel 12 -v 2"

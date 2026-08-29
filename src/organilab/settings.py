@@ -85,12 +85,10 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "msds",
     "sga",
-    "async_notifications",
+    "djgentelella.async_notification",
     "django_celery_results",
     "risk_management",
-    "markitup",
     "djgentelella",
-    "djgentelella.blog",
     "djgentelella.chunked_upload",
     "api.apps.ApiConfig",
     "reservations_management",
@@ -297,13 +295,16 @@ LOCATION_FIELD = {
 
 ACCOUNT_ACTIVATION_DAYS = 2
 
-ASYNC_NOTIFICATION_TEXT_AREA_WIDGET = "markitup.widgets.AdminMarkItUpWidget"
+ASYNC_NOTIFICATION_BACKEND = (
+    "djgentelella.async_notification.backends.celery.CeleryBackend"
+)
 CELERY_MODULE = "organilab.celery"
 
 CELERYBEAT_SCHEDULE = {
-    # execute 12:30 pm
+    # Drena la cola de correos (enqueued=True) de djgentelella.async_notification;
+    # conserva la semántica del viejo send_daily de async-notifications 0.2.
     "send_daily_emails": {
-        "task": "async_notifications.tasks.send_daily",
+        "task": "presentation.tasks.process_email_notifications",
         "schedule": crontab(minute=2, hour=0),
     },
     "check_product_limits": {
@@ -345,10 +346,6 @@ CKEDITOR_CONFIGS = {
     },
 }
 ASYNC_SMTP_DEBUG = False
-ASYNC_NEWSLETTER_WIDGET = "markitup.widgets.AdminMarkItUpWidget"
-MARKITUP_FILTER = ("markdown.markdown", {"safe_mode": True})
-MARKITUP_SET = "markitup/sets/markdown/"
-JQUERY_URL = None
 
 DATE_INPUT_FORMATS = ["%d/%m/%Y", "%Y-%m-%d", "%d/%m/%y"]
 
