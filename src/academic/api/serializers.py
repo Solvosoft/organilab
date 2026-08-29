@@ -11,7 +11,12 @@ from djgentelella.fields.drfdatetime import DateTimeRangeTextWidget
 from rest_framework import serializers
 
 from academic.models import CommentProcedureStep
-from academic.models import MyProcedure, Procedure
+from academic.models import (
+    MyProcedure,
+    Procedure,
+    ProcedureRequiredObject,
+    ProcedureObservations,
+)
 from auth_and_perms.organization_utils import user_is_allowed_on_organization
 from laboratory.models import OrganizationStructure
 
@@ -237,3 +242,63 @@ class ValidateUserAccessOrgSerializer(serializers.Serializer):
         user_is_allowed_on_organization(user, organization)
 
         return data
+
+
+class ProcedureRequiredObjectSerializer(serializers.ModelSerializer):
+    object = serializers.StringRelatedField()
+    measurement_unit = serializers.StringRelatedField()
+    actions = serializers.SerializerMethodField()
+
+    def get_actions(self, obj):
+        user = self.context["request"].user
+        return {
+            "destroy": user.has_perm("academic.delete_procedurerequiredobject"),
+        }
+
+    class Meta:
+        model = ProcedureRequiredObject
+        fields = ("id", "object", "quantity", "measurement_unit", "actions")
+
+
+class ProcedureRequiredObjectDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(
+        child=ProcedureRequiredObjectSerializer(), required=True
+    )
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+
+class AddProcedureRequiredObjectSerializer(serializers.ModelSerializer):
+    quantity = serializers.FloatField(min_value=settings.DEFAULT_MIN_QUANTITY)
+
+    class Meta:
+        model = ProcedureRequiredObject
+        fields = ("object", "quantity", "measurement_unit")
+
+
+class ProcedureObservationSerializer(serializers.ModelSerializer):
+    actions = serializers.SerializerMethodField()
+
+    def get_actions(self, obj):
+        user = self.context["request"].user
+        return {
+            "destroy": user.has_perm("academic.delete_procedureobservations"),
+        }
+
+    class Meta:
+        model = ProcedureObservations
+        fields = ("id", "description", "actions")
+
+
+class ProcedureObservationDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=ProcedureObservationSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+
+class AddProcedureObservationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProcedureObservations
+        fields = ("description",)

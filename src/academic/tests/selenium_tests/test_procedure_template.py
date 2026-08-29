@@ -277,34 +277,34 @@ class ProcedureTemplateSeleniumTest(OptimizedSeleniumBase):
                 "wait_ready": True,
             },
             {
-                "path": "//span[contains(@class, 'open_modal') and @data-bs-target='#object_modal']",
+                "path": "//button[contains(@class, 'create-reqobj-btn')]",
                 "scroll": "window.scrollTo(0, 300)",
                 "wait_ready": True,
             },
             {
-                "path": "//*[@id='object_modal']//span[contains(@class, 'select2-selection')]",
+                "path": "//span[@aria-controls='select2-id_reqobj-object-container']",
                 "sleep": 1,
             },
             {
                 "path": select2_result(2),
             },
             {
-                "path": "//input[@id='id_quantity']",
+                "path": "//input[@id='id_reqobj-quantity']",
                 "extra_action": "clearinput",
             },
             {
-                "path": "//input[@id='id_quantity']",
+                "path": "//input[@id='id_reqobj-quantity']",
                 "extra_action": "setvalue",
                 "value": "10",
             },
             {
-                "path": "//span[@aria-controls='select2-id_unit-container']",
+                "path": "//span[@aria-controls='select2-id_reqobj-measurement_unit-container']",
             },
             {
                 "path": "//li[text()='Metros']",
             },
             {
-                "path": "//*[@id='object_modal']//button[contains(@class, 'btn-success')]",
+                "path": "//*[@id='object_modal']//button[contains(@class, 'formadd')]",
             },
             {
                 "path": "//button[@id='save_step'] | //button[contains(@class, 'step_save')]",
@@ -334,11 +334,13 @@ class ProcedureTemplateSeleniumTest(OptimizedSeleniumBase):
                 "wait_ready": True,
             },
             {
-                "path": "//tbody[@id='object_list']/tr[1]/td[3]",
+                "path": "//table[@id='table-reqobj']//tbody/tr[1]//i[contains(@class, 'fa-trash')]",
                 "scroll": "window.scrollTo(0, 400)",
-                "extra_action": "sweetalert_comfirm",
-                "comfirm": """document.querySelector('.swal2-confirm').click();""",
                 "wait_ready": True,
+            },
+            {
+                "path": "//*[@id='delete_object_modal']//button[contains(@class, 'delbtn')]",
+                "sleep": 1,
             },
             {
                 "path": "//button[@id='save_step'] | //button[contains(@class, 'step_save')]",
@@ -367,18 +369,18 @@ class ProcedureTemplateSeleniumTest(OptimizedSeleniumBase):
                 "wait_ready": True,
             },
             {
-                "path": "//span[contains(@class, 'open_modal') and @data-bs-target='#observation_modal']",
+                "path": "//button[contains(@class, 'create-obs-btn')]",
                 "scroll": "window.scrollTo(0, 350)",
                 "wait_ready": True,
             },
             {
-                "path": "//textarea[@id='id_procedure_description']",
+                "path": "//textarea[@id='id_obs-description']",
                 "extra_action": "setvalue",
                 "value": "Tener cuidado con los envases de materiales biologícos",
                 "sleep": 1,
             },
             {
-                "path": "//*[@id='observation_modal']//button[contains(@class, 'btn-success')]",
+                "path": "//*[@id='observation_modal']//button[contains(@class, 'formadd')]",
                 "scroll": "window.scrollTo(0, document.body.scrollHeight)",
             },
             {
@@ -409,11 +411,13 @@ class ProcedureTemplateSeleniumTest(OptimizedSeleniumBase):
                 "wait_ready": True,
             },
             {
-                "path": "//tbody[@id='observation_list']/tr[1]/td[2]",
+                "path": "//table[@id='table-obs']//tbody/tr[1]//i[contains(@class, 'fa-trash')]",
                 "scroll": "window.scrollTo(0, 600)",
-                "extra_action": "sweetalert_comfirm",
-                "comfirm": """document.querySelector('.swal2-confirm').click();""",
                 "wait_ready": True,
+            },
+            {
+                "path": "//*[@id='delete_observation_modal']//button[contains(@class, 'delbtn')]",
+                "sleep": 1,
             },
             {
                 "path": "//button[@id='save_step'] | //button[contains(@class, 'step_save')]",

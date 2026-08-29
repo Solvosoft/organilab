@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-29 13:51-0600\n"
+"POT-Creation-Date: 2026-08-29 14:28-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -35,6 +35,23 @@ msgstr "Nuevo Paso"
 
 msgid "Remove"
 msgstr "Eliminar"
+
+#, python-format
+msgid "Added required object '%(obj)s' (%(qty)s %(unit)s) to procedure step"
+msgstr ""
+"Objeto requerido '%(obj)s' (%(qty)s %(unit)s) agregado al paso de "
+"procedimiento"
+
+#, python-format
+msgid "Removed required object '%(obj)s' from procedure step"
+msgstr "Objeto requerido '%(obj)s' eliminado del paso de procedimiento"
+
+#, python-format
+msgid "Added observation to procedure step '%(title)s'"
+msgstr "Observación agregada al paso de procedimiento '%(title)s'"
+
+msgid "Removed observation from procedure step"
+msgstr "Observación eliminada del paso de procedimiento"
 
 msgid "Description"
 msgstr "Descripción"
@@ -232,23 +249,23 @@ msgstr "Pasos en los procedimientos"
 msgid "Create Step"
 msgstr "Crear Paso"
 
+msgid "Save the step to add objects."
+msgstr "Guarde el paso para agregar objetos."
+
+msgid "Save the step to add observations."
+msgstr "Guarde el paso para agregar observaciones."
+
 msgid "Create Object"
 msgstr "Crear Objeto"
-
-msgid "Actions"
-msgstr "Acciones"
-
-msgid "Create Observation"
-msgstr "Crear Observación"
-
-msgid "Objects"
-msgstr "Objetos"
 
 msgid "Remove object"
 msgstr "Eliminar Objeto"
 
-msgid "Do you want to remove the object?"
-msgstr "¿Desea eliminar el objeto?"
+msgid "Create Observation"
+msgstr "Crear Observación"
+
+msgid "Remove observation"
+msgstr "Eliminar observación"
 
 #, python-format
 msgid "Added step to procedure '%(name)s'"
@@ -291,29 +308,9 @@ msgstr "Esquema de formulario personalizado '%(name)s' actualizado"
 msgid "Updated procedure step '%(title)s'"
 msgstr "Paso de procedimiento '%(title)s' actualizado"
 
-msgid "There is no object in the inventory with this unit of measurement"
-msgstr "No existe ningún objeto en el inventario con esta unidad de medida"
-
-#, python-format
-msgid "Added required object '%(obj)s' (%(qty)s %(unit)s) to procedure step"
-msgstr ""
-"Objeto requerido '%(obj)s' (%(qty)s %(unit)s) agregado al paso de "
-"procedimiento"
-
 #, python-format
 msgid "Deleted procedure step '%(title)s'"
 msgstr "Paso de procedimiento '%(title)s' eliminado"
-
-#, python-format
-msgid "Removed required object '%(obj)s' from procedure step"
-msgstr "Objeto requerido '%(obj)s' eliminado del paso de procedimiento"
-
-#, python-format
-msgid "Added observation to procedure step '%(title)s'"
-msgstr "Observación agregada al paso de procedimiento '%(title)s'"
-
-msgid "Removed observation from procedure step"
-msgstr "Observación eliminada del paso de procedimiento"
 
 msgid ""
 "The procedure don't has objects, please add some objects in the procedure "
@@ -578,6 +575,9 @@ msgstr "Cambiar nombre de la organización"
 
 msgid "Active organization"
 msgstr "Activar Organización"
+
+msgid "Actions"
+msgstr "Acciones"
 
 msgid "Profile"
 msgstr "Perfil"
@@ -2335,6 +2335,9 @@ msgstr "¿Es peligroso?"
 msgid "Is pure?"
 msgstr "¿Es pura?"
 
+msgid "Objects"
+msgstr "Objetos"
+
 msgid "Cas ID Number"
 msgstr "Número ID CAS"
 
@@ -3901,12 +3904,6 @@ msgstr "Lista de QR de registro"
 
 msgid "Register User QR"
 msgstr "QR de registro de usuario"
-
-msgid "Creation date"
-msgstr "Fecha de creación"
-
-msgid "History"
-msgstr "Historial"
 
 msgid "Changes on Objects"
 msgstr "Cambio de objetos"
@@ -7272,6 +7269,9 @@ msgstr "Sin registros."
 
 msgid "IPER — Risk follow-up"
 msgstr "IPER — Seguimiento de riesgos"
+
+msgid "History"
+msgstr "Historial"
 
 msgid "Dashboard"
 msgstr "Tablero"
