@@ -4,7 +4,6 @@ from io import BytesIO
 from django.contrib import messages
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.contrib.auth.decorators import login_required, permission_required
-from django.db.models import Q
 from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
@@ -31,7 +30,6 @@ from laboratory.views.djgeneric import (
     CreateView,
     DeleteView,
     DetailView,
-    ListView,
     ReportListView,
     UpdateView,
 )
@@ -98,33 +96,14 @@ def _risk_summary(counts):
     permission_required("risk_management.view_iperassessment", raise_exception=True),
     name="dispatch",
 )
-class IPERAssessmentList(ListView):
-    model = IPERAssessment
+class IPERAssessmentList(TemplateView):
+    # La tabla se llena por el api-iperassessment (ObjectCRUD); el filtrado por
+    # organización/laboratorios y la búsqueda con anonimato viven en el viewset.
     template_name = "risk_management/iper_list.html"
-    paginate_by = 20
-
-    def get_queryset(self):
-        org = self.kwargs["org_pk"]
-        queryset = super().get_queryset().filter(organization__pk=org)
-        if not self.request.user.has_perm("risk_management.view_all_iper"):
-            labs = get_user_laboratories(self.request.user)
-            queryset = queryset.filter(laboratory__in=labs)
-        q = self.request.GET.get("q", "")
-        if q:
-            queryset = queryset.filter(
-                Q(laboratory__name__icontains=q, is_anonymous=False)
-                | Q(responsible__username__icontains=q)
-            ).distinct()
-        return queryset.select_related("laboratory", "responsible")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        q = self.request.GET.get("q", "")
-        context["q"] = q
-        context["pgparams"] = "?q=%s&" % q if q else "?"
-        context["can_view_all"] = self.request.user.has_perm(
-            "risk_management.view_all_iper"
-        )
+        context["org_pk"] = self.kwargs["org_pk"]
         return context
 
 

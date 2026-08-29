@@ -156,13 +156,24 @@ previo salvo donde se indica):
       PDF, historial, borrar). Cobertura: 6 tests selenium en
       `manage_laboratory/test_register_users.py` (entran por el reverse — sobreviven si se
       conservan los botones); sin unit tests.
-- [ ] `risk_management/iper_list.html` — `IPERAssessmentList(ListView)`
-      (`iper_views.py:99`), url `riskmanagement:iper_list`, modelo `IPERAssessment`.
-      Conversión limpia: copiar hermanos de `risk_management/api/viewset.py` (RegentViewSet
-      etc.). Portar al viewset: filtro por labs del usuario sin `view_all_iper`, enmascarado
-      `is_anonymous` (¡en el serializer, no en el template!), búsqueda `?q=` → search del
-      DataTable. Desaparecen caja de búsqueda, paginación y el JS inline del modal delete.
-      Cobertura: `test_iper.py:96 test_list_view` (ajustar).
+- [x] `risk_management/iper_list.html` — **HECHA (2026-08-29)**:
+      `IPERAssessmentViewSet(AuthAllPermBaseObjectManagement)` en `api/viewset.py`
+      (solo `list`+`destroy`; crear/editar siguen siendo páginas por su lógica de
+      versionado; acción no mapeada → 403 vía `AllPermissionByAction`, verificado con
+      test), serializer `IPERAssessmentSerializer` que enmascara el laboratorio anónimo
+      EN EL SERVIDOR (laboratory=null), `IPERSearchFilter` que excluye el nombre de labs
+      anónimos de la búsqueda (mismo criterio que la vista vieja),
+      `perform_destroy` con `organilab_logentry` (paridad con `IPERAssessmentDelete`).
+      Página → `TemplateView` + tabla vacía `#table-iper` + `iper_list.js` (ObjectCRUD,
+      búsqueda global del DataTable, sin filtros por columna). La acción "Open" navega a
+      `iper_detail` con la nueva acción `link:true` de la lib (ver Cambios en djgentelella).
+      Tests: 5 nuevos de API en `test_iper.py` (enmascarado, búsqueda-anonimato, destroy,
+      create→403) — risk_management 32/32 OK. Traducciones extraídas y compiladas
+      (djangojs.po tenía fuzzy erróneos de makemessages: corregidos a mano).
+      OJO: `IPERAssessmentDelete` (`riskmanagement:iper_delete`) quedó huérfana — solo la
+      usaba el modal viejo del listado; candidata a retirar tras la validación (etapa 12).
+      Los viewsets hermanos usan `permission_classes = ()` (¡sin chequeo de permisos!):
+      el de IPER usa el default `AllPermissionByAction`; revisar los hermanos aparte.
 - [ ] `risk_management/iper_history.html` — `IPERHistory(ReportListView)`
       (`iper_views.py:618`), modelo `IPERHazard`, SIN acciones por fila (reporte). ⚠️ La
       exportación XLSX/ODS/PDF depende de `?{{pgparams}}&format=` de la vista actual:
@@ -234,6 +245,14 @@ columnas + template con tabla vacía + `ObjectCRUD` (ver `regents.html` como ref
 2. Cambio.
 3. Prueba (unit del endpoint + selenium puntual si existe).
 4. Marcar en la tabla de INVENTARIO_VISTAS.md.
+
+## Cambios en djgentelella (esta etapa)
+
+- `obj_api_management.js` `do_action()`: soporte de **acciones de navegación** en
+  `object_actions` — `link: true` hace `window.location.assign(url)` en vez de fetch.
+  Cubre el caso genérico "abrir la página de detalle de la fila" (lo usan iper_list en
+  organilab y el demo). Prueba en demo: `object_management.html` reemplazó su columna
+  "Notes" con `<a>` a mano por una object_action `link:true` hacia la página inline.
 
 ## Notas / hallazgos
 

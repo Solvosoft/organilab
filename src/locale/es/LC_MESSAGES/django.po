@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-29 09:36-0600\n"
+"POT-Creation-Date: 2026-08-29 13:51-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -3818,9 +3818,6 @@ msgstr "Borrar objeto"
 msgid "Equipment management"
 msgstr "Administración de Equipos"
 
-msgid "Reactive management"
-msgstr "Administración de Reactivos"
-
 msgid "This action will delete its descendants organizations too."
 msgstr "Esta acción también eliminará sus organizaciones descendientes."
 
@@ -4193,6 +4190,9 @@ msgstr "Hojas de seguridad"
 
 msgid "Sustance Representation"
 msgstr "Representación de la sustancia"
+
+msgid "Reactive management"
+msgstr "Administración de Reactivos"
 
 msgid "Update Reactive"
 msgstr "Actualizar Reactivo"
@@ -6390,6 +6390,10 @@ msgstr "No se pudo procesar la devolución. Por favor verifique los valores."
 msgid "Closed reservation"
 msgstr "Reserva cerrada"
 
+#, python-format
+msgid "Deleted IPER assessment for laboratory '%(lab)s'"
+msgstr "Evaluación IPER eliminada para laboratorio '%(lab)s'"
+
 msgid "Hazard classification"
 msgstr "Clasificación de peligro"
 
@@ -6778,10 +6782,6 @@ msgstr "Evaluación IPER creada para laboratorio '%(lab)s'"
 #, python-format
 msgid "Updated IPER assessment for laboratory '%(lab)s'"
 msgstr "Evaluación IPER actualizada para laboratorio '%(lab)s'"
-
-#, python-format
-msgid "Deleted IPER assessment for laboratory '%(lab)s'"
-msgstr "Evaluación IPER eliminada para laboratorio '%(lab)s'"
 
 msgid "Toggled anonymous mode for IPER assessment"
 msgstr "Modo anónimo alternado para evaluación IPER"
@@ -7278,21 +7278,6 @@ msgstr "Tablero"
 
 msgid "New assessment"
 msgstr "Nueva evaluación"
-
-msgid "Next update"
-msgstr "Próxima actualización"
-
-msgid "Laboratory name hidden"
-msgstr "Nombre del laboratorio oculto"
-
-msgid "Laboratory name visible"
-msgstr "Nombre del laboratorio visible"
-
-msgid "Open"
-msgstr "Abrir"
-
-msgid "No assessments yet."
-msgstr "Aún no hay evaluaciones."
 
 msgid "Delete IPER assessment"
 msgstr "Eliminar evaluación IPER"

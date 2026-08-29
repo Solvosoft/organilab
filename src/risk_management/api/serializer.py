@@ -15,6 +15,7 @@ from risk_management.models import (
     RiskZone,
     IncidentReport,
     Workday,
+    IPERAssessment,
 )
 
 
@@ -363,6 +364,51 @@ class DataWorkdaySerializer(serializers.Serializer):
 
 class WorkdayDataTableSerializer(serializers.Serializer):
     data = serializers.ListField(child=DataWorkdaySerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+
+class IPERAssessmentSerializer(serializers.ModelSerializer):
+    # El nombre del laboratorio se enmascara aquí y no en el cliente: una
+    # evaluación anónima nunca debe viajar con el nombre en el JSON.
+    laboratory = serializers.SerializerMethodField()
+    assessment_date = GTDateField()
+    due_date = GTDateField(allow_null=True, required=False)
+    status_display = serializers.CharField(source="get_status_display")
+    responsible = serializers.StringRelatedField()
+    actions = serializers.SerializerMethodField()
+
+    def get_laboratory(self, obj):
+        if obj.is_anonymous:
+            return None
+        return obj.laboratory.name
+
+    def get_actions(self, obj):
+        user = self.context["request"].user
+        return {
+            "open": user.has_perm("risk_management.view_iperassessment"),
+            "destroy": user.has_perm("risk_management.delete_iperassessment"),
+        }
+
+    class Meta:
+        model = IPERAssessment
+        fields = (
+            "id",
+            "laboratory",
+            "is_anonymous",
+            "assessment_date",
+            "version",
+            "status",
+            "status_display",
+            "responsible",
+            "due_date",
+            "actions",
+        )
+
+
+class IPERAssessmentDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=IPERAssessmentSerializer(), required=True)
     draw = serializers.IntegerField(required=True)
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)

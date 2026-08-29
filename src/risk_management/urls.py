@@ -11,10 +11,14 @@ from risk_management.api.viewset import (
     StructureViewSet,
     IncidentViewSet,
     WorkdaysViewSet,
+    IPERAssessmentViewSet,
 )
 
 risk_router = DefaultRouter()
 risk_router.register("api_regent", RegentViewSet, basename="api-regent")
+risk_router.register(
+    "api_iperassessment", IPERAssessmentViewSet, basename="api-iperassessment"
+)
 building_router = DefaultRouter()
 building_router.register("api_building", BuildingViewSet, basename="api-building")
 structure_router = DefaultRouter()
