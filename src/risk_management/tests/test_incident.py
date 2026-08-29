@@ -23,14 +23,16 @@ class IncidentReportTest(TestCase):
             reverse("riskmanagement:api-incident-list", kwargs=self.url_attr)
         )
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(json.loads(response.content).get("recordsTotal") == 3)
+        # recordsTotal cuenta el queryset filtrado por la URL (risk=5): el
+        # fixture trae 3 incidentes pero solo 1 pertenece a esa zona.
+        self.assertEqual(json.loads(response.content).get("recordsTotal"), 1)
 
     def test_get_q_incident(self):
         response = self.client.get(
             reverse("riskmanagement:api-incident-list", kwargs=self.url_attr) + "?q=Algo"
         )
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(json.loads(response.content).get("recordsTotal") == 3)
+        self.assertEqual(json.loads(response.content).get("recordsTotal"), 1)
 
     def test_add_incident(self):
         data = {

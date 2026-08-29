@@ -1,7 +1,7 @@
 from django.contrib.auth.models import Group
 from django.utils.translation import gettext as _
 
-from async_notifications.utils import send_email_from_template
+from djgentelella.async_notification.sending import send_email_from_template
 
 import logging
 

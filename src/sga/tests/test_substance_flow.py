@@ -1,6 +1,6 @@
 import json
 
-from async_notifications.models import EmailNotification
+from djgentelella.async_notification.models import EmailNotification
 from django.contrib.auth.models import Group, User
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -230,7 +230,7 @@ class SubstanceWizardFlowTest(TestCase):
         # mail.outbox daría un verde falso permanente. Además esta aserción
         # atraviesa el try/except silencioso de sga.utils._send.
         self.assertEqual(
-            EmailNotification.objects.filter(recipient=reviewer.email).count(), 1
+            EmailNotification.objects.filter(recipients__contains=[reviewer.email]).count(), 1
         )
 
     def test_send_to_review_rejects_a_foreign_organization(self):
@@ -537,7 +537,7 @@ class SubstanceWizardFlowTest(TestCase):
         review = ReviewSubstance.objects.get(substance=self.substance)
         self.assertEqual(PendingTask.objects.filter(profile=reviewer.profile).count(), 1)
         self.assertEqual(
-            EmailNotification.objects.filter(recipient=reviewer.email).count(), 1
+            EmailNotification.objects.filter(recipients__contains=[reviewer.email]).count(), 1
         )
 
         # 4. aprobación

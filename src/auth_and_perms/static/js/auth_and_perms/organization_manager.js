@@ -38,7 +38,8 @@ language: {"url": datatables_lang },
 }
 }, addfilter=false);
 
-$('input[name="nodes"]').on('ifChecked', function(e){
+$('input[name="nodes"]').on('change', function(e){
+        if (!this.checked) return;
         $("#id_laboratories").val(null).trigger('change');
         datatableuserpermelement.ajax.reload();
         datatableorpermelement.ajax.reload();
@@ -914,7 +915,8 @@ function get_roles_by_organization(rol_url, is_checked=false){
      }
      });
 
-$(".nodeorg").on('ifChecked', function(e){
+$(".nodeorg").on('change', function(e){
+    if (!this.checked) return;
     let rol_url = roles_url.replace('/0', "/"+$(this).val());
     get_roles_by_organization(rol_url, is_checked=true);
 })

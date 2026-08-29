@@ -1,0 +1,32 @@
+# Roadmap — Organilab sobre djgentelella 0.6.0
+
+Rama de trabajo: `dj060`. Biblioteca: checkout `~/Desktop/desarrollo/django-gentelella-widgets`,
+rama `development` (instalación editable durante el desarrollo; mecanismo de CI pendiente de decidir).
+
+| Etapa | Documento | Contenido | Riesgo | Estado |
+|---|---|---|---|---|
+| 0 | `00_ANALISIS_DJGENTELELLA_060.md` + `BASELINE.md` | Análisis de la biblioteca, baseline de pruebas (891/891 OK), backups | — | hecha |
+| — | `INVENTARIO_VISTAS.md` | Impacto vista por vista (métrica de cambios) | — | hecho |
+| 1 | `01_ETAPA_LIMPIEZA.md` | Limpieza compatible con 0.5.9 (alias, blog, DataTables vendorizado, tests perdidos) | bajo | hecha |
+| 2 | `02_ETAPA_DJANGO_AJAX.md` | django_ajax: dependencia asumida + JS vendorizado (salida total → etapa 10) | medio | hecha |
+| 3 | `03_ETAPA_ASYNC_NOTIFICATION.md` | Correos → djgentelella.async_notification (+ salida de markitup) | **alto** | hecha |
+| 4 | `04_ETAPA_SUBIDA_060.md` | Instalación 0.6.0 (editable, adelantada a la 3), migraciones, arranque | medio | hecha |
+| 5 | `05_ETAPA_ICHECK.md` | iCheck/switchery → inputs nativos | **alto** | hecha y validada |
+| 6 | `06_ETAPA_DATATABLES2.md` | DataTables 1→2 (dom→layout, clases, hook selenium) | **alto** | hecha y validada |
+| 7 | `07_ETAPA_CHARTJS4.md` | Chart.js 2→4 (+ fix genérico min/max en la lib) | medio | hecha |
+| 8 | `08_ETAPA_OVERRIDES.md` | Overrides de la lib: 11 borrados, sidebar/navbar adaptados | medio-alto | hecha |
+| 9 | `09_ETAPA_AJUSTES.md` | TinyMCE 8, recordsTotal, moment locale, misc | bajo | hecha salvo 2 borrados triviales |
+| 10 | `10_ETAPA_MODERNIZACION.md` | Modales, formularios y tablas a mano → widgets (completa) | medio | en curso — inventario 10a/10c auditado, falta ejecutar |
+| 11 | `11_ETAPA_SELENIUM.md` | Mejoras menores de la infraestructura selenium | bajo | parcial — hallazgos auditados, ver doc |
+| 12 | `12_ETAPA_VALIDACION.md` | Validación final completa | — | pendiente |
+
+## Principios
+
+1. **djgentelella es genérica**: los arreglos que le hagamos van al checkout SIN conocimiento de
+   organilab (con prueba en su demo). Lo específico de organilab (org-scope, multi-tenant) se
+   implementa en organilab como subclases/configuración. Registrar cada cambio hecho a la
+   biblioteca en la sección "Cambios en djgentelella" del documento de la etapa.
+2. **Pruebas**: baseline antes de tocar; por etapa solo los tests del área
+   (`make single-test` / `make test-selenium-single-fast TEST=...`); la corrida completa
+   (unit + selenium, 1-2 h) UNA sola vez al final (etapa 12).
+3. Cada etapa actualiza su documento (estado, hallazgos, desvíos) al cerrarse.

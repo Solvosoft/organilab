@@ -1,10 +1,17 @@
+from unittest import skip
+
 from django.test import tag
 from django.utils.timezone import now
-from laboratory.tests.selenium_tests.laboratory_view.actions_buttons_shelfobject_table_actions_column import (
+from laboratory.tests.selenium_tests.laboratory_view.test_actions_buttons_shelfobject_table_actions_column import (
     ButtonsActionsTableColumnBase,
 )
 
 
+@skip(
+    "Suite rescatada en la migración a djgentelella 0.6.0: nunca corría (faltaba el "
+    "prefijo test_) y quedó desactualizada respecto a la tabla de shelfobjects. "
+    "Rehabilitar en roadmap/11_ETAPA_SELENIUM.md tras las etapas 5-6."
+)
 @tag("selenium")
 class ShelfObjectInfoButtonsActions(ButtonsActionsTableColumnBase):
 

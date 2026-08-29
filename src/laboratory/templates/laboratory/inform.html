@@ -86,12 +86,13 @@
   <script>
     $(document).ready(function() {
 
-    document.table_default_dom = "<'row'<'col-sm-12 col-md-4 d-flex justify-content-start'l>" +
-                 "<'col-sm-12 col-md-8 d-flex align-items-center justify-content-end mt-1'f>>" +
-                 "<'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>";
-
       $('#inform').DataTable({
-      dom: document.table_default_dom
+      layout: {
+          topStart: 'pageLength',
+          topEnd: 'search',
+          bottomStart: 'info',
+          bottomEnd: 'paging'
+      }
      	});
       });
   </script>

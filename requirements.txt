@@ -1,5 +1,8 @@
 djgentelella[firmador]>=0.5.9
-async-notifications==0.2
+# djangoajax dejó de ser dependencia de djgentelella en 0.6.0; organilab lo usa
+# directamente (vistas @ajax/AJAXMixin de laboratory) hasta modernizar esas pantallas.
+# Los JS del plugin están vendorizados en src/presentation/static/django_ajax/js/.
+djangoajax==3.3
 django==5.2.11
 django-excel==0.0.13
 django-location-field==2.7.3
@@ -16,7 +19,6 @@ pyexcel-webio==0.1.4
 pyexcel-xls==0.7.1
 pyexcel-xlsx==0.6.1
 xlwt==1.3.0
-Markdown==3.10
 django-celery-beat==2.8.1
 django-celery-results==2.6.0
 celery==5.6.2
@@ -34,3 +36,6 @@ pdfplumber
 pandas==3.0.0
 curl_cffi>=0.14.0
 mozilla-django-oidc==4.0.1
+# tblib permite serializar tracebacks bajo `manage.py test --parallel`;
+# sin él, un fallo con excepciones encadenadas aborta la suite entera.
+tblib>=3.0

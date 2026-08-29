@@ -45,3 +45,21 @@
 	</div>
 </div>
 {% endblock %}
+
+{% block js %}
+{{ block.super }}
+<script>
+	$(document).ready(function () {
+		$('#regulations').DataTable({
+			layout: {
+				topStart: 'pageLength',
+				topEnd: 'search',
+				bottomStart: 'info',
+				bottomEnd: 'paging'
+			},
+			columnDefs: [{targets: -1, orderable: false, searchable: false}],
+			language: {url: datatables_lang}
+		});
+	});
+</script>
+{% endblock %}

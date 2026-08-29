@@ -19,7 +19,12 @@ FEEDBACK_MESSAGE = (
 
 
 def update_feedback_template(apps, schema_editor):
-    EmailTemplate = apps.get_model("async_notifications", "EmailTemplate")
+    # La app externa async_notifications fue reemplazada por
+    # djgentelella.async_notification; en instalaciones nuevas no existe.
+    try:
+        EmailTemplate = apps.get_model("async_notifications", "EmailTemplate")
+    except LookupError:
+        return
     EmailTemplate.objects.filter(code="New feedback").update(message=FEEDBACK_MESSAGE)
 
 
@@ -27,7 +32,6 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("authentication", "0006_delete_demorequest_delete_feedbackentry"),
-        ("async_notifications", "0001_initial"),
     ]
 
     operations = [

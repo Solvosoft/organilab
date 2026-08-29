@@ -2,7 +2,12 @@ from django.db import migrations
 
 
 def update_email_templates(apps, schema_editor):
-    EmailTemplate = apps.get_model("async_notifications", "EmailTemplate")
+    # La app externa async_notifications fue reemplazada por
+    # djgentelella.async_notification; en instalaciones nuevas no existe.
+    try:
+        EmailTemplate = apps.get_model("async_notifications", "EmailTemplate")
+    except LookupError:
+        return
     EmailTemplate.objects.filter(code="lab_or_org_request_created").update(
         subject="{{ subject|safe }}",
         message="{{ body|linebreaksbr }}",
@@ -14,7 +19,12 @@ def update_email_templates(apps, schema_editor):
 
 
 def revert_email_templates(apps, schema_editor):
-    EmailTemplate = apps.get_model("async_notifications", "EmailTemplate")
+    # La app externa async_notifications fue reemplazada por
+    # djgentelella.async_notification; en instalaciones nuevas no existe.
+    try:
+        EmailTemplate = apps.get_model("async_notifications", "EmailTemplate")
+    except LookupError:
+        return
     EmailTemplate.objects.filter(
         code__in=["lab_or_org_request_created", "lab_or_org_request_status_changed"]
     ).update(subject="{{ subject }}", message="{{ body }}")

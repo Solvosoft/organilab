@@ -150,7 +150,8 @@ class LaboratoryDangerIndicationChart(BaseChart, HorizontalBarChart):
 
     def get_options(self):
         options = super().get_options()
-        options["plugins"] = {
+        # merge, no reemplazo: super() ya archivó title/legend/tooltip en plugins
+        options.setdefault("plugins", {}).update({
             "showDataLabels": True,
             "datalabels": {
                 "anchor": "end",
@@ -160,7 +161,7 @@ class LaboratoryDangerIndicationChart(BaseChart, HorizontalBarChart):
                 "color": "#333",
                 "font": {"weight": "bold", "size": 11},
             },
-        }
+        })
         return options
 
     def get_labels(self):
@@ -273,7 +274,8 @@ class LaboratoryWhiteOrganChart(BaseChart, HorizontalBarChart):
 
     def get_options(self):
         options = super().get_options()
-        options["plugins"] = {
+        # merge, no reemplazo: super() ya archivó title/legend/tooltip en plugins
+        options.setdefault("plugins", {}).update({
             "showDataLabels": True,
             "datalabels": {
                 "anchor": "end",
@@ -283,7 +285,7 @@ class LaboratoryWhiteOrganChart(BaseChart, HorizontalBarChart):
                 "color": "#333",
                 "font": {"weight": "bold", "size": 11},
             },
-        }
+        })
         return options
 
     def get_labels(self):
@@ -398,7 +400,8 @@ class LaboratoryPrecursorTypeChart(BaseChart, HorizontalBarChart):
 
     def get_options(self):
         options = super().get_options()
-        options["plugins"] = {
+        # merge, no reemplazo: super() ya archivó title/legend/tooltip en plugins
+        options.setdefault("plugins", {}).update({
             "showDataLabels": True,
             "datalabels": {
                 "anchor": "end",
@@ -408,7 +411,7 @@ class LaboratoryPrecursorTypeChart(BaseChart, HorizontalBarChart):
                 "color": "#333",
                 "font": {"weight": "bold", "size": 11},
             },
-        }
+        })
         return options
 
     def get_labels(self):
@@ -522,7 +525,8 @@ class LaboratoryNFPAChart(BaseChart, HorizontalBarChart):
 
     def get_options(self):
         options = super().get_options()
-        options["plugins"] = {
+        # merge, no reemplazo: super() ya archivó title/legend/tooltip en plugins
+        options.setdefault("plugins", {}).update({
             "showDataLabels": True,
             "datalabels": {
                 "anchor": "end",
@@ -532,7 +536,7 @@ class LaboratoryNFPAChart(BaseChart, HorizontalBarChart):
                 "color": "#333",
                 "font": {"weight": "bold", "size": 11},
             },
-        }
+        })
         return options
 
     def get_labels(self):
@@ -644,7 +648,8 @@ class LaboratoryUECodeChart(BaseChart, HorizontalBarChart):
 
     def get_options(self):
         options = super().get_options()
-        options["plugins"] = {
+        # merge, no reemplazo: super() ya archivó title/legend/tooltip en plugins
+        options.setdefault("plugins", {}).update({
             "showDataLabels": True,
             "datalabels": {
                 "anchor": "end",
@@ -654,7 +659,7 @@ class LaboratoryUECodeChart(BaseChart, HorizontalBarChart):
                 "color": "#333",
                 "font": {"weight": "bold", "size": 11},
             },
-        }
+        })
         return options
 
     def get_labels(self):
@@ -769,7 +774,8 @@ class LaboratoryStorageClassChart(BaseChart, HorizontalBarChart):
 
     def get_options(self):
         options = super().get_options()
-        options["plugins"] = {
+        # merge, no reemplazo: super() ya archivó title/legend/tooltip en plugins
+        options.setdefault("plugins", {}).update({
             "showDataLabels": True,
             "datalabels": {
                 "anchor": "end",
@@ -779,7 +785,7 @@ class LaboratoryStorageClassChart(BaseChart, HorizontalBarChart):
                 "color": "#333",
                 "font": {"weight": "bold", "size": 11},
             },
-        }
+        })
         return options
 
     def get_labels(self):
@@ -893,9 +899,9 @@ class SubstanceQuantityTonsChart(BaseChart, HorizontalBarChart):
 
     def get_options(self):
         options = super().get_options()
-        options['plugins'] = {
+        options.setdefault('plugins', {}).update({
             'showDataLabels': False,
-        }
+        })
         options['maintainAspectRatio'] = False
         return options
 
@@ -1047,7 +1053,8 @@ class EstablishmentLogsClassChart(BaseChart, HorizontalBarChart):
 
     def get_options(self):
         options = super().get_options()
-        options["plugins"] = {
+        # merge, no reemplazo: super() ya archivó title/legend/tooltip en plugins
+        options.setdefault("plugins", {}).update({
             "showDataLabels": True,
             "datalabels": {
                 "anchor": "end",
@@ -1057,13 +1064,15 @@ class EstablishmentLogsClassChart(BaseChart, HorizontalBarChart):
                 "color": "#333",
                 "font": {"weight": "bold", "size": 11},
             },
-        }
+        })
         return options
 
     def get_scales(self):
+        # Formato Chart.js 4 (el shim xAxes/yAxes de djgentelella es temporal).
+        # En v4 min/max/stepSize viven en la escala, no en ticks.
         return {
-            "xAxes": [{"ticks": {"min": 0, "max": 1, "stepSize": 0.1}}],
-            "yAxes": [{"ticks": {}}],
+            "x": {"min": 0, "max": 1, "ticks": {"stepSize": 0.1}},
+            "y": {},
         }
 
     def get_labels(self):

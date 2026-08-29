@@ -1,10 +1,11 @@
 {% load i18n shelf_position laboratory %}
 {% load urlname_tags i18n gentelellamenu gtsettings %}
-<nav class="nav_menu">
+<nav class="navbar navbar-expand-lg nav_menu">
 
 	<div class="container-fluid">
 		<div class="nav toggle" style="margin-top:9px;">
-			<a id="menu_toggle"><i class="fa fa-bars"></i></a>
+			<a id="menu_toggle" style="cursor:pointer;" role="button" tabindex="0"
+			   aria-controls="sidebar-menu" aria-expanded="false"><i class="fa fa-bars"></i></a>
 		</div>
 		{% if laboratory and org_pk %}
 			<ul class="nav navbar-nav float-start d-flex flex-row">
@@ -17,7 +18,9 @@
 			</ul>
 		{% endif %}
 
-		<ul class="nav navbar-nav float-end flex-row-reverse">
+		{# id items-top-navbar: custom.js 0.6.0 le cuelga los dropdowns por click, #}
+		{# el ajuste del flyout y el flex-row-reverse reactivo al breakpoint. #}
+		<ul id="items-top-navbar" class="nav navbar-nav float-end flex-row-reverse">
 			{% if request.user.is_authenticated %}
 				{% include 'gentelella/app/top_navigation_user_authenticated.html' %}
 			{% endif %}

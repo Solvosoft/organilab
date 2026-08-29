@@ -53,16 +53,9 @@ function form_field_errors(target_form, form_errors, prefix){
 }
 
 function clear_action_form(form){
-    // clear switchery before the form reset so the check status doesn't get changed before the validation
-    $(form).find("input[data-switchery=true]").each(function() {
-        if($(this).prop("checked")){  // only reset it if it is checked
-            $(this).trigger("click").prop("checked", false);
-        }
-    });
-
-    // reset iCheck elements
+    // los switches (YesNoInput, .gt-switch) y radios son inputs nativos: basta prop()
+    $(form).find("input.gt-switch:checked").prop("checked", false).trigger("change");
     $(form).find("input[type='radio']").prop('checked', false);
-    $(form).find("input[type='radio']").iCheck('update');
 
    //reset ChunkedUpload elements
     if($(form).find("input[class='chunkedvalue']").val()){

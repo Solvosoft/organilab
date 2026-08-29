@@ -151,21 +151,23 @@ class ManageOrganizationsSeleniumTest(SeleniumBase):
         return []
 
     def select_org_via_icheck(self, pk):
-        """Return path dict to select org via iCheck (avoids click interception).
+        """Return path dict to select an org node radio.
 
-        iCheck wraps radio buttons with an overlay that intercepts direct
-        clicks.  Using iCheck('check') fires the proper ifChecked event.
+        djgentelella 0.6.0 dejó los radios como inputs nativos (gt-check);
+        se marca por script para conservar la mecánica de rutas y se dispara
+        'change', que es el evento que escucha organization_manager.js.
         """
         return {
             "path": self.org_node_radio(pk),
             "extra_action": "script",
-            "value": "$('input.nodeorg[value=%d]').iCheck('check')" % pk,
+            "value": "$('input.nodeorg[value=%d]')"
+                     ".prop('checked', true).trigger('change')" % pk,
             "sleep": 1,
         }
 
     @property
     def select_organization(self):
-        """Select the first org node radio button (pk=1) via iCheck."""
+        """Select the first org node radio button (pk=1)."""
         return [
             self.select_org_via_icheck(1),
         ]
@@ -189,7 +191,7 @@ class ManageOrganizationsSeleniumTest(SeleniumBase):
             {
                 "path": "//*[@id='modal1']//div[contains(@class, 'modal-body')]//input[@name='mergeaction' and @value='sustract']",
                 "extra_action": "script",
-                "value": "$('#modal1 input[name=mergeaction][value=sustract]').iCheck('check')",
+                "value": "$('#modal1 input[name=mergeaction][value=sustract]').prop('checked', true).trigger('change')",
             }
         ] + self.button_save_permission_rol
 
@@ -199,6 +201,6 @@ class ManageOrganizationsSeleniumTest(SeleniumBase):
             {
                 "path": "//*[@id='modal1']//div[contains(@class, 'modal-body')]//input[@name='mergeaction' and @value='full']",
                 "extra_action": "script",
-                "value": "$('#modal1 input[name=mergeaction][value=full]').iCheck('check')",
+                "value": "$('#modal1 input[name=mergeaction][value=full]').prop('checked', true).trigger('change')",
             }
         ] + self.button_save_permission_rol

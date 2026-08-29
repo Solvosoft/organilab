@@ -1,6 +1,6 @@
 from urllib.parse import urlencode
 
-from async_notifications.register import update_template_context
+from djgentelella.async_notification.registry import register_context
 from django.conf import settings
 from django.urls import reverse_lazy
 from django.views.generic.base import TemplateView
@@ -16,24 +16,17 @@ class PermissionDeniedView(TemplateView):
     template_name = "laboratory/permission_denied.html"
 
 
-context = [
-    ("data.name", "name"),
-    ("data.business_email", "Business email"),
-    ("data.company_name", "Company name"),
-    ("data.country", "Country"),
-    ("data.phone_number", "Phone number"),
-]
-update_template_context(
-    "Request demo",
-    "New demo request",
-    context,
-    message="""User information:<br>
-                        {{data.name}}<br>
-                        {{data.business_email}}<br>
-                        {{data.company_name}}<br>
-                        {{data.country}}<br>
-                        {{data.phone_number}}
-                        """,
+register_context(
+    code="request-demo",
+    subject="New demo request",
+    models={},
+    extra_variables={
+        "data.name": "Name",
+        "data.business_email": "Business email",
+        "data.company_name": "Company name",
+        "data.country": "Country",
+        "data.phone_number": "Phone number",
+    },
 )
 
 

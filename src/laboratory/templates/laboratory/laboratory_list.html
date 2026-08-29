@@ -8,18 +8,15 @@
 {% endblock %}
 
 {% block content %}
-  <label for="searchbox">Buscar Laboratorio</label>
-  <form id="searchform"  method="get" action="" accept-charset="utf-8">
-    <div class="row">
-        <div class="col-sm-4">
-            <div class="input-group">
-              <input id="searchbox" name="search_fil" type="text" class="form-control" style="height:40px">
-              <span class="input-group-btn " style="height:40px margin-left:20px;">
-                <button class="btn btn-primary " type="submit" style="margin-left:10px;">Buscar</button>
-              </span>
-            </div>
-        </div>
+  <form id="searchform" method="get" action="" accept-charset="utf-8">
+    <div class="row align-items-end">
+      <div class="col-sm-4">
+        {{ search_form }}
       </div>
+      <div class="col-sm-2 mb-3">
+        <button class="btn btn-primary" type="submit">{% trans 'Search' %}</button>
+      </div>
+    </div>
   </form>
   <br>
   <div class="row">

@@ -40,10 +40,13 @@ var object_urls = {
 	update_url: "{% url "laboratory:api-equipmenttype-detail" org_pk lab_pk 0 %}"
 }
 
-table_default_dom = "<'row mb-1'<'col-sm-4 col-md-4 d-flex align-items-center justify-content-start'f>" +
-                 "<'col-sm-4 col-md-4 d-flex align-items-center justify-content-center'B>" +
-                 "<'col-sm-3 col-md-3 d-flex align-items-center justify-content-end 'l>>" +
-                 "<'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>";
+table_default_layout = {
+    topStart: 'search',
+    top: 'buttons',
+    topEnd: 'pageLength',
+    bottomStart: 'info',
+    bottomEnd: 'paging'
+};
 
 datatable_inits = {
 			columns: [
@@ -53,7 +56,7 @@ datatable_inits = {
 							{data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: true}
 		],
 		addfilter: true,
-		dom: table_default_dom
+		layout: table_default_layout
 }
 
 var equipmenttype_modalids = {

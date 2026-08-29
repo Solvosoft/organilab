@@ -1,5 +1,12 @@
 # djgentelella 0.6.0 — qué trae y cómo usarlo en estos planes
 
+> **⚠️ PARCIALMENTE OBSOLETO (2026-08-29).** Este análisis se hizo sobre la rama `cleanup`, que
+> quedó 67 commits detrás de `development`. NO cubre la revisión JS/vendors de la sección
+> `Unreleased` del CHANGELOG (iCheck eliminado, DataTables 2, Chart.js 4, TinyMCE 8,
+> FullCalendar 6, pdf.js 6, mapas, banderas, dictado por voz). El análisis vigente y el plan de
+> migración están en **`roadmap/00_ANALISIS_DJGENTELELLA_060.md`** y `roadmap/README.md`.
+> Lo que sigue siendo válido aquí: history/trash/MenuItem/BaseInlineObjectManagement (§2-§4).
+
 > **Qué es esto.** Análisis de la versión de djgentelella con la que se construirán los módulos
 > descritos en [`PLATFORM_ADMIN_PLAN.md`](PLATFORM_ADMIN_PLAN.md),
 > [`MANAGEMENT_PLANS_PLAN.md`](MANAGEMENT_PLANS_PLAN.md) y [`ENVIRONMENT_PLAN.md`](ENVIRONMENT_PLAN.md).

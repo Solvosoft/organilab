@@ -243,6 +243,14 @@ class LaboratoryEdit(GTForm, forms.ModelForm):
         }
 
 
+class LaboratorySearchForm(GTForm, forms.Form):
+    search_fil = forms.CharField(
+        required=False,
+        widget=genwidgets.TextInput,
+        label=_("Search laboratory"),
+    )
+
+
 class H_CodeForm(GTForm, forms.Form):
     hcode = forms.ModelMultipleChoiceField(
         queryset=DangerIndication.objects.all(),

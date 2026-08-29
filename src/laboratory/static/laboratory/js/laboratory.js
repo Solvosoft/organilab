@@ -52,11 +52,9 @@ const tableObject={
             }
             document.prefix=id;
             shelf_action_modals(modalid, datarequest['shelf'], objecttype)
-            if(!$(document.prefix+"without_limit").parent().hasClass('checked')){
-                $(document.prefix+"without_limit").parent().addClass('checked')
-            }
-            if($(document.prefix+"marked_as_discard").parent().hasClass('checked') && !discard){
-                $(document.prefix+"marked_as_discard").parent().removeClass('checked')
+            $(document.prefix+"without_limit").prop('checked', true);
+            if(!discard){
+                $(document.prefix+"marked_as_discard").prop('checked', false);
             }
 
     },
@@ -274,9 +272,13 @@ $(document).ready(function(){
             {data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: true, filterable: false, sortable: false},
         ],
         buttons: shelfObjectButtons,
-        dom: "<'d-flex justify-content-between'<'m-2'l>" +
-        "<'m-2'B><'m-2 d-flex justify-content-start'f>>" +
-        "<'row'tr><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 m-auto'p>>",
+        layout: {
+            topStart: 'pageLength',
+            top: 'buttons',
+            topEnd: 'search',
+            bottomStart: 'info',
+            bottomEnd: 'paging'
+        },
         ajax: {
             url: document.url_shelfobject,
             type: 'GET',
@@ -307,9 +309,12 @@ $(document).ready(function(){
         paging: true,
         buttons: [],
         deferLoading: true,
-        dom: "<'row'<'col-sm-4 col-md-4 d-flex justify-content-start'l>" +
-        "<'col-sm-7 col-md-7 mt-1 d-flex justify-content-end'f>>" +
-        "<'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 m-auto'p>>",
+        layout: {
+            topStart: 'pageLength',
+            topEnd: 'search',
+            bottomStart: 'info',
+            bottomEnd: 'paging'
+        },
         ajax: {
            url: document.urls.transfer_list,
            type: 'GET',
@@ -394,7 +399,7 @@ $(".add_status").click(function(){
     add_status(document.url_status)
 });
 
-$(".check_limit").on('ifChanged', function(event){
+$(".check_limit").on('change', function(event){
     show_hide_limits(this,document.prefix)
 })
 
@@ -456,7 +461,7 @@ const labviewSearch={
                     $(radio_obj).parents('.shelves_rows').parent().children().hide();
 
                 $(radio_obj).parents('.col').show();
-                $(radio_obj).iCheck('check');
+                $(radio_obj).prop('checked', true);
                 $(radio_obj).change();
             }
         });
@@ -527,7 +532,7 @@ const labviewSearch={
         }
     },
     restart_objs: function(){
-        $('input[name="shelfselected"]').iCheck('uncheck').change();
+        $('input[name="shelfselected"]').prop('checked', false).change();
         $("span.check-box").click();
         $('div#shelfobjecttable_filter input[type="search"]').val('').keyup();
         $("span.box").parent().show();
@@ -611,21 +616,21 @@ function show_hide_container_selects(form_id, selected_value, prefix=""){
    }
 }
 
-$("#transfer_in_approve_with_container_form #id_container_select_option").on('ifChanged', function(event){
+$("#transfer_in_approve_with_container_form #id_container_select_option").on('change', function(event){
     show_hide_container_selects("#transfer_in_approve_with_container_form", event.target.value);
 });
 
-$("#reactive_refuse_form #id_rff-container_select_option").on('ifChanged', function(event){
+$("#reactive_refuse_form #id_rff-container_select_option").on('change', function(event){
     show_hide_container_selects("#reactive_refuse_form", event.target.value, prefix="rff-");
 
 });
 
-$("#reactive_form #id_rf-container_select_option").on('ifChanged', function(event){
+$("#reactive_form #id_rf-container_select_option").on('change', function(event){
     show_hide_container_selects("#reactive_form", event.target.value, prefix="rf-");
 });
 
 
-$("#movesocontainerform #id_movewithcontainer-container_select_option").on('ifChanged', function(event){
+$("#movesocontainerform #id_movewithcontainer-container_select_option").on('change', function(event){
     show_hide_container_selects("#movesocontainerform", event.target.value, prefix="movewithcontainer-");
 });
 
@@ -648,7 +653,7 @@ function ContainerUpdateForm(elementid, shelfobject, container, containername){
         'select_shelfobject_c': 'select[name="mc-available_container"]',
         'select_object_c': 'select[name="mc-container_for_cloning"]',
         "init": function(){
-             $(this.radio_action_id).on('ifChanged', (function(instance){ return (event)=>{instance.onchange_event(event)};})(this));
+             $(this.radio_action_id).on('change', (function(instance){ return (event)=>{instance.onchange_event(event)};})(this));
         },
         'onchange_event': function(event){
             if($(event.target).prop('checked')){
@@ -670,12 +675,10 @@ function ContainerUpdateForm(elementid, shelfobject, container, containername){
         'update_shelfobject_filters': function(){
             if(this.container == "" || this.container == undefined){
                 $(this.radio_action_id+'[value=clone]').prop('checked', true);
-                $(this.radio_action_id).iCheck('update');
-                $(this.radio_action_id).trigger('ifChanged');
+                $(this.radio_action_id).trigger('change');
             }else{
                 $(this.radio_action_id+'[value=available]').prop('checked', true);
-                $(this.radio_action_id).iCheck('update');
-                $(this.radio_action_id).trigger('ifChanged');
+                $(this.radio_action_id).trigger('change');
             }
         }
 
@@ -772,7 +775,7 @@ function editReactiveShelfObject(instance, event){
 
 }
 
-$(".lock_limits").on('ifChanged', function(event){
+$(".lock_limits").on('change', function(event){
 
     show_hide_limits(this,"#"+this.dataset.prefix)
 
@@ -799,24 +802,11 @@ function get_shelfobject_data(shelfobject){
             $('#id_edit-container_entry_date').val(data.container_entry_date).trigger('change');
             $('#id_edit-container_open_date').val(data.container_open_date).trigger('change');
             if(data.was_donated) {
-                if (!$("#id_edit-was_donated").parent().hasClass('checked')) {
-                    $("#id_edit-was_donated").parent().addClass('checked')
-                    $('#id_edit-was_donated').iCheck('check');
-                } else {
-                    $('#id_edit-was_donated').iCheck('check');
-                }
+                $('#id_edit-was_donated').prop('checked', true).trigger('change');
             }
-        if(data.minimum_limit == 0 && data.maximum_limit == 0){
-            if(!$("#id_edit-without_limit").parent().hasClass('checked')){
-                $("#id_edit-without_limit").parent().addClass('checked')
-                $('#id_edit-without_limit').iCheck('check');
-            }else{
-                $('#id_edit-without_limit').iCheck('check');
-                }
-        }else if($("#id_edit-without_limit").parent().hasClass('checked')){
-            $("#id_edit-without_limit").parent().removeClass('checked')
-            $('#id_edit-without_limit').iCheck('uncheck');
-        }
+        $('#id_edit-without_limit')
+            .prop('checked', data.minimum_limit == 0 && data.maximum_limit == 0)
+            .trigger('change');
 
             $('#id_edit-pictograms').val(null).trigger('change');
               if (data.pictograms.length > 0) {
@@ -870,24 +860,11 @@ function get_material_shelfobject_data(shelfobject){
         document.querySelector("#id_edit_material-shelfobject_code").value = data.shelfobject_code;
         $('#id_edit_material-status').val(data.status).trigger('change');
         if(data.was_donated) {
-            if (!$("#id_edit_material-was_donated").parent().hasClass('checked')) {
-                $("#id_edit_material-was_donated").parent().addClass('checked')
-                $('#id_edit_material-was_donated').iCheck('check');
-            } else {
-            $('#id_edit_material-was_donated').iCheck('check');
-            }
+            $('#id_edit_material-was_donated').prop('checked', true).trigger('change');
         }
-        if(data.minimum_limit == 0 && data.maximum_limit == 0){
-            if(!$("#id_edit_material-without_limit").parent().hasClass('checked')){
-                $("#id_edit_material-without_limit").parent().addClass('checked')
-                $('#id_edit_material-without_limit').iCheck('check');
-            }else{
-                $('#id_edit_material-without_limit').iCheck('check');
-            }
-       }else if($("#id_edit_material-without_limit").parent().hasClass('checked')){
-            $("#id_edit_material-without_limit").parent().removeClass('checked')
-            $('#id_edit_material-without_limit').iCheck('uncheck');
-        }
+        $('#id_edit_material-without_limit')
+            .prop('checked', data.minimum_limit == 0 && data.maximum_limit == 0)
+            .trigger('change');
          show_hide_limits($(".lock_limits"),"#id_edit_material-");
         }
     });
@@ -921,9 +898,12 @@ function displayShelfobjectLabels(data) {
         paging: true,
         buttons: [],
         deferLoading: true,
-        dom: "<'row'<'col-sm-4 col-md-4 d-flex justify-content-start'l>" +
-        "<'col-sm-7 col-md-7 mt-1 d-flex justify-content-end'f>>" +
-        "<'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 m-auto'p>>",
+        layout: {
+            topStart: 'pageLength',
+            topEnd: 'search',
+            bottomStart: 'info',
+            bottomEnd: 'paging'
+        },
         ajax: {
            url: $(data).data('url'),
            type: 'GET',

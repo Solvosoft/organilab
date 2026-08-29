@@ -62,7 +62,7 @@ class ButtonBoxCollapseOrgNameTest(ManageOrganizationsSeleniumTest):
             {
                 "path": "//*[@id='selectroldiv']",
                 "extra_action": "script",
-                "value": "$('#id_relate_rols').iCheck('check'); setTimeout(function(){ $('#rolS2container').show(); }, 500);",
+                "value": "$('#id_relate_rols').prop('checked', true).trigger('change'); setTimeout(function(){ $('#rolS2container').show(); }, 500);",
                 "sleep": 2,
             },
             {
