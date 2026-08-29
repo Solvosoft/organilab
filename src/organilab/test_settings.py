@@ -64,7 +64,8 @@ GENERATE_SCREENSHOTS = os.getenv("GENERATE_SCREENSHOTS", "True") == "True"
 # Directory for temporary selenium screenshots (PNGs used to build GIFs).
 # Override with SELENIUM_SCREENSHOTS_DIR env var to keep them in a known location for debugging.
 # Default: system temp directory (e.g. /tmp/organilab_selenium_screenshots/)
-import tempfile
+import tempfile  # noqa: E402
+
 SELENIUM_SCREENSHOTS_DIR = os.getenv(
     "SELENIUM_SCREENSHOTS_DIR",
     os.path.join(tempfile.gettempdir(), "organilab_selenium_screenshots"),

@@ -103,11 +103,11 @@ class ButtonsActionsTableColumn(ButtonsActionsTableColumnBase):
                 "value": "2",
             },
             {"path": "//*[@id='reservesoform']/div[2]/div/div/input", "sleep": 1},
-            {"path": "//*[@data-day='%s']" % initial_date_strftime,"sleep": 1},
-            {"path": "//*[@id='reservesomodal']//h4 | //*[@id='reservesomodal']//h5","sleep": 1},
+            {"path": "//*[@data-day='%s']" % initial_date_strftime, "sleep": 1},
+            {"path": "//*[@id='reservesomodal']//h4 | //*[@id='reservesomodal']//h5", "sleep": 1},
             {"path": "//*[@id='reservesoform']/div[3]/div/div/input"},
-            {"path": "//*[@data-day='%s']" % final_date_strftime,"sleep": 1},
-            {"path": "//*[@id='reservesomodal']//h4 | //*[@id='reservesomodal']//h5","sleep": 1},
+            {"path": "//*[@data-day='%s']" % final_date_strftime, "sleep": 1},
+            {"path": "//*[@id='reservesomodal']//h4 | //*[@id='reservesomodal']//h5", "sleep": 1},
             {"path": self.get_save_button_modal("reservesomodal"), "sleep": 5},
         ]
         self.create_gif_process(path_list, "reserve_shelfobject")

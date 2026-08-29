@@ -313,6 +313,7 @@ class MyProceduresAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
             return Response(
                 validate_serializer.errors, status=status.HTTP_400_BAD_REQUEST
             )
+
     @action(detail=True, methods=["get"])
     def download_my_procedures(self, request, org_pk, lab_pk, pk=None):
         organization = get_object_or_404(
@@ -363,9 +364,6 @@ class MyProceduresAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
             f'attachment; filename="procedure_{my_procedure.pk}.pdf"'
         )
         return response
-
-
-
 
 
 @method_decorator(login_required, name="dispatch")

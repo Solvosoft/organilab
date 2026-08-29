@@ -401,7 +401,8 @@ class RiskSeleniumTest(RiskSeleniumBase):
             {
                 "path": "//*[@id='create_obj_modal']//div[contains(@class, 'modal-body')]",
                 "extra_action": "script",
-                "value": 'if(typeof tinymce!=="undefined"&&tinymce.get("id_create-infraestructure_impact")){tinymce.get("id_create-infraestructure_impact").setContent("<p>Daño menor en equipo</p>");}',
+                "value": 'if(typeof tinymce!=="undefined"&&tinymce.get("id_create-infraestructure_impact"))'
+                         '{tinymce.get("id_create-infraestructure_impact").setContent("<p>Daño menor en equipo</p>");}',
                 "scroll": "$('#create_obj_modal .modal-body').scrollTop(400)",
                 "sleep": 1,
             },
@@ -486,7 +487,8 @@ class RiskSeleniumTest(RiskSeleniumBase):
             {
                 "path": "//*[@id='update_obj_modal']//div[contains(@class, 'modal-body')]",
                 "extra_action": "script",
-                "value": 'if(typeof tinymce!=="undefined"&&tinymce.get("id_update-infraestructure_impact")){tinymce.get("id_update-infraestructure_impact").setContent("<p>Daño menor en equipo</p>");}',
+                "value": 'if(typeof tinymce!=="undefined"&&tinymce.get("id_update-infraestructure_impact"))'
+                         '{tinymce.get("id_update-infraestructure_impact").setContent("<p>Daño menor en equipo</p>");}',
                 "sleep": 1,
             },
             {

@@ -38,6 +38,7 @@ from laboratory.models import (
     LaboratoryRoom,
     Furniture,
     LabOrOrgRequest,
+    RegisterUserQR,
 )
 
 from laboratory.models import Protocol
@@ -2090,7 +2091,7 @@ class LoadArchiveSerializer(serializers.Serializer):
     def get_fields(self):
         fields = super().get_fields()
         know_place = fields["know_places"].initial
-        if know_place == False:
+        if know_place is False:
             fields["lab_room"].required = False
             fields["furniture"].required = False
             fields["shelf"].required = False
@@ -2351,6 +2352,37 @@ class LabOrOrgRequestDataTableSerializer(serializers.Serializer):
 
 class LabOrOrgRequestReviewDataTableSerializer(serializers.Serializer):
     data = serializers.ListField(child=LabOrOrgRequestReviewSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+
+class RegisterUserQRSerializer(serializers.ModelSerializer):
+    creation_date = GTDateTimeField()
+    last_update = GTDateTimeField()
+    created_by = serializers.SerializerMethodField()
+    organization_register = serializers.SlugRelatedField(
+        slug_field="name", read_only=True
+    )
+
+    def get_created_by(self, obj):
+        if obj.created_by:
+            return obj.created_by.get_full_name() or obj.created_by.username
+        return ""
+
+    class Meta:
+        model = RegisterUserQR
+        fields = (
+            "id",
+            "creation_date",
+            "last_update",
+            "created_by",
+            "organization_register",
+        )
+
+
+class RegisterUserQRDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=RegisterUserQRSerializer(), required=True)
     draw = serializers.IntegerField(required=True)
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)

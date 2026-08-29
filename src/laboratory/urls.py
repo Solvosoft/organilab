@@ -59,6 +59,7 @@ from laboratory.api.views import (
     ObjectViewSet,
     ShelObjectReactiveViewset,
     ShelfObjectHcodeViewset,
+    RegisterUserQRViewSet,
 )
 from laboratory.functions import return_laboratory_of_shelf_id
 from laboratory.protocol.views import (
@@ -435,7 +436,13 @@ informs_period_urls = [
     ),
 ]
 
+register_user_qr_router = DefaultRouter()
+register_user_qr_router.register(
+    "api_registeruserqr", RegisterUserQRViewSet, basename="api-registeruserqr"
+)
+
 user_register_qr = [
+    path("api/", include(register_user_qr_router.urls)),
     path(
         "list/", laboratory.RegisterUserQRList.as_view(), name="list_register_user_qr"
     ),

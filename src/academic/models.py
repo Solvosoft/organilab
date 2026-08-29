@@ -147,4 +147,3 @@ class ProcedureObservations(models.Model):
         ordering = ("pk",)
         verbose_name = _("Procedure Observation")
         verbose_name_plural = _("Procedure Observations")
-

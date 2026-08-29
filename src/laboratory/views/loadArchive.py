@@ -169,7 +169,7 @@ def load_archive(request, org_pk, lab_pk):
         uploaded_file = serializer.validated_data["file"]
         data = read_xlsm_data(uploaded_file, serializer.validated_data["shelf"].pk)
         shelf = serializer.validated_data["shelf"]
-        if shelf.measurement_unit != None:
+        if shelf.measurement_unit is not None:
             for row in data:
                 if (
                     shelf.measurement_unit.description

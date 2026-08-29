@@ -489,7 +489,9 @@ class ObjectSeleniumTest(ObjectSeleniumBase):
             },
             # Órgano blanco (select2)
             {
-                "path": "//*[@id='create_obj_modal']//*[self::label or self::span][contains(normalize-space(.),'Organo blanco') or contains(normalize-space(.),'Órgano blanco')]/ancestor::*[self::div or self::p or self::li][1]//span[contains(@class,'select2-selection')]",
+                "path": "//*[@id='create_obj_modal']//*[self::label or self::span]"
+                        "[contains(normalize-space(.),'Organo blanco') or contains(normalize-space(.),'Órgano blanco')]"
+                        "/ancestor::*[self::div or self::p or self::li][1]//span[contains(@class,'select2-selection')]",
                 "sleep": 0.4,
             },
             {
@@ -588,7 +590,9 @@ class ObjectSeleniumTest(ObjectSeleniumBase):
             # (laboratory/forms.py): el formulario de reactivo no lo renderiza.
             # Tiene umbral
             {
-                "path": "//*[@id='id_create-has_threshold']/ancestor::*[self::div or self::li or self::p][1]//label | //*[@id='id_create-has_threshold']/ancestor::*[self::div or self::li or self::p][1]//*[contains(@class,'switch') or contains(@class,'slider')]",
+                "path": "//*[@id='id_create-has_threshold']/ancestor::*[self::div or self::li or self::p][1]//label"
+                        " | //*[@id='id_create-has_threshold']/ancestor::*[self::div or self::li or self::p][1]"
+                        "//*[contains(@class,'switch') or contains(@class,'slider')]",
                 "scroll": "$('#create_obj_modal .modal-body').scrollTop(400)",
                 "sleep": 0.6,
             },
@@ -601,12 +605,16 @@ class ObjectSeleniumTest(ObjectSeleniumBase):
             },
             # Es pura
             {
-                "path": "//*[@id='id_create-is_pure']/ancestor::*[self::div or self::li or self::p][1]//label | //*[@id='id_create-is_pure']/ancestor::*[self::div or self::li or self::p][1]//*[contains(@class,'switch') or contains(@class,'slider')]",
+                "path": "//*[@id='id_create-is_pure']/ancestor::*[self::div or self::li or self::p][1]//label"
+                        " | //*[@id='id_create-is_pure']/ancestor::*[self::div or self::li or self::p][1]"
+                        "//*[contains(@class,'switch') or contains(@class,'slider')]",
                 "sleep": 0.6,
             },
             # Es precursor
             {
-                "path": "//*[@id='id_create-is_precursor']/ancestor::*[self::div or self::li or self::p][1]//label | //*[@id='id_create-is_precursor']/ancestor::*[self::div or self::li or self::p][1]//*[contains(@class,'switch') or contains(@class,'slider')]",
+                "path": "//*[@id='id_create-is_precursor']/ancestor::*[self::div or self::li or self::p][1]//label"
+                        " | //*[@id='id_create-is_precursor']/ancestor::*[self::div or self::li or self::p][1]"
+                        "//*[contains(@class,'switch') or contains(@class,'slider')]",
                 "scroll": "$('#create_obj_modal .modal-body').scrollTop(450)",
                 "sleep": 0.6,
             },

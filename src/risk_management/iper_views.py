@@ -101,6 +101,13 @@ class IPERAssessmentList(TemplateView):
     # organización/laboratorios y la búsqueda con anonimato viven en el viewset.
     template_name = "risk_management/iper_list.html"
 
+    def get(self, request, *args, **kwargs):
+        if not check_user_access_kwargs_org_lab(
+            kwargs["org_pk"], None, request.user
+        ):
+            raise Http404()
+        return super().get(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["org_pk"] = self.kwargs["org_pk"]

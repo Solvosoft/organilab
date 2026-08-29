@@ -172,7 +172,8 @@ class ProfileSerializer(serializers.ModelSerializer):
             <button %s class="btn btn-sm border-0 text-secondary p-0 m-0" type="button" onclick="newuserrol(%s, '%s', %s)" id="profile_%s" data-bs-toggle="tooltip" data-bs-placement="top" title="%s">
                 <i class="fa fa-user-md" aria-hidden="true"></i>
             </button>
-            <button type="button" class="btn btn-sm border-0 text-secondary p-0 m-0 dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false" data-bs-toggle="tooltip" data-bs-placement="top" title="%s">
+            <button type="button" class="btn btn-sm border-0 text-secondary p-0 m-0 dropdown-toggle dropdown-toggle-split"
+                data-bs-toggle="dropdown" aria-expanded="false" data-bs-toggle="tooltip" data-bs-placement="top" title="%s">
                 <span class="visually-hidden">Toggle Dropdown</span>
             </button>
             <ul class="dropdown-menu">%s</ul>
@@ -655,17 +656,22 @@ class ListUserSerializer(serializers.ModelSerializer):
         )
 
         buttons = "<ul class='list-group'>"
-        for l in labs:
+        for lab in labs:
             pp = ProfilePermission.objects.filter(
                 profile=obj.profile,
                 content_type__app_label="laboratory",
                 content_type__model="laboratory",
-                object_id=l[1],
+                object_id=lab[1],
             )
             if pp.exists():
                 buttons += (
-                    "<li class='list-group-item d-flex justify-content-between align-items-start'><span class='dropdown-item-text small'>%s</span> <button class='btn btn-sm btn-secondary' title='%s' data-user='%s' data-lab='%s' onclick=get_roles_in_laboratory(this)><i class='fa fa-user-md' aria-hidden='true'></i> <span class='badge bg-secondary'>%s</span></button></li>"
-                    % (l[0], _("Roles"), obj.pk, l[1], pp.count())
+                    "<li class='list-group-item d-flex justify-content-between align-items-start'>"
+                    "<span class='dropdown-item-text small'>%s</span> "
+                    "<button class='btn btn-sm btn-secondary' title='%s' "
+                    "data-user='%s' data-lab='%s' onclick=get_roles_in_laboratory(this)>"
+                    "<i class='fa fa-user-md' aria-hidden='true'></i> "
+                    "<span class='badge bg-secondary'>%s</span></button></li>"
+                    % (lab[0], _("Roles"), obj.pk, lab[1], pp.count())
                 )
 
         buttons += "</ul>"
@@ -686,17 +692,22 @@ class ListUserSerializer(serializers.ModelSerializer):
         )
 
         buttons = "<ul class='list-group'>"
-        for l in orgs:
+        for org in orgs:
             pp = ProfilePermission.objects.filter(
                 profile=obj.profile,
                 content_type__app_label="laboratory",
                 content_type__model="organizationstructure",
-                object_id=l[1],
+                object_id=org[1],
             ).first()
 
             buttons += (
-                "<li class='list-group-item d-flex justify-content-between align-items-start'><span class='dropdown-item-text small'>%s</span> <button class='btn btn-sm btn-secondary' title='%s' data-user='%s' data-org='%s' onclick=get_roles_in_organization(this)><i class='fa fa-user-md' aria-hidden='true'></i> <span class='badge bg-secondary'>%s</span></button></li>"
-                % (l[0], _("Roles"), obj.pk, l[1], pp.rol.count() if pp else 0)
+                "<li class='list-group-item d-flex justify-content-between align-items-start'>"
+                "<span class='dropdown-item-text small'>%s</span> "
+                "<button class='btn btn-sm btn-secondary' title='%s' "
+                "data-user='%s' data-org='%s' onclick=get_roles_in_organization(this)>"
+                "<i class='fa fa-user-md' aria-hidden='true'></i> "
+                "<span class='badge bg-secondary'>%s</span></button></li>"
+                % (org[0], _("Roles"), obj.pk, org[1], pp.rol.count() if pp else 0)
             )
         buttons += "</ul>"
         return buttons
@@ -746,16 +757,21 @@ class OrganizationLaboratorySerializer(serializers.ModelSerializer):
         )
 
         buttons = "<ul class='list-group'>"
-        for l in labs:
+        for lab in labs:
             profile = get_profile_by_organization(obj.pk)
             users = profile.filter(
                 profilepermission__content_type__app_label="laboratory",
                 profilepermission__content_type__model="laboratory",
-                profilepermission__object_id=l[1],
+                profilepermission__object_id=lab[1],
             ).values_list("user", flat=True)
             buttons += (
-                "<li class='list-group-item d-flex justify-content-between align-items-start'><span class='dropdown-item-text small'>%s</span> <button class='btn btn-sm btn-secondary' title='%s' data-org='%s' data-lab='%s' data-content='%s' onclick=get_roles(this)><i class='fa fa-user-md' aria-hidden='true'></i> <span class='badge bg-secondary'>%s</span></button></li>"
-                % (l[0], _("Users"), obj.pk, l[1], "organization", users.count())
+                "<li class='list-group-item d-flex justify-content-between align-items-start'>"
+                "<span class='dropdown-item-text small'>%s</span> "
+                "<button class='btn btn-sm btn-secondary' title='%s' "
+                "data-org='%s' data-lab='%s' data-content='%s' onclick=get_roles(this)>"
+                "<i class='fa fa-user-md' aria-hidden='true'></i> "
+                "<span class='badge bg-secondary'>%s</span></button></li>"
+                % (lab[0], _("Users"), obj.pk, lab[1], "organization", users.count())
             )
         buttons += "</ul>"
         return buttons
@@ -787,17 +803,22 @@ class LaboratoryOrganizationSerializer(serializers.ModelSerializer):
         )
 
         buttons = "<ul class='list-group'>"
-        for l in labs:
-            profile = get_profile_by_organization(l[1])
+        for org in labs:
+            profile = get_profile_by_organization(org[1])
             users = profile.filter(
                 profilepermission__content_type__app_label="laboratory",
                 profilepermission__content_type__model="laboratory",
                 profilepermission__object_id=obj.pk,
-                profilepermission__organization__pk=l[1],
+                profilepermission__organization__pk=org[1],
             ).values_list("user", flat=True)
             buttons += (
-                "<li class='list-group-item d-flex justify-content-between align-items-start'><span class='dropdown-item-text small'>%s</span> <button class='btn btn-sm btn-secondary' title='%s' data-org='%s' data-lab='%s' data-content='%s' onclick=get_roles(this)><i class='fa fa-user-md' aria-hidden='true'></i> <span class='badge bg-secondary'>%s</span></button></li>"
-                % (l[0], _("Users"), l[1], obj.pk, "laboratory", users.count())
+                "<li class='list-group-item d-flex justify-content-between align-items-start'>"
+                "<span class='dropdown-item-text small'>%s</span> "
+                "<button class='btn btn-sm btn-secondary' title='%s' "
+                "data-org='%s' data-lab='%s' data-content='%s' onclick=get_roles(this)>"
+                "<i class='fa fa-user-md' aria-hidden='true'></i> "
+                "<span class='badge bg-secondary'>%s</span></button></li>"
+                % (org[0], _("Users"), org[1], obj.pk, "laboratory", users.count())
             )
         buttons += "</ul>"
         return buttons

@@ -85,10 +85,7 @@ def get_dataset_report_reactive(report, column_list=None):
     for furniture in furniture_list:
         if object_type != "":
             objects = furniture.get_objects().filter(object__type=object_type)
-            if (
-                extra_filter["object__substancharacteristics_object__is_precursor"]
-                == True
-            ):
+            if extra_filter["object__substancharacteristics_object__is_precursor"]:
                 objects = objects.filter(**extra_filter)
         else:
             objects = furniture.get_objects()
