@@ -16,7 +16,6 @@ from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets.files import FileChunkedUpload
 from djgentelella.widgets.selects import AutocompleteSelect, AutocompleteSelectMultiple
 from djgentelella.widgets.tinymce import EditorTinymce
-from location_field.forms.plain import PlainLocationField as PlainLocationFormField
 
 from auth_and_perms.models import Profile, Rol
 from authentication.forms import PasswordChangeForm
@@ -129,7 +128,6 @@ class LaboratoryCreate(GTForm, forms.ModelForm):
             "name": genwidgets.TextInput,
             "phone_number": genwidgets.TextInput,
             "location": genwidgets.TextInput,
-            "geolocation": genwidgets.TextInput,
             "organization": genwidgets.HiddenInput,
             "area": genwidgets.FloatInput,
             "description": genwidgets.Textarea,
@@ -231,7 +229,6 @@ class LaboratoryEdit(GTForm, forms.ModelForm):
             "phone_number": genwidgets.TextInput,
             "email": genwidgets.EmailInput,
             "location": genwidgets.TextInput,
-            "geolocation": genwidgets.TextInput,
             "organization": genwidgets.HiddenInput,
             "description": genwidgets.Textarea,
             "area": genwidgets.FloatInput,
@@ -1909,13 +1906,6 @@ class LabOrOrgRequestForm(GTForm, forms.ModelForm):
         label=_("Is organization?"),
         required=False,
         widget=genwidgets.YesNoInput(shparent=".mb-3"),
-    )
-
-    geolocation = PlainLocationFormField(
-        based_fields=[],
-        zoom=15,
-        required=False,
-        initial="9.895804362670006,-84.1552734375",
     )
 
     def __init__(self, *args, **kwargs):

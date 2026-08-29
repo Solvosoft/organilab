@@ -14,7 +14,7 @@ from django.db.models import Sum, Q, Max, Min, JSONField
 from django.db.models.expressions import F
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
-from location_field.models.plain import PlainLocationField
+from djgentelella.fields.maps import GTPointField
 from tree_queries.fields import TreeNodeForeignKey
 from tree_queries.models import TreeNode
 from tree_queries.query import TreeQuerySet
@@ -1400,7 +1400,7 @@ class Laboratory(BaseCreationObj):
     phone_number = models.CharField(_("Phone"), default="", max_length=25)
 
     location = models.CharField(_("Location"), default="", max_length=255)
-    geolocation = PlainLocationField(
+    geolocation = GTPointField(
         default="9.895804362670006,-84.1552734375",
         zoom=15,
         verbose_name=_("Geolocation"),
@@ -1986,7 +1986,7 @@ class LabOrOrgRequest(models.Model):
     # Laboratory fields
     phone_number = models.CharField(_("Phone"), max_length=25, blank=True)
     location = models.CharField(_("Location"), max_length=255, blank=True)
-    geolocation = PlainLocationField(
+    geolocation = GTPointField(
         default="9.895804362670006,-84.1552734375",
         zoom=15,
         verbose_name=_("Geolocation"),

@@ -312,7 +312,16 @@ columnas + template con tabla vacía + `ObjectCRUD` (ver `regents.html` como ref
 
 ## 10d — Oportunidades nuevas (evaluación 2026-08-29)
 
-- [ ] **`GTPointField`/`MapPointInput` — SE HACE** (auditado, bajo riesgo):
+- [x] **`GTPointField`/`MapPointInput` — HECHO (2026-08-29)**. Además de lo planeado:
+  `map_of_laboratories.html` cargaba leaflet desde los statics de location_field →
+  eliminado (la lib siempre carga Leaflet base; `use_maps` añade markercluster/heat);
+  `lab_or_org_request/list.html` traía 59 líneas de hacks para re-inicializar el mapa
+  de location_field en modales (`_patch_leaflet`, `reinit_map_in_modal`,
+  `data-location-field-observed`) → eliminadas, la lib ya re-inicializa por id y hace
+  `invalidateSize` en `shown.bs.modal/tab/collapse`. Migraciones: `laboratory/0220` y
+  `risk_management/0037` (AlterField sin cambio de datos). Tests: 626/626
+  (laboratory + risk_management + auth_and_perms + authentication); sin cobertura
+  selenium de geolocation (verificado). Plan original:
   `django-location-field` se usa en 4 model fields (`laboratory/models.py:1403,1989`
   Laboratory + LabOrOrgRequest; `risk_management/models.py:247,322` Buildings +
   Structure) y 1 form field (`laboratory/forms.py:1914`, LabOrOrgRequest público).

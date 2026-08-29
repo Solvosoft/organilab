@@ -8,7 +8,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
-from location_field.models.plain import PlainLocationField
+from djgentelella.fields.maps import GTPointField
 
 from laboratory import catalog
 from laboratory.models import Laboratory, Catalog, ShelfObject
@@ -244,7 +244,7 @@ class Buildings(AbstractOrganizationRef):
         null=True,
         blank=True,
     )
-    geolocation = PlainLocationField(
+    geolocation = GTPointField(
         default="9.895804362670006,-84.1552734375", zoom=15
     )
     regents = models.ManyToManyField(
@@ -319,7 +319,7 @@ class Structure(AbstractOrganizationRef):
         key_value="distance_unit",
         related_name="structure_measurement_unit",
     )
-    geolocation = PlainLocationField(
+    geolocation = GTPointField(
         default="9.895804362670006,-84.1552734375",
         zoom=15,
         verbose_name=_("Geolocation"),
