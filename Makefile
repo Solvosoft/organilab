@@ -98,22 +98,22 @@ test-parallel: ## - run tests in parallel (auto-detect workers)
 single-test: ## Run Django tests (optional: TEST=path.to.test, example: make single-test TEST=laboratory.tests.test_provider.ProviderViewTest)
 	cd src && python manage.py test $(TEST) --no-input --exclude-tag=selenium
 
-test-selenium: ## Run Selenium tests (optional: TEST=path.to.test, example: make test-selenium TEST=laboratory.tests.selenium_tests)
+test-selenium: ## Run Selenium tests, workers auto (optional: TEST=path.to.test, example: make test-selenium TEST=laboratory.tests.selenium_tests)
 	cd src && python manage.py test $(or $(TEST),) --tag=selenium --no-input --parallel -v 2
 
-test-selenium-parallel: ## Run Selenium tests with 12 workers (optional: TEST=path.to.test)
-	cd src && python manage.py test $(or $(TEST),) --tag=selenium --no-input --parallel 12 -v 2
+test-selenium-parallel: ## Run Selenium tests with a fixed worker count (WORKERS=12 by default, optional: TEST=path.to.test)
+	cd src && python manage.py test $(or $(TEST),) --tag=selenium --no-input --parallel $(or $(WORKERS),12) -v 2
 
-test-selenium-xvfb: ## Run Selenium tests with virtual display via xvfb-run (optional: TEST=path.to.test)
-	xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" sh -c "cd src && python manage.py test $(or $(TEST),) --tag=selenium --no-input --parallel 12 -v 2"
+test-selenium-xvfb: ## Run Selenium tests headless via xvfb-run, workers auto (optional: TEST=path.to.test)
+	xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" sh -c "cd src && python manage.py test $(or $(TEST),) --tag=selenium --no-input --parallel -v 2"
 
-test-selenium-fast: ## Run Selenium tests without GIF generation (fast mode, optional: TEST=path.to.test)
+test-selenium-fast: ## Run Selenium tests without GIF generation, workers auto (optional: TEST=path.to.test)
 	cd src && GENERATE_SCREENSHOTS=False python manage.py test $(or $(TEST),) --tag=selenium --no-input --parallel -v 2
 
-test-selenium-single-fast: ## Run a single Selenium test without GIF generation (TEST=path.to.test)
+test-selenium-single-fast: ## Run a single Selenium test without GIF generation, serial (TEST=path.to.test)
 	cd src && GENERATE_SCREENSHOTS=False python manage.py test $(TEST) --tag=selenium --no-input -v 2
 
-test-selenium-dev: ## Run Selenium tests fast, headless and reusing the DB (optional: TEST=path.to.test)
+test-selenium-dev: ## Run Selenium tests fast, headless, reusing the DB (optional: TEST=...). OJO --keepdb: si la BD reciclada queda sin permisos, loaddata revienta en setUpClass; borrar test_organilab y relanzar
 	xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" \
 		sh -c "cd src && GENERATE_SCREENSHOTS=False python manage.py test $(or $(TEST),) --tag=selenium --no-input --keepdb --parallel -v 2"
 
@@ -127,7 +127,7 @@ docs: clean ##  - generate Sphinx HTML documentation, including API docs
 	python docs/fix_capacitacion_images.py
 
 docs_full: ##  - generate full docs, Sphinx HTML documentation, including API docs
-	xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" sh -c "cd src && python manage.py test  --no-input --tag=selenium --parallel 12"
+	xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" sh -c "cd src && python manage.py test  --no-input --tag=selenium --parallel"
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
 	pip install 'sphinx==8.2.3' sphinx-rtd-theme==3.0.2 sphinxcontrib-video==0.4.2

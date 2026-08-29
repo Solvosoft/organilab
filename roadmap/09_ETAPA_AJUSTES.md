@@ -1,7 +1,7 @@
 # Etapa 9 — Ajustes menores de 0.6.0
 
 **Objetivo:** cabos sueltos que no son bloqueadores pero cambian comportamiento.
-**Estado:** hecha salvo dos borrados triviales (ver "Pendiente de código" abajo).
+**Estado:** HECHA (2026-08-29; los dos borrados se ejecutaron con la etapa 11).
 
 ## Tareas
 
@@ -69,6 +69,6 @@
 
 ## Pendiente de código (únicas acciones restantes de la etapa)
 
-- [ ] Borrar `src/laboratory/static/js/jquery-3.3.1.js`.
-- [ ] Borrar los dos bloques `{% comment %}` con paginación DT1 de
-      `reservations_management/reservations_list.html`.
+- [x] Borrar `src/laboratory/static/js/jquery-3.3.1.js`. (hecho)
+- [x] Borrar los dos bloques `{% comment %}` con paginación DT1 de
+      `reservations_management/reservations_list.html`. (hecho)

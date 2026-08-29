@@ -12,7 +12,7 @@ class LaboratoryTabTest(ManageOrganizationsSeleniumTest):
         super().setUp()
         # Select org node radio and click "By laboratory" tab
         self.tab_lab = [
-            self.select_org_via_icheck(1),
+            self.select_org_node_radio(1),
             {"path": "//*[@id='navbylabs']", "sleep": 1},
         ]
 

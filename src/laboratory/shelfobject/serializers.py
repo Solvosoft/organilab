@@ -1682,6 +1682,18 @@ class MoveShelfObjectSerializer(ValidateShelfSerializer):
             shelf_object.measurement_unit, shelf.measurement_unit, shelf_object.quantity
         )
 
+        # Sin unidad base registrada no hay conversión posible: error de
+        # validación, no un 500 al sumar None más adelante.
+        if converted_quantity is None:
+            raise serializers.ValidationError(
+                {
+                    "shelf": _(
+                        "The object measurement unit cannot be converted to the "
+                        "shelf measurement unit."
+                    )
+                }
+            )
+
         errors = validate_measurement_unit_and_quantity(
             shelf,
             shelf_object.object,
@@ -2074,6 +2086,18 @@ class TransferInShelfObjectApproveWithContainerSerializer(
                 shelf.measurement_unit,
                 transfer_object.object.quantity,
             )
+
+            # Sin unidad base registrada la conversión devuelve None: error de
+            # validación, no un 500 (comparación None<=None / quantity nulo).
+            if converted_quantity is None or converted_quantity_object is None:
+                raise serializers.ValidationError(
+                    {
+                        "shelf": _(
+                            "The transferred object measurement unit cannot be "
+                            "converted to the shelf measurement unit."
+                        )
+                    }
+                )
 
             data["transfer_object"].quantity = converted_quantity
             # data['transfer_object'].object.measurement_unit = shelf.measurement_unit

@@ -1,5 +1,3 @@
-from unittest import skip
-
 from django.test import tag
 from django.utils.timezone import now
 from laboratory.tests.selenium_tests.laboratory_view.test_actions_buttons_shelfobject_table_actions_column import (
@@ -7,11 +5,6 @@ from laboratory.tests.selenium_tests.laboratory_view.test_actions_buttons_shelfo
 )
 
 
-@skip(
-    "Suite rescatada en la migración a djgentelella 0.6.0: nunca corría (faltaba el "
-    "prefijo test_) y quedó desactualizada respecto a la tabla de shelfobjects. "
-    "Rehabilitar en roadmap/11_ETAPA_SELENIUM.md tras las etapas 5-6."
-)
 @tag("selenium")
 class ShelfObjectInfoButtonsActions(ButtonsActionsTableColumnBase):
 
@@ -19,10 +12,10 @@ class ShelfObjectInfoButtonsActions(ButtonsActionsTableColumnBase):
         super().setUp()
 
         self.path_shelfobject_info = self.buttons_actions_path + [
-            {"path": "//*[@id='shelfobjecttable']/tbody/tr/td[7]/a[6]"}
+            {"path": self.shelfobject_row_action("fa-file-text-o")}
         ]
         self.path_shelfobject_equipment = self.buttons_actions_path + [
-            {"path": "//*[@id='shelfobjecttable']/tbody/tr[2]/td[7]/a[6]"}
+            {"path": self.shelfobject_row_action("fa-file-text-o", row=2)}
         ]
 
     def test_view_equipment_details(self):
@@ -33,17 +26,28 @@ class ShelfObjectInfoButtonsActions(ButtonsActionsTableColumnBase):
 
     def test_change_shelfobject_status(self):
         path_list = [
-            {"path": "//*[@data-modalid='status_modal']"},
-            {"path": "//*[@id='status_form']/div/div/span[2]/a"},
-            {"path": "/html/body/div[4]/div/div[2]/input[1]"},
+            {"path": "//*[@data-modalid='status_modal']", "sleep": 10},
+            {"path": "//*[@id='status_form']//a[contains(@class, 'add_status')]"},
+            {"path": "//input[contains(@class, 'swal2-input')]"},
             {
-                "path": "/html/body/div[4]/div/div[2]/input[1]",
+                "path": "//input[contains(@class, 'swal2-input')]",
                 "extra_action": "setvalue",
                 "value": "En uso",
             },
-            {"path": "/html/body/div[4]/div/div[3]/button"},
-            {"path": "//*[@id='status_form']/div/div/span/span/span"},
-            {"path": "/html/body/span/span/span[2]/ul/li[2]"},
+            {
+                # El fetch de creación + el swal de éxito (timer 1.5s) deben
+                # terminar antes de abrir el select2 de estados.
+                "path": "//button[contains(@class, 'swal2-confirm')]",
+                "sleep": 30,
+            },
+            {"path": "//*[@id='status_form']/div/div/span/span/span", "sleep": 10},
+            {
+                # El estado recién creado se elige por texto: el fixture no
+                # trae estados previos, así que la posición no es estable.
+                "path": "//li[contains(@class, 'select2-results__option')]"
+                        "[normalize-space(.)='En uso']",
+                "sleep": 1,
+            },
             {"path": "//*[@id='status_form']/div[2]/div/textarea"},
             {
                 "path": "//*[@id='status_form']/div[2]/div/textarea",
