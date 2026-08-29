@@ -169,7 +169,12 @@ class CatalogUnitLookup(BaseSelect2View):
         if self.shelf:
             if self.shelf.measurement_unit:
                 subunit = self.shelf.measurement_unit
-                return get_related_units(subunit, queryset)
+                related = get_related_units(subunit, queryset)
+                # None cuando la unidad no tiene unidad base registrada: sin
+                # convertibles, no un 500 al paginar None.
+                if related is None:
+                    return queryset.none()
+                return related
             else:
                 return queryset
         else:
@@ -211,7 +216,14 @@ class CatalogUnitIncreaseDecrease(BaseSelect2View):
         queryset = super().get_queryset().filter(key="units")
         if self.shelf:
             if self.shelfobject:
-                return get_related_units(self.shelfobject.measurement_unit, queryset)
+                related = get_related_units(
+                    self.shelfobject.measurement_unit, queryset
+                )
+                # None cuando la unidad no tiene unidad base registrada: sin
+                # convertibles, no un 500 al paginar None.
+                if related is None:
+                    return self.model.objects.none()
+                return related
             else:
                 return queryset
         else:

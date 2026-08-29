@@ -4,7 +4,7 @@
 multi-tamaño — `screenshot_size = "1280x720"` (`src/organilab_test/tests/base.py:334-339`) es solo
 el nombre del directorio de capturas; nada itera tamaños. Los grandes ahorros ya existen:
 `GENERATE_SCREENSHOTS=False`, `SELENIUM_SLEEP_FACTOR`, `OptimizedSeleniumBase` + `@modifies_db`.
-**Estado:** pendiente.
+**Estado:** HECHA (2026-08-29).
 
 ## Tareas
 
@@ -62,3 +62,35 @@ el nombre del directorio de capturas; nada itera tamaños. Los grandes ahorros y
   `#menu_toggle`.
 - `screenshot_size = "1280x720"` es solo el nombre del directorio de capturas (coincide con
   `set_window_size(1280, 720)` y el `-screen` de xvfb); no hay ejecución multi-tamaño.
+
+## Cierre (2026-08-29)
+
+- Makefile homogeneizado: todos los targets selenium usan `--parallel` auto salvo
+  `test-selenium-parallel` (ahora `WORKERS=n`, default 12) y el single (serie);
+  `docs_full` también auto; el help de `test-selenium-dev` advierte la trampa de
+  `--keepdb`. `select_org_via_icheck` renombrado a `select_org_node_radio`.
+- **Los 3 tests rescatados quedaron VERDES (30/30 con toda laboratory_view)**.
+  Selectores migrados: acciones por fila por ICONO (`shelfobject_row_action`),
+  toolbar por icono (`shelfobject_toolbar_button`), radios de contenedor por
+  value (`container_radio`) — helpers en `laboratory_view/base.py`; resultados
+  select2 con `select2_result()`; campos de formularios por id (`id_<prefijo>-<campo>`,
+  prefijos rf/mf/ef/increase/decrease); swal por clase (`swal2-input`/`swal2-confirm`).
+  `path_base` del labindex por href (`/rooms/`). El flujo de equipo se simplificó a los
+  campos esenciales (los pasos de fechas/toggles usaban rutas absolutas del body).
+- `change_focus_tab` ahora espera a que exista la pestaña nombrada buscando de la más
+  reciente hacia atrás (la página destino se auto-nombra al cargar y el navegador se
+  reutiliza entre tests).
+- Fixture `laboratory_view.json`: se añadieron las 13 filas de `BaseUnitValues` —
+  TransactionTestCase hace flush de lo sembrado por migraciones y sin ellas ninguna
+  conversión de unidades funciona (era la causa de la mitad de los fallos).
+- **Bugs REALES de producto encontrados y corregidos por el camino**:
+  1. `MoveShelfObjectSerializer.validate` y `TransferInShelfObjectApproveWithContainer
+     Serializer.validate`: conversión de unidades None → 500 (float+None, None<=None,
+     IntegrityError por quantity nulo). Ahora ValidationError con mensaje.
+  2. `CatalogUnitLookup` y `CatalogUnitIncreaseDecrease` (gtselects): unidad sin
+     unidad base → `len(None)` → 500 en el select2. Ahora lista vacía.
+  3. djgentelella `as_horizontal/as_plain`: el help_text se rendía en un div
+     `valid-feedback` (oculto salvo validación) → cualquier link embebido en help_text
+     (p.ej. "Nuevo estado") quedaba invisible. Cambiado a `form-text` (cambio en la lib).
+- Cobertura nueva de paso: el flujo "Nuevo estado" del log de shelfobject quedó cubierto
+  end-to-end (crear estado por swal + seleccionarlo + guardar).

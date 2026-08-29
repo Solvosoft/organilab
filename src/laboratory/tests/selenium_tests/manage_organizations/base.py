@@ -150,7 +150,7 @@ class ManageOrganizationsSeleniumTest(SeleniumBase):
         """Empty path base; navigation handled by navigate_to_org_manage."""
         return []
 
-    def select_org_via_icheck(self, pk):
+    def select_org_node_radio(self, pk):
         """Return path dict to select an org node radio.
 
         djgentelella 0.6.0 dejó los radios como inputs nativos (gt-check);
@@ -169,7 +169,7 @@ class ManageOrganizationsSeleniumTest(SeleniumBase):
     def select_organization(self):
         """Select the first org node radio button (pk=1)."""
         return [
-            self.select_org_via_icheck(1),
+            self.select_org_node_radio(1),
         ]
 
     @property

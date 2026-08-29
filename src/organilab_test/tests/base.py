@@ -411,7 +411,22 @@ class SeleniumBase(StaticLiveServerTestCase):
         super().tearDown()
 
     def change_focus_tab(self, window_name):
-        self.selenium.switch_to.window(window_name)
+        """La pestaña destino se auto-nombra al cargar (window.name), así que
+        el nombre puede tardar en existir, y una pestaña vieja del mismo
+        test-class puede conservarlo (el navegador se reutiliza): se busca de
+        la pestaña más reciente hacia atrás hasta que aparezca."""
+
+        def _switch_to_named(driver):
+            for handle in reversed(driver.window_handles):
+                driver.switch_to.window(handle)
+                if driver.execute_script("return window.name") == window_name:
+                    return True
+            return False
+
+        WebDriverWait(self.selenium, self.element_timeout).until(
+            _switch_to_named,
+            "no apareció ninguna pestaña llamada %r" % window_name,
+        )
 
     def get_format_increase_decrease_date(
         self, date, days, increase=True, format="%m/%d/%Y"
