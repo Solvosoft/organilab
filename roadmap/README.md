@@ -20,7 +20,7 @@ que solo existe en 0.6.0); se restaura con `pip install -e ~/Desktop/desarrollo/
 | 7 | `07_ETAPA_CHARTJS4.md` | Chart.js 2→4 (+ fix genérico min/max en la lib) | medio | hecha |
 | 8 | `08_ETAPA_OVERRIDES.md` | Overrides de la lib: 11 borrados, sidebar/navbar adaptados | medio-alto | hecha |
 | 9 | `09_ETAPA_AJUSTES.md` | TinyMCE 8, recordsTotal, moment locale, misc | bajo | hecha salvo 2 borrados triviales |
-| 10 | `10_ETAPA_MODERNIZACION.md` | Modales, formularios y tablas a mano → widgets (completa) | medio | en curso — 10c ejecutada (iper_list, register_user_qr, procedure_steps inline, objectview_list retirada); falta 10a modales |
+| 10 | `10_ETAPA_MODERNIZACION.md` | Modales, formularios y tablas a mano → widgets (completa) | medio | hecha — 10a/10b/10c/10d ejecutadas; diferidos como proyectos aparte: labview (salida total de django_ajax) e history/Trash |
 | 11 | `11_ETAPA_SELENIUM.md` | Mejoras menores de la infraestructura selenium | bajo | parcial — hallazgos auditados, ver doc |
 | 12 | `12_ETAPA_VALIDACION.md` | Validación final completa | — | pendiente |
 
