@@ -879,18 +879,18 @@ function get_roles_by_organization(rol_url, is_checked=false){
           contentType: 'application/json',
           headers: {'X-CSRFToken': getCookie('csrftoken')},
           success: function(data) {
-            $("#rol_details_container").empty();
+            $("#rol_details .modal-body").empty();
             if (data.roles.length > 0){
                 data.roles.forEach(function(element) {
                     div +=`<div class="list-group"><h6 class="mb-1 fw-bold">${element.name}</h6><br><p class="ms-2">${element.description}</p></div><hr>`
                 });
-                $("#rol_details_container").html(div);
+                $("#rol_details .modal-body").html(div);
                 if(!is_checked){
                     $("#rol_details").modal('show');
                 }
 
             }else{
-                $("#rol_details_container").html("<h6>No roles found</h6>");
+                $("#rol_details .modal-body").html("<h6>No roles found</h6>");
             }
            }
            });
@@ -928,7 +928,7 @@ $(".admin_users_btn").on('click', function () {
         type: "GET",
         url: url,
         success: function (data) {
-            let container = $("#admin_users_container");
+            let container = $("#admin_users_modal .modal-body");
             container.empty();
             if (data.users.length > 0) {
                 let html = '<ul class="list-group list-group-flush">';

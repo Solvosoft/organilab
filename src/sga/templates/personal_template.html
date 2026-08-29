@@ -64,24 +64,9 @@
     </div>
 </div>
 
-    <div class="modal fade" id="newsgalabelmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-sm" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title float-start" id="exampleModalLabel">{% trans 'New SGA Label' %}</h5>
-                    <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close">
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="newsgalabelform"  method="POST" action="{% url 'sga:sgalabel_create'  org_pk=org_pk %}">
-                        {% csrf_token %}
-                        {{form.as_horizontal}}
-                        <button type="submit" class="btn btn-success" style="margin-top: 3%;">{% trans 'Continue' %}</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+    {% url 'sga:sgalabel_create' org_pk=org_pk as newsgalabel_url %}
+    {% trans 'New SGA Label' as newsgalabel_title %}
+    {% include 'modal_template_submit_form.html' with form=form id="newsgalabelmodal" title=newsgalabel_title form_id="newsgalabelform" url=newsgalabel_url modal_class="modal-sm" %}
 
     <div class="modal fade" id="deletesgalabelmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-sm" role="document">
@@ -97,7 +82,7 @@
                             </div>
                         </div>
                         <div class="col-sm-2">
-                            <button type="button" class="btn-close float-end" data-dismiss="modal" aria-label="Close">
+                            <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close">
                             </button>
                         </div>
                     </div>

@@ -4,7 +4,7 @@
 **completo** (decisión de Luis). Se ejecuta por sub-etapas medibles, cada pantalla con su prueba.
 **Estado:** pendiente. Lista completa de candidatos: `INVENTARIO_VISTAS.md` §MODERNIZAR.
 
-## 10a — Modales (primero: reduce superficie de 10b/10c)
+## 10a — Modales — EJECUTADA (2026-08-29; ver "Ejecución 10a" abajo)
 
 **Hallazgo (2026-08-29):** las 4 plantillas de modal "propias" NO son duplicados de la lib —
 son variantes con propósito:
@@ -93,6 +93,31 @@ confirmaciones de reservations (`my_reservation_delete{,_all}.html`, `product_mo
 - `academic/step_modal.html:53` `remove_object_modal`: HTML roto y aparentemente muerto
   (`onclick="add_observation"` sin paréntesis, footer anidado) — confirmar que nada lo
   abre y borrarlo.
+
+### Ejecución 10a (2026-08-29)
+
+- **Convertidos a `modal_template_submit_form.html` (5)**: `addOrganizationmodal`,
+  `actionsmodal` (list_organizations), `add_my_procedures` (procedure.html, arregla el
+  footer mal anidado), `newsgalabelmodal` (personal_template), `add_inform` (inform.html).
+- **Convertidos a `modal_template_detail.html` de la lib (5)**: `rol_details` y
+  `admin_users_modal` (list_organizations), `object_detail_modal` (object_list),
+  `reactive_detail_modal` (sustance/list), `equipment_detail_modal` (equipment/list).
+  El JS pasó de llenar divs internos propios a llenar `#<id> .modal-body` (patrón de la
+  lib) y los títulos mutados por JS usan `<id>_title`; scroll con
+  `modal-dialog-scrollable`.
+- **Fixes BS4→BS5**: `data-dismiss` → `data-bs-dismiss` en `personal_template.html`,
+  `my_reservation_delete{,_all}.html` y `sga/editor/canvas_and_utils.html` (no cerraban).
+- **DIFERIDOS al sub-proyecto labview** (flujo django_ajax, no convertir a medias):
+  los 3 cascarones de `shelfobjectUpdate_modal.html` y los de `furniture_form.html`
+  (`data-ajax`/`processResponse*`). Semi-convertibles sin tocar: `orgbyusermodal`,
+  `rol_details` de rol_list (action dinámico por JS). El resto de diálogos a medida se
+  quedan (decisión original de la etapa).
+- **Selenium**: `//input` genérico en `test_buttons_box_org.py` ahora apunta a
+  `input[@type='text']` — el include pone el hidden del csrf dentro del modal-body y el
+  xpath viejo lo agarraba. manage_organizations + informs: 33/33 OK (el deadlock de
+  flush del primer intento era arrastre del fallo del selector). Unit: 805/805.
+- Trampa documentada de fondo: el include añade `{% csrf_token %}` + hidden `prefix`
+  DENTRO de `.modal-body` — selectores `//input` sin filtro se rompen.
 
 ### Receta procedure_steps → BaseInlineObjectManagement — EJECUTADA (2026-08-29, ver 10c)
 
@@ -285,13 +310,28 @@ columnas + template con tabla vacía + `ObjectCRUD` (ver `regents.html` como ref
   `object_view` (`views/objects.py:345`) + `ObjectViewSet` (`api/views.py:1653`) +
   `object_management.js`.
 
-## 10d — Oportunidades nuevas (evaluar al final, opcional)
+## 10d — Oportunidades nuevas (evaluación 2026-08-29)
 
-- `MapPointInput`/`GTPointField` en vez de `django-location-field==2.7.3`
-  (`risk_management/forms.py:240,328` + settings `LOCATION_FIELD`; requiere
-  `SECURE_REFERRER_POLICY='strict-origin-when-cross-origin'` y `use_maps`).
-- `djgentelella.history`/`Trash` para bitácora/borrado lógico (ver plans/DJGENTELELLA_060_NOTES.md
-  §4: trampas conocidas — `models_log`, org-scope) — probablemente proyecto aparte.
+- [ ] **`GTPointField`/`MapPointInput` — SE HACE** (auditado, bajo riesgo):
+  `django-location-field` se usa en 4 model fields (`laboratory/models.py:1403,1989`
+  Laboratory + LabOrOrgRequest; `risk_management/models.py:247,322` Buildings +
+  Structure) y 1 form field (`laboratory/forms.py:1914`, LabOrOrgRequest público).
+  Mismo almacenamiento ("lat,lng" en CharField max_length=63) → el AlterField de la
+  migración no toca datos. BONUS de UX: los forms de organilab hoy pisan el widget con
+  `genwidgets.TextInput` plano (¡el mapa de location_field ni se mostraba!) — con
+  `GTPointField.formfield()` el mapa Leaflet aparece de verdad. Los tests postean
+  "lat,lng" (`test_laboratory.py:104,132`) y `GTPointFormField` lo valida; selenium que
+  tipea en el input sigue funcionando (MapPointInput es TextInput). Plan: swap de los 4
+  fields + quitar el form field manual y los overrides `geolocation: TextInput`;
+  settings: quitar app `location_field` + `LOCATION_FIELD*`, añadir
+  `DEFAULT_JS_IMPORTS['use_maps']=True` (como el demo) y
+  `SECURE_REFERRER_POLICY='strict-origin-when-cross-origin'` (hoy
+  "origin-when-cross-origin"); quitar `django-location-field==2.7.3` de requirements;
+  makemigrations laboratory + risk_management.
+- [x] **`djgentelella.history`/`Trash` — DIFERIDO a proyecto aparte** (confirmado contra
+  plans/DJGENTELELLA_060_NOTES.md §2-4): exige puentear con los ~280 usos de
+  `organilab_logentry` y añadir alcance por organización que la lib no trae. No es de
+  esta migración.
 
 ## Método por pantalla
 

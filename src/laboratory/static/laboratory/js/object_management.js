@@ -133,10 +133,10 @@ ocrud.view_detail = function(obj, action) {
 }
 
 function buildObjectDetailModal(data) {
-    const modalBody = document.getElementById('object_detail_modal_body');
+    const modalBody = document.querySelector('#object_detail_modal .modal-body');
     modalBody.innerHTML = '';
 
-    const modalLabel = document.getElementById('object_detail_modalLabel');
+    const modalLabel = document.getElementById('object_detail_modal_title');
     modalLabel.textContent = data.name || gettext('Material Detail');
 
     let html = '<div class="container-fluid">';
