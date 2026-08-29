@@ -57,65 +57,6 @@
 			update_url: "{% url 'laboratory:api-labororgrequest-detail' org_pk 0 %}",
 		}
 	</script>
-	<script>
-		(function () {
-			['#create_obj_modal', '#update_obj_modal'].forEach(function (id) {
-				var input = document.querySelector(id + ' input[data-location-field-options]');
-				if (input) input.setAttribute('data-location-field-observed', true);
-			});
-		})();
-	</script>
 	{{ form_create.media }}
 	<script src="{% static 'laboratory/js/lab_or_org_request.js' %}?v={% get_organilab_version %}"></script>
-	<script>
-		window._lf_map_instances = {};
-
-		function _patch_leaflet() {
-			if (typeof L === 'undefined' || !L.Map || L.Map._organilab_patched) return;
-			var origInit = L.Map.prototype.initialize;
-			L.Map.prototype.initialize = function (id, options) {
-				origInit.call(this, id, options);
-				if (this._container && this._container.id) {
-					window._lf_map_instances[this._container.id] = this;
-				}
-			};
-			var origRemove = L.Map.prototype.remove;
-			L.Map.prototype.remove = function () {
-				var mapId = this._container && this._container.id;
-				if (mapId) delete window._lf_map_instances[mapId];
-				return origRemove.call(this);
-			};
-			L.Map._organilab_patched = true;
-		}
-
-		var _patchAttempts = 0;
-		function _tryPatchLeaflet() {
-			_patch_leaflet();
-			if ((typeof L === 'undefined' || !L.Map._organilab_patched) && _patchAttempts++ < 200) {
-				setTimeout(_tryPatchLeaflet, 50);
-			}
-		}
-		_tryPatchLeaflet();
-
-		function reinit_map_in_modal(modal) {
-			var input = modal.querySelector('input[data-location-field-options]');
-			if (!input) return;
-			var mapId = 'map_' + input.name;
-			var mapContainer = document.getElementById(mapId);
-			if (!mapContainer) return;
-			input.removeAttribute('data-location-field-observed');
-			if (mapContainer._leaflet_id) {
-				var existing = window._lf_map_instances[mapId];
-				if (existing) {
-					try { existing.remove(); } catch (e) {}
-				} else {
-					delete mapContainer._leaflet_id;
-					mapContainer.innerHTML = '';
-				}
-			}
-			document.documentElement.setAttribute('data-lf-init', Date.now());
-		}
-		$('#create_obj_modal').on('shown.bs.modal', function () { reinit_map_in_modal(this); });
-		$('#update_obj_modal').on('shown.bs.modal', function () { reinit_map_in_modal(this); });
-	</script>
 {% endblock %}

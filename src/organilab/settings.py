@@ -56,7 +56,7 @@ else:
     ALLOWED_HOSTS = ["*"]
     CORS_ALLOW_ALL_ORIGINS = True
 
-SECURE_REFERRER_POLICY = "origin-when-cross-origin"
+SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
 ADMINS = [
     ("Solvo", "sitio@solvosoft.com"),
 ]
@@ -80,7 +80,6 @@ INSTALLED_APPS = [
     "academic",
     "djreservation",
     "celery",
-    "location_field",
     "rest_framework",
     "rest_framework.authtoken",
     "msds",
@@ -284,13 +283,10 @@ CACHES = {
         "LOCATION": "my_cache_table",
     }
 }
-LOCATION_FIELD_PATH = STATIC_URL + "location_field"
-LOCATION_FIELD = {
-    "map.provider": "openstreetmap",
-    "search.provider": "nominatim",
-    "map.zoom": 13,
-    "search.suffix": "",
-    "resources.root_path": LOCATION_FIELD_PATH,
+# Widgets de mapa de djgentelella (MapPointInput/GTPointField): carga Leaflet
+# en las páginas base. Nominatim exige un Referer válido para la búsqueda.
+DEFAULT_JS_IMPORTS = {
+    "use_maps": True,
 }
 
 ACCOUNT_ACTIVATION_DAYS = 2

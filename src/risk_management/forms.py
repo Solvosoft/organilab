@@ -236,7 +236,6 @@ class BuildingsForm(GTForm, forms.ModelForm):
                 attrs={"rel": ["#id_nearby_buildings"]},
             ),
             "nearby_buildings": genwidgets.SelectMultiple,
-            "geolocation": genwidgets.TextInput,
             "phone": genwidgets.TextInput,
             "manager": genwidgets.Select,
             "regents": genwidgets.SelectMultiple,
@@ -324,7 +323,6 @@ class StructureForm(GTForm, forms.ModelForm):
         widgets = {
             "name": genwidgets.TextInput,
             "buildings": genwidgets.SelectMultiple,
-            "geolocation": genwidgets.TextInput,
             "manager": genwidgets.Select,
             "area": genwidgets.FloatInput,
             "measuerement_unit": genwidgets.Select,
