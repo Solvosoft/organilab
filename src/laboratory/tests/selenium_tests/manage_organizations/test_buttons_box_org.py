@@ -156,11 +156,11 @@ class ButtonBoxOrgTest(ManageOrganizationsSeleniumTest):
         path_list = [
             {"path": self.org_add_child_btn(1)},
             {
-                "path": "//*[@id='addOrganizationmodal']//div[contains(@class, 'modal-body')]//input",
+                "path": "//*[@id='addOrganizationmodal']//div[contains(@class, 'modal-body')]//input[@type='text']",
                 "sleep": 2,
             },
             {
-                "path": "//*[@id='addOrganizationmodal']//div[contains(@class, 'modal-body')]//input",
+                "path": "//*[@id='addOrganizationmodal']//div[contains(@class, 'modal-body')]//input[@type='text']",
                 "extra_action": "setvalue",
                 "value": "Organización Hija",
             },

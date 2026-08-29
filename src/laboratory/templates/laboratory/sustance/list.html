@@ -35,21 +35,8 @@
 {% include 'gentelella/blocks/modal_template.html' with form=limit_form id="create_limit_modal" title=limit_obj_tittle form_id="create_reactive_limit_form" url=detail_obj_url principal_class='modal-xl' %}
 
 <!-- Modal de Detalle de Reactivo -->
-<div class="modal fade" id="reactive_detail_modal" tabindex="-1" role="dialog" aria-labelledby="reactive_detail_modalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="reactive_detail_modalLabel">{% trans 'Reactive Detail' %}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
-            </div>
-            <div class="modal-body" id="reactive_detail_modal_body">
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-            </div>
-        </div>
-    </div>
-</div>
+{% trans 'Reactive Detail' as reactive_detail_ttl %}
+{% include 'gentelella/blocks/modal_template_detail.html' with id="reactive_detail_modal" title=reactive_detail_ttl modal_class="modal-xl modal-dialog-scrollable" %}
 
 
 {% endblock %}
@@ -207,10 +194,10 @@ crud.view_detail = function(obj, action){
 }
 
 function buildReactiveDetailModal(data) {
-	const modalBody = document.getElementById('reactive_detail_modal_body');
+	const modalBody = document.querySelector('#reactive_detail_modal .modal-body');
 	modalBody.innerHTML = '';
 
-	const modalLabel = document.getElementById('reactive_detail_modalLabel');
+	const modalLabel = document.getElementById('reactive_detail_modal_title');
 	modalLabel.textContent = data.name || gettext('Reactive Detail');
 
 	let html = '<div class="container-fluid">';
