@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-29 09:36-0600\n"
+"POT-Creation-Date: 2026-08-29 13:51-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -3546,9 +3546,6 @@ msgstr ""
 msgid "Equipment management"
 msgstr ""
 
-msgid "Reactive management"
-msgstr ""
-
 msgid "This action will delete its descendants organizations too."
 msgstr ""
 
@@ -3912,6 +3909,9 @@ msgid "Security Sheet"
 msgstr ""
 
 msgid "Sustance Representation"
+msgstr ""
+
+msgid "Reactive management"
 msgstr ""
 
 msgid "Update Reactive"
@@ -5890,6 +5890,10 @@ msgstr ""
 msgid "Closed reservation"
 msgstr ""
 
+#, python-format
+msgid "Deleted IPER assessment for laboratory '%(lab)s'"
+msgstr ""
+
 msgid "Hazard classification"
 msgstr ""
 
@@ -6288,10 +6292,6 @@ msgstr ""
 
 #, python-format
 msgid "Updated IPER assessment for laboratory '%(lab)s'"
-msgstr ""
-
-#, python-format
-msgid "Deleted IPER assessment for laboratory '%(lab)s'"
 msgstr ""
 
 msgid "Toggled anonymous mode for IPER assessment"
@@ -6769,21 +6769,6 @@ msgid "Dashboard"
 msgstr ""
 
 msgid "New assessment"
-msgstr ""
-
-msgid "Next update"
-msgstr ""
-
-msgid "Laboratory name hidden"
-msgstr ""
-
-msgid "Laboratory name visible"
-msgstr ""
-
-msgid "Open"
-msgstr ""
-
-msgid "No assessments yet."
 msgstr ""
 
 msgid "Delete IPER assessment"

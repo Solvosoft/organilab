@@ -99,6 +99,55 @@ class IPERViewTest(TestCase):
         )
         self.assertEqual(response.status_code, 200)
 
+    def test_api_list_masks_anonymous(self):
+        visible = self._make_assessment(is_anonymous=False)
+        anon = self._make_assessment(is_anonymous=True)
+        url = reverse(
+            "riskmanagement:api-iperassessment-list",
+            kwargs={"org_pk": self.org_pk},
+        )
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(data["recordsTotal"], 2)
+        rows = {row["id"]: row for row in data["data"]}
+        self.assertEqual(rows[visible.pk]["laboratory"], self.lab.name)
+        self.assertIsNone(rows[anon.pk]["laboratory"])
+        self.assertTrue(rows[anon.pk]["is_anonymous"])
+
+    def test_api_search_excludes_anonymous_by_lab_name(self):
+        visible = self._make_assessment(is_anonymous=False)
+        anon = self._make_assessment(is_anonymous=True)
+        url = reverse(
+            "riskmanagement:api-iperassessment-list",
+            kwargs={"org_pk": self.org_pk},
+        )
+        response = self.client.get(url, {"search": self.lab.name})
+        self.assertEqual(response.status_code, 200)
+        ids = [row["id"] for row in response.json()["data"]]
+        self.assertIn(visible.pk, ids)
+        self.assertNotIn(anon.pk, ids)
+
+    def test_api_destroy(self):
+        assessment = self._make_assessment()
+        url = reverse(
+            "riskmanagement:api-iperassessment-detail",
+            kwargs={"org_pk": self.org_pk, "pk": assessment.pk},
+        )
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, 204)
+        self.assertFalse(
+            IPERAssessment.objects.filter(pk=assessment.pk).exists()
+        )
+
+    def test_api_create_not_allowed(self):
+        url = reverse(
+            "riskmanagement:api-iperassessment-list",
+            kwargs={"org_pk": self.org_pk},
+        )
+        response = self.client.post(url, {})
+        self.assertEqual(response.status_code, 403)
+
     def test_hazard_save_computes_risk_level(self):
         assessment = self._make_assessment()
         hazard = IPERHazard.objects.create(
