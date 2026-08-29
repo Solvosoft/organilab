@@ -11,6 +11,7 @@ def select_organization_by_user(request):
     }
     return render(request, "auth_and_perms/select_organization.html", context=context)
 
+
 @login_required
 @permission_required("risk_management.view_riskzone", raise_exception=True)
 def map_of_laboratories_view(request, org_pk):

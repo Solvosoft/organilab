@@ -503,7 +503,7 @@ def clone_shelfobject_to(
     msg = _("Income")
     if shelfobject.is_box:
         shelfobject.quantity_units = shelfobject.order_by_boxes()[
-            -int(request.data["amount_transfer"]) :
+            -int(request.data["amount_transfer"]):
         ]
         msg = _("Income the boxes %(boxes)s from the laboratory %(lab)s.") % {
             "boxes": ", ".join([x.get("code") for x in shelfobject.quantity_units]),

@@ -152,11 +152,11 @@ class Command(BaseCommand):
                     if susta is None:
                         print(f"No encontro caracteristicas de {fila[0]}")
                         continue
-                    if fila[1] != None:
+                    if fila[1] is not None:
                         hcode = fila[1].split(",")
                         susta.h_code.add(*hcode)
 
-                    if fila[2] != None:
+                    if fila[2] is not None:
                         hcode = fila[2].split(",")
                         susta.h_code.remove(*hcode)
 

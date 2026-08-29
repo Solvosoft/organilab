@@ -3,8 +3,9 @@ import logging
 from django.conf import settings
 from django.contrib.admin.models import LogEntry, DELETION, CHANGE, ADDITION
 from django.contrib.auth.decorators import permission_required, login_required
+from django.contrib.contenttypes.models import ContentType
 from django.db.models import Value, DateField, Q
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 from django.shortcuts import get_object_or_404, render
 from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
@@ -64,6 +65,7 @@ from laboratory.api.serializers import (
     LabOrOrgRequestDataTableSerializer,
     LabOrOrgRequestReviewSerializer,
     LabOrOrgRequestReviewDataTableSerializer,
+    RegisterUserQRDataTableSerializer,
 )
 from laboratory.forms import ObservationShelfObjectForm
 from laboratory.models import (
@@ -84,6 +86,7 @@ from laboratory.models import (
     ObjectFeatures,
     ShelfObjectObservation,
     LabOrOrgRequest,
+    RegisterUserQR,
 )
 from laboratory.qr_utils import get_or_create_qr_shelf_object
 from laboratory.shelfobject.forms import ShelfObjectStatusForm
@@ -98,6 +101,7 @@ from laboratory.utils import (
     get_pk_org_ancestors_decendants,
     PermissionByLaboratoryInOrganization,
     organilab_logentry,
+    check_user_access_kwargs_org_lab,
 )
 from laboratory.lab_or_org_request_notifications import (
     notify_request_created,
@@ -2084,3 +2088,51 @@ class LabOrOrgRequestReviewViewSet(AuthAllPermBaseObjectManagement):
         )
         notify_request_status_changed(instance)
         return Response({"detail": _("Request rejected.")}, status=status.HTTP_200_OK)
+
+
+class RegisterUserQRViewSet(AuthAllPermBaseObjectManagement):
+    # Solo listado: alta/edición, PDF, historial y borrado siguen siendo
+    # páginas propias (manage_register_user_qr y compañía); la tabla las abre
+    # como enlaces por fila.
+    serializer_class = {
+        "list": RegisterUserQRDataTableSerializer,
+    }
+    perms = {
+        "list": ["laboratory.view_registeruserqr"],
+    }
+
+    queryset = RegisterUserQR.objects.all()
+    pagination_class = LimitOffsetPagination
+    filter_backends = (SearchFilter, OrderingFilter)
+    search_fields = [
+        "created_by__username",
+        "created_by__first_name",
+        "created_by__last_name",
+        "organization_register__name",
+    ]
+    ordering_fields = [
+        "id",
+        "creation_date",
+        "last_update",
+        "created_by__username",
+        "organization_register__name",
+    ]
+    ordering = ("creation_date", "last_update", "organization_register__name")
+
+    def get_queryset(self):
+        org_pk = self.kwargs.get("org_pk")
+        lab_pk = self.kwargs.get("lab_pk")
+        # Mismo control multi-tenant que hacía la ListView vieja vía djgeneric.
+        if not check_user_access_kwargs_org_lab(org_pk, lab_pk, self.request.user):
+            raise Http404()
+        queryset = super().get_queryset()
+        content_type = ContentType.objects.filter(
+            app_label="laboratory", model="laboratory"
+        ).first()
+        organization = get_object_or_404(OrganizationStructure, pk=org_pk)
+        org_base_list = list(organization.descendants(include_self=True))
+        return queryset.filter(
+            organization_register__in=org_base_list,
+            content_type=content_type,
+            object_id=lab_pk,
+        ).select_related("created_by", "organization_register")

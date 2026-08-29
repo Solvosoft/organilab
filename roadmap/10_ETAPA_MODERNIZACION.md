@@ -147,15 +147,20 @@ previo salvo donde se indica):
       (`furniture_tags.py:22`); `shelf_list.html`/`generic.py` quedan en su lugar hasta
       diseñar el equivalente. Es la continuación natural de la etapa 2 (salida total de
       django_ajax) y se trabaja como sub-proyecto propio del labview.
-- [ ] `laboratory/register_user_qr/register_user_qr_list.html` — vista
-      `RegisterUserQRList(ListView)` (`views/laboratory.py:500`), url
-      `laboratory:list_register_user_qr`, modelo `RegisterUserQR` (GenericFK + 2 FKs org).
-      Hoy DataTable client-side sobre HTML renderizado. OJO: alta/edición es página completa
-      (`manage_register_qr`, `views/laboratory.py:526`, genera QR + URL absoluta) — convertir
-      SOLO el listado a viewset+ObjectCRUD manteniendo las acciones como links (editar,
-      PDF, historial, borrar). Cobertura: 6 tests selenium en
-      `manage_laboratory/test_register_users.py` (entran por el reverse — sobreviven si se
-      conservan los botones); sin unit tests.
+- [x] `laboratory/register_user_qr/register_user_qr_list.html` — **HECHA (2026-08-29)**:
+      `RegisterUserQRViewSet` (solo `list`) en `laboratory/api/views.py`, serializer en
+      `api/serializers.py`, router bajo el prefijo `register_user_qr/<org>/<lab>/api/`
+      (`laboratory:api-registeruserqr-list`). Página → `TemplateView`; tabla server-side
+      con `register_user_qr_list.js` (ObjectCRUD list-only, `columnDefs` propio que rinde
+      las 4 acciones como `<a>` con las MISMAS clases btn-outline-* que antes — los 6
+      selenium de `test_register_users.py` seleccionan por esas clases). Alta/edición/PDF/
+      historial/borrado siguen siendo páginas (sin cambios). Columnas con `name` =
+      campo real de BD (`created_by__username`, `organization_register__name`) para que el
+      ordenamiento server-side funcione. IMPORTANTE: se conservó el control multi-tenant
+      `check_user_access_kwargs_org_lab` que hacía djgeneric — en la página nueva Y en el
+      viewset (y se añadió retroactivamente al viewset de IPER, que lo había perdido).
+      Tests nuevos: `laboratory/tests/test_register_user_qr_api.py` (4: página, list,
+      cross-lab→404, create→403). laboratory 508/508 OK.
 - [x] `risk_management/iper_list.html` — **HECHA (2026-08-29)**:
       `IPERAssessmentViewSet(AuthAllPermBaseObjectManagement)` en `api/viewset.py`
       (solo `list`+`destroy`; crear/editar siguen siendo páginas por su lógica de

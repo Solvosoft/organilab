@@ -1117,7 +1117,7 @@ class OrganizationStructureManager(models.Manager):
                 enable_child = (
                     org.parent.enable_child_organizations if org.parent else False
                 )
-                if descendants and enable_child == False:
+                if descendants and enable_child is False:
                     descendant_pks = org.descendants(include_self=False).values_list(
                         "pk", flat=True
                     )

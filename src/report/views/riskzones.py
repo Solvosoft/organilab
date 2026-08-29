@@ -297,7 +297,7 @@ def report_compatibility_html(report):
             hcode_map = build_hcode_substance_map(zone)
 
             for i, code_a in enumerate(all_h_codes):
-                for code_b in all_h_codes[i + 1 :]:
+                for code_b in all_h_codes[i + 1:]:
                     compat = get_h_code_compatibility(code_a, code_b)
                     compat_label = COMPAT_LABELS.get(compat, compat)
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-29 13:51-0600\n"
+"POT-Creation-Date: 2026-08-29 14:04-0600\n"
 "PO-Revision-Date: 2024-04-12 23:50-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -326,6 +326,24 @@ msgstr "Identificador del laboratorio"
 msgid "You do not have permission to perform this action."
 msgstr "No tienes los permisos necesarios para realizar esta acción."
 
+msgid "Creation date"
+msgstr "Fecha de creación"
+
+msgid "Last update"
+msgstr "Última actualización"
+
+msgid "Created by"
+msgstr "Creado por"
+
+msgid "Edit"
+msgstr "Editar"
+
+msgid "Download"
+msgstr "Descargar"
+
+msgid "History"
+msgstr "Historial"
+
 msgid "Are you sure you want to delete"
 msgstr "¿Está seguro/a de que desea eliminar"
 
@@ -453,9 +471,6 @@ msgstr "Códigos NFPA"
 
 msgid "Security Sheet"
 msgstr "Hoja de Seguridad"
-
-msgid "Download"
-msgstr "Descargar"
 
 msgid "Sustance Representation"
 msgstr "Representación de la sustancia"
@@ -606,9 +621,6 @@ msgstr "¿Está seguro/a de que desea eliminar esta tamaño de recipiente?"
 
 msgid "Recipient size was deleted successfully."
 msgstr "Se eliminó con éxito el tamaño de recipiente."
-
-msgid "Created by"
-msgstr "Creado por"
 
 msgid "Capacity"
 msgstr "Capacidad"

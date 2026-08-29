@@ -1,5 +1,6 @@
 from django.contrib.admin.models import DELETION
 from django.db.models import Q
+from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
 from django_filters.rest_framework import DjangoFilterBackend
@@ -8,7 +9,11 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.pagination import LimitOffsetPagination
 
 from laboratory.models import OrganizationStructure
-from laboratory.utils import get_user_laboratories, organilab_logentry
+from laboratory.utils import (
+    check_user_access_kwargs_org_lab,
+    get_user_laboratories,
+    organilab_logentry,
+)
 from risk_management.api.filterseet import (
     BuildingFilter,
     StructureFilter,
@@ -370,9 +375,13 @@ class IPERAssessmentViewSet(AuthAllPermBaseObjectManagement):
     ordering = ("-assessment_date", "-id")
 
     def get_queryset(self):
-        queryset = super().get_queryset().filter(
-            organization__pk=self.kwargs.get("org_pk")
-        )
+        org_pk = self.kwargs.get("org_pk")
+        # Mismo control multi-tenant que hacía la ListView vieja vía djgeneric.
+        if not check_user_access_kwargs_org_lab(
+            org_pk, None, self.request.user
+        ):
+            raise Http404()
+        queryset = super().get_queryset().filter(organization__pk=org_pk)
         if not self.request.user.has_perm("risk_management.view_all_iper"):
             queryset = queryset.filter(
                 laboratory__in=get_user_laboratories(self.request.user)
