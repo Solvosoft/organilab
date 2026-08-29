@@ -126,7 +126,12 @@ Auditados los 13 candidatos, solo UNO era un formulario Django real:
   detail_substance, manage_reservation, tasks-view, list_organizations modal de roles,
   informscheduler period select), o branding de login (etapa 8).
 
-## 10c — Tablas sin DataTables — RE-ALCANZADA (2026-08-29): ~22 → 6 reales
+## 10c — Tablas sin DataTables — CERRADA (2026-08-29): 3 convertidas, 2 decididas-no, 1 retirada, 1 diferida
+
+Resumen del cierre: `iper_list`, `register_user_qr_list` y `procedure_steps` (inline)
+convertidas con tests verdes; `iper_history` y `regulations_document` se quedan como
+están (reporte / pública); `objectview_list` retirada (duplicada); `shelf_list` diferida
+al sub-proyecto labview (reemplazo total del AJAX conservando la interacción).
 
 La auditoría (¿la tabla se llena con `{% for %}` del servidor o la llena JS?) mostró que 13 de los
 22 candidatos YA son ObjectCRUD/DataTable (tabla vacía + JS dedicado): lab_org_list, user_list,
