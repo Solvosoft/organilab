@@ -2,7 +2,12 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth.models import User
-from academic.models import Procedure, ProcedureStep, ProcedureObservations
+from academic.models import (
+    Procedure,
+    ProcedureStep,
+    ProcedureObservations,
+    ProcedureRequiredObject,
+)
 from derb.models import CustomForm
 import json
 from datetime import datetime
@@ -219,55 +224,100 @@ class AcademicTest(TestCase):
         url = self.url_attr.copy()
         step = ProcedureStep.objects.get(pk=17)
         obs = ProcedureObservations.objects.filter(step=step).latest("pk")
-        url["pk"] = step.pk
-        data = {"pk": obs.pk}
+        url["parent_pk"] = step.pk
+        url["pk"] = obs.pk
 
-        response = self.client.post(
-            reverse("academic:remove_observation", kwargs=url), data
+        response = self.client.delete(
+            reverse("academic:api-procedureobservation-detail", kwargs=url)
         )
 
-        obs = ProcedureObservations.objects.filter(step=step)
-
-        self.assertTrue(obs.count() == 1)
-        self.assertEqual(
-            json.loads(response.content)["data"],
-            '[{"description": "Cleaning", "id": 1}]',
-        )
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 204)
+        self.assertTrue(ProcedureObservations.objects.filter(step=step).count() == 1)
 
     def test_delete_procedure_observation_fail(self):
         url = self.url_attr.copy()
         step = ProcedureStep.objects.get(pk=17)
+        url["parent_pk"] = step.pk
+        url["pk"] = 80
 
-        url["pk"] = step.pk
-        data = {"pk": 80}
-
-        response = self.client.post(
-            reverse("academic:remove_observation", kwargs=url), data
+        response = self.client.delete(
+            reverse("academic:api-procedureobservation-detail", kwargs=url)
         )
 
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 404)
+
+    def test_list_observations(self):
+        url = self.url_attr.copy()
+        step = ProcedureStep.objects.get(pk=17)
+        url["parent_pk"] = step.pk
+
+        response = self.client.get(
+            reverse("academic:api-procedureobservation-list", kwargs=url)
+        )
+
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(data["recordsTotal"], 2)
+        self.assertIn("Cleaning", [row["description"] for row in data["data"]])
 
     def test_add_object(self):
         url = self.url_attr.copy()
         step = ProcedureStep.objects.get(pk=17)
-        url["pk"] = step.pk
-        data = {"unit": 64, "object": 75, "quantity": 8}
+        url["parent_pk"] = step.pk
+        data = {"measurement_unit": 64, "object": 75, "quantity": 8}
+        total = ProcedureRequiredObject.objects.filter(step=step).count()
 
-        response = self.client.post(reverse("academic:add_object", kwargs=url), data)
-        self.assertEqual(response.status_code, 200)
+        response = self.client.post(
+            reverse("academic:api-procedurerequiredobject-list", kwargs=url), data
+        )
+
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(
+            ProcedureRequiredObject.objects.filter(step=step).count(), total + 1
+        )
+
+    def test_add_object_invalid_quantity(self):
+        url = self.url_attr.copy()
+        step = ProcedureStep.objects.get(pk=17)
+        url["parent_pk"] = step.pk
+        data = {"measurement_unit": 64, "object": 75, "quantity": -5}
+
+        response = self.client.post(
+            reverse("academic:api-procedurerequiredobject-list", kwargs=url), data
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("quantity", response.json())
 
     def test_remove_object(self):
         url = self.url_attr.copy()
         step = ProcedureStep.objects.get(pk=17)
-        url["pk"] = step.pk
-        data = {
-            "pk": 12,
-        }
+        url["parent_pk"] = step.pk
+        url["pk"] = 12
 
-        response = self.client.post(reverse("academic:remove_object", kwargs=url), data)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(json.loads(response.content)["data"], "[]")
+        response = self.client.delete(
+            reverse("academic:api-procedurerequiredobject-detail", kwargs=url)
+        )
+
+        self.assertEqual(response.status_code, 204)
+        self.assertFalse(ProcedureRequiredObject.objects.filter(pk=12).exists())
+
+    def test_remove_object_wrong_parent(self):
+        url = self.url_attr.copy()
+        other_step = (
+            ProcedureStep.objects.filter(procedure=self.procedure)
+            .exclude(pk=17)
+            .first()
+        )
+        url["parent_pk"] = other_step.pk
+        url["pk"] = 12
+
+        response = self.client.delete(
+            reverse("academic:api-procedurerequiredobject-detail", kwargs=url)
+        )
+
+        self.assertEqual(response.status_code, 404)
+        self.assertTrue(ProcedureRequiredObject.objects.filter(pk=12).exists())
 
     def test_procedure_reservation(self):
         initial_date = datetime(2023, 1, 17, 11, 2, 5)

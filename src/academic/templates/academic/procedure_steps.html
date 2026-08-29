@@ -46,65 +46,23 @@
 		<br>
 		<div class="card">
 			<div class="card-body">
-				<div class="clearfix">
-					<h3 class="card-title float-start">{% trans 'Object List' %}</h3>
-					{% if perms.academic.add_procedurerequiredobject %}
-						<span class="btn btn-success float-end open_modal" data-bs-target="#object_modal" data-bs-toggle="modal"
-										title="{% trans 'Create Object' %}">
-                    <i class="fa fa-plus"></i> {% trans 'Create Object' %}
-                </span>
-						</div>
-					{% endif %}
-				<table class="table table-bordered table-hover table-striped">
-					<thead>
-					<tr>
-						<th width="60%">{% trans 'Name' %}</th>
-						<th class="text-center" width="15%">{% trans 'Amount' %}</th>
-						<th class="text-center" width="20%">{% trans 'Actions' %}</th>
-					</tr>
-					</thead>
-					<tbody id="object_list">
-					{% for obj in step.procedurerequiredobject_set.all %}
-						<tr>
-							<td>{{ obj.object }}</td>
-							<td class="text-center">{{ obj.quantity }} {{ obj.measurement_unit }}</td>
-							<td class="text-center"><span onclick="delete_object({{ obj.pk }}, '{{ obj.object.name }}')"
-																																					title="{% trans 'Delete' %}"><i class="fa fa-trash text-danger"></i></span></td>
-						</tr>
-					{% endfor %}
-					</tbody>
-				</table>
+				<h3 class="card-title">{% trans 'Object List' %}</h3>
+				{% if step %}
+					<table class="table table-bordered table-hover table-striped w-100" id="table-reqobj"></table>
+				{% else %}
+					<p class="text-muted">{% trans 'Save the step to add objects.' %}</p>
+				{% endif %}
 			</div>
 		</div>
 		<br>
 		<div class="card">
 			<div class="card-body">
-				<div class="clearfix">
-					<h3 class="card-title float-start">{% trans 'Observations' %}</h3>
-					{% if perms.academic.add_procedureobservations %}
-						<span class="btn btn-success float-end open_modal" data-bs-target="#observation_modal"
-										data-bs-toggle="modal" title="{% trans 'Create Observation' %}">
-                    <i class="fa fa-plus"></i> {% trans 'Create Observation' %}
-                </span>
-					{% endif %}
-				</div>
-				<table class="table table-bordered table-hover table-striped">
-					<thead>
-					<tr>
-						<th width="80%">{% trans 'Description' %}</th>
-						<th class="text-center">{% trans 'Actions' %}</th>
-					</tr>
-					</thead>
-					<tbody id="observation_list">
-					{% for obs in step.procedureobservations_set.all %}
-						<tr>
-							<td>{{ obs.description }}</td>
-							<td class="text-center"><span onclick="delete_observation({{ obs.pk }})"
-																																					title="{% trans 'Delete' %}"><i class="fa fa-trash text-danger"></i></span></td>
-						</tr>
-					{% endfor %}
-					</tbody>
-				</table>
+				<h3 class="card-title">{% trans 'Observations' %}</h3>
+				{% if step %}
+					<table class="table table-bordered table-hover table-striped w-100" id="table-obs"></table>
+				{% else %}
+					<p class="text-muted">{% trans 'Save the step to add observations.' %}</p>
+				{% endif %}
 			</div>
 		</div>
 		<div class="text-center mt-2">
@@ -113,21 +71,47 @@
 			</button>
 		</div>
 	</div>
-	{% include 'academic/step_modal.html' %}
+	{% if step %}
+		{% url 'academic:api-procedurerequiredobject-list' org_pk step.id as reqobj_list_url %}
+		{% url 'academic:api-procedurerequiredobject-detail' org_pk step.id 0 as reqobj_detail_url %}
+		{% trans 'Create Object' as reqobj_title %}
+		{% include 'gentelella/blocks/modal_template.html' with form=object_form form_id="object_form" id="object_modal" title=reqobj_title url=reqobj_list_url %}
+		{% trans 'Remove object' as reqobj_del_title %}
+		{% include 'gentelella/blocks/modal_template_delete.html' with form_id="delete_object_form" id="delete_object_modal" title=reqobj_del_title url=reqobj_detail_url %}
+
+		{% url 'academic:api-procedureobservation-list' org_pk step.id as obs_list_url %}
+		{% url 'academic:api-procedureobservation-detail' org_pk step.id 0 as obs_detail_url %}
+		{% trans 'Create Observation' as obs_title %}
+		{% include 'gentelella/blocks/modal_template.html' with form=observation_form form_id="observation_form" id="observation_modal" title=obs_title url=obs_list_url %}
+		{% trans 'Remove observation' as obs_del_title %}
+		{% include 'gentelella/blocks/modal_template_delete.html' with form_id="delete_observation_form" id="delete_observation_modal" title=obs_del_title url=obs_detail_url %}
+	{% endif %}
 {% endblock %}
 
 {% block js %}
-	<script>
-		document.urls = {
-			{% if step %}
-			save_object: "{% url 'academic:save_object' pk=step.id org_pk=org_pk %}",
-			remove_object: "{% url 'academic:remove_object' pk=step.id org_pk=org_pk %}",
-			save_observation: "{% url 'academic:add_observation' pk=step.id org_pk=org_pk %}",
-			remove_observation: "{% url 'academic:remove_observation' pk=step.id org_pk=org_pk %}"
-			{% endif %}
-		}
-	</script>
-	<script src="{% static 'js/procedures.js' %}?v={% get_organilab_version %}"></script>
+	{% if step %}
+		{% url 'academic:api-procedurerequiredobject-list' org_pk step.id as reqobj_list_url %}
+		{% url 'academic:api-procedurerequiredobject-detail' org_pk step.id 0 as reqobj_detail_url %}
+		{% url 'academic:api-procedureobservation-list' org_pk step.id as obs_list_url %}
+		{% url 'academic:api-procedureobservation-detail' org_pk step.id 0 as obs_detail_url %}
+		<script>
+			const step_inline_perms = {
+				reqobj_create: {{ perms.academic.add_procedurerequiredobject|yesno:"true,false" }},
+				obs_create: {{ perms.academic.add_procedureobservations|yesno:"true,false" }},
+			};
+			const reqobj_urls = {
+				list_url: "{{ reqobj_list_url }}",
+				create_url: "{{ reqobj_list_url }}",
+				destroy_url: "{{ reqobj_detail_url }}",
+			};
+			const obs_urls = {
+				list_url: "{{ obs_list_url }}",
+				create_url: "{{ obs_list_url }}",
+				destroy_url: "{{ obs_detail_url }}",
+			};
+		</script>
+		<script src="{% static 'js/procedure_step_inline.js' %}?v={% get_organilab_version %}"></script>
+	{% endif %}
 	<script type="text/javascript" src="{% static 'formio/formio.full.min.js' %}?v={% get_organilab_version %}"></script>
 	<script type="text/javascript" src="{% static 'formio/CustomSection.js' %}?v={% get_organilab_version %}"></script>
 	<script type="text/javascript" src="{% static 'formio/CustomTextInput.js' %}?v={% get_organilab_version %}"></script>

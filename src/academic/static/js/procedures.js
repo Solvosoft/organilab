@@ -39,95 +39,6 @@ function get_procedure(element){
 
     })
 }
-function add_object(){
-  form= new FormData(document.getElementById('object_form'));
-
-    $.ajax({
-        url: document.urls["save_object"],
-        type: 'POST',
-        data: form,
-        processData: false,
-        contentType: false,
-        success: function({data, msg}) {
-
-            generate_table(JSON.parse(data));
-            document.getElementById('object_form').reset();
-            $('select').prop('selectedIndex', 0).change();
-            $('.form_errors').remove();
-            $('#object_modal').modal('hide');
-
-        },
-        error: function(xhr, resp, text) {
-               var errors = xhr.responseJSON.form;
-               if(errors){
-                  $('.form_errors').remove();
-                  form_field_errors(form, errors,".form-group");
-
-               }else{
-                           Swal.fire({
-                icon: 'error',
-                text: xhr.responseJSON.msg,
-            })
-
-               }
-               }
-        });
-  }
-
-function generate_table(data){
-    let tbody=document.querySelector('#object_list');
-    tbody.innerHTML='';
-
-    data.forEach((item)=>{
-    tbody.innerHTML+=`<tr>
-        <td>${item.obj}</td>
-        <td>${item.amount} ${item.unit}</td>
-        <td class="text-center"><a onclick="delete_object(${item.id},'${item.obj}')" title=" ${gettext('Delete')}"><i class="fa fa-trash text-danger"></i></a>
-              </td>
-        </tr>`;
-    });
-}
-
-function add_observation(){
-    var modal = $("#observation_form");
-    data= new FormData(document.getElementById('observation_form'));
-    var form = modal.find('form');
-    $.ajax({
-        url: document.urls["save_observation"],
-        type: 'POST',
-        data: data,
-        processData: false,
-        contentType: false,
-        success: function({data}) {
-        document.getElementById('observation_form').reset();
-            generate_observation_table(JSON.parse(data));
-            $("#observation_modal").modal("hide")
-        },
-        error: function(xhr, resp, text) {
-               var errors = xhr.responseJSON.errors;
-               if(errors){
-                  $('.form_errors').remove();
-                  form_field_errors(form, errors,"#observation_form");
-
-               }
-            }
-        });
-        }
-
-function generate_observation_table(data){
-
-    let tbody=document.querySelector('#observation_list');
-    tbody.innerHTML='';
-
-    data.forEach((item)=>{
-        tbody.innerHTML+=`<tr>
-            <td>${item.description}</td>
-             <td class="text-center"><a class="text-center" onclick="delete_observation(${item.id})" title="${gettext('Delete')}"><i class="fa fa-trash text-danger"></i></a></td>
-            </tr>`
-
-    });
- }
-
 function delete_procedure(pk,procedure_name){
     open_alert(pk, gettext('Are you sure to delete the procedure')+` ${procedure_name}?`,
     `${procedure_name} `+ gettext('has been deleted'),
@@ -138,18 +49,6 @@ function delete_step(pk,step_name){
     open_alert(pk, gettext('Are you sure to delete the step')+ ` ${step_name}?`,
     gettext('Step')+` ${step_name} `+ gettext('has been deleted'),
     document.urls["remove_step"],0, gettext('The procedure step was not removed'));
-}
-
-function delete_observation(pk){
-    open_alert(pk, gettext('Are you sure to delete this observation?'),
-    gettext('Observation has been deleted'),
-    document.urls["remove_observation"],2, gettext('The observation was not removed'));
-}
-
-function delete_object(pk,obj_name){
-    open_alert(pk, gettext('Are you sure to delete this object')+ ` ${obj_name}?`,
-    gettext('Object')+` ${obj_name} `+gettext('has been deleted'),
-    document.urls["remove_object"],1, gettext('The object was not removed'));
 }
 
 function sendrequest(element,url,action, msg, swal){
@@ -165,15 +64,8 @@ function sendrequest(element,url,action, msg, swal){
                 text:msg,
                 type:'success'
           }).then(function(){
-          if(action==0){
-               if(data){
+          if(data){
                 location.reload();
-               }
-           }else if(action==1){
-               generate_table(JSON.parse(data));
-           }else{
-               generate_observation_table(JSON.parse(data))
-
            }
            });
            }else{

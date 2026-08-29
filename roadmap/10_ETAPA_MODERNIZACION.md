@@ -94,7 +94,7 @@ confirmaciones de reservations (`my_reservation_delete{,_all}.html`, `product_mo
   (`onclick="add_observation"` sin paréntesis, footer anidado) — confirmar que nada lo
   abre y borrarlo.
 
-### Receta pendiente: procedure_steps → BaseInlineObjectManagement
+### Receta procedure_steps → BaseInlineObjectManagement — EJECUTADA (2026-08-29, ver 10c)
 
 El caso de libro para `BaseInlineObjectManagement` (hijos de `ProcedureStep`:
 `ProcedureRequiredObject` y `ProcedureObservations`; hoy FBVs `save_object`/`remove_object`/
@@ -179,15 +179,59 @@ previo salvo donde se indica):
       usaba el modal viejo del listado; candidata a retirar tras la validación (etapa 12).
       Los viewsets hermanos usan `permission_classes = ()` (¡sin chequeo de permisos!):
       el de IPER usa el default `AllPermissionByAction`; revisar los hermanos aparte.
-- [ ] `risk_management/iper_history.html` — `IPERHistory(ReportListView)`
-      (`iper_views.py:618`), modelo `IPERHazard`, SIN acciones por fila (reporte). ⚠️ La
-      exportación XLSX/ODS/PDF depende de `?{{pgparams}}&format=` de la vista actual:
-      decidir si el export queda en la vista (solo la tabla pasa a ObjectCRUD, compartiendo
-      filterset) o si NO se convierte (es salida de reporte, como hazard_map). Cobertura:
-      `test_iper.py:182,188`.
-- [ ] `academic/procedure_steps.html` — NO es un listado: página de formulario con 2 tablas
-      inline (`procedurerequiredobject_set`, `procedureobservations_set`). Es el caso
-      `BaseInlineObjectManagement` de la receta de abajo, no ObjectCRUD plano.
+- [x] `risk_management/iper_history.html` — **NO SE CONVIERTE (decidido 2026-08-29)**:
+      es salida de reporte (`ReportListView` con export XLSX/ODS/PDF atado a los filtros
+      del querystring), mismo tratamiento que hazard_map. Convertir la tabla a ObjectCRUD
+      rompería el vínculo filtros↔export sin ganancia (solo lectura, sin acciones por
+      fila). Cobertura existente: `test_iper.py:182,188`.
+- [x] `academic/procedure_steps.html` — **HECHA (2026-08-29, receta
+      BaseInlineObjectManagement)**; selenium pendiente de confirmar al escribir esto:
+      - API: `ProcedureRequiredObjectViewSet` y `ProcedureObservationViewSet`
+        (`academic/api/views.py`) heredan de `ProcedureStepInlineManagement`
+        (`BaseInlineObjectManagement` + Token/Session auth + `AllPermissionByAction`).
+        Padre por URL: `academic/<org_pk>/step/<parent_pk>/api_{requiredobject,observation}/`.
+        `get_parent_queryset()` acota a la org del prefijo (content_type
+        organizationstructure + object_id=org) y ADMITE procedimientos legados con
+        content_type nulo — el fixture y los datos viejos los tienen, y el flujo FBV
+        anterior no filtraba nada (esto es estrictamente más seguro que antes).
+        `user_is_allowed_on_organization` se conserva. Auditoría: `perform_create`/
+        `perform_destroy` con los mismos mensajes de `organilab_logentry`.
+      - Permisos por acción: requiredobject create=add_procedurerequiredobject,
+        destroy=delete_procedurerequiredobject; observation create/destroy=
+        add/delete_procedureobservations; list=view_procedure; el resto → 403.
+      - Se BORRARON los FBVs `save_object`/`remove_object`/`save_observation`/
+        `remove_observation` + `get_objects`/`get_observations`, sus urls
+        (incluido el alias roto `add_object` con paréntesis en el path) y
+        `AddObjectStepForm`. OJO histórico: `delete_step` vive ENTRE esos FBVs —
+        se conserva (lo usa `detail.html`).
+      - Forms renombrados para mapear 1:1 con serializers (el modal de la lib
+        serializa por nombre): `ObjectForm.unit`→`measurement_unit`,
+        `ObservationForm.procedure_description`→`description` (ahora GTForm).
+        Se instancian con prefijos `reqobj`/`obs` en los contextos de
+        `ProcedureStepCreateView`/`UpdateView`.
+      - Template: tablas vacías `#table-reqobj`/`#table-obs` + includes de
+        `modal_template{,_delete}.html` de la lib (ids conservados `object_modal`/
+        `observation_modal`) SOLO `{% if step %}`; en la página de crear se muestra
+        "Save the step to add objects/observations" — antes los botones aparecían
+        pero el JS no tenía urls (flujo roto). `step_modal.html` BORRADO (incluía
+        además `remove_object_modal`, roto y muerto). OJO plantillas: las variables
+        `{% url ... as x %}` de `block content` NO llegan a `block js` — se
+        redeclaran ahí.
+      - JS: nuevo `academic/static/js/procedure_step_inline.js` (2 ObjectCRUD;
+        botones create con clases `create-reqobj-btn`/`create-obs-btn` para los
+        selectores selenium). `procedures.js` purgado de las 6 funciones del flujo
+        viejo; `sendrequest` ya solo recarga (las ramas action 1/2 regeneraban las
+        tablas viejas); se conservan `delete_step`/`delete_procedure`/`open_alert`
+        (los usa `detail.html`).
+      - Tests: reescritos los 4 de FBV a API + 3 nuevos (list, quantity inválida→400,
+        cross-parent→404). academic 49/49 OK. Selenium: helpers `object_step`/
+        `remove_object`/`observation`/`remove_observation` actualizados a los
+        selectores nuevos (`create-*-btn`, `id_reqobj-*`, `id_obs-description`,
+        `.formadd`, `.delbtn`).
+      - Las claves `save_object`/`remove_object`/`add_observation_*`/
+        `remove_observation` de `urlname_permissions.py` y los
+        `define_urlname_action` del template se conservan (son claves de grupos de
+        permisos RBAC, no URLs).
 - [x] `msds/regulation/regulations_document.html` — **SE QUEDA como está** (verificado
       2026-08-29): vista PÚBLICA/anónima (`msds/views.py:187`, sin login ni org_pk, url raíz
       `regulation_docs`) y EN USO (sidebar.html:42 y tutorial.html:105).
