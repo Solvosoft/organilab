@@ -41,12 +41,9 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
         self.assertEqual(response.status_code, 302)
         self.assertTrue(MaterialCapacity.objects.last().capacity == 200)
         self.assertEqual(total_obj + 1, Object.objects.all().count())
-        success_url = (
-            reverse(
-                "laboratory:objectview_list",
-                kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk},
-            )
-            + "?type_id=1"
+        success_url = reverse(
+            "laboratory:object_view",
+            kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk},
         )
         self.assertRedirects(response, success_url)
 
@@ -224,12 +221,9 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
         self.assertEqual(response.status_code, 302)
         self.assertTrue(not hasattr(Object.objects.last(), "materialcapacity"))
         self.assertTrue(total_obj < Object.objects.all().count())
-        success_url = (
-            reverse(
-                "laboratory:objectview_list",
-                kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk},
-            )
-            + "?type_id=2"
+        success_url = reverse(
+            "laboratory:equipment_list",
+            kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk},
         )
         self.assertRedirects(response, success_url)
 
@@ -255,12 +249,9 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
             "plaque": "RA4300",
             "type": "0",
         }
-        success_url = (
-            reverse(
-                "laboratory:objectview_list",
-                kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk},
-            )
-            + "?type_id=0"
+        success_url = reverse(
+            "laboratory:sustance_list",
+            kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk},
         )
         response = self.client.post(url, data=data)
         new_object = Object.objects.filter(type=1).first()
@@ -292,12 +283,9 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
             "capacity": 21.54,
             "capacity_measurement_unit": 64,
         }
-        success_url = (
-            reverse(
-                "laboratory:objectview_list",
-                kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk},
-            )
-            + "?type_id=0"
+        success_url = reverse(
+            "laboratory:sustance_list",
+            kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk},
         )
         response = self.client.post(url, data=data)
         new_object = Object.objects.filter(type=1).first()

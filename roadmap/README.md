@@ -3,6 +3,10 @@
 Rama de trabajo: `dj060`. Biblioteca: checkout `~/Desktop/desarrollo/django-gentelella-widgets`,
 rama `development` (instalación editable durante el desarrollo; mecanismo de CI pendiente de decidir).
 
+**Entorno:** venv `~/entornos/organilab`. OJO: una reinstalación desde requirements puede pisar
+la editable con la djgentelella de PyPI (pasó el 2026-08-29: faltaba `djgentelella.async_notification`,
+que solo existe en 0.6.0); se restaura con `pip install -e ~/Desktop/desarrollo/django-gentelella-widgets`.
+
 | Etapa | Documento | Contenido | Riesgo | Estado |
 |---|---|---|---|---|
 | 0 | `00_ANALISIS_DJGENTELELLA_060.md` + `BASELINE.md` | Análisis de la biblioteca, baseline de pruebas (891/891 OK), backups | — | hecha |

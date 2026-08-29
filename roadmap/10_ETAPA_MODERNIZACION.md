@@ -138,11 +138,15 @@ correcto) y hazard_map{,_visual} son salidas de reporte.
 Conversiones reales pendientes (auditoría fina 2026-08-29; ninguna tiene serializer/viewset
 previo salvo donde se indica):
 
-- [ ] ~~`laboratory/shelf_list.html`~~ → **BORRAR, no convertir**: template HUÉRFANO. Solo lo
-      usaría `laboratory/generic.py:14` `ShelfListView`, que no se importa ni rutea en ningún
-      lado. El grid vivo de estantes es `shelf_card.html` vía `furniture_tags.py:22`. Además
-      es una matriz de posiciones, no una tabla. Acción: borrar template + `generic.py` tras
-      confirmar. Sin tests que lo cubran.
+- [ ] `laboratory/shelf_list.html` — decisión de Luis (2026-08-29): NO se borra. La carga
+      por AJAX de partes de la vista de laboratorio (labview) es funcionalidad deseada; la
+      implementación AJAX actual (era django_ajax) debe reemplazarse COMPLETA por componentes
+      de la lib, pero manteniendo una interacción de usuario similar — que no se pierda
+      funcionalidad aunque la implementación cambie. Contexto técnico: hoy los fragmentos
+      vivos son `shelf_details.html` (`views/shelfs.py:378,469`) y `shelf_card.html`
+      (`furniture_tags.py:22`); `shelf_list.html`/`generic.py` quedan en su lugar hasta
+      diseñar el equivalente. Es la continuación natural de la etapa 2 (salida total de
+      django_ajax) y se trabaja como sub-proyecto propio del labview.
 - [ ] `laboratory/register_user_qr/register_user_qr_list.html` — vista
       `RegisterUserQRList(ListView)` (`views/laboratory.py:500`), url
       `laboratory:list_register_user_qr`, modelo `RegisterUserQR` (GenericFK + 2 FKs org).
@@ -168,22 +172,24 @@ previo salvo donde se indica):
 - [ ] `academic/procedure_steps.html` — NO es un listado: página de formulario con 2 tablas
       inline (`procedurerequiredobject_set`, `procedureobservations_set`). Es el caso
       `BaseInlineObjectManagement` de la receta de abajo, no ObjectCRUD plano.
-- [ ] `msds/regulation/regulations_document.html` — ⚠️ vista PÚBLICA/anónima
-      (`msds/views.py:187`, sin login ni org_pk, url raíz `regulation_docs`).
-      `AuthAllPermBaseObjectManagement` exige sesión+permisos → convertir tal cual ROMPE el
-      acceso anónimo y `msds/tests.py:39` (asserta `object_list` en contexto). Opciones:
-      dejarla como está (recomendado: 3 columnas, solo link de descarga) o viewset con
-      permisos laxos. Decidir con Luis antes de tocar.
-- [ ] `laboratory:objectview_list` → **RETIRAR**: confirmado que la rama con permisos rinde
-      vacío (`objectview_list.html:38-42`) y ningún menú enlaza la página (solo
-      `define_urlname_action`). Ya existe el reemplazo en producción:
-      `laboratory:object_view` + `ObjectViewSet` (`api/views.py:1653`) +
-      `object_management.js`. Acción: retirar URL/vista/template y repuntar los 3
-      `success_url` de `ObjectCreateView`/`ObjectUpdateView`/`ObjectDeleteView`
-      (`views/objects.py:53,110,185,192`) a `laboratory:object_view`; ajustar los
-      `assertRedirects` (`test_object.py:103,135`, `test_object_material.py:46,229,260,297`)
-      y la entrada en `urlname_permissions.py:623`. Nota: `ObjectViewSet.get_queryset()`
-      fuerza `type=MATERIAL` — reactivos y equipos ya tienen sus pantallas migradas propias.
+- [x] `msds/regulation/regulations_document.html` — **SE QUEDA como está** (verificado
+      2026-08-29): vista PÚBLICA/anónima (`msds/views.py:187`, sin login ni org_pk, url raíz
+      `regulation_docs`) y EN USO (sidebar.html:42 y tutorial.html:105).
+      `AuthAllPermBaseObjectManagement` exige sesión+permisos → convertirla rompería el
+      acceso anónimo y `msds/tests.py:39`. Son 3 columnas con solo link de descarga; no
+      justifica un viewset con permisos laxos.
+- [x] `laboratory:objectview_list` — **RETIRADA (hecho 2026-08-29)**: verificado que la rama
+      con permisos rendía vacío y ningún menú/JS enlazaba la página; era duplicado de las
+      pantallas vivas por tipo (material `object_view` + ObjectCRUD, reactivo
+      `sustance_list`, equipo `equipment_list`). Hecho: borrado
+      `objectview_list.html`; eliminada `ObjectListView` interna y la ruta `list` de
+      `ObjectView.get_urls()`; los 3 `success_url` de crear/editar/borrar ahora redirigen
+      POR TIPO vía helper `get_object_list_url()` (`views/objects.py`); tests ajustados
+      (`test_object.py`, `test_object_material.py`) → 43/43 OK. Se conservan:
+      `objectview_create/update/delete` (páginas con tests de validación de capacidad),
+      la clave `objectview_list` en `urlname_permissions.py:623` y los
+      `define_urlname_action 'objectview_list'` de las 5 pantallas vivas (es clave de grupo
+      de permisos, no una URL — `define_urlname_action` no hace reverse).
 
 Patrón: viewset `AuthAllPermBaseObjectManagement` (o reusar el existente) + serializer con
 columnas + template con tabla vacía + `ObjectCRUD` (ver `regents.html` como referencia interna).

@@ -9,7 +9,6 @@ Free as freedom will be 26/8/2016
 from django.contrib import messages
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.contrib.auth.decorators import login_required, permission_required
-from django.db.models.query_utils import Q
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.urls import path
@@ -32,9 +31,23 @@ from laboratory.models import (
     MaterialCapacity,
     Object,
 )
-from laboratory.utils import organilab_logentry, get_pk_org_ancestors_decendants
-from laboratory.views.djgeneric import CreateView, DeleteView, UpdateView, ListView
+from laboratory.utils import organilab_logentry
+from laboratory.views.djgeneric import CreateView, DeleteView, UpdateView
 from auth_and_perms.organization_utils import user_is_allowed_on_organization
+
+
+# El listado unificado objectview_list se retiró (rendía vacío); cada tipo tiene su
+# pantalla propia con ObjectCRUD, y ahí redirigen ahora crear/editar/borrar.
+OBJECT_TYPE_LIST_URLNAMES = {
+    Object.REACTIVE: "laboratory:sustance_list",
+    Object.MATERIAL: "laboratory:object_view",
+    Object.EQUIPMENT: "laboratory:equipment_list",
+}
+
+
+def get_object_list_url(type_id, org_pk, lab_pk):
+    urlname = OBJECT_TYPE_LIST_URLNAMES.get(type_id, "laboratory:object_view")
+    return reverse_lazy(urlname, args=(org_pk, lab_pk))
 
 
 class ObjectView(object):
@@ -48,14 +61,7 @@ class ObjectView(object):
             permission_required = ("laboratory.add_object",)
 
             def get_success_url(self, *args, **kwargs):
-                redirect = (
-                    reverse_lazy(
-                        "laboratory:objectview_list", args=(self.org, self.lab)
-                    )
-                    + "?type_id="
-                    + self.object.type
-                )
-                return redirect
+                return get_object_list_url(self.object.type, self.org, self.lab)
 
             def get_form_kwargs(self):
                 kwargs = super(ObjectCreateView, self).get_form_kwargs()
@@ -105,13 +111,7 @@ class ObjectView(object):
         class ObjectUpdateView(UpdateView):
 
             def get_success_url(self):
-                return (
-                    reverse_lazy(
-                        "laboratory:objectview_list", args=(self.org, self.lab)
-                    )
-                    + "?type_id="
-                    + self.get_object().type
-                )
+                return get_object_list_url(self.get_object().type, self.org, self.lab)
 
             def get_form_kwargs(self):
                 kwargs = super(ObjectUpdateView, self).get_form_kwargs()
@@ -176,21 +176,8 @@ class ObjectView(object):
         class ObjectDeleteView(DeleteView):
 
             def get_success_url(self):
-                if "type_id" in self.request.GET:
-
-                    self.type_id = self.request.GET.get("type_id", "")
-
-                    return (
-                        reverse_lazy(
-                            "laboratory:objectview_list", args=(self.org, self.lab)
-                        )
-                        + "?type_id="
-                        + self.type_id
-                    )
-                else:
-                    return reverse_lazy(
-                        "laboratory:objectview_list", args=(self.org, self.lab)
-                    )
+                type_id = self.request.GET.get("type_id", "")
+                return get_object_list_url(type_id, self.org, self.lab)
 
             def form_valid(self, form):
                 success_url = self.get_success_url()
@@ -213,54 +200,8 @@ class ObjectView(object):
             template_name=self.template_name_base + "_delete.html",
         )
 
-        @method_decorator(
-            permission_required("laboratory.view_object"), name="dispatch"
-        )
-        class ObjectListView(ListView):
-
-            def get_queryset(self):
-                filters = Q(
-                    organization__in=get_pk_org_ancestors_decendants(
-                        self.request.user, self.org
-                    ),
-                    is_public=True,
-                ) | Q(organization__pk=self.org, is_public=False)
-                query = ListView.get_queryset(self).filter(filters).distinct()
-
-                if "type_id" in self.request.GET:
-                    self.type_id = self.request.GET.get("type_id", "")
-                    if self.type_id:
-                        filters = Q(type=self.type_id)
-                        query = query.filter(filters)
-                else:
-                    self.type_id = ""
-
-                if "q" in self.request.GET:
-                    self.q = self.request.GET.get("q", "")
-                    if self.q:
-                        query = query.filter(
-                            Q(name__icontains=self.q) | Q(code__icontains=self.q)
-                        )
-                else:
-                    self.q = ""
-                return query.distinct()
-
-            def get_context_data(self, **kwargs):
-                context = ListView.get_context_data(self, **kwargs)
-                context["q"] = self.q or ""
-                context["type_id"] = self.type_id or ""
-                return context
-
-        self.list = ObjectListView.as_view(
-            model=self.model,
-            paginate_by=10,
-            ordering=["code"],
-            template_name=self.template_name_base + "_list.html",
-        )
-
     def get_urls(self):
         return [
-            path("list", self.list, name="objectview_list"),
             path("create", self.create, name="objectview_create"),
             path("edit/<int:pk>", self.edit, name="objectview_update"),
             path("delete/<int:pk>", self.delete, name="objectview_delete"),
