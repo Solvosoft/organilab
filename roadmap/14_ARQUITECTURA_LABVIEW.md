@@ -2,7 +2,8 @@
 
 Documento de **arquitectura**: explica las capas del subproyecto labview y **por qué** son
 así. El plan ejecutable (fases, archivos, orden) está en
-[`14_ETAPA_LABVIEW.md`](14_ETAPA_LABVIEW.md).
+[`14_ETAPA_LABVIEW.md`](14_ETAPA_LABVIEW.md) y el prototipo visual de la pantalla en
+[`14_labview_prototipo.svg`](14_labview_prototipo.svg).
 
 ## El problema que resuelve
 

@@ -4,6 +4,8 @@
 (viene de la etapa 2 y de la etapa 10 §labview).
 
 > Arquitectura y decisiones de diseño: [`14_ARQUITECTURA_LABVIEW.md`](14_ARQUITECTURA_LABVIEW.md).
+> Prototipo visual de la pantalla: [`14_labview_prototipo.svg`](14_labview_prototipo.svg)
+> (vista de consulta, modo edición, móvil y leyenda de riesgo/permisos).
 > Este documento es el plan ejecutable (qué se hace, en qué orden, con qué archivos).
 
 ## Objetivo
