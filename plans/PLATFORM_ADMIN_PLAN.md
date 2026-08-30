@@ -12,7 +12,7 @@
 > **Principio rector: reutilizar, no reinventar.** Se construye sobre **djgentelella 0.6.0**
 > (`djgentelella.history`, `djgentelella.trash`, `djgentelella.async_notification`,
 > `djgentelella.notification`, `MenuItem`) y sobre lo que Organilab ya tiene
-> (`organilab_logentry`, `LabOrgLogEntry`, `Catalog`, `PendingTask`, `REPORT_FORMS`, `Tutorial`).
+> (`organilab_logentry`, `HistoryRelation`, `Catalog`, `PendingTask`, `REPORT_FORMS`, `Tutorial`).
 > Ver [`DJGENTELELLA_060_NOTES.md`](DJGENTELELLA_060_NOTES.md) para el detalle de cada pieza y las
 > trampas conocidas.
 
@@ -41,9 +41,10 @@ Este plan cierra esos seis huecos sin crear un app nuevo.
 
 - **Sin app nueva.** Ayuda y configuración viven en `src/presentation/`; bitácora y justificación en
   `src/laboratory/`, junto a la auditoría existente.
-- **La bitácora no cambia de motor.** Sigue siendo `django.contrib.admin.LogEntry` + `LabOrgLogEntry`;
-  se amplía la **consulta**, no la captura. La consulta se arma sobre `djgentelella.history`, que
-  usa exactamente ese motor.
+- **La bitácora no cambia de motor.** Sigue siendo `django.contrib.admin.LogEntry`; el proyecto 13
+  (`roadmap/13_HISTORY_TRASH.md`) ya sustituyó el `LabOrgLogEntry` propio por la `HistoryRelation`
+  de la biblioteca. Se amplía la **consulta**, no la captura. La consulta se arma sobre
+  `djgentelella.history`, que usa exactamente ese motor.
 - **La justificación es opt-in por modelo**, nunca global: solo donde el cambio arrastra registros
   dependientes.
 - **Los catálogos administrables usan el modelo `Catalog`** (`src/laboratory/models.py:52`,
@@ -103,12 +104,12 @@ multi-tenant.
 
 | Pieza | Origen | Trabajo |
 |-------|--------|---------|
-| Viewset base | `djgentelella.history.api.HistoryViewSet` | **Subclasificar** en `src/laboratory/api/views.py` para cruzar con `LabOrgLogEntry` (`src/laboratory/models.py:1740`): entradas ligadas a la org actual **o a sus descendientes** (el árbol ya es `TreeNode`) o a un laboratorio de esa org, conservando `get_logentries_org_management()`. Sin esta subclase, la pantalla mostraría la bitácora de **todas** las organizaciones |
+| Viewset base | `djgentelella.history.api.HistoryViewSet` | **Ya hecho** por el proyecto 13: `LogEntryViewSet` (`src/laboratory/api/views.py`) subclasea el viewset de la lib y acota por `scope_queryset()` con un join a `HistoryRelation` (org de la URL + laboratorios de esa org), con `recordsTotal` también acotado. `get_logentries_org_management()` fue eliminada. Lo que falta para esta pantalla es solo extender el alcance a las **organizaciones descendientes** (el árbol ya es `TreeNode`) |
 | Modelos vigilados | `GT_HISTORY_ALLOWED_MODELS` en `settings.py` | Declarar la lista, incluyendo `"djgentelella.trash"`. **Es obligatorio**: sin el setting, `HistoryViewSet.get_queryset()` falla al recibir `?contenttype=…` |
 | Filtros | `history.filterset.HistoryFilterSet` | Ya filtra por fecha, usuario, acción y texto. Extender con `content_type__app_label` / `content_type__model` para el filtro por módulo |
 | Selector de módulo | `HistoryFilterForm` (patrón de `docs/source/history.rst`) | Formulario `GTForm` con las apps de Organilab etiquetadas en español; el JS lo inyecta en el filtro del datatable |
 | Pantalla | `ObjectCRUD` + `docs/source/history.rst` | Copiar la configuración de columnas del ejemplo y agregar la columna de detalle antes→después |
-| Valor anterior → nuevo | Propio | `add_log()` de la biblioteca no guarda valores, solo nombres de campo. Se mantiene el plan: nueva `get_field_diffs(old_values, instance)` en `src/laboratory/utils.py` que devuelve `{campo: {"old": …, "new": …}}`; `get_changed_fields()` queda como wrapper que devuelve `list(diffs)` — **las ≈280 llamadas existentes no se tocan**. `organilab_logentry()` serializa `[{"changed": {"fields": [...], "diffs": {...}}}]`, compatible con el parser de Django admin |
+| Valor anterior → nuevo | Propio | `add_log()` de la biblioteca no guarda valores, solo nombres de campo. Se mantiene el plan: nueva `get_field_diffs(old_values, instance)` en `src/laboratory/utils.py` que devuelve `{campo: {"old": …, "new": …}}` (el antiguo `get_changed_fields()` se borró: nunca tuvo llamadores). **Las ≈280 llamadas a `organilab_logentry` no se tocan.** `organilab_logentry()` serializa `[{"changed": {"fields": [...], "diffs": {...}}}]`, compatible con el parser de Django admin |
 | Serializer | `history.serializers.HistorySerializer` | Subclasificar para exponer `diffs` y `justification` |
 | Exportación | `src/report/register.py` | Registrar `report_audit_log` con `html`/`pdf`/`xls`/`xlsx`/`ods`; formulario en `src/report/forms.py`, vistas en `src/report/views/audit.py` clonadas de `object_changes.py`; tarea `report.tasks.task_report` |
 
@@ -163,7 +164,7 @@ todo eso en la bitácora.
 ### Diseño en Organilab
 
 ```python
-# src/laboratory/models.py, junto a LabOrgLogEntry
+# src/laboratory/models.py
 class ChangeJustification(models.Model):
     log_entry = models.OneToOneField("admin.LogEntry", on_delete=models.CASCADE)
     justification = models.TextField(verbose_name=_("Justification"))

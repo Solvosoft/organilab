@@ -8,7 +8,7 @@ from django.urls import reverse
 
 from auth_and_perms.models import ProfilePermission, Rol
 from djgentelella.models import Trash, TrashRelation
-from laboratory.models import Protocol
+from laboratory.models import Laboratory, Protocol
 from laboratory.tests.utils import BaseLaboratorySetUpTest, BaseSetUpAjaxRequest
 
 
@@ -231,3 +231,57 @@ class TrashScopeTest(TrashPilotBase):
             self.list_url(self.org1), {"limit": 10, "offset": 0}
         )
         self.assertIn(response.status_code, (302, 403))
+
+
+class ProtocolApiIsReadOnlyTest(BaseLaboratorySetUpTest):
+    """El viewset de protocolos solo lista.
+
+    Cuando era un ModelViewSet completo, DELETE .../api_protocol/<pk>/
+    ejecutaba instance.delete() sin usuario ni related_objects: el protocolo
+    entraba a la papelera sin TrashRelation y, como la pantalla org-scoped
+    filtra justamente por esa relación, quedaba borrado e irrecuperable.
+    """
+
+    def detail_url(self, pk):
+        return "%s%d/" % (reverse("laboratory:api-protocol-list"), pk)
+
+    def test_delete_is_not_routed_and_the_protocol_survives(self):
+        protocol = Protocol.objects.get(
+            name="Manipulación de instrumentos de laboratorio"
+        )
+        # Como XHR para que HandleErrorMiddleware no convierta el 404 en un
+        # redirect a la pantalla de error.
+        response = self.client.delete(
+            self.detail_url(protocol.pk), HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+        )
+
+        self.assertEqual(response.status_code, 404)
+        self.assertTrue(Protocol.objects.filter(pk=protocol.pk).exists())
+        self.assertFalse(
+            Trash.objects.filter(
+                content_type__app_label="laboratory",
+                content_type__model="protocol",
+                object_id=protocol.pk,
+            ).exists()
+        )
+
+    def test_records_total_is_scoped_to_the_laboratory(self):
+        other_lab = Laboratory.objects.exclude(pk=self.lab.pk).first()
+        Protocol.objects.create(
+            name="Protocolo de otro laboratorio",
+            short_description="corto",
+            file="protocols/otro.pdf",
+            laboratory=other_lab,
+            upload_by=self.user,
+        )
+        response = self.client.get(
+            reverse("laboratory:api-protocol-list"),
+            data={"org_pk": self.org.pk, "lab_pk": self.lab.pk},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json()["recordsTotal"],
+            Protocol.objects.filter(laboratory=self.lab).count(),
+        )
+        self.assertNotContains(response, "Protocolo de otro laboratorio")

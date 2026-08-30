@@ -91,7 +91,7 @@ Estado: ✅ existe · 🟡 parcial · ❌ falta · ⛔ no aplica a Organilab
 | 5.5.9 Indicadores normalizados (por funcionario, m², vehículo, NIS) | ❌ | Los **denominadores ya existen**: `Buildings.area`, `Structure.area` + unidad, `Workday.num_workers` |
 | 5.5.10 Comparación entre períodos con variación absoluta y % | ❌ | Depende del plan de consumos |
 | 5.5.11 Alertas por consumo atípico contra umbrales | ❌ | Existe el patrón en inventario (`ReactiveLimit`, `ObjectMaximumLimit`), no para consumos |
-| 5.6 Bitácora de auditoría consultable, filtrable y exportable | 🟡 | **Captura sí, consulta limitada.** `organilab_logentry` (`src/laboratory/utils.py:249`) instrumenta ≈280 puntos y `LabOrgLogEntry` (`src/laboratory/models.py:1740`) relaciona cada entrada con lab/org. Pero la vista `logentry_list` (`src/laboratory/urls.py:307`) + `LogEntryViewSet` (`src/laboratory/api/views.py:319`) **filtra solo `content_type` `laboratory`/`organizationstructure`**, no exporta, y no muestra valor anterior/nuevo |
+| 5.6 Bitácora de auditoría consultable, filtrable y exportable | 🟡 | **Captura sí, consulta limitada.** `organilab_logentry` (`src/laboratory/utils.py`) instrumenta ≈280 puntos y, desde el proyecto 13, es un puente sobre `add_log` de djgentelella: la relación con lab/org la guarda `HistoryRelation` (antes el `LabOrgLogEntry` propio, ya eliminado). `LogEntryViewSet` (`src/laboratory/api/views.py`) ya acota por organización con `scope_queryset()`, pero la pantalla `logentry_list` sigue **sin exportar** y **sin mostrar valor anterior/nuevo** |
 | Exportación PDF/Word/Excel de todo reporte | ✅ | `REPORT_FORMS` en `src/report/register.py` ya declara `html`/`pdf`/`xls`/`xlsx`/`ods` por reporte, con generación asíncrona (`report.tasks.task_report`) |
 
 ---

@@ -1,7 +1,10 @@
 # Proyecto history/Trash — estado y traspaso (2026-08-30)
 
-Plan aprobado completo en `~/.claude/plans/vamos-a-revisar-roadmap-composed-cookie.md`
-(fases A/B/C con decisiones de Luis). Este documento es el traspaso operativo.
+Este documento es el traspaso operativo y **el único registro** del proyecto: el
+archivo de plan original (`~/.claude/plans/vamos-a-revisar-roadmap-composed-cookie.md`)
+fue reutilizado después por el proyecto 14 y ya no contiene este plan.
+La fase D (extender la papelera más allá de los dos pilotos) está diseñada en
+[`13D_FASE_D_PAPELERA.md`](13D_FASE_D_PAPELERA.md).
 
 ## Decisiones ya tomadas por Luis (NO re-preguntar)
 
@@ -84,11 +87,11 @@ Plan aprobado completo en `~/.claude/plans/vamos-a-revisar-roadmap-composed-cook
 4. ~~Commit de organilab~~ HECHO (ver git log). ~~Commit de la lib~~ HECHO en su
    checkout (`ba63783`, `7645a4e`, `94a568d`).
 5. ~~get_logentries_org_management~~ HECHO: eliminada (0 llamadores).
-6. Traducciones: la lib ganó strings nuevos (mensajes de restore/errores) — se
-   compilan en el repo de la LIB, no en organilab; organilab no ganó strings.
-7. Menor preexistente: `makemigrations --check` acusa deriva en
-   `report/0009_alter_taskreport_language` (default desde settings) — decidir
-   aparte, no es de este proyecto.
+6. ~~Traducciones de la lib~~ HECHO (2026-08-30, ver "Cierre"): 9 msgids del
+   proyecto traducidos y compilados en el repo de la LIB; organilab no ganó
+   strings.
+7. ~~Deriva de `report/0009_alter_taskreport_language`~~ CERRADO:
+   `makemigrations --check --dry-run` sale limpio (2026-08-30).
 8. ~~FASE C (papelera)~~ **HECHA (2026-08-29)** — ver la sección siguiente.
 
 ## HECHO — Fase C (papelera, 2026-08-29)
@@ -166,3 +169,51 @@ Notas de corte:
   `GENERATE_SCREENSHOTS=False xvfb-run -a ...`.
 - OJO entorno: la lib debe estar instalada EDITABLE en `~/entornos/organilab`
   (una reinstalación desde requirements la pisa; `pip install -e` la restaura).
+
+
+## Cierre y limpieza (2026-08-30)
+
+Revisión del proyecto contra el código real de la rama `labview`. Todo lo
+documentado arriba está implementado; lo que faltaba:
+
+**Bug corregido — fuga de la papelera en `ProtocolViewSet`.**
+`src/laboratory/api/views.py` exponía un `ModelViewSet` completo con solo
+`IsAuthenticated` bajo `inform/api/api_protocol/`, aunque la pantalla solo usa
+`list`. Un `DELETE .../<pk>/` ejecutaba el `perform_destroy` por defecto de DRF
+→ `instance.delete()` **sin `user` ni `related_objects`**: fila `Trash` con
+`deleted_by=None` y sin `TrashRelation`, así que `OrganizationTrashViewSet
+.scope_queryset` (que exige el join con la organización) nunca la listaba y el
+protocolo quedaba borrado, invisible e irrecuperable. Además no validaba
+organización ni laboratorio en `destroy`/`update`. Ahora es
+`mixins.ListModelMixin + viewsets.GenericViewSet`, y su `recordsTotal` dejó de
+ser el `Protocol.objects.count()` global (misma fuga multi-tenant que la fase B
+corrigió en `LogEntryViewSet`). Dos tests nuevos en `tests/test_trash.py`.
+
+**Código muerto eliminado.** `LogEntry` del import de `laboratory/api/views.py`
+(quedó sin uso al heredar de `HistoryViewSet`), `from laboratory.views import
+logentry` en `msds/api/api.py`, y dos funciones sin llamadores en
+`laboratory/utils.py`: `get_changed_fields` y
+`get_laboratories_from_organization_profile`. Los dos primeros son F401 que el
+"lint global 0 avisos" no cazó porque **pycodestyle no revisa imports**.
+
+**Permisos.** `trash_list` entró a `URLNAME_PERMISSIONS`
+(`auth_and_perms/management/commands/urlname_permissions.py`) con los tres
+permisos de la papelera, para que se puedan configurar por organización desde el
+panel de permisos de la página. `logentry_list` NO se añadió: su vista no exige
+ningún permiso, declararlo ahí inventaría una exigencia que el código no aplica.
+
+**Documentación corregida** (describía la arquitectura anterior):
+`plans/PLATFORM_ADMIN_PLAN.md`, `plans/SIGMA_GAP_ANALYSIS.md`,
+`plans/DJGENTELELLA_060_NOTES.md`; y `plans/AGENT_BRIEFING.md` ganó la sección
+de `DeletedWithTrash` con la regla de `related_objects`.
+
+**Lib** (`~/Desktop/desarrollo/django-gentelella-widgets`, sin commitear):
+entrada de `CHANGELOG.rst` para `HistoryRelation`/`TrashRelation` (los tres
+commits del proyecto no la habían escrito) y las 9 traducciones al español —
+tres de ellas venían marcadas `fuzzy` con textos ajenos (`Log entry` →
+"Ingresar"), que `compilemessages` habría descartado.
+
+**Se dejó como está:** `static/js/trash_list.js` no se movió a
+`static/laboratory/js/` — ese directorio tiene otros siete JS de la app
+(`register_user_qr_list.js`, `disposal.js`, …), así que moverlo solo lo separaría
+de sus vecinos.
