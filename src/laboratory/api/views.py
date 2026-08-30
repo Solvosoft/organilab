@@ -1,7 +1,7 @@
 import logging
 
 from django.conf import settings
-from django.contrib.admin.models import LogEntry, DELETION, CHANGE, ADDITION
+from django.contrib.admin.models import DELETION, CHANGE, ADDITION
 from django.contrib.auth.decorators import permission_required, login_required
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Value, DateField, Q, Subquery
@@ -289,7 +289,17 @@ class CommentAPI(viewsets.ModelViewSet):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-class ProtocolViewSet(viewsets.ModelViewSet):
+class ProtocolViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    """Solo listado: la pantalla de protocolos no crea ni edita por aquí.
+
+    Era un ModelViewSet completo con solo IsAuthenticated, así que exponía
+    create/update/destroy sin validar organización ni laboratorio (el filtro
+    por lab_pk solo corre en el listado). Peor: su destroy llamaba al
+    delete() de DeletedWithTrash sin usuario ni related_objects, y un
+    protocolo sin TrashRelation nunca aparece en la papelera org-scoped —
+    quedaba borrado, invisible e irrecuperable.
+    """
+
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = serializers.ProtocolDataTableSerializer
@@ -301,21 +311,23 @@ class ProtocolViewSet(viewsets.ModelViewSet):
     ordering_fields = ["pk"]
     ordering = ("pk",)
 
-    def filter_queryset(self, queryset):
-        queryset = super().filter_queryset(queryset)
+    def scope_queryset(self, queryset):
         lab_pk = self.request.GET.get("lab_pk", None)
-        if lab_pk:
-            queryset = queryset.filter(laboratory__pk=lab_pk)
-        else:
-            queryset = queryset.none()
-        return queryset
+        if not lab_pk:
+            return queryset.none()
+        return queryset.filter(laboratory__pk=lab_pk)
+
+    def filter_queryset(self, queryset):
+        return self.scope_queryset(super().filter_queryset(queryset))
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         data = self.paginate_queryset(queryset)
         response = {
             "data": data,
-            "recordsTotal": Protocol.objects.count(),
+            # Scoped al laboratorio: el count global fugaba el volumen de
+            # toda la plataforma a cualquier inquilino.
+            "recordsTotal": self.scope_queryset(self.get_queryset()).count(),
             "recordsFiltered": queryset.count(),
             "draw": self.request.GET.get("draw", 1),
         }

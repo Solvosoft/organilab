@@ -3344,6 +3344,26 @@ URLNAME_PERMISSIONS = {
             "permission": "sga.view_recipientsize",
         },
     ],
+    # La papelera es de la biblioteca: sus permisos viven en djgentelella,
+    # no en laboratory. update_roles.update_papelera() ya se los da a los
+    # roles fijos; esto es lo que permite configurarlos por organización.
+    "trash_list": [
+        {
+            "name": "View Trash",
+            "category": "Trash",
+            "permission": "djgentelella.view_trash",
+        },
+        {
+            "name": "Restore from Trash",
+            "category": "Trash",
+            "permission": "djgentelella.change_trash",
+        },
+        {
+            "name": "Delete permanently from Trash",
+            "category": "Trash",
+            "permission": "djgentelella.delete_trash",
+        },
+    ],
 }
 
 # create_sustance, update_substance y step_one son la misma vista, así que

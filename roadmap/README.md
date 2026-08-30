@@ -23,14 +23,15 @@ que solo existe en 0.6.0); se restaura con `pip install -e ~/Desktop/desarrollo/
 | 10 | `10_ETAPA_MODERNIZACION.md` | Modales, formularios y tablas a mano → widgets (completa) | medio | hecha — 10a/10b/10c/10d ejecutadas; diferidos como proyectos aparte: labview (salida total de django_ajax) e history/Trash |
 | 11 | `11_ETAPA_SELENIUM.md` | Mejoras menores de la infraestructura selenium | bajo | hecha — 3 tests rescatados en verde (30/30), bugs de producto corregidos de paso |
 | 12 | `12_ETAPA_VALIDACION.md` | Validación final completa | — | hecha salvo smoke manual — unit 902/902, selenium ≈213/213, lint 0, migrate limpio |
-| 13 | `13_HISTORY_TRASH.md` | history/Trash: relaciones + extras JSON y papelera org-scoped (proyecto diferido de la 10) | medio | hecha — fases A, B y C; unit 917/917 |
+| 13 | `13_HISTORY_TRASH.md` + `13D_FASE_D_PAPELERA.md` | history/Trash: relaciones + extras JSON y papelera org-scoped (proyecto diferido de la 10) | medio | hecha y cerrada (2026-08-30) — fases A, B y C, más limpieza de residuos y el arreglo de la fuga de papelera del `ProtocolViewSet`; la fase D queda diseñada, sin implementar |
 | 14 | `14_ETAPA_LABVIEW.md` + `14_ARQUITECTURA_LABVIEW.md` + `14_labview_prototipo.svg` | labview: mapa digital del laboratorio sobre API, overlay de riesgo y salida total de django_ajax (proyecto diferido de la 2 y la 10) | **alto** | en curso — F0 (documentación y prototipo) hecha |
 
 ## Cambios hechos a djgentelella durante la migración (para su changelog/release)
 
 Los cambios 1-4 quedaron sin commitear al cierre de la etapa 12; los del proyecto 13
 (ítems 5 y 6) ya están commiteados en el checkout `development` (`ba63783`, `7645a4e`,
-`94a568d`).
+`94a568d`); su entrada de `CHANGELOG.rst` y sus 9 traducciones al español se
+escribieron después (2026-08-30) y siguen sin commitear.
 
 1. **`chartjs.py` + `tests/ChartJS_Test.py`** (etapa 7): fix genérico min/max de ejes —
    los valores configurados se propagan a Chart.js 4 (antes se perdían). Con test.

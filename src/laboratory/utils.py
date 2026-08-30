@@ -317,27 +317,6 @@ def organilab_logentry(
     )
 
 
-def get_changed_fields(old_values, instance):
-    """
-    Compara los valores anteriores con los actuales del objeto
-    y retorna la lista de campos que realmente cambiaron.
-
-    :param old_values: dict con {field_name: old_value} capturado ANTES de save()
-    :param instance: objeto actualizado DESPUÉS de save()
-    :return: list de nombres de campos modificados
-    """
-    changed = []
-    for field, old_value in old_values.items():
-        new_value = getattr(instance, field, None)
-        if hasattr(old_value, 'pk'):
-            old_value = old_value.pk
-        if hasattr(new_value, 'pk'):
-            new_value = new_value.pk
-        if old_value != new_value:
-            changed.append(field)
-    return changed
-
-
 def get_pk_org_ancestors(org_pk, descendants=True):
     organization = OrganizationStructure.objects.filter(pk=org_pk)
     pks = []
@@ -433,21 +412,6 @@ def get_organizations_register_user(organization, lab_id, org_register_pk=None):
 def check_has_profile(user):
     obj = Profile.objects.filter(user=user)
     return obj.exists()
-
-
-def get_laboratories_from_organization_profile(rootpk, user):
-    org = OrganizationStructure.objects.filter(pk=rootpk).first()
-    if org:
-        desendants = list(
-            OrganizationStructure.objects.filter(pk=rootpk)
-            .descendants(include_self=True, of=org)
-            .values_list("pk", flat=True)
-        )
-        return Laboratory.objects.filter(
-            organization__in=desendants, profile__user__pk=user
-        ).distinct()
-
-    return Laboratory.objects.none()
 
 
 def get_laboratories_by_user_profile(user, org_pk, get_all=False):

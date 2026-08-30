@@ -25,7 +25,7 @@ function waitForElementToDisplay(selector, checkFrequencyInMs, timeoutInMs) {
   })(jQuery);
 }
 
-function get_columns_logentry(){
+function get_columns_review_flow(){
     var columns = [
         {data: "creation_date", name: "creation_date", title: gettext("Creation Date"), type: "date",
         render: DataTable.render.datetime(), visible: true,  "dateformat":  document.datetime_format},
@@ -39,7 +39,7 @@ function get_columns_logentry(){
 }
 $(document).ready(function() {
        substancetable = createDataTable("#substancetable", document.urls.review_datatable_url, {
-          'columns': get_columns_logentry(),
+          'columns': get_columns_review_flow(),
           layout: {
               topStart: 'pageLength',
               top: 'buttons',
