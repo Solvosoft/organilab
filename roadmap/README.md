@@ -56,6 +56,15 @@ Sin commitear en el checkout `development` al cierre de la etapa 12:
    `deleted_by`, bulk `delete(user=)` con filas Trash; `__init__.py` en history/ y
    trash/; docs ampliadas; demo sin override de `perform_destroy`. Tests:
    `History_Test.py` nuevo + `Trash_Test.py` ampliado.
+6. **history/Trash (proyecto 13, fase C — papelera)**: nuevo modelo
+   **`TrashRelation`** (contexto del borrado: FK Trash + GenericFK, migración
+   0020) con admin; `DeletedWithTrash.delete(..., related_objects=)` y el
+   `delete()` de queryset registran ese contexto (instancias solamente, pk
+   pelado → ValueError; el primer borrado gana); `TrashViewSet` gana
+   `scope_queryset()` (acota list/restore/destroy y recordsTotal) y los
+   params `related_contenttype`/`related_id`; demo `Customer.delete` reenvía
+   `**kwargs`; docs `trash.rst` con la sección multi-tenant; `Trash_Test.py`
+   +8 tests.
 
 Ya venían de etapas previas y quedaron registrados en su documento de etapa; los cambios
 anteriores del checkout (rama `development`) se commitean en el repo de la lib con su

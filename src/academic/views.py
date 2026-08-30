@@ -595,8 +595,11 @@ def delete_procedure(request, org_pk):
         DELETION,
         changed_data=["name", "title", "description"],
         change_message=_("Deleted procedure '%(name)s'") % {"name": procedure.title},
+        relobj=organization,
     )
-    procedure.delete()
+    # Soft delete a la papelera org-scoped: la relación con la organización es
+    # lo que permite listarlo y restaurarlo desde su pantalla.
+    procedure.delete(user=request.user, related_objects=[organization])
     return JsonResponse({"data": True})
 
 

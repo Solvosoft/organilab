@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-29 14:28-0600\n"
+"POT-Creation-Date: 2026-08-29 21:11-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -208,12 +208,6 @@ msgstr "Lista de procedimientos"
 
 msgid "Create procedure"
 msgstr "Crear procedimiento"
-
-msgid "Cancel"
-msgstr "Cancelar"
-
-msgid "Add"
-msgstr "Agregar"
 
 msgid "Reservation"
 msgstr "Reservación"
@@ -783,6 +777,9 @@ msgstr ""
 msgid "Add new rol"
 msgstr "Agregar Nuevo Rol"
 
+msgid "Add"
+msgstr "Agregar"
+
 msgid "Add User"
 msgstr "Agregar Usuario"
 
@@ -807,6 +804,9 @@ msgstr "Habilitar filtro de organizaciones hijas"
 
 msgid "Log List"
 msgstr "Bitácoras"
+
+msgid "Trash"
+msgstr "Papelera"
 
 msgid "Show Roles information"
 msgstr "Mostrar información de roles"
@@ -1117,6 +1117,9 @@ msgstr "Su contraseña no debe ser muy común."
 
 msgid "Your password cannot be completely numeric."
 msgstr "Su contraseña no puede contener solo números."
+
+msgid "Cancel"
+msgstr "Cancelar"
 
 msgid "New User"
 msgstr "Nuevo Usuario"
@@ -1734,14 +1737,6 @@ msgstr "Capacitación actualizada"
 #, python-format
 msgid "Updated training record for shelfobject '%(name)s'"
 msgstr "Registro de capacitación actualizado para objeto de estante '%(name)s'"
-
-#, python-format
-msgid "[{'changed': {'fields': ['Login', %d]}}]"
-msgstr ""
-
-#, python-format
-msgid "[{'added': {'fields': ['Register', %d]}}]"
-msgstr ""
 
 #, python-format
 msgid "Created equipment '%(name)s'"
@@ -2710,9 +2705,6 @@ msgstr "1 de %s del %d - %d de %s del %d"
 msgid "Inform"
 msgstr "Informe"
 
-msgid "Log Entry"
-msgstr "Entrada de bitácora"
-
 msgid "Protocol PDF File"
 msgstr "Archivo del protocolo en PDF"
 
@@ -2998,6 +2990,14 @@ msgstr "Estante no está disponible en la lista de estantes"
 msgid "Object cannot be moved to same shelf."
 msgstr "Object no puede ser movido al mismo estante."
 
+#, fuzzy
+#| msgid ""
+#| "Measurement unit cannot be different than the shelf's measurement unit."
+msgid ""
+"The object measurement unit cannot be converted to the shelf measurement "
+"unit."
+msgstr "La unidad de medida no puede ser diferente a la del estante."
+
 msgid "Transfer was not sent to the laboratory."
 msgstr "La transferencia no fue enviada al laboratorio."
 
@@ -3053,6 +3053,14 @@ msgid ""
 msgstr ""
 "La opción seleccionada no puede ser utilizada dado que el objeto fuente no  "
 "tiene un contenedor asignado."
+
+#, fuzzy
+#| msgid ""
+#| "Measurement unit cannot be different than the shelf's measurement unit."
+msgid ""
+"The transferred object measurement unit cannot be converted to the shelf "
+"measurement unit."
+msgstr "La unidad de medida no puede ser diferente a la del estante."
 
 msgid ""
 "The source container cannot be moved since the entire quantity available for "
@@ -3706,6 +3714,9 @@ msgstr "Guardar reactivos"
 msgid "Load Archive"
 msgstr "Cargar Archivo"
 
+msgid "Log Entry"
+msgstr "Entrada de bitácora"
+
 msgid "Info"
 msgstr "Info"
 
@@ -4204,6 +4215,9 @@ msgstr "Estadísticas de reactivos"
 
 msgid "Select the Shelf"
 msgstr "Seleccione el Estante"
+
+msgid "Delete permanently"
+msgstr "Eliminar permanentemente"
 
 msgid "Date:"
 msgstr "Fecha:"
@@ -7281,9 +7295,6 @@ msgstr "Nueva evaluación"
 
 msgid "Delete IPER assessment"
 msgstr "Eliminar evaluación IPER"
-
-msgid "Delete permanently"
-msgstr "Eliminar permanentemente"
 
 msgid "Regents"
 msgstr "Regentes"

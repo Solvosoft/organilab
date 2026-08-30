@@ -15,6 +15,7 @@ from django.db.models.expressions import F
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from djgentelella.fields.maps import GTPointField
+from djgentelella.models import DeletedWithTrash
 from tree_queries.fields import TreeNodeForeignKey
 from tree_queries.models import TreeNode
 from tree_queries.query import TreeQuerySet
@@ -1754,7 +1755,7 @@ class CommentInform(models.Model):
         return f"{self.created_by} - {self.create_at}"
 
 
-class Protocol(BaseCreationObj):
+class Protocol(BaseCreationObj, DeletedWithTrash):
     name = models.CharField(_("Name"), max_length=300)
     file = models.FileField(
         upload_to=upload_files,

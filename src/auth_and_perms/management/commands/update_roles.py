@@ -1347,6 +1347,24 @@ ROL_DESCRIPTIONS = {
 }
 
 
+def update_papelera():
+    # Papelera org-scoped (djgentelella Trash): ver la pantalla, restaurar
+    # (change) y borrar definitivamente (delete). Solo roles administrativos.
+    for name in ["Administrador de Laboratorio", "Administrativo superior"]:
+        rol = Rol.objects.filter(name=name).first()
+        if not rol:
+            print(f"WARNING: Rol '{name}' not found, skipping.")
+            continue
+        add_permissions(
+            rol,
+            [
+                "djgentelella.view_trash",
+                "djgentelella.change_trash",
+                "djgentelella.delete_trash",
+            ],
+        )
+
+
 def update_descriptions():
     for name, description in ROL_DESCRIPTIONS.items():
         rol = Rol.objects.filter(name=name).first()
@@ -1379,4 +1397,5 @@ class Command(BaseCommand):
         update_iper_roles()
         create_auditor_iper()
         create_administrador_iper()
+        update_papelera()
         update_descriptions()

@@ -13,7 +13,7 @@ Plan aprobado completo en `~/.claude/plans/vamos-a-revisar-roadmap-composed-cook
 - Pilotos de papelera (Fase C): **Protocol y Procedure**; los flags booleanos
   artesanales NO se migran en esa fase.
 
-## HECHO — Fase A (lib, checkout `~/Desktop/desarrollo/django-gentelella-widgets`, SIN commitear)
+## HECHO — Fase A (lib, checkout `~/Desktop/desarrollo/django-gentelella-widgets`; commiteada: `ba63783`)
 
 - `djgentelella/models.py`: modelo **`HistoryRelation`** (FK LogEntry
   `related_name='gt_relations'` + GenericFK nullable + `data` JSONField +
@@ -45,7 +45,7 @@ Plan aprobado completo en `~/.claude/plans/vamos-a-revisar-roadmap-composed-cook
   **Estado: lib+demo 371 tests, todo verde salvo 1 flake ajeno de DataTables
   (pasa solo).**
 
-## HECHO — Fase B (organilab, rama dj060, SIN commitear)
+## HECHO — Fase B (organilab, rama dj060; commiteada: `2bbd4568`)
 
 - `src/laboratory/utils.py`: `organilab_logentry` es puente sobre `add_log`
   (firma y TEXTOS idénticos; `relobj` pk → Laboratory con DeprecationWarning;
@@ -81,21 +81,80 @@ Plan aprobado completo en `~/.claude/plans/vamos-a-revisar-roadmap-composed-cook
    **74/74 OK** con el viewset nuevo.
 2. ~~Lint global~~ HECHO: 0 avisos.
 3. ~~Roadmap README~~ HECHO (ítem 5 de "Cambios en djgentelella").
-4. ~~Commit de organilab~~ HECHO (ver git log). Los cambios de la lib siguen sin
-   commitear en su checkout (los commitea Luis con su changelog).
+4. ~~Commit de organilab~~ HECHO (ver git log). ~~Commit de la lib~~ HECHO en su
+   checkout (`ba63783`, `7645a4e`, `94a568d`).
 5. ~~get_logentries_org_management~~ HECHO: eliminada (0 llamadores).
 6. Traducciones: la lib ganó strings nuevos (mensajes de restore/errores) — se
    compilan en el repo de la LIB, no en organilab; organilab no ganó strings.
 7. Menor preexistente: `makemigrations --check` acusa deriva en
    `report/0009_alter_taskreport_language` (default desde settings) — decidir
    aparte, no es de este proyecto.
-8. **FASE C (papelera, NO iniciada)**: pilotos Protocol + Procedure con
-   `DeletedWithTrash`; scope multi-tenant del Trash con el mismo patrón
-   (`TrashRelation` FK Trash + GenericFK, poblado desde
-   `delete(user=..., related_objects=...)`, `scope_queryset` en subclase de
-   `TrashViewSet`); pantalla org-scoped basada en el demo
-   (`demo/demoapp/templates/gentelella/trash/trash.html`). Diseño fino en el
-   plan aprobado.
+8. ~~FASE C (papelera)~~ **HECHA (2026-08-29)** — ver la sección siguiente.
+
+## HECHO — Fase C (papelera, 2026-08-29)
+
+Lib (commiteada en su checkout: `94a568d`, con el refactor previo `7645a4e`
+que unificó la resolución `app.model`→ContentType en
+`djgentelella.utils.contenttypes_from_labels`, usado por history y trash):
+
+- `djgentelella/models.py`: modelo **`TrashRelation`** (FK Trash
+  `related_name='gt_relations'` + GenericFK + índice ct/object_id, migración
+  `0020_trashrelation`) y helper `relation_targets` (valida instancias; pk
+  pelado → ValueError, igual que add_log). `DeletedWithTrash.delete(...,
+  related_objects=None)` registra el contexto del borrado; regla "el primer
+  borrado gana" (un re-delete no pisa las relaciones existentes; el restore
+  vía fila Trash las cascadea y el siguiente borrado registra contexto nuevo).
+- `models_manager.py`: el `delete(user=, related_objects=)` de queryset
+  también crea las relaciones (solo para filas Trash aún sin contexto).
+- `trash/api.py` `TrashViewSet`: `get_queryset` pasa por `filter_by_related`
+  (params `related_contenttype`/`related_id`, espejo de HistoryViewSet) y por
+  el hook `scope_queryset()`; como restore/destroy resuelven por
+  `get_object()`, el scope acota también esas acciones; recordsTotal scoped.
+- Admin de TrashRelation; demo `Customer.delete` reenvía `**kwargs` (antes
+  tragaba `related_objects`); docs `trash.rst` con la sección de contexto y
+  scoping multi-tenant. Tests: `Trash_Test.py` +8 (relaciones instancia/
+  queryset, pk rechazado, primer-borrado-gana, cascade, filtro related,
+  scope + recordsTotal). **Lib 35/35 en Trash+History (suite completa OK).**
+
+Organilab (rama dj060):
+
+- Pilotos: `Protocol` y `Procedure` heredan `DeletedWithTrash` (migraciones
+  `laboratory/0222` y `academic/0018`); managers por defecto ocultan borrados
+  (listas, API, selects y admin dejan de verlos; los FK existentes —
+  MyProcedure→custom_procedure, GFK de Trash — siguen resolviendo porque
+  Django usa el base manager sin filtrar). Ningún form/serializer usa
+  `__all__` sobre los pilotos, `is_deleted` no se filtra a la UI.
+- `ProtocolDeleteView.form_valid` → `delete(user=..., related_objects=[org,
+  lab])`; `academic delete_procedure` → `delete(user=...,
+  related_objects=[org])` y su logentry ahora lleva `relobj=organization`
+  (antes ese DELETE no salía en la bitácora org-scoped).
+- `laboratory/api/views.py`: **`OrganizationTrashViewSet(TrashViewSet)`** —
+  `scope_queryset` por join TrashRelation→organización de la URL +
+  `user_is_allowed_on_organization`; `get_log_related_objects` propaga el
+  contexto del borrado al log de restore/hard-delete (aparecen en la
+  bitácora). Router `laboratory:api-trash-*` bajo `trash/api/<org_pk>/`.
+- Pantalla: `laboratory/views/trash.py` + `templates/laboratory/trash_list.html`
+  + `static/js/trash_list.js` (ObjectCRUD según el demo: restore con Swal y
+  manejo de 404/403/410, hard-delete con modal_template_delete); enlace con
+  ícono de papelera en `list_organizations.html` junto al de bitácora, gateado
+  por `perms.djgentelella.view_trash`.
+- Permisos: `update_roles.py` gana `update_papelera()` — view/change/delete
+  trash para "Administrador de Laboratorio" y "Administrativo superior"
+  (correr `python manage.py update_roles` al desplegar).
+- Tests `laboratory/tests/test_trash.py` (7): vista de protocolo → papelera
+  con contexto, procedure FBV → papelera, ANTI-FUGA 2 orgs (data y
+  recordsTotal), restore con log relacionado a la org, restore cross-tenant
+  bloqueado, hard-delete purga (objeto+fila+relaciones), sin view_trash → 403.
+
+Notas de corte:
+
+- Los borrados de Protocol/Procedure ANTERIORES a esta fase fueron hard
+  deletes: la papelera solo aplica hacia adelante.
+- El CASCADE de Django (p.ej. borrar un Laboratory arrastra sus Protocol) es
+  hard delete por colección, no pasa por `delete()` del modelo: esos no van a
+  papelera (huérfanos ya cubiertos por el 410/hard_delete de la lib).
+- Los flags booleanos artesanales de otros modelos NO se migraron (decisión
+  de Luis para esta fase).
 
 ## Verificación al cerrar
 
