@@ -662,6 +662,56 @@ URLNAME_PERMISSIONS = {
             "category": "Shelf Object",
             "permission": "laboratory.view_shelfobject",
         },
+        {
+            "name": "Add Shelf Object",
+            "category": "Shelf Object",
+            "permission": "laboratory.add_shelfobject",
+        },
+        {
+            "name": "Change Shelf Object",
+            "category": "Shelf Object",
+            "permission": "laboratory.change_shelfobject",
+        },
+        {
+            "name": "Delete Shelf Object",
+            "category": "Shelf Object",
+            "permission": "laboratory.delete_shelfobject",
+        },
+        {
+            "name": "View Shelf Object Observations",
+            "category": "Shelf Object Observations",
+            "permission": "laboratory.view_shelfobjectobservation",
+        },
+        {
+            "name": "Manage Disposal",
+            "category": "Disposal",
+            "permission": "laboratory.can_manage_disposal",
+        },
+        {
+            "name": "Add Report",
+            "category": "Report",
+            "permission": "laboratory.do_report",
+        },
+        {
+            "name": "Add Transfer",
+            "category": "Transfer",
+            "permission": "laboratory.add_tranferobject",
+        },
+        {
+            "name": "View Recipient Size",
+            "category": "Labels",
+            "permission": "sga.view_recipientsize",
+        },
+        {
+            "name": "Add Recipient Size",
+            "category": "Labels",
+            "permission": "sga.add_recipientsize",
+        },
+        {
+            "name": "Add Reserved Product",
+            "category": "Reservation",
+            "permission": "reservations_management.add_reservedproducts",
+        },
     ],
     "rooms_create": [
         {
