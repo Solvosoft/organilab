@@ -596,6 +596,73 @@ URLNAME_PERMISSIONS = {
             "permission": "laboratory.view_laboratoryroom",
         },
     ],
+    "labview": [
+        {
+            "name": "View Laboratory Room",
+            "category": "Laboratory Room",
+            "permission": "laboratory.view_laboratoryroom",
+        },
+        {
+            "name": "Add Laboratory Room",
+            "category": "Laboratory Room",
+            "permission": "laboratory.add_laboratoryroom",
+        },
+        {
+            "name": "Change Laboratory Room",
+            "category": "Laboratory Room",
+            "permission": "laboratory.change_laboratoryroom",
+        },
+        {
+            "name": "Delete Laboratory Room",
+            "category": "Laboratory Room",
+            "permission": "laboratory.delete_laboratoryroom",
+        },
+        {
+            "name": "View Furniture",
+            "category": "Furniture",
+            "permission": "laboratory.view_furniture",
+        },
+        {
+            "name": "Add Furniture",
+            "category": "Furniture",
+            "permission": "laboratory.add_furniture",
+        },
+        {
+            "name": "Change Furniture",
+            "category": "Furniture",
+            "permission": "laboratory.change_furniture",
+        },
+        {
+            "name": "Delete Furniture",
+            "category": "Furniture",
+            "permission": "laboratory.delete_furniture",
+        },
+        {
+            "name": "View Shelf",
+            "category": "Shelf",
+            "permission": "laboratory.view_shelf",
+        },
+        {
+            "name": "Add Shelf",
+            "category": "Shelf",
+            "permission": "laboratory.add_shelf",
+        },
+        {
+            "name": "Change Shelf",
+            "category": "Shelf",
+            "permission": "laboratory.change_shelf",
+        },
+        {
+            "name": "Delete Shelf",
+            "category": "Shelf",
+            "permission": "laboratory.delete_shelf",
+        },
+        {
+            "name": "View Shelf Object",
+            "category": "Shelf Object",
+            "permission": "laboratory.view_shelfobject",
+        },
+    ],
     "rooms_create": [
         {
             "name": "Add Laboratory Room",

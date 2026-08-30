@@ -73,7 +73,14 @@ from laboratory.reservation import ShelfObjectReservation
 from laboratory.search import SearchDisposalObject
 from laboratory.views import furniture, reports, shelfs, objectfeature
 from laboratory.views import inform_period
-from laboratory.views import labroom, shelfobject, laboratory, organizations
+from laboratory.views import (
+    labroom,
+    labview,
+    shelfobject,
+    laboratory,
+    organizations,
+)
+from laboratory.api.labview import viewsets as labview_api
 from laboratory.views.informs import (
     get_informs,
     create_informs,
@@ -168,6 +175,7 @@ lab_shelf_urls = [
 
 lab_rooms_urls = [
     path("", labroom.LaboratoryRoomsList.as_view(), name="rooms_list"),
+    path("labview/", labview.LabView.as_view(), name="labview"),
     path("create", labroom.LabroomCreate.as_view(), name="rooms_create"),
     path(
         "rebuild_laboratory_qr",
@@ -548,6 +556,30 @@ shelfobjectrouter.register(
     "api_search_labview", ShelfObjectApi.SearchLabView, basename="api-search-labview"
 )
 
+# labview: los CRUDs por nivel, el arbol y la tabla con acciones como datos.
+labview_router = DefaultRouter()
+labview_router.register(
+    "api_labview_labroom",
+    labview_api.LabRoomManagement,
+    basename="api-labview-labroom",
+)
+labview_router.register(
+    "api_labview_furniture",
+    labview_api.FurnitureManagement,
+    basename="api-labview-furniture",
+)
+labview_router.register(
+    "api_labview_shelf", labview_api.ShelfManagement, basename="api-labview-shelf"
+)
+labview_router.register(
+    "api_labview_tree", labview_api.LabviewTreeViewSet, basename="api-labview-tree"
+)
+labview_router.register(
+    "api_labview_shelfobject_table",
+    labview_api.LabviewShelfObjectTableViewSet,
+    basename="api-labview-shelfobjecttable",
+)
+
 shelfcontainerrouter = DefaultRouter()
 shelfcontainerrouter.register(
     "api_container_list", ContainerManagementViewset, basename="api-container-in-shelf"
@@ -656,6 +688,9 @@ urlpatterns += organization_urls + [
         name="block_notification",
     ),
     path("so/api/<int:org_pk>/<int:lab_pk>/", include(shelfobjectrouter.urls)),
+    path(
+        "labview/api/<int:org_pk>/<int:lab_pk>/", include(labview_router.urls)
+    ),
     path(
         "so/api/<int:org_pk>/<int:lab_pk>/<int:shelf>/",
         include(shelfcontainerrouter.urls),

@@ -28,6 +28,7 @@ from auth_and_perms.organization_utils import (
     user_is_allowed_on_organization,
     organization_can_change_laboratory,
 )
+from laboratory import dataconfig
 from laboratory.models import Shelf, Object, Laboratory, OrganizationStructure
 from presentation.utils import build_qr_instance
 from .djgeneric import CreateView, UpdateView
@@ -359,6 +360,11 @@ class ShelfCreate(AJAXMixin, CreateView):
         self.object.furniture = furniture
         self.object.created_by = self.request.user
         self.object.save()
+        # La posición nace junto al estante: antes sólo entraba a la
+        # cuadrícula cuando el usuario guardaba el mueble y el JS la
+        # reconstruía desde el DOM, así que un estante creado y no guardado
+        # quedaba huérfano y la tarea remove_shelf_not_furniture lo borraba.
+        dataconfig.DataconfigService(furniture).place_shelf(self.object.pk, row, col)
         if form.cleaned_data["limit_only_objects"]:
             for objlimt in form.cleaned_data["available_objects_when_limit"]:
                 self.object.available_objects_when_limit.add(objlimt)

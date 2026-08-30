@@ -6,35 +6,31 @@ Free as freedom will be 13/10/2016
 @author: luisza
 """
 
-import json
+from laboratory import dataconfig
 from laboratory.models import Shelf
 
 
 def preserve_order(order, queryset):
-    for item in queryset:
-        index = order.index(item.pk)
-        if index >= 0:
-            order[index] = item
-    return [shelf for shelf in order if isinstance(shelf, Shelf)]
+    """Ordena el queryset según la lista de pks ``order``.
+
+    Se conserva por compatibilidad con los llamadores existentes; la resolución
+    real vive en :func:`laboratory.dataconfig.resolve_shelves`.
+    """
+    shelves = {shelf.pk: shelf for shelf in queryset}
+    result = []
+    for pk in order:
+        try:
+            pk = int(pk)
+        except (TypeError, ValueError):
+            continue
+        if pk in shelves:
+            result.append(shelves[pk])
+    return result
 
 
-def get_dataconfig(dataconfig):
-    if dataconfig:
-        dataconfig = json.loads(dataconfig)
+def get_dataconfig(dataconfig_text):
+    """``dataconfig`` -> matriz de instancias ``Shelf``, en una sola consulta.
 
-    for irow, row in enumerate(dataconfig):
-        for icol, col in enumerate(row):
-            if col:
-                val = None
-                if isinstance(col, str):
-                    val = col.split(",")
-                elif isinstance(col, int):
-                    val = [col]
-                elif isinstance(col, list):
-                    val = col
-                else:
-                    continue
-                dataconfig[irow][icol] = preserve_order(
-                    val, Shelf.objects.filter(pk__in=val)
-                )
-    return dataconfig
+    Delega en el módulo canónico: aquí ya no se parsea nada.
+    """
+    return dataconfig.resolve_shelves(dataconfig.parse(dataconfig_text))

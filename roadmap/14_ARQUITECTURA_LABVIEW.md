@@ -121,7 +121,8 @@ deliberadas:
 **El árbol.** `GET .../api/labview/tree/?risk=1` devuelve el mapa completo del laboratorio en
 una sola respuesta: salas, muebles con su cuadrícula real, estantes con nombre, tipo,
 posición, capacidad, porcentaje de ocupación y descarte, más conteos agregados y —cuando se
-pide— el color de riesgo. Se construye en 3-4 consultas (salas; muebles; estantes por
+pide— el color de riesgo. La cuadrícula viaja como `{"cells": [[…], […]]}` **sin** un ancho
+único, porque las filas son irregulares y declarar un `cols` mentiría sobre la forma. Se construye en 3-4 consultas (salas; muebles; estantes por
 `pk__in` de todos los `dataconfig` parseados; agregados de objetos por `values`/`annotate`),
 frente al N+1 por celda que hacía el mapa de peligros.
 
@@ -145,10 +146,12 @@ sobre riesgo a nivel de zona y no solo del laboratorio entero.
 
 Dos componentes se aportan a la biblioteca porque **no saben nada de organilab**:
 
-- **`PositionsGrid`** — una matriz de filas × columnas con items opacos. Recibe `data`
-  (dimensiones y qué ids hay en cada celda), un catálogo `items`, y una función
-  `renderItem` con la que el proyecto anfitrión decide el aspecto. En modo edición recibe
-  `handlers` para las siete operaciones.
+- **`PositionsGrid`** — una matriz de filas × celdas con items opacos. Recibe `data`
+  (qué ids hay en cada celda), un catálogo `items`, y una función `renderItem` con la que
+  el proyecto anfitrión decide el aspecto. En modo edición recibe `handlers` para las
+  siete operaciones. **Las filas son irregulares a propósito**: la forma la define el
+  usuario según cómo sea su laboratorio, así que una fila de dos celdas mide la mitad que
+  una de cuatro, alineadas a la izquierda, y nada se rellena hasta un rectángulo.
 - **`BreadcrumbNav`** — la ruta jerárquica navegable que rellena el bloque `breadcrumbs`
   vacío del tema.
 

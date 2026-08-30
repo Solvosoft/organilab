@@ -1,5 +1,4 @@
 import datetime
-import json
 import uuid
 from gc import enable
 from pathlib import Path
@@ -19,6 +18,8 @@ from djgentelella.models import DeletedWithTrash
 from tree_queries.fields import TreeNodeForeignKey
 from tree_queries.models import TreeNode
 from tree_queries.query import TreeQuerySet
+
+from laboratory import dataconfig as dataconfig_utils
 
 from auth_and_perms.models import ProfilePermission
 from presentation.models import AbstractOrganizationRef
@@ -899,97 +900,33 @@ class Furniture(BaseCreationObj):
     color = models.CharField(default="#73879C", max_length=10)
     dataconfig = models.TextField(_("Data configuration"))
 
+    def get_grid(self):
+        """Matriz ``filas -> celdas -> [pk de Shelf]`` de este mueble.
+
+        Las filas son irregulares a propósito: la forma la define el usuario
+        según cómo sea su laboratorio.
+        """
+        return dataconfig_utils.parse(self.dataconfig)
+
     def remove_shelf_dataconfig(self, shelf_pk):
         if self.dataconfig:
-            dataconfig = json.loads(self.dataconfig)
-
-            for irow, row in enumerate(dataconfig):
-                for icol, col in enumerate(row):
-                    if col:
-                        val = None
-                        if isinstance(col, str):
-                            val = col.split(",")
-                        elif isinstance(col, int):
-                            val = [col]
-                            if shelf_pk in val:
-                                val.set("")
-                        elif isinstance(col, list):
-                            val = col
-                            if shelf_pk in val:
-                                col.remove(shelf_pk)
-                        else:
-                            continue
-
-                        if int(shelf_pk) in val:
-                            val.remove(int(shelf_pk))
-
-            self.dataconfig = str(dataconfig)
-            self.save()
+            dataconfig_utils.DataconfigService(self).remove_shelf(shelf_pk)
 
     def change_shelf_dataconfig(self, shelf_row, shelf_col, shelf_pk):
-        if self.dataconfig:
-            dataconfig = json.loads(self.dataconfig)
-
-            for irow, row in enumerate(dataconfig):
-                for icol, col in enumerate(row):
-                    if col:
-                        val = None
-                        if isinstance(col, str):
-                            val = col.split(",")
-                        elif isinstance(col, int):
-                            val = [col]
-                        elif isinstance(col, list):
-                            val = col
-                        else:
-                            continue
-                        # remove old postion
-                        if int(shelf_pk) in val:
-                            val.remove(int(shelf_pk))
-
-                        if shelf_row == irow and shelf_col == icol:
-                            val.append(shelf_pk)
-
-                    else:  # add id when it is white
-                        if shelf_row == irow and shelf_col == icol:
-                            col.append(shelf_pk)
-            self.dataconfig = str(dataconfig)
-            self.save()
+        dataconfig_utils.DataconfigService(self).place_shelf(
+            shelf_pk, shelf_row, shelf_col
+        )
 
     def get_position_shelf(self, shelf_pk):
-        if self.dataconfig:
-            dataconfig = json.loads(self.dataconfig)
-
-            for irow, row in enumerate(dataconfig):
-                for icol, col in enumerate(row):
-                    if col:
-                        val = None
-                        if isinstance(col, str):
-                            val = col.split(",")
-                        elif isinstance(col, int):
-                            val = [col]
-                        elif isinstance(col, list):
-                            val = col
-                        else:
-                            continue
-                        if shelf_pk in (val):
-                            return [irow, icol]
-
-        return [None, None]
+        row, col = dataconfig_utils.get_position(self.get_grid(), shelf_pk)
+        return [row, col]
 
     def get_row_count(self):
-        if self.dataconfig:
-            dataconfig = json.loads(self.dataconfig)
-            count = len(dataconfig)
-            return count
-        return 0
+        return len(self.get_grid())
 
     def get_col_count(self):
-        if self.dataconfig:
-            dataconfig = json.loads(self.dataconfig)
-            for irow, row in enumerate(dataconfig):
-                count = len(row)
-                return count
-        return 0
+        grid = self.get_grid()
+        return len(grid[0]) if grid else 0
 
     class Meta:
         verbose_name = _("Piece of furniture")

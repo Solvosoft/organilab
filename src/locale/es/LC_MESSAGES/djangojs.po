@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-29 21:11-0600\n"
+"POT-Creation-Date: 2026-08-30 11:01-0600\n"
 "PO-Revision-Date: 2024-04-12 23:50-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -364,7 +364,8 @@ msgid ""
 "This action will permanently delete the register, as well as all related "
 "data."
 msgstr ""
-"Esta acción eliminará permanentemente el registro, así como todos sus datos relacionados."
+"Esta acción eliminará permanentemente el registro, así como todos sus datos "
+"relacionados."
 
 msgid "Accept"
 msgstr "Aceptar"
@@ -571,45 +572,6 @@ msgstr "Aprobar"
 msgid "Reject"
 msgstr "Rechazar"
 
-msgid "No shelf selected"
-msgstr "No se ha seleccionado un estante"
-
-msgid "You need to select a shelf before performing this action."
-msgstr "Necesita seleccionar un estante antes de realizar esta acción."
-
-msgid "Are you sure you want to deny the transfer of"
-msgstr "¿Está seguro/a de que desea denegar la transferencia de"
-
-msgid "Confirm"
-msgstr "Confirmar"
-
-msgid "Create Equipment"
-msgstr "Crear Equipo"
-
-msgid "Create Material"
-msgstr "Crear Material"
-
-msgid "Create Substance"
-msgstr "Crear Sustancia"
-
-msgid "Containers"
-msgstr "Contenedores"
-
-msgid "Transfer In"
-msgstr "Transferir aquí"
-
-msgid "Object"
-msgstr "Objeto"
-
-msgid "Laboratory Send"
-msgstr "Laboratorio que Envía"
-
-msgid "Mark as Discard"
-msgstr "Marcar como Desecho"
-
-msgid "Deny"
-msgstr "Denegar"
-
 msgid "Search"
 msgstr "Buscar"
 
@@ -619,26 +581,148 @@ msgstr "Muestra el primer resultado de "
 msgid " matched shelves"
 msgstr " estanterías que combinan"
 
-msgid "Height"
-msgstr "Altura"
+msgid "Object"
+msgstr "Objeto"
 
-msgid "Width"
-msgstr "Ancho"
+msgid "Select a shelf to see its objects."
+msgstr ""
 
-msgid "Recipient size was created successfully."
-msgstr "Se creó con éxito el tamaño de recipiente."
+msgid "Direct link"
+msgstr ""
 
-msgid "There was a problem performing your request."
-msgstr "Hubo un problema realizando su solicitud."
-
-msgid "Are you sure you want to delete this recipient size?"
-msgstr "¿Está seguro/a de que desea eliminar esta tamaño de recipiente?"
-
-msgid "Recipient size was deleted successfully."
-msgstr "Se eliminó con éxito el tamaño de recipiente."
+msgid "Availability"
+msgstr ""
 
 msgid "Capacity"
 msgstr "Capacidad"
+
+msgid "Infinity"
+msgstr ""
+
+#, fuzzy
+#| msgid "Restore"
+msgid "Stored"
+msgstr "Restaurar"
+
+msgid "Occupancy"
+msgstr ""
+
+msgid "Disposal"
+msgstr ""
+
+#, fuzzy
+#| msgid "View Detail"
+msgid "Detail"
+msgstr "Ver detalle"
+
+msgid "List of Recipients"
+msgstr ""
+
+#, fuzzy
+#| msgid "Observation"
+msgid "Reservation"
+msgstr "Observación"
+
+msgid "Add"
+msgstr "Agregar"
+
+#, fuzzy
+#| msgid "Transfer In"
+msgid "Transfer Out"
+msgstr "Transferir aquí"
+
+#, fuzzy
+#| msgid "Substance"
+msgid "Substract"
+msgstr "Sustancia"
+
+msgid "Log"
+msgstr ""
+
+#, fuzzy
+#| msgid "Container"
+msgid "Manage Container"
+msgstr "Contenedor"
+
+msgid "Move"
+msgstr ""
+
+msgid "Maintenance"
+msgstr ""
+
+msgid "Done"
+msgstr ""
+
+#, fuzzy
+#| msgid "Furniture"
+msgid "Edit furniture"
+msgstr "Mueble"
+
+msgid "The operation was refused"
+msgstr ""
+
+msgid "New shelf"
+msgstr ""
+
+msgid "The name is required"
+msgstr ""
+
+msgid "The shelf will be removed from the furniture."
+msgstr ""
+
+msgid "This laboratory has no rooms yet."
+msgstr ""
+
+msgid "%(furniture)s furniture · %(shelves)s shelves · %(objects)s objects"
+msgstr ""
+
+msgid "Open in another tab"
+msgstr ""
+
+#, fuzzy
+#| msgid "No tasks in this column"
+msgid "No furniture in this room."
+msgstr "No hay tareas en esta columna"
+
+#, fuzzy
+#| msgid " matched shelves"
+msgid "shelves"
+msgstr " estanterías que combinan"
+
+#, fuzzy
+#| msgid "Report failed"
+msgid "Report"
+msgstr "Reporte fallido"
+
+msgid "Shelves without a position:"
+msgstr ""
+
+#, fuzzy
+#| msgid "No code"
+msgid "QR code"
+msgstr "Sin código"
+
+msgid "Incompatibilities"
+msgstr ""
+
+msgid "alerts"
+msgstr ""
+
+msgid "empty"
+msgstr ""
+
+#, fuzzy
+#| msgid "Objects"
+msgid "objects"
+msgstr "Objetos"
+
+msgid "Search a room, furniture, shelf or object"
+msgstr ""
+
+#, fuzzy, javascript-format
+#| msgid "Showing first result from "
+msgid "Showing the first result out of %s matched shelves"
+msgstr "Muestra el primer resultado de "
 
 msgid "Object Features"
 msgstr "Características del objeto"
@@ -681,9 +765,6 @@ msgstr "Mueble"
 msgid "Boxes"
 msgstr "Cajas"
 
-msgid "Add"
-msgstr "Agregar"
-
 msgid "Decrease"
 msgstr "Disminuir"
 
@@ -713,6 +794,60 @@ msgstr "Cantidad final"
 
 msgid "Difference"
 msgstr "Diferencia"
+
+msgid "No shelf selected"
+msgstr "No se ha seleccionado un estante"
+
+msgid "You need to select a shelf before performing this action."
+msgstr "Necesita seleccionar un estante antes de realizar esta acción."
+
+msgid "Are you sure you want to deny the transfer of"
+msgstr "¿Está seguro/a de que desea denegar la transferencia de"
+
+msgid "Confirm"
+msgstr "Confirmar"
+
+msgid "Laboratory Send"
+msgstr "Laboratorio que Envía"
+
+msgid "Mark as Discard"
+msgstr "Marcar como Desecho"
+
+msgid "Deny"
+msgstr "Denegar"
+
+msgid "Create Equipment"
+msgstr "Crear Equipo"
+
+msgid "Create Material"
+msgstr "Crear Material"
+
+msgid "Create Substance"
+msgstr "Crear Sustancia"
+
+msgid "Containers"
+msgstr "Contenedores"
+
+msgid "Transfer In"
+msgstr "Transferir aquí"
+
+msgid "Height"
+msgstr "Altura"
+
+msgid "Width"
+msgstr "Ancho"
+
+msgid "Recipient size was created successfully."
+msgstr "Se creó con éxito el tamaño de recipiente."
+
+msgid "There was a problem performing your request."
+msgstr "Hubo un problema realizando su solicitud."
+
+msgid "Are you sure you want to delete this recipient size?"
+msgstr "¿Está seguro/a de que desea eliminar esta tamaño de recipiente?"
+
+msgid "Recipient size was deleted successfully."
+msgstr "Se eliminó con éxito el tamaño de recipiente."
 
 msgid "CAS Code"
 msgstr "Código CAS"

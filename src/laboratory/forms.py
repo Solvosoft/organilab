@@ -5,7 +5,6 @@ from django.conf import settings
 from django.contrib.auth.forms import UsernameField
 from django.contrib.auth.models import Group, User
 from django.core.exceptions import ValidationError
-from django.core.validators import RegexValidator
 from django.db.models import Q
 from django.forms import ModelForm
 from django.shortcuts import get_object_or_404
@@ -21,6 +20,7 @@ from auth_and_perms.models import Profile, Rol
 from authentication.forms import PasswordChangeForm
 from derb.models import CustomForm as DerbCustomForm
 from laboratory import utils
+from laboratory import dataconfig
 from laboratory.models import (
     OrganizationStructure,
     CommentInform,
@@ -457,17 +457,22 @@ class RoomCreateForm(forms.ModelForm, GTForm):
 
 
 class FurnitureForm(forms.ModelForm, GTForm):
-    dataconfig = forms.CharField(
-        widget=forms.HiddenInput,
-        validators=[
-            RegexValidator(
-                r'^[\[\],\s"\d]*$',
-                message=_("Invalid format in shelf dataconfig "),
-                code="invalid_format",
-            )
-        ],
-    )
+    dataconfig = forms.CharField(widget=forms.HiddenInput)
     shelfs = forms.CharField(required=False, widget=forms.HiddenInput)
+
+    def clean_dataconfig(self):
+        """Acepta el legado y normaliza al guardar.
+
+        Sustituye a un RegexValidator que sólo miraba los caracteres: no
+        comprobaba la estructura y, además, rechazaba las comillas simples que
+        el propio modelo escribía con ``str(dataconfig)``.
+        """
+        value = self.cleaned_data["dataconfig"]
+        try:
+            matrix = dataconfig.parse_strict(value)
+        except dataconfig.DataconfigInvalid as error:
+            raise forms.ValidationError(str(error), code="invalid_format")
+        return dataconfig.dump(matrix)
 
     def clean_shelfs(self):
         value = self.cleaned_data["shelfs"]

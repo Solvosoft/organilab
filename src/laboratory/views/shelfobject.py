@@ -31,7 +31,7 @@ from auth_and_perms.organization_utils import (
     user_is_allowed_on_organization,
     organization_can_change_laboratory,
 )
-from laboratory import utils
+from laboratory import dataconfig, utils
 from laboratory.shelfobject.utils import has_active_reservations
 from laboratory.forms import (
     ReservationModalForm,
@@ -627,15 +627,7 @@ def get_shelf_list(request):
             unit = transfer_detail.object.measurement_unit
 
             for furniture in furnitures:
-                replacements = [("[", ""), ("]", "")]
-                dataconfig = furniture.dataconfig
-
-                for simbol, config in replacements:
-
-                    if simbol in dataconfig:
-                        dataconfig = dataconfig.replace(simbol, "")
-
-                data = [x for x in dataconfig.split(",") if x != ""]
+                data = dataconfig.iter_shelf_pks(furniture.get_grid())
                 if len(data) > 0:
                     for shelf in Shelf.objects.filter(pk__in=data):
                         if (

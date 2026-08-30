@@ -2,7 +2,6 @@ from __future__ import absolute_import, unicode_literals
 
 import importlib
 import os
-import re
 import time
 from collections import defaultdict
 from datetime import date, timedelta
@@ -16,6 +15,7 @@ from django.template.loader import render_to_string
 from django.utils.translation import gettext_lazy as _
 
 from auth_and_perms.models import ProfilePermission
+from laboratory import dataconfig
 from laboratory.models import (
     Catalog,
     ShelfObject,
@@ -132,9 +132,18 @@ def create_informs_based_on_period():
 
 @app.task()
 def remove_shelf_not_furniture():
+    """Borra los estantes que no ocupan ninguna posición de su mueble.
+
+    Un mueble sin cuadrícula se salta: no significa "ningún estante colocado",
+    significa que todavía no se ha dibujado, y borrarle todos los estantes
+    perdería datos.
+    """
     furnitures = Furniture.objects.all()
     for furniture in furnitures:
-        obj_pks = re.findall(r"\d+", furniture.dataconfig)
+        grid = furniture.get_grid()
+        if not grid:
+            continue
+        obj_pks = dataconfig.iter_shelf_pks(grid)
         furniture.shelf_set.all().exclude(pk__in=obj_pks).delete()
 
 
