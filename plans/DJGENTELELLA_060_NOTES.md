@@ -130,9 +130,11 @@ router.register(r'annual_plan/(?P<parent_pk>[^/.]+)/action',
 
 1. **`HistoryViewSet` no sabe de organizaciones.** Filtra por `GT_HISTORY_ALLOWED_MODELS` y por un
    parámetro `contenttype`, nada más: cualquier usuario con `admin.view_logentry` vería la bitácora
-   de **todas** las organizaciones. En Organilab hay que subclasificarlo y cruzar con
-   `LabOrgLogEntry` (`src/laboratory/models.py:1740`), que es justamente la pieza que la biblioteca
-   no tiene. Esto no es un defecto de la biblioteca: es la parte que le toca al proyecto.
+   de **todas** las organizaciones. Esto no es un defecto de la biblioteca: es la parte que le toca
+   al proyecto, y **ya está resuelta** por el proyecto 13 (`roadmap/13_HISTORY_TRASH.md`): la lib
+   ganó el hook `scope_queryset()` y organilab lo implementa en `LogEntryViewSet`
+   (`src/laboratory/api/views.py`) cruzando con `HistoryRelation`, que sustituyó al `LabOrgLogEntry`
+   propio.
 
 2. **`BaseViewSetWithLogs.perform_destroy` exige un atributo no documentado.** Hace
    `if instance._meta.verbose_name.title() in self.models_log:` y `models_log` no está definido en la

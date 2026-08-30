@@ -13,7 +13,6 @@ from auth_and_perms.organization_utils import user_is_allowed_on_organization
 from laboratory.models import OrganizationStructure
 from sga.models import SDSTraceability
 from laboratory.utils import organilab_logentry
-from laboratory.views import logentry
 from msds.api.filterset import SDSTraceabilityFilterSet
 from msds.api.serializer import (
     SDSTraceabilityDataTableSerializer,
