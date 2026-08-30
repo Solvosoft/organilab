@@ -3,6 +3,7 @@
 {% load static %}
 {% load urlname_tags %}
 {% load gtsettings %}
+{% load organilab_tags %}
 {% block pre_head %}
     {% define_urlname_action 'edit_process_condition' %}
 {% endblock %}
@@ -29,5 +30,5 @@
 		update_url: "{% url 'laboratory:api-shelfobject-hcode-list' org_pk lab_pk 0 %}",
 	}
 </script>
-<script src="{% static 'laboratory/js/shelfobject_code.js' %}?v={% get_organilab_version"></script>
+<script src="{% static 'laboratory/js/shelfobject_code.js' %}?v={% get_organilab_version %}"></script>
 {% endblock %}

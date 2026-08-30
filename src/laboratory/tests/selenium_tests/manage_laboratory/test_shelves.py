@@ -28,17 +28,16 @@ class ShelvesSeleniumTest(OptimizedSeleniumBase):
             + str(reverse("laboratory:labindex", kwargs={"org_pk": 1, "lab_pk": 1}))
         )
         path_list = [
-            {"path": ".//div[1]/div/div[3]/div/div/div[2]/div[2]/div[2]/ul/li[1]/a"},
+            {"path": "//div[contains(@class, 'right_col')]//a[contains(@href, '/rooms/create')]"},
+            {"path": "(//button[@data-bs-toggle='popover'])[1]", "sleep": 1},
+            {"path": "(//div[contains(@class, 'popover')]//a)[1]", "sleep": 1},
             {
-                "path": ".//div[1]/div/div[3]/div/div/div[2]/div[1]/div/ul/li/div/div[1]/div/div[3]/div/button[1]"
-            },
-            {"path": ".//div[3]/div[2]/ul/li[1]/a"},
-            {
-                "path": ".//div[1]/div/div[3]/div/div/div[1]/form/div[2]/div/div[1]/button[1]/span",
+                "path": "//*[@id='btnAddRow']",
                 "screenshot_name": "view_shelves",
             },
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[1]/form/div[2]/table/tr/td/a"
+                "path": "(//table[@id='mytab']//a[contains(@class, 'btn-success')])[1]",
+                "sleep": 1,
             },
             {"path": ".//*[@id='id_shelf--name']", "extra_action": "clearinput"},
             {
@@ -46,19 +45,14 @@ class ShelvesSeleniumTest(OptimizedSeleniumBase):
                 "extra_action": "setvalue",
                 "value": "Primer Estante",
             },
+            {"path": "//span[@aria-controls='select2-id_shelf--type-container']"},
+            {"path": select2_result(2)},
+            {"path": "//span[@aria-controls='select2-id_shelf--measurement_unit-container']"},
+            {"path": select2_result(2)},
+            {"path": "//*[@id='createshelfmodal']//button[@type='submit']"},
             {
-                "path": ".//div[1]/div/div[3]/div/div/div[3]/div/div/div[2]/form/div[1]/div[2]/div/div/span/span[1]/span"
-            },
-            {"path": ".//span/span/span[2]/ul/li[2]"},
-            {
-                "path": ".//div[1]/div/div[3]/div/div/div[3]/div/div/div[2]/form/div[1]/div[7]/div/span/span[1]/span"
-            },
-            {"path": ".//span/span/span[2]/ul/li[2]"},
-            {
-                "path": ".//div[1]/div/div[3]/div/div/div[3]/div/div/div[2]/form/div[2]/button[2]"
-            },
-            {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[1]/form/div[1]/div[2]/button"
+                "path": "//*[@id='save_button1']//button[@type='submit']",
+                "wait_ready": True,
             },
         ]
         self.create_gif_process(path_list, "add_shelf")
@@ -70,26 +64,18 @@ class ShelvesSeleniumTest(OptimizedSeleniumBase):
             + str(reverse("laboratory:labindex", kwargs={"org_pk": 1, "lab_pk": 1}))
         )
         path_list = [
-            {"path": ".//div[1]/div/div[3]/div/div/div[2]/div[2]/div[2]/ul/li[1]/a"},
+            {"path": "//div[contains(@class, 'right_col')]//a[contains(@href, '/rooms/create')]"},
+            {"path": "(//button[@data-bs-toggle='popover'])[1]", "sleep": 1},
+            {"path": "(//div[contains(@class, 'popover')]//a)[2]", "sleep": 1},
             {
-                "path": ".//div[1]/div/div[3]/div/div/div[2]/div[1]/div/ul/li/div/div[1]/div/div[3]/div/button[1]"
-            },
-            {"path": ".//div[3]/div[2]/ul/li[2]/a"},
-            {
-                "path": ".//div[1]/div/div[3]/div/div/div[1]/form/div[2]/div/div[1]/button[1]/span",
+                "path": "//*[@id='btnAddRow']",
                 "scroll": "window.scrollTo(0, 100)",
             },
+            {"path": "//button[@onclick='addColumn()']"},
+            {"path": "//button[@onclick='deleteColumns()']"},
+            {"path": "//button[@onclick='deleteRows()']"},
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[1]/form/div[2]/div/div[1]/button[2]/span"
-            },
-            {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[1]/form/div[2]/div/div[2]/button[2]/span"
-            },
-            {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[1]/form/div[2]/div/div[2]/button[1]/span"
-            },
-            {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[1]/form/div[2]/div/div[2]/button[1]/span",
+                "path": "//button[@onclick='deleteRows()']",
                 "screenshot_name": "remove_shelf_row",
             },
         ]
@@ -102,14 +88,10 @@ class ShelvesSeleniumTest(OptimizedSeleniumBase):
             + str(reverse("laboratory:labindex", kwargs={"org_pk": 1, "lab_pk": 1}))
         )
         path_list = [
-            {"path": ".//div[1]/div/div[3]/div/div/div[2]/div[2]/div[2]/ul/li[1]/a"},
-            {
-                "path": ".//div[1]/div/div[3]/div/div/div[2]/div[1]/div/ul/li/div/div[1]/div/div[3]/div/button[1]"
-            },
-            {"path": ".//div[3]/div[2]/ul/li[2]/a"},
-            {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[1]/form/div[2]/div/div[2]/button[1]/span"
-            },
+            {"path": "//div[contains(@class, 'right_col')]//a[contains(@href, '/rooms/create')]"},
+            {"path": "(//button[@data-bs-toggle='popover'])[1]", "sleep": 1},
+            {"path": "(//div[contains(@class, 'popover')]//a)[2]", "sleep": 1},
+            {"path": "//button[@onclick='deleteRows()']"},
             {"path": "//*[@id='remove_shelf']", "screenshot_name": "remove_shelf_row"},
         ]
         self.create_gif_process(path_list, "manage_rows_cols_shelf")
@@ -121,13 +103,13 @@ class ShelvesSeleniumTest(OptimizedSeleniumBase):
             + str(reverse("laboratory:labindex", kwargs={"org_pk": 1, "lab_pk": 1}))
         )
         path_list = [
-            {"path": ".//div[1]/div/div[3]/div/div/div[2]/div[2]/div[2]/ul/li[1]/a"},
+            {"path": "//div[contains(@class, 'right_col')]//a[contains(@href, '/rooms/create')]"},
+            {"path": "(//button[@data-bs-toggle='popover'])[1]", "sleep": 1},
+            {"path": "(//div[contains(@class, 'popover')]//a)[2]", "sleep": 1},
             {
-                "path": ".//div[1]/div/div[3]/div/div/div[2]/div[1]/div/ul/li/div/div[1]/div/div[3]/div/button[1]"
-            },
-            {"path": ".//div[3]/div[2]/ul/li[2]/a"},
-            {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[1]/form/div[2]/table/tbody/tr/td/div/ul/li/div/ul/li[1]/a"
+                "path": "(//li[contains(@class, 'shelfitem')]"
+                        "//a[.//i[contains(@class, 'fa-edit')]])[1]",
+                "sleep": 1,
             },
             {"path": ".//*[@id='id_shelf--name']", "extra_action": "clearinput"},
             {
@@ -135,15 +117,14 @@ class ShelvesSeleniumTest(OptimizedSeleniumBase):
                 "extra_action": "setvalue",
                 "value": "Estante Actualizado",
             },
+            {"path": "//span[@aria-controls='select2-id_shelf--type-container']"},
+            {"path": select2_result(3)},
+            # processResponse llena #shelfmodalbody (createshelfmodal) también
+            # para la edición; el editshelfmodal quedó sin uso en este flujo.
+            {"path": "//*[@id='createshelfmodal']//button[@type='submit']"},
             {
-                "path": ".//div[1]/div/div[3]/div/div/div[3]/div/div/div[2]/form/div[1]/div[2]/div/div/span/span[1]/span"
-            },
-            {"path": ".//span/span/span[2]/ul/li[3]"},
-            {
-                "path": ".//div[1]/div/div[3]/div/div/div[3]/div/div/div[2]/form/div[2]/button[2]"
-            },
-            {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[1]/form/div[1]/div[2]/button"
+                "path": "//*[@id='save_button1']//button[@type='submit']",
+                "wait_ready": True,
             },
         ]
         self.create_gif_process(path_list, "update_shelf")
@@ -155,40 +136,29 @@ class ShelvesSeleniumTest(OptimizedSeleniumBase):
             + str(reverse("laboratory:labindex", kwargs={"org_pk": 1, "lab_pk": 1}))
         )
         path_list = [
-            {"path": ".//div[1]/div/div[3]/div/div/div[2]/div[2]/div[2]/ul/li[1]/a"},
+            {"path": "//div[contains(@class, 'right_col')]//a[contains(@href, '/rooms/create')]"},
+            {"path": "(//button[@data-bs-toggle='popover'])[1]", "sleep": 1},
+            {"path": "(//div[contains(@class, 'popover')]//a)[2]", "sleep": 1},
             {
-                "path": ".//div[1]/div/div[3]/div/div/div[2]/div[1]/div/ul/li/div/div[1]/div/div[3]/div/button[1]"
+                "path": "(//li[contains(@class, 'shelfitem')]"
+                        "//a[.//i[contains(@class, 'fa-minus')]])[1]",
+                "sleep": 1,
             },
-            {"path": ".//div[3]/div[2]/ul/li[2]/a"},
-            {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[1]/form/div[2]/table/tbody/tr/td[1]/div/ul/li/div/ul/li[2]/a"
-            },
-            {"path": "/html/body/div[4]/div/div[3]/button[1]"},
+            {"path": "//button[contains(@class, 'swal2-confirm')]", "sleep": 1},
         ]
         self.create_gif_process(path_list, "delete_shelf")
 
     def test_view_shelf(self):
+        # El preludio original (selector de org -> "My laboratories") depende
+        # de permisos que el fixture no trae (my_labs rinde vacío para user 1);
+        # se entra directo al labindex como el resto de la suite.
         self.selenium.get(
             url=self.live_server_url
-            + str(reverse("auth_and_perms:select_organization_by_user"))
+            + str(reverse("laboratory:labindex", kwargs={"org_pk": 1, "lab_pk": 1}))
         )
         path_list = [
-            {"path": ".//div[1]/div/div[3]/div/div/div/div[1]/div/div/span"},
-            {"path": select2_result(1)},
-            # Botón "My laboratories", inyectado por AJAX en #orginfo.
-            {"path": "//div[@id='orginfo']//a[contains(@href, '/my_labs/')]", "sleep": 1},
-            # Primera tarjeta de laboratorio del listado. La ruta posicional
-            # anterior dejó de cuadrar cuando laboratory_list.html pasó a
-            # empezar por el formulario de búsqueda en vez de por un <div>.
-            # wait_ready porque el paso anterior navega a otra página.
-            {
-                "path": "(//div[contains(@class, 'card-title')]//a[contains(@href, '/labindex/')])[1]",
-                "wait_ready": True,
-            },
-            {"path": ".//div[1]/div/div[3]/div/div/div[2]/div[2]/div[2]/ul/li[1]/a"},
-            {
-                "path": ".//div[1]/div/div[3]/div/div/div[2]/div[1]/div/ul/li/div/div[1]/div/div[3]/div/button[1]"
-            },
-            {"path": ".//div[3]/div[2]/ul/li[2]/a"},
+            {"path": "//div[contains(@class, 'right_col')]//a[contains(@href, '/rooms/create')]"},
+            {"path": "(//button[@data-bs-toggle='popover'])[1]", "sleep": 1},
+            {"path": "(//div[contains(@class, 'popover')]//a)[2]", "sleep": 1},
         ]
         self.create_gif_process(path_list, "view_shelves")

@@ -317,7 +317,10 @@ class EquipmentDropdowmSeleniumTest(ObjectSeleniumBase):
         """
         self.navigate_to_equipment_list()
 
-        general_search_input = "//*[@id='equipment_table_filter']//input"
+        # DataTables 2 renombró <tabla>_filter a dt-search.
+        general_search_input = (
+            "//*[@id='equipment_table_wrapper']//div[contains(@class, 'dt-search')]//input"
+        )
         code_input_search = "//*[@id='equipment_table']//thead/tr[2]/th[2]/input"
         name_input_search = "//*[@id='equipment_table']//thead/tr[2]/th[3]/input"
         clean_filters_btn = "//*[@id='equipment_table_wrapper']//button[.//i[contains(@class, 'fa-eraser')]]"

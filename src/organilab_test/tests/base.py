@@ -823,6 +823,11 @@ class SeleniumBase(StaticLiveServerTestCase):
         """
         This function applies the respective action by obj path.
         """
+        # presence_only = espera pura: clicar el elemento localizado puede
+        # tener efectos (p.ej. el div de un modal es zona de backdrop y el
+        # click lo cierra).
+        if obj.get("presence_only"):
+            return None
         if "extra_action" not in obj:
             return self.click_element(obj, element)
 
@@ -981,9 +986,20 @@ class SeleniumBase(StaticLiveServerTestCase):
         self.take_screenshot_list(path_list, folder_name, cursor, hover, order)
         self.create_gif(self.dir, folder_name)
 
+    def close_extra_windows(self):
+        """Deja solo la primera pestaña: el navegador se reutiliza entre tests
+        y una pestaña vieja puede conservar el window.name que el flujo va a
+        buscar."""
+        handles = self.selenium.window_handles
+        for handle in handles[1:]:
+            self.selenium.switch_to.window(handle)
+            self.selenium.close()
+        self.selenium.switch_to.window(handles[0])
+
     def create_gif_by_change_focus_tab(
         self, general_path_list, tab_name_list, folder_name
     ):
+        self.close_extra_windows()
         order = 0
         screenshot_order = 1
 

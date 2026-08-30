@@ -50,7 +50,7 @@ class ShelfObjectHcodeSeleniumTest(ShelfObjectHcodeSeleniumBase):
                     "var d=t.row(0).data();"
                     "if(d){ocrud.update(d);}"
                 ),
-                "sleep": 3,
+                "sleep": 30,
             },
             # El select2 existe oculto desde que carga la página, así que hay
             # que esperar a que el modal esté realmente abierto: si no, el
@@ -58,7 +58,7 @@ class ShelfObjectHcodeSeleniumTest(ShelfObjectHcodeSeleniumBase):
             {
                 "path": "//*[@id='update_obj_modal'][contains(@class, 'show')]",
                 "presence_only": True,
-                "sleep": 1,
+                "sleep": 30,
             },
             # El formulario sólo tiene el campo process_condition, así que no
             # hace falta la cadena posicional de <div>/<span> que dependía de
