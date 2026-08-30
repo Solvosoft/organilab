@@ -839,16 +839,9 @@ class LabOrgReassignedOnUserDeleteFilter(admin.SimpleListFilter):
         return queryset
 
 
-class LabOrgLogEntryAdmin(admin.ModelAdmin):
-    list_display = ["log_entry", "content_object"]
-    search_fields = ["log_entry__object_repr", "log_entry__user__username"]
-    list_filter = [LabOrgReassignedOnUserDeleteFilter]
-
-
 admin.site.register(models.PrecursorReport, PrecursorReportAdmin)
 admin.site.register(models.PrecursorReportValues, PrecursorReportValuesAdmin)
 admin.site.register(models.ShelfObjectLimits)
-admin.site.register(models.LabOrgLogEntry, LabOrgLogEntryAdmin)
 # OBSOLETO: SustanceCharacteristics se migró a sga.SubstanceCharacteristics.
 # Se retira del admin para que nadie escriba en el modelo antiguo; sus filas se
 # conservan un ciclo como respaldo de la migración y se eliminarán en la

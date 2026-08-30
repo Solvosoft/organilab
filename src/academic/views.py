@@ -75,7 +75,7 @@ def add_steps_wrapper(request, org_pk, pk):
         changed_data=["procedure"],
         change_message=_("Added step to procedure '%(name)s'")
         % {"name": procedure.title},
-        relobj=org_pk,
+        relobj=organization,
     )
     return redirect(
         reverse("academic:update_step", kwargs={"pk": proc_step.pk, "org_pk": org_pk})

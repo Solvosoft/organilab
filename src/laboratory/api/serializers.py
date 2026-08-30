@@ -147,7 +147,7 @@ class LogEntryUserSerializer(serializers.ModelSerializer):
 
         name = obj.user.get_full_name()
         if not name:
-            name = obj.username
+            name = obj.user.username
         return name
 
     def get_action_flag(self, obj):

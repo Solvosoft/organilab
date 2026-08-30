@@ -1,4 +1,5 @@
 import io
+import warnings
 
 import qrcode
 import qrcode.image.svg
@@ -11,7 +12,8 @@ from django.db.models.query_utils import Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.utils.timezone import now
-from djgentelella.models import ChunkedUpload
+from djgentelella.history.utils import add_log
+from djgentelella.models import ChunkedUpload, HistoryRelation
 from djgentelella.permission_management import all_permission
 from rest_framework.permissions import BasePermission
 from auth_and_perms.models import Profile, User, ProfilePermission
@@ -23,7 +25,6 @@ from laboratory.logsustances import log_object_change
 from laboratory.models import (
     Laboratory,
     OrganizationStructure,
-    LabOrgLogEntry,
     UserOrganization,
     RegisterUserQR,
     OrganizationStructureRelations,
@@ -235,11 +236,11 @@ def find_rel_object(object):
         instance = object.step.procedure.content_object
     elif natural_name == "academic.procedureobservations":
         instance = object.step.procedure.content_object
-    elif natural_name == " reservations_management.reservedproducts":
-        # TODO: Allow return a list
-        instance = (
-            object.shelf_object.shelf.furniture.labroom.laboratory_set.all().first()
-        )
+    elif natural_name == "reservations_management.reservedproducts":
+        # La rama estaba muerta por un typo y su navegación vieja
+        # (labroom.laboratory_set) nunca existió; el laboratorio vive
+        # directo en el shelf_object.
+        instance = object.shelf_object.in_where_laboratory
     elif natural_name == "laboratory.protocol":
         instance = object.laboratory
 
@@ -257,6 +258,11 @@ def organilab_logentry(
     content_type=None,
     relobj=None,
 ):
+    """Puente de compatibilidad sobre djgentelella.history.add_log.
+
+    Conserva la firma y los textos históricos de organilab; las relaciones
+    (antes LabOrgLogEntry) se guardan como HistoryRelation de la lib.
+    """
     if content_type is None:
         content_type = ContentType.objects.get_for_model(object)
 
@@ -264,6 +270,14 @@ def organilab_logentry(
         model_name = object._meta.verbose_name
 
     if isinstance(relobj, (int, str)):
+        # Un pk pelado no dice de qué modelo es; históricamente se asumió
+        # Laboratory y varios sitios pasaban org_pk (puente roto en silencio).
+        warnings.warn(
+            "organilab_logentry: relobj como pk se asume Laboratory; "
+            "pase instancias de modelo.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         relobj = Laboratory.objects.filter(pk=relobj).first()
 
     action = "added"
@@ -283,26 +297,24 @@ def organilab_logentry(
         else:
             change_message = "%s %s has been %s" % (str(object), model_name, action)
 
-    log_entry = LogEntry.objects.log_action(
-        user_id=user.id,
-        content_type_id=content_type.id,
-        object_id=object.pk,
-        object_repr=object_repr,
-        action_flag=action_flag,
-        change_message=change_message,
-    )
-
     if relobj is None:
         relobj = find_rel_object(object)
+    if relobj and not isinstance(relobj, (list,)):
+        relobj = [relobj]
 
-    if relobj:
-        if not isinstance(relobj, (list,)):
-            relobj = [relobj]
-        for rel_obj in relobj:
-            content_type_obj = ContentType.objects.get_for_model(rel_obj)
-            LabOrgLogEntry.objects.create(
-                log_entry=log_entry, content_type=content_type_obj, object_id=rel_obj.id
-            )
+    # changed_data=None a propósito: los textos ya vienen resueltos arriba y
+    # add_log no debe decorarlos.
+    return add_log(
+        user,
+        object,
+        action_flag,
+        model_name=model_name,
+        changed_data=None,
+        object_repr=object_repr,
+        change_message=change_message,
+        content_type=content_type,
+        related_objects=relobj or None,
+    )
 
 
 def get_changed_fields(old_values, instance):
@@ -416,40 +428,6 @@ def get_organizations_register_user(organization, lab_id, org_register_pk=None):
         .exclude(pk__in=org_exclude)
         .distinct()
     )
-
-
-def get_logentries_org_management(self, org, user):
-    in_org = org
-    if not org:
-        return self.queryset.none()
-    else:
-        org = OrganizationStructure.objects.filter(pk=org).first()
-        if not org:
-            return LabOrgLogEntry.objects.filter(
-                Q(
-                    content_type__app_label="laboratory",
-                    content_type__model="organizationstructure",
-                    object_id=in_org,
-                )
-            ).values_list("log_entry", flat=True)
-    laboratories = list(
-        get_laboratories_from_organization(org.pk, user).values_list("pk", flat=True)
-    )
-
-    log_entries = LabOrgLogEntry.objects.filter(
-        Q(
-            content_type__app_label="laboratory",
-            content_type__model="laboratory",
-            object_id__in=laboratories,
-        )
-        | Q(
-            content_type__app_label="laboratory",
-            content_type__model="organizationstructure",
-            object_id=org.pk,
-        )
-    ).values_list("log_entry", flat=True)
-
-    return log_entries
 
 
 def check_has_profile(user):
