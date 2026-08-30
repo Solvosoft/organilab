@@ -43,6 +43,19 @@ Sin commitear en el checkout `development` al cierre de la etapa 12:
    `get_labels()`, invirtiendo el contrato histórico del que dependen las subclases
    (suelen calcular las series en `get_labels()`). Reordenado, con test de orden en
    `ChartJS_Test` (20/20).
+5. **history/Trash (proyecto 13, fases A)**: nuevo modelo `HistoryRelation`
+   (relaciones N por LogEntry + JSON `data`, migración 0019) con admin; `add_log`
+   retorna el LogEntry y acepta `related_objects`/`extra` + centinela
+   `GT_HISTORY_ANONYMOUS_USERNAME` (y ya no pisa un change_message custom en DELETE);
+   `HistoryViewSet` con `scope_queryset()`, filtros `related_contenttype`/`related_id`
+   y `extra` (1..n claves JSON), `recordsTotal` scoped y fix del TypeError sin
+   `GT_HISTORY_ALLOWED_MODELS`; `BaseViewSetWithLogs` reparado (`models_log`
+   inexistente → allowlist coherente, `delete(user=)`, `perform_update` por `source`,
+   hooks + metadatos de request); Trash: restore vía `get_object()` (scoped),
+   huérfanos 410/borrables, logs con el modelo real, permisos alineados, filtro
+   `deleted_by`, bulk `delete(user=)` con filas Trash; `__init__.py` en history/ y
+   trash/; docs ampliadas; demo sin override de `perform_destroy`. Tests:
+   `History_Test.py` nuevo + `Trash_Test.py` ampliado.
 
 Ya venían de etapas previas y quedaron registrados en su documento de etapa; los cambios
 anteriores del checkout (rama `development`) se commitean en el repo de la lib con su

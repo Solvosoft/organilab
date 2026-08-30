@@ -267,6 +267,10 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 # If unset or the user doesn't exist, deletion proceeds without reassignment (history is lost).
 DELETED_USER_SENTINEL_USERNAME = os.getenv("DELETED_USER_SENTINEL_USERNAME", "solvoadmin")
 
+# Los logs sin usuario autenticado (registro por QR) se atribuyen al mismo
+# centinela que conserva la traza al borrar usuarios.
+GT_HISTORY_ANONYMOUS_USERNAME = DELETED_USER_SENTINEL_USERNAME
+
 # Celery settings
 BROKER_URL = os.getenv("BROKER_URL", "amqp://guest:guest@localhost:5672/organilabvhost")
 CELERY_TIMEZONE = TIME_ZONE

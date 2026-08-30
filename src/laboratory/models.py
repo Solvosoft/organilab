@@ -1754,18 +1754,6 @@ class CommentInform(models.Model):
         return f"{self.created_by} - {self.create_at}"
 
 
-class LabOrgLogEntry(models.Model):
-    log_entry = models.ForeignKey(
-        "admin.LogEntry", on_delete=models.CASCADE, verbose_name=_("Log Entry")
-    )
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
-    content_object = GenericForeignKey("content_type", "object_id")
-
-    def __str__(self):
-        return f"{self.log_entry}"
-
-
 class Protocol(BaseCreationObj):
     name = models.CharField(_("Name"), max_length=300)
     file = models.FileField(

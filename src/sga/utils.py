@@ -150,7 +150,7 @@ def create_object_notification(instance, user=None):
         actor = user or instance.created_by
         laboratories = list(instance.laboratories.all())
         if actor and laboratories:
-            # organilab_logentry acepta la lista y crea un LabOrgLogEntry por
+            # organilab_logentry acepta la lista y crea una HistoryRelation por
             # laboratorio, que es lo que hace visible el alta en cada bitácora.
             organilab_logentry(
                 actor,

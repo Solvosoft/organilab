@@ -10,8 +10,8 @@ from django.urls import reverse
 
 from auth_and_perms.models import Profile, ProfilePermission
 from django.contrib.contenttypes.models import ContentType
+from djgentelella.models import HistoryRelation
 from laboratory.models import (
-    LabOrgLogEntry,
     Laboratory,
     Object,
     ObjectFeatures,
@@ -373,7 +373,7 @@ class SubstanceWizardFlowTest(TestCase):
 
     def lab_log_entries(self, obj, laboratory):
         """Entradas de bitácora del laboratorio que apuntan a este objeto."""
-        return LabOrgLogEntry.objects.filter(
+        return HistoryRelation.objects.filter(
             content_type=ContentType.objects.get_for_model(Laboratory),
             object_id=laboratory.pk,
             log_entry__object_id=str(obj.pk),

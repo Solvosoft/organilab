@@ -4,12 +4,13 @@ from django.conf import settings
 from django.contrib.admin.models import LogEntry, DELETION, CHANGE, ADDITION
 from django.contrib.auth.decorators import permission_required, login_required
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import Value, DateField, Q
+from django.db.models import Value, DateField, Q, Subquery
 from django.http import JsonResponse, Http404
 from django.shortcuts import get_object_or_404, render
 from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
 from django_filters.rest_framework import DjangoFilterBackend
+from djgentelella.history.api import HistoryViewSet
 from djgentelella.objectmanagement import AuthAllPermBaseObjectManagement
 from rest_framework import status, viewsets, mixins
 from rest_framework.authentication import SessionAuthentication, BaseAuthentication
@@ -97,7 +98,7 @@ from laboratory.shelfobject.serializers import (
 )
 from laboratory.shelfobject.utils import save_increase_decrease_shelf_object
 from laboratory.utils import (
-    get_logentries_org_management,
+    get_laboratories_from_organization,
     get_pk_org_ancestors_decendants,
     PermissionByLaboratoryInOrganization,
     organilab_logentry,
@@ -320,12 +321,20 @@ class ProtocolViewSet(viewsets.ModelViewSet):
         return Response(self.get_serializer(response).data)
 
 
-class LogEntryViewSet(viewsets.ModelViewSet):
-    authentication_classes = [SessionAuthentication]
+class LogEntryViewSet(HistoryViewSet):
+    """Bitácora org-scoped sobre el HistoryViewSet de la lib.
+
+    El alcance multi-tenant va por el join de HistoryRelation (org + labs de
+    la org), sin materializar pks en memoria; recordsTotal es el universo
+    scoped (el count global fugaba el volumen de toda la plataforma). La
+    rama QR filtra por la RELACIÓN al RegisterUserQR en vez de comparar
+    change_message traducido (que rompía al cambiar de idioma). Los logs QR
+    anteriores a esta migración no llevan esa relación y no se listan aquí.
+    """
+
     permission_classes = [IsAuthenticated]
+    perms = {}
     serializer_class = serializers.LogEntryDataTableSerializer
-    queryset = LogEntry.objects.all()
-    pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     search_fields = ["object_repr", "action_flag"]
     filterset_class = LogEntryFilterSet
@@ -333,56 +342,46 @@ class LogEntryViewSet(viewsets.ModelViewSet):
     ordering = ("-pk",)
     can_use_inactive_organization = True
 
-    def get_queryset(self):
-        filters = {}
+    def get_serializer_class(self):
+        if self.request.GET.get("qr_obj", ""):
+            return LogEntryUserDataTableSerializer
+        return self.serializer_class
+
+    def get_serializer(self, *args, **kwargs):
+        kwargs.setdefault("context", self.get_serializer_context())
+        return self.get_serializer_class()(*args, **kwargs)
+
+    def scope_queryset(self, queryset):
+        qr_obj = self.request.GET.get("qr_obj", "")
+        if qr_obj:
+            if not qr_obj.isnumeric():
+                return queryset.none()
+            return queryset.filter(
+                gt_relations__content_type__app_label="laboratory",
+                gt_relations__content_type__model="registeruserqr",
+                gt_relations__object_id=int(qr_obj),
+            ).distinct()
+
         org = self.request.GET.get("org_pk", None)
-        qr_obj = self.request.GET.get("qr_obj", None)
-        queryset = self.queryset.none()
-
-        if not qr_obj:
-            orga = OrganizationStructure.objects.filter(pk=org).first()
-            log_entries = get_logentries_org_management(self, org, self.request.user)
-            logs = set()
-            if orga:
-                logs = self.queryset.filter(
-                    content_type__app_label="laboratory",
-                    content_type__model__in=["laboratory", "organizationstructure"],
-                    object_id__in=set(orga.get_my_laboratories),
-                ).values_list("pk", flat=True)
-            filters.update({"pk__in": set(logs).union(set(log_entries))})
-        else:
-            if qr_obj.isnumeric():
-                self.serializer_class = LogEntryUserDataTableSerializer
-                qr_obj = int(qr_obj)
-                detail = [
-                    _("[{'changed': {'fields': ['Login', %d]}}]") % (qr_obj),
-                    _("[{'added': {'fields': ['Register', %d]}}]") % (qr_obj),
-                ]
-
-                filters.update(
-                    {
-                        "action_flag__in": [1, 2],
-                        "content_type__app_label": "auth",
-                        "content_type__model": "user",
-                        "change_message__in": detail,
-                    }
-                )
-
-        if filters:
-            queryset = self.queryset.filter(**filters).distinct()
-
-        return queryset
-
-    def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
-        data = self.paginate_queryset(queryset)
-        response = {
-            "data": data,
-            "recordsTotal": LogEntry.objects.count(),
-            "recordsFiltered": queryset.count(),
-            "draw": self.request.GET.get("draw", 1),
-        }
-        return Response(self.get_serializer(response).data)
+        orga = OrganizationStructure.objects.filter(pk=org).first()
+        if not orga:
+            return queryset.none()
+        user_is_allowed_on_organization(self.request.user, orga)
+        laboratories = get_laboratories_from_organization(
+            orga.pk, self.request.user
+        ).values("pk")
+        return queryset.filter(
+            Q(
+                gt_relations__content_type__app_label="laboratory",
+                gt_relations__content_type__model="laboratory",
+                gt_relations__object_id__in=Subquery(laboratories),
+            )
+            | Q(
+                gt_relations__content_type__app_label="laboratory",
+                gt_relations__content_type__model="organizationstructure",
+                gt_relations__object_id=orga.pk,
+            )
+        ).distinct()
 
 
 class InformViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
@@ -1711,7 +1710,7 @@ class ObjectViewSet(AuthAllPermBaseObjectManagement):
             ADDITION,
             "object",
             changed_data=[],  # no necesaria en create
-            relobj=org.root,  # para LabOrgLogEntry
+            relobj=org.root,  # para HistoryRelation
         )
 
     def perform_update(self, serializer):
