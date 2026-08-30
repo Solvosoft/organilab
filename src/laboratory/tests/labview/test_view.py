@@ -3,12 +3,12 @@
 from django.contrib.auth.models import Permission
 from django.urls import reverse
 
-from auth_and_perms.models import Rol
 from laboratory.models import Shelf
+from laboratory.tests.labview.utils import RolPermissionMixin
 from laboratory.tests.utils import BaseLaboratorySetUpTest
 
 
-class LabviewViewTest(BaseLaboratorySetUpTest):
+class LabviewViewTest(RolPermissionMixin, BaseLaboratorySetUpTest):
     def setUp(self):
         super().setUp()
         self.user.user_permissions.add(
@@ -77,11 +77,7 @@ class LabviewViewTest(BaseLaboratorySetUpTest):
         self.assertEqual(self.client.get(old).status_code, 200)
 
     def test_without_permission_the_page_is_refused(self):
-        for rol in Rol.objects.all():
-            rol.permissions.clear()
-        self.user.user_permissions.clear()
-        self.user.groups.clear()
-        self.client.force_login(type(self.user).objects.get(pk=self.user.pk))
+        self.user = self.strip_effective_permissions(self.user)
         response = self.client.get(
             self.url, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
         )

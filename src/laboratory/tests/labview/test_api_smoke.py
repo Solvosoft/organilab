@@ -11,14 +11,14 @@ from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
 
-from auth_and_perms.models import Rol
 from laboratory import dataconfig
 from laboratory.models import Furniture, LaboratoryRoom, Shelf, ShelfObject
+from laboratory.tests.labview.utils import RolPermissionMixin
 from laboratory.tests.utils import BaseLaboratorySetUpTest
 from presentation.models import QRModel
 
 
-class LabviewApiTest(BaseLaboratorySetUpTest):
+class LabviewApiTest(RolPermissionMixin, BaseLaboratorySetUpTest):
     def setUp(self):
         super().setUp()
         # El usuario del fixture no trae los permisos espaciales; sin ellos
@@ -344,12 +344,7 @@ class LabviewApiTest(BaseLaboratorySetUpTest):
         # los inyecta ``ProfileMiddleware`` desde el Rol que el perfil tiene en
         # esa organizacion y ese laboratorio. Vaciar solo los directos dejaria
         # pasar al usuario y la prueba mentiria.
-        for rol in Rol.objects.all():
-            rol.permissions.clear()
-        self.user.user_permissions.clear()
-        self.user.groups.clear()
-        self.user = type(self.user).objects.get(pk=self.user.pk)
-        self.client.force_login(self.user)
+        self.user = self.strip_effective_permissions(self.user)
 
         self.assertEqual(
             self.client.get(self.url("api-labview-tree-list")).status_code, 403
