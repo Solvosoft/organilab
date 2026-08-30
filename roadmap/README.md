@@ -39,6 +39,10 @@ Sin commitear en el checkout `development` al cierre de la etapa 12:
    rendía en `div.valid-feedback` (Bootstrap lo oculta salvo validación) → cualquier
    contenido interactivo embebido en help_text quedaba invisible. Ahora `div.form-text`
    (siempre visible, la clase correcta de BS5 para help).
+4. **`chartjs.py` `get_data()`** (etapa 12): invocaba `get_datasets()` antes que
+   `get_labels()`, invirtiendo el contrato histórico del que dependen las subclases
+   (suelen calcular las series en `get_labels()`). Reordenado, con test de orden en
+   `ChartJS_Test` (20/20).
 
 Ya venían de etapas previas y quedaron registrados en su documento de etapa; los cambios
 anteriores del checkout (rama `development`) se commitean en el repo de la lib con su
