@@ -1,4 +1,3 @@
-import json
 import logging
 
 from laboratory.models import (
@@ -9,6 +8,7 @@ from laboratory.models import (
     Shelf,
     ShelfObject,
 )
+from laboratory import dataconfig
 from laboratory.utils_base_unit import get_conversion_units
 from risk_management.compatibility_utils import (
     COMPAT_LABELS,
@@ -116,161 +116,185 @@ def compute_shelf_danger(shelf_pk, shelf_hcodes, all_shelves_data):
     return worst, worst_pair
 
 
-def _parse_dataconfig_cell(cell):
-    """Parse a single dataconfig cell into a list of shelf PKs (as int)."""
-    if not cell:
-        return []
-    if isinstance(cell, int):
-        return [cell]
-    if isinstance(cell, str):
-        parts = cell.split(",")
-        result = []
-        for p in parts:
-            p = p.strip()
-            if p:
-                try:
-                    result.append(int(p))
-                except (ValueError, TypeError):
-                    pass
-        return result
-    if isinstance(cell, list):
-        result = []
-        for item in cell:
-            if isinstance(item, int):
-                result.append(item)
-            elif isinstance(item, str):
-                try:
-                    result.append(int(item.strip()))
-                except (ValueError, TypeError):
-                    pass
-        return result
-    return []
+COMPAT_SUMMARY_KEYS = {"V": "green", "A": "yellow", "R": "red", "-": "gray"}
 
 
-def compute_lab_tonnage(laboratory):
-    """Compute total reactive weight in kg and tons for a laboratory.
+def _empty_summary():
+    return {"green": 0, "yellow": 0, "red": 0, "gray": 0}
 
-    Sums ShelfObject quantities for reactives whose measurement_unit has
-    a BaseUnitValues with base 'Kilogramos', converting via get_conversion_units().
-    Returns {"kilograms": float, "tons": float}.
+
+def _kg_conversion_map():
+    """``measurement_unit_id`` -> ``True`` cuando la unidad se mide en kilogramos.
+
+    Una sola consulta.  Antes se preguntaba por ``BaseUnitValues`` una vez por
+    objeto, dentro del bucle.
     """
-    total_kg = 0.0
+    units = BaseUnitValues.objects.select_related(
+        "measurement_unit_base"
+    ).filter(measurement_unit_base__description="Kilogramos")
+    return set(units.values_list("measurement_unit_id", flat=True))
+
+
+def compute_tonnage_aggregates(laboratory):
+    """Masa de reactivos en kg y toneladas, por laboratorio, sala y mueble.
+
+    El total del laboratorio es lo que consumía el mapa de peligros; los
+    desgloses por sala y por mueble son lo que faltaba para razonar sobre
+    riesgo por zona y no sólo por laboratorio entero.
+    """
+    kg_units = _kg_conversion_map()
+    totals = {"laboratory": 0.0, "rooms": {}, "furniture": {}}
+
     shelf_objects = ShelfObject.objects.filter(
         in_where_laboratory=laboratory,
         object__type=Object.REACTIVE,
-    ).select_related('measurement_unit')
+    ).select_related("measurement_unit", "shelf__furniture")
 
     for so in shelf_objects:
-        if so.measurement_unit is None or so.quantity is None:
+        if so.measurement_unit_id is None or so.quantity is None:
             continue
-        buv = BaseUnitValues.objects.filter(
-            measurement_unit=so.measurement_unit
-        ).select_related('measurement_unit_base').first()
-        if buv and buv.measurement_unit_base and buv.measurement_unit_base.description == "Kilogramos":
-            converted = get_conversion_units(so.measurement_unit, float(so.quantity))
-            if converted is not None:
-                total_kg += converted
+        if so.measurement_unit_id not in kg_units:
+            continue
+        converted = get_conversion_units(so.measurement_unit, float(so.quantity))
+        if converted is None:
+            continue
+        totals["laboratory"] += converted
+        furniture = so.shelf.furniture if so.shelf_id else None
+        if furniture is None:
+            continue
+        totals["furniture"][furniture.pk] = (
+            totals["furniture"].get(furniture.pk, 0.0) + converted
+        )
+        totals["rooms"][furniture.labroom_id] = (
+            totals["rooms"].get(furniture.labroom_id, 0.0) + converted
+        )
 
-    return {"kilograms": round(total_kg, 4), "tons": round(total_kg / 1000, 6)}
+    def as_tonnage(kilograms):
+        return {
+            "kilograms": round(kilograms, 4),
+            "tons": round(kilograms / 1000, 6),
+        }
+
+    return {
+        "laboratory": as_tonnage(totals["laboratory"]),
+        "rooms": {pk: as_tonnage(kg) for pk, kg in totals["rooms"].items()},
+        "furniture": {pk: as_tonnage(kg) for pk, kg in totals["furniture"].items()},
+    }
 
 
-def build_lab_hazard_map(laboratory):
-    """Build complete hazard map data for a laboratory.
+def compute_lab_tonnage(laboratory):
+    """Total del laboratorio.  Se conserva: es lo que consume el reporte."""
+    return compute_tonnage_aggregates(laboratory)["laboratory"]
 
-    Returns structured dict with rooms, furniture grids, shelf colors,
-    summary counts, and incompatibility alerts.
+
+def compute_lab_risk(laboratory, rooms=None):
+    """El único constructor de riesgo espacial del proyecto.
+
+    Devuelve el color y los códigos H de cada estante, las alertas de
+    incompatibilidad y los recuentos por laboratorio y por sala.  Lo consumen
+    **tanto el mapa de peligros como el árbol del labview**, de modo que la
+    pantalla y el reporte no puedan divergir: si el mapa dice que un estante es
+    rojo, el reporte dice lo mismo porque es el mismo cálculo.
     """
-    rooms_data = []
-    summary = {"green": 0, "yellow": 0, "red": 0, "gray": 0}
-    alerts = []
+    if rooms is None:
+        rooms = LaboratoryRoom.objects.filter(laboratory=laboratory)
 
-    rooms = LaboratoryRoom.objects.filter(laboratory=laboratory)
+    shelf_colors, shelf_hcodes, alerts = {}, {}, []
+    summary = _empty_summary()
+    rooms_summary = {}
 
     for room in rooms:
         all_shelves_data = collect_room_shelf_hcodes(room)
+        room_summary = _empty_summary()
 
-        shelf_colors = {}
         for shelf_pk, sdata in all_shelves_data.items():
             compat_code, worst_pair = compute_shelf_danger(
                 shelf_pk, sdata["h_codes"], all_shelves_data
             )
-            color = HAZARD_COLORS.get(compat_code, HAZARD_COLORS['-'])
             shelf_colors[shelf_pk] = {
                 "compat_code": compat_code,
-                "color": color,
+                "color": HAZARD_COLORS.get(compat_code, HAZARD_COLORS["-"]),
                 "worst_pair": worst_pair,
                 "substances": sdata["substances"],
                 "name": sdata["name"],
             }
+            shelf_hcodes[shelf_pk] = sorted(sdata["h_codes"])
+            key = COMPAT_SUMMARY_KEYS.get(compat_code, "gray")
+            summary[key] += 1
+            room_summary[key] += 1
 
-            if compat_code == 'V':
-                summary["green"] += 1
-            elif compat_code == 'A':
-                summary["yellow"] += 1
-            elif compat_code == 'R':
-                summary["red"] += 1
-            else:
-                summary["gray"] += 1
-
+        before = len(alerts)
         _collect_alerts(all_shelves_data, alerts)
+        rooms_summary[room.pk] = {
+            "summary": room_summary,
+            "alerts": len(alerts) - before,
+        }
 
-        furniture_list = []
-        furnitures = Furniture.objects.filter(labroom=room)
+    return {
+        "shelf_colors": shelf_colors,
+        "shelf_hcodes": shelf_hcodes,
+        "alerts": alerts,
+        "summary": summary,
+        "rooms": rooms_summary,
+    }
 
-        for furniture in furnitures:
-            grid = _build_furniture_grid(furniture, shelf_colors)
-            furniture_list.append({
+
+def build_lab_hazard_map(laboratory):
+    """Datos completos del mapa de peligros de un laboratorio.
+
+    El cálculo de riesgo ya no vive aquí: lo hace ``compute_lab_risk``, que es
+    el mismo que alimenta el árbol del labview.  Este envoltorio sólo le da la
+    forma que esperan las plantillas del reporte.
+    """
+    rooms = list(LaboratoryRoom.objects.filter(laboratory=laboratory))
+    risk = compute_lab_risk(laboratory, rooms=rooms)
+    shelf_colors = risk["shelf_colors"]
+
+    rooms_data = []
+    for room in rooms:
+        furniture_list = [
+            {
                 "name": furniture.name,
                 "pk": furniture.pk,
-                "grid": grid,
-            })
-
-        rooms_data.append({
-            "name": room.name,
-            "furniture_list": furniture_list,
-        })
+                "grid": _build_furniture_grid(furniture, shelf_colors),
+            }
+            for furniture in Furniture.objects.filter(labroom=room)
+        ]
+        rooms_data.append({"name": room.name, "furniture_list": furniture_list})
 
     return {
         "laboratory": laboratory.name,
         "laboratory_pk": laboratory.pk,
         "rooms": rooms_data,
-        "summary": summary,
-        "alerts": alerts,
+        "summary": risk["summary"],
+        "alerts": risk["alerts"],
         "tonnage": compute_lab_tonnage(laboratory),
     }
 
 
 def _build_furniture_grid(furniture, shelf_colors):
-    """Build the grid representation for a furniture using its dataconfig."""
+    """Cuadrícula del mueble, resuelta en una sola consulta.
+
+    El parseo lo hace ``laboratory.dataconfig``: antes este módulo tenía su
+    propio parser y consultaba ``Shelf.objects.get(pk=...)`` dentro del doble
+    bucle, un N+1 por celda.  Las filas son irregulares y se respetan tal cual.
+    """
     grid = []
-    if not furniture.dataconfig:
+    matrix = dataconfig.parse(furniture.dataconfig)
+    if not matrix:
         shelves = Shelf.objects.filter(furniture=furniture)
         if shelves.exists():
-            row_shelves = []
-            for shelf in shelves:
-                row_shelves.append(_shelf_to_dict(shelf, shelf_colors))
+            row_shelves = [_shelf_to_dict(shelf, shelf_colors) for shelf in shelves]
             grid.append([{"shelves": row_shelves}])
         return grid
 
-    try:
-        dataconfig = json.loads(furniture.dataconfig)
-    except (json.JSONDecodeError, TypeError):
-        return grid
-
-    for row in dataconfig:
-        grid_row = []
-        for cell in row:
-            shelf_pks = _parse_dataconfig_cell(cell)
-            cell_shelves = []
-            for pk in shelf_pks:
-                try:
-                    shelf = Shelf.objects.get(pk=pk)
-                except Shelf.DoesNotExist:
-                    continue
-                cell_shelves.append(_shelf_to_dict(shelf, shelf_colors))
-            grid_row.append({"shelves": cell_shelves})
-        grid.append(grid_row)
-
+    for row in dataconfig.resolve_shelves(matrix):
+        grid.append(
+            [
+                {"shelves": [_shelf_to_dict(shelf, shelf_colors) for shelf in cell]}
+                for cell in row
+            ]
+        )
     return grid
 
 

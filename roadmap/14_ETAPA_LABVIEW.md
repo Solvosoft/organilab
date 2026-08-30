@@ -1,7 +1,7 @@
 # Etapa 14 — labview: mapa digital del laboratorio sobre API (salida total de django_ajax)
 
-**Estado: EN CURSO — F0 hecha (2026-08-29).** Último proyecto diferido de la migración dj060
-(viene de la etapa 2 y de la etapa 10 §labview).
+**Estado: EN CURSO — F0 a F5 hechas (2026-08-30); faltan F6 (pruebas) y F7.** Último proyecto
+diferido de la migración dj060 (viene de la etapa 2 y de la etapa 10 §labview).
 
 > Arquitectura y decisiones de diseño: [`14_ARQUITECTURA_LABVIEW.md`](14_ARQUITECTURA_LABVIEW.md).
 > Prototipo visual de la pantalla: [`14_labview_prototipo.svg`](14_labview_prototipo.svg)
@@ -17,6 +17,97 @@ cuyo layout vive en `Furniture.dataconfig` sin representación normalizada. Hay 
 COMPLETO el AJAX heredado de `django_ajax` por APIs + componentes de la biblioteca, con una
 interfaz **semejante a la actual** (el usuario debe reconocerla) pero de **navegación más
 fluida** hacia todos los sectores del laboratorio, que siga pareciéndose a la ubicación real.
+
+## Corrección de F0: la cuadrícula NO es rectangular (2026-08-30)
+
+Decisión de Luis durante la implementación: **la forma la define el usuario según cómo sea su
+laboratorio**, así que una fila puede tener dos celdas y la siguiente cuatro. El fixture ya lo
+demuestra (`[[[6],[]],[[],[],[5],[]]]`). Consecuencias, ya aplicadas:
+
+- `dataconfig.parse` **preserva filas irregulares**: no rellena a rectángulo ni al leer ni al
+  escribir.
+- El contrato del árbol lleva `grid: {"cells": [...]}` **sin** `rows` ni `cols` (el §F3 de abajo
+  todavía los enseña; el código no los emite, porque un ancho único mentiría sobre la forma).
+- `PositionsGrid` pinta cada fila con su ancho real, celdas alineadas a la izquierda y del mismo
+  ancho: una fila de dos celdas ocupa la mitad que una de cuatro.
+- Las operaciones de columna son **globales** (± una celda en todas las filas), lo que sobre datos
+  irregulares preserva la irregularidad: `remove_col(i)` sólo encoge las filas que tienen esa
+  posición.
+
+## Desvíos anotados de la implementación
+
+1. **`shelf.discard` en `shelfobject_actions.html:102`**: la plantilla comprueba una variable que
+   **no está en su contexto**, así que la rama `can_manage_disposal` nunca se ejecutaba y en un
+   estante de descarte se caía al `elif delete_shelfobject`. El diccionario `actions` usa
+   `shelfobject.shelf.discard`, que es lo que la plantilla dice querer. **Cambia comportamiento
+   observable**: en un estante de descarte, borrar pasa a exigir `can_manage_disposal`.
+2. **Formato canónico compacto**: `dump` escribe `json.dumps(..., separators=(",", ":"))`, que es
+   exactamente lo que producía el editor en JavaScript. El escritor del modelo producía la
+   variante con espacios (`str(dataconfig)`); dos tests de `test_remove_shelf.py` fijaban ese
+   formato y se actualizaron para expresar la intención (`dataconfig.dump(...)`) en vez de un
+   literal.
+3. **`parse` deduplica**: un mismo estante se queda en su primera posición. Un estante ocupa una
+   posición y los duplicados eran daño de los escritores antiguos.
+4. **`ShelfEdit` no se tocó**: sus `row`/`col` vienen de índices del DOM, así que escribirlos al
+   editar podría mover un estante a una celda equivocada. El hueco real (estante huérfano) estaba
+   en `ShelfCreate`, que ahora sí escribe la posición.
+5. **Los permisos efectivos no salen de `user_permissions`**: los inyecta `ProfileMiddleware`
+   (`authentication/middleware.py:141-159`) desde el `Rol` que el perfil tiene en esa organización
+   y ese laboratorio. El bloque `permissions` del árbol se calcula con `user.has_perm`, así que
+   hereda ese ámbito sin hacer nada; y una prueba de denegación que sólo vacíe `user_permissions`
+   **miente**.
+6. **Extracción compartida**: `laboratory.js` mezclaba el cableado del árbol y la tabla de la vista
+   antigua con los ayudantes que abren los modales de objeto. Estos últimos viven ahora en
+   `laboratory/js/shelfobject_action_helpers.js`, que cargan **las dos** pantallas. Lo mismo del
+   lado Python con `views/labview_helpers.py` (deep-link, sugerencias del buscador y los 18
+   formularios de los modales).
+
+## Auditoría de funciones perdidas (2026-08-30)
+
+Al terminar F5 se comparó la vista nueva contra la antigua función por función. Lo que se
+había perdido y quedó **reincorporado**:
+
+| Perdido | Cómo se recuperó |
+|---|---|
+| Botones de cabecera de la tabla: **crear equipo / material / sustancia** | Se reutiliza `tableObject.addObject`, que además prepara el formulario (prefijo, `update_selects` del recipiente, `show_hide_container_selects`, `without_limit` y la variante de residuos según el estante). El selector propio que se había escrito saltaba todo eso. |
+| Botón **Contenedores** (`tableObject.redirectContainer`) | Mismo origen: `get_shelfobject_table_buttons()`, compartida por las dos pantallas. |
+| **Transferencias entrantes**: botón, modal, tabla y aprobar/denegar | `init_transfer_list_table()` + `transferInObjectApprove/Deny`, movidos al archivo compartido. |
+| Tarjeta de estante: **pk delante del nombre, color propio y descripción** | El árbol manda `description` y `color`; `renderShelf` los pinta. El color del riesgo pasa a ser un borde para no pisar el del estante. |
+| Columna **Id** visible y **unidad truncada** (`truncateTextRenderer`) | Restauradas en la definición de columnas. |
+| Búsqueda: **filtrar la tabla** al encontrar un objeto (convenio `pk=<n>`) y el aviso **«se muestra el primero de N estantes»** | `LabviewSearch.filterTable()` y `reportMatches()`; quitar las etiquetas limpia ambos. |
+| **`data-box` de "añadir"**: la plantilla emitía `"True"`, el JS nuevo `"true"`, y `jQuery.data()` lo convierte a booleano → `is_box=="True"` fallaba y el aviso de caducidad de una caja no salía nunca | `data-box="${row.is_box ? 'True' : 'False'}"` |
+| **Enlace "descargar informe" de cada fila**: `reports_shelf_objects` es `shelf_objects/<pk>` **sin barra final**, así que el `replace('/0/')` no sustituía nada y **todas las filas apuntaban al pk 0** | `withPk` contempla ahora las rutas con y sin barra final |
+| **`.add_status` («+ nuevo estado»)**: el manejador vivía solo en `laboratory.js`, así que en la pantalla nueva el enlace aparecía en nueve formularios y no hacía nada | El binding se movió al archivo compartido |
+| **Leyenda de colores** del buscador (`colors_tooltip`): se calculaba y nunca se pintaba | Renderizada junto al buscador |
+| **Colapsar todo el árbol** de golpe | Botón `#labview_collapse_all` → `LabviewMap.collapseAll()` |
+| **Textos traducidos** de tipo, nombre, cantidad y unidad de la fila | El serializer vuelve a **heredar** de `ShelfObjectLaboratoryViewSerializer` en vez de reimplementar esos métodos sin `_()` |
+| **`data-containername`**: el select2 mostraba el `__str__` del contenedor (nombre + cantidad + unidad), no solo el nombre | Campo `container_display` con `str(obj.container)` |
+| **`data-expiration`**: la plantilla emitía `"None"` y el modal lo traduce a «Unknown»; la cadena vacía dejaba un hueco | Se emite `'None'` |
+| **QR de salas, muebles y estantes que aún no existen**: `get_qr_svg_img` los **crea al vuelo**; el árbol solo los leía | `get_qr_map` los materializa, igual que la plantilla antigua |
+| Búsqueda con **varias etiquetas**: la antigua mostraba todas las coincidencias filtrando el árbol; la nueva navegaba a una sola | Se navega a la más profunda **y se marcan todas** (`highlightMatches`) |
+| La vista nueva **no era alcanzable** desde la interfaz | Entrada «Laboratory view (new)» en `laboratory_menu.html`, junto a la antigua, hasta que F7 deje una sola |
+
+Para que las dos pantallas no vuelvan a divergir, `tableObject`, los manejadores de
+transferencia, `init_transfer_list_table()` y `get_shelfobject_table_buttons()` viven en
+`laboratory/js/shelfobject_action_helpers.js`, que cargan **las dos**.
+`tableObject.get_active_shelf()` sigue leyendo el radio en la vista antigua y cae a
+`#id_shelf` cuando no hay radios, que es el caso del labview.
+
+La auditoría la hizo un segundo pase independiente sobre las dos pantallas y los seis
+archivos JS compartidos, comprobando una a una las 13 acciones de fila, cada `data-*` que
+sus manejadores leen, y todas las globales y nodos del DOM que el código compartido
+espera (`document.urls.*`, `document.shelf_discard`, `document.prefix`,
+`can_add_shelfobject`, `has_perm`, `datatableelement`, `objecttype`, `#id_shelf`,
+`#closemodal`, `#alert_msg`, `#recipient_datatable`, `#transfer-list-datatable`…).
+
+**Código muerto que NO se reincorpora** (no era funcionalidad activable): el modal vacío
+`#shelfdetailmodal`, la constante `view_search`, y `load_self_from_uls()` con sus
+`wait_*` sobre selectores inexistentes.
+
+**Pendiente, no perdido**: crear, editar y borrar salas y muebles desde la propia pantalla.
+La API de F3 lo soporta, pero la vista antigua tampoco lo ofrecía (se hace en
+`laboratory:rooms_create` y `furniture_update`, ambas intactas), así que no es una
+regresión sino trabajo restante del inventario.
 
 ## Decisiones de Luis (firmes, NO re-preguntar)
 
@@ -185,7 +276,7 @@ Este documento + [`14_ARQUITECTURA_LABVIEW.md`](14_ARQUITECTURA_LABVIEW.md) + en
 tabla de `README.md`. Si la sesión se cierra aquí, otra sesión implementa F1-F7 desde estos
 documentos sin re-explorar.
 
-### F1 — Módulo canónico de `dataconfig`
+### F1 — Módulo canónico de `dataconfig` (HECHA)
 
 **Nuevo `src/laboratory/dataconfig.py`**:
 
@@ -210,7 +301,7 @@ documentos sin re-explorar.
 **Migración de datos** `laboratory/00XX_normalize_dataconfig.py`: parse + dump de todos los
 `Furniture.dataconfig` (idempotente, no bloqueante porque el parser es tolerante).
 
-### F2 — Widgets genéricos en djgentelella
+### F2 — Widgets genéricos en djgentelella (HECHA)
 
 Checkout `~/Desktop/desarrollo/django-gentelella-widgets`, rama `development`.
 
@@ -240,7 +331,7 @@ Checkout `~/Desktop/desarrollo/django-gentelella-widgets`, rama `development`.
 - Demo en `demo/demoapp` (grid de "bodega" con endpoints JSON para los handlers, patrón de la
   demo de cardlist) + entrada de menú + docs breves. Tests en F6.
 
-### F3 — Capa API labview
+### F3 — Capa API labview (HECHA)
 
 **Nuevo paquete `src/laboratory/api/labview/`** (`serializers.py`, `viewsets.py`,
 `tree_builder.py`), router bajo el prefijo de laboratorio en `src/laboratory/urls.py`:
@@ -305,7 +396,7 @@ Checkout `~/Desktop/desarrollo/django-gentelella-widgets`, rama `development`.
   generaliza a `compute_tonnage_aggregates` (totales por laboratorio, sala y mueble). La
   semántica de color no cambia.
 
-### F4 — UI nueva `laboratory:labview` (vista paralela)
+### F4 — UI nueva `laboratory:labview` (vista paralela) (HECHA)
 
 - URL en `lab_rooms_urls` (`urls.py:169`): `path("labview/", ...)`, name `labview`.
 - `src/laboratory/views/labview.py`: TemplateView delgada (perm `view_laboratoryroom`) que
@@ -344,7 +435,7 @@ Checkout `~/Desktop/desarrollo/django-gentelella-widgets`, rama `development`.
   tablet/móvil: apilados, con la tabla bajo el estante seleccionado y scroll-to; DataTable en
   modo responsive; breadcrumb colapsable; convive con el drawer <992px del tema.
 
-### F5 — Modo edición (editor de cuadrícula nuevo)
+### F5 — Modo edición (editor de cuadrícula nuevo) (HECHA)
 
 En la misma página, botón "editar mueble" **visible solo si el payload lo autoriza**
 (`change_furniture`); dentro del modo, cada handler se ofrece según su capacidad
