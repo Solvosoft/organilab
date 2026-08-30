@@ -56,9 +56,13 @@ def collect_room_shelf_hcodes(room):
                 "labroom_pk": shelf.furniture.labroom_id,
             }
 
-        sga_char = obj.substancharacteristics_object.first()
+        # ``.first()`` añade ORDER BY + LIMIT y por eso **no** usa la caché del
+        # prefetch: una consulta por objeto, que en un laboratorio grande es el
+        # coste entero del overlay de riesgo.  ``.all()`` sí la usa.
+        prefetched = list(obj.substancharacteristics_object.all())
+        sga_char = prefetched[0] if prefetched else None
         if sga_char:
-            h_codes = list(sga_char.h_code.values_list('code', flat=True))
+            h_codes = [h.code for h in sga_char.h_code.all()]
             if h_codes:
                 shelf_data[shelf.pk]["h_codes"].update(h_codes)
                 codes_str = ", ".join(sorted(h_codes))
