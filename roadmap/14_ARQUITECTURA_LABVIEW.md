@@ -206,6 +206,25 @@ Tres decisiones que la definen:
   vista nueva lo entiende y lo mantiene en la barra de direcciones al navegar, y cuando la
   vista vieja se retire seguirá respondiendo por redirección conservando esos parámetros.
 
+### QR, reportes y etiquetas: funciones de datos, no de plantilla
+
+Cada nivel del mapa tiene hoy su **QR** (sala, mueble y estante), el mueble tiene su
+**reporte PDF**, y cada objeto tiene su QR, su reporte, su bitácora, sus **etiquetas y
+recipientes** de SGA y —si es equipo— su mantenimiento. Hoy todo eso lo decide una
+plantilla; en el diseño nuevo son datos:
+
+- El **enlace directo y el QR de cada nodo** viajan en la respuesta del árbol, de modo que
+  el mapa pueda ofrecerlos sin consultar nada más.
+- El **QR del objeto** ya lo devuelve la API de detalle en base64: el modal se rinde en
+  cliente con `BaseDetailModal` en vez de recibir HTML.
+- Las **etiquetas** siguen colgando de sus endpoints de SGA, y el botón solo aparece donde
+  aparecía: reactivos, con `sga.view_recipientsize`.
+- Las acciones que **abren otra página** (bitácora, mantenimiento, reporte) se declaran con
+  `link: true`, la capacidad que la biblioteca ganó en la etapa 10 justo para esto.
+
+La consecuencia buscada es que ninguna de estas funciones dependa ya de dónde esté
+renderizada: el mismo dato sirve al mapa, al móvil y a quien consulte la API.
+
 ## Reparto de responsabilidades
 
 | | djgentelella (genérico) | organilab (dominio) |
