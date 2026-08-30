@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 1250" width="1440" height="1250">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 1600" width="1440" height="1600">
   <defs>
     <style>
       .ui   { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
@@ -19,9 +19,20 @@
       .dash { fill: none; stroke: #C7CFD6; stroke-width: 1.2; stroke-dasharray: 4 3; }
       .sep  { stroke: #E9ECEF; stroke-width: 1; }
     </style>
+    <g id="qr" fill="none" stroke="#73879C" stroke-width="1.1">
+      <rect x="0.5" y="0.5" width="3.6" height="3.6"/>
+      <rect x="6.4" y="0.5" width="3.6" height="3.6"/>
+      <rect x="0.5" y="6.4" width="3.6" height="3.6"/>
+      <rect x="6.4" y="6.4" width="1.6" height="1.6" fill="#73879C" stroke="none"/>
+      <rect x="9" y="9" width="1.5" height="1.5" fill="#73879C" stroke="none"/>
+    </g>
+    <g id="pdf">
+      <rect x="0" y="0" width="17" height="11" rx="2" fill="#FDEDEC"/>
+      <text class="ui" x="8.5" y="8.2" text-anchor="middle" font-size="6.5" font-weight="700" fill="#C0392B">PDF</text>
+    </g>
   </defs>
 
-  <rect width="1440" height="1250" fill="#F2F4F6"/>
+  <rect width="1440" height="1600" fill="#F2F4F6"/>
 
   <!-- ══ título ══ -->
   <text class="ui h1" x="40" y="40">Prototipo — Vista de laboratorio (labview)</text>
@@ -79,14 +90,17 @@
   <line class="sep" x1="116" y1="264" x2="876" y2="264"/>
   <path d="M132 243 l6 6 l-6 6" fill="none" stroke="#73879C" stroke-width="1.6" transform="rotate(90 135 249)"/>
   <text class="ui h3" x="150" y="251">Sala A</text>
-  <text class="ui mut" x="205" y="251">4 muebles · 12 estantes · 87 objetos</text>
+  <use href="#qr" x="0" y="0" transform="translate(196,240)"/>
+  <text class="ui mut" x="216" y="251">4 muebles · 12 estantes · 87 objetos</text>
   <circle cx="836" cy="246" r="5" fill="#E74C3C"/>
   <text class="ui tiny" x="846" y="250" fill="#C0392B">2 alertas</text>
 
   <!-- Mueble 1 (cuadrícula 4×2) -->
   <rect class="soft" x="132" y="276" width="440" height="234" rx="5"/>
   <text class="ui h3" x="146" y="296">Mueble 1</text>
-  <text class="ui mut" x="205" y="296">Vitrina · 8 estantes</text>
+  <use href="#qr" x="0" y="0" transform="translate(203,285)"/>
+  <use href="#pdf" x="0" y="0" transform="translate(220,285)"/>
+  <text class="ui mut" x="244" y="296">Vitrina · 8 estantes</text>
   <rect x="524" y="284" width="34" height="18" rx="4" fill="#FFFFFF" stroke="#E3E7EB"/>
   <text class="ui tiny" x="534" y="296" fill="#12866F">✎</text>
   <!-- etiquetas de columna -->
@@ -99,6 +113,7 @@
   <rect x="158" y="322" width="92" height="62" rx="4" fill="#FFFFFF" stroke="#1ABB9C" stroke-width="1.8"/>
   <rect x="158" y="322" width="4" height="62" rx="2" fill="#E74C3C"/>
   <text class="ui h3" x="170" y="340">A1</text>
+  <use href="#qr" x="0" y="0" transform="translate(228,328)"/>
   <text class="ui tiny" x="170" y="354">82% · L</text>
   <rect x="170" y="362" width="68" height="5" rx="2.5" fill="#EEF1F4"/>
   <rect x="170" y="362" width="56" height="5" rx="2.5" fill="#E74C3C"/>
@@ -145,12 +160,15 @@
   <rect x="476" y="434" width="68" height="5" rx="2.5" fill="#EEF1F4"/>
   <rect x="476" y="434" width="33" height="5" rx="2.5" fill="#26B99A"/>
   <text class="ui tiny" x="146" y="480">PositionsGrid (djgentelella) en modo lectura · la posición viene de dataconfig</text>
-  <text class="ui tiny" x="146" y="496" fill="#C0392B">A1 en rojo: incompatible con B2 de la misma sala (H225 / H272)</text>
+  <text class="ui tiny" x="146" y="494" fill="#C0392B">A1 en rojo: incompatible con B2 de la misma sala (H225 / H272)</text>
+  <text class="ui tiny" x="146" y="508">Sala, mueble y estante conservan su QR; el mueble, su reporte PDF</text>
 
   <!-- Mueble 2 (cuadrícula 2×2) -->
   <rect class="soft" x="588" y="276" width="272" height="234" rx="5"/>
   <text class="ui h3" x="602" y="296">Mueble 2</text>
-  <text class="ui mut" x="661" y="296">Estantería · 4</text>
+  <use href="#qr" x="0" y="0" transform="translate(659,285)"/>
+  <use href="#pdf" x="0" y="0" transform="translate(676,285)"/>
+  <text class="ui mut" x="700" y="296">Estantería · 4</text>
   <text class="ui tiny" x="656" y="316" text-anchor="middle">1</text>
   <text class="ui tiny" x="772" y="316" text-anchor="middle">2</text>
   <text class="ui tiny" x="602" y="356">A</text>
@@ -183,12 +201,14 @@
   <rect class="card" x="116" y="538" width="760" height="38" rx="5"/>
   <path d="M134 551 l6 6 l-6 6" fill="none" stroke="#73879C" stroke-width="1.6"/>
   <text class="ui h3" x="150" y="562">Sala B</text>
-  <text class="ui mut" x="205" y="562">2 muebles · 6 estantes · 31 objetos</text>
+  <use href="#qr" x="0" y="0" transform="translate(196,551)"/>
+  <text class="ui mut" x="216" y="562">2 muebles · 6 estantes · 31 objetos</text>
   <circle cx="836" cy="557" r="5" fill="#F0AD4E"/>
   <rect class="card" x="116" y="586" width="760" height="38" rx="5"/>
   <path d="M134 599 l6 6 l-6 6" fill="none" stroke="#73879C" stroke-width="1.6"/>
   <text class="ui h3" x="150" y="610">Bodega</text>
-  <text class="ui mut" x="211" y="610">1 mueble · 4 estantes · 12 objetos</text>
+  <use href="#qr" x="0" y="0" transform="translate(204,599)"/>
+  <text class="ui mut" x="224" y="610">1 mueble · 4 estantes · 12 objetos</text>
   <circle cx="836" cy="605" r="5" fill="#26B99A"/>
   <text class="ui tiny" x="116" y="644">Un solo fetch a</text>
   <text class="ui code mono" x="192" y="644">GET …/api/labview/tree/?risk=1</text>
@@ -204,42 +224,43 @@
   <text class="ui tiny" x="1284" y="253" fill="#FFFFFF">+ Objeto</text>
   <!-- cabecera -->
   <text class="ui tiny" x="908" y="290" font-weight="700" fill="#73879C">OBJETO</text>
-  <text class="ui tiny" x="1128" y="290" font-weight="700" fill="#73879C">CANTIDAD</text>
-  <text class="ui tiny" x="1216" y="290" font-weight="700" fill="#73879C">ACCIONES</text>
+  <text class="ui tiny" x="1078" y="290" font-weight="700" fill="#73879C">CANTIDAD</text>
+  <text class="ui tiny" x="1140" y="290" font-weight="700" fill="#73879C">ACCIONES</text>
   <line class="sep" x1="908" y1="298" x2="1364" y2="298"/>
   <!-- filas -->
   <text class="ui lbl" x="908" y="320">Acetona</text>
   <text class="ui tiny" x="908" y="333">Reactivo · H225 · FDS ✓</text>
-  <text class="ui lbl" x="1128" y="320">3,5 L</text>
-  <g fill="#73879C" font-size="11" class="ui"><text x="1216" y="322">◉</text><text x="1240" y="322">＋</text><text x="1264" y="322">－</text><text x="1288" y="322">✎</text><text x="1312" y="322">⇄</text><text x="1336" y="322">✕</text></g>
+  <text class="ui lbl" x="1078" y="320">3,5 L</text>
+  <g fill="#73879C" font-size="11" class="ui"><text x="1140" y="322">◉</text><text x="1158" y="322">▤</text><text x="1176" y="322">⊕</text><text x="1194" y="322">⊖</text><text x="1212" y="322">✎</text><text x="1230" y="322">⇄</text><text x="1248" y="322">↕</text><text x="1266" y="322">☰</text><text x="1284" y="322">↓</text><text x="1302" y="322">✕</text></g>
   <line class="sep" x1="908" y1="344" x2="1364" y2="344"/>
   <text class="ui lbl" x="908" y="366">Etanol absoluto</text>
   <text class="ui tiny" x="908" y="379">Reactivo · H225 · en caja</text>
-  <text class="ui lbl" x="1128" y="366">2,0 L</text>
-  <g fill="#73879C" font-size="11" class="ui"><text x="1216" y="368">◉</text><text x="1240" y="368">＋</text><text x="1264" y="368">－</text><text x="1288" y="368">✎</text><text x="1312" y="368">⇄</text><text x="1336" y="368">✕</text></g>
+  <text class="ui lbl" x="1078" y="366">2,0 L</text>
+  <g fill="#73879C" font-size="11" class="ui"><text x="1140" y="368">◉</text><text x="1158" y="368">▤</text><text x="1176" y="368">⊕</text><text x="1194" y="368">⊖</text><text x="1212" y="368">✎</text><text x="1230" y="368">⇄</text><text x="1248" y="368">↕</text><text x="1266" y="368">☰</text><text x="1284" y="368">↓</text><text x="1302" y="368">✕</text></g>
   <line class="sep" x1="908" y1="390" x2="1364" y2="390"/>
   <text class="ui lbl" x="908" y="412">Balanza analítica</text>
   <text class="ui tiny" x="908" y="425">Equipo · calibración vigente</text>
-  <text class="ui lbl" x="1128" y="412">1 u</text>
-  <g fill="#73879C" font-size="11" class="ui"><text x="1216" y="414">◉</text><text x="1288" y="414">✎</text><text x="1312" y="414">⇄</text></g>
-  <text class="ui tiny" x="1216" y="428" fill="#C7CFD6">sin ＋/－: es equipo</text>
+  <text class="ui lbl" x="1078" y="412">1 u</text>
+  <g fill="#73879C" font-size="11" class="ui"><text x="1140" y="414">◉</text><text x="1212" y="414">✎</text><text x="1230" y="414">⇄</text><text x="1248" y="414">↕</text><text x="1266" y="414">☰</text><text x="1284" y="414">↓</text><text x="1302" y="414">⚙</text></g>
+  <text class="ui tiny" x="1140" y="428" fill="#C7CFD6">equipo: sin ⊕/⊖ ni etiquetas; gana mantenimiento ⚙</text>
   <line class="sep" x1="908" y1="440" x2="1364" y2="440"/>
   <text class="ui lbl" x="908" y="462">Probeta 100 mL</text>
   <text class="ui tiny" x="908" y="475">Material</text>
-  <text class="ui lbl" x="1128" y="462">12 u</text>
-  <g fill="#73879C" font-size="11" class="ui"><text x="1216" y="464">◉</text><text x="1240" y="464">＋</text><text x="1264" y="464">－</text><text x="1288" y="464">✎</text></g>
-  <text class="ui tiny" x="1216" y="478" fill="#C7CFD6">sin permiso de transferir ni borrar</text>
+  <text class="ui lbl" x="1078" y="462">12 u</text>
+  <g fill="#73879C" font-size="11" class="ui"><text x="1140" y="464">◉</text><text x="1176" y="464">⊕</text><text x="1194" y="464">⊖</text><text x="1212" y="464">✎</text><text x="1248" y="464">↕</text><text x="1266" y="464">☰</text><text x="1284" y="464">↓</text></g>
+  <text class="ui tiny" x="1140" y="478" fill="#C7CFD6">material sin permiso de transferir ni borrar</text>
   <line class="sep" x1="908" y1="490" x2="1364" y2="490"/>
   <text class="ui tiny" x="908" y="512">Mostrando 4 de 8</text>
   <rect x="1268" y="500" width="22" height="18" rx="3" class="card"/><text class="ui tiny" x="1276" y="513">1</text>
   <rect x="1294" y="500" width="22" height="18" rx="3" fill="#1ABB9C"/><text class="ui tiny" x="1302" y="513" fill="#FFFFFF">2</text>
   <line class="sep" x1="908" y1="534" x2="1364" y2="534"/>
-  <text class="ui tiny" x="908" y="556">Tabla: ObjectCRUD contra</text>
-  <text class="ui code mono" x="1044" y="556">api-labview-shelfobjecttable</text>
-  <text class="ui tiny" x="908" y="574">Los iconos de cada fila salen del dict</text>
-  <text class="ui code mono" x="1112" y="574">actions {accion: bool}</text>
-  <text class="ui tiny" x="908" y="592">que combina permiso × tipo de objeto × estado (caja, contenedor).</text>
-  <text class="ui tiny" x="908" y="610">Modales reutilizados tal cual: action_modal.html + base_modal_management.js</text>
+  <text class="ui tiny" x="908" y="552">Tabla: ObjectCRUD contra</text>
+  <text class="ui code mono" x="1044" y="552">api-labview-shelfobjecttable</text>
+  <text class="ui tiny" x="908" y="568">Los iconos de cada fila salen del dict</text>
+  <text class="ui code mono" x="1112" y="568">actions {accion: bool}</text>
+  <text class="ui tiny" x="908" y="584">que combina permiso × tipo de objeto × estado (caja, contenedor).</text>
+  <text class="ui tiny" x="908" y="600">◉ abre el detalle con el QR del objeto y su descarga · ▤ etiquetas y recipientes (SGA) · ↓ reporte</text>
+  <text class="ui tiny" x="908" y="616">Modales reutilizados tal cual: action_modal.html + base_modal_management.js</text>
 
   <!-- ══════════ 2 · MODO EDICIÓN ══════════ -->
   <text class="ui h2" x="40" y="728">2 · MODO EDICIÓN DE LA CUADRÍCULA (PERSISTENCIA POR OPERACIÓN)</text>
@@ -409,4 +430,72 @@
   <text class="ui code mono" x="1106" y="1158">GET  …/api_labview_shelfobject_table/</text>
   <text class="ui code mono" x="1106" y="1174">GET  …/api_search_labview/get/</text>
   <text class="ui tiny" x="1106" y="1192">Deep-link intacto: <tspan class="mono" font-size="8.5">?labroom=&amp;furniture=&amp;shelf=</tspan> (QR)</text>
+
+  <!-- ══════════ 5 · INVENTARIO DE FUNCIONES QUE NO SE PIERDEN ══════════ -->
+  <text class="ui h2" x="40" y="1244">5 · INVENTARIO: TODO LO QUE LA VISTA ACTUAL HACE Y DEBE SEGUIR HACIENDO</text>
+  <rect class="frame" x="40" y="1256" width="1360" height="324" rx="6"/>
+  <text class="ui tiny" x="60" y="1280">Traducción 1 a 1 de lo que hoy decide <tspan class="mono" font-size="8.5">shelfobject_actions.html</tspan>, <tspan class="mono" font-size="8.5">shelf_card.html</tspan> y <tspan class="mono" font-size="8.5">laboratoryroom_list.html</tspan>. Ninguna acción se elimina: cambia de dónde sale el dato, no lo que el usuario puede hacer.</text>
+  <line class="sep" x1="60" y1="1292" x2="1380" y2="1292"/>
+  <line class="sep" x1="392" y1="1300" x2="392" y2="1560"/>
+  <line class="sep" x1="700" y1="1300" x2="700" y2="1560"/>
+  <line class="sep" x1="1008" y1="1300" x2="1008" y2="1560"/>
+
+  <!-- columna: sala -->
+  <text class="ui h3" x="60" y="1316">SALA</text>
+  <use href="#qr" x="0" y="0" transform="translate(60,1332)"/>
+  <text class="ui tiny" x="80" y="1342">QR propio con enlace directo a la sala</text>
+  <text class="ui tiny" x="60" y="1362">▸  Colapsar y expandir</text>
+  <text class="ui tiny" x="60" y="1380">▸  Conteos de muebles, estantes y objetos</text>
+  <text class="ui tiny" x="60" y="1398">▸  Color de riesgo y número de alertas</text>
+  <text class="ui tiny" x="60" y="1416">▸  Crear, editar y borrar sala</text>
+  <text class="ui code mono" x="76" y="1430">laboratory.*_laboratoryroom</text>
+  <text class="ui tiny" x="60" y="1454" fill="#8C9AA8">Nuevo: los conteos y el riesgo por sala</text>
+  <text class="ui tiny" x="60" y="1468" fill="#8C9AA8">no existían en la vista actual.</text>
+
+  <!-- columna: mueble -->
+  <text class="ui h3" x="412" y="1316">MUEBLE</text>
+  <use href="#qr" x="0" y="0" transform="translate(412,1332)"/>
+  <text class="ui tiny" x="432" y="1342">QR propio con enlace directo al mueble</text>
+  <use href="#pdf" x="0" y="0" transform="translate(412,1352)"/>
+  <text class="ui tiny" x="434" y="1361">Reporte PDF del mueble</text>
+  <text class="ui code mono" x="428" y="1375">report:reports_furniture_detail · do_report</text>
+  <text class="ui tiny" x="412" y="1396">▸  Cuadrícula real de filas × columnas</text>
+  <text class="ui tiny" x="412" y="1414">▸  Nombre, tipo y color</text>
+  <text class="ui tiny" x="412" y="1432">▸  Editar cuadrícula (crear, mover, quitar</text>
+  <text class="ui tiny" x="424" y="1446">estantes; añadir y quitar filas y columnas)</text>
+  <text class="ui code mono" x="428" y="1460">laboratory.change_furniture</text>
+  <text class="ui tiny" x="412" y="1482">▸  Crear y borrar mueble</text>
+
+  <!-- columna: estante -->
+  <text class="ui h3" x="720" y="1316">ESTANTE</text>
+  <use href="#qr" x="0" y="0" transform="translate(720,1332)"/>
+  <text class="ui tiny" x="740" y="1342">QR propio con enlace directo al estante</text>
+  <text class="ui tiny" x="720" y="1362">▸  Enlace directo para abrir en otra pestaña</text>
+  <text class="ui tiny" x="720" y="1380">▸  Color, tipo y marca de descarte</text>
+  <text class="ui tiny" x="720" y="1398">▸  Capacidad, unidad y % de ocupación</text>
+  <text class="ui tiny" x="720" y="1416">▸  Disponibilidad y límites del estante</text>
+  <text class="ui code mono" x="736" y="1430">…/api_labview_shelf/&lt;pk&gt;/availability/</text>
+  <text class="ui tiny" x="720" y="1452">▸  Seleccionarlo carga su tabla de objetos</text>
+  <text class="ui tiny" x="720" y="1470">▸  Crear, editar, mover y borrar estante</text>
+  <text class="ui code mono" x="736" y="1484">laboratory.*_shelf</text>
+
+  <!-- columna: objeto -->
+  <text class="ui h3" x="1028" y="1316">OBJETO EN EL ESTANTE</text>
+  <g class="ui" font-size="9.5" fill="#2A3F54">
+    <text x="1028" y="1336">◉  Detalle, con su QR y descarga</text>
+    <text x="1028" y="1352">▤  Etiquetas y recipientes (SGA)</text>
+    <text x="1028" y="1368">⊕  Aumentar cantidad</text>
+    <text x="1028" y="1384">⊖  Disminuir cantidad</text>
+    <text x="1028" y="1400">✎  Editar (reactivo, material, equipo, caja)</text>
+    <text x="1028" y="1416">⇄  Transferir a otro laboratorio</text>
+    <text x="1028" y="1432">↕  Mover de estante y gestionar contenedor</text>
+    <text x="1028" y="1448">☰  Bitácora y observaciones</text>
+    <text x="1028" y="1464">↓  Descargar su reporte</text>
+    <text x="1028" y="1480">⚙  Mantenimiento, calibración, garantía y</text>
+    <text x="1044" y="1494">capacitación (solo equipos)</text>
+    <text x="1028" y="1510">✕  Borrar o desechar</text>
+    <text x="1028" y="1526">＋  Reservar</text>
+  </g>
+  <text class="ui tiny" x="1028" y="1548" fill="#8C9AA8">Cada uno con su permiso; el dict <tspan class="mono" font-size="8.5">actions</tspan> decide cuáles</text>
+  <text class="ui tiny" x="1028" y="1562" fill="#8C9AA8">se ven, igual que hoy lo decide la plantilla.</text>
 </svg>

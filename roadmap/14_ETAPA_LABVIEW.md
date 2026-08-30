@@ -360,7 +360,11 @@ funcional sin tocar hasta F7.
   CON y otro SIN el permiso → (a) el bloque `permissions` del árbol y el dict `actions` de
   fila reflejan exactamente lo que la UI mostraría, y (b) el endpoint responde 403 aunque el
   cliente lo invoque igual. Incluye la equivalencia 1:1 del dict `actions` contra las reglas
-  de `shelfobject_actions.html` (permiso × tipo REACTIVE/EQUIPMENT × `is_box`).
+  de `shelfobject_actions.html` (permiso × tipo REACTIVE/EQUIPMENT × `is_box` × estante de
+  descarte) — **las 13 acciones del inventario, no solo el CRUD**.
+- **Inventario de funciones**: un test por cada fila de la tabla del inventario, de modo que
+  perder el QR de un nivel, el reporte del mueble, las etiquetas, la bitácora o el
+  mantenimiento rompa la suite.
 - `src/risk_management/tests/`: equivalencia del hazard_map antes/después del refactor.
 - Biblioteca: `djgentelella/tests/PositionsGrid_Test.py` (+ breadcrumb) sobre la demo.
 - Selenium: smoke nuevo `selenium_tests/labview_new/test_smoke_navigation.py` (recorrido
@@ -395,6 +399,46 @@ F0 → F1 → F3 → (F4, F5) → F6 → F7 (tras OK de Luis)
 
 Sin migraciones de esquema; una migración de datos (F1) y `make messages` + `make trans` al
 cierre de F5.
+
+## Funciones que NO se pueden perder (inventario por nivel)
+
+Traducción 1:1 de lo que hoy ofrecen `laboratoryroom_list.html`, `shelf_card.html` y
+`serializers/shelfobject_actions.html`. **Cambia de dónde sale el dato, no lo que el usuario
+puede hacer.** Está dibujado en [`14_labview_prototipo.svg`](14_labview_prototipo.svg) §5.
+
+| Nivel | Función | Hoy | En el labview nuevo |
+|---|---|---|---|
+| Sala | **QR propio** con enlace directo | `{% get_qr_svg_img LaboratoryRoom … url=labindex %}` (`laboratoryroom_list.html:59`) | campo `qr`/`deep_link` por nodo en el árbol |
+| Sala | Colapsar/expandir, crear, editar, borrar | árbol server-side + CBVs | panel colapsable + `LabRoomManagement` |
+| Mueble | **QR propio** | `laboratoryroom_list.html:67` | campo por nodo en el árbol |
+| Mueble | **Reporte PDF** | `report:reports_furniture_detail` con `perms.laboratory.do_report` (`:69-73`) | mismo enlace, capacidad `do_report` en el payload |
+| Mueble | Cuadrícula, nombre, tipo, color; crear/editar/borrar | `display_furniture` + `FurnitureUpdateView` | `grid` en el árbol + `FurnitureManagement` |
+| Estante | **QR propio** | `{% get_qr_svg_img item … %}` (`shelf_card.html:56`) | campo por nodo en el árbol |
+| Estante | **Enlace directo** (abrir en otra pestaña) | `<a … ?labroom=&furniture=&shelf=>` con icono de etiquetas (`shelf_card.html:58`) | mismo query string, desde el estado de la UI |
+| Estante | Color, tipo, descarte, unidad, capacidad, % ocupación, límites | `shelf_card.html` + `shelf_availability_information` (HTML) | campos del árbol + action `availability` en JSON |
+| Objeto | **Detalle con su QR y descarga** | `shelfObjectDetail()` → `api-shelfobject-details` (devuelve QR b64) | igual; modal con `BaseDetailModal` |
+| Objeto | **Etiquetas y recipientes (SGA)** | `api-shelfobject-recipient-list` + `generate_shelfobject_label`, `perms.sga.view_recipientsize`, solo REACTIVO | acción `labels` del dict |
+| Objeto | Reservar | `reservations_management.add_reservedproducts` | acción `reserve` |
+| Objeto | Aumentar / disminuir | `change_shelfobject`, no equipos | `increase` / `decrease` |
+| Objeto | Transferir a otro laboratorio | `add_tranferobject` | `transfer_out` |
+| Objeto | Mover de estante y gestionar contenedor | `movesomodal` / `movesocontainermodal` / `managecontainermodal` | `move` / `container` |
+| Objeto | Editar según tipo (reactivo, material, equipo, caja) | 4 modales distintos | `edit` (el serializer ya sabe el tipo) |
+| Objeto | **Bitácora y observaciones** | `laboratory:get_shelfobject_log`, exige `view_shelfobject` + `view_shelfobjectobservation` | acción `log` (enlace, `link:true`) |
+| Objeto | **Mantenimiento, calibración, garantía, capacitación** | `laboratory:equipment_shelfobject_detail`, solo EQUIPO con view+change | acción `maintenance` (enlace) |
+| Objeto | **Descargar su reporte** | `laboratory:reports_shelf_objects` con `do_report` | acción `report` (enlace) |
+| Objeto | Borrar / desechar | `delete_shelfobject`, o `can_manage_disposal` si el estante es de descarte | `destroy` |
+
+Consecuencias para las APIs de F3:
+
+- El **árbol** incluye, por sala/mueble/estante, su `deep_link` (el mismo query string de
+  siempre) y lo necesario para pintar su QR; y expone `do_report` entre las capacidades para
+  que el mueble muestre su enlace de reporte.
+- El **dict `actions`** de cada fila cubre las 13 acciones de la tabla anterior, no solo el
+  CRUD: `labels`, `log`, `maintenance` y `report` incluidas. Las que son navegación a otra
+  página se declaran con `link: true` en `object_actions` (soportado por la biblioteca desde
+  la etapa 10).
+- La regla de descarte (`shelf.discard` → borrar exige `can_manage_disposal` en vez de
+  `delete_shelfobject`) se traduce tal cual: depende del estante, no solo del objeto.
 
 ## Contratos que NO pueden romperse
 
