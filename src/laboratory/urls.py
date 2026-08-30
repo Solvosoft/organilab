@@ -60,6 +60,7 @@ from laboratory.api.views import (
     ShelObjectReactiveViewset,
     ShelfObjectHcodeViewset,
     RegisterUserQRViewSet,
+    OrganizationTrashViewSet,
 )
 from laboratory.functions import return_laboratory_of_shelf_id
 from laboratory.protocol.views import (
@@ -85,6 +86,7 @@ from laboratory.views.laboratory import (
     laboratory_process_list,
 )
 from laboratory.views.logentry import get_logentry_from_organization
+from laboratory.views.trash import get_trash_from_organization
 from laboratory.views.my_reservations import MyReservationView
 from laboratory.views.objects import (
     ObjectView,
@@ -312,6 +314,7 @@ organization_urls = [
     path("profile/<int:pk>/password", password_change, name="password_change"),
     path("profile/info/<int:org_pk>/<int:pk>", get_profile, name="profile_detail"),
     path("logentry/<int:org_pk>", get_logentry_from_organization, name="logentry_list"),
+    path("trash/<int:org_pk>", get_trash_from_organization, name="trash_list"),
     path("reports/<int:org_pk>/", reports.report_index, name="reports"),
 ]
 
@@ -491,6 +494,8 @@ comment_router = DefaultRouter()
 comment_router.register("api_inform", CommentAPI, basename="api-inform")
 router.register("api_protocol", ProtocolViewSet, basename="api-protocol")
 router.register("api_logentry", LogEntryViewSet, basename="api-logentry")
+trash_router = DefaultRouter()
+trash_router.register("api_trash", OrganizationTrashViewSet, basename="api-trash")
 router.register("api_informs", InformViewSet, basename="api-informs")
 shelObjectReactive_router = DefaultRouter()
 shelObjectReactive_router.register(
@@ -671,6 +676,7 @@ urlpatterns += organization_urls + [
     path("catalogs/", include(catalogs_urls)),
     path("inform/api/<int:org_pk>/", include(comment_router.urls)),
     path("inform/api/", include(router.urls)),
+    path("trash/api/<int:org_pk>/", include(trash_router.urls)),
     path("register_user_qr/<int:org_pk>/<int:lab_pk>/", include(user_register_qr)),
     path("spc/api/<int:org_pk>/<int:lab_pk>/", include(stepcommentsrouter.urls)),
     path("sga_components/api/<int:org_pk>/", include(sgacomponentsrouter.urls)),

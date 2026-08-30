@@ -139,6 +139,12 @@
 											<a class="loglist" href="{% url 'laboratory:logentry_list' node.0.pk %}" title="{% trans 'Log List' %}">
 												<i class="fa fa-file-text-o"></i></a>
 										</li>
+										{% if perms.djgentelella.view_trash %}
+											<li class="list-group-item">
+												<a class="trashlist" href="{% url 'laboratory:trash_list' node.0.pk %}" title="{% trans 'Trash' %}">
+													<i class="fa fa-trash-o"></i></a>
+											</li>
+										{% endif %}
 									{% endif %}
 									{% if perms.auth_and_perms.view_rol and node.0.parent == none %}
 										<li class="list-group-item">

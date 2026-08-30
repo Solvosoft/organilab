@@ -12,6 +12,7 @@ from django.utils.decorators import method_decorator
 from django_filters.rest_framework import DjangoFilterBackend
 from djgentelella.history.api import HistoryViewSet
 from djgentelella.objectmanagement import AuthAllPermBaseObjectManagement
+from djgentelella.trash.api import TrashViewSet
 from rest_framework import status, viewsets, mixins
 from rest_framework.authentication import SessionAuthentication, BaseAuthentication
 from rest_framework.decorators import action
@@ -382,6 +383,45 @@ class LogEntryViewSet(HistoryViewSet):
                 gt_relations__object_id=orga.pk,
             )
         ).distinct()
+
+
+class OrganizationTrashViewSet(TrashViewSet):
+    """Papelera org-scoped sobre el TrashViewSet de la lib.
+
+    El alcance va por el join de TrashRelation con la organización de la URL
+    (todo borrado a papelera registra esa relación al ejecutarse) y aplica
+    tanto al listado como a restore/destroy, que resuelven por get_object().
+    recordsTotal es el universo scoped. Los permisos son los de la lib
+    (djgentelella.view/change/delete_trash), otorgados por rol vía
+    update_roles.
+    """
+
+    def get_organization(self):
+        if not hasattr(self, "_organization"):
+            self._organization = get_object_or_404(
+                OrganizationStructure, pk=self.kwargs.get("org_pk")
+            )
+        return self._organization
+
+    def scope_queryset(self, queryset):
+        organization = self.get_organization()
+        user_is_allowed_on_organization(self.request.user, organization)
+        return queryset.filter(
+            gt_relations__content_type__app_label="laboratory",
+            gt_relations__content_type__model="organizationstructure",
+            gt_relations__object_id=organization.pk,
+        ).distinct()
+
+    def get_log_related_objects(self, trash):
+        # El contexto que registró el borrado (organización, laboratorio…) se
+        # propaga al log del restore/hard delete, y así la bitácora
+        # org-scoped también lista esas acciones.
+        related = [
+            relation.content_object
+            for relation in trash.gt_relations.all()
+            if relation.content_object is not None
+        ]
+        return related or [self.get_organization()]
 
 
 class InformViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):

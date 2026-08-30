@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-29 14:28-0600\n"
+"POT-Creation-Date: 2026-08-29 21:11-0600\n"
 "PO-Revision-Date: 2024-04-12 23:50-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -344,6 +344,36 @@ msgstr "también?"
 msgid "An error has occurred"
 msgstr "Ha ocurrido un error"
 
+#, fuzzy
+#| msgid "Deleted!"
+msgid "Deleted date"
+msgstr "¡Eliminado!"
+
+#, fuzzy
+#| msgid "Deleted!"
+msgid "Deleted by"
+msgstr "¡Eliminado!"
+
+msgid "Model"
+msgstr "Modelo"
+
+msgid "Restore"
+msgstr "Restaurar"
+
+msgid ""
+"This action will permanently delete the register, as well as all related "
+"data."
+msgstr ""
+"Esta acción eliminará permanentemente el registro, así como todos sus datos relacionados."
+
+msgid "Accept"
+msgstr "Aceptar"
+
+#, fuzzy
+#| msgid "An error has occurred"
+msgid "Sorry, an error occurred."
+msgstr "Ha ocurrido un error"
+
 msgid ""
 "It is a feature related to the physical properties of this element, some "
 "examples could be volatile, fragile, poor state, good condition."
@@ -402,9 +432,6 @@ msgstr "Código"
 
 msgid "Synonym"
 msgstr "Sinónimo"
-
-msgid "Model"
-msgstr "Modelo"
 
 msgid "Serie"
 msgstr "Serie"

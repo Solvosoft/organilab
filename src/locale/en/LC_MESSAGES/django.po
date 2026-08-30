@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-29 14:28-0600\n"
+"POT-Creation-Date: 2026-08-29 21:11-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -205,12 +205,6 @@ msgid "List of procedures"
 msgstr ""
 
 msgid "Create procedure"
-msgstr ""
-
-msgid "Cancel"
-msgstr ""
-
-msgid "Add"
 msgstr ""
 
 msgid "Reservation"
@@ -735,6 +729,9 @@ msgstr ""
 msgid "Add new rol"
 msgstr ""
 
+msgid "Add"
+msgstr ""
+
 msgid "Add User"
 msgstr ""
 
@@ -754,6 +751,9 @@ msgid "Enable child organizations filter"
 msgstr ""
 
 msgid "Log List"
+msgstr ""
+
+msgid "Trash"
 msgstr ""
 
 msgid "Show Roles information"
@@ -1052,6 +1052,9 @@ msgid "Your password cannot be a commonly used password."
 msgstr ""
 
 msgid "Your password cannot be completely numeric."
+msgstr ""
+
+msgid "Cancel"
 msgstr ""
 
 msgid "New User"
@@ -1601,14 +1604,6 @@ msgstr ""
 
 #, python-format
 msgid "Updated training record for shelfobject '%(name)s'"
-msgstr ""
-
-#, python-format
-msgid "[{'changed': {'fields': ['Login', %d]}}]"
-msgstr ""
-
-#, python-format
-msgid "[{'added': {'fields': ['Register', %d]}}]"
 msgstr ""
 
 #, python-format
@@ -2538,9 +2533,6 @@ msgstr ""
 msgid "Inform"
 msgstr ""
 
-msgid "Log Entry"
-msgstr ""
-
 msgid "Protocol PDF File"
 msgstr ""
 
@@ -2789,6 +2781,11 @@ msgstr ""
 msgid "Object cannot be moved to same shelf."
 msgstr ""
 
+msgid ""
+"The object measurement unit cannot be converted to the shelf measurement "
+"unit."
+msgstr ""
+
 msgid "Transfer was not sent to the laboratory."
 msgstr ""
 
@@ -2836,6 +2833,11 @@ msgstr ""
 msgid ""
 "The selected option cannot be used since the source object does not have a "
 "container assigned."
+msgstr ""
+
+msgid ""
+"The transferred object measurement unit cannot be converted to the shelf "
+"measurement unit."
 msgstr ""
 
 msgid ""
@@ -3438,6 +3440,9 @@ msgstr ""
 msgid "Load Archive"
 msgstr ""
 
+msgid "Log Entry"
+msgstr ""
+
 msgid "Info"
 msgstr ""
 
@@ -3921,6 +3926,9 @@ msgid "Reactive Detail"
 msgstr ""
 
 msgid "Select the Shelf"
+msgstr ""
+
+msgid "Delete permanently"
 msgstr ""
 
 msgid "Date:"
@@ -6772,9 +6780,6 @@ msgid "New assessment"
 msgstr ""
 
 msgid "Delete IPER assessment"
-msgstr ""
-
-msgid "Delete permanently"
 msgstr ""
 
 msgid "Regents"
