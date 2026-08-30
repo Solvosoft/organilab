@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-29 21:11-0600\n"
+"POT-Creation-Date: 2026-08-30 11:01-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -1355,6 +1355,73 @@ msgstr "Borrar objeto"
 msgid "Organilab Administration site"
 msgstr "Sitio administrativo de Organilab"
 
+#, fuzzy
+#| msgid "Create laboratory"
+msgid "Created laboratory room"
+msgstr "Crear un laboratorio"
+
+#, fuzzy
+#| msgid "Updated laboratory room '%(name)s'"
+msgid "Updated laboratory room"
+msgstr "Sala de laboratorio '%(name)s' actualizada"
+
+#, fuzzy
+#| msgid "Delete laboratory room"
+msgid "Deleted laboratory room"
+msgstr "Eliminar sala de laboratorio"
+
+#, fuzzy
+#| msgid "Create Furniture"
+msgid "Created furniture"
+msgstr "Crear Mueble"
+
+#, fuzzy
+#| msgid "Updated furniture '%(name)s'"
+msgid "Updated furniture"
+msgstr "Mobiliario '%(name)s' actualizado"
+
+#, fuzzy
+#| msgid "Delete furniture"
+msgid "Deleted furniture"
+msgstr "Eliminar pieza de mueble"
+
+msgid "Added a row to the furniture grid"
+msgstr ""
+
+msgid "Removed a row from the furniture grid"
+msgstr ""
+
+msgid "Added a column to the furniture grid"
+msgstr ""
+
+msgid "Removed a column from the furniture grid"
+msgstr ""
+
+#, fuzzy
+#| msgid "Create shelf"
+msgid "Created shelf"
+msgstr "Crear nuevo estante"
+
+#, fuzzy
+#| msgid "Create shelf"
+msgid "Updated shelf"
+msgstr "Crear nuevo estante"
+
+#, fuzzy
+#| msgid "The shelf dont have shelfobjects"
+msgid "The shelf still contains objects"
+msgstr "El estante no tiene objetos"
+
+#, fuzzy
+#| msgid "Delete Shelf"
+msgid "Deleted shelf"
+msgstr "Eliminar estante"
+
+#, fuzzy
+#| msgid "Move to other shelf"
+msgid "Moved shelf"
+msgstr "Mover a Otro Estante"
+
 msgid "File not found"
 msgstr "Archivo no encontrado"
 
@@ -1899,6 +1966,30 @@ msgstr "Solicitud de %(type)s '%(name)s' rechazada"
 msgid "Request rejected."
 msgstr "Solicitud rechazada."
 
+msgid "Invalid format in shelf dataconfig "
+msgstr "Formato inválido en la configuración de datos del estante "
+
+#, fuzzy
+#| msgid "Invalid box selection."
+msgid "Invalid position"
+msgstr "Selección de caja inválida."
+
+#, fuzzy
+#| msgid "Object doesn't exists"
+msgid "The row does not exist"
+msgstr "Objeto no existe"
+
+msgid "The row still contains shelves"
+msgstr ""
+
+#, fuzzy
+#| msgid "Object doesn't exists"
+msgid "The column does not exist"
+msgstr "Objeto no existe"
+
+msgid "The column still contains shelves"
+msgstr ""
+
 msgid "Regent"
 msgstr "Regente"
 
@@ -1948,9 +2039,6 @@ msgstr "Estante"
 
 msgid "Select Furniture"
 msgstr "Seleccionar Mueble"
-
-msgid "Invalid format in shelf dataconfig "
-msgstr "Formato inválido en la configuración de datos del estante "
 
 msgid "Organization parent cannot be inactive"
 msgstr "Padre de la organización no puede ser inactivado"
@@ -3705,6 +3793,19 @@ msgstr "Salas de laboratorio"
 msgid "Remove All Tags"
 msgstr "Eliminar todas las etiquetas"
 
+msgid "Collapse all"
+msgstr ""
+
+#, fuzzy
+#| msgid "Risk level"
+msgid "Risk overlay"
+msgstr "Nivel de riesgo"
+
+#, fuzzy
+#| msgid "The shelf dont have shelfobjects"
+msgid "Select a shelf to see its objects."
+msgstr "El estante no tiene objetos"
+
 msgid "Upload Reactives"
 msgstr "Subir reactivos"
 
@@ -5250,6 +5351,11 @@ msgstr "Administración"
 
 msgid "All Rights Reserved."
 msgstr "Todos los Derechos Reservados."
+
+#, fuzzy
+#| msgid "Laboratory view"
+msgid "Laboratory view (new)"
+msgstr "Vista de laboratorio"
 
 msgid "user profile icon"
 msgstr "icono de perfil"

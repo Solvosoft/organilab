@@ -24,7 +24,7 @@ que solo existe en 0.6.0); se restaura con `pip install -e ~/Desktop/desarrollo/
 | 11 | `11_ETAPA_SELENIUM.md` | Mejoras menores de la infraestructura selenium | bajo | hecha — 3 tests rescatados en verde (30/30), bugs de producto corregidos de paso |
 | 12 | `12_ETAPA_VALIDACION.md` | Validación final completa | — | hecha salvo smoke manual — unit 902/902, selenium ≈213/213, lint 0, migrate limpio |
 | 13 | `13_HISTORY_TRASH.md` + `13D_FASE_D_PAPELERA.md` | history/Trash: relaciones + extras JSON y papelera org-scoped (proyecto diferido de la 10) | medio | hecha y cerrada (2026-08-30) — fases A, B y C, más limpieza de residuos y el arreglo de la fuga de papelera del `ProtocolViewSet`; la fase D queda diseñada, sin implementar |
-| 14 | `14_ETAPA_LABVIEW.md` + `14_ARQUITECTURA_LABVIEW.md` + `14_labview_prototipo.svg` | labview: mapa digital del laboratorio sobre API, overlay de riesgo y salida total de django_ajax (proyecto diferido de la 2 y la 10) | **alto** | en curso — F0 (documentación y prototipo) hecha |
+| 14 | `14_ETAPA_LABVIEW.md` + `14_ARQUITECTURA_LABVIEW.md` + `14_labview_prototipo.svg` | labview: mapa digital del laboratorio sobre API, overlay de riesgo y salida total de django_ajax (proyecto diferido de la 2 y la 10) | **alto** | en curso — F0 a F5 hechas (dataconfig canónico, widgets en la lib, API, UI y editor); faltan F6 (pruebas) y F7 |
 
 ## Cambios hechos a djgentelella durante la migración (para su changelog/release)
 
@@ -70,6 +70,29 @@ escribieron después (2026-08-30) y siguen sin commitear.
    params `related_contenttype`/`related_id`; demo `Customer.delete` reenvía
    `**kwargs`; docs `trash.rst` con la sección multi-tenant; `Trash_Test.py`
    +8 tests.
+
+7. **PositionsGrid y BreadcrumbNav (proyecto 14, fase F2)**: dos componentes
+   genéricos nuevos en `static/gentelella/js/base/`, concatenados a `base.js`
+   por `createbasejs` (en `basefiles`, nunca en `jquery_plugins`: ese bloque va
+   envuelto en `(function($){...})(jQuery)` y una clase declarada ahí no sería
+   alcanzable), con `css/positionsgrid.css` y `css/breadcrumbnav.css` enlazados
+   sin condición desde `statics/stylesheets.html` (mismo criterio que
+   `maps.css`). `PositionsGrid` dibuja una matriz de filas y celdas con items
+   opacos y **filas irregulares a propósito**: una fila de dos celdas mide la
+   mitad que una de cuatro, alineadas a la izquierda, sin rellenar hasta un
+   rectángulo. No guarda estado propio ni serializa nada: cada mutación sale por
+   un handler que resuelve con el estado nuevo y el widget se repinta con eso,
+   de modo que un handler rechazado deja la pantalla mostrando exactamente lo
+   que el servidor confirmó y emite `pg:error`. Mover es dos toques (elegir y
+   destino), no arrastrar, así que funciona en un teléfono y desde el teclado.
+   `BreadcrumbNav` rellena el `{% block breadcrumbs %}` de `base.html` y
+   `plain.html`, que estaban vacíos, con `blocks/breadcrumb.html` como semilla
+   renderizada por el servidor (no cambia ninguna página existente: sin
+   `breadcrumbs` en el contexto no emite nada). Demo de bodega en
+   `/positionsgrid_view` con los siete handlers contra endpoints reales, que
+   rechaza borrar una fila con cajas — la única forma de ver el camino de
+   rechazo en pantalla. Docs en `appwidgets/positionsgrid.rst` y
+   `appwidgets/breadcrumbnav.rst`. Tests: fase F6.
 
 Ya venían de etapas previas y quedaron registrados en su documento de etapa; los cambios
 anteriores del checkout (rama `development`) se commitean en el repo de la lib con su
