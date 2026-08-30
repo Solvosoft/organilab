@@ -238,10 +238,22 @@ router in the app's `urls.py`.
 
 ## 11. Frontend
 
-- Admin UI uses **djgentelella** (Gentelella template). Base template:
-  `src/presentation/templates/base.html` (extends `gentelella/base.html`).
+- Admin UI uses **djgentelella 0.6.0** (Gentelella template; checkout editable de
+  `~/Desktop/desarrollo/django-gentelella-widgets`, rama `development` — ver
+  `roadmap/README.md`). Base template: `src/presentation/templates/base.html`
+  (extends `gentelella/base.html`).
+- Stack UI post-migración: **Bootstrap 5** (inputs nativos, sin iCheck/switchery),
+  **DataTables 2** (`layout`, clases `dt-*`), **Chart.js 4**, **TinyMCE 8**,
+  **Leaflet** vía `GTPointField`/`MapPointInput` (sin django-location-field).
+- Modales y tablas nuevas siguen el patrón `AuthAllPermBaseObjectManagement` +
+  `ObjectCRUD` (`gentelella/blocks/modal_template*.html`); variantes propias en
+  `src/presentation/templates/modal_template*.html`. Inline CRUD de hijos:
+  `BaseInlineObjectManagement` (ej. `academic/api/views.py`).
+- Correos/notificaciones: `djgentelella.async_notification` (el paquete standalone
+  `async_notifications` y markitup salieron en la migración).
 - Per-app `templates/` and `static/{css,js,img}` directories; shared assets in
-  `src/presentation/static/`.
+  `src/presentation/static/` (incluye `django_ajax/` vendorizado, pendiente de
+  salida total con el sub-proyecto labview).
 - **Dynamic forms** use **Formio.js** in `derb`: `src/derb/static/formio/`
   (`FormioController.js`, plus custom components `CustomSelect.js`,
   `CustomTextInput.js`, `CustomSection.js`, and `formio.full.min.js`).
@@ -262,8 +274,8 @@ router in the app's `urls.py`.
   `django-celery-beat` for scheduling. In tests, `CELERY_TASK_ALWAYS_EAGER = True`.
 - **Notable third-party libs:** `djgentelella` (UI + base object-management viewsets),
   `djangorestframework`, `tree_queries` (TreeNode hierarchies), `mozilla_django_oidc`,
-  `django-otp` (TOTP), `weasyprint` (PDF), `location_field`, `async_notifications`,
-  Sentry/Glitchtip.
+  `django-otp` (TOTP), `weasyprint` (PDF), Sentry/Glitchtip. (`location_field` y
+  `async_notifications` se retiraron en la migración a djgentelella 0.6.0.)
 - **Scheduled tasks** (`CELERYBEAT_SCHEDULE`): daily emails, product-limit checks,
   precursor reports (monthly), max-stock registration, shelf-object expiration emails,
   establishment logs, org-lab relation cleanup.

@@ -45,7 +45,7 @@ class ButtonsActionsTableColumn(ButtonsActionsTableColumnBase):
         super().setUp()
 
         self.move_shelfobject_form_path = self.buttons_actions_path + [
-            {"path": self.shelfobject_row_action("fa-arrows"), "sleep": 10},
+            {"path": self.shelfobject_row_action("fa-arrows"), "sleep": 30},
             {
                 "path": "//*[@id='movesocontainerform']/div/div/span/span/span",
                 "scroll": "$('#movesocontainermodal').scrollTop(150);",
@@ -83,8 +83,11 @@ class ButtonsActionsTableColumn(ButtonsActionsTableColumnBase):
         initial_date, initial_date_strftime = self.get_format_increase_decrease_date(
             now(), 2
         )
+        # +1 y no +5: el datepicker abre en el mes de la fecha inicial y una
+        # final a 5 días puede caer fuera de la cuadrícula visible (bomba de
+        # tiempo en los cierres de mes).
         final_date, final_date_strftime = self.get_format_increase_decrease_date(
-            initial_date, 5
+            initial_date, 1
         )
 
         path_list = self.buttons_actions_path + [
@@ -96,10 +99,10 @@ class ButtonsActionsTableColumn(ButtonsActionsTableColumnBase):
                 "extra_action": "setvalue",
                 "value": "2",
             },
-            {"path": "//*[@id='reservesoform']/div[2]/div/div/input", "sleep": 1},
+            {"path": "//*[@id='reservesoform']/div[2]/div/div/input", "sleep": 15},
             {"path": "//*[@data-day='%s']" % initial_date_strftime, "sleep": 1},
             {"path": "//*[@id='reservesomodal']//h4 | //*[@id='reservesomodal']//h5", "sleep": 1},
-            {"path": "//*[@id='reservesoform']/div[3]/div/div/input"},
+            {"path": "//*[@id='reservesoform']/div[3]/div/div/input", "sleep": 15},
             {"path": "//*[@data-day='%s']" % final_date_strftime, "sleep": 1},
             {"path": "//*[@id='reservesomodal']//h4 | //*[@id='reservesomodal']//h5", "sleep": 1},
             {"path": self.get_save_button_modal("reservesomodal"), "sleep": 5},

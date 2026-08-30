@@ -22,7 +22,27 @@ que solo existe en 0.6.0); se restaura con `pip install -e ~/Desktop/desarrollo/
 | 9 | `09_ETAPA_AJUSTES.md` | TinyMCE 8, recordsTotal, moment locale, misc | bajo | hecha |
 | 10 | `10_ETAPA_MODERNIZACION.md` | Modales, formularios y tablas a mano → widgets (completa) | medio | hecha — 10a/10b/10c/10d ejecutadas; diferidos como proyectos aparte: labview (salida total de django_ajax) e history/Trash |
 | 11 | `11_ETAPA_SELENIUM.md` | Mejoras menores de la infraestructura selenium | bajo | hecha — 3 tests rescatados en verde (30/30), bugs de producto corregidos de paso |
-| 12 | `12_ETAPA_VALIDACION.md` | Validación final completa | — | pendiente |
+| 12 | `12_ETAPA_VALIDACION.md` | Validación final completa | — | hecha salvo smoke manual — unit 902/902, selenium ≈213/213, lint 0, migrate limpio |
+
+## Cambios hechos a djgentelella durante la migración (para su changelog/release)
+
+Sin commitear en el checkout `development` al cierre de la etapa 12:
+
+1. **`chartjs.py` + `tests/ChartJS_Test.py`** (etapa 7): fix genérico min/max de ejes —
+   los valores configurados se propagan a Chart.js 4 (antes se perdían). Con test.
+2. **`static/gentelella/js/obj_api_management.js`** (etapa 10c): `do_action()` soporta
+   **acciones de navegación** en `object_actions` — `link: true` hace
+   `window.location.assign(url)` en vez de fetch (caso "abrir la página de detalle de la
+   fila"). Probado en el demo: `object_management.html` reemplazó su columna "Notes" con
+   `<a>` a mano por una object_action `link:true`.
+3. **`templates/forms/as_horizontal.html` y `as_plain.html`** (etapa 11): el help_text se
+   rendía en `div.valid-feedback` (Bootstrap lo oculta salvo validación) → cualquier
+   contenido interactivo embebido en help_text quedaba invisible. Ahora `div.form-text`
+   (siempre visible, la clase correcta de BS5 para help).
+
+Ya venían de etapas previas y quedaron registrados en su documento de etapa; los cambios
+anteriores del checkout (rama `development`) se commitean en el repo de la lib con su
+propio changelog.
 
 ## Principios
 

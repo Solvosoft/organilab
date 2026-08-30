@@ -6,10 +6,12 @@ from organilab_test.tests.base import OptimizedSeleniumBase, modifies_db
 
 # Formio builder sidebar component buttons (text-based selectors)
 FORMIO_TEXT_FIELD = "//span[contains(@class, 'btn') and contains(., 'Text Field')]"
-FORMIO_NUMBER = "//span[contains(@class, 'btn') and contains(., 'Number')]"
-FORMIO_PASSWORD = "//span[contains(@class, 'btn') and contains(., 'Password')]"
-FORMIO_CHECKBOX = "//span[contains(@class, 'btn') and contains(., 'Checkbox')]"
-FORMIO_RADIO = "//span[contains(@class, 'btn') and contains(., 'Radio')]"
+# Por data-key y no por texto: el palette de Formio se muestra traducido
+# (es: "Contraseña", "Casilla…"), así que el título no es estable.
+FORMIO_NUMBER = "//span[contains(@class, 'btn') and @data-key='number']"
+FORMIO_PASSWORD = "//span[contains(@class, 'btn') and @data-key='password']"
+FORMIO_CHECKBOX = "//span[contains(@class, 'btn') and @data-key='checkbox']"
+FORMIO_RADIO = "//span[contains(@class, 'btn') and @data-key='radio']"
 
 # Formio builder drop zone (top-level form uses formio-builder-form)
 FORMIO_DROP_ZONE = "//*[@id='formio']//div[contains(@class, 'drag-container')]"
