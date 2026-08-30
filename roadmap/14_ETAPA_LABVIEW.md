@@ -5,7 +5,8 @@
 
 > Arquitectura y decisiones de diseño: [`14_ARQUITECTURA_LABVIEW.md`](14_ARQUITECTURA_LABVIEW.md).
 > Prototipo visual de la pantalla: [`14_labview_prototipo.svg`](14_labview_prototipo.svg)
-> (vista de consulta, modo edición, móvil y leyenda de riesgo/permisos).
+> — §1 vista de consulta, §2 detalle y etiquetas del objeto, §3 modo edición, §4 móvil,
+> §5 inventario de funciones por nivel.
 > Este documento es el plan ejecutable (qué se hace, en qué orden, con qué archivos).
 
 ## Objetivo
@@ -321,16 +322,22 @@ Checkout `~/Desktop/desarrollo/django-gentelella-widgets`, rama `development`.
   - `labview_state.js` — estado (sala/mueble/estante/objeto) y `history.pushState`
     manteniendo EXACTOS los query params (compatibilidad con QR y `hazard_map_visual`).
   - `labview_render.js` — un fetch al árbol; paneles de sala colapsables (aspecto semejante a
-    `laboratoryroom_list.html`); cada mueble con su cuadrícula real vía `PositionsGrid` en
-    modo lectura (`renderItem` = tarjeta de estante semejante a `shelf_card.html`: nombre,
-    % de ocupación, unidad, discard; color de riesgo cuando el overlay está activo); toggle
-    de overlay.
+    `laboratoryroom_list.html`) con su QR; cada mueble con su QR, su reporte PDF y su
+    cuadrícula real vía `PositionsGrid` en modo lectura (`renderItem` = tarjeta de estante
+    semejante a `shelf_card.html`: nombre, % de ocupación, unidad, discard, **QR propio**;
+    color de riesgo cuando el overlay está activo); el panel del estante seleccionado
+    ofrece su QR, su enlace directo y su disponibilidad; toggle de overlay.
   - `labview_search.js` — Tagify + `api-search-labview-get` (sin cambios en el endpoint):
     con los pks jerárquicos **navega** (expande la sala, hace scroll al mueble,
     `highlight(shelf)`, filtra la tabla) en vez de ocultar DOM.
   - `labview_actions.js` — `ObjectCRUD` de la tabla contra
-    `api-labview-shelfobjecttable` (object_actions por dict, patrón `equipment_edit.html`) +
-    modal de disponibilidad del estante.
+    `api-labview-shelfobjecttable` (object_actions por dict, patrón `equipment_edit.html`);
+    **modal de detalle del objeto** con su QR y descarga (`BaseDetailModal` sobre
+    `api-shelfobject-details`, que ya devuelve el QR en base64); **panel de etiquetas y
+    recipientes** (`api-shelfobject-recipient-list` + `generate_shelfobject_label`, solo
+    reactivos y con `sga.view_recipientsize`); modal de disponibilidad del estante. Las
+    acciones que abren otra página (bitácora, mantenimiento, reporte del objeto) van como
+    `object_actions` con `link: true`. Ver prototipo §2.
 - **Permisos en la UI**: `labview_render.js` guarda el bloque `permissions` en el estado y
   cada botón/panel/handler se pinta solo si su capacidad está ahí.
 - **Responsive**: grid/flex de Bootstrap 5 — escritorio: mapa y tabla lado a lado;
