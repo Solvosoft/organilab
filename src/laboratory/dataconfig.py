@@ -71,14 +71,21 @@ def _cell_to_pks(cell):
     return []
 
 
-def _loads(text):
-    """Deserializa tolerando JSON, el ``repr`` de Python y la basura."""
+#: Lo que devuelve :func:`_deserialize` cuando el texto no es deserializable.
+#: Hace falta un centinela porque ``[]`` es un valor legítimo: sin él,
+#: ``parse_strict`` no podría distinguir una cuadrícula vacía de basura, y
+#: aceptaría en silencio un ``dataconfig`` corrupto borrando el mueble entero.
+UNPARSEABLE = object()
+
+
+def _deserialize(text):
+    """JSON, o el ``repr`` de Python, o :data:`UNPARSEABLE`."""
     if isinstance(text, (list, tuple)):
         return list(text)
     if not text:
         return []
     if not isinstance(text, str):
-        return []
+        return UNPARSEABLE
     try:
         return json.loads(text)
     except (ValueError, TypeError):
@@ -87,7 +94,13 @@ def _loads(text):
         # El legado escribía ``str(dataconfig)``: comillas simples, JSON inválido.
         return ast.literal_eval(text)
     except (ValueError, TypeError, SyntaxError, MemoryError, RecursionError):
-        return []
+        return UNPARSEABLE
+
+
+def _loads(text):
+    """Deserializa tolerando JSON, el ``repr`` de Python y la basura."""
+    data = _deserialize(text)
+    return [] if data is UNPARSEABLE else data
 
 
 def parse(text, dedupe=True):
@@ -150,8 +163,8 @@ def parse_strict(text):
     """
     if not text or (isinstance(text, str) and not text.strip()):
         return []
-    data = _loads(text)
-    if not isinstance(data, (list, tuple)):
+    data = _deserialize(text)
+    if data is UNPARSEABLE or not isinstance(data, (list, tuple)):
         raise DataconfigInvalid(_("Invalid format in shelf dataconfig "))
 
     matrix = []
