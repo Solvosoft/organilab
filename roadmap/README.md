@@ -24,7 +24,7 @@ que solo existe en 0.6.0); se restaura con `pip install -e ~/Desktop/desarrollo/
 | 11 | `11_ETAPA_SELENIUM.md` | Mejoras menores de la infraestructura selenium | bajo | hecha — 3 tests rescatados en verde (30/30), bugs de producto corregidos de paso |
 | 12 | `12_ETAPA_VALIDACION.md` | Validación final completa | — | hecha salvo smoke manual — unit 902/902, selenium ≈213/213, lint 0, migrate limpio |
 | 13 | `13_HISTORY_TRASH.md` | history/Trash: relaciones + extras JSON y papelera org-scoped (proyecto diferido de la 10) | medio | hecha — fases A, B y C; unit 917/917 |
-| 14 | `14_ETAPA_LABVIEW.md` + `14_ARQUITECTURA_LABVIEW.md` | labview: mapa digital del laboratorio sobre API, overlay de riesgo y salida total de django_ajax (proyecto diferido de la 2 y la 10) | **alto** | en curso — F0 (documentación) hecha |
+| 14 | `14_ETAPA_LABVIEW.md` + `14_ARQUITECTURA_LABVIEW.md` + `14_labview_prototipo.svg` | labview: mapa digital del laboratorio sobre API, overlay de riesgo y salida total de django_ajax (proyecto diferido de la 2 y la 10) | **alto** | en curso — F0 (documentación y prototipo) hecha |
 
 ## Cambios hechos a djgentelella durante la migración (para su changelog/release)
 
