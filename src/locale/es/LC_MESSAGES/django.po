@@ -1355,72 +1355,50 @@ msgstr "Borrar objeto"
 msgid "Organilab Administration site"
 msgstr "Sitio administrativo de Organilab"
 
-#, fuzzy
-#| msgid "Create laboratory"
 msgid "Created laboratory room"
-msgstr "Crear un laboratorio"
+msgstr "Se creó la sala de laboratorio"
 
-#, fuzzy
-#| msgid "Updated laboratory room '%(name)s'"
 msgid "Updated laboratory room"
-msgstr "Sala de laboratorio '%(name)s' actualizada"
+msgstr "Se actualizó la sala de laboratorio"
 
-#, fuzzy
-#| msgid "Delete laboratory room"
 msgid "Deleted laboratory room"
-msgstr "Eliminar sala de laboratorio"
+msgstr "Se eliminó la sala de laboratorio"
 
-#, fuzzy
-#| msgid "Create Furniture"
 msgid "Created furniture"
-msgstr "Crear Mueble"
+msgstr "Se creó el mueble"
 
-#, fuzzy
-#| msgid "Updated furniture '%(name)s'"
 msgid "Updated furniture"
-msgstr "Mobiliario '%(name)s' actualizado"
+msgstr "Se actualizó el mueble"
 
-#, fuzzy
-#| msgid "Delete furniture"
 msgid "Deleted furniture"
-msgstr "Eliminar pieza de mueble"
+msgstr "Se eliminó el mueble"
 
 msgid "Added a row to the furniture grid"
-msgstr ""
+msgstr "Se añadió una fila a la cuadrícula del mueble"
 
 msgid "Removed a row from the furniture grid"
-msgstr ""
+msgstr "Se eliminó una fila de la cuadrícula del mueble"
 
 msgid "Added a column to the furniture grid"
-msgstr ""
+msgstr "Se añadió una columna a la cuadrícula del mueble"
 
 msgid "Removed a column from the furniture grid"
-msgstr ""
+msgstr "Se eliminó una columna de la cuadrícula del mueble"
 
-#, fuzzy
-#| msgid "Create shelf"
 msgid "Created shelf"
-msgstr "Crear nuevo estante"
+msgstr "Se creó el estante"
 
-#, fuzzy
-#| msgid "Create shelf"
 msgid "Updated shelf"
-msgstr "Crear nuevo estante"
+msgstr "Se actualizó el estante"
 
-#, fuzzy
-#| msgid "The shelf dont have shelfobjects"
 msgid "The shelf still contains objects"
-msgstr "El estante no tiene objetos"
+msgstr "El estante todavía contiene objetos"
 
-#, fuzzy
-#| msgid "Delete Shelf"
 msgid "Deleted shelf"
-msgstr "Eliminar estante"
+msgstr "Se eliminó el estante"
 
-#, fuzzy
-#| msgid "Move to other shelf"
 msgid "Moved shelf"
-msgstr "Mover a Otro Estante"
+msgstr "Se movió el estante"
 
 msgid "File not found"
 msgstr "Archivo no encontrado"
@@ -1974,21 +1952,17 @@ msgstr "Formato inválido en la configuración de datos del estante "
 msgid "Invalid position"
 msgstr "Selección de caja inválida."
 
-#, fuzzy
-#| msgid "Object doesn't exists"
 msgid "The row does not exist"
-msgstr "Objeto no existe"
+msgstr "La fila no existe"
 
 msgid "The row still contains shelves"
-msgstr ""
+msgstr "La fila todavía contiene estantes"
 
-#, fuzzy
-#| msgid "Object doesn't exists"
 msgid "The column does not exist"
-msgstr "Objeto no existe"
+msgstr "La columna no existe"
 
 msgid "The column still contains shelves"
-msgstr ""
+msgstr "La columna todavía contiene estantes"
 
 msgid "Regent"
 msgstr "Regente"
@@ -3794,17 +3768,15 @@ msgid "Remove All Tags"
 msgstr "Eliminar todas las etiquetas"
 
 msgid "Collapse all"
-msgstr ""
+msgstr "Colapsar todo"
 
 #, fuzzy
 #| msgid "Risk level"
 msgid "Risk overlay"
 msgstr "Nivel de riesgo"
 
-#, fuzzy
-#| msgid "The shelf dont have shelfobjects"
 msgid "Select a shelf to see its objects."
-msgstr "El estante no tiene objetos"
+msgstr "Seleccione un estante para ver sus objetos."
 
 msgid "Upload Reactives"
 msgstr "Subir reactivos"
