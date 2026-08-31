@@ -1,4 +1,7 @@
-djgentelella[firmador]>=0.5.9
+# 0.6.0 no es opcional: el proyecto usa async_notification, history y Trash,
+# que no existen antes. Con el pin flojo una reinstalación traía la 0.5.9 de
+# PyPI, pisaba la editable y el arranque fallaba por importaciones ausentes.
+djgentelella[firmador]>=0.6.0
 # djangoajax dejó de ser dependencia de djgentelella en 0.6.0; organilab lo usa
 # directamente (vistas @ajax/AJAXMixin de laboratory) hasta modernizar esas pantallas.
 # Los JS del plugin están vendorizados en src/presentation/static/django_ajax/js/.
