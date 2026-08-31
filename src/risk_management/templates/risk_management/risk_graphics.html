@@ -110,7 +110,12 @@
 {% endblock %}
 
 {% block js %}
-	<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
+	{# El 0.7.0 que se cargaba del CDN es de la línea de Chart.js 2: usa
+	   `Chart.defaults.global`, que ya no existe, así que el script reventaba
+	   al cargar y las etiquetas de datos no salían en ningún gráfico. El 2.2.0
+	   es la línea compatible con Chart.js 3/4, y va vendorizado para no depender
+	   de un CDN en tiempo de ejecución. #}
+	<script src="{% static 'vendors/chartjs-plugin-datalabels/chartjs-plugin-datalabels.min.js' %}?v={% get_organilab_version %}"></script>
 	<script src="{% static 'js/graphics_callback.js' %}?v={% get_organilab_version %}"></script>
 	<script>
 	$(document).ready(function() {
