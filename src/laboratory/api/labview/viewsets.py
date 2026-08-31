@@ -192,20 +192,19 @@ class FurnitureManagement(LabviewBaseManagement):
         El widget se repinta con lo que responde el servidor y nunca acumula
         estado propio, así que devolver el estado entero es lo que impide que
         cliente y base de datos diverjan.
+
+        Los nodos los arma ``TreeBuilder``, el mismo que pinta el árbol: si
+        aquí se serializara el estante de otra forma, al repintar faltarían
+        campos que la tarjeta lee y la pantalla se quedaría mostrando un estado
+        que la base de datos ya no tiene.
         """
-        grid = furniture.get_grid()
-        shelves = Shelf.objects.filter(furniture=furniture).select_related(
-            "type", "measurement_unit"
+        builder = TreeBuilder(
+            self.get_organization(),
+            self.get_laboratory(),
+            self.request.user,
+            request=self.request,
         )
-        return Response(
-            {
-                "grid": {"cells": grid},
-                "shelves": {
-                    str(shelf.pk): labview_serializers.ShelfSerializer(shelf).data
-                    for shelf in shelves
-                },
-            }
-        )
+        return Response(builder.build_shelves_of(furniture))
 
     def grid_conflict(self, error):
         return Response(
