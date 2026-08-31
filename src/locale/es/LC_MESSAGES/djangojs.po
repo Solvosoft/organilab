@@ -585,19 +585,19 @@ msgid "Object"
 msgstr "Objeto"
 
 msgid "Select a shelf to see its objects."
-msgstr ""
+msgstr "Seleccione un estante para ver sus objetos."
 
 msgid "Direct link"
-msgstr ""
+msgstr "Enlace directo"
 
 msgid "Availability"
-msgstr ""
+msgstr "Disponibilidad"
 
 msgid "Capacity"
 msgstr "Capacidad"
 
 msgid "Infinity"
-msgstr ""
+msgstr "Infinita"
 
 #, fuzzy
 #| msgid "Restore"
@@ -605,10 +605,10 @@ msgid "Stored"
 msgstr "Restaurar"
 
 msgid "Occupancy"
-msgstr ""
+msgstr "Ocupación"
 
 msgid "Disposal"
-msgstr ""
+msgstr "Descarte"
 
 #, fuzzy
 #| msgid "View Detail"
@@ -616,7 +616,7 @@ msgid "Detail"
 msgstr "Ver detalle"
 
 msgid "List of Recipients"
-msgstr ""
+msgstr "Lista de recipientes"
 
 #, fuzzy
 #| msgid "Observation"
@@ -637,7 +637,7 @@ msgid "Substract"
 msgstr "Sustancia"
 
 msgid "Log"
-msgstr ""
+msgstr "Bitácora"
 
 #, fuzzy
 #| msgid "Container"
@@ -645,13 +645,13 @@ msgid "Manage Container"
 msgstr "Contenedor"
 
 msgid "Move"
-msgstr ""
+msgstr "Mover"
 
 msgid "Maintenance"
-msgstr ""
+msgstr "Mantenimiento"
 
 msgid "Done"
-msgstr ""
+msgstr "Listo"
 
 #, fuzzy
 #| msgid "Furniture"
@@ -659,25 +659,25 @@ msgid "Edit furniture"
 msgstr "Mueble"
 
 msgid "The operation was refused"
-msgstr ""
+msgstr "La operación fue rechazada"
 
 msgid "New shelf"
-msgstr ""
+msgstr "Estante nuevo"
 
 msgid "The name is required"
-msgstr ""
+msgstr "El nombre es obligatorio"
 
 msgid "The shelf will be removed from the furniture."
-msgstr ""
+msgstr "El estante se quitará del mueble."
 
 msgid "This laboratory has no rooms yet."
-msgstr ""
+msgstr "Este laboratorio todavía no tiene salas."
 
 msgid "%(furniture)s furniture · %(shelves)s shelves · %(objects)s objects"
-msgstr ""
+msgstr "%(furniture)s muebles · %(shelves)s estantes · %(objects)s objetos"
 
 msgid "Open in another tab"
-msgstr ""
+msgstr "Abrir en otra pestaña"
 
 #, fuzzy
 #| msgid "No tasks in this column"
@@ -695,7 +695,7 @@ msgid "Report"
 msgstr "Reporte fallido"
 
 msgid "Shelves without a position:"
-msgstr ""
+msgstr "Estantes sin posición:"
 
 #, fuzzy
 #| msgid "No code"
@@ -703,13 +703,13 @@ msgid "QR code"
 msgstr "Sin código"
 
 msgid "Incompatibilities"
-msgstr ""
+msgstr "Incompatibilidades"
 
 msgid "alerts"
-msgstr ""
+msgstr "alertas"
 
 msgid "empty"
-msgstr ""
+msgstr "vacío"
 
 #, fuzzy
 #| msgid "Objects"
@@ -717,7 +717,7 @@ msgid "objects"
 msgstr "Objetos"
 
 msgid "Search a room, furniture, shelf or object"
-msgstr ""
+msgstr "Busque una sala, un mueble, un estante o un objeto"
 
 #, fuzzy, javascript-format
 #| msgid "Showing first result from "
