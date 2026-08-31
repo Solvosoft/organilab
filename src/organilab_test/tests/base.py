@@ -683,6 +683,85 @@ class SeleniumBase(StaticLiveServerTestCase):
         except Exception:
             pass
 
+    def wait_for_browser_idle(self, timeout=5):
+        """Espera a que el navegador no tenga nada en vuelo contra el servidor.
+
+        El teardown hace `flush` (TRUNCATE, AccessExclusiveLock) mientras el hilo
+        del StaticLiveServerTestCase puede seguir atendiendo la última petición
+        del test —el borrado en sí, o el ajax.reload() del DataTable que va
+        detrás— con un RowExclusiveLock tomado: PostgreSQL corta el ciclo con
+        "deadlock detected" y el flush revienta. Con GENERATE_SCREENSHOTS=False
+        salta a menudo porque el sleep_factor deja los `sleep` del path_list en
+        una décima parte.
+
+        Best-effort: si el driver ya murió, o la página no usa jQuery ni
+        DataTables, retorna sin esperar.
+        """
+        try:
+            WebDriverWait(self.selenium, timeout).until(
+                lambda driver: driver.execute_script(
+                    "return document.readyState === 'complete'"
+                    " && (typeof jQuery === 'undefined' || jQuery.active === 0)"
+                    " && (window.__organilabPendingDT === undefined"
+                    "     || window.__organilabPendingDT === 0);"
+                )
+            )
+        except Exception:  # noqa: BLE001
+            pass
+
+    def quiesce_browser(self, timeout=5):
+        """Deja el navegador sin peticiones pendientes ni capacidad de lanzar más.
+
+        Esperar a que esté ocioso no basta: un temporizador o un callback puede
+        disparar otra petición justo cuando empieza el TRUNCATE. Navegar a
+        about:blank descarta el documento y con él todo lo que tuviera agendado.
+        El siguiente test de la clase vuelve a navegar en su propio setUp.
+        """
+        self.wait_for_browser_idle(timeout)
+        try:
+            self.selenium.get("about:blank")
+        except Exception:  # noqa: BLE001
+            pass
+
+    @staticmethod
+    def _is_deadlock(exc):
+        """¿Este error (o su causa) es el deadlock del flush?
+
+        `flush` envuelve el OperationalError en un CommandError cuyo texto no
+        menciona el deadlock, así que hay que mirar la cadena de causas.
+        """
+        seen = 0
+        while exc is not None and seen < 5:
+            if "deadlock detected" in str(exc).lower():
+                return True
+            exc = exc.__cause__
+            seen += 1
+        return False
+
+    def _retry_on_deadlock(self, action, attempts=2):
+        """Ejecuta `action`, reintentando una vez si PostgreSQL detectó un deadlock.
+
+        El deadlock del teardown es una carrera, no un estado: al reintentar, la
+        petición que competía ya terminó. Se cierran las conexiones antes de
+        reintentar porque la víctima del deadlock queda con la transacción
+        abortada.
+        """
+        from django.db import connections
+
+        for attempt in range(attempts):
+            try:
+                return action()
+            except Exception as exc:  # noqa: BLE001
+                if attempt == attempts - 1 or not self._is_deadlock(exc):
+                    raise
+                for conn in connections.all():
+                    conn.close()
+                sleep(1)
+
+    def _fixture_teardown(self):
+        self.quiesce_browser()
+        self._retry_on_deadlock(super()._fixture_teardown)
+
     def active_hidden_elements(self, obj):
         """
         Display hidden elements, for example in dropdowns or elements that are hidden.
@@ -1173,6 +1252,10 @@ class OptimizedSeleniumBase(SeleniumBase):
         if did_modify:
             from django.core.management import call_command
             from django.db import connections
+
+            # Mismo cuidado que en SeleniumBase._fixture_teardown: esta rama no
+            # llama a super(), así que repite el quiesce y el reintento.
+            self.quiesce_browser()
             for db_name in self._databases_names(include_mirrors=False):
                 inhibit_post_migrate = (
                     self.available_apps is not None
@@ -1181,10 +1264,12 @@ class OptimizedSeleniumBase(SeleniumBase):
                         and hasattr(connections[db_name], "_test_serialized_contents")
                     )
                 )
-                call_command(
-                    "flush", verbosity=0, interactive=False,
-                    database=db_name, reset_sequences=False,
-                    allow_cascade=self.available_apps is not None,
-                    inhibit_post_migrate=inhibit_post_migrate,
+                self._retry_on_deadlock(
+                    lambda db_name=db_name, inhibit=inhibit_post_migrate: call_command(
+                        "flush", verbosity=0, interactive=False,
+                        database=db_name, reset_sequences=False,
+                        allow_cascade=self.available_apps is not None,
+                        inhibit_post_migrate=inhibit,
+                    )
                 )
             self.__class__._needs_reload = True
