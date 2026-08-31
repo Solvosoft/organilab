@@ -223,6 +223,32 @@ class TreeBuilder:
             ],
         }
 
+    def build_shelves_of(self, furniture):
+        """Los nodos de estante de UN mueble, con la forma exacta del árbol.
+
+        El editor repinta con lo que responde el servidor, así que la respuesta
+        de una operación de cuadrícula tiene que traer los mismos campos que el
+        árbol: si trae menos, el repintado se cae y la pantalla se queda
+        mostrando un estado que ya no es el de la base de datos.
+        """
+        items = [furniture]
+        grid = dataconfig.parse(furniture.dataconfig)
+        shelves = self.get_shelves(items)
+        counts = self.get_shelfobject_counts(items)
+        occupancy = self.get_occupancy(items)
+        qr_map = self.get_qr_map([], items, shelves)
+        risk = self.build_risk() if self.risk else None
+
+        return {
+            "grid": {"cells": grid},
+            "shelves": {
+                str(pk): self.build_shelf(
+                    shelf, grid, counts, occupancy, qr_map, risk
+                )
+                for pk, shelf in shelves.items()
+            },
+        }
+
     def build_room(self, room, furniture, grids, shelves, counts, occupancy,
                    qr_map, risk):
         furniture_data = [
