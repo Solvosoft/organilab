@@ -370,3 +370,45 @@ class LabviewApiTest(RolPermissionMixin, BaseLaboratorySetUpTest):
             ).status_code,
             403,
         )
+
+    def test_a_grid_operation_answers_shelves_shaped_like_the_tree(self):
+        """El editor repinta con esto, así que tiene que traer lo mismo.
+
+        Si la respuesta de una operación de cuadrícula trae menos campos que el
+        árbol, el repintado se cae en el navegador y la pantalla se queda
+        mostrando un estado que la base de datos ya no tiene: el servidor
+        guarda y el usuario no ve nada.
+        """
+        tree = self.client.get(self.url("api-labview-tree-list")).json()
+        from_tree = {
+            pk: shelf
+            for room in tree["rooms"]
+            for item in room["furniture"]
+            for pk, shelf in item["shelves"].items()
+        }
+
+        for name, payload in (
+            ("api-labview-furniture-add-row", {}),
+            ("api-labview-furniture-add-col", {}),
+        ):
+            with self.subTest(operation=name):
+                response = self.post(name, payload, pk=self.furniture.pk)
+                self.assertEqual(response.status_code, 200, response.content)
+                shelves = response.json()["shelves"]
+                self.assertTrue(shelves)
+                for pk, shelf in shelves.items():
+                    self.assertEqual(sorted(shelf), sorted(from_tree[pk]))
+
+    def test_the_furniture_retrieve_answers_the_same_shape_too(self):
+        tree = self.client.get(self.url("api-labview-tree-list")).json()
+        from_tree = {
+            pk: shelf
+            for room in tree["rooms"]
+            for item in room["furniture"]
+            for pk, shelf in item["shelves"].items()
+        }
+        response = self.client.get(
+            self.url("api-labview-furniture-detail", pk=self.furniture.pk)
+        )
+        for pk, shelf in response.json()["shelves"].items():
+            self.assertEqual(sorted(shelf), sorted(from_tree[pk]))
