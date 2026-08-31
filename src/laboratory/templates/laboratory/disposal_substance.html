@@ -103,6 +103,8 @@
                             graphic: '{% url "laboratory:api_shelfobject_graphic" %}'
         }
 </script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{# Chart.js lo sirve djgentelella (vendors/chartjs/chart.umd.min.js, v4),
+   cargado ya por statics/javascript.html. El CDN traía la última versión
+   publicada, sin fijar, y sin funcionar cuando no hay salida a internet. #}
 <script src="{% static 'js/disposal.js' %}?v={% get_organilab_version %}"></script>
 {% endblock %}

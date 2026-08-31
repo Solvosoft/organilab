@@ -80,11 +80,12 @@ $('.shelf_button').click(e=>{
                    }
           },
             scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    }
-                }]
+                // Chart.js 3 sustituyó el arreglo `yAxes` por un eje con nombre
+                // y subió `beginAtZero` fuera de `ticks`. La forma vieja no da
+                // error: se ignora, y el eje deja de empezar en cero.
+                y: {
+                    beginAtZero: true
+                }
             }
         }
     });
