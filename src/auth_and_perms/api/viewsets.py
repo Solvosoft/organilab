@@ -657,7 +657,9 @@ class DeleteUserFromContenttypeViewSet(mixins.ListModelMixin, viewsets.GenericVi
                     DELETION,
                     "profilepermission",
                     changed_data=["profile", "content_type", "object_id"],
-                    change_message=_("Removed laboratory permission from user '%(user)s'")
+                    change_message=_(
+                        "Removed laboratory permission from user '%(user)s'"
+                    )
                     % {"user": user.username},
                     relobj=organization,
                 )

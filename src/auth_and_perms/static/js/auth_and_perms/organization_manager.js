@@ -523,8 +523,8 @@ $(".contenttyperelobjbtnadd").on('click', function(e){
     let select = $("#relOrganizationmodal select");
     let organizationinput = $('#relOrganizationmodal input[name="organization"]');
     let saveBtn = $('#relOrganizationmodal .btnsaveorglabs');
-    let baseUrl = saveBtn.data('url');
-    let fullbaseUrl = $(select).data('url');
+    let baseUrl = saveBtn.attr('data-base-url') || saveBtn.attr('data-url');
+    let fullbaseUrl = $(select).attr('data-base-url') || $(select).attr('data-url');
 
     organizationinput.val(orgPk);
     saveBtn.data('url', baseUrl.replace('/0/', '/' + orgPk + '/'));
@@ -957,7 +957,6 @@ $(".enable_child_org").on('click', function(){
     let enable = $(this).data('enable');
     $("#id_organization_enable").val(orgPk);
     $("#id_enable_field").val(enable);
-    console.log(enable);
     if (enable == true){
         $("#enable-msg").text(gettext("Do you want to disable the child organizations filter?"));
         $("#enable-title").text(gettext("Disable child organizations filter?"));
