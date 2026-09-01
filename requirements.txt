@@ -9,6 +9,11 @@ djangoajax==3.3
 django==5.2.11
 django-excel==0.0.13
 django-reservation==0.2.10
+# El campo geolocation ya no usa location_field (se migró a GTPointField de
+# djgentelella), pero las migraciones históricas (0001, 0032, 0183, 0201)
+# siguen importando location_field.models.plain y Django las carga todas
+# para construir el grafo de migraciones, incluso en una BD nueva.
+django-location-field==2.7.3
 djangorestframework==3.16.1
 openpyxl==3.1.5
 Pillow>=12.0.0
