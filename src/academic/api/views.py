@@ -17,9 +17,24 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from django.contrib.admin.models import ADDITION, DELETION
+from django.db.models import Q
+from django.utils.translation import gettext_lazy as _
+from djgentelella.objectmanagement import BaseInlineObjectManagement
+from djgentelella.permission_management import AllPermissionByAction
+from rest_framework.authentication import TokenAuthentication
+
 from academic.api import serializers, filterset
 from academic.api.forms import CommentProcedureStepForm
-from academic.models import CommentProcedureStep, ProcedureStep, MyProcedure, Procedure
+from academic.models import (
+    CommentProcedureStep,
+    ProcedureStep,
+    MyProcedure,
+    Procedure,
+    ProcedureRequiredObject,
+    ProcedureObservations,
+)
+from laboratory.utils import organilab_logentry
 from auth_and_perms.api.serializers import ValidateUserAccessOrgLabSerializer
 from auth_and_perms.organization_utils import (
     user_is_allowed_on_organization,
@@ -313,6 +328,7 @@ class MyProceduresAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
             return Response(
                 validate_serializer.errors, status=status.HTTP_400_BAD_REQUEST
             )
+
     @action(detail=True, methods=["get"])
     def download_my_procedures(self, request, org_pk, lab_pk, pk=None):
         organization = get_object_or_404(
@@ -363,9 +379,6 @@ class MyProceduresAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
             f'attachment; filename="procedure_{my_procedure.pk}.pdf"'
         )
         return response
-
-
-
 
 
 @method_decorator(login_required, name="dispatch")
@@ -425,3 +438,111 @@ class ProcedureAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
             return Response(
                 validate_serializer.errors, status=status.HTTP_400_BAD_REQUEST
             )
+
+
+class ProcedureStepInlineManagement(BaseInlineObjectManagement):
+    """CRUDAL de los hijos de un ProcedureStep (reemplazo de los FBV
+    save_object/remove_object/save_observation/remove_observation).
+
+    El padre se resuelve por URL (``parent_pk``) y se acota a la organización
+    del prefijo; se admiten procedimientos legados sin organización
+    (content_type nulo), que es como operaba el flujo anterior."""
+
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+    permission_classes = (AllPermissionByAction,)
+    parent_model = ProcedureStep
+    parent_field = "step"
+    pagination_class = LimitOffsetPagination
+    filter_backends = (OrderingFilter,)
+    ordering = ("pk",)
+
+    def get_parent_queryset(self):
+        org_pk = self.kwargs.get("org_pk")
+        organization = get_object_or_404(
+            OrganizationStructure.objects.using(settings.READONLY_DATABASE),
+            pk=org_pk,
+        )
+        user_is_allowed_on_organization(self.request.user, organization)
+        content_type = ContentType.objects.get(
+            app_label="laboratory", model="organizationstructure"
+        )
+        return ProcedureStep.objects.filter(
+            Q(procedure__content_type__isnull=True)
+            | Q(procedure__content_type=content_type, procedure__object_id=org_pk)
+        )
+
+
+class ProcedureRequiredObjectViewSet(ProcedureStepInlineManagement):
+    serializer_class = {
+        "list": serializers.ProcedureRequiredObjectDataTableSerializer,
+        "create": serializers.AddProcedureRequiredObjectSerializer,
+    }
+    perms = {
+        "list": ["academic.view_procedure"],
+        "create": ["academic.add_procedurerequiredobject"],
+        "destroy": ["academic.delete_procedurerequiredobject"],
+    }
+    queryset = ProcedureRequiredObject.objects.all()
+
+    def perform_create(self, serializer):
+        instance = serializer.save(step=self.get_parent_object())
+        organilab_logentry(
+            self.request.user,
+            instance,
+            ADDITION,
+            changed_data=list(serializer.validated_data.keys()),
+            change_message=_(
+                "Added required object '%(obj)s' (%(qty)s %(unit)s) to procedure step"
+            )
+            % {
+                "obj": str(instance.object),
+                "qty": instance.quantity,
+                "unit": str(instance.measurement_unit),
+            },
+            relobj=self.kwargs.get("org_pk"),
+        )
+
+    def perform_destroy(self, instance):
+        organilab_logentry(
+            self.request.user,
+            instance,
+            DELETION,
+            changed_data=["object", "quantity", "measurement_unit", "step"],
+            change_message=_("Removed required object '%(obj)s' from procedure step")
+            % {"obj": str(instance.object)},
+        )
+        instance.delete()
+
+
+class ProcedureObservationViewSet(ProcedureStepInlineManagement):
+    serializer_class = {
+        "list": serializers.ProcedureObservationDataTableSerializer,
+        "create": serializers.AddProcedureObservationSerializer,
+    }
+    perms = {
+        "list": ["academic.view_procedure"],
+        "create": ["academic.add_procedureobservations"],
+        "destroy": ["academic.delete_procedureobservations"],
+    }
+    queryset = ProcedureObservations.objects.all()
+
+    def perform_create(self, serializer):
+        instance = serializer.save(step=self.get_parent_object())
+        organilab_logentry(
+            self.request.user,
+            instance,
+            ADDITION,
+            changed_data=["description", "step"],
+            change_message=_("Added observation to procedure step '%(title)s'")
+            % {"title": instance.step.title},
+        )
+
+    def perform_destroy(self, instance):
+        organilab_logentry(
+            self.request.user,
+            instance,
+            DELETION,
+            changed_data=["description", "step"],
+            change_message=_("Removed observation from procedure step"),
+        )
+        instance.delete()

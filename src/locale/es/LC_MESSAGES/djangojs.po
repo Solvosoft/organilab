@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-02 08:55-0600\n"
+"POT-Creation-Date: 2026-08-30 11:01-0600\n"
 "PO-Revision-Date: 2024-04-12 23:50-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -105,11 +105,14 @@ msgstr "Título"
 msgid "Description"
 msgstr "Descripción"
 
+msgid "Amount"
+msgstr "Cantidad"
+
+msgid "Unit"
+msgstr "Unidad"
+
 msgid "Error"
 msgstr "Error"
-
-msgid "Delete"
-msgstr "Eliminar"
 
 msgid "Are you sure to delete the procedure"
 msgstr "¿Está seguro de que quiere eliminar este procedimiento"
@@ -128,24 +131,6 @@ msgstr "Paso"
 
 msgid "The procedure step was not removed"
 msgstr "El paso del procedimiento no fue eliminado"
-
-msgid "Are you sure to delete this observation?"
-msgstr "¿Está seguro de que quiere eliminar esta observación?"
-
-msgid "Observation has been deleted"
-msgstr "La observación ha sido eliminada"
-
-msgid "The observation was not removed"
-msgstr "La observación no fue eliminada"
-
-msgid "Are you sure to delete this object"
-msgstr "Estas seguro de eliminar el objeto"
-
-msgid "Object"
-msgstr "Objeto"
-
-msgid "The object was not removed"
-msgstr "El objeto no fue eliminado"
 
 msgid "Deleted!"
 msgstr "¡Eliminado!"
@@ -326,6 +311,27 @@ msgstr "Identificador del laboratorio"
 msgid "You do not have permission to perform this action."
 msgstr "No tienes los permisos necesarios para realizar esta acción."
 
+msgid "Creation date"
+msgstr "Fecha de creación"
+
+msgid "Last update"
+msgstr "Última actualización"
+
+msgid "Created by"
+msgstr "Creado por"
+
+msgid "Edit"
+msgstr "Editar"
+
+msgid "Download"
+msgstr "Descargar"
+
+msgid "History"
+msgstr "Historial"
+
+msgid "Delete"
+msgstr "Eliminar"
+
 msgid "Are you sure you want to delete"
 msgstr "¿Está seguro/a de que desea eliminar"
 
@@ -336,6 +342,37 @@ msgid "as well?"
 msgstr "también?"
 
 msgid "An error has occurred"
+msgstr "Ha ocurrido un error"
+
+#, fuzzy
+#| msgid "Deleted!"
+msgid "Deleted date"
+msgstr "¡Eliminado!"
+
+#, fuzzy
+#| msgid "Deleted!"
+msgid "Deleted by"
+msgstr "¡Eliminado!"
+
+msgid "Model"
+msgstr "Modelo"
+
+msgid "Restore"
+msgstr "Restaurar"
+
+msgid ""
+"This action will permanently delete the register, as well as all related "
+"data."
+msgstr ""
+"Esta acción eliminará permanentemente el registro, así como todos sus datos "
+"relacionados."
+
+msgid "Accept"
+msgstr "Aceptar"
+
+#, fuzzy
+#| msgid "An error has occurred"
+msgid "Sorry, an error occurred."
 msgstr "Ha ocurrido un error"
 
 msgid ""
@@ -397,9 +434,6 @@ msgstr "Código"
 msgid "Synonym"
 msgstr "Sinónimo"
 
-msgid "Model"
-msgstr "Modelo"
-
 msgid "Serie"
 msgstr "Serie"
 
@@ -408,9 +442,6 @@ msgstr "Placa"
 
 msgid "Donated income"
 msgstr "Ingreso por donacion"
-
-msgid "Unit"
-msgstr "Unidad"
 
 msgid "Unit code"
 msgstr "Código de unidad"
@@ -453,9 +484,6 @@ msgstr "Códigos NFPA"
 
 msgid "Security Sheet"
 msgstr "Hoja de Seguridad"
-
-msgid "Download"
-msgstr "Descargar"
 
 msgid "Sustance Representation"
 msgstr "Representación de la sustancia"
@@ -544,42 +572,6 @@ msgstr "Aprobar"
 msgid "Reject"
 msgstr "Rechazar"
 
-msgid "No shelf selected"
-msgstr "No se ha seleccionado un estante"
-
-msgid "You need to select a shelf before performing this action."
-msgstr "Necesita seleccionar un estante antes de realizar esta acción."
-
-msgid "Are you sure you want to deny the transfer of"
-msgstr "¿Está seguro/a de que desea denegar la transferencia de"
-
-msgid "Confirm"
-msgstr "Confirmar"
-
-msgid "Create Equipment"
-msgstr "Crear Equipo"
-
-msgid "Create Material"
-msgstr "Crear Material"
-
-msgid "Create Substance"
-msgstr "Crear Sustancia"
-
-msgid "Containers"
-msgstr "Contenedores"
-
-msgid "Transfer In"
-msgstr "Transferir aquí"
-
-msgid "Laboratory Send"
-msgstr "Laboratorio que Envía"
-
-msgid "Mark as Discard"
-msgstr "Marcar como Desecho"
-
-msgid "Deny"
-msgstr "Denegar"
-
 msgid "Search"
 msgstr "Buscar"
 
@@ -589,11 +581,148 @@ msgstr "Muestra el primer resultado de "
 msgid " matched shelves"
 msgstr " estanterías que combinan"
 
-msgid "Created by"
-msgstr "Creado por"
+msgid "Object"
+msgstr "Objeto"
+
+msgid "Select a shelf to see its objects."
+msgstr "Seleccione un estante para ver sus objetos."
+
+msgid "Direct link"
+msgstr "Enlace directo"
+
+msgid "Availability"
+msgstr "Disponibilidad"
 
 msgid "Capacity"
 msgstr "Capacidad"
+
+msgid "Infinity"
+msgstr "Infinita"
+
+#, fuzzy
+#| msgid "Restore"
+msgid "Stored"
+msgstr "Restaurar"
+
+msgid "Occupancy"
+msgstr "Ocupación"
+
+msgid "Disposal"
+msgstr "Descarte"
+
+#, fuzzy
+#| msgid "View Detail"
+msgid "Detail"
+msgstr "Ver detalle"
+
+msgid "List of Recipients"
+msgstr "Lista de recipientes"
+
+#, fuzzy
+#| msgid "Observation"
+msgid "Reservation"
+msgstr "Observación"
+
+msgid "Add"
+msgstr "Agregar"
+
+#, fuzzy
+#| msgid "Transfer In"
+msgid "Transfer Out"
+msgstr "Transferir aquí"
+
+#, fuzzy
+#| msgid "Substance"
+msgid "Substract"
+msgstr "Sustancia"
+
+msgid "Log"
+msgstr "Bitácora"
+
+#, fuzzy
+#| msgid "Container"
+msgid "Manage Container"
+msgstr "Contenedor"
+
+msgid "Move"
+msgstr "Mover"
+
+msgid "Maintenance"
+msgstr "Mantenimiento"
+
+msgid "Done"
+msgstr "Listo"
+
+#, fuzzy
+#| msgid "Furniture"
+msgid "Edit furniture"
+msgstr "Mueble"
+
+msgid "The operation was refused"
+msgstr "La operación fue rechazada"
+
+msgid "New shelf"
+msgstr "Estante nuevo"
+
+msgid "The name is required"
+msgstr "El nombre es obligatorio"
+
+msgid "The shelf will be removed from the furniture."
+msgstr "El estante se quitará del mueble."
+
+msgid "This laboratory has no rooms yet."
+msgstr "Este laboratorio todavía no tiene salas."
+
+msgid "%(furniture)s furniture · %(shelves)s shelves · %(objects)s objects"
+msgstr "%(furniture)s muebles · %(shelves)s estantes · %(objects)s objetos"
+
+msgid "Open in another tab"
+msgstr "Abrir en otra pestaña"
+
+#, fuzzy
+#| msgid "No tasks in this column"
+msgid "No furniture in this room."
+msgstr "No hay tareas en esta columna"
+
+#, fuzzy
+#| msgid " matched shelves"
+msgid "shelves"
+msgstr " estanterías que combinan"
+
+#, fuzzy
+#| msgid "Report failed"
+msgid "Report"
+msgstr "Reporte fallido"
+
+msgid "Shelves without a position:"
+msgstr "Estantes sin posición:"
+
+#, fuzzy
+#| msgid "No code"
+msgid "QR code"
+msgstr "Sin código"
+
+msgid "Incompatibilities"
+msgstr "Incompatibilidades"
+
+msgid "alerts"
+msgstr "alertas"
+
+msgid "empty"
+msgstr "vacío"
+
+#, fuzzy
+#| msgid "Objects"
+msgid "objects"
+msgstr "Objetos"
+
+msgid "Search a room, furniture, shelf or object"
+msgstr "Busque una sala, un mueble, un estante o un objeto"
+
+#, fuzzy, javascript-format
+#| msgid "Showing first result from "
+msgid "Showing the first result out of %s matched shelves"
+msgstr "Muestra el primer resultado de "
 
 msgid "Object Features"
 msgstr "Características del objeto"
@@ -636,9 +765,6 @@ msgstr "Mueble"
 msgid "Boxes"
 msgstr "Cajas"
 
-msgid "Add"
-msgstr "Agregar"
-
 msgid "Decrease"
 msgstr "Disminuir"
 
@@ -668,6 +794,60 @@ msgstr "Cantidad final"
 
 msgid "Difference"
 msgstr "Diferencia"
+
+msgid "No shelf selected"
+msgstr "No se ha seleccionado un estante"
+
+msgid "You need to select a shelf before performing this action."
+msgstr "Necesita seleccionar un estante antes de realizar esta acción."
+
+msgid "Are you sure you want to deny the transfer of"
+msgstr "¿Está seguro/a de que desea denegar la transferencia de"
+
+msgid "Confirm"
+msgstr "Confirmar"
+
+msgid "Laboratory Send"
+msgstr "Laboratorio que Envía"
+
+msgid "Mark as Discard"
+msgstr "Marcar como Desecho"
+
+msgid "Deny"
+msgstr "Denegar"
+
+msgid "Create Equipment"
+msgstr "Crear Equipo"
+
+msgid "Create Material"
+msgstr "Crear Material"
+
+msgid "Create Substance"
+msgstr "Crear Sustancia"
+
+msgid "Containers"
+msgstr "Contenedores"
+
+msgid "Transfer In"
+msgstr "Transferir aquí"
+
+msgid "Height"
+msgstr "Altura"
+
+msgid "Width"
+msgstr "Ancho"
+
+msgid "Recipient size was created successfully."
+msgstr "Se creó con éxito el tamaño de recipiente."
+
+msgid "There was a problem performing your request."
+msgstr "Hubo un problema realizando su solicitud."
+
+msgid "Are you sure you want to delete this recipient size?"
+msgstr "¿Está seguro/a de que desea eliminar esta tamaño de recipiente?"
+
+msgid "Recipient size was deleted successfully."
+msgstr "Se eliminó con éxito el tamaño de recipiente."
 
 msgid "CAS Code"
 msgstr "Código CAS"
@@ -881,6 +1061,24 @@ msgstr "Ayuda sobre probabilidad"
 msgid "Help about consequence"
 msgstr "Ayuda sobre consecuencia"
 
+msgid "Anonymous"
+msgstr "Anónimo"
+
+msgid "Laboratory name hidden"
+msgstr "Nombre del laboratorio oculto"
+
+msgid "Laboratory name visible"
+msgstr "Nombre del laboratorio visible"
+
+msgid "Version"
+msgstr "Versión"
+
+msgid "Next update"
+msgstr "Próxima actualización"
+
+msgid "Open"
+msgstr "Abrir"
+
 msgid "Chemical"
 msgstr "Químico"
 
@@ -994,14 +1192,8 @@ msgstr "Eliminar tamaño de recipiente"
 msgid "Do you want to remove the recipient?"
 msgstr "¿Deseas eliminar el recipiente?"
 
-msgid "Height"
-msgstr "Altura"
-
 msgid "Height Unit"
 msgstr "Unidad de Medida de Altura"
-
-msgid "Width"
-msgstr "Ancho"
 
 msgid "Width Unit"
 msgstr "Unidad de Medida de Ancho"

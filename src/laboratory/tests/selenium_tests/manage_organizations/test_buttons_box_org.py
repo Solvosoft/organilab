@@ -3,6 +3,7 @@ from django.test import tag
 from laboratory.tests.selenium_tests.manage_organizations.base import (
     ManageOrganizationsSeleniumTest,
 )
+from organilab_test.tests.selenium_xpaths import select2_result
 
 
 @tag("selenium")
@@ -122,7 +123,7 @@ class ButtonBoxOrgTest(ManageOrganizationsSeleniumTest):
                 "sleep": 2,
             },
             {
-                "path": "//ul[contains(@class, 'select2-results__options')]/li",
+                "path": select2_result(1),
             },
             {"path": self.get_submit_button_path("orgbyusermodal")},
         ]
@@ -155,11 +156,11 @@ class ButtonBoxOrgTest(ManageOrganizationsSeleniumTest):
         path_list = [
             {"path": self.org_add_child_btn(1)},
             {
-                "path": "//*[@id='addOrganizationmodal']//div[contains(@class, 'modal-body')]//input",
+                "path": "//*[@id='addOrganizationmodal']//div[contains(@class, 'modal-body')]//input[@type='text']",
                 "sleep": 2,
             },
             {
-                "path": "//*[@id='addOrganizationmodal']//div[contains(@class, 'modal-body')]//input",
+                "path": "//*[@id='addOrganizationmodal']//div[contains(@class, 'modal-body')]//input[@type='text']",
                 "extra_action": "setvalue",
                 "value": "Organización Hija",
             },

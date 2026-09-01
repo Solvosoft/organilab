@@ -401,7 +401,8 @@ class RiskSeleniumTest(RiskSeleniumBase):
             {
                 "path": "//*[@id='create_obj_modal']//div[contains(@class, 'modal-body')]",
                 "extra_action": "script",
-                "value": 'if(typeof tinymce!=="undefined"&&tinymce.get("id_create-infraestructure_impact")){tinymce.get("id_create-infraestructure_impact").setContent("<p>Daño menor en equipo</p>");}',
+                "value": 'if(typeof tinymce!=="undefined"&&tinymce.get("id_create-infraestructure_impact"))'
+                         '{tinymce.get("id_create-infraestructure_impact").setContent("<p>Daño menor en equipo</p>");}',
                 "scroll": "$('#create_obj_modal .modal-body').scrollTop(400)",
                 "sleep": 1,
             },
@@ -486,7 +487,8 @@ class RiskSeleniumTest(RiskSeleniumBase):
             {
                 "path": "//*[@id='update_obj_modal']//div[contains(@class, 'modal-body')]",
                 "extra_action": "script",
-                "value": 'if(typeof tinymce!=="undefined"&&tinymce.get("id_update-infraestructure_impact")){tinymce.get("id_update-infraestructure_impact").setContent("<p>Daño menor en equipo</p>");}',
+                "value": 'if(typeof tinymce!=="undefined"&&tinymce.get("id_update-infraestructure_impact"))'
+                         '{tinymce.get("id_update-infraestructure_impact").setContent("<p>Daño menor en equipo</p>");}',
                 "sleep": 1,
             },
             {
@@ -669,8 +671,12 @@ class RiskSeleniumTest(RiskSeleniumBase):
             {
                 "path": "//button[@type='submit' or @id='btnsave']",
             },
+            # Al guardar se redirige al listado, que es un DataTable con <h1>:
+            # el heading-1 sólo existe en el formulario. Comprobar la tabla es
+            # además la prueba de que el guardado terminó bien.
             {
-                "path": "//h3[contains(@class, 'heading-1')]/span",
+                "path": "//table[@id='table-building']",
+                "presence_only": True,
                 "wait_ready": True,
             },
         ]
@@ -911,8 +917,11 @@ class RiskSeleniumTest(RiskSeleniumBase):
             {
                 "path": "//button[@type='submit' or @id='btnsave']",
             },
+            # Igual que en add_building: tras guardar se vuelve al listado, que
+            # ya no usa heading-1.
             {
-                "path": "//h3[contains(@class, 'heading-1')]/span",
+                "path": "//table[@id='table-structure']",
+                "presence_only": True,
                 "wait_ready": True,
             },
         ]

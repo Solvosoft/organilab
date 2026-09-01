@@ -10,9 +10,12 @@ columns: [
 
 ],
 ordering: false,
-dom: "<'row'<'col-sm-4 col-md-4 d-flex justify-content-start'l>" +
-"<'col-sm-7 col-md-7 mt-1 d-flex justify-content-end'f>>" +
-"<'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 m-auto'p>>",
+layout: {
+    topStart: 'pageLength',
+    topEnd: 'search',
+    bottomStart: 'info',
+    bottomEnd: 'paging'
+},
 ajax: {
 url: document.urls.observation_table,
 type: 'GET',

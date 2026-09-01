@@ -14,7 +14,7 @@
 
 <h1 class="text-center">{% trans 'Search FDS' %}
 {% if perms.msds.add_msdsobject %}
-<a class="btn btn-success float-end" href="{% url 'msds:sds_create' org_pk %}">
+<a class="btn btn-success float-end" href="{% url 'sga:create_sustance' org_pk %}">
 {% trans 'Upload FDS' %}
 </a>
 {% endif %}

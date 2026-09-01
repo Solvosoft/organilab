@@ -18,8 +18,8 @@ from laboratory.models import (
     ShelfObject,
     Laboratory,
     OrganizationStructure,
-    SustanceCharacteristics,
 )
+from sga.models import SubstanceCharacteristics
 from laboratory.report_utils import ExcelGraphBuilder
 from laboratory.utils import (
     get_user_laboratories,
@@ -191,7 +191,7 @@ def get_dataset_reactive_precursor(report, column_list=None):
             rpo = Object.objects.all()
 
         rpo = rpo.filter(
-            type=Object.REACTIVE, sustancecharacteristics__is_precursor=True
+            type=Object.REACTIVE, substancharacteristics_object__is_precursor=True
         )
         # Compute per-object totals in Python to avoid PostgreSQL grouping
         # issues with correlated jsonb_array_elements inside aggregates.
@@ -331,8 +331,9 @@ def get_object_elements(obj):
         if not (x + 1 == len(all_features)):
             features += ", "
 
-    if hasattr(obj, "sustancecharacteristics"):
-        all_hcode = obj.sustancecharacteristics.h_code.all()
+    sga_char = obj.substancharacteristics_object.first()
+    if sga_char:
+        all_hcode = sga_char.h_code.all()
         for x, h_code in enumerate(all_hcode):
             danger += f"{h_code}"
             if not (x + 1 == len(all_hcode)):
@@ -369,12 +370,9 @@ def get_dataset_objects(report, column_list=None):
     for obj in objects:
         formula = "-"
         features, danger = get_object_elements(obj.object)
-        if hasattr(obj.object, "sustancecharacteristics"):
-            formula = (
-                obj.object.sustancecharacteristics.molecular_formula
-                if obj.object.sustancecharacteristics.molecular_formula
-                else "-"
-            )
+        sga_char = obj.object.substancharacteristics_object.first()
+        if sga_char and sga_char.molecular_formula:
+            formula = sga_char.molecular_formula
         cas = get_cas(obj.object, "") if get_cas(obj.object, "") else ""
         data_column = {
             "laboratory": obj.in_where_laboratory.name,
@@ -603,7 +601,7 @@ def report_limit_object_doc(report):
 # report_organization_reactive
 def get_dataset_report_organization_reactive(report, column_list=None):
     dataset = []
-    filters = {"object__sustancecharacteristics__isnull": False}
+    filters = {"object__substancharacteristics_object__isnull": False}
 
     if "organization" in report.data:
         org_pk = report.data["organization"]
@@ -627,14 +625,29 @@ def get_dataset_report_organization_reactive(report, column_list=None):
             )
             .annotate(count=Count("object"))
         )
+        # Una consulta para todas las filas en vez de una por fila. Un objeto
+        # puede no tener características —el filtro las exige, pero la relación
+        # es opcional— así que el bucle contempla su ausencia en lugar de fallar.
+        characteristics_by_object = {
+            characteristics.object_related_id: characteristics
+            for characteristics in SubstanceCharacteristics.objects.filter(
+                object_related__pk__in=[reactive["object"] for reactive in objs]
+            ).prefetch_related("white_organ", "iarc")
+        }
+
         for reactive in objs:
-            caracteristics = SustanceCharacteristics.objects.filter(
-                obj__pk=reactive["object"]
-            ).first()
-            white_organ = ", ".join(
-                caracteristics.white_organ.all().values_list("description", flat=True)
-            )
-            iarc = str(caracteristics.iarc) if caracteristics.iarc else ""
+            caracteristics = characteristics_by_object.get(reactive["object"])
+            white_organ = ""
+            iarc = ""
+            cas = ""
+            if caracteristics:
+                white_organ = ", ".join(
+                    caracteristics.white_organ.all().values_list(
+                        "description", flat=True
+                    )
+                )
+                iarc = str(caracteristics.iarc) if caracteristics.iarc else ""
+                cas = caracteristics.cas_id_number or ""
             data_column = {
                 "laboratory_name": reactive["laboratory__name"],
                 "name": reactive["user__first_name"]
@@ -642,7 +655,7 @@ def get_dataset_report_organization_reactive(report, column_list=None):
                 + reactive["user__last_name"],
                 "code": reactive["object__code"],
                 "substance": reactive["object__name"],
-                "cas": caracteristics.cas_id_number,
+                "cas": cas,
                 "white_organ": white_organ,
                 "carcinogenic": iarc,
                 "id_card": "",

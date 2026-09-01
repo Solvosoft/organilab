@@ -1,6 +1,6 @@
 {% load i18n shelf_position laboratory static %}
 {% load gentelellamenu %}
-<div class="left_col scroll-view">
+<div class="left_col gt-sidebar scroll-view">
 	<div class="navbar nav_title" style="border: 0;  ">
 		<a href="
 
@@ -21,7 +21,7 @@
 		</div>
 	</div>
 	<br>
-	<div class="main_menu_side hidden-print main_menu" id="sidebar-menu">
+	<div class="main_menu_side d-print-none main_menu" id="sidebar-menu">
 
 		<div class="menu_section">
 			<ul class="nav side-menu">
@@ -37,13 +37,6 @@
 				{% endif %}
 				{% include 'partials/auth_and_perms.html' %}
 
-				<!--	<li>
-					<a class="nav-link" href="'blog:entrylist'"
-								title="{% trans 'blog entries' %}">
-						<i class="fa fa-edit fa-fw"></i> {% trans 'Blog' %}
-					</a>
-				</li>
-				-->
 				{% if perms.msds.view_regulationdocument %}
 					<li>
 						<a class="nav-link" href="{% url 'regulation_docs' %}{% if org_pk %}?org_pk={{ org_pk }}{% endif %}"
@@ -62,7 +55,7 @@
 			</ul>
 		</div>
 	</div>
-	<div class="sidebar-footer hidden-print nohidden">
+	<div class="sidebar-footer d-print-none nohidden">
 		{% if user.is_authenticated %}
 			<a href="{% url 'laboratory:profile' user.pk %}" title="{% trans 'Profile' %}">
 				<span class="fa fa-user" aria-hidden="true"></span>

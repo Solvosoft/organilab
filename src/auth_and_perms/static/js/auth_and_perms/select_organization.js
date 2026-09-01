@@ -1,9 +1,11 @@
 function create_object_table(){
 
-document.table_default_dom = "<'row mb-3'<'col-sm-12 col-md-12 mb-1 d-flex align-items-center justify-content-center'>" +
-                 "<'col-sm-6 col-md-6 mt-1 d-flex align-items-center justify-content-start'B>" +
-                 "<'col-sm-6 col-md-6 mt-1 d-flex align-items-center justify-content-end 'l>>" +
-                 "<'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>";
+const object_table_layout = {
+    topStart: 'buttons',
+    topEnd: 'pageLength',
+    bottomStart: 'info',
+    bottomEnd: 'paging'
+};
 
 
 objectdatatable=createDataTable('#objecttable', searchshelfobjectorg_api_url, {
@@ -24,7 +26,7 @@ language: {"url": datatables_lang },
         return data;
     }
 },
-dom: document.table_default_dom
+layout: object_table_layout
 }, addfilter=false);
 }
 

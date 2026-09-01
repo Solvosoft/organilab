@@ -7,7 +7,12 @@ Created on 4 may. 2017
 from django.urls import include, path, re_path
 from rest_framework.routers import DefaultRouter
 
-from academic.api.views import MyProceduresAPI, ProcedureAPI
+from academic.api.views import (
+    MyProceduresAPI,
+    ProcedureAPI,
+    ProcedureRequiredObjectViewSet,
+    ProcedureObservationViewSet,
+)
 from academic.views import (
     add_steps_wrapper,
     ProcedureListView,
@@ -16,10 +21,6 @@ from academic.views import (
     procedureStepDetail,
     ProcedureStepCreateView,
     ProcedureStepUpdateView,
-    save_object,
-    remove_object,
-    save_observation,
-    remove_observation,
     delete_step,
     get_procedure,
     get_my_procedures,
@@ -35,10 +36,21 @@ procedure = DefaultRouter()
 myprocedure = DefaultRouter()
 myprocedure.register("api_my_procedure", MyProceduresAPI, basename="api-my-procedure")
 procedure.register("api_procedures", ProcedureAPI, basename="api-procedure")
+step_inline_router = DefaultRouter()
+step_inline_router.register(
+    "api_requiredobject",
+    ProcedureRequiredObjectViewSet,
+    basename="api-procedurerequiredobject",
+)
+step_inline_router.register(
+    "api_observation",
+    ProcedureObservationViewSet,
+    basename="api-procedureobservation",
+)
 
 procedure_url = [
     path("add_steps_wrapper/<int:pk>/", add_steps_wrapper, name="add_steps_wrapper"),
-    path("save_object/<int:pk>/", save_object, name="save_object"),
+    path("step/<int:parent_pk>/", include(step_inline_router.urls)),
     path("procedure_create/", ProcedureCreateView.as_view(), name="procedure_create"),
     path(
         "procedure_update/<int:pk>/",
@@ -57,10 +69,6 @@ procedure_url = [
         "step/<int:pk>/update/", ProcedureStepUpdateView.as_view(), name="update_step"
     ),
     path("step/delete/", delete_step, name="delete_step"),
-    path("add_object/(<int:pk>/", save_object, name="add_object"),
-    path("remove_object/<int:pk>/", remove_object, name="remove_object"),
-    path("add_observation/<int:pk>/", save_observation, name="add_observation"),
-    path("remove_observation/<int:pk>/", remove_observation, name="remove_observation"),
     path("procedure_list/", ProcedureListView.as_view(), name="procedure_list"),
 ]
 

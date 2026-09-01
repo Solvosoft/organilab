@@ -58,10 +58,10 @@ def check_needs_update(pdf_path, max_years=5):
 def update_sds_for_substance(
     sc, sources=None, max_years=5, dry_run=False, force=False, existing_pdf_path=None
 ):
-    """Try to update the SDS for a SustanceCharacteristics instance.
+    """Try to update the SDS for a SubstanceCharacteristics instance.
 
     Args:
-        sc: SustanceCharacteristics instance (with obj relation loaded)
+        sc: sga.SubstanceCharacteristics instance (with object_related loaded)
         sources: list of SDSSource instances to try (in order)
         max_years: max age in years before considering SDS outdated
         dry_run: if True, only check without downloading
@@ -76,9 +76,17 @@ def update_sds_for_substance(
     if sources is None:
         sources = get_sources()
 
-    name = str(sc.obj) if sc.obj else f"PK={sc.pk}"
+    # Una fila SGA puede colgar de un objeto de inventario o de una sustancia del
+    # catálogo; ambas conviven en la misma tabla.
+    owner = sc.object_related or sc.substance
+    name = str(owner) if owner else f"PK={sc.pk}"
     cas = (sc.cas_id_number or "").strip()
-    substance_name = str(sc.obj.name) if sc.obj else ""
+    if sc.object_related:
+        substance_name = sc.object_related.name or ""
+    elif sc.substance:
+        substance_name = sc.substance.comercial_name or ""
+    else:
+        substance_name = ""
 
     result = {
         "pk": sc.pk,
@@ -164,7 +172,7 @@ def update_sds_for_substance(
 
             # Create traceability record
             try:
-                from laboratory.models import SDSTraceability
+                from sga.models import SDSTraceability
                 from laboratory.management.commands.identify_sds_sources import (
                     _extract_revision_date,
                     _extract_text,
@@ -184,13 +192,14 @@ def update_sds_for_substance(
                     rev_date_str = _extract_revision_date(text)
                     rev_date = _parse_date(rev_date_str)
 
-                SDSTraceability.objects.update_or_create(
-                    sustance_characteristics=sc,
-                    defaults={
-                        "source": source.name,
-                        "revision_date": rev_date,
-                        "download_url": search_result.get("url", "") or "",
-                    },
+                # Historial, no estado: cada descarga deja su propia entrada para
+                # poder ver cómo ha evolucionado la ficha de esta sustancia. Los
+                # consumidores toman la vigente con order_by("-creation_date").
+                SDSTraceability.objects.create(
+                    sga_substance_characteristics=sc,
+                    source=source.name,
+                    revision_date=rev_date,
+                    download_url=search_result.get("url", "") or "",
                 )
             except Exception as e:
                 logger.warning(

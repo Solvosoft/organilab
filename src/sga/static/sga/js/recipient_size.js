@@ -172,8 +172,12 @@ datatableelement=createDataTable('#recipienttable', document.urls["table_url"], 
         {data: "actions", name: "actions", title: gettext('Actions'), type: "string", visible: true, sortable: false, filterable: false}
     ],
     buttons:buttons,
-    dom: "<'d-flex justify-content-between'<'m-2'l>" +
-    "<'m-2'B><'m-2 d-flex justify-content-start'f>>" +
-    "<'row'tr><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 m-auto'p>>",
+    layout: {
+        topStart: 'pageLength',
+        top: 'buttons',
+        topEnd: 'search',
+        bottomStart: 'info',
+        bottomEnd: 'paging'
+    },
 }, addfilter=false);
 

@@ -21,6 +21,19 @@
         </div>
     {% endif %}
 
+    <div class="form-group row justify-content-center mb-3">
+        <div class="col-12 text-center">
+            <a href="{% url 'laboratory:shelfobject_label' org_pk laboratory object.pk %}"
+               target="_blank" rel="noopener" class="btn btn-primary">
+                <i class="fa fa-tag"></i> {% trans 'Print label' %}
+            </a>
+            <a href="{% url 'laboratory:shelfobject_label' org_pk laboratory object.pk %}?formato=pdf"
+               target="_blank" rel="noopener" class="btn btn-outline-primary">
+                <i class="fa fa-file-pdf-o"></i> {% trans 'Label PDF' %}
+            </a>
+        </div>
+    </div>
+
 <table class="table table-striped">
     <tbody>
 <tr><td>{% trans 'Code' %}</td><td>{{object.object.code|default:"" }} </td></tr>
@@ -40,7 +53,7 @@
 <tr><td>{% trans 'Serie' %}</td><td>{{object.object.serie|default:"" }} </td></tr>
 <tr><td>{% trans 'Plaque' %}</td><td>{{object.object.plaque|default:"" }} </td></tr>
 
-{% with sustancecharacteristics=object.object.sustancecharacteristics %}
+{% with sustancecharacteristics=object.object.substancharacteristics_object.first %}
 
 {% if sustancecharacteristics %}
 <tr><td>{% trans 'Cas Number' %}</td><td>{{sustancecharacteristics.cas_id_number|default:""}} </td></tr>

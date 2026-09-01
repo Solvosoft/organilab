@@ -1,7 +1,7 @@
-import json
 import re
 
 from django.urls import reverse
+from laboratory import dataconfig
 from laboratory.models import Shelf, Furniture
 from laboratory.tests.utils import BaseLaboratorySetUpTest
 import re
@@ -33,9 +33,9 @@ class FurnitureDataconfigTest(BaseLaboratorySetUpTest):
         shelf_removed = Shelf.objects.filter(pk=4).first()
 
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(
-            post_furniture.dataconfig
-            == "[[[400], [2], [3], []], [[1], [444], [], [404]]]"
+        self.assertEqual(
+            post_furniture.dataconfig,
+            dataconfig.dump([[[400], [2], [3], []], [[1], [444], [], [404]]]),
         )
         self.assertTrue(pre_count > post_count)
         self.assertIsNone(shelf_removed)
@@ -65,9 +65,9 @@ class FurnitureDataconfigTest(BaseLaboratorySetUpTest):
         shelf_removed = Shelf.objects.filter(pk=2).first()
 
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(
-            post_furniture.dataconfig
-            == json.dumps([[[400], [1, 3], [11]], [[41], [444], [4], [404]]])
+        self.assertEqual(
+            post_furniture.dataconfig,
+            dataconfig.dump([[[400], [1, 3], [11]], [[41], [444], [4], [404]]]),
         )
         self.assertTrue(pre_count > post_count)
         self.assertIsNone(shelf_removed)
@@ -100,7 +100,7 @@ class FurnitureDataconfigTest(BaseLaboratorySetUpTest):
         post_furniture = Furniture.objects.get(pk=pre_furniture.pk)
 
         self.assertEqual(response.status_code, 302)
-        self.assertTrue(post_furniture.dataconfig == "[[[],[2],[]],[[1],[],[]]]")
+        self.assertEqual(post_furniture.dataconfig, "[[[],[2],[]],[[1],[],[]]]")
         self.assertTrue(shelfs.count() == 0)
         self.assertTrue(post_furniture.shelf_set.all().count() == 2)
 
@@ -132,7 +132,7 @@ class FurnitureDataconfigTest(BaseLaboratorySetUpTest):
         post_furniture = Furniture.objects.get(pk=pre_furniture.pk)
 
         self.assertEqual(response.status_code, 302)
-        self.assertTrue(post_furniture.dataconfig == "[[[],[2],[]]]")
+        self.assertEqual(post_furniture.dataconfig, "[[[],[2],[]]]")
         self.assertTrue(shelfs.count() == 0)
         self.assertTrue(post_furniture.shelf_set.all().count() == 2)
 

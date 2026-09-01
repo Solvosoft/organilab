@@ -2,7 +2,8 @@ from django import forms
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets.files import FileChunkedUpload
 
-from laboratory.models import Object, SustanceCharacteristics, Laboratory
+from laboratory.models import Object
+from sga.models import SubstanceCharacteristics
 from djgentelella.widgets import core as genwidgets
 
 
@@ -36,8 +37,8 @@ class SustanceObjectForm(GTForm, forms.ModelForm):
 
 class SustanceCharacteristicsForm(GTForm, forms.ModelForm):
     class Meta:
-        model = SustanceCharacteristics
-        exclude = ["obj", "valid_molecular_formula"]
+        model = SubstanceCharacteristics
+        exclude = ["object_related", "substance", "valid_molecular_formula"]
         widgets = {
             "iarc": genwidgets.Select,
             "imdg": genwidgets.Select,

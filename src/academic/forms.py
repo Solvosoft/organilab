@@ -55,8 +55,11 @@ class ProcedureStepForm(forms.ModelForm, GTForm):
         widgets = {"description": TextareaWysiwyg, "title": genwidgets.TextInput}
 
 
-class ObservationForm(forms.Form):
-    procedure_description = forms.CharField(
+# Los nombres de campo coinciden 1:1 con los serializers del API inline de
+# pasos (api-procedurerequiredobject / api-procedureobservation): el modal de
+# la lib serializa los inputs por nombre.
+class ObservationForm(GTForm, forms.Form):
+    description = forms.CharField(
         widget=genwidgets.Textarea(), label=_("Description"), required=True
     )
 
@@ -71,7 +74,7 @@ class ObjectForm(GTForm, forms.Form):
     quantity = forms.CharField(
         widget=genwidgets.TextInput(), max_length=20, label=_("Amount"), required=True
     )
-    unit = forms.ModelChoiceField(
+    measurement_unit = forms.ModelChoiceField(
         widget=genwidgets.Select(attrs={"data-dropdownparent": "#object_modal"}),
         queryset=Catalog.objects.filter(key="units"),
         label=_("Unit"),

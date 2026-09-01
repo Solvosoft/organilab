@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% load gtsettings i18n static laboratory %}
+{% load urlname_tags %}
+{% load organilab_tags %}
+
+{% block pre_head %}
+	{% define_true "use_datatables" %}
+	{% define_urlname_action 'laboratory_view_principal' %}
+	{% define_urlname_action 'recipient_size' %}
+{% endblock %}
+{% block title %}{% trans 'Laboratory view' %}{% endblock %}
+{% block container %}container-fluid{% endblock %}
+
+{% block content %}
+{# Los modales de accion leen el contexto de estos campos, igual que en la #}
+{# vista antigua: se reutilizan tal cual y no se reescribe ninguna accion. #}
+<input type="hidden" name="organization" id="id_organization" value="{{org_pk}}">
+<input type="hidden" name="laboratory" id="id_laboratory" value="{{laboratory}}">
+<input type="hidden" name="shelf" id="id_shelf" value="">
+<input type="hidden" name="container" id="id_container" value="">
+<input type="hidden" name="shelfobject" id="id_shelfobject" value="">
+
+{% include 'laboratory/shelfobject/action_modal.html' %}
+{% include 'laboratory/shelfobjectUpdate_modal.html' %}
+{% include 'laboratory/shelfobject/delete_shelfobject_modal.html' %}
+
+{# Un unico contenedor de detalle para toda la pagina: la plantilla antigua lo #}
+{# emitia una vez por fila, con el mismo id repetido N veces. #}
+<div class="modal fade" id="detail_modal_container" tabindex="-1"
+	 aria-labelledby="detail_modalLabel" aria-hidden="true">
+	{% include 'laboratory/shelfobject/detail_modal.html' %}
+</div>
+
+<div class="alert alert-secondary alert-dismissible fade" role="alert">
+	<div id="alert_msg"></div>
+	<button type="button" class="btn-close" id="hide_alert"></button>
+</div>
+
+<div class="row g-3 mb-3">
+	<div class="col-12 col-lg-8">
+		<div class="input-group">
+			{# Colapsar todo el arbol de golpe, como el fa-compress de la vista #}
+			{# antigua: con muchas salas abiertas hace falta. #}
+			<button class="btn btn-outline-secondary" type="button"
+					id="labview_collapse_all" title="{% trans 'Collapse all' %}">
+				<i class="fa fa-compress"></i>
+			</button>
+			<input name="tags-search" id="labview_search" class="form-control"
+				   placeholder="{% trans 'Search' %}">
+			<button class="btn btn-outline-secondary" type="button"
+					id="labview_clear_tags" title="{% trans 'Remove All Tags' %}">
+				<i class="fa fa-trash red"></i>
+			</button>
+			{# La leyenda de colores por tipo de objeto; sin ella el usuario no #}
+			{# sabe que significa cada color de las etiquetas. #}
+			<span class="input-group-text">
+				<a data-bs-toggle="tooltip" data-bs-html="true"
+				   title="{{colors_tooltip}}"><i class="fa fa-info-circle"></i></a>
+			</span>
+		</div>
+	</div>
+	<div class="col-12 col-lg-4 d-flex align-items-center gap-3">
+		<div class="form-check form-switch">
+			<input class="form-check-input" type="checkbox" id="labview_risk_toggle">
+			<label class="form-check-label" for="labview_risk_toggle">
+				{% trans 'Risk overlay' %}
+			</label>
+		</div>
+	</div>
+</div>
+
+<div class="row g-3">
+	<div class="col-12 col-lg-6">
+		<div id="labview_map"></div>
+	</div>
+	<div class="col-12 col-lg-6">
+		<div class="card">
+			<div class="card-header" id="labview_shelf_panel">
+				<p class="text-muted mb-0">
+					{% trans 'Select a shelf to see its objects.' %}</p>
+			</div>
+			<div class="card-body d-none" id="labview_table_wrapper">
+				<table class="table table-striped" id="labview_shelfobjecttable"></table>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="closemodal"></div>
+{% endblock %}
+
+{% block css %}
+<link href="{% static 'laboratory/css/laboratory.css' %}?v={% get_organilab_version %}"
+	  rel="stylesheet">
+<link href="{% static 'laboratory/css/labview.css' %}?v={% get_organilab_version %}"
+	  rel="stylesheet">
+{% endblock %}
+
+{% block js %}
+{{block.super}}
+{{search_by_url|json_script:"search_by_url"}}
+{{suggestions_tag|json_script:"suggestions_tag"}}
+{{labview_urls|json_script:"labview_urls"}}
+<script>
+	document.labview_urls = JSON.parse(
+		document.getElementById('labview_urls').textContent);
+	document.search_by_url = JSON.parse(
+		document.getElementById('search_by_url').textContent);
+	document.suggestions_tag = JSON.parse(
+		document.getElementById('suggestions_tag').textContent);
+
+	{# Los ayudantes de accion reutilizados esperan estas globales. #}
+	document.urls = {
+		shelfobject_create: "{% url 'laboratory:shelfobject_create' lab_pk=laboratory org_pk=org_pk %}",
+		shelf_availability_information: '{% url "laboratory:api-shelfobject-shelf-availability-information" lab_pk=laboratory org_pk=org_pk %}',
+		transfer_list: '{% url "laboratory:api-shelfobject-transfer-available-list" org_pk=org_pk lab_pk=laboratory %}',
+		transfer_in_deny: '{% url "laboratory:api-shelfobject-transfer-in-deny" org_pk=org_pk lab_pk=laboratory %}',
+		search_labview: '{% url "laboratory:api-search-labview-get" org_pk=org_pk lab_pk=laboratory %}',
+		transfer_in_approve: '{% url "laboratory:api-shelfobject-transfer-in-approve" org_pk=org_pk lab_pk=laboratory %}',
+		edit_shelfobject: '{% url "laboratory:api-shelfobject-edit-reactive-shelfobject" org_pk=org_pk lab_pk=laboratory pk=0 %}',
+		get_shelfobject_data: '{% url "laboratory:api-shelfobject-get-reactive-edit-data" org_pk=org_pk lab_pk=laboratory pk=0 %}',
+		edit_material_shelfobject: '{% url "laboratory:api-shelfobject-edit-material-shelfobject" org_pk=org_pk lab_pk=laboratory pk=0 %}',
+		get_shelfobject_limits: '{% url "laboratory:api-shelfobject-get-shelfobject-limits" org_pk=org_pk lab_pk=laboratory pk=0 %}',
+		update_box_shelfobject: '{% url "laboratory:api-shelfobject-update-box-shelfobject" org_pk=org_pk lab_pk=laboratory pk=0 %}',
+		get_box_edit_data: '{% url "laboratory:api-shelfobject-get-box-edit-data" org_pk=org_pk lab_pk=laboratory pk=0 %}'
+	};
+	document.url_status = '{% url "laboratory:api-shelfobject-create-status" org_pk=org_pk lab_pk=laboratory %}';
+	document.url_container_list = "{% url 'laboratory:shelf_containers' org_pk=org_pk lab_pk=laboratory %}";
+	document.delete_recipient_url = "{% url 'laboratory:api-shelfobject-delete-recipient' org_pk=org_pk lab_pk=laboratory pk=0 %}";
+	const can_add_shelfobject = {{ perms.laboratory.add_shelfobject|yesno:"true,false" }};
+	const has_perm = {
+		"create": {{ perms.sga.add_recipientsize|yesno:"true,false" }},
+		"remove": {{ perms.sga.delete_recipientsize|yesno:"true,false" }},
+		"transfer": {{ perms.laboratory.view_tranferobject|yesno:"true,false" }}
+	};
+</script>
+
+<script src="{% static 'js/shelfobjectedit.js' %}?v={% get_organilab_version %}"></script>
+<script src="{% static 'laboratory/js/shelfobject_utils.js' %}?v={% get_organilab_version %}"></script>
+<script src="{% static 'laboratory/js/base_modal_management.js' %}?v={% get_organilab_version %}"></script>
+<script src="{% static 'laboratory/js/shelfobject_action_helpers.js' %}?v={% get_organilab_version %}"></script>
+<script src="{% static 'laboratory/js/detail_modal_creation.js' %}?v={% get_organilab_version %}"></script>
+
+<script src="{% static 'laboratory/js/labview/labview_state.js' %}?v={% get_organilab_version %}"></script>
+<script src="{% static 'laboratory/js/labview/labview_render.js' %}?v={% get_organilab_version %}"></script>
+<script src="{% static 'laboratory/js/labview/labview_search.js' %}?v={% get_organilab_version %}"></script>
+<script src="{% static 'laboratory/js/labview/labview_actions.js' %}?v={% get_organilab_version %}"></script>
+<script src="{% static 'laboratory/js/labview/labview_editor.js' %}?v={% get_organilab_version %}"></script>
+<script src="{% static 'laboratory/js/labview/labview.js' %}?v={% get_organilab_version %}"></script>
+{% endblock %}

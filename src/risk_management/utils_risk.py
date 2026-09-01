@@ -36,7 +36,8 @@ def get_inventory(filters=None):
     for obj in objs:
         data = {}
         total_shelfobjects = 0
-        density = getattr(obj.sustancecharacteristics, "density", None)
+        sga_char = obj.substancharacteristics_object.first()
+        density = getattr(sga_char, "density", None) if sga_char else None
         units = Catalog.objects.filter(
             pk__in=objs_max.filter(object=obj).values_list(
                 "measurement_unit", flat=True
@@ -44,9 +45,7 @@ def get_inventory(filters=None):
         ).distinct()
         h_codes = [
             h_code
-            for h_code in obj.sustancecharacteristics.h_code.values_list(
-                "code", flat=True
-            )
+            for h_code in (sga_char.h_code.values_list("code", flat=True) if sga_char else [])
         ]
         # Extraer los objectos con procesos de condición
         max_objs = ObjectMaximumLimit.objects.filter(

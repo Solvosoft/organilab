@@ -100,7 +100,7 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
         self.assertEqual(response.status_code, 302)
         self.assertNotIn(object.pk, Object.objects.values_list("pk"))
         success_url = reverse(
-            "laboratory:objectview_list",
+            "laboratory:object_view",
             kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk},
         )
         self.assertRedirects(response, success_url)
@@ -130,12 +130,9 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Object.objects.last().materialcapacity.capacity == 200)
         self.assertEqual(total_obj + 1, Object.objects.all().count())
-        success_url = (
-            reverse(
-                "laboratory:objectview_list",
-                kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk},
-            )
-            + "?type_id=1"
+        success_url = reverse(
+            "laboratory:object_view",
+            kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk},
         )
         self.assertRedirects(response, success_url)
 

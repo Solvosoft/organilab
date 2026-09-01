@@ -55,6 +55,11 @@ urlpatterns = [
     path("template_editor", editor.template_editor, name="editor"),
     # FIXME: It's necessary this preview ?
     path("get_preview/<int:pk>", editor.get_preview, name="get_preview"),
+    path(
+        "engine_label_preview/<int:pk>",
+        editor.engine_label_preview,
+        name="engine_label_preview",
+    ),
     # my templates
     path("sustance/create/", substance.create_edit_sustance, name="create_sustance"),
     path(
@@ -71,6 +76,11 @@ urlpatterns = [
         "detail_substance/<int:pk>/",
         substance.detail_substance,
         name="detail_substance",
+    ),
+    path(
+        "generate_label/<int:pk>/",
+        substance.generate_label,
+        name="generate_label",
     ),
     # sga/get_get_templateList
     path("labels/", editor.create_personal_template, name="add_personal"),
@@ -111,13 +121,19 @@ urlpatterns = [
     path(
         "substance/step_one/<int:pk>/", substance.create_edit_sustance, name="step_one"
     ),
-    path("substance/step_two/<int:pk>/", substance.step_two, name="step_two"),
-    path(
-        "substance/step_three/<int:template>/<int:substance>/",
-        substance.step_three,
-        name="step_three",
-    ),
     path("substance/step_four/<int:substance>/", substance.step_four, name="step_four"),
+    path(
+        "substance/send_to_review/<int:substance>/",
+        substance.sent_to_review,
+        name="send_to_review",
+    ),
+    path("substance/upload_sds/", substance.upload_sds, name="upload_sds"),
+    path("substance/upload_sds/<int:pk>/", substance.upload_sds, name="upload_sds_pk"),
+    path(
+        "substance/sds_task_status/",
+        substance.sds_task_status,
+        name="sds_task_status",
+    ),
     path(
         "substance/get_security_leaf/<int:substance>/",
         substance.security_leaf_pdf,

@@ -52,21 +52,8 @@
 	{% include 'gentelella/blocks/modal_template_delete.html' with form=delete_form id="delete_obj_modal" form_id="delete_obj_form" url=detail_obj_url %}
 
 	<!-- Modal de Detalle de Equipo -->
-	<div class="modal fade" id="equipment_detail_modal" tabindex="-1" role="dialog" aria-labelledby="equipment_detail_modalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-xl" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="equipment_detail_modalLabel">{% trans 'Equipment Detail' %}</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
-				</div>
-				<div class="modal-body" id="equipment_detail_modal_body">
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-				</div>
-			</div>
-		</div>
-	</div>
+	{% trans 'Equipment Detail' as equipment_detail_ttl %}
+	{% include 'gentelella/blocks/modal_template_detail.html' with id="equipment_detail_modal" title=equipment_detail_ttl modal_class="modal-xl modal-dialog-scrollable" %}
 
 {% endblock %}
 {% block js %}
@@ -172,10 +159,10 @@
 		}
 
 		function buildEquipmentDetailModal(data) {
-			const modalBody = document.getElementById('equipment_detail_modal_body');
+			const modalBody = document.querySelector('#equipment_detail_modal .modal-body');
 			modalBody.innerHTML = '';
 
-			const modalLabel = document.getElementById('equipment_detail_modalLabel');
+			const modalLabel = document.getElementById('equipment_detail_modal_title');
 			modalLabel.textContent = data.name || gettext('Equipment Detail');
 
 			let html = '<div class="container-fluid">';

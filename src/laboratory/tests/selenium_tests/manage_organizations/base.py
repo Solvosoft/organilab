@@ -88,6 +88,34 @@ class ManageOrganizationsSeleniumTest(SeleniumBase):
         """Return XPath for the 'Delete organization' link."""
         return "//a[contains(@href, '/organization/%d/delete')]" % pk
 
+    # --- Profile table selectors ---
+
+    def rol_btn(self, table_id="orpermelement", row=1):
+        """Return XPath for the manage-roles button (fa-user-md) of a row.
+
+        It used to be <span class="applyasrole">, rendered by
+        auth_and_perms.utils.get_roles_in_html().  Since 71aae5e6 the cell is
+        built by ProfileSerializer.get_rols() as a button whose id is
+        profile_<profile>_<model>_<objpk>; its sibling dropdown-toggle carries
+        no id, so starts-with() is enough to tell them apart.  It opens #modal1,
+        same as the old markup.
+        """
+        return (
+            "//*[@id='%s']//tbody/tr[%d]//button[starts-with(@id, 'profile_')]"
+            % (table_id, row)
+        )
+
+    def delete_profile_btn(self, table_id="userpermelement", row=1):
+        """Return XPath for the delete (fa-trash) icon of a profile row.
+
+        Requiring the <i> keeps this from matching DataTables' "No data
+        available in table" placeholder row.
+        """
+        return (
+            "//*[@id='%s']//tbody/tr[%d]//i[starts-with(@id, 'ndel_')]"
+            % (table_id, row)
+        )
+
     # --- Modal selectors ---
 
     def get_submit_button_path(self, id_modal, button_type="submit"):
@@ -95,6 +123,17 @@ class ManageOrganizationsSeleniumTest(SeleniumBase):
         return (
             "//*[@id='%s']//div[contains(@class, 'modal-footer')]"
             "//button[@type='%s']" % (id_modal, button_type)
+        )
+
+    def org_rel_lab_save_btn(self):
+        """Return XPath for the save button of the link-laboratories modal.
+
+        It is not a submit: since ef74755c both footer buttons are
+        type="button" and saving goes through AJAX bound to .btnsaveorglabs.
+        """
+        return (
+            "//*[@id='relOrganizationmodal']"
+            "//button[contains(@class, 'btnsaveorglabs')]"
         )
 
     def get_modal_save_btn(self, id_modal):
@@ -111,24 +150,26 @@ class ManageOrganizationsSeleniumTest(SeleniumBase):
         """Empty path base; navigation handled by navigate_to_org_manage."""
         return []
 
-    def select_org_via_icheck(self, pk):
-        """Return path dict to select org via iCheck (avoids click interception).
+    def select_org_node_radio(self, pk):
+        """Return path dict to select an org node radio.
 
-        iCheck wraps radio buttons with an overlay that intercepts direct
-        clicks.  Using iCheck('check') fires the proper ifChecked event.
+        djgentelella 0.6.0 dejó los radios como inputs nativos (gt-check);
+        se marca por script para conservar la mecánica de rutas y se dispara
+        'change', que es el evento que escucha organization_manager.js.
         """
         return {
             "path": self.org_node_radio(pk),
             "extra_action": "script",
-            "value": "$('input.nodeorg[value=%d]').iCheck('check')" % pk,
+            "value": "$('input.nodeorg[value=%d]')"
+                     ".prop('checked', true).trigger('change')" % pk,
             "sleep": 1,
         }
 
     @property
     def select_organization(self):
-        """Select the first org node radio button (pk=1) via iCheck."""
+        """Select the first org node radio button (pk=1)."""
         return [
-            self.select_org_via_icheck(1),
+            self.select_org_node_radio(1),
         ]
 
     @property
@@ -150,7 +191,7 @@ class ManageOrganizationsSeleniumTest(SeleniumBase):
             {
                 "path": "//*[@id='modal1']//div[contains(@class, 'modal-body')]//input[@name='mergeaction' and @value='sustract']",
                 "extra_action": "script",
-                "value": "$('#modal1 input[name=mergeaction][value=sustract]').iCheck('check')",
+                "value": "$('#modal1 input[name=mergeaction][value=sustract]').prop('checked', true).trigger('change')",
             }
         ] + self.button_save_permission_rol
 
@@ -160,6 +201,6 @@ class ManageOrganizationsSeleniumTest(SeleniumBase):
             {
                 "path": "//*[@id='modal1']//div[contains(@class, 'modal-body')]//input[@name='mergeaction' and @value='full']",
                 "extra_action": "script",
-                "value": "$('#modal1 input[name=mergeaction][value=full]').iCheck('check')",
+                "value": "$('#modal1 input[name=mergeaction][value=full]').prop('checked', true).trigger('change')",
             }
         ] + self.button_save_permission_rol

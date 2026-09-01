@@ -3,6 +3,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from djgentelella.models import DeletedWithTrash
 
 from academic.presentation import HTMLPresentation
 from derb.models import CustomForm
@@ -11,7 +12,7 @@ from laboratory.models import Object, Catalog
 from presentation.models import AbstractOrganizationRef
 
 
-class Procedure(models.Model, HTMLPresentation):
+class Procedure(DeletedWithTrash, HTMLPresentation):
     title = models.CharField(max_length=500, verbose_name=_("Title"))
     description = models.TextField(_("Description"))
     content_type = models.ForeignKey(
@@ -147,4 +148,3 @@ class ProcedureObservations(models.Model):
         ordering = ("pk",)
         verbose_name = _("Procedure Observation")
         verbose_name_plural = _("Procedure Observations")
-

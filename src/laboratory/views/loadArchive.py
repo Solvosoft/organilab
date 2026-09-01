@@ -13,6 +13,7 @@ from auth_and_perms.organization_utils import (
     user_is_allowed_on_organization,
     organization_can_change_laboratory,
 )
+from laboratory import dataconfig
 from laboratory.api.serializers import LoadArchiveSerializer
 from laboratory.forms import LoadArchiveForm, ReactiveUploadForm
 from laboratory.models import (
@@ -130,8 +131,10 @@ def load_archive(request, org_pk, lab_pk):
                 type=Catalog.objects.filter(key="container_type").first(),
             )
             if shelf_created:
-                furniture.dataconfig = "[[[%d]]]" % shelf.pk
-                furniture.save()
+                # place_shelf en vez de sobrescribir la cuadrícula entera: si
+                # el mueble ya existía con su distribución, escribir
+                # "[[[pk]]]" la borraba.
+                dataconfig.DataconfigService(furniture).place_shelf(shelf.pk, 0, 0)
 
             data.update(
                 {
@@ -169,7 +172,7 @@ def load_archive(request, org_pk, lab_pk):
         uploaded_file = serializer.validated_data["file"]
         data = read_xlsm_data(uploaded_file, serializer.validated_data["shelf"].pk)
         shelf = serializer.validated_data["shelf"]
-        if shelf.measurement_unit != None:
+        if shelf.measurement_unit is not None:
             for row in data:
                 if (
                     shelf.measurement_unit.description

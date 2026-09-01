@@ -6,7 +6,12 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     def update_template(apps, schema_editor):
-        model = apps.get_model('async_notifications', 'TemplateContext')
+        # La app externa async_notifications fue reemplazada por
+        # djgentelella.async_notification; en instalaciones nuevas no existe.
+        try:
+            model = apps.get_model('async_notifications', 'TemplateContext')
+        except LookupError:
+            return
         template = model.objects.filter(code='Shelf object in limit').first()
         if template is not None:
             template.context_dic = {
@@ -14,7 +19,6 @@ class Migration(migrations.Migration):
                     ["shelf_object", "Object in limit"], ["laboratory", "Laboratory where is the object"]]}
             template.save()
     dependencies = [
-        ('async_notifications', '0004_auto_20200228_1653'),
         ('laboratory', '0039_precursorreport_consecutive'),
     ]
 

@@ -32,7 +32,6 @@ from risk_management.iper_defaults import (
     KEY_HAZARD_CATEGORY,
     KEY_RISK_LEVEL,
 )
-from djgentelella.widgets import core as djgentelella
 from djgentelella.widgets import core as genwidgets
 from urllib.parse import quote
 from django.urls import reverse, reverse_lazy
@@ -87,13 +86,13 @@ class RiskZoneCreateForm(forms.ModelForm, GTForm):
         model = RiskZone
         exclude = ["priority", "organization", "created_by"]
         widgets = {
-            "name": djgentelella.TextInput,
-            "buildings": djgentelella.SelectMultiple,
-            "num_workers": djgentelella.NumberInput,
-            "zone_type": djgentelella.SelectWithAdd(
+            "name": genwidgets.TextInput,
+            "buildings": genwidgets.SelectMultiple,
+            "num_workers": genwidgets.NumberInput,
+            "zone_type": genwidgets.SelectWithAdd(
                 attrs={"add_url": "#", "data-otrono": 1}
             ),
-            "laboratories": djgentelella.SelectMultiple(),
+            "laboratories": genwidgets.SelectMultiple(),
         }
 
 
@@ -135,17 +134,17 @@ class IncidentReportForm(GTForm, forms.ModelForm):
         )
 
         widgets = {
-            "short_description": djgentelella.TextInput,
+            "short_description": genwidgets.TextInput,
             "causes": TextareaWysiwyg,
-            "incident_date": djgentelella.DateInput,
+            "incident_date": genwidgets.DateInput,
             "infraestructure_impact": TextareaWysiwyg,
             "people_impact": TextareaWysiwyg,
-            "laboratories": djgentelella.SelectMultiple(),
+            "laboratories": genwidgets.SelectMultiple(),
             "environment_impact": TextareaWysiwyg,
             "result_of_plans": TextareaWysiwyg,
             "mitigation_actions": TextareaWysiwyg,
             "recomendations": TextareaWysiwyg,
-            "buildings": djgentelella.SelectMultiple(),
+            "buildings": genwidgets.SelectMultiple(),
             "notification_copy": FileChunkedUpload,
         }
 
@@ -155,8 +154,8 @@ class ZoneTypeForm(GTForm, forms.ModelForm):
         model = ZoneType
         fields = "__all__"
         widgets = {
-            "name": djgentelella.TextInput(),
-            "priority_validator": djgentelella.SelectMultiple(),
+            "name": genwidgets.TextInput(),
+            "priority_validator": genwidgets.SelectMultiple(),
         }
 
 
@@ -230,20 +229,19 @@ class BuildingsForm(GTForm, forms.ModelForm):
         fields = "__all__"
         exclude = ["organization"]
         widgets = {
-            "name": djgentelella.TextInput,
-            "laboratories": djgentelella.SelectMultiple,
-            "is_asociaty_buildings": djgentelella.YesNoInput(
+            "name": genwidgets.TextInput,
+            "laboratories": genwidgets.SelectMultiple,
+            "is_asociaty_buildings": genwidgets.YesNoInput(
                 shparent=".mb-3",
                 attrs={"rel": ["#id_nearby_buildings"]},
             ),
-            "nearby_buildings": djgentelella.SelectMultiple,
-            "geolocation": djgentelella.TextInput,
-            "phone": djgentelella.TextInput,
-            "manager": djgentelella.Select,
-            "regents": djgentelella.SelectMultiple,
-            "has_water_resources": djgentelella.YesNoInput,
+            "nearby_buildings": genwidgets.SelectMultiple,
+            "phone": genwidgets.TextInput,
+            "manager": genwidgets.Select,
+            "regents": genwidgets.SelectMultiple,
+            "has_water_resources": genwidgets.YesNoInput,
             "has_nearby_sites": FileChunkedUpload,
-            "area": djgentelella.FloatInput,
+            "area": genwidgets.FloatInput,
             "plans": FileChunkedUpload,
             "security_plan": FileChunkedUpload,
             "regulatory_plans": FileChunkedUpload,
@@ -323,14 +321,13 @@ class StructureForm(GTForm, forms.ModelForm):
         fields = "__all__"
         exclude = ["organization"]
         widgets = {
-            "name": djgentelella.TextInput,
-            "buildings": djgentelella.SelectMultiple,
-            "geolocation": djgentelella.TextInput,
-            "manager": djgentelella.Select,
-            "area": djgentelella.FloatInput,
-            "measuerement_unit": djgentelella.Select,
-            "area": djgentelella.FloatInput,
-            "type_structure": djgentelella.SelectWithAdd(
+            "name": genwidgets.TextInput,
+            "buildings": genwidgets.SelectMultiple,
+            "manager": genwidgets.Select,
+            "area": genwidgets.FloatInput,
+            "measuerement_unit": genwidgets.Select,
+            "area": genwidgets.FloatInput,
+            "type_structure": genwidgets.SelectWithAdd(
                 attrs={"add_url": "#", "data-otrono": 1}
             ),
         }
@@ -397,9 +394,9 @@ class WorkdayForm(forms.ModelForm):
         exclude = ["organization", "risk_zone", "created_by"]
         widgets = {
             "workday": genwidgets.Select(attrs={"class": "form-control"}),
-            "num_workers": djgentelella.NumberInput,
-            "start_time": djgentelella.TimeInput,
-            "end_time": djgentelella.TimeInput,
+            "num_workers": genwidgets.NumberInput,
+            "start_time": genwidgets.TimeInput,
+            "end_time": genwidgets.TimeInput,
         }
 
 

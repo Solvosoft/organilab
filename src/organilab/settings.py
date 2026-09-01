@@ -56,7 +56,7 @@ else:
     ALLOWED_HOSTS = ["*"]
     CORS_ALLOW_ALL_ORIGINS = True
 
-SECURE_REFERRER_POLICY = "origin-when-cross-origin"
+SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
 ADMINS = [
     ("Solvo", "sitio@solvosoft.com"),
 ]
@@ -80,17 +80,14 @@ INSTALLED_APPS = [
     "academic",
     "djreservation",
     "celery",
-    "location_field",
     "rest_framework",
     "rest_framework.authtoken",
     "msds",
     "sga",
-    "async_notifications",
+    "djgentelella.async_notification",
     "django_celery_results",
     "risk_management",
-    "markitup",
     "djgentelella",
-    "djgentelella.blog",
     "djgentelella.chunked_upload",
     "api.apps.ApiConfig",
     "reservations_management",
@@ -270,6 +267,10 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 # If unset or the user doesn't exist, deletion proceeds without reassignment (history is lost).
 DELETED_USER_SENTINEL_USERNAME = os.getenv("DELETED_USER_SENTINEL_USERNAME", "solvoadmin")
 
+# Los logs sin usuario autenticado (registro por QR) se atribuyen al mismo
+# centinela que conserva la traza al borrar usuarios.
+GT_HISTORY_ANONYMOUS_USERNAME = DELETED_USER_SENTINEL_USERNAME
+
 # Celery settings
 BROKER_URL = os.getenv("BROKER_URL", "amqp://guest:guest@localhost:5672/organilabvhost")
 CELERY_TIMEZONE = TIME_ZONE
@@ -286,24 +287,24 @@ CACHES = {
         "LOCATION": "my_cache_table",
     }
 }
-LOCATION_FIELD_PATH = STATIC_URL + "location_field"
-LOCATION_FIELD = {
-    "map.provider": "openstreetmap",
-    "search.provider": "nominatim",
-    "map.zoom": 13,
-    "search.suffix": "",
-    "resources.root_path": LOCATION_FIELD_PATH,
+# Widgets de mapa de djgentelella (MapPointInput/GTPointField): carga Leaflet
+# en las páginas base. Nominatim exige un Referer válido para la búsqueda.
+DEFAULT_JS_IMPORTS = {
+    "use_maps": True,
 }
 
 ACCOUNT_ACTIVATION_DAYS = 2
 
-ASYNC_NOTIFICATION_TEXT_AREA_WIDGET = "markitup.widgets.AdminMarkItUpWidget"
+ASYNC_NOTIFICATION_BACKEND = (
+    "djgentelella.async_notification.backends.celery.CeleryBackend"
+)
 CELERY_MODULE = "organilab.celery"
 
 CELERYBEAT_SCHEDULE = {
-    # execute 12:30 pm
+    # Drena la cola de correos (enqueued=True) de djgentelella.async_notification;
+    # conserva la semántica del viejo send_daily de async-notifications 0.2.
     "send_daily_emails": {
-        "task": "async_notifications.tasks.send_daily",
+        "task": "presentation.tasks.process_email_notifications",
         "schedule": crontab(minute=2, hour=0),
     },
     "check_product_limits": {
@@ -345,10 +346,6 @@ CKEDITOR_CONFIGS = {
     },
 }
 ASYNC_SMTP_DEBUG = False
-ASYNC_NEWSLETTER_WIDGET = "markitup.widgets.AdminMarkItUpWidget"
-MARKITUP_FILTER = ("markdown.markdown", {"safe_mode": True})
-MARKITUP_SET = "markitup/sets/markdown/"
-JQUERY_URL = None
 
 DATE_INPUT_FORMATS = ["%d/%m/%Y", "%Y-%m-%d", "%d/%m/%y"]
 

@@ -101,6 +101,9 @@ from laboratory.shelfobject.serializers import (
     ReactiveShelfObjectDataSerializer,
     MaterialShelfObjectDataSerializer,
     ShelfObjectMaterialLimitsSerializer,
+    RecipientSizeDataTableSerializer,
+    RecipientSizeCreateSerializer,
+    RecipientSizeDeleteSerializer,
 )
 
 from laboratory.shelfobject.utils import (
@@ -124,6 +127,7 @@ from laboratory.shelfobject.utils import (
 
 from laboratory.utils import save_object_by_action, PermissionByLaboratoryInOrganization
 from laboratory.utils_base_unit import get_conversion_from_two_units, get_base_unit
+from sga.models import RecipientSize
 
 
 class ShelfObjectTableViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -571,6 +575,22 @@ class ShelfObjectCreateMethods:
             "in_where_laboratory",
         ]
 
+        # La cantidad de cada caja se expresa en la unidad del estante. Si las
+        # unidades no son convertibles entre sí, la conversión no existe y no
+        # hay caja que crear: se comprueba antes de guardar para no dejar el
+        # objeto a medias.
+        object_unit = serializer.validated_data.get("measurement_unit")
+        shelf = serializer.validated_data.get("shelf")
+        shelf_unit = getattr(shelf, "measurement_unit", None)
+        if object_unit and shelf_unit:
+            converted = get_conversion_from_two_units(
+                object_unit, shelf_unit, serializer.validated_data.get("quantity")
+            )
+            if converted is None:
+                return {
+                    "measurement_unit": [_("Measurement unit is not valid")]
+                }, None
+
         shelfobject = serializer.save(**extra_kwargs)
 
         # Generate unique codes now that we have the pk
@@ -578,6 +598,12 @@ class ShelfObjectCreateMethods:
         quantity = shelfobject.quantity
         if shelfobject.measurement_unit and shelfobject.shelf.measurement_unit:
             quantity = shelfobject.get_obj_conversion_from_two_units()
+
+        if quantity is None:
+            # Sin cantidad utilizable no se puede repartir entre las cajas. Se
+            # informa en vez de multiplicar por None, que devolvía un 500.
+            shelfobject.delete()
+            return {"quantity": [_("Quantity is not valid")]}, None
 
         for _i in range(box_count):
             existing_codes = [b["code"] for b in quantity_units]
@@ -823,6 +849,9 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         "edit_shelfobject_limits": ["laboratory.change_shelfobject"],
         "update_box_shelfobject": ["laboratory.change_shelfobject"],
         "get_box_edit_data": ["laboratory.view_shelfobject"],
+        "recipient_list": ["sga.view_recipientsize"],
+        "create_recipient": ["sga.add_recipientsize"],
+        "delete_recipient": ["sga.delete_recipientsize"],
     }
 
     # This is not an API endpoint
@@ -2351,6 +2380,129 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         else:
             errors.update(shelfobject_serializer.errors)
         return JsonResponse({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=["get"])
+    def recipient_list(self, request, org_pk, lab_pk, pk, **kwargs):
+        """
+
+        :param request: http request
+        :param org_pk: pk of the organization being queried
+        :param lab_pk: pk of the laboratory that can receive the transfer in
+        :param kwargs: other extra params
+        :return: JsonResponse with the transfer request information and the number of records
+        """
+        self._check_permission_on_laboratory(request, org_pk, lab_pk, "recipient_list")
+        self.serializer_class = RecipientSizeDataTableSerializer
+        self.pagination_class = LimitOffsetPagination
+        self.filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+        self.search_fields = [
+            "name",
+            "height",
+            "height_unit",
+            "width",
+            "width_unit",
+        ]
+        self.ordering_fields = [
+            "height",
+            "height_unit",
+            "width",
+            "width_unit",
+        ]
+        self.ordering = ("-pk",)  # default order
+
+        self.queryset = RecipientSize.objects.filter(laboratory=lab_pk)
+        queryset = self.filter_queryset(self.queryset)
+
+        data = self.paginate_queryset(queryset)
+        response_data = {
+            "data": data,
+            "recordsTotal": self.queryset.count(),
+            "recordsFiltered": self.queryset.count(),
+            "draw": self.request.query_params.get("draw", 1),
+        }
+        return JsonResponse(self.get_serializer(response_data).data)
+
+    @action(detail=True, methods=["post"])
+    def create_recipient(self, request, org_pk, lab_pk, pk, **kwargs):
+        """
+        Creates a new RecipientSize for the laboratory.
+
+        :param request: http request
+        :param org_pk: pk of the organization
+        :param lab_pk: pk of the laboratory
+        :param pk: pk of the shelf object (context)
+        :param kwargs: other extra params
+        :return: JsonResponse with result information (success or errors)
+        """
+        self._check_permission_on_laboratory(
+            request, org_pk, lab_pk, "create_recipient"
+        )
+        self.serializer_class = RecipientSizeCreateSerializer
+        serializer = self.serializer_class(data=request.data)
+
+        if serializer.is_valid():
+            recipient_size = serializer.save(
+                laboratory_id=lab_pk, width_unit="cm", height_unit="cm"
+            )
+            utils.organilab_logentry(
+                request.user,
+                recipient_size,
+                ADDITION,
+                "recipientsize",
+                changed_data=list(serializer.validated_data.keys()),
+                relobj=self.laboratory,
+            )
+            return JsonResponse(
+                {
+                    "detail": _("Recipient size was created successfully."),
+                    "id": recipient_size.pk,
+                    "name": recipient_size.name,
+                },
+                status=status.HTTP_201_CREATED,
+            )
+
+        return JsonResponse(
+            {"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
+        )
+
+    @action(detail=True, methods=["delete"])
+    def delete_recipient(self, request, org_pk, lab_pk, pk, **kwargs):
+        """
+        Deletes a RecipientSize from the laboratory.
+
+        :param request: http request
+        :param org_pk: pk of the organization
+        :param lab_pk: pk of the laboratory
+        :param pk: pk of the shelf object (context)
+        :param kwargs: other extra params
+        :return: JsonResponse with result information (success or errors)
+        """
+        self._check_permission_on_laboratory(
+            request, org_pk, lab_pk, "delete_recipient"
+        )
+        self.serializer_class = RecipientSizeDeleteSerializer
+        serializer = self.serializer_class(
+            data={"recipient_size": pk}, context={"laboratory_id": lab_pk}
+        )
+
+        if serializer.is_valid():
+            recipient_size = serializer.validated_data["recipient_size"]
+            utils.organilab_logentry(
+                request.user,
+                recipient_size,
+                DELETION,
+                "recipientsize",
+                relobj=self.laboratory,
+            )
+            recipient_size.delete()
+            return JsonResponse(
+                {"detail": _("Recipient size was deleted successfully.")},
+                status=status.HTTP_200_OK,
+            )
+
+        return JsonResponse(
+            {"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
+        )
 
 
 class SearchLabView(viewsets.GenericViewSet):

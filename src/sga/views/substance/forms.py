@@ -3,8 +3,17 @@ from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
+from djgentelella.widgets.selects import (
+    AutocompleteSelect,
+    AutocompleteSelectMultiple,
+)
 from djgentelella.widgets.tagging import TaggingInput
 
+from laboratory.models import Laboratory, OrganizationStructure
+from sga.gtselects import (
+    get_user_laboratories_queryset,
+    get_user_organizations_queryset,
+)
 from sga.models import (
     Substance,
     SubstanceCharacteristics,
@@ -21,36 +30,38 @@ from sga.models import SubstanceObservation
 class SustanceObjectForm(GTForm, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(SustanceObjectForm, self).__init__(*args, **kwargs)
-        self.fields["components_sga"].required = False
+        self.fields["comercial_name"].label = _("Substance name")
 
     class Meta:
         model = Substance
         fields = [
             "comercial_name",
             "synonymous",
-            "uipa_name",
-            "components_sga",
-            "agrochemical",
+            "features",
             "description",
             "brand",
             "organization",
         ]
         widgets = {
             "comercial_name": genwidgets.TextInput,
-            "uipa_name": genwidgets.TextInput,
             "synonymous": TaggingInput,
-            "components_sga": genwidgets.SelectMultiple,
-            "agrochemical": genwidgets.YesNoInput,
             "description": genwidgets.Textarea,
             "brand": genwidgets.TextInput,
             "organization": genwidgets.HiddenInput,
+            "features": genwidgets.SelectMultiple,
         }
 
 
 class SustanceCharacteristicsForm(GTForm, forms.ModelForm):
     class Meta:
         model = SubstanceCharacteristics
-        exclude = ["substance", "valid_molecular_formula", "security_sheet"]
+        exclude = [
+            "substance",
+            "valid_molecular_formula",
+            "number_index",
+            "number_ce",
+            "object_related",
+        ]
         widgets = {
             "iarc": genwidgets.Select,
             "imdg": genwidgets.Select,
@@ -65,11 +76,21 @@ class SustanceCharacteristicsForm(GTForm, forms.ModelForm):
             "nfpa": genwidgets.SelectMultiple,
             "storage_class": genwidgets.SelectMultiple,
             "seveso_list": genwidgets.YesNoInput,
-            "number_index": genwidgets.TextInput,
-            "number_ce": genwidgets.TextInput,
             "molecular_weight": genwidgets.TextInput,
             "concentration": genwidgets.TextInput,
-            # 'security_sheet': genwidgets.FileInput
+            # genwidgets.FileInput sube por trozos a `upload_file_view` y deja en
+            # el POST un token JSON que el widget resuelve contra ChunkedUpload;
+            # por eso no mira request.FILES.
+            "security_sheet": genwidgets.FileInput,
+            "img_representation": genwidgets.FileInput,
+            "density": genwidgets.TextInput,
+            "is_dangerous": genwidgets.YesNoInput,
+            "has_threshold": genwidgets.YesNoInput(
+                shparent=".form-group",
+                attrs={"rel": ["#id_threshold"]},
+            ),
+            "threshold": genwidgets.TextInput,
+            "is_pure": genwidgets.YesNoInput,
         }
 
 
@@ -102,6 +123,24 @@ class WarningWordForm(GTForm, forms.ModelForm):
             "weigth": genwidgets.NumberInput,
         }
 
+    def clean(self):
+        cleaned_data = super().clean()
+        name = cleaned_data.get("name")
+        weigth = cleaned_data.get("weigth")
+
+        if name is not None and weigth is not None:
+            queryset = WarningWord.objects.filter(name=name, weigth=weigth)
+
+            if self.instance.pk:
+                queryset = queryset.exclude(pk=self.instance.pk)
+
+            if queryset.exists():
+                raise forms.ValidationError(
+                    _("A warning word with this name and weight already exists.")
+                )
+
+        return cleaned_data
+
 
 class PrudenceAdviceForm(GTForm, forms.ModelForm):
     class Meta:
@@ -122,7 +161,7 @@ class ObservationForm(GTForm, forms.ModelForm):
         widgets = {"description": genwidgets.Textarea}
 
 
-class SecurityLeafForm(forms.ModelForm, GTForm):
+class SecurityLeafForm(GTForm, forms.ModelForm):
 
     def __init__(self, *arg, **kwargs):
         super(SecurityLeafForm, self).__init__(*arg, **kwargs)
@@ -143,7 +182,7 @@ class SecurityLeafForm(forms.ModelForm, GTForm):
         widgets = {"provider": genwidgets.Select}
 
 
-class ReviewSubstanceForm(forms.ModelForm, GTForm):
+class ReviewSubstanceForm(GTForm, forms.ModelForm):
     class Meta:
         model = ReviewSubstance
         fields = "__all__"
@@ -167,3 +206,52 @@ class RecipientSizeForm(GTForm, forms.ModelForm):
             "width": genwidgets.NumberInput,
             "width_unit": genwidgets.Select,
         }
+
+
+class SendToReviewForm(GTForm, forms.ModelForm):
+    organization = forms.ModelChoiceField(
+        queryset=OrganizationStructure.objects.none(),
+        label=_("Organization"),
+        widget=AutocompleteSelect(
+            "user_organization_loop",
+            attrs={
+                "data-related": "true",
+                "data-pos": 0,
+                "data-groupname": "send_to_review",
+                "data-s2filter-organization": "#id_organization",
+                "data-s2filter-org_pk": "#id_organization",
+            },
+        ),
+    )
+    # Una sustancia se solicita a la vez para todos los laboratorios que la
+    # necesitan, así que se eligen varios en un solo envío.
+    laboratories = forms.ModelMultipleChoiceField(
+        queryset=Laboratory.objects.none(),
+        label=_("Laboratories"),
+        widget=AutocompleteSelectMultiple(
+            "user_laboratory_loop",
+            attrs={
+                "data-related": "true",
+                "data-pos": 1,
+                "data-groupname": "send_to_review",
+                "data-s2filter-organization": "#id_organization",
+                "data-s2filter-org_pk": "#id_organization",
+            },
+        ),
+    )
+
+    def __init__(self, *args, user=None, org_pk=None, **kwargs):
+        super(SendToReviewForm, self).__init__(*args, **kwargs)
+        self.fields["laboratories"].required = True
+        self.fields["organization"].required = True
+        # Los lookups solo restringen lo que muestra el desplegable; sin acotar
+        # también el queryset, la validación aceptaría cualquier pk y permitiría
+        # enviar una sustancia a una organización o laboratorio ajenos.
+        self.fields["organization"].queryset = get_user_organizations_queryset(user)
+        self.fields["laboratories"].queryset = get_user_laboratories_queryset(
+            user, org_pk
+        )
+
+    class Meta:
+        model = Substance
+        fields = ["organization", "laboratories"]

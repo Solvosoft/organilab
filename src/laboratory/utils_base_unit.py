@@ -56,6 +56,12 @@ def get_conversion_from_two_units(shelfobject_unit, shelf_unit, amount):
 
 
 def get_related_units(unit, queryset):
+    """Unidades convertibles con ``unit``, o ``None`` si no tiene unidad base.
+
+    ``None`` significa que la unidad no es convertible, no que no haya
+    resultados: quien llame debe rechazar la conversión en vez de tratarlo
+    como una lista vacía.
+    """
     base_unit = BaseUnitValues.objects.filter(measurement_unit=unit)
 
     if base_unit.exists():
@@ -68,6 +74,8 @@ def get_related_units(unit, queryset):
         subunit_ids = subunits.values_list("measurement_unit__pk", flat=True)
 
         return queryset.filter(pk__in=subunit_ids)
+
+    return None
 
 
 def get_related_units_from_laboratory(unit):

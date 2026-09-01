@@ -150,7 +150,8 @@ class LaboratoryDangerIndicationChart(BaseChart, HorizontalBarChart):
 
     def get_options(self):
         options = super().get_options()
-        options["plugins"] = {
+        # merge, no reemplazo: super() ya archivó title/legend/tooltip en plugins
+        options.setdefault("plugins", {}).update({
             "showDataLabels": True,
             "datalabels": {
                 "anchor": "end",
@@ -160,7 +161,7 @@ class LaboratoryDangerIndicationChart(BaseChart, HorizontalBarChart):
                 "color": "#333",
                 "font": {"weight": "bold", "size": 11},
             },
-        }
+        })
         return options
 
     def get_labels(self):
@@ -180,7 +181,7 @@ class LaboratoryDangerIndicationChart(BaseChart, HorizontalBarChart):
             kilo_amount = 0
             libra_amount = 0
             for obj in queryset.filter(
-                object__sustancecharacteristics__h_code=dangerindication
+                object__substancharacteristics_object__h_code=dangerindication
             ):
                 base_unit = BaseUnitValues.objects.filter(
                     measurement_unit=obj.measurement_unit
@@ -273,7 +274,8 @@ class LaboratoryWhiteOrganChart(BaseChart, HorizontalBarChart):
 
     def get_options(self):
         options = super().get_options()
-        options["plugins"] = {
+        # merge, no reemplazo: super() ya archivó title/legend/tooltip en plugins
+        options.setdefault("plugins", {}).update({
             "showDataLabels": True,
             "datalabels": {
                 "anchor": "end",
@@ -283,7 +285,7 @@ class LaboratoryWhiteOrganChart(BaseChart, HorizontalBarChart):
                 "color": "#333",
                 "font": {"weight": "bold", "size": 11},
             },
-        }
+        })
         return options
 
     def get_labels(self):
@@ -305,7 +307,7 @@ class LaboratoryWhiteOrganChart(BaseChart, HorizontalBarChart):
             kilo_amount = 0
             libra_amount = 0
             for obj in queryset.filter(
-                object__sustancecharacteristics__white_organ__pk=catalog["pk"]
+                object__substancharacteristics_object__white_organ__pk=catalog["pk"]
             ):
                 base_unit = BaseUnitValues.objects.filter(
                     measurement_unit=obj.measurement_unit
@@ -398,7 +400,8 @@ class LaboratoryPrecursorTypeChart(BaseChart, HorizontalBarChart):
 
     def get_options(self):
         options = super().get_options()
-        options["plugins"] = {
+        # merge, no reemplazo: super() ya archivó title/legend/tooltip en plugins
+        options.setdefault("plugins", {}).update({
             "showDataLabels": True,
             "datalabels": {
                 "anchor": "end",
@@ -408,7 +411,7 @@ class LaboratoryPrecursorTypeChart(BaseChart, HorizontalBarChart):
                 "color": "#333",
                 "font": {"weight": "bold", "size": 11},
             },
-        }
+        })
         return options
 
     def get_labels(self):
@@ -429,7 +432,7 @@ class LaboratoryPrecursorTypeChart(BaseChart, HorizontalBarChart):
             kilo_amount = 0
             libra_amount = 0
             for obj in queryset.filter(
-                object__sustancecharacteristics__precursor_type__pk=catalog["pk"]
+                object__substancharacteristics_object__precursor_type__pk=catalog["pk"]
             ):
                 base_unit = BaseUnitValues.objects.filter(
                     measurement_unit=obj.measurement_unit
@@ -522,7 +525,8 @@ class LaboratoryNFPAChart(BaseChart, HorizontalBarChart):
 
     def get_options(self):
         options = super().get_options()
-        options["plugins"] = {
+        # merge, no reemplazo: super() ya archivó title/legend/tooltip en plugins
+        options.setdefault("plugins", {}).update({
             "showDataLabels": True,
             "datalabels": {
                 "anchor": "end",
@@ -532,7 +536,7 @@ class LaboratoryNFPAChart(BaseChart, HorizontalBarChart):
                 "color": "#333",
                 "font": {"weight": "bold", "size": 11},
             },
-        }
+        })
         return options
 
     def get_labels(self):
@@ -551,7 +555,7 @@ class LaboratoryNFPAChart(BaseChart, HorizontalBarChart):
             kilo_amount = 0
             libra_amount = 0
             for obj in queryset.filter(
-                object__sustancecharacteristics__nfpa__pk=catalog["pk"]
+                object__substancharacteristics_object__nfpa__pk=catalog["pk"]
             ):
                 base_unit = BaseUnitValues.objects.filter(
                     measurement_unit=obj.measurement_unit
@@ -644,7 +648,8 @@ class LaboratoryUECodeChart(BaseChart, HorizontalBarChart):
 
     def get_options(self):
         options = super().get_options()
-        options["plugins"] = {
+        # merge, no reemplazo: super() ya archivó title/legend/tooltip en plugins
+        options.setdefault("plugins", {}).update({
             "showDataLabels": True,
             "datalabels": {
                 "anchor": "end",
@@ -654,7 +659,7 @@ class LaboratoryUECodeChart(BaseChart, HorizontalBarChart):
                 "color": "#333",
                 "font": {"weight": "bold", "size": 11},
             },
-        }
+        })
         return options
 
     def get_labels(self):
@@ -676,7 +681,7 @@ class LaboratoryUECodeChart(BaseChart, HorizontalBarChart):
             kilo_amount = 0
             libra_amount = 0
             for obj in queryset.filter(
-                object__sustancecharacteristics__ue_code__pk=catalog["pk"]
+                object__substancharacteristics_object__ue_code__pk=catalog["pk"]
             ):
                 base_unit = BaseUnitValues.objects.filter(
                     measurement_unit=obj.measurement_unit
@@ -769,7 +774,8 @@ class LaboratoryStorageClassChart(BaseChart, HorizontalBarChart):
 
     def get_options(self):
         options = super().get_options()
-        options["plugins"] = {
+        # merge, no reemplazo: super() ya archivó title/legend/tooltip en plugins
+        options.setdefault("plugins", {}).update({
             "showDataLabels": True,
             "datalabels": {
                 "anchor": "end",
@@ -779,7 +785,7 @@ class LaboratoryStorageClassChart(BaseChart, HorizontalBarChart):
                 "color": "#333",
                 "font": {"weight": "bold", "size": 11},
             },
-        }
+        })
         return options
 
     def get_labels(self):
@@ -800,7 +806,7 @@ class LaboratoryStorageClassChart(BaseChart, HorizontalBarChart):
             kilo_amount = 0
             libra_amount = 0
             for obj in queryset.filter(
-                object__sustancecharacteristics__storage_class__pk=catalog["pk"]
+                object__substancharacteristics_object__storage_class__pk=catalog["pk"]
             ):
                 base_unit = BaseUnitValues.objects.filter(
                     measurement_unit=obj.measurement_unit
@@ -893,9 +899,9 @@ class SubstanceQuantityTonsChart(BaseChart, HorizontalBarChart):
 
     def get_options(self):
         options = super().get_options()
-        options['plugins'] = {
+        options.setdefault('plugins', {}).update({
             'showDataLabels': False,
-        }
+        })
         options['maintainAspectRatio'] = False
         return options
 
@@ -1047,7 +1053,8 @@ class EstablishmentLogsClassChart(BaseChart, HorizontalBarChart):
 
     def get_options(self):
         options = super().get_options()
-        options["plugins"] = {
+        # merge, no reemplazo: super() ya archivó title/legend/tooltip en plugins
+        options.setdefault("plugins", {}).update({
             "showDataLabels": True,
             "datalabels": {
                 "anchor": "end",
@@ -1057,13 +1064,15 @@ class EstablishmentLogsClassChart(BaseChart, HorizontalBarChart):
                 "color": "#333",
                 "font": {"weight": "bold", "size": 11},
             },
-        }
+        })
         return options
 
     def get_scales(self):
+        # Formato Chart.js 4 (el shim xAxes/yAxes de djgentelella es temporal).
+        # En v4 min/max/stepSize viven en la escala, no en ticks.
         return {
-            "xAxes": [{"ticks": {"min": 0, "max": 1, "stepSize": 0.1}}],
-            "yAxes": [{"ticks": {}}],
+            "x": {"min": 0, "max": 1, "ticks": {"stepSize": 0.1}},
+            "y": {},
         }
 
     def get_labels(self):

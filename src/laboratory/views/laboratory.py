@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import FieldDoesNotExist
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import redirect, get_object_or_404, render
 from django.template.loader import get_template
 from django.urls import reverse_lazy, path
@@ -17,6 +17,7 @@ from django.urls.base import reverse
 from django.utils.decorators import method_decorator
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
+from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 from weasyprint import HTML
 
@@ -26,6 +27,7 @@ from laboratory import utils
 from laboratory.forms import (
     LaboratoryCreate,
     H_CodeForm,
+    LaboratorySearchForm,
     LaboratoryEdit,
     OrganizationUserManagementForm,
     RegisterUserQRForm,
@@ -50,6 +52,7 @@ from laboratory.utils import (
     delete_profile_roles_related_to_laboratory,
     delete_relation_between_laboratory_with_other_models,
     get_lab_ids,
+    check_user_access_kwargs_org_lab,
 )
 from laboratory.views.djgeneric import CreateView, UpdateView, ListView, DeleteView
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
@@ -263,6 +266,11 @@ class LaboratoryListView(ListView):
             queryset = queryset.filter(name__icontains=q)
         return queryset.order_by(*self.ordering)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["search_form"] = LaboratorySearchForm(self.request.GET or None)
+        return context
+
 
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
@@ -327,7 +335,7 @@ class LaboratoryDeleteView(DeleteView):
         success_url = self.get_success_url()
         general_relation_list = []
         exclude_fields = [
-            "LabOrgLogEntry",
+            "HistoryRelation",
             "LogEntry",
             "Permission",
             "ProfilePermission",
@@ -491,29 +499,23 @@ def get_pdf_register_user_qr(request, org_pk, lab_pk, pk):
     permission_required("laboratory.view_registeruserqr", raise_exception=True),
     name="dispatch",
 )
-class RegisterUserQRList(ListView):
-    model = RegisterUserQR
+class RegisterUserQRList(TemplateView):
+    # La tabla se llena por el api-registeruserqr (ObjectCRUD); el filtrado por
+    # organización/laboratorio vive en el viewset.
     template_name = "laboratory/register_user_qr/register_user_qr_list.html"
 
-    def get_queryset(self):
-        queryset = super().get_queryset()
+    def get(self, request, *args, **kwargs):
+        if not check_user_access_kwargs_org_lab(
+            kwargs["org_pk"], kwargs["lab_pk"], request.user
+        ):
+            raise Http404()
+        return super().get(request, *args, **kwargs)
 
-        content_type = ContentType.objects.filter(
-            app_label="laboratory", model="laboratory"
-        ).first()
-
-        organization = OrganizationStructure.objects.get(pk=self.org)
-        org_base_list = list(organization.descendants(include_self=True))
-
-        if self.org and self.lab:
-            queryset = queryset.filter(
-                organization_register__in=org_base_list,
-                content_type=content_type,
-                object_id=self.lab,
-            ).order_by("creation_date", "last_update", "organization_register__name")
-        else:
-            queryset = queryset.none()
-        return queryset
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["org_pk"] = self.kwargs["org_pk"]
+        context["laboratory"] = self.kwargs["lab_pk"]
+        return context
 
 
 @login_required
@@ -699,7 +701,7 @@ def add_user_to_rel_obj(request, user, org_pk, lab_pk, qr_obj, id_card=None):
             changed_data=["user", "phone_number", "id_card", "job_position"],
             change_message=_("Created profile for user '%(user)s'")
             % {"user": user.username},
-            relobj=org_pk,
+            relobj=[org, qr_obj],
         )
 
         organilab_logentry(
@@ -710,7 +712,7 @@ def add_user_to_rel_obj(request, user, org_pk, lab_pk, qr_obj, id_card=None):
             changed_data=["Register", qr_obj.pk],
             change_message=_("Registered user '%(user)s' via QR code")
             % {"user": user.username},
-            relobj=org,
+            relobj=[org, qr_obj],
         )
     else:
         profile = user.profile
@@ -735,7 +737,7 @@ def add_user_to_rel_obj(request, user, org_pk, lab_pk, qr_obj, id_card=None):
             changed_data=["profile", "content_type", "object_id"],
             change_message=_("Created profile permission for user '%(user)s'")
             % {"user": user.username},
-            relobj=org_pk,
+            relobj=[org, qr_obj],
         )
     else:
         pp = pp.first()
@@ -747,7 +749,7 @@ def add_user_to_rel_obj(request, user, org_pk, lab_pk, qr_obj, id_card=None):
             changed_data=["rol"],
             change_message=_("Updated profile permission for user '%(user)s'")
             % {"user": user.username},
-            relobj=org_pk,
+            relobj=[org, qr_obj],
         )
     pp.rol.add(qr_obj.role)
 
@@ -763,7 +765,7 @@ def add_user_to_rel_obj(request, user, org_pk, lab_pk, qr_obj, id_card=None):
             changed_data=["organization", "user"],
             change_message=_("Added user '%(user)s' to organization '%(org)s'")
             % {"user": user.username, "org": org.name},
-            relobj=org_pk,
+            relobj=[org, qr_obj],
         )
 
     root_org = org.root
@@ -783,7 +785,7 @@ def add_user_to_rel_obj(request, user, org_pk, lab_pk, qr_obj, id_card=None):
                 changed_data=["organization", "user"],
                 change_message=_("Added user '%(user)s' to root organization '%(org)s'")
                 % {"user": user.username, "org": root_org.name},
-                relobj=root_org.pk,
+                relobj=root_org,
             )
 
     organilab_logentry(
@@ -794,7 +796,7 @@ def add_user_to_rel_obj(request, user, org_pk, lab_pk, qr_obj, id_card=None):
         changed_data=["Login", qr_obj.pk],
         change_message=_("User '%(user)s' logged in via QR code")
         % {"user": user.username},
-        relobj=org,
+        relobj=[org, qr_obj],
     )
 
 
@@ -840,7 +842,10 @@ def create_user_qr(request, org_pk, lab_pk, pk, user=None):
                     ],
                     change_message=_("Created user '%(user)s' via QR registration")
                     % {"user": instance.username},
-                    relobj=org_pk,
+                    relobj=[
+                        get_object_or_404(OrganizationStructure, pk=org_pk),
+                        user_qr,
+                    ],
                 )
 
                 id_card = register_form.cleaned_data["id_card"]

@@ -31,7 +31,7 @@ from auth_and_perms.organization_utils import (
     user_is_allowed_on_organization,
     organization_can_change_laboratory,
 )
-from laboratory import utils
+from laboratory import dataconfig, utils
 from laboratory.shelfobject.utils import has_active_reservations
 from laboratory.forms import (
     ReservationModalForm,
@@ -49,6 +49,7 @@ from laboratory.models import (
 )
 from laboratory.views.djgeneric import CreateView, UpdateView, DeleteView, DetailView
 from presentation.models import QRModel
+from sga.models import RecipientSize
 from ..logsustances import log_object_change
 from ..qr_utils import get_or_create_qr_shelf_object
 from ..shelfobject.forms import (
@@ -558,7 +559,11 @@ class ShelfObjectDelete(AJAXMixin, DeleteView):
 
     def form_valid(self, form):
         if has_active_reservations(self.object):
-            msg = str(_("This item cannot be deleted because it has active reservations. Please close all reservations first."))
+            msg = str(
+                _(
+                    "This item cannot be deleted because it has active reservations. Please close all reservations first."
+                )
+            )
             data = {
                 "inner-fragments": {
                     "#closemodal": f'<script>$("#object_delete").modal("hide"); Swal.fire({{title: "{str(_("Error"))}", text: "{msg}", icon: "error"}});</script>'
@@ -622,15 +627,7 @@ def get_shelf_list(request):
             unit = transfer_detail.object.measurement_unit
 
             for furniture in furnitures:
-                replacements = [("[", ""), ("]", "")]
-                dataconfig = furniture.dataconfig
-
-                for simbol, config in replacements:
-
-                    if simbol in dataconfig:
-                        dataconfig = dataconfig.replace(simbol, "")
-
-                data = [x for x in dataconfig.split(",") if x != ""]
+                data = dataconfig.iter_shelf_pks(furniture.get_grid())
                 if len(data) > 0:
                     for shelf in Shelf.objects.filter(pk__in=data):
                         if (
@@ -986,3 +983,40 @@ def shelf_object_hcode(request, org_pk, lab_pk):
             "form": ShelfObjectFlashpointForm(prefix="update"),
         },
     )
+
+
+@login_required()
+@all_permission_required(["laboratory.view_shelfobject"], raise_exception=True)
+def generate_shelfobject_label(request, org_pk, lab_pk, pk, recipient):
+    """Genera la etiqueta GHS/SGA de un ShelfObject (instancia física).
+
+    Hereda el color del contenedor (estante), la ubicación, cantidad, lote y
+    caducidad, y ajusta el tamaño a la capacidad del envase. Formato PNG/SVG/PDF.
+    """
+    from sga.label_blueprint import blueprint_from_shelfobject
+    from sga.label_render import render_label
+
+    org = get_object_or_404(OrganizationStructure, pk=org_pk)
+    lab = get_object_or_404(Laboratory, pk=lab_pk)
+    user_is_allowed_on_organization(request.user, org)
+    organization_can_change_laboratory(lab, org)
+    shelfobject = get_object_or_404(
+        ShelfObject.objects.using(settings.READONLY_DATABASE), pk=pk
+    )
+    recipient = get_object_or_404(RecipientSize, pk=recipient)
+
+    overrides = {}
+    for field in ("lote", "fecha_caducidad", "cantidad", "qr_url"):
+        if request.GET.get(field):
+            overrides[field] = request.GET.get(field)
+    # El tamaño se deriva de la capacidad; permitir override explícito.
+    if request.GET.get("ancho_mm"):
+        overrides["ancho_mm"] = float(request.GET["ancho_mm"])
+    if request.GET.get("alto_mm"):
+        overrides["alto_mm"] = float(request.GET["alto_mm"])
+
+    blueprint = blueprint_from_shelfobject(
+        shelfobject, organization=org, recipient=recipient, **overrides
+    )
+    formato = request.GET.get("formato", "png")
+    return render_label(blueprint, formato, filename=f"etiqueta_shelfobject_{pk}")

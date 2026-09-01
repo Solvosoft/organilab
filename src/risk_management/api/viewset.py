@@ -1,10 +1,19 @@
+from django.contrib.admin.models import DELETION
+from django.db.models import Q
+from django.http import Http404
 from django.shortcuts import get_object_or_404
+from django.utils.translation import gettext_lazy as _
 from django_filters.rest_framework import DjangoFilterBackend
 from djgentelella.objectmanagement import AuthAllPermBaseObjectManagement
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.pagination import LimitOffsetPagination
 
 from laboratory.models import OrganizationStructure
+from laboratory.utils import (
+    check_user_access_kwargs_org_lab,
+    get_user_laboratories,
+    organilab_logentry,
+)
 from risk_management.api.filterseet import (
     BuildingFilter,
     StructureFilter,
@@ -21,6 +30,7 @@ from risk_management.api.serializer import (
     UpdateRegentSerializer,
     WorkdaysSerializer,
     WorkdayDataTableSerializer,
+    IPERAssessmentDataTableSerializer,
 )
 from risk_management.models import (
     Buildings,
@@ -29,6 +39,7 @@ from risk_management.models import (
     RiskZone,
     IncidentReport,
     Workday,
+    IPERAssessment,
 )
 
 
@@ -328,3 +339,64 @@ class WorkdaysViewSet(AuthAllPermBaseObjectManagement):
             created_by=self.request.user,
             organization=self.get_organization(),
         )
+
+
+class IPERSearchFilter(SearchFilter):
+    """Búsqueda del listado IPER con el mismo criterio que tenía la vista de
+    página: el nombre del laboratorio solo cuenta si la evaluación no es
+    anónima, para no delatar qué laboratorios tienen evaluaciones."""
+
+    def filter_queryset(self, request, queryset, view):
+        term = request.query_params.get(self.search_param, "")
+        if not term:
+            return queryset
+        return queryset.filter(
+            Q(laboratory__name__icontains=term, is_anonymous=False)
+            | Q(responsible__username__icontains=term)
+        ).distinct()
+
+
+class IPERAssessmentViewSet(AuthAllPermBaseObjectManagement):
+    # Solo listado y borrado: crear/editar son páginas completas
+    # (riskmanagement:iper_create / iper_update) con lógica de versionado.
+    serializer_class = {
+        "list": IPERAssessmentDataTableSerializer,
+    }
+    perms = {
+        "list": ["risk_management.view_iperassessment"],
+        "destroy": ["risk_management.delete_iperassessment"],
+    }
+
+    queryset = IPERAssessment.objects.all()
+    pagination_class = LimitOffsetPagination
+    filter_backends = (IPERSearchFilter, OrderingFilter)
+    search_fields = ["laboratory__name", "responsible__username"]
+    ordering_fields = ["id", "assessment_date", "version", "status", "due_date"]
+    ordering = ("-assessment_date", "-id")
+
+    def get_queryset(self):
+        org_pk = self.kwargs.get("org_pk")
+        # Mismo control multi-tenant que hacía la ListView vieja vía djgeneric.
+        if not check_user_access_kwargs_org_lab(
+            org_pk, None, self.request.user
+        ):
+            raise Http404()
+        queryset = super().get_queryset().filter(organization__pk=org_pk)
+        if not self.request.user.has_perm("risk_management.view_all_iper"):
+            queryset = queryset.filter(
+                laboratory__in=get_user_laboratories(self.request.user)
+            )
+        return queryset.select_related("laboratory", "responsible")
+
+    def perform_destroy(self, instance):
+        organilab_logentry(
+            self.request.user,
+            instance,
+            DELETION,
+            "iperassessment",
+            changed_data=["laboratory", "assessment_date"],
+            change_message=_("Deleted IPER assessment for laboratory '%(lab)s'")
+            % {"lab": instance.laboratory.name},
+            relobj=[instance.laboratory],
+        )
+        instance.delete()

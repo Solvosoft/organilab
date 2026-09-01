@@ -2,7 +2,7 @@ import json
 import logging
 import re
 
-from async_notifications.utils import send_email_from_template
+from djgentelella.async_notification.sending import send_email_from_template
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
@@ -273,7 +273,7 @@ class FeedbackView(PermissionRequiredMixin, CreateView):
         file_url = self.request.build_absolute_uri(upfile.url) if upfile else None
         try:
             send_email_from_template(
-                "New feedback",
+                "new-feedback",
                 settings.DEFAULT_FROM_EMAIL,
                 context={
                     "feedback": self.object,

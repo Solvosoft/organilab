@@ -128,23 +128,24 @@ def get_dataset_report(report, column_list=None):
         if dangerous:
             third_column = _("Square 3") + " "
 
-        if hasattr(reactive, "sustancecharacteristics"):
-            physical = reactive.sustancecharacteristics.h_code.filter(
+        sga_char = reactive.substancharacteristics_object.first()
+        if sga_char:
+            physical = sga_char.h_code.filter(
                 category_h_code__danger_category="physical"
             ).values_list("description", flat=True)
-            health = reactive.sustancecharacteristics.h_code.filter(
+            health = sga_char.h_code.filter(
                 category_h_code__danger_category="health"
             ).values_list("description", flat=True)
-            enviroment = reactive.sustancecharacteristics.h_code.filter(
+            enviroment = sga_char.h_code.filter(
                 category_h_code__danger_category="environment"
             ).values_list("description", flat=True)
-            total_physical = reactive.sustancecharacteristics.h_code.filter(
+            total_physical = sga_char.h_code.filter(
                 category_h_code__danger_category="physical"
             ).values_list("category_h_code__threshold", flat=True)
-            total_health = reactive.sustancecharacteristics.h_code.filter(
+            total_health = sga_char.h_code.filter(
                 category_h_code__danger_category="health"
             ).values_list("category_h_code__threshold", flat=True)
-            total_enviroment = reactive.sustancecharacteristics.h_code.filter(
+            total_enviroment = sga_char.h_code.filter(
                 category_h_code__danger_category="environment"
             ).values_list("category_h_code__threshold", flat=True)
             cas_id = reactive.cas_code
@@ -296,7 +297,7 @@ def report_compatibility_html(report):
             hcode_map = build_hcode_substance_map(zone)
 
             for i, code_a in enumerate(all_h_codes):
-                for code_b in all_h_codes[i + 1 :]:
+                for code_b in all_h_codes[i + 1:]:
                     compat = get_h_code_compatibility(code_a, code_b)
                     compat_label = COMPAT_LABELS.get(compat, compat)
 
@@ -384,19 +385,15 @@ def _build_compatibility_diagnostic(buildings_qs, risk_zone_pks):
                         in_where_laboratory=lab, object__type=Object.REACTIVE
                     )
                     .select_related("object")
-                    .prefetch_related("object__sustancecharacteristics__h_code")
+                    .prefetch_related("object__substancharacteristics_object__h_code")
                 )
                 total_reactives += shelf_objects.count()
                 for so in shelf_objects:
                     obj = so.object
-                    if (
-                        hasattr(obj, "sustancecharacteristics")
-                        and obj.sustancecharacteristics
-                    ):
+                    sga_char = obj.substancharacteristics_object.first()
+                    if sga_char:
                         h_codes = list(
-                            obj.sustancecharacteristics.h_code.values_list(
-                                "code", flat=True
-                            )
+                            sga_char.h_code.values_list("code", flat=True)
                         )
                         if h_codes:
                             total_with_h_codes += 1

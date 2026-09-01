@@ -19,14 +19,228 @@ from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
 from dateutil.relativedelta import relativedelta
 from selenium.webdriver.chrome.service import Service
-from selenium.common.exceptions import ElementClickInterceptedException, ElementNotInteractableException
+from selenium.common.exceptions import (
+    ElementClickInterceptedException,
+    ElementNotInteractableException,
+    MoveTargetOutOfBoundsException,
+    NoSuchElementException,
+    StaleElementReferenceException,
+    TimeoutException,
+)
 from selenium.webdriver.support.ui import WebDriverWait
 
 
 class SeleniumBase(StaticLiveServerTestCase):
+    # Retardo entre capturas. Sólo aplica al generar el GIF: le da al navegador
+    # tiempo de pintar la transición para que la animación no salte.
     screenshot_delay = 3
+
+    # Las esperas fijas de los path_list existen sobre todo para que el GIF
+    # tenga fluidez. Cuando no se generan capturas basta con esperar a que el
+    # elemento esté presente, y de eso se encarga find_element_waiting(), así
+    # que se escalan a una fracción en vez de dormir el tiempo completo.
+    # Ajustable con SELENIUM_SLEEP_FACTOR (1 = comportamiento original).
+    sleep_factor = None
+    element_timeout = 10
+
+    # Segunda espera, corta y best-effort: si el elemento nunca llega a ser
+    # clicable se sigue con el localizado por presencia y do_action aplica el
+    # fallback por JS. Sólo acota cuánto se espera de más.
+    interactable_timeout = int(os.getenv("SELENIUM_INTERACTABLE_TIMEOUT", "5"))
+
+    # extra_actions que manipulan el WebElement localizado. El resto ("script",
+    # "hover", "drag_and_drop", "move_cursor_end") actúan por JS o sobre otros
+    # XPath, así que no requieren que el elemento sea clicable.
+    ELEMENT_DRIVEN_ACTIONS = frozenset({"setvalue", "clearinput", "sweetalert_comfirm"})
+
+    # Excepciones que indican que el DOM cambió bajo los pies o que el elemento
+    # aún no estaba listo: merecen relocalizar y reintentar una vez.
+    RETRY_EXCEPTIONS = (
+        StaleElementReferenceException,
+        ElementNotInteractableException,
+        MoveTargetOutOfBoundsException,
+    )
+
     _server_exceptions = []
     _server_exceptions_lock = threading.Lock()
+
+    @classmethod
+    def get_sleep_factor(cls):
+        if cls.sleep_factor is not None:
+            return cls.sleep_factor
+        default = "1" if getattr(settings, "GENERATE_SCREENSHOTS", True) else "0.1"
+        try:
+            return float(os.getenv("SELENIUM_SLEEP_FACTOR", default))
+        except ValueError:
+            return float(default)
+
+    def scaled_sleep(self, seconds):
+        """Duerme `seconds` escalados por el factor configurado."""
+        delay = seconds * self.get_sleep_factor()
+        if delay > 0:
+            sleep(delay)
+
+    def diagnose_page(self, tag=""):
+        """Vuelca el estado del navegador cuando una página no termina de cargar.
+
+        Un `TimeoutException` en `get()` no dice nada por sí solo. Esto responde
+        a las tres preguntas que lo explican: si hay un diálogo abierto (que
+        impide el evento `load`), en qué punto se quedó el documento y qué
+        peticiones siguen sin respuesta.
+        """
+        prefix = "[diag %s]" % tag
+        try:
+            print(prefix, "url:", self.selenium.current_url)
+            print(
+                prefix,
+                "readyState:",
+                self.selenium.execute_script("return document.readyState"),
+            )
+        except Exception as exc:  # noqa: BLE001
+            print(prefix, "no se pudo interrogar la página:", type(exc).__name__)
+            return
+
+        try:
+            print(prefix, "ALERTA:", repr(self.selenium.switch_to.alert.text))
+        except Exception as exc:  # noqa: BLE001
+            print(prefix, "sin alerta abierta (%s)" % type(exc).__name__)
+
+        try:
+            pending = self.selenium.execute_script(
+                "return (performance.getEntriesByType('resource') || [])"
+                ".filter(r => r.responseEnd === 0).map(r => r.name);"
+            )
+            print(prefix, "peticiones sin respuesta:", pending)
+        except Exception:  # noqa: BLE001
+            pass
+
+        if getattr(self, "collect_browser_logs", False):
+            try:
+                for entry in self.selenium.get_log("browser"):
+                    print(prefix, "consola:", entry.get("level"), entry.get("message"))
+            except Exception as exc:  # noqa: BLE001
+                print(prefix, "sin log de consola:", type(exc).__name__)
+            self._dump_network_log(prefix)
+
+    def _dump_network_log(self, prefix):
+        """Resume el log de red de Chrome: qué se pidió y qué se respondió.
+
+        `performance.getEntriesByType` sólo ve los recursos del documento ya
+        cargado, así que no muestra la navegación que no llegó a completarse.
+        El log de red del navegador sí la registra, y es lo que distingue
+        "el navegador nunca emitió la petición" de "la emitió y no obtuvo
+        respuesta".
+        """
+        import json as json_module
+
+        try:
+            entries = self.selenium.get_log("performance")
+        except Exception as exc:  # noqa: BLE001
+            print(prefix, "sin log de red:", type(exc).__name__)
+            return
+
+        sent, answered, failed = {}, set(), []
+        for entry in entries:
+            try:
+                message = json_module.loads(entry["message"])["message"]
+            except (KeyError, ValueError):
+                continue
+            method = message.get("method", "")
+            params = message.get("params", {})
+            request_id = params.get("requestId")
+            if method == "Network.requestWillBeSent":
+                sent[request_id] = params.get("request", {}).get("url", "")
+            elif method in ("Network.responseReceived", "Network.loadingFinished"):
+                answered.add(request_id)
+            elif method == "Network.loadingFailed":
+                answered.add(request_id)
+                failed.append(
+                    (
+                        sent.get(request_id, "?"),
+                        params.get("errorText"),
+                        params.get("blockedReason"),
+                    )
+                )
+
+        pending = [url for rid, url in sent.items() if rid not in answered]
+        print(
+            prefix,
+            "red: %d peticiones emitidas, %d sin respuesta, %d fallidas"
+            % (len(sent), len(pending), len(failed)),
+        )
+        for url in pending[:10]:
+            print(prefix, "  emitida SIN respuesta:", url[:160])
+        for url, error, blocked in failed[:10]:
+            print(prefix, "  FALLÓ:", error, blocked or "", url[:120])
+
+    def open_url(self, url, tag=""):
+        """Navega a `url`, dejando un diagnóstico si la carga no termina."""
+        from selenium.common.exceptions import TimeoutException
+
+        try:
+            self.selenium.get(url)
+        except TimeoutException:
+            self.diagnose_page(tag or url)
+            raise
+
+    def step_needs_interaction(self, obj):
+        """Indica si el paso va a manipular el WebElement que se localice.
+
+        Los pasos que actúan por JS o sobre otros XPath no necesitan que el
+        elemento sea clicable, así que esperarlo sólo les costaría tiempo.
+        """
+        if obj.get("presence_only"):
+            return False
+        extra = obj.get("extra_action")
+        if extra is None:
+            return True  # sin extra_action el paso hace click
+        return extra in self.ELEMENT_DRIVEN_ACTIONS
+
+    def find_element_waiting(self, xpath, obj=None):
+        """Busca por XPath esperando a que aparezca.
+
+        Sustituye la espera fija por una condicional: el test avanza en cuanto
+        el elemento existe, en vez de dormir un tiempo fijo estimado a ojo.
+
+        Si el paso va a interactuar con el elemento se espera además a que sea
+        clicable. Esa segunda espera es best-effort: si vence se devuelve el
+        elemento localizado por presencia y do_action se encarga del fallback,
+        de modo que este método nunca falla por algo que antes pasaba.
+        """
+        from selenium.webdriver.support import expected_conditions as EC
+
+        # Sin esto el TimeoutException llega con el mensaje vacío y no se sabe
+        # qué selector falló ni en qué página.
+        message = "no apareció %s en %s s (url: %s)" % (
+            xpath,
+            self.element_timeout,
+            self.selenium.current_url,
+        )
+        try:
+            element = WebDriverWait(self.selenium, self.element_timeout).until(
+                EC.presence_of_element_located((By.XPATH, xpath)),
+                message=message,
+            )
+        except TimeoutException:
+            # El respaldo cubre el caso de que el nodo aparezca justo al vencer
+            # la espera. Si tampoco está, se conserva el mensaje con XPath y URL:
+            # es el único dato que permite clasificar el fallo después.
+            try:
+                return self.selenium.find_element(By.XPATH, xpath)
+            except NoSuchElementException as exc:
+                raise NoSuchElementException(message) from exc
+
+        if obj is not None and self.step_needs_interaction(obj):
+            try:
+                # element_to_be_clickable re-localiza por XPath, así que además
+                # de esperar visibilidad devuelve una referencia fresca: evita
+                # el StaleElementReference del caso común.
+                element = WebDriverWait(self.selenium, self.interactable_timeout).until(
+                    EC.element_to_be_clickable((By.XPATH, xpath))
+                )
+            except Exception:
+                pass  # nunca llegó a ser clicable: sigue el de presencia
+        return element
 
     @classmethod
     def _on_request_exception(cls, sender, request, **kwargs):
@@ -50,6 +264,33 @@ class SeleniumBase(StaticLiveServerTestCase):
         cls.options = webdriver.FirefoxOptions()
         is_docker = os.getenv("DOCKER_ACTIVE", "false").lower() == "true"
 
+        # Un test que deja abierta una alerta JS bloquea el driver: todos los
+        # comandos siguientes esperan hasta agotar el timeout del cliente (120 s
+        # por defecto), y esa espera se paga en cada paso restante del test.
+        # Descartarlas automáticamente evita que un aviso de DataTables
+        # convierta un fallo instantáneo en dos minutos de bloqueo.
+        prompt_behavior = os.getenv("SELENIUM_PROMPT_BEHAVIOR", "dismiss")
+        # SELENIUM_BROWSER_LOGS=1 vuelca consola y red en el diagnóstico. Las
+        # capacidades de logging, en cambio, se piden SIEMPRE: pedirlas hace que
+        # chromedriver habilite el dominio Network de DevTools, y con él las
+        # navegaciones dejan de colgarse.
+        #
+        # Medido sobre Cap5ManageReservationsTest, dos corridas de cada caso:
+        #   sin las capacidades -> 310 s, 6 errores
+        #   con las capacidades ->  91 s, todo en verde
+        # Sin ellas, el navegador se quedaba sin respuesta en la segunda prueba
+        # de cada clase mientras el servidor contestaba a curl en milisegundos.
+        # No está claro por qué lo arregla, así que se deja documentado y con
+        # una salida para desactivarlo si alguna vez estorba.
+        cls.collect_browser_logs = os.getenv("SELENIUM_BROWSER_LOGS") == "1"
+        enable_devtools_logging = os.getenv("SELENIUM_DEVTOOLS_LOGGING", "1") == "1"
+
+        # "normal" espera al evento `load`; "eager" devuelve el control en
+        # DOMContentLoaded. Se deja configurable porque es lo primero que se
+        # prueba cuando una página no termina de cargar, aunque para el cuelgue
+        # de las pruebas de reservaciones se comprobó que no cambia nada.
+        page_load_strategy = os.getenv("SELENIUM_PAGE_LOAD_STRATEGY", "normal")
+
         if is_docker:
             driverpath = os.getenv("CHROMEDRIVER_DIR", "/usr/bin/chromedriver")
             options = webdriver.ChromeOptions()
@@ -58,10 +299,37 @@ class SeleniumBase(StaticLiveServerTestCase):
             options.add_argument("--disable-dev-shm-usage")
             options.add_argument("--disable-gpu")
             options.add_argument("--remote-debugging-port=9222")
+            options.unhandled_prompt_behavior = prompt_behavior
+            options.page_load_strategy = page_load_strategy
+            if enable_devtools_logging:
+                options.set_capability(
+                    "goog:loggingPrefs", {"browser": "ALL", "performance": "ALL"}
+                )
             service = Service(executable_path=driverpath)
             cls.selenium = webdriver.Chrome(options=options, service=service)
         else:
-            cls.selenium = webdriver.Chrome()
+            options = webdriver.ChromeOptions()
+            options.unhandled_prompt_behavior = prompt_behavior
+            options.page_load_strategy = page_load_strategy
+            if enable_devtools_logging:
+                options.set_capability(
+                    "goog:loggingPrefs", {"browser": "ALL", "performance": "ALL"}
+                )
+            cls.selenium = webdriver.Chrome(options=options)
+
+        # El cliente HTTP contra el chromedriver espera 120 s por respuesta: un
+        # test bloqueado no falla, se queda dos minutos esperando en cada paso.
+        # Se recorta para que el fallo llegue pronto y con su error real.
+        client_config = getattr(cls.selenium.command_executor, "_client_config", None)
+        if client_config is not None:
+            client_config.timeout = int(os.getenv("SELENIUM_COMMAND_TIMEOUT", "60"))
+
+        cls.selenium.set_page_load_timeout(
+            int(os.getenv("SELENIUM_PAGE_LOAD_TIMEOUT", "45"))
+        )
+        cls.selenium.set_script_timeout(
+            int(os.getenv("SELENIUM_SCRIPT_TIMEOUT", "30"))
+        )
         cls.ob = Screenshot(cls.selenium)
         cls.selenium.set_window_size(1280, 720)
 
@@ -102,6 +370,10 @@ class SeleniumBase(StaticLiveServerTestCase):
 
     def setUp(self):
         super().setUp()
+        # Pasos que necesitaron el click por JS. No hacen fallar el test, pero
+        # se avisan: cada uno es una interacción que el usuario real no podría
+        # completar tal cual.
+        self.js_click_fallbacks = []
         with self._server_exceptions_lock:
             self._server_exceptions.clear()
         from django.core.signals import got_request_exception
@@ -115,6 +387,11 @@ class SeleniumBase(StaticLiveServerTestCase):
         got_request_exception.disconnect(
             dispatch_uid='selenium_test_exception_handler'
         )
+        if getattr(self, 'js_click_fallbacks', None):
+            print(
+                "\n[selenium] %s usó click por JS en: %s"
+                % (self.id(), ', '.join(self.js_click_fallbacks))
+            )
         with self._server_exceptions_lock:
             exceptions = list(self._server_exceptions)
             self._server_exceptions.clear()
@@ -134,7 +411,22 @@ class SeleniumBase(StaticLiveServerTestCase):
         super().tearDown()
 
     def change_focus_tab(self, window_name):
-        self.selenium.switch_to.window(window_name)
+        """La pestaña destino se auto-nombra al cargar (window.name), así que
+        el nombre puede tardar en existir, y una pestaña vieja del mismo
+        test-class puede conservarlo (el navegador se reutiliza): se busca de
+        la pestaña más reciente hacia atrás hasta que aparezca."""
+
+        def _switch_to_named(driver):
+            for handle in reversed(driver.window_handles):
+                driver.switch_to.window(handle)
+                if driver.execute_script("return window.name") == window_name:
+                    return True
+            return False
+
+        WebDriverWait(self.selenium, self.element_timeout).until(
+            _switch_to_named,
+            "no apareció ninguna pestaña llamada %r" % window_name,
+        )
 
     def get_format_increase_decrease_date(
         self, date, days, increase=True, format="%m/%d/%Y"
@@ -302,9 +594,36 @@ class SeleniumBase(StaticLiveServerTestCase):
         """
         This is an action responsible to set value in an element.
         Value can be quotation marks this is equal to clear an input.
+
+        No se limpia por defecto: hay flujos que escriben el valor por partes
+        (move_cursor_end, máscaras con reduce_length) y se romperían. Para
+        limpiar antes, usar "clear": True.
         """
-        if "value" in obj:
+        if "value" not in obj:
+            return
+
+        if obj.get("clear"):
+            element.clear()
+
+        try:
             element.send_keys(obj["value"])
+        except self.RETRY_EXCEPTIONS:
+            fresh = self.relocate(obj)
+            if fresh is None:
+                raise
+            try:
+                fresh.send_keys(obj["value"])
+            except ElementNotInteractableException:
+                # Input tapado por un widget (select2, iCheck, editores): se
+                # asigna el valor por JS y se notifican los eventos, que es lo
+                # que escucha jQuery.
+                self.selenium.execute_script(
+                    "arguments[0].value = arguments[1];"
+                    "arguments[0].dispatchEvent(new Event('input', {bubbles: true}));"
+                    "arguments[0].dispatchEvent(new Event('change', {bubbles: true}));",
+                    fresh,
+                    obj["value"],
+                )
 
     def move_cursor_end(self, obj):
         """
@@ -346,6 +665,103 @@ class SeleniumBase(StaticLiveServerTestCase):
             "document.body.removeAttribute('data-organilab-ready');"
         )
 
+    def wait_for_datatables_idle(self, timeout=10):
+        """Espera a que no queden peticiones AJAX de DataTables en vuelo.
+
+        Complementa a wait_for_page_ready(), que sólo cubre la carga inicial:
+        tras un ajax.reload() el <tbody> se reemplaza entero y el elemento que
+        ya se había localizado queda obsoleto. Best-effort: en páginas sin
+        DataTables la variable es undefined y retorna de inmediato.
+        """
+        try:
+            WebDriverWait(self.selenium, timeout).until(
+                lambda driver: driver.execute_script(
+                    "return window.__organilabPendingDT === undefined"
+                    " || window.__organilabPendingDT === 0;"
+                )
+            )
+        except Exception:
+            pass
+
+    def wait_for_browser_idle(self, timeout=5):
+        """Espera a que el navegador no tenga nada en vuelo contra el servidor.
+
+        El teardown hace `flush` (TRUNCATE, AccessExclusiveLock) mientras el hilo
+        del StaticLiveServerTestCase puede seguir atendiendo la última petición
+        del test —el borrado en sí, o el ajax.reload() del DataTable que va
+        detrás— con un RowExclusiveLock tomado: PostgreSQL corta el ciclo con
+        "deadlock detected" y el flush revienta. Con GENERATE_SCREENSHOTS=False
+        salta a menudo porque el sleep_factor deja los `sleep` del path_list en
+        una décima parte.
+
+        Best-effort: si el driver ya murió, o la página no usa jQuery ni
+        DataTables, retorna sin esperar.
+        """
+        try:
+            WebDriverWait(self.selenium, timeout).until(
+                lambda driver: driver.execute_script(
+                    "return document.readyState === 'complete'"
+                    " && (typeof jQuery === 'undefined' || jQuery.active === 0)"
+                    " && (window.__organilabPendingDT === undefined"
+                    "     || window.__organilabPendingDT === 0);"
+                )
+            )
+        except Exception:  # noqa: BLE001
+            pass
+
+    def quiesce_browser(self, timeout=5):
+        """Deja el navegador sin peticiones pendientes ni capacidad de lanzar más.
+
+        Esperar a que esté ocioso no basta: un temporizador o un callback puede
+        disparar otra petición justo cuando empieza el TRUNCATE. Navegar a
+        about:blank descarta el documento y con él todo lo que tuviera agendado.
+        El siguiente test de la clase vuelve a navegar en su propio setUp.
+        """
+        self.wait_for_browser_idle(timeout)
+        try:
+            self.selenium.get("about:blank")
+        except Exception:  # noqa: BLE001
+            pass
+
+    @staticmethod
+    def _is_deadlock(exc):
+        """¿Este error (o su causa) es el deadlock del flush?
+
+        `flush` envuelve el OperationalError en un CommandError cuyo texto no
+        menciona el deadlock, así que hay que mirar la cadena de causas.
+        """
+        seen = 0
+        while exc is not None and seen < 5:
+            if "deadlock detected" in str(exc).lower():
+                return True
+            exc = exc.__cause__
+            seen += 1
+        return False
+
+    def _retry_on_deadlock(self, action, attempts=2):
+        """Ejecuta `action`, reintentando una vez si PostgreSQL detectó un deadlock.
+
+        El deadlock del teardown es una carrera, no un estado: al reintentar, la
+        petición que competía ya terminó. Se cierran las conexiones antes de
+        reintentar porque la víctima del deadlock queda con la transacción
+        abortada.
+        """
+        from django.db import connections
+
+        for attempt in range(attempts):
+            try:
+                return action()
+            except Exception as exc:  # noqa: BLE001
+                if attempt == attempts - 1 or not self._is_deadlock(exc):
+                    raise
+                for conn in connections.all():
+                    conn.close()
+                sleep(1)
+
+    def _fixture_teardown(self):
+        self.quiesce_browser()
+        self._retry_on_deadlock(super()._fixture_teardown)
+
     def active_hidden_elements(self, obj):
         """
         Display hidden elements, for example in dropdowns or elements that are hidden.
@@ -356,7 +772,7 @@ class SeleniumBase(StaticLiveServerTestCase):
         element.click();
         """
         )
-        sleep(obj.get("active_hidden_timeout", 5))
+        self.scaled_sleep(obj.get("active_hidden_timeout", 5))
         self.selenium.execute_script(move_cursor)
 
     def extra_action(self, obj, element):
@@ -376,10 +792,52 @@ class SeleniumBase(StaticLiveServerTestCase):
         elif obj["extra_action"] == "hover":
             self.selenium.execute_script(self.set_css_element(".component-btn-group"))
         elif obj["extra_action"] == "drag_and_drop":
-            self.action.drag_and_drop(
-                self.selenium.find_element(By.XPATH, obj["x"]),
-                self.selenium.find_element(By.XPATH, obj["y"]),
-            ).perform()
+            self.drag_and_drop_action(obj)
+
+    def drag_and_drop_action(self, obj, attempts=3):
+        """Arrastra obj["x"] hasta obj["y"] simulando el gesto paso a paso.
+
+        ActionChains.drag_and_drop() emite mousedown y mouseup casi seguidos y
+        sin mousemove intermedios. Las librerías de arrastre basadas en eventos
+        de ratón (dragula, que es la que usa el constructor de formularios de
+        formio) nunca llegan a considerar iniciado el arrastre y el elemento se
+        queda donde estaba, así que el diálogo del componente no se abre y el
+        paso siguiente falla como si su selector fuese incorrecto.
+
+        Aun con los movimientos intermedios el gesto es sensible al ritmo del
+        navegador, así que se reintenta: `expect` (si se indica) es el XPath de
+        lo que debe aparecer al soltar, y sirve para saber si hizo efecto.
+        """
+        expect = obj.get("expect")
+
+        for attempt in range(attempts):
+            source = self.selenium.find_element(By.XPATH, obj["x"])
+            target = self.selenium.find_element(By.XPATH, obj["y"])
+
+            self.action.move_to_element(source).click_and_hold().perform()
+            self.scaled_sleep(0.2)
+            # El primer desplazamiento es el que marca el inicio del arrastre.
+            self.action.move_by_offset(10, 10).perform()
+            self.scaled_sleep(0.2)
+            self.action.move_to_element(target).perform()
+            self.scaled_sleep(0.2)
+            # Un segundo movimiento sobre el destino asegura que se calcule la
+            # posición de inserción antes de soltar.
+            self.action.move_by_offset(0, 5).perform()
+            self.scaled_sleep(0.2)
+            self.action.release().perform()
+
+            if not expect:
+                return
+            try:
+                WebDriverWait(self.selenium, self.interactable_timeout).until(
+                    lambda driver: driver.find_elements(By.XPATH, expect)
+                )
+                return
+            except Exception:
+                if attempt == attempts - 1:
+                    raise
+                self.scaled_sleep(1)
 
     def do_sweetaler_comfirm_action(self, obj, element):
         """
@@ -387,23 +845,80 @@ class SeleniumBase(StaticLiveServerTestCase):
         """
         self.action.move_to_element(element).perform()
         element.click()
-        sleep(1)
+        self.scaled_sleep(1)
         self.selenium.execute_script(obj["comfirm"])
-        sleep(1)
+        self.scaled_sleep(1)
         self.selenium.execute_script(obj["comfirm"])
+
+    def relocate(self, obj):
+        """Vuelve a localizar el elemento del paso tras un cambio del DOM."""
+        from selenium.webdriver.support import expected_conditions as EC
+
+        try:
+            return WebDriverWait(self.selenium, self.interactable_timeout).until(
+                EC.element_to_be_clickable((By.XPATH, obj["path"]))
+            )
+        except Exception:
+            try:
+                return self.selenium.find_element(By.XPATH, obj["path"])
+            except NoSuchElementException:
+                return None
+
+    def js_click(self, obj, element):
+        """Click por JS. Último recurso, sólo sobre elementos visibles.
+
+        Un click por JS sobre un nodo oculto dejaría el test en verde ejecutando
+        una acción que el usuario no podría realizar: eso es un falso verde, no
+        una reparación.
+        """
+        if not (element.is_displayed() or obj.get("force_click")):
+            raise ElementNotInteractableException(
+                "el elemento de %s existe pero no es visible; si es intencional "
+                "usa force_click=True o extra_action='script'" % obj["path"]
+            )
+        self.js_click_fallbacks.append(obj["path"])
+        self.selenium.execute_script(
+            "arguments[0].scrollIntoView({block: 'center'});arguments[0].click();",
+            element,
+        )
+
+    def click_element(self, obj, element, retried=False):
+        try:
+            self.action.move_to_element(element).perform()
+            element.click()
+        except ElementClickInterceptedException:
+            self.js_click(obj, element)
+        except self.RETRY_EXCEPTIONS:
+            # El DOM cambió bajo los pies (típicamente una recarga de DataTable)
+            # o el elemento todavía no estaba pintado: se relocaliza y se
+            # reintenta una sola vez antes de caer al click por JS.
+            if not retried:
+                fresh = self.relocate(obj)
+                if fresh is not None:
+                    return self.click_element(obj, fresh, retried=True)
+            self.js_click(obj, element)
 
     def do_action(self, obj, element):
         """
         This function applies the respective action by obj path.
         """
-        if "extra_action" in obj:
+        # presence_only = espera pura: clicar el elemento localizado puede
+        # tener efectos (p.ej. el div de un modal es zona de backdrop y el
+        # click lo cierra).
+        if obj.get("presence_only"):
+            return None
+        if "extra_action" not in obj:
+            return self.click_element(obj, element)
+
+        try:
             self.extra_action(obj, element)
-        else:
-            try:
-                self.action.move_to_element(element).perform()
-                element.click()
-            except ElementClickInterceptedException:
-                self.selenium.execute_script("arguments[0].click();", element)
+        except self.RETRY_EXCEPTIONS:
+            if not self.step_needs_interaction(obj):
+                raise  # actúa por JS: el fallo es real, no de sincronía
+            fresh = self.relocate(obj)
+            if fresh is None:
+                raise
+            self.extra_action(obj, fresh)
 
     def apply_utils(self, obj):
 
@@ -411,7 +926,7 @@ class SeleniumBase(StaticLiveServerTestCase):
             self.selenium.execute_script(obj["scroll"])
 
         if "modalscroll" in obj:
-            self.selenium.execute_script(obj["scroll"])
+            self.selenium.execute_script(obj["modalscroll"])
 
         if "active_hidden_elements" in obj:
             self.active_hidden_elements(obj)
@@ -419,14 +934,16 @@ class SeleniumBase(StaticLiveServerTestCase):
         if "hover" in obj:
             self.selenium.execute_script(self.set_css_element(obj["element"]))
 
+        if "wait_dt" in obj:
+            self.wait_for_datatables_idle(
+                obj["wait_dt"] if isinstance(obj["wait_dt"], int) else 10
+            )
+
         if "wait_ready" in obj:
             timeout = obj["wait_ready"] if isinstance(obj["wait_ready"], int) else 10
             self.wait_for_page_ready(timeout=timeout)
         elif "sleep" in obj:
-            if isinstance(obj["sleep"], int):
-                sleep(obj["sleep"])
-            else:
-                sleep(15)
+            self.scaled_sleep(obj["sleep"] if isinstance(obj["sleep"], int) else 15)
 
     def assert_no_server_error(self, context_msg=''):
         try:
@@ -497,25 +1014,49 @@ class SeleniumBase(StaticLiveServerTestCase):
         if generate:
             self.create_directory_path(folder_name=folder_name)
             self.create_screenshot(order=order)
-        for obj in path_list:
-            self.apply_utils(obj)
-            self.assert_no_server_error(
-                context_msg='before finding element: %s' % obj.get('path', '?')
-            )
-            element = self.selenium.find_element(By.XPATH, obj["path"])
-            if generate:
-                order = self.create_screenshot(order=order)
-                x, y = self.get_x_y_element(element)
-                self.activate_move_cursor(element, cursor, hover)
-                order = self.take_screenshot_by_obj(obj, order)
-                self.hide_show_cursor(cursor, show_cursor=False)
-            self.do_action(obj, element)
-            if generate:
-                self.hide_show_cursor(cursor, x=x, y=y)
-                order = self.create_screenshot(order=order)
-            self.assert_no_server_error(
-                context_msg='after action on: %s' % obj.get('path', '?')
-            )
+        for index, obj in enumerate(path_list, start=1):
+            step_error = None
+            try:
+                self.apply_utils(obj)
+                self.assert_no_server_error(
+                    context_msg='before finding element: %s' % obj.get('path', '?')
+                )
+                element = self.find_element_waiting(obj["path"], obj)
+                if generate:
+                    order = self.create_screenshot(order=order)
+                    x, y = self.get_x_y_element(element)
+                    self.activate_move_cursor(element, cursor, hover)
+                    order = self.take_screenshot_by_obj(obj, order)
+                    self.hide_show_cursor(cursor, show_cursor=False)
+                self.do_action(obj, element)
+                if generate:
+                    self.hide_show_cursor(cursor, x=x, y=y)
+                    order = self.create_screenshot(order=order)
+                self.assert_no_server_error(
+                    context_msg='after action on: %s' % obj.get('path', '?')
+                )
+            except Exception as exc:
+                # Sin saber qué paso del path_list falló, clasificar el error
+                # obliga a releer el test entero. El tipo de excepción se
+                # conserva porque es lo que distingue un selector roto de un
+                # problema de sincronía.
+                context = "paso %d/%d de '%s' | xpath=%s | url=%s" % (
+                    index,
+                    len(path_list),
+                    folder_name,
+                    obj.get("path"),
+                    self.selenium.current_url,
+                )
+                if getattr(exc, "msg", None) is not None:
+                    exc.msg = "%s\n%s" % (context, exc.msg)
+                    raise
+                step_error = "%s\n%s: %s" % (context, type(exc).__name__, exc)
+            # Fuera del except a propósito: encadenar la excepción deja un
+            # __cause__ con su traceback, y con --parallel Django tiene que
+            # serializar el fallo entre procesos (falla con "cannot pickle
+            # 'traceback' object" salvo que tblib esté instalado).
+            if step_error is not None:
+                raise AssertionError(step_error)
         return order
 
     def create_gif_process(
@@ -524,9 +1065,20 @@ class SeleniumBase(StaticLiveServerTestCase):
         self.take_screenshot_list(path_list, folder_name, cursor, hover, order)
         self.create_gif(self.dir, folder_name)
 
+    def close_extra_windows(self):
+        """Deja solo la primera pestaña: el navegador se reutiliza entre tests
+        y una pestaña vieja puede conservar el window.name que el flujo va a
+        buscar."""
+        handles = self.selenium.window_handles
+        for handle in handles[1:]:
+            self.selenium.switch_to.window(handle)
+            self.selenium.close()
+        self.selenium.switch_to.window(handles[0])
+
     def create_gif_by_change_focus_tab(
         self, general_path_list, tab_name_list, folder_name
     ):
+        self.close_extra_windows()
         order = 0
         screenshot_order = 1
 
@@ -602,7 +1154,8 @@ class SeleniumBase(StaticLiveServerTestCase):
         from django.conf import settings
 
         SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
-        driver.get(base_url)
+        # Sólo hace falta estar en el dominio para poder dejar la cookie.
+        self.open_url(base_url, tag="force_login.get")
 
         session = SessionStore()
         session[SESSION_KEY] = user._meta.pk.value_to_string(user)
@@ -616,7 +1169,13 @@ class SeleniumBase(StaticLiveServerTestCase):
             "path": "/",
         }
         driver.add_cookie(cookie)
-        driver.refresh()
+        from selenium.common.exceptions import TimeoutException
+
+        try:
+            driver.refresh()
+        except TimeoutException:
+            self.diagnose_page("force_login.refresh")
+            raise
 
     @classmethod
     def tearDownClass(cls):
@@ -693,6 +1252,10 @@ class OptimizedSeleniumBase(SeleniumBase):
         if did_modify:
             from django.core.management import call_command
             from django.db import connections
+
+            # Mismo cuidado que en SeleniumBase._fixture_teardown: esta rama no
+            # llama a super(), así que repite el quiesce y el reintento.
+            self.quiesce_browser()
             for db_name in self._databases_names(include_mirrors=False):
                 inhibit_post_migrate = (
                     self.available_apps is not None
@@ -701,10 +1264,12 @@ class OptimizedSeleniumBase(SeleniumBase):
                         and hasattr(connections[db_name], "_test_serialized_contents")
                     )
                 )
-                call_command(
-                    "flush", verbosity=0, interactive=False,
-                    database=db_name, reset_sequences=False,
-                    allow_cascade=self.available_apps is not None,
-                    inhibit_post_migrate=inhibit_post_migrate,
+                self._retry_on_deadlock(
+                    lambda db_name=db_name, inhibit=inhibit_post_migrate: call_command(
+                        "flush", verbosity=0, interactive=False,
+                        database=db_name, reset_sequences=False,
+                        allow_cascade=self.available_apps is not None,
+                        inhibit_post_migrate=inhibit,
+                    )
                 )
             self.__class__._needs_reload = True

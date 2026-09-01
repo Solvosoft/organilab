@@ -3,7 +3,12 @@
 from django.db import migrations
 
 def update_template(apps, schema_editor):
-    model = apps.get_model('async_notifications', 'EmailTemplate')
+    # La app externa async_notifications fue reemplazada por
+    # djgentelella.async_notification; en instalaciones nuevas no existe.
+    try:
+        model = apps.get_model('async_notifications', 'EmailTemplate')
+    except LookupError:
+        return
     template = model.objects.filter(code='Shelf object in limit').first()
     if template is not None:
         temp = "<p>Hola</p><p>&nbsp;</p><p>Usted ha recibido este correo porque tiene un cambio en un laboratorio en el sistema Organilab.</p>" \

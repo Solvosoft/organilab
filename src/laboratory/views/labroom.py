@@ -18,11 +18,22 @@ from django.utils.text import slugify
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 
-from laboratory.forms import LaboratoryRoomForm, FurnitureCreateForm, RoomCreateForm
+from laboratory.forms import (
+    LaboratoryRoomForm,
+    FurnitureCreateForm,
+    RoomCreateForm,
+    RecipientSizeForm,
+)
 from laboratory.models import LaboratoryRoom, Laboratory
 from presentation.utils import build_qr_instance, update_qr_instance
 from report.forms import LaboratoryRoomReportForm
 from .djgeneric import CreateView, DeleteView, ListView, UpdateView
+from .labview_helpers import (
+    LabviewDeepLinkMixin,
+    LabviewSuggestionsMixin,
+    ShelfObjectModalFormsMixin,
+    display_shelfobject,
+)
 from ..shelfobject.forms import (
     TransferOutShelfObjectForm,
     MoveShelfObjectForm,
@@ -46,16 +57,17 @@ from ..shelfobject.serializers import SearchShelfObjectSerializer
 from ..utils import organilab_logentry, check_user_access_kwargs_org_lab
 
 
-def display_shelfobject(data, name):
-    return "%s %s" % (data["object__code"], data[name])
-
-
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
     permission_required("laboratory.view_laboratoryroom", raise_exception=True),
     name="dispatch",
 )
-class LaboratoryRoomsList(ListView):
+class LaboratoryRoomsList(
+    LabviewDeepLinkMixin,
+    LabviewSuggestionsMixin,
+    ShelfObjectModalFormsMixin,
+    ListView,
+):
     model = LaboratoryRoom
 
     def get_queryset(self):
@@ -63,213 +75,21 @@ class LaboratoryRoomsList(ListView):
         self.request.session["search_lab"] = self.lab
         return lab.laboratoryroom_set.all()
 
-    def get_labroom_data(self, serializer, result):
-        if "labroom" in serializer.validated_data:
-            result["labroom"] = [serializer.validated_data["labroom"].pk]
-
-    def get_furniture_data(self, serializer, result):
-        if "furniture" in serializer.validated_data:
-            furniture = serializer.validated_data["furniture"]
-            result["furniture"] = {"furniture": [furniture.pk]}
-
-            if "labroom" not in serializer.validated_data:
-                result["labroom"] = [furniture.labroom.pk]
-
-    def get_shelf_data(self, serializer, result):
-        if "shelf" in serializer.validated_data:
-            shelf = serializer.validated_data["shelf"]
-            result["shelf"] = {"shelf": [shelf.pk]}
-
-            if "furniture" not in serializer.validated_data:
-                result["furniture"] = {"furniture": [shelf.furniture.pk]}
-
-            if "labroom" not in serializer.validated_data:
-                result["labroom"] = [shelf.furniture.labroom.pk]
-
-    def get_shelfobject_data(self, serializer, result):
-        if "shelfobject" in serializer.validated_data:
-            shelfobject = serializer.validated_data["shelfobject"]
-            result["shelfobject"] = {"shelfobject": [shelfobject.pk]}
-            result["shelfobject"]["filter_shelfobject"] = True
-
-            if "shelf" not in serializer.validated_data:
-                result["shelf"] = {"shelf": [shelfobject.shelf.pk]}
-
-            if "furniture" not in serializer.validated_data:
-                result["furniture"] = {"furniture": [shelfobject.shelf.furniture.pk]}
-
-            if "labroom" not in serializer.validated_data:
-                result["labroom"] = [shelfobject.shelf.furniture.labroom.pk]
-
-    def search_by_url(self, kwargs):
-        result = {}
-
-        if any([i in kwargs for i in ["labroom", "furniture", "shelf", "shelfobject"]]):
-            serializer = SearchShelfObjectSerializer(
-                data=kwargs, context={"source_laboratory_id": self.lab}
-            )
-
-            if serializer.is_valid():
-                self.get_labroom_data(serializer, result)
-                self.get_furniture_data(serializer, result)
-                self.get_shelf_data(serializer, result)
-                self.get_shelfobject_data(serializer, result)
-            else:
-                raise Http404()
-        return result
-
-    def get_obj_colors(self):
-        return {
-            "labroom": "#b8e4ff",
-            "furniture": "#ff85d5",
-            "shelf": "#ffe180",
-            "shelfobject": "#95fab9",
-            "object": "#f4fab4",
-        }
-
-    def get_whitelist_by_object(
-        self,
-        model,
-        filters,
-        color,
-        value="name",
-        filter_values=None,
-        display_fnc=lambda x, y: x[y],
-    ):
-        suggestions_tag = []
-        contenttype = ContentType.objects.filter(
-            app_label="laboratory", model=model
-        ).first()
-
-        if filter_values is None:
-            filter_values = ["pk", value]
-        MODEL = contenttype.model_class()
-        queryset = MODEL.objects.filter(**filters).values(*filter_values).distinct()
-        whitelist = [
-            {
-                "pk": x["pk"],
-                "value": "%d: %s" % (x["pk"], display_fnc(x, value)),
-                "objtype": model,
-                "color": color,
-            }
-            for x in queryset
-        ]
-
-        if whitelist:
-            suggestions_tag = suggestions_tag + whitelist
-        return suggestions_tag
-
-    def get_suggestions_tag(self):
-        color_by_obj = self.get_obj_colors()
-        suggestions_tag = self.get_whitelist_by_object(
-            "laboratoryroom", {"laboratory__pk": self.lab}, color_by_obj["labroom"]
-        )
-        suggestions_tag += self.get_whitelist_by_object(
-            "furniture",
-            {"labroom__laboratory__pk": self.lab},
-            color_by_obj["furniture"],
-        )
-        suggestions_tag += self.get_whitelist_by_object(
-            "shelf",
-            {"furniture__labroom__laboratory__pk": self.lab},
-            color_by_obj["shelf"],
-        )
-        suggestions_tag += self.get_whitelist_by_object(
-            "shelfobject",
-            {"in_where_laboratory__pk": self.lab, "containershelfobject": None},
-            color_by_obj["shelfobject"],
-            filter_values=["pk", "object__name", "object__code"],
-            value="object__name",
-            display_fnc=display_shelfobject,
-        )
-        suggestions_tag += self.get_whitelist_by_object(
-            "object",
-            {
-                "shelfobject__in_where_laboratory": self.lab,
-                "shelfobject__containershelfobject": None,
-            },
-            color_by_obj["object"],
-            value="name",
-        )
-        return suggestions_tag
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["reserve_object_form"] = ReserveShelfObjectForm(prefix="reserve")
-        context["transfer_out_object_form"] = TransferOutShelfObjectForm(
-            users=self.request.user, lab_send=self.lab, org=self.org
-        )
-        context["increase_object_form"] = IncreaseShelfObjectForm(prefix="increase")
-        context["decrease_object_form"] = DecreaseShelfObjectForm(prefix="decrease")
-        context["move_object_form"] = MoveShelfObjectForm(
-            group_name="groupmoveso", prefix="move"
-        )
-        context["move_object_container_form"] = MoveShelfobjectWithContainerForm(
-            group_name="groupmovesocontainer",
-            modal_id="#movesocontainerform",
-            set_container_advanced_options=True,
-            prefix="movewithcontainer",
-        )
-        context["equipment_form"] = ShelfObjectEquipmentForm(
-            initial={"objecttype": 2}, org_pk=self.org, prefix="ef"
-        )
-        context["equipment_refuse_form"] = ShelfObjectRefuseEquipmentForm(
-            initial={"objecttype": 2}, org_pk=self.org, prefix="erf"
-        )
-        context["reactive_form"] = ShelfObjectReactiveForm(
-            initial={"objecttype": 0},
-            org_pk=self.org,
-            prefix="rf",
-            modal_id="#reactive_form",
-        )
-        context["manage_container_form"] = ContainerManagementForm(
-            modal_id="#managecontainermodal", prefix="mc"
-        )
-
-        context["reactive_refuse_form"] = ShelfObjectRefuseReactiveForm(
-            initial={"objecttype": 0},
-            org_pk=self.org,
-            prefix="rff",
-            modal_id="#reactive_refuse_form",
-        )
-        context["material_form"] = ShelfObjectMaterialForm(
-            initial={"objecttype": 1}, org_pk=self.org, prefix="mf"
-        )
-        context["box_form"] = ShelfObjectBoxForm(
-            initial={"objecttype": 0}, org_pk=self.org, prefix="bf"
-        )
-        context["update_box_form"] = ShelfObjectBoxForm(
-            initial={"objecttype": 0}, org_pk=self.org, prefix="ubf",
-            modal_id="#edit_box_form", object_readonly=True,
-        )
-        context["material_refuse_form"] = ShelfObjectRefuseMaterialForm(
-            initial={"objecttype": 1}, org_pk=self.org, prefix="mff"
-        )
-        context["transfer_in_approve_with_container_form"] = (
-            TransferInShelfObjectApproveWithContainerForm(
-                modal_id="#transfer_in_approve_with_container_id_modal",
-                set_container_advanced_options=True,
-            )
-        )
-        context["edit_form"] = EditReactiveForm(
-            prefix="edit",
-        )
-        context["edit_material_form"] = EditMaterialForm(
-            prefix="edit_material",
-        )
-        context["options"] = ["Reservation", "Add", "Transfer", "Substract"]
+        context.update(self.get_shelfobject_modal_forms())
         context["user"] = self.request.user
         context["search_by_url"] = self.search_by_url(self.request.GET)
         context["suggestions_tag"] = self.get_suggestions_tag()
-        context["colors_tooltip"] = render_to_string(
-            "laboratory/shelfobject/colors_tooltip.html", request=self.request
-        )
         return context
 
 
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
-    any_permission_required(["laboratory.add_laboratoryroom", "laboratory.view_laboratoryroom"], raise_exception=True),
+    any_permission_required(
+        ["laboratory.add_laboratoryroom", "laboratory.view_laboratoryroom"],
+        raise_exception=True,
+    ),
     name="dispatch",
 )
 class LabroomCreate(CreateView):

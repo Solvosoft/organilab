@@ -239,10 +239,11 @@ def _donut_arc_path(cx, cy, r_outer, r_inner, start_angle, end_angle):
 
 @login_required
 def sds_coverage_svg(request, org_pk):
-    from laboratory.models import SustanceCharacteristics, SDSTraceability
+    from sga.models import SDSTraceability
+    from sga.models import SubstanceCharacteristics
     from django.db.models import Subquery, OuterRef
 
-    qs = SustanceCharacteristics.objects.filter(obj__organization__pk=org_pk)
+    qs = SubstanceCharacteristics.objects.filter(object_related__organization__pk=org_pk)
     total = qs.count()
 
     if total == 0:
@@ -256,7 +257,7 @@ def sds_coverage_svg(request, org_pk):
 
     # Get latest traceability source per substance
     latest_trace = SDSTraceability.objects.filter(
-        sustance_characteristics=OuterRef("pk")
+        sga_substance_characteristics=OuterRef("pk")
     ).order_by("-creation_date")
 
     annotated = qs.annotate(latest_source=Subquery(latest_trace.values("source")[:1]))

@@ -246,14 +246,13 @@ def get_zone_substances(zone):
         ).select_related(
             'object'
         ).prefetch_related(
-            'object__sustancecharacteristics__h_code'
+            'object__substancharacteristics_object__h_code'
         )
         for so in shelf_objects:
             obj = so.object
-            if hasattr(obj, 'sustancecharacteristics') and obj.sustancecharacteristics:
-                h_codes = list(
-                    obj.sustancecharacteristics.h_code.values_list('code', flat=True)
-                )
+            sga_char = obj.substancharacteristics_object.first()
+            if sga_char:
+                h_codes = list(sga_char.h_code.values_list('code', flat=True))
                 if h_codes:
                     substances.append((obj.name, sorted(h_codes)))
         if substances:
@@ -283,14 +282,13 @@ def build_hcode_substance_map(zone):
         ).select_related(
             'object', 'shelf'
         ).prefetch_related(
-            'object__sustancecharacteristics__h_code'
+            'object__substancharacteristics_object__h_code'
         )
         for so in shelf_objects:
             obj = so.object
-            if hasattr(obj, 'sustancecharacteristics') and obj.sustancecharacteristics:
-                h_codes = list(
-                    obj.sustancecharacteristics.h_code.values_list('code', flat=True)
-                )
+            sga_char = obj.substancharacteristics_object.first()
+            if sga_char:
+                h_codes = list(sga_char.h_code.values_list('code', flat=True))
                 shelf_name = so.shelf.name if so.shelf else ''
                 entry = {"substance": obj.name, "lab": lab.name, "shelf": shelf_name}
                 for code in h_codes:

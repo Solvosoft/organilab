@@ -64,7 +64,7 @@ class Command(BaseCommand):
 
     def update_precursor(self):
         ObjectLogChange.objects.filter(
-            object__sustancecharacteristics__is_precursor=True,
+            object__substancharacteristics_object__is_precursor=True,
             precursor=False,
             object__type=0,
         ).update(precursor=True)

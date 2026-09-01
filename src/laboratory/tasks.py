@@ -2,12 +2,10 @@ from __future__ import absolute_import, unicode_literals
 
 import importlib
 import os
-import re
 import time
 from collections import defaultdict
 from datetime import date, timedelta
 
-from async_notifications.utils import send_email_from_template
 from celery.utils.log import get_task_logger
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -17,11 +15,10 @@ from django.template.loader import render_to_string
 from django.utils.translation import gettext_lazy as _
 
 from auth_and_perms.models import ProfilePermission
+from laboratory import dataconfig
 from laboratory.models import (
     Catalog,
-    SDSTraceability,
     ShelfObject,
-    SustanceCharacteristics,
     Laboratory,
     PrecursorReport,
     InformScheduler,
@@ -32,6 +29,7 @@ from laboratory.models import (
     OrganizationStructure,
     OrganizationStructureRelations,
 )
+from sga.models import SDSTraceability, SubstanceCharacteristics
 from pending_tasks.models import PendingTask
 from pending_tasks.utils import create_pending_task
 from .limit_shelfobject import send_email_limit_objs
@@ -134,9 +132,18 @@ def create_informs_based_on_period():
 
 @app.task()
 def remove_shelf_not_furniture():
+    """Borra los estantes que no ocupan ninguna posición de su mueble.
+
+    Un mueble sin cuadrícula se salta: no significa "ningún estante colocado",
+    significa que todavía no se ha dibujado, y borrarle todos los estantes
+    perdería datos.
+    """
     furnitures = Furniture.objects.all()
     for furniture in furnitures:
-        obj_pks = re.findall(r"\d+", furniture.dataconfig)
+        grid = furniture.get_grid()
+        if not grid:
+            continue
+        obj_pks = dataconfig.iter_shelf_pks(grid)
         furniture.shelf_set.all().exclude(pk__in=obj_pks).delete()
 
 
@@ -239,7 +246,7 @@ def _get_sources_for_substance(sc, force_pubchem_replacement):
     from laboratory.sds_sources import get_sources
 
     is_pubchem = SDSTraceability.objects.filter(
-        sustance_characteristics=sc, source="pubchem"
+        sga_substance_characteristics=sc, source="pubchem"
     ).exists()
 
     if force_pubchem_replacement and is_pubchem:
@@ -250,7 +257,7 @@ def _get_sources_for_substance(sc, force_pubchem_replacement):
 
 
 def _resolve_pdf_path(sc):
-    """Resolve the PDF path for a SustanceCharacteristics in MEDIA_ROOT."""
+    """Resolve the PDF path for a SubstanceCharacteristics in MEDIA_ROOT."""
     if not sc.security_sheet or not sc.security_sheet.name:
         return None
     local_path = os.path.join(settings.MEDIA_ROOT, sc.security_sheet.name)
@@ -259,28 +266,68 @@ def _resolve_pdf_path(sc):
     return None
 
 
-def _update_substance_from_pdf(sc):
+#: Campos escalares que solo se rellenan si están vacíos, pase lo que pase con
+#: `overwrite`. El CAS es la clave con la que `update_sds_and_extract_data` busca
+#: la ficha: sustituirlo por una heurística sobre el PDF puede dejar la sustancia
+#: sin poder actualizarse nunca más.
+_FILL_ONLY_IF_EMPTY = ("cas_id_number",)
+
+#: Booleanos que la extracción solo puede promocionar de False a True. Sus
+#: extractores devuelven False tanto cuando la sustancia no lo es como cuando no
+#: encuentran nada (`utils_pdf._extract_seveso`, `_extract_precursor`), así que
+#: escribir el False borraría una marca puesta a mano —y el reporte regulatorio
+#: de precursores se alimenta justo de ese campo.
+_PROMOTE_ONLY = ("seveso_list", "is_precursor")
+
+
+def _is_empty(sc, field):
+    """Un campo cuenta como vacío si nadie ha puesto nada en él.
+
+    `density` es FloatField no nulo con default 0, así que su vacío es el 0;
+    `molecular_formula` y `cas_id_number` son CharField nulos, y `bioaccumulable`
+    es BooleanField nulo.
+    """
+    value = getattr(sc, field)
+    if field == "density":
+        return not value
+    return value in (None, "")
+
+
+def _update_substance_from_pdf(sc, overwrite=True):
     """Extract data from the SDS PDF and update substance fields.
 
-    Uses .set() for h_codes and M2M catalog fields to replace completely.
-    Returns (success, message) tuple.
+    Con `overwrite=True` —el proceso masivo `update_sds_and_extract_data`— los
+    campos y los M2M se reemplazan con lo que diga el PDF, que es lo que ese
+    proceso busca. Con `overwrite=False` —el asistente de SGA— la extracción es
+    una propuesta: solo rellena lo que esté vacío y nunca pisa lo que la persona
+    ya haya escrito.
+
+    Returns (success, message, data) where `data` is the raw extraction (empty
+    dict on failure); quien registre la trazabilidad necesita de ahí la fecha de
+    revisión sin volver a abrir el PDF.
     """
     from laboratory.utils_pdf import extract_msds_data, extract_catalog_fields
     from sga.models import DangerIndication
 
     file_path = _resolve_pdf_path(sc)
     if not file_path:
-        return False, "no PDF file"
+        return False, "no PDF file", {}
 
     data = extract_msds_data(file_path)
     if data is None:
-        return False, "failed to extract PDF data"
+        return False, "failed to extract PDF data", {}
 
     pdf_text = data.pop("_text", "")
     lang = data.get("_lang", "es")
 
+    def writable(field):
+        if field in _FILL_ONLY_IF_EMPTY:
+            return _is_empty(sc, field)
+        return overwrite or _is_empty(sc, field)
+
     # Update simple fields (only if extracted value is not None)
     simple_fields = {
+        "cas_id_number": data.get("cas_id_number"),
         "molecular_formula": data.get("molecular_formula"),
         "density": data.get("density"),
         "bioaccumulable": data.get("bioaccumulable"),
@@ -288,13 +335,19 @@ def _update_substance_from_pdf(sc):
         "is_precursor": data.get("is_precursor"),
     }
     for field, value in simple_fields.items():
-        if value is not None:
+        if value is None:
+            continue
+        if field in _PROMOTE_ONLY:
+            if value:
+                setattr(sc, field, True)
+            continue
+        if writable(field):
             setattr(sc, field, value)
     sc.save()
 
     # H-codes: SET (replace) instead of ADD
     h_codes = data.get("h_codes", [])
-    if h_codes:
+    if h_codes and (overwrite or not sc.h_code.exists()):
         h_code_objects = list(DangerIndication.objects.filter(code__in=h_codes))
         sc.h_code.set(h_code_objects)
 
@@ -326,17 +379,17 @@ def _update_substance_from_pdf(sc):
         ("precursor_type", "precursor_type_id"),
     ]:
         value = catalog_fields.get(cat_key)
-        if value is not None:
+        if value is not None and (overwrite or getattr(sc, model_field) is None):
             setattr(sc, model_field, value)
 
     # M2M catalog fields: SET (replace)
     for field_name in ["white_organ", "ue_code", "nfpa", "storage_class"]:
         pks = catalog_fields.get(field_name, [])
-        if pks:
+        if pks and (overwrite or not getattr(sc, field_name).exists()):
             getattr(sc, field_name).set(pks)
 
     sc.save()
-    return True, "updated"
+    return True, "updated", data
 
 
 @app.task()
@@ -349,9 +402,11 @@ def update_sds_and_extract_data(
     1. Download/update SDS (replace PubChem with Merck when possible)
     2. Extract data from the PDF and update substance fields
     3. H-codes are set (replaced) exactly as found in the PDF
+    4. El CAS solo se rellena si está vacío, y `is_precursor`/`seveso_list` solo
+       se promocionan a True: ver `_update_substance_from_pdf`
 
     Args:
-        sc_ids: list of SustanceCharacteristics PKs (None = all with CAS)
+        sc_ids: list of SubstanceCharacteristics PKs (None = all with CAS)
         force_pubchem_replacement: if True, try Merck for PubChem SDSs
         max_years: max age before considering SDS outdated
         delay: seconds between downloads (rate limiting)
@@ -359,9 +414,9 @@ def update_sds_and_extract_data(
     from laboratory.sds_sources import check_needs_update, update_sds_for_substance
 
     qs = (
-        SustanceCharacteristics.objects.filter(cas_id_number__isnull=False)
+        SubstanceCharacteristics.objects.filter(cas_id_number__isnull=False)
         .exclude(cas_id_number="")
-        .select_related("obj")
+        .select_related("object_related")
     )
     if sc_ids:
         qs = qs.filter(pk__in=sc_ids)
@@ -373,7 +428,7 @@ def update_sds_and_extract_data(
     task_logger.info("Starting SDS update for %d substances", total)
 
     for i, sc in enumerate(qs.iterator(), 1):
-        name = str(sc.obj) if sc.obj else f"PK={sc.pk}"
+        name = str(sc.object_related) if sc.object_related else f"PK={sc.pk}"
         cas = sc.cas_id_number.strip()
         task_logger.info("[%d/%d] Processing %s (CAS: %s)", i, total, name, cas)
 
@@ -416,7 +471,7 @@ def update_sds_and_extract_data(
                     time.sleep(delay)
 
             # Extract data from the PDF and update substance fields
-            success, msg = _update_substance_from_pdf(sc)
+            success, msg, _extracted = _update_substance_from_pdf(sc)
             if success:
                 task_logger.info("[OK] %s: %s", name, msg)
                 updated += 1

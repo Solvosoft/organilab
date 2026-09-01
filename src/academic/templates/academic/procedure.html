@@ -19,29 +19,9 @@
 	</div>
 	</div>
 
-	<div class="modal fade" id="add_my_procedures" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-						aria-hidden="true">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title">{% trans 'Create procedure' %}</h5>
-						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-					<form
-						action="{% url 'academic:add_my_procedures' lab_pk=laboratory content_type='laboratory' model='laboratory' org_pk=org_pk %}"
-						method="POST">
-						{% csrf_token %}
-						{{ form.as_horizontal }}
-						<div class="modal-footer">
-							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
-							<button type="submit" class="btn btn-primary">{% trans 'Add' %}</button>
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
+	{% url 'academic:add_my_procedures' lab_pk=laboratory content_type='laboratory' model='laboratory' org_pk=org_pk as add_my_procedures_url %}
+	{% trans 'Create procedure' as add_my_procedures_title %}
+	{% include 'modal_template_submit_form.html' with form=form id="add_my_procedures" title=add_my_procedures_title form_id="add_my_procedures_form" url=add_my_procedures_url %}
 	<div aria-hidden="true" class="modal fade" id="reservation_modal" role="dialog"
 						tabindex="-1">
 		<div class="modal-dialog" role="document">

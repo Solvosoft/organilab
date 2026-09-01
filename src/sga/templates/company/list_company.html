@@ -61,7 +61,11 @@
 {{block.super}}
 <script>
 (function(){
-   var table = $("#companytable").DataTable();
+   var table = $("#companytable").DataTable({
+       language: {
+           "url": datatables_lang
+       }
+   });
 })(jQuery);
 const messages= {
     title: "{% trans 'Remove company' %}",

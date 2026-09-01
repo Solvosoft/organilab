@@ -596,6 +596,123 @@ URLNAME_PERMISSIONS = {
             "permission": "laboratory.view_laboratoryroom",
         },
     ],
+    "labview": [
+        {
+            "name": "View Laboratory Room",
+            "category": "Laboratory Room",
+            "permission": "laboratory.view_laboratoryroom",
+        },
+        {
+            "name": "Add Laboratory Room",
+            "category": "Laboratory Room",
+            "permission": "laboratory.add_laboratoryroom",
+        },
+        {
+            "name": "Change Laboratory Room",
+            "category": "Laboratory Room",
+            "permission": "laboratory.change_laboratoryroom",
+        },
+        {
+            "name": "Delete Laboratory Room",
+            "category": "Laboratory Room",
+            "permission": "laboratory.delete_laboratoryroom",
+        },
+        {
+            "name": "View Furniture",
+            "category": "Furniture",
+            "permission": "laboratory.view_furniture",
+        },
+        {
+            "name": "Add Furniture",
+            "category": "Furniture",
+            "permission": "laboratory.add_furniture",
+        },
+        {
+            "name": "Change Furniture",
+            "category": "Furniture",
+            "permission": "laboratory.change_furniture",
+        },
+        {
+            "name": "Delete Furniture",
+            "category": "Furniture",
+            "permission": "laboratory.delete_furniture",
+        },
+        {
+            "name": "View Shelf",
+            "category": "Shelf",
+            "permission": "laboratory.view_shelf",
+        },
+        {
+            "name": "Add Shelf",
+            "category": "Shelf",
+            "permission": "laboratory.add_shelf",
+        },
+        {
+            "name": "Change Shelf",
+            "category": "Shelf",
+            "permission": "laboratory.change_shelf",
+        },
+        {
+            "name": "Delete Shelf",
+            "category": "Shelf",
+            "permission": "laboratory.delete_shelf",
+        },
+        {
+            "name": "View Shelf Object",
+            "category": "Shelf Object",
+            "permission": "laboratory.view_shelfobject",
+        },
+        {
+            "name": "Add Shelf Object",
+            "category": "Shelf Object",
+            "permission": "laboratory.add_shelfobject",
+        },
+        {
+            "name": "Change Shelf Object",
+            "category": "Shelf Object",
+            "permission": "laboratory.change_shelfobject",
+        },
+        {
+            "name": "Delete Shelf Object",
+            "category": "Shelf Object",
+            "permission": "laboratory.delete_shelfobject",
+        },
+        {
+            "name": "View Shelf Object Observations",
+            "category": "Shelf Object Observations",
+            "permission": "laboratory.view_shelfobjectobservation",
+        },
+        {
+            "name": "Manage Disposal",
+            "category": "Disposal",
+            "permission": "laboratory.can_manage_disposal",
+        },
+        {
+            "name": "Add Report",
+            "category": "Report",
+            "permission": "laboratory.do_report",
+        },
+        {
+            "name": "Add Transfer",
+            "category": "Transfer",
+            "permission": "laboratory.add_tranferobject",
+        },
+        {
+            "name": "View Recipient Size",
+            "category": "Labels",
+            "permission": "sga.view_recipientsize",
+        },
+        {
+            "name": "Add Recipient Size",
+            "category": "Labels",
+            "permission": "sga.add_recipientsize",
+        },
+        {
+            "name": "Add Reserved Product",
+            "category": "Reservation",
+            "permission": "reservations_management.add_reservedproducts",
+        },
+    ],
     "rooms_create": [
         {
             "name": "Add Laboratory Room",
@@ -1097,18 +1214,10 @@ URLNAME_PERMISSIONS = {
             "permission": "msds.view_msdsobject",
         },
     ],
-    "msds_msdsobject_create": [
-        {
-            "name": "Add MSDS Object",
-            "category": "MSDS Object",
-            "permission": "msds.add_msdsobject",
-        },
-        {
-            "name": "View MSDS Object",
-            "category": "MSDS Object",
-            "permission": "msds.view_msdsobject",
-        },
-    ],
+    # "msds_msdsobject_create" se retiró: el alta de fichas ya no tiene pantalla
+    # propia, se hace en el paso 1 del asistente de sustancias. Las vecinas
+    # msds_msdsobject_upate/delete/detail tampoco resuelven a ninguna URL y
+    # habría que revisarlas junto al resto del catálogo.
     "msds_msdsobject_upate": [
         {
             "name": "Change MSDS Object",
@@ -2233,7 +2342,7 @@ URLNAME_PERMISSIONS = {
             "permission": "sga.change_displaylabel",
         },
     ],
-    "step_two": [
+    "sgalabel_step_one": [
         {
             "name": "Add SGA Complement",
             "category": "SGA Complement",
@@ -2255,7 +2364,7 @@ URLNAME_PERMISSIONS = {
             "permission": "sga.change_displaylabel",
         },
     ],
-    "step_three": [
+    "sgalabel_step_two": [
         {
             "name": "View SGA Complement",
             "category": "SGA Complement",
@@ -2489,6 +2598,27 @@ URLNAME_PERMISSIONS = {
         }
     ],
     "get_preview": [
+        {
+            "name": "View Label SGA",
+            "category": "Label SGA",
+            "permission": "sga.view_displaylabel",
+        }
+    ],
+    # El motor renderiza la etiqueta al vuelo: no persiste nada, así que basta
+    # con leer la sustancia y el tamaño de recipiente que fija sus dimensiones.
+    "generate_label": [
+        {
+            "name": "View Substance",
+            "category": "Substance",
+            "permission": "sga.view_substance",
+        },
+        {
+            "name": "View Recipient Size",
+            "category": "Recipient Size",
+            "permission": "sga.view_recipientsize",
+        },
+    ],
+    "engine_label_preview": [
         {
             "name": "View Label SGA",
             "category": "Label SGA",
@@ -3213,7 +3343,7 @@ URLNAME_PERMISSIONS = {
         {
             "name": "Verify SDS",
             "category": "Verify SDS",
-            "permission": "laboratory.change_sdstraceability",
+            "permission": "sga.change_sdstraceability",
         }
     ],
     "lab_or_org_request": [
@@ -3245,4 +3375,115 @@ URLNAME_PERMISSIONS = {
             "permission": "laboratory.can_approve_labororgrequest",
         },
     ],
+    "send_to_review": [
+        {
+            "name": "Change Substance",
+            "category": "Substance",
+            "permission": "sga.change_substance",
+        },
+        {
+            "name": "View Substance",
+            "category": "Substance",
+            "permission": "sga.view_substance",
+        },
+        {
+            "name": "Add Review Substance",
+            "category": "Review Substance",
+            "permission": "sga.add_reviewsubstance",
+        },
+        {
+            "name": "View Review Substance",
+            "category": "Review Substance",
+            "permission": "sga.view_reviewsubstance",
+        },
+    ],
+    "upload_sds": [
+        {
+            "name": "Change Substance Characteristics",
+            "category": "Substance Characteristics",
+            "permission": "sga.change_substancecharacteristics",
+        },
+        {
+            "name": "Add SDS Traceability",
+            "category": "SDS Traceability",
+            "permission": "sga.add_sdstraceability",
+        },
+        {
+            "name": "Add Substance",
+            "category": "Substance",
+            "permission": "sga.add_substance",
+        },
+    ],
+    "sds_task_status": [
+        {
+            "name": "View Substance Characteristics",
+            "category": "Substance Characteristics",
+            "permission": "sga.view_substancecharacteristics",
+        },
+    ],
+    "accept_substance": [
+        {
+            "name": "Change Substance",
+            "category": "Substance",
+            "permission": "sga.change_substance",
+        },
+        {
+            "name": "Change Review Substance",
+            "category": "Review Substance",
+            "permission": "sga.change_reviewsubstance",
+        },
+        {
+            "name": "View Review Substance",
+            "category": "Review Substance",
+            "permission": "sga.view_reviewsubstance",
+        },
+        {
+            # Aprobar una sustancia crea su Object de inventario.
+            "name": "Add Object",
+            "category": "Object",
+            "permission": "laboratory.add_object",
+        },
+    ],
+    "recipient_size": [
+        {
+            "name": "Add Recipient Size",
+            "category": "Recipient Size",
+            "permission": "sga.add_recipientsize",
+        },
+        {
+            "name": "Delete Recipient Size",
+            "category": "Recipient Size",
+            "permission": "sga.delete_recipientsize",
+        },
+        {
+            "name": "View Recipient Size",
+            "category": "Recipient Size",
+            "permission": "sga.view_recipientsize",
+        },
+    ],
+    # La papelera es de la biblioteca: sus permisos viven en djgentelella,
+    # no en laboratory. update_roles.update_papelera() ya se los da a los
+    # roles fijos; esto es lo que permite configurarlos por organización.
+    "trash_list": [
+        {
+            "name": "View Trash",
+            "category": "Trash",
+            "permission": "djgentelella.view_trash",
+        },
+        {
+            "name": "Restore from Trash",
+            "category": "Trash",
+            "permission": "djgentelella.change_trash",
+        },
+        {
+            "name": "Delete permanently from Trash",
+            "category": "Trash",
+            "permission": "djgentelella.delete_trash",
+        },
+    ],
 }
+
+# create_sustance, update_substance y step_one son la misma vista, así que
+# comparten exigencias de permisos; se declaran una vez y se replican.
+URLNAME_PERMISSIONS["create_sustance"] = URLNAME_PERMISSIONS["step_one"]
+URLNAME_PERMISSIONS["update_substance"] = URLNAME_PERMISSIONS["step_one"]

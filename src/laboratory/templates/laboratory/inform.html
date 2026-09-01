@@ -61,37 +61,21 @@
   </div>
 </div>
 
-<div class="modal fade" id="add_inform" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" >{% trans 'Create Inform' %}</h5>
-           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form action="{% url 'laboratory:add_informs' lab_pk=laboratory content_type='laboratory' model='laboratory' org_pk=org_pk %}" method="POST">
-            {% csrf_token %}
-            {{form.as_horizontal}}
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
-        <button type="submit" class="btn btn-primary">{% trans 'Add' %}</button>
-      </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
+{% url 'laboratory:add_informs' lab_pk=laboratory content_type='laboratory' model='laboratory' org_pk=org_pk as add_inform_url %}
+{% trans 'Create Inform' as add_inform_title %}
+{% include 'modal_template_submit_form.html' with form=form id="add_inform" title=add_inform_title form_id="add_inform_form" url=add_inform_url %}
 {% endblock %}
 {% block js %}
   <script>
     $(document).ready(function() {
 
-    document.table_default_dom = "<'row'<'col-sm-12 col-md-4 d-flex justify-content-start'l>" +
-                 "<'col-sm-12 col-md-8 d-flex align-items-center justify-content-end mt-1'f>>" +
-                 "<'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>";
-
       $('#inform').DataTable({
-      dom: document.table_default_dom
+      layout: {
+          topStart: 'pageLength',
+          topEnd: 'search',
+          bottomStart: 'info',
+          bottomEnd: 'paging'
+      }
      	});
       });
   </script>

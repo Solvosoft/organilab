@@ -171,12 +171,16 @@ function delete_comment(comment) {
     });
 }
 
-document.table_default_dom = "<'row'<'col-sm-6 col-md-6 p-0' f>" +
-    "<'col-sm-11 col-md-11 mt-1 p-0 d-flex align-items-center justify-content-start'l>" +
-    "<'col-sm-1 col-md-1 mt-1 d-flex align-items-center justify-content-end 'B>>" +
-    "<'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>";
+const procedure_table_layout = {
+    topStart: 'search',
+    top: 'pageLength',
+    topEnd: 'buttons',
+    bottomStart: 'info',
+    bottomEnd: 'paging'
+};
 
 datatableelement = createDataTable('#datatableelement', urls['get_datatable_info'], {
+    layout: procedure_table_layout,
     columns: [
         {data: "created_by", name: "created_by", title: gettext("Creator"), type: "string", visible: true},
         {
@@ -223,11 +227,11 @@ datatableelement = createDataTable('#datatableelement', urls['get_datatable_info
 
 
 $(document).ready(function () {
-    $('.dataTables_filter').addClass('w-100');
-    $('.dataTables_filter input').addClass('filter-input').css('width', '96%');
-    $('.dataTables_filter label').addClass('filter-label').css('width', '100%');
-    $('.dataTables_paginate').removeClass('paging_full_numbers');
-    $('.dataTables_paginate').addClass('paging_simple_numbers');
+    // DataTables 2 renombró dataTables_filter/paginate a dt-search/dt-paging;
+    // el intercambio paging_full_numbers/paging_simple_numbers de DT1 ya no existe.
+    $('.dt-search').addClass('w-100');
+    $('.dt-search input').addClass('filter-input').css('width', '96%');
+    $('.dt-search label').addClass('filter-label').css('width', '100%');
     $('#datatableelement').removeClass('dtr-inline');
 });
 

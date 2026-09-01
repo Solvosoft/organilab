@@ -8,55 +8,33 @@ Free as freedom will be 10/10/2016
 
 
 from laboratory.models import LaboratoryRoom, Furniture, Shelf, Object, ShelfObject
-import json
 import re
+
+from laboratory import dataconfig
 
 
 def get_dataconfig(furniture):
-    if furniture.dataconfig:
-        dataconfig = json.loads(furniture.dataconfig)
-    else:
-        dataconfig = []
-    return dataconfig
-
-
-def build_dataconfig(furniture, col, row):
-    dataconfig = get_dataconfig(furniture)
-    if len(dataconfig) > 0:
-        # Work with rows
-        row2 = len(dataconfig) - 1
-        col2 = len(dataconfig[0]) - 1
-        if row2 < row:
-            row_less = row - row2
-            for x in range(row_less):
-                dataconfig.append([""] * (col2 + 1))
-        # Work with columns
-        if col2 < col:
-            col_less = col - col2
-            for i, x in enumerate(dataconfig):
-                dataconfig[i] = dataconfig[i] + [""] * col_less
-    else:
-        for x in range(row + 1):
-            dataconfig.append([""] * (col + 1))
-    return dataconfig
-
-
-def _set_dataconfig(furniture, col, row, value):
-    dataconfig = build_dataconfig(furniture, col, row)
-    if dataconfig[row][col]:
-        dataconfig[row][col] += ","
-    dataconfig[row][col] += str(value)
-    furniture.dataconfig = json.dumps(dataconfig)
-    furniture.save()
-    return dataconfig
+    """Matriz del mueble.  Delega en el módulo canónico."""
+    return furniture.get_grid()
 
 
 def set_dataconfig(furniture, col, value):
-    data = get_dataconfig(furniture)
+    """Coloca el estante en la columna ``col``, en la primera fila libre.
+
+    Antes este módulo escribía celdas CSV (``"1,2"``), un tercer formato
+    incompatible con los otros dos; ahora la posición la escribe el servicio,
+    que serializa siempre listas de enteros.
+    """
+    grid = furniture.get_grid()
     row = 0
-    if len(data) > col:
-        row = len(data[col])
-    return _set_dataconfig(furniture, col, row, value)
+    for irow, cells in enumerate(grid):
+        if col >= len(cells) or not cells[col]:
+            row = irow
+            break
+    else:
+        row = len(grid)
+    dataconfig.DataconfigService(furniture).place_shelf(value, row, col)
+    return furniture.get_grid()
 
 
 def set_in_position(furniture, code, tipo=None):

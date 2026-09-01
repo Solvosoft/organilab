@@ -4,11 +4,12 @@ from django.core.management.base import BaseCommand
 from academic.models import MyProcedure
 from auth_and_perms.models import ProfilePermission, Profile
 from derb.models import CustomForm
+from djgentelella.models import HistoryRelation
 from laboratory.models import OrganizationStructure, Laboratory, Object, \
     Furniture, ShelfObjectEquipmentCharacteristics, ShelfObjectLog, \
     ShelfObjectMaintenance, ShelfObjectCalibrate, ShelfObjectTraining, \
     ShelfObjectGuarantee, UserOrganization, ObjectLogChange, Inform, InformScheduler, \
-    InformsPeriod, OrganizationStructureRelations, LabOrgLogEntry, RegisterUserQR
+    InformsPeriod, OrganizationStructureRelations, RegisterUserQR
 
 from reservations_management.models import ReservedProducts
 from risk_management.models import RiskZone, PriorityConstrain, IncidentReport, Regent, \
@@ -71,7 +72,7 @@ class Command(BaseCommand):
                                content_type=lab_contenttype).
          update(organization=self.parent_org))
 
-        (LabOrgLogEntry.objects.filter(content_type=org_contenttype).
+        (HistoryRelation.objects.filter(content_type=org_contenttype).
          update(object_id=self.parent_org.pk))
 
         (RegisterUserQR.objects.filter(organization_creator__in=self.child_org,

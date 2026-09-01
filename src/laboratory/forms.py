@@ -5,7 +5,6 @@ from django.conf import settings
 from django.contrib.auth.forms import UsernameField
 from django.contrib.auth.models import Group, User
 from django.core.exceptions import ValidationError
-from django.core.validators import RegexValidator
 from django.db.models import Q
 from django.forms import ModelForm
 from django.shortcuts import get_object_or_404
@@ -16,12 +15,12 @@ from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets.files import FileChunkedUpload
 from djgentelella.widgets.selects import AutocompleteSelect, AutocompleteSelectMultiple
 from djgentelella.widgets.tinymce import EditorTinymce
-from location_field.forms.plain import PlainLocationField as PlainLocationFormField
 
 from auth_and_perms.models import Profile, Rol
 from authentication.forms import PasswordChangeForm
 from derb.models import CustomForm as DerbCustomForm
 from laboratory import utils
+from laboratory import dataconfig
 from laboratory.models import (
     OrganizationStructure,
     CommentInform,
@@ -40,7 +39,7 @@ from laboratory.models import (
 )
 from reservations_management.models import ReservedProducts
 from risk_management.models import Regent
-from sga.models import DangerIndication
+from sga.models import DangerIndication, RecipientSize
 from .models import (
     Laboratory,
     Object,
@@ -129,7 +128,6 @@ class LaboratoryCreate(GTForm, forms.ModelForm):
             "name": genwidgets.TextInput,
             "phone_number": genwidgets.TextInput,
             "location": genwidgets.TextInput,
-            "geolocation": genwidgets.TextInput,
             "organization": genwidgets.HiddenInput,
             "area": genwidgets.FloatInput,
             "description": genwidgets.Textarea,
@@ -231,7 +229,6 @@ class LaboratoryEdit(GTForm, forms.ModelForm):
             "phone_number": genwidgets.TextInput,
             "email": genwidgets.EmailInput,
             "location": genwidgets.TextInput,
-            "geolocation": genwidgets.TextInput,
             "organization": genwidgets.HiddenInput,
             "description": genwidgets.Textarea,
             "area": genwidgets.FloatInput,
@@ -241,6 +238,14 @@ class LaboratoryEdit(GTForm, forms.ModelForm):
             "faculty_dispatch": genwidgets.TextInput,
             "workplace": genwidgets.SelectMultiple,
         }
+
+
+class LaboratorySearchForm(GTForm, forms.Form):
+    search_fil = forms.CharField(
+        required=False,
+        widget=genwidgets.TextInput,
+        label=_("Search laboratory"),
+    )
 
 
 class H_CodeForm(GTForm, forms.Form):
@@ -452,17 +457,22 @@ class RoomCreateForm(forms.ModelForm, GTForm):
 
 
 class FurnitureForm(forms.ModelForm, GTForm):
-    dataconfig = forms.CharField(
-        widget=forms.HiddenInput,
-        validators=[
-            RegexValidator(
-                r'^[\[\],\s"\d]*$',
-                message=_("Invalid format in shelf dataconfig "),
-                code="invalid_format",
-            )
-        ],
-    )
+    dataconfig = forms.CharField(widget=forms.HiddenInput)
     shelfs = forms.CharField(required=False, widget=forms.HiddenInput)
+
+    def clean_dataconfig(self):
+        """Acepta el legado y normaliza al guardar.
+
+        Sustituye a un RegexValidator que sólo miraba los caracteres: no
+        comprobaba la estructura y, además, rechazaba las comillas simples que
+        el propio modelo escribía con ``str(dataconfig)``.
+        """
+        value = self.cleaned_data["dataconfig"]
+        try:
+            matrix = dataconfig.parse_strict(value)
+        except dataconfig.DataconfigInvalid as error:
+            raise forms.ValidationError(str(error), code="invalid_format")
+        return dataconfig.dump(matrix)
 
     def clean_shelfs(self):
         value = self.cleaned_data["shelfs"]
@@ -1903,13 +1913,6 @@ class LabOrOrgRequestForm(GTForm, forms.ModelForm):
         widget=genwidgets.YesNoInput(shparent=".mb-3"),
     )
 
-    geolocation = PlainLocationFormField(
-        based_fields=[],
-        zoom=15,
-        required=False,
-        initial="9.895804362670006,-84.1552734375",
-    )
-
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop("org_pk", None)
         super().__init__(*args, **kwargs)
@@ -1917,22 +1920,24 @@ class LabOrOrgRequestForm(GTForm, forms.ModelForm):
 
         p = (self.prefix + "-") if self.prefix else ""
         self.fields["is_org"].widget.attrs["data-rel"] = f"#id_{p}parent_org"
-        self.fields["is_org"].widget.attrs["data-relhidden"] = ";".join([
-            f"#id_{p}phone_number",
-            f"#id_{p}location",
-            f"#id_{p}geolocation",
-            f"#id_{p}email",
-            f"#id_{p}coordinator",
-            f"#id_{p}unit",
-            f"#id_{p}description",
-            f"#id_{p}area",
-            f"#id_{p}faculty_dispatch",
-            f"#id_{p}organization",
-            f"#id_{p}responsible",
-            f"#id_{p}workplace",
-            f"#id_{p}nearby_sites",
-            f"#id_{p}water_resources_affected",
-        ])
+        self.fields["is_org"].widget.attrs["data-relhidden"] = ";".join(
+            [
+                f"#id_{p}phone_number",
+                f"#id_{p}location",
+                f"#id_{p}geolocation",
+                f"#id_{p}email",
+                f"#id_{p}coordinator",
+                f"#id_{p}unit",
+                f"#id_{p}description",
+                f"#id_{p}area",
+                f"#id_{p}faculty_dispatch",
+                f"#id_{p}organization",
+                f"#id_{p}responsible",
+                f"#id_{p}workplace",
+                f"#id_{p}nearby_sites",
+                f"#id_{p}water_resources_affected",
+            ]
+        )
 
         if org_pk:
             root = OrganizationStructure.objects.filter(pk=org_pk).first()
@@ -2009,3 +2014,23 @@ class LabOrOrgRequestFilterForm(GTForm, forms.Form):
         required=False,
         widget=forms.Select(attrs={"class": "form-control"}),
     )
+
+
+class RecipientSizeForm(GTForm, forms.ModelForm):
+    unit = forms.CharField(
+        initial=_("Centimeters"),
+        label=_("Measurement unit"),
+        widget=genwidgets.TextInput(
+            attrs={"disabled": True},
+        ),
+    )
+
+    class Meta:
+        model = RecipientSize
+        fields = ["name", "height", "width"]
+        widgets = {
+            "name": genwidgets.TextInput,
+            "height": genwidgets.TextInput,
+            "width": genwidgets.TextInput,
+        }
+        exclude = ["laboratory"]
