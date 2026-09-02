@@ -34,7 +34,7 @@ class ReviewSubstanceViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         return queryset.annotate(
             comercial_name=F("substance__comercial_name")
             # Sin esto la columna de laboratorios dispara una consulta por fila.
-        ).prefetch_related("substance__laboratories")
+        ).prefetch_related("substance__laboratories").order_by("-creation_date")
 
     def filter_queryset(self, queryset):
         queryset = super().filter_queryset(queryset)
@@ -48,7 +48,7 @@ class ReviewSubstanceViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
             "substance__organization": self.organization,
             "is_approved": showapprove,
         }
-        return queryset.filter(**filter_data)
+        return queryset.filter(**filter_data).order_by("-creation_date")
 
     def list(self, request, org_pk, *args, **kwargs):
         self.organization = get_object_or_404(
