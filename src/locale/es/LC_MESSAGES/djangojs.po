@@ -1090,36 +1090,8 @@ msgstr "Se creó con éxito el tamaño de recipiente."
 msgid "Weight"
 msgstr "Peso"
 
-
-msgid "Substance Characteristics"
-msgstr "Características de la sustancia"
-
-msgid "Is Pure"
-msgstr "Es Pura"
-
-msgid "Is Dangerous"
-msgstr "Es Peligrosa"
-
-msgid "Has Threshold"
-msgstr "Tiene Umbral"
-
 msgid "Seveso List III"
 msgstr "Lista Seveso III"
-
-msgid "Density"
-msgstr "Densidad"
-
-msgid "CAS Number"
-msgstr "Numero CAS"
-
-msgid "Bioaccumulable"
-msgstr "Bioacumulable"
-
-msgid "Download Security Sheet"
-msgstr "Descarga hoja de seguridad"
-
-msgid "Storage Class"
-msgstr "Clases de almacenamientos"
 
 msgid "Maximum Limit"
 msgstr "Limíte Maximo"
@@ -1127,3 +1099,5 @@ msgstr "Limíte Maximo"
 msgid "Minimum Limit"
 msgstr "Limite Minimo"
 
+msgid "Continue"
+msgstr "Continuar"
