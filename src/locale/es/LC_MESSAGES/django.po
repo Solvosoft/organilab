@@ -8341,3 +8341,39 @@ msgstr "Imagen representativa"
 
 msgid "Do you want to approve the substance"
 msgstr "¿Quieres aprobar la sustancia?"
+
+msgid "Is Dangerous?"
+msgstr "¿Es peligroso?"
+
+msgid "Load extracted data"
+msgstr "Cargar los datos extraídos"
+
+msgid "Data found in the sheet. Loading it will discard what you have typed."
+msgstr "Datos encontrados en la hoja de cálculo. Al cargarla, se descartará lo que hayas escrito."
+
+msgid "Data found. Loading it into the form…"
+msgstr "Datos encontrados. Cargándolos en el formulario…"
+
+msgid "Reading the safety data sheet. You can keep filling in the form."
+msgstr "Lea la ficha de datos de seguridad. Puede seguir rellenando el formulario."
+
+msgid "Uploading the safety data sheet…"
+msgstr "Cargando la ficha de datos de seguridad…"
+
+msgid "The sheet was saved, but no data could be read from it. Fill in the fields manually."
+msgstr "La hoja de cálculo se guardó, pero no se pudo leer ningún dato. Rellene los campos manualmente."
+
+msgid "The sheet was saved, but it could not be read. Fill in the fields manually."
+msgstr "La hoja de cálculo se guardó, pero no se pudo leer. Rellene los campos manualmente."
+
+msgid "The safety data sheet could not be uploaded."
+msgstr "No se pudo cargar la ficha de datos de seguridad."
+
+msgid "Reading the sheet is taking too long. Reload the page in a moment to see the result."
+msgstr "La lectura de la hoja de cálculo está tardando demasiado. Recargue la página en un momento para ver el resultado."
+
+msgid "Substance '%(name)s' has been sent for review."
+msgstr "La sustancia '%(name)s' ha sido enviada para su análisis."
+
+msgid "Update Substances"
+msgstr "Actualizar Sustancia"
