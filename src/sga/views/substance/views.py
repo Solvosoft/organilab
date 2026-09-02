@@ -23,7 +23,7 @@ from laboratory.models import OrganizationStructure
 from laboratory.utils import organilab_logentry
 from sga.forms import (
     ProviderSGAForm,
-    RecipientSizeForm,
+    RecipientSizeForm, StepOneForm,
 )
 from sga.models import Substance, DisplayLabel, SGAComplement, SecurityLeaf
 from sga.models import SubstanceCharacteristics, TemplateSGA, Label, ReviewSubstance
@@ -921,7 +921,7 @@ def upload_sds(request, org_pk, pk=None):
 
     with transaction.atomic():
         if substance is None:
-            substance = Substance.objects.create(
+            substance = Substance.objects.create(comercial_name=request.POST.get("name",""),
                 created_by=request.user, organization=organization
             )
             organilab_logentry(
@@ -1031,3 +1031,16 @@ def generate_label(request, org_pk, pk):
 
     formato = request.GET.get("formato", "png")
     return render_label(blueprint, formato, filename=f"etiqueta_{substance.pk}")
+
+def step_zero(request, org_pk, pk=None):
+    context = {
+        "form_zero":StepOneForm(),
+        "step": 0,
+        "org_pk": org_pk,
+    }
+    if request.method == "POST" and pk:
+        substance = get_object_or_404(Substance, pk=pk)
+        substance.comercial_name = request.POST.get("name", "")
+        substance.save()
+        return redirect(reverse("sga:step_one", kwargs={"pk": pk, "org_pk": org_pk}))
+    return render(request, "sga/substance/step_one.html", context)
