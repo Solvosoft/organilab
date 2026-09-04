@@ -599,29 +599,24 @@ msgstr "Capacidad"
 msgid "Infinity"
 msgstr "Infinita"
 
-#, fuzzy
-#| msgid "Restore"
+
 msgid "Stored"
-msgstr "Restaurar"
+msgstr "Almacenado"
 
 msgid "Occupancy"
 msgstr "Ocupación"
 
 msgid "Disposal"
-msgstr "Descarte"
+msgstr "Desecho"
 
-#, fuzzy
-#| msgid "View Detail"
 msgid "Detail"
 msgstr "Ver detalle"
 
 msgid "List of Recipients"
 msgstr "Lista de recipientes"
 
-#, fuzzy
-#| msgid "Observation"
 msgid "Reservation"
-msgstr "Observación"
+msgstr "Reservación"
 
 msgid "Add"
 msgstr "Agregar"
@@ -653,11 +648,6 @@ msgstr "Mantenimiento"
 msgid "Done"
 msgstr "Listo"
 
-#, fuzzy
-#| msgid "Furniture"
-msgid "Edit furniture"
-msgstr "Mueble"
-
 msgid "The operation was refused"
 msgstr "La operación fue rechazada"
 
@@ -683,11 +673,6 @@ msgstr "Abrir en otra pestaña"
 #| msgid "No tasks in this column"
 msgid "No furniture in this room."
 msgstr "No hay tareas en esta columna"
-
-#, fuzzy
-#| msgid " matched shelves"
-msgid "shelves"
-msgstr " estanterías que combinan"
 
 #, fuzzy
 #| msgid "Report failed"
@@ -1206,3 +1191,27 @@ msgstr "¿Desea eliminar esta palabra de advertencia?"
 
 msgid "Weight"
 msgstr "Peso"
+
+msgid "Maximum Limit"
+msgstr "Limite Maximo"
+
+msgid "Minimum Limit"
+msgstr "Limite minimo"
+
+msgid "No equipment characteristics available"
+msgstr "No hay caracteristicas del equipo disponible"
+
+msgid "Equipment Characteristics"
+msgstr "Caracteristicas del equipo"
+
+msgid "Equipment Type"
+msgstr "Tipo de equipo"
+
+msgid "shelves"
+msgstr "Estantes"
+
+msgid "Edit furniture"
+msgstr "Editar mueble"
+
+msgid "Add Permission"
+msgstr "Agregar permisos"
