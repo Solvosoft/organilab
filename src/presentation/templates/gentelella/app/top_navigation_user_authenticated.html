@@ -7,7 +7,7 @@
 	{% get_urlname_action as urlnameactions %}
 	{% validate_context urlnameactions as context %}
 	{% if urlnameactions and context %}
-		<li><a id="btn_perms" title="Add Permission" data-bs-toggle="modal" data-bs-target="#permission_modal"
+		<li><a id="btn_perms" title="{% trans 'Add Permission' %}" data-bs-toggle="modal" data-bs-target="#permission_modal"
 									data-parameter="{% get_page_name urlnameactions %}" data-urlname="{{ urlnameactions }}"><i
 			class="fa fa-key fa-2x" aria-hidden="true"></i></a>
 		</li>

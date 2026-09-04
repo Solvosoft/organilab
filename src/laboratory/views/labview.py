@@ -96,6 +96,15 @@ class LabView(
             ),
         }
 
+    def get_container_types(self):
+        """Container type choices for the shelf creation dialog."""
+        from laboratory.models import Catalog
+        return list(
+            Catalog.objects.filter(key="container_type")
+            .values("id", "description")
+            .order_by("id")
+        )
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update(self.get_shelfobject_modal_forms())
@@ -103,6 +112,7 @@ class LabView(
         context["search_by_url"] = self.search_by_url(self.request.GET)
         context["suggestions_tag"] = self.get_suggestions_tag()
         context["labview_urls"] = self.get_urls()
+        context["container_types"] = self.get_container_types()
         context["breadcrumbs"] = [
             {"label": str(self.object_list.first() or "")},
         ]

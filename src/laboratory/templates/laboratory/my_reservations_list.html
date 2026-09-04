@@ -81,10 +81,6 @@
 								<input type="hidden" name="status_num" value="{{ obj.status }}">
 							</td>
 						</tr>
-						{% empty %}
-						<tr>
-							<td colspan="6" class="text-center text-muted">{% trans 'No pending reservations.' %}</td>
-						</tr>
 					{% endfor %}
 					</tbody>
 				</table>
@@ -141,10 +137,6 @@
 									{{ obj.get_status_display }}
 								</strong>
 							</td>
-						</tr>
-						{% empty %}
-						<tr>
-							<td colspan="6" class="text-center text-muted">{% trans 'No reservation history found.' %}</td>
 						</tr>
 					{% endfor %}
 					</tbody>
