@@ -1,5 +1,9 @@
-Chart.plugins.unregister(ChartDataLabels);
-Chart.plugins.register({
+if (typeof ChartDataLabels !== 'undefined') {
+    Chart.unregister(ChartDataLabels);
+}
+
+Chart.register({
+    id: 'showDataLabels',
     afterDatasetsDraw: function(chart) {
         if (!chart.options.plugins || !chart.options.plugins.showDataLabels) return;
 
