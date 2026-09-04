@@ -1,6 +1,8 @@
 
 
 (function () {
+    L.Icon.Default.imagePath = leaflet_images_path;
+
     const map = L.map('org-map').setView([9.9, -84.1], 8);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,

@@ -22,6 +22,7 @@
 	{{ block.super }}
 	<script>
 		 const laboratory_geolocations_url = "{% url 'auth_and_perms:api_laboratory_geolocations' %}";
+		 const leaflet_images_path = "{% static 'vendors/leaflet/images/' %}";
 	</script>
 	<script src="{% static 'js/auth_and_perms/map_of_laboratories.js' %}?v={% get_organilab_version %}"></script>
 {% endblock %}
