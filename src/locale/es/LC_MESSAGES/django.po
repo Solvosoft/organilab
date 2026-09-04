@@ -281,8 +281,7 @@ msgstr "Procedimiento '%(name)s' creado"
 msgid "Updated procedure '%(name)s'"
 msgstr "Procedimiento '%(name)s' actualizado"
 
-#, fuzzy
-#| msgid "Step Comment"
+
 msgid "Step Form"
 msgstr "Comentario de paso"
 
@@ -339,8 +338,6 @@ msgstr "Reasignado por borrado de usuario"
 msgid "Yes"
 msgstr "Si"
 
-#, fuzzy
-#| msgid "Role"
 msgid "Roles"
 msgstr "Rol"
 
@@ -1970,8 +1967,6 @@ msgstr "Regente"
 msgid "Last update"
 msgstr "Última actualización"
 
-#, fuzzy
-#| msgid "Select laboratory"
 msgid "Search laboratory"
 msgstr "Buscar laboratorio"
 
@@ -3770,8 +3765,6 @@ msgstr "Eliminar todas las etiquetas"
 msgid "Collapse all"
 msgstr "Colapsar todo"
 
-#, fuzzy
-#| msgid "Risk level"
 msgid "Risk overlay"
 msgstr "Nivel de riesgo"
 
@@ -7549,8 +7542,6 @@ msgstr "Crear Estructura"
 msgid "Update Structure"
 msgstr "Actualizar Estructura"
 
-#, fuzzy
-#| msgid "Object management"
 msgid "Object name"
 msgstr "Administración de objetos"
 
@@ -7601,8 +7592,6 @@ msgstr "Palabra de advertencia '%(name)s' creada"
 msgid "Updated warning word '%(name)s'"
 msgstr "Palabra de advertencia '%(name)s' actualizada"
 
-#, fuzzy
-#| msgid "The container cannot be deleted of because it is being used."
 msgid ""
 "This item can't be deleted because it is being used by a danger indication."
 msgstr "El recipiente no se puede eliminar, porque se está utilizando."
@@ -7720,8 +7709,6 @@ msgstr "Sinónimos"
 msgid "Agrochemical"
 msgstr "Agroquímicos"
 
-#, fuzzy
-#| msgid "Substance Characteristics"
 msgid "Substance laboratories"
 msgstr "Características de sustancia"
 
@@ -8132,26 +8119,18 @@ msgstr "Sección"
 msgid "Manual upload"
 msgstr ""
 
-#, fuzzy
-#| msgid "Source"
 msgid "SDS source"
 msgstr "Origen"
 
-#, fuzzy
-#| msgid "Revision date"
 msgid "SDS revision date"
 msgstr "Fecha de revisión"
 
-#, fuzzy
-#| msgid "Download QR"
 msgid "Download URL"
 msgstr "Descargar QR"
 
 msgid "Verified by"
 msgstr ""
 
-#, fuzzy
-#| msgid "Printing date"
 msgid "Verified date"
 msgstr "Fecha de impresión"
 
@@ -8263,8 +8242,6 @@ msgstr "¿Encontró el componente de códigos H?"
 msgid "Create it here!"
 msgstr "¡Créelo aquí!"
 
-#, fuzzy
-#| msgid "Details of the supplier of the safety data sheet"
 msgid "Uploading the safety data sheet…"
 msgstr "Datos del proveedor de la ficha de datos de seguridad"
 
@@ -8277,8 +8254,6 @@ msgstr ""
 msgid "Data found in the sheet. Loading it will discard what you have typed."
 msgstr ""
 
-#, fuzzy
-#| msgid "Review extracted data"
 msgid "Load extracted data"
 msgstr "Revisar datos extraídos"
 
@@ -8291,8 +8266,6 @@ msgid ""
 "The sheet was saved, but it could not be read. Fill in the fields manually."
 msgstr ""
 
-#, fuzzy
-#| msgid "The inform template could not be updated."
 msgid "The safety data sheet could not be uploaded."
 msgstr "La plantilla de informe no se pudo actualizar."
 
@@ -8307,8 +8280,6 @@ msgstr "Información sobre la Sustancia"
 msgid "Bioaccomulable"
 msgstr "Bioacumulable"
 
-#, fuzzy
-#| msgid "Generate Label"
 msgid "Generate GHS Label"
 msgstr "Generado"
 
@@ -8593,8 +8564,6 @@ msgstr ""
 "Gracias,\n"
 "Sistema Organilab"
 
-#, fuzzy, python-format
-#| msgid "Approved substance '%(name)s' from request"
 msgid "Approved substance '%(name)s' added to inventory"
 msgstr "Sustancia aprobada '%(name)s' desde solicitud"
 
@@ -8642,8 +8611,6 @@ msgstr ""
 msgid "Approved substance '%(name)s'"
 msgstr "Sustancia '%(name)s' aprobada"
 
-#, fuzzy, python-format
-#| msgid "Your request '%(name)s' has been %(status)s"
 msgid "Substance '%(name)s' has been approved."
 msgstr "Su solicitud '%(name)s' ha sido %(status)s"
 
@@ -8693,8 +8660,7 @@ msgid ""
 "review."
 msgstr ""
 
-#, fuzzy, python-format
-#| msgid "Approved substance '%(name)s' from request"
+
 msgid "Sent substance '%(name)s' for review"
 msgstr "Sustancia aprobada '%(name)s' desde solicitud"
 
@@ -8708,8 +8674,6 @@ msgstr ""
 msgid "Security sheet (SDS) is required to send this substance for review."
 msgstr ""
 
-#, fuzzy
-#| msgid "Not allowed"
 msgid "Method not allowed"
 msgstr "No permitido"
 
@@ -8718,3 +8682,9 @@ msgstr ""
 
 msgid "Created new substance"
 msgstr "Nueva sustancia creada"
+
+msgid "Edit funiture"
+msgstr "Editar Mueble"
+
+msgid "Add Permission"
+msgstr "Agregar permisos"
