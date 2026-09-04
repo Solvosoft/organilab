@@ -19,7 +19,7 @@ class PendingTaskForm(GTForm, forms.ModelForm):
             "description": TextareaWysiwyg,  # (attrs={"data-option-lang": "es"}),
             "status": genwidgets.Select,
             "profile": AutocompleteSelect("profiles_ref"),
-            # "rols": AutocompleteSelectMultiple("roluserorgbase"),
+            "rols": AutocompleteSelectMultiple("roluserorgbase"),
             "link": genwidgets.URLInput,
         }
 
