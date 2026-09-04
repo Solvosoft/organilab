@@ -150,12 +150,33 @@ const LabviewEditor = {
     },
 
     createShelf(furniturePk, row, col) {
+        const types = document.container_types || [];
+        const typeOptions = types.map(
+            (t) => `<option value="${t.id}">${escapeHtml(t.description)}</option>`
+        ).join('');
+
         return Swal.fire({
             title: gettext('New shelf'),
-            input: 'text',
-            inputLabel: gettext('Name'),
+            html: `
+                <label for="swal-shelf-name" class="swal2-input-label">${gettext('Name')}</label>
+                <input type="text" id="swal-shelf-name" class="swal2-input" placeholder="${gettext('Name')}">
+                <label for="swal-shelf-type" class="swal2-input-label">${gettext('Type')}</label>
+                <select id="swal-shelf-type" class="swal2-select">
+                    ${typeOptions}
+                </select>
+            `,
             showCancelButton: true,
-            inputValidator: (value) => (!value ? gettext('The name is required') : null)
+            focusConfirm: false,
+            preConfirm: () => {
+                const name = document.getElementById('swal-shelf-name').value.trim();
+                const type = document.getElementById('swal-shelf-type').value;
+
+                if (!name) {
+                    Swal.showValidationMessage(gettext('The name is required'));
+                    return false;
+                }
+                return { name: name, type: parseInt(type, 10) };
+            }
         }).then((result) => {
             if (!result.isConfirmed) { return null; }
             return fetch(document.labview_urls.shelf +
@@ -164,7 +185,9 @@ const LabviewEditor = {
                 headers: {'X-CSRFToken': getCookie('csrftoken'),
                           'Content-Type': 'application/json'},
                 body: JSON.stringify({
-                    name: result.value, row: row, col: col,
+                    name: result.value.name,
+                    type: result.value.type,
+                    row: row, col: col,
                     quantity: 0, infinity_quantity: true
                 })
             }).then((response) => this.unwrap(response))
