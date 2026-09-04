@@ -18,18 +18,29 @@ const LabviewSearch = {
             enforceWhitelist: true,
             whitelist: document.suggestions_tag || [],
             placeholder: gettext('Search a room, furniture, shelf or object'),
+            dropdown: {
+                maxItems: 20,
+                enabled: 0,
+                closeOnSelect: true
+            },
             templates: {
-                tag: (tagData) => `
+                tag: function(tagData, tagify) {
+                    return `
 <tag title='${tagData.value}' contenteditable='false' spellcheck='false'
-     tabIndex="-1" class='tagify__tag' style='--tag-bg: ${tagData.color}'>
-  <x title='' class='tagify__tag__removeBtn'></x>
+     tabIndex="-1" class='tagify__tag ${this.settings.classNames.tag}'
+     style='--tag-bg: ${tagData.color || '#ccc'}' ${this.getAttributes(tagData)}>
+  <x title='' class='tagify__tag__removeBtn' role='button' aria-label='remove tag'></x>
   <div><span class='tagify__tag-text'>${tagData.value}</span></div>
-</tag>`,
-                dropdownItem: (tagData) => `
-<div class='tagify__dropdown__item'>
-  <span class='fs-6' style='background-color: ${tagData.color}; color: black;'>
-    ${tagData.value}</span>
-</div>`
+</tag>`;
+                },
+                dropdownItem: function(tagData, tagify) {
+                    return `
+<div ${this.getAttributes(tagData)}
+     class='tagify__dropdown__item ${tagData.class || ''}'
+     tabindex="0" role="option">
+  <span style='background-color: ${tagData.color || '#ccc'}; color: black; padding: 2px 6px; border-radius: 3px;'>${tagData.value}</span>
+</div>`;
+                }
             }
         });
 

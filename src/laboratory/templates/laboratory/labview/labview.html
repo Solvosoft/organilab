@@ -47,7 +47,7 @@
 			</button>
 			<input name="tags-search" id="labview_search" class="form-control"
 				   placeholder="{% trans 'Search' %}">
-			<button class="btn btn-outline-secondary" type="button"
+			<button class="btn btn-outline-danger" type="button"
 					id="labview_clear_tags" title="{% trans 'Remove All Tags' %}">
 				<i class="fa fa-trash red"></i>
 			</button>
@@ -70,10 +70,10 @@
 </div>
 
 <div class="row g-3">
-	<div class="col-12 col-lg-6">
+	<div class="col-12 col-lg-12">
 		<div id="labview_map"></div>
 	</div>
-	<div class="col-12 col-lg-6">
+	<div class="col-12 col-lg-12">
 		<div class="card">
 			<div class="card-header" id="labview_shelf_panel">
 				<p class="text-muted mb-0">
@@ -101,6 +101,7 @@
 {{search_by_url|json_script:"search_by_url"}}
 {{suggestions_tag|json_script:"suggestions_tag"}}
 {{labview_urls|json_script:"labview_urls"}}
+{{container_types|json_script:"container_types"}}
 <script>
 	document.labview_urls = JSON.parse(
 		document.getElementById('labview_urls').textContent);
@@ -108,6 +109,8 @@
 		document.getElementById('search_by_url').textContent);
 	document.suggestions_tag = JSON.parse(
 		document.getElementById('suggestions_tag').textContent);
+	document.container_types = JSON.parse(
+		document.getElementById('container_types').textContent);
 
 	{# Los ayudantes de accion reutilizados esperan estas globales. #}
 	document.urls = {
