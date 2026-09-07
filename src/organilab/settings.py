@@ -265,7 +265,9 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
 # Username to reassign audit trail (LogEntry/ObjectLogChange) to when a User is deleted.
 # If unset or the user doesn't exist, deletion proceeds without reassignment (history is lost).
-DELETED_USER_SENTINEL_USERNAME = os.getenv("DELETED_USER_SENTINEL_USERNAME", "solvoadmin")
+DELETED_USER_SENTINEL_USERNAME = os.getenv(
+    "DELETED_USER_SENTINEL_USERNAME", "solvoadmin"
+)
 
 # Los logs sin usuario autenticado (registro por QR) se atribuyen al mismo
 # centinela que conserva la traza al borrar usuarios.

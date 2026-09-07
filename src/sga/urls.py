@@ -121,6 +121,12 @@ urlpatterns = [
     path(
         "substance/step_one/<int:pk>/", substance.create_edit_sustance, name="step_one"
     ),
+    path(
+        "substance/step_zero/", substance.step_zero, name="step_zero"
+    ),
+    path(
+        "substance/step_zero/<int:pk>/", substance.step_zero, name="step_zero_pk"
+    ),
     path("substance/step_four/<int:substance>/", substance.step_four, name="step_four"),
     path(
         "substance/send_to_review/<int:substance>/",
