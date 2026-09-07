@@ -1,4 +1,4 @@
-.PHONY: help clean clean-pyc clean-build list setup check-env venv-info url-inventory url-inventory-check test-urls test test-parallel test-selenium test-selenium-4 test-selenium-single test-selenium-xvfb test-selenium-bitacora docs release sdist
+.PHONY: feature-coverage feature-coverage-fast feature-catalog feature-catalog-check feature-roles feature-gaps help clean clean-pyc clean-build list setup check-env venv-info url-inventory url-inventory-check test-urls test test-parallel test-selenium test-selenium-4 test-selenium-single test-selenium-xvfb test-selenium-bitacora docs release sdist
 
 # Variables
 ROOT_DIR := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
@@ -225,7 +225,43 @@ url-inventory: ## - regenera roadmap/INVENTARIO_URLS.md y el CSV con la clasific
 	cd src && DEBUG=False $(PYTHON) manage.py url_inventory --settings=organilab.test_settings
 
 url-inventory-check: ## - falla si el inventario commiteado quedó desactualizado
-	cd src && DEBUG=False $(PYTHON) manage.py url_inventory --settings=organilab.test_settings --check $(ROOT_DIR)/roadmap/INVENTARIO_URLS.md
+	cd src && DEBUG=False $(PYTHON) manage.py url_inventory --settings=organilab.test_settings \
+		--check $(ROOT_DIR)/roadmap/INVENTARIO_URLS.md \
+		--check $(ROOT_DIR)/roadmap/inventario_urls.csv
+
+##--------------------------------------------------------
+## Catálogo de funcionalidades
+##--------------------------------------------------------
+
+# Igual que el inventario de rutas: test_settings y DEBUG=False a propósito, porque el
+# catálogo cruza contra el mismo urlconf que ve el guardián.
+feature-catalog: ## - regenera roadmap/INVENTARIO_FUNCIONALIDADES.md
+	cd src && DEBUG=False $(PYTHON) manage.py feature_catalog --settings=organilab.test_settings --format md -o $(ROOT_DIR)/roadmap/INVENTARIO_FUNCIONALIDADES.md
+	cd src && DEBUG=False $(PYTHON) manage.py feature_catalog --settings=organilab.test_settings
+
+feature-catalog-check: ## - falla si el catálogo commiteado quedó desactualizado
+	cd src && DEBUG=False $(PYTHON) manage.py feature_catalog --settings=organilab.test_settings --check $(ROOT_DIR)/roadmap/INVENTARIO_FUNCIONALIDADES.md
+
+feature-roles: ## - qué roles del eje aparecen en el catálogo y cuáles no
+	cd src && DEBUG=False $(PYTHON) manage.py feature_catalog --settings=organilab.test_settings --roles
+
+# La sonda no corre en cada `make test`: mediría lo mismo y cuesta la suite Selenium
+# entera. Se corre a mano o de noche, y el guardián compara contra el JSON commiteado.
+feature-coverage: ## - mide con la sonda qué ROL ejercita cada paso (suite completa + selenium, headless)
+	rm -rf $(ROOT_DIR)/roadmap/.feature_probe
+	cd src && ORGANILAB_FEATURE_PROBE=1 $(PYTHON) manage.py test --no-input --exclude-tag=selenium
+	xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" \
+		sh -c "cd src && ORGANILAB_FEATURE_PROBE=1 GENERATE_SCREENSHOTS=False $(PYTHON) manage.py test --tag=selenium --no-input --parallel -v 2"
+	cd src && DEBUG=False $(PYTHON) manage.py feature_catalog --settings=organilab.test_settings --ingest-probe
+
+feature-coverage-fast: ## - igual pero solo con la suite sin navegador (medición parcial)
+	rm -rf $(ROOT_DIR)/roadmap/.feature_probe
+	cd src && ORGANILAB_FEATURE_PROBE=1 $(PYTHON) manage.py test --no-input --exclude-tag=selenium
+	cd src && DEBUG=False $(PYTHON) manage.py feature_catalog --settings=organilab.test_settings --ingest-probe
+
+feature-gaps: ## - funcionalidades sin ninguna prueba y rutas sin funcionalidad
+	cd src && DEBUG=False $(PYTHON) manage.py feature_catalog --settings=organilab.test_settings --sin-pruebas
+	cd src && DEBUG=False $(PYTHON) manage.py feature_catalog --settings=organilab.test_settings --huerfanas
 
 test-urls: ## - smoke de las vistas navegables, sin navegador
 	cd src && $(PYTHON) manage.py test organilab_test.tests.test_url_smoke --no-input -v 2

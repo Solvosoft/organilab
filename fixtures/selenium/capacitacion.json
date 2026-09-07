@@ -23,7 +23,7 @@
   "fields": {
    "password": "pbkdf2_sha256$600000$salt$hash",
    "last_login": "2026-01-10T10:00:00Z",
-   "is_superuser": true,
+   "is_superuser": false,
    "username": "lab_manager",
    "first_name": "Carlos",
    "last_name": "Quesada",
@@ -425,6 +425,31 @@
      "view_inform",
      "laboratory",
      "inform"
+    ],
+    [
+     "view_reservations",
+     "reservations_management",
+     "reservations"
+    ],
+    [
+     "change_reservations",
+     "reservations_management",
+     "reservations"
+    ],
+    [
+     "view_reservedproducts",
+     "reservations_management",
+     "reservedproducts"
+    ],
+    [
+     "change_reservedproducts",
+     "reservations_management",
+     "reservedproducts"
+    ],
+    [
+     "add_reservedproducts",
+     "reservations_management",
+     "reservedproducts"
     ]
    ]
   }

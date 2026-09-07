@@ -3,6 +3,10 @@ from django.test import tag
 from organilab_test.tests.selenium_tests.capacitacion.base import (
     CapacitacionSeleniumBase,
 )
+from organilab_test.tests.selenium_xpaths import (
+    PAGE_MY_PROCEDURES,
+    PAGE_PROCEDURE_LIST,
+)
 
 
 @tag("selenium")
@@ -47,7 +51,7 @@ class Cap4ProceduresTest(CapacitacionSeleniumBase):
         path_list = [
             # Esperar a que cargue el DataTable de procedimientos
             {
-                "path": "//body",
+                "path": PAGE_PROCEDURE_LIST,
                 "wait_ready": True,
                 "screenshot_name": "cap4_procedure_list",
                 "extra_action": "script",
@@ -65,7 +69,7 @@ class Cap4ProceduresTest(CapacitacionSeleniumBase):
         path_list = [
             # Esperar a que cargue la pagina de mis procedimientos
             {
-                "path": "//body",
+                "path": PAGE_MY_PROCEDURES,
                 "wait_ready": True,
                 "screenshot_name": "cap4_my_procedures",
                 "extra_action": "script",

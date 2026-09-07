@@ -70,3 +70,15 @@ SELENIUM_SCREENSHOTS_DIR = os.getenv(
     "SELENIUM_SCREENSHOTS_DIR",
     os.path.join(tempfile.gettempdir(), "organilab_selenium_screenshots"),
 )
+
+# --------------------------------------------------------------------------
+# Sonda de cobertura por rol
+# --------------------------------------------------------------------------
+# Apagada salvo que `ORGANILAB_FEATURE_PROBE=1` (lo pone `make feature-coverage`).
+# Va al FINAL de la cadena, después de `ProfileMiddleware`, para observar el resultado
+# real de cada petición: los 403 forman parte de la medición.
+MIDDLEWARE = MIDDLEWARE + ["presentation.probe.FeatureProbeMiddleware"]
+
+# Le pone nombre a cada petición: la prueba que la provocó. Sin la sonda encendida es
+# el runner de Django sin cambios.
+TEST_RUNNER = "presentation.probe.ProbeRunner"

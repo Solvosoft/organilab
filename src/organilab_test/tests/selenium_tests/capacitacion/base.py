@@ -5,6 +5,15 @@ from organilab_test.tests.base import SeleniumBase
 
 
 class CapacitacionSeleniumBase(SeleniumBase):
+    """Base del corpus de capacitación.
+
+    Nota sobre las aserciones: cada escenario comprueba un elemento **propio de su
+    pantalla** (`organilab_test/tests/selenium_xpaths.py`, sección de marcadores de
+    página). No vale esperar `//body`: una página de error 403 también tiene `<body>`,
+    así que esa prueba pasa cuando al rol le falta el permiso — que es justo lo que hay
+    que detectar. Aquí no se ignora un fallo de permisos: se deja que rompa.
+    """
+
     fixtures = ["selenium/capacitacion.json"]
 
     @classmethod

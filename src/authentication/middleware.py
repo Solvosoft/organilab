@@ -10,6 +10,7 @@ from django.urls import resolve
 from rest_framework.exceptions import PermissionDenied
 
 from auth_and_perms.models import ProfilePermission
+from auth_and_perms.organization_utils import profile_permission_scope_query
 from laboratory.models import OrganizationStructure
 from laboratory.utils import get_laboratories_by_user_profile
 from django.shortcuts import redirect
@@ -92,20 +93,9 @@ class ProfileMiddleware:
         if hasattr(view_func, "can_use_inactive_organization"):
             can_use_inactive_organization = view_func.can_use_inactive_organization
 
-        queryQ = Q(
-            profile=profile,
-            object_id=profile.pk,
-            content_type__app_label=profile._meta.app_label,
-            content_type__model=profile._meta.model_name,
-        )
-
-        if lab_pk:
-            queryQ |= Q(
-                profile=user.profile,
-                object_id=lab_pk,
-                content_type__app_label="laboratory",
-                content_type__model="laboratory",
-            )
+        # El ámbito vive en `organization_utils` para que la sonda de cobertura por rol
+        # mida exactamente lo que aquí se autoriza, en vez de una copia que se desviaría.
+        queryQ = profile_permission_scope_query(profile, user, lab_pk=lab_pk)
 
         if org_pk:
             if (
@@ -118,13 +108,10 @@ class ProfileMiddleware:
 
             effective_org = org.get_effective_org_for_profile(user.profile)
 
-            if effective_org is not None:
-                queryQ |= Q(
-                    profile=user.profile,
-                    object_id=effective_org.pk,
-                    content_type__app_label="laboratory",
-                    content_type__model="organizationstructure",
-                )
+            queryQ |= profile_permission_scope_query(
+                profile, user, org_pk=org_pk, effective_org=effective_org,
+                include_profile=False,
+            )
 
             if not lab_pk:
                 # for my_labs selection and other steps without laboratory defined

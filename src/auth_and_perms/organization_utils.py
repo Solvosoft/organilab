@@ -91,3 +91,54 @@ def organization_can_change_laboratory(laboratory, organization, raise_exec=Fals
     if raise_exec:
         raise PermissionDenied(_("You can modify this laboratory"))
     return False
+
+
+def profile_permission_scope_query(profile, user, org_pk=None, lab_pk=None,
+                                   effective_org=None, include_profile=True):
+    """El ámbito de `ProfilePermission` que aplica a una petición.
+
+    Es el `Q` con el que `ProfileMiddleware` decide qué roles cuentan para el usuario en
+    esta URL, extraído aquí para que no exista en dos sitios: el middleware lo usa para
+    autorizar y la sonda de `presentation/probe.py` para atribuir «qué rol hizo esto».
+    Si las dos copias se separaran, la medición dejaría de hablar del sistema real.
+
+    Tres ramas, y el orden importa entenderlo:
+
+    - **Por perfil** (siempre): `object_id=profile.pk`. Concede en *todas* las
+      organizaciones, y por eso una prueba de aislamiento entre inquilinos no puede
+      apoyarse en ella.
+    - **Por laboratorio**, cuando la URL trae `lab_pk`: literal, y la única que permite
+      distinguir inquilinos.
+    - **Por organización efectiva**, cuando la URL trae `org_pk`: la organización del
+      árbol en la que el perfil tiene realmente sus permisos.
+
+    `effective_org` y la lista de laboratorios los calcula quien llama, porque en el
+    middleware salen de consultas que además deciden si hay que devolver 404.
+    `include_profile=False` sirve para componer ramas sin repetir la del perfil.
+    """
+    from django.db.models import Q
+
+    query = Q(pk__in=()) if not include_profile else Q(
+        profile=profile,
+        object_id=profile.pk,
+        content_type__app_label=profile._meta.app_label,
+        content_type__model=profile._meta.model_name,
+    )
+
+    if lab_pk:
+        query |= Q(
+            profile=profile,
+            object_id=lab_pk,
+            content_type__app_label="laboratory",
+            content_type__model="laboratory",
+        )
+
+    if org_pk and effective_org is not None:
+        query |= Q(
+            profile=profile,
+            object_id=effective_org.pk,
+            content_type__app_label="laboratory",
+            content_type__model="organizationstructure",
+        )
+
+    return query

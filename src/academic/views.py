@@ -282,7 +282,11 @@ def complete_my_procedure(request, org_pk, lab_pk, pk):
 class ProcedureListView(DJListView):
     model = Procedure
     queryset = Procedure.objects.none()
-    template_name = "academic/list.html"
+    # `academic/list.html` no existe: Django caía al nombre derivado del modelo
+    # (`academic/procedure_list.html`) y la página se pintaba igual, así que el error
+    # era invisible. Pero dejaba el inventario clasificando esta ruta como fragmento
+    # cuando es una página completa, y por eso escapaba al smoke.
+    template_name = "academic/procedure_list.html"
 
 
 @method_decorator(login_required, name="dispatch")

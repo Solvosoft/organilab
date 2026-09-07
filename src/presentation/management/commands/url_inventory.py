@@ -36,13 +36,17 @@ class Command(BaseCommand):
         parser.add_argument("--coverage", action="store_true",
                             help="cruza con los reverse() de las pruebas")
         parser.add_argument("-o", "--output", help="fichero destino (por defecto, stdout)")
-        parser.add_argument("--check", metavar="FICHERO",
-                            help="compara con FICHERO y sale con error si difiere")
+        parser.add_argument("--check", metavar="FICHERO", action="append",
+                            help="compara con FICHERO y sale con error si difiere; "
+                                 "el formato sale de la extensión (.md o .csv). "
+                                 "Se puede repetir")
 
     def handle(self, *args, **options):
         entries = build_inventory()
-        if options["coverage"] or options["format"] == "md" or options["check"]:
-            annotate_coverage(entries)
+        # Siempre: condicionarla a `--coverage` dejó el CSV commiteado con las dos
+        # columnas a cero durante toda su vida, y `--check` no lo veía porque solo
+        # compara el markdown.  Cuesta un `rglob` sobre las pruebas.
+        annotate_coverage(entries)
 
         if options["category"]:
             entries = [e for e in entries if e.category == options["category"]]
@@ -50,7 +54,14 @@ class Command(BaseCommand):
             entries = [e for e in entries if e.namespace == options["namespace"]]
 
         if options["check"]:
-            return self._check(entries, options["check"])
+            # `call_command(..., check="fichero")` entrega una cadena, no la lista
+            # que arma `action="append"` desde la línea de órdenes.
+            paths = options["check"]
+            if isinstance(paths, str):
+                paths = [paths]
+            for path in paths:
+                self._check(entries, path)
+            return
 
         renderer = {
             "resumen": self._render_summary,
@@ -69,7 +80,8 @@ class Command(BaseCommand):
     # -- comprobación ------------------------------------------------------
 
     def _check(self, entries, path):
-        expected = self._render_markdown(entries)
+        renderer = self._render_csv if path.endswith(".csv") else self._render_markdown
+        expected = renderer(entries)
         try:
             with open(path, encoding="utf-8") as handle:
                 current = handle.read()

@@ -16,7 +16,7 @@
                     </a>
                 </li>
             </ul>
-            <h2>
+            <h2 id="managereservation">
                 {% trans 'Reservation from' %} <strong>{{ object.user.username }}</strong>
                 {% with lab=object.reservedproducts_set.first.laboratory %}
                     {% if lab %}{% trans 'for laboratory' %} <strong>{{ lab.name }}</strong>{% endif %}
