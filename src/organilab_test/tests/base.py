@@ -1,4 +1,5 @@
 import glob
+import json
 import os
 import re
 import shutil
@@ -990,6 +991,118 @@ class SeleniumBase(StaticLiveServerTestCase):
                 msg += signal_detail
 
             self.fail(msg)
+
+    # -----------------------------------------------------------------
+    # Constructores de pasos para widgets que no aceptan send_keys
+    # -----------------------------------------------------------------
+
+    def set_value_by_script_steps(self, field_id, value):
+        """Asigna el valor de un campo por JS y notifica el cambio.
+
+        Para los campos donde teclear no sirve o no es fiable. El evento
+        `change` es obligatorio: es lo que escuchan jQuery, select2 y los
+        widgets de gentelella para enterarse.
+        """
+        return [
+            {
+                "path": "//*[@id='%s']" % field_id,
+                # OJO: nada de presence_only aquí. do_action() hace return
+                # ANTES de extra_action cuando está puesto, así que el paso
+                # se quedaría en una espera silenciosa y no escribiría nada.
+                # No hace falta: "script" no está en ELEMENT_DRIVEN_ACTIONS,
+                # así que step_needs_interaction() ya solo espera presencia.
+                "extra_action": "script",
+                "value": (
+                    "var el = document.getElementById(%(id)s);"
+                    "el.value = %(val)s;"
+                    "el.dispatchEvent(new Event('input', {bubbles: true}));"
+                    "el.dispatchEvent(new Event('change', {bubbles: true}));"
+                ) % {"id": json.dumps(field_id), "val": json.dumps(str(value))},
+            }
+        ]
+
+    def select_option_steps(self, field_id, value):
+        """Selecciona una opción de un <select> nativo por su `value`.
+
+        No se usa send_keys: sobre un <select> eso dispara el type-ahead del
+        navegador, que busca por TEXTO visible. El texto suele estar traducido
+        y hay prefijos que colisionan —"XLS" lo es de "XLSX"—, así que el
+        resultado dependería del idioma de la corrida y del ritmo de tecleo.
+        """
+        return self.set_value_by_script_steps(field_id, value)
+
+    def select2_preset_steps(self, field_id, value, text=None):
+        """Deja una opción ya elegida en un select2 alimentado por AJAX.
+
+        Es la vía que documenta select2 para preseleccionar sin pasar por la
+        búsqueda: se añade el <option> al <select> real, se marca y se emite
+        `change`, que es el evento con el que select2 repinta su caja.
+
+        Cuándo usarla en vez de teclear en la caja de búsqueda: cuando el valor
+        ya se conoce y lo que se quiere probar es el formulario, no el
+        autocompletado. Para PROBAR el autocompletado hay que teclear —abrir el
+        desplegable no dispara la petición—, y eso es lo que hacen los flujos que
+        lo tienen como objetivo.
+        """
+        return [
+            {
+                "path": "//*[@id='%s']" % field_id,
+                "extra_action": "script",
+                "value": (
+                    "var el = document.getElementById(%(id)s);"
+                    "var opt = el.querySelector('option[value=' + JSON.stringify(%(val)s) + ']');"
+                    "if (!opt) {"
+                    "  opt = document.createElement('option');"
+                    "  opt.value = %(val)s;"
+                    "  opt.textContent = %(txt)s;"
+                    "  el.appendChild(opt);"
+                    "}"
+                    "opt.selected = true;"
+                    "el.dispatchEvent(new Event('change', {bubbles: true}));"
+                ) % {
+                    "id": json.dumps(field_id),
+                    "val": json.dumps(str(value)),
+                    "txt": json.dumps(str(text if text is not None else value)),
+                },
+            }
+        ]
+
+    def tinymce_set_steps(self, field_id, html):
+        """Escribe en un editor TinyMCE (widget EditorTinymce de gentelella).
+
+        TinyMCE sustituye el <textarea> por un iframe con su propio documento,
+        así que ni send_keys ni asignar `.value` llegan a nada: al enviar el
+        formulario se mandaría el textarea vacío. Hay que pasar por su API y
+        volcar el contenido al textarea original con `save()` —el método que
+        usa `flush_editors()` de gentelella; `triggerSave()` es del plugin
+        jQuery y no existe en el editor de TinyMCE 8—.
+
+        El editor solo aparece cuando el modal se ha mostrado, así que si
+        todavía no existe se escribe el <textarea> directamente.
+        """
+        return [
+            {
+                "path": "//*[@id='%s']" % field_id,
+                # OJO: nada de presence_only aquí. do_action() hace return
+                # ANTES de extra_action cuando está puesto, así que el paso
+                # se quedaría en una espera silenciosa y no escribiría nada.
+                # No hace falta: "script" no está en ELEMENT_DRIVEN_ACTIONS,
+                # así que step_needs_interaction() ya solo espera presencia.
+                "extra_action": "script",
+                "value": (
+                    "var ed = window.tinymce && tinymce.get(%(id)s);"
+                    "if (ed) {"
+                    "  ed.setContent(%(html)s);"
+                    "  if (ed.save) { ed.save(); }"
+                    "  else if (ed.triggerSave) { ed.triggerSave(); }"
+                    "} else {"
+                    "  var el = document.getElementById(%(id)s);"
+                    "  el.value = %(html)s;"
+                    "  el.dispatchEvent(new Event('change', {bubbles: true}));"
+                    "}"
+                ) % {"id": json.dumps(field_id), "html": json.dumps(html)},
+            }
+        ]
 
     def take_screenshot_list(
         self, path_list, folder_name, cursor=True, hover=True, order=1

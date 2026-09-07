@@ -34,7 +34,7 @@
 </div>
 <div class="row">
 	<div class="col-md-4 offset-md-8">
-		{% if perm_do_report   %}
+		{% if perm_do_report and object.risk_zone %}
 		<div class="float-end">
 			<div class="btn-group dropup">
 				<button type="button" class="btn btn-sm btn-outline-danger">
@@ -46,16 +46,16 @@
 				</button>
 				<ul class="dropdown-menu">
 					<li>
-						<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' org_pk=org_pk building_pk=building.pk  pk=object.pk %}?format=pdf">{% trans "PDF" %} </a>
+						<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' org_pk=org_pk risk_pk=object.risk_zone.pk  pk=object.pk %}?format=pdf">{% trans "PDF" %} </a>
 					</li>
 					<li>
-						<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' org_pk=org_pk building_pk=building.pk  pk=object.pk  %}?format=ods">{% trans "Ods" %} </a>
+						<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' org_pk=org_pk risk_pk=object.risk_zone.pk  pk=object.pk  %}?format=ods">{% trans "Ods" %} </a>
 					</li>
 					<li>
-						<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' org_pk=org_pk building_pk=building.pk pk=object.pk  %}?format=xls">{% trans "Xls" %} </a>
+						<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' org_pk=org_pk risk_pk=object.risk_zone.pk pk=object.pk  %}?format=xls">{% trans "Xls" %} </a>
 					</li>
 					<li>
-						<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' org_pk=org_pk building_pk=building.pk  pk=object.pk %}?format=xlsx">{% trans "Xlsx" %} </a>
+						<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' org_pk=org_pk risk_pk=object.risk_zone.pk  pk=object.pk %}?format=xlsx">{% trans "Xlsx" %} </a>
 					</li>
 				</ul>
 			</div>
@@ -77,7 +77,7 @@
 						{{ lab.name }}
 					</a>
 				</div>
-				{% if perm_do_report   %}
+				{% if perm_do_report and object.risk_zone %}
 				<div class="float-end">
 					<div class="btn-group dropup">
 						<button type="button" class="btn btn-sm btn-outline-danger">
@@ -89,16 +89,16 @@
 						</button>
 						<ul class="dropdown-menu">
 							<li>
-								<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' org_pk=org_pk building_pk=building.pk  pk=object.pk %}?format=pdf">{% trans "PDF" %} </a>
+								<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' org_pk=org_pk risk_pk=object.risk_zone.pk  pk=object.pk %}?format=pdf">{% trans "PDF" %} </a>
 							</li>
 							<li>
-								<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' org_pk=org_pk building_pk=building.pk  pk=object.pk %}?format=ods">{% trans "Ods" %} </a>
+								<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' org_pk=org_pk risk_pk=object.risk_zone.pk  pk=object.pk %}?format=ods">{% trans "Ods" %} </a>
 							</li>
 							<li>
-								<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' org_pk=org_pk building_pk=building.pk  pk=object.pk %}?format=xls">{% trans "Xls" %} </a>
+								<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' org_pk=org_pk risk_pk=object.risk_zone.pk  pk=object.pk %}?format=xls">{% trans "Xls" %} </a>
 							</li>
 							<li>
-								<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' org_pk=org_pk building_pk=building.pk  pk=object.pk %}?format=xlsx">{% trans "Xlsx" %} </a>
+								<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' org_pk=org_pk risk_pk=object.risk_zone.pk  pk=object.pk %}?format=xlsx">{% trans "Xlsx" %} </a>
 							</li>
 						</ul>
 					</div>

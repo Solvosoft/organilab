@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-30 11:01-0600\n"
+"POT-Creation-Date: 2026-09-06 15:38-0600\n"
 "PO-Revision-Date: 2024-04-12 23:50-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -311,6 +311,9 @@ msgstr "Identificador del laboratorio"
 msgid "You do not have permission to perform this action."
 msgstr "No tienes los permisos necesarios para realizar esta acción."
 
+msgid "No pending reservations."
+msgstr "No hay reservaciones pendientes."
+
 msgid "Creation date"
 msgstr "Fecha de creación"
 
@@ -599,7 +602,6 @@ msgstr "Capacidad"
 msgid "Infinity"
 msgstr "Infinita"
 
-
 msgid "Stored"
 msgstr "Almacenado"
 
@@ -648,14 +650,23 @@ msgstr "Mantenimiento"
 msgid "Done"
 msgstr "Listo"
 
+msgid "Edit furniture"
+msgstr "Editar mueble"
+
 msgid "The operation was refused"
 msgstr "La operación fue rechazada"
 
 msgid "New shelf"
 msgstr "Estante nuevo"
 
+msgid "There are no container types configured."
+msgstr "No hay tipos de estante configurados."
+
 msgid "The name is required"
 msgstr "El nombre es obligatorio"
+
+msgid "The type is required"
+msgstr "El tipo es obligatorio"
 
 msgid "The shelf will be removed from the furniture."
 msgstr "El estante se quitará del mueble."
@@ -673,6 +684,9 @@ msgstr "Abrir en otra pestaña"
 #| msgid "No tasks in this column"
 msgid "No furniture in this room."
 msgstr "No hay tareas en esta columna"
+
+msgid "shelves"
+msgstr "Estantes"
 
 #, fuzzy
 #| msgid "Report failed"
@@ -1191,27 +1205,3 @@ msgstr "¿Desea eliminar esta palabra de advertencia?"
 
 msgid "Weight"
 msgstr "Peso"
-
-msgid "Maximum Limit"
-msgstr "Limite Maximo"
-
-msgid "Minimum Limit"
-msgstr "Limite minimo"
-
-msgid "No equipment characteristics available"
-msgstr "No hay caracteristicas del equipo disponible"
-
-msgid "Equipment Characteristics"
-msgstr "Caracteristicas del equipo"
-
-msgid "Equipment Type"
-msgstr "Tipo de equipo"
-
-msgid "shelves"
-msgstr "Estantes"
-
-msgid "Edit furniture"
-msgstr "Editar mueble"
-
-msgid "Add Permission"
-msgstr "Agregar permisos"
