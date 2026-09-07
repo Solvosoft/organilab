@@ -411,7 +411,14 @@ def annotate_coverage(entries, root=None):
     de un vistazo qué se está probando con navegador sin necesitarlo.
     """
     root = Path(root or Path(settings.BASE_DIR))
-    reverse_re = re.compile(r"""reverse(?:_lazy)?\(\s*["']([^"']+)["']""")
+    # Además de `reverse()`, se reconocen los ayudantes de navegación de las
+    # suites Selenium (`navigate("nombre")`, `navigate_to_sga("nombre")`...).
+    # Sin esto, un flujo que navegue por nombre a través del ayudante queda
+    # contado como "sin prueba" y el inventario subestima la cobertura: es lo
+    # que pasaba con las suites de report, sga y las transversales.
+    reverse_re = re.compile(
+        r"""(?:reverse(?:_lazy)?|navigate(?:_to_[a-z_]+)?)\(\s*["']([^"']+)["']"""
+    )
     selenium_names, test_names = set(), set()
 
     for path in root.rglob("test*.py"):

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-30 11:01-0600\n"
+"POT-Creation-Date: 2026-09-06 15:38-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -280,7 +280,6 @@ msgstr "Procedimiento '%(name)s' creado"
 #, python-format
 msgid "Updated procedure '%(name)s'"
 msgstr "Procedimiento '%(name)s' actualizado"
-
 
 msgid "Step Form"
 msgstr "Comentario de paso"
@@ -3834,9 +3833,6 @@ msgstr "Cantidad requerida"
 msgid "boxes"
 msgstr "cajas"
 
-msgid "No pending reservations."
-msgstr "No hay reservaciones pendientes."
-
 msgid "Reservation History"
 msgstr "Historial de Reservaciones"
 
@@ -5334,21 +5330,14 @@ msgstr "Salir"
 msgid "Go to laboratory"
 msgstr "Ir al Laboratorio"
 
+msgid "Add Permission"
+msgstr "Agregar permisos"
+
 msgid "Permission Management"
 msgstr "Administración de permisos"
 
 msgid "Permission Type"
 msgstr "Tipo de Permiso"
-
-msgid "Activate account at"
-msgstr "Cuenta activada en"
-
-#, python-format
-msgid "Link is valid for %(expiration_days)s days."
-msgstr "El enlace es válido por %(expiration_days)s días."
-
-msgid "Account activation on"
-msgstr "Activar cuenta en"
 
 msgid "Your username and password didn't match. Please try again."
 msgstr "Su usuario y contraseña no concuerdan. Por favor inténtelo de nuevo."
@@ -5424,10 +5413,6 @@ msgstr ""
 
 msgid "Send email"
 msgstr "Enviar correo"
-
-#, python-format
-msgid "Password reset on %(site_name)s"
-msgstr "Reinicio de contraseña en %(site_name)s"
 
 msgid "Welcome to Organilab"
 msgstr "Bienvenido a Organilab"
@@ -8564,6 +8549,7 @@ msgstr ""
 "Gracias,\n"
 "Sistema Organilab"
 
+#, python-format
 msgid "Approved substance '%(name)s' added to inventory"
 msgstr "Sustancia aprobada '%(name)s' desde solicitud"
 
@@ -8611,6 +8597,8 @@ msgstr ""
 msgid "Approved substance '%(name)s'"
 msgstr "Sustancia '%(name)s' aprobada"
 
+#, fuzzy, python-format
+#| msgid "Substance '%(name)s' has been approved."
 msgid "Substance '%(name)s' has been approved."
 msgstr "Su solicitud '%(name)s' ha sido %(status)s"
 
@@ -8660,7 +8648,7 @@ msgid ""
 "review."
 msgstr ""
 
-
+#, python-format
 msgid "Sent substance '%(name)s' for review"
 msgstr "Sustancia aprobada '%(name)s' desde solicitud"
 
@@ -8682,9 +8670,3 @@ msgstr ""
 
 msgid "Created new substance"
 msgstr "Nueva sustancia creada"
-
-msgid "Edit funiture"
-msgstr "Editar Mueble"
-
-msgid "Add Permission"
-msgstr "Agregar permisos"

@@ -253,7 +253,7 @@ def edit_personal_template(request, org_pk, pk):
     initial = {
         "name": display_label.name,
         "template": display_label.template,
-        "barcode": display_label.barcotesthtml.htmlde,
+        "barcode": display_label.barcode,
         "json_representation": display_label.json_representation,
     }
 

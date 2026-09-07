@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-30 11:01-0600\n"
+"POT-Creation-Date: 2026-09-06 15:38-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -3563,9 +3563,6 @@ msgstr ""
 msgid "boxes"
 msgstr ""
 
-msgid "No pending reservations."
-msgstr ""
-
 msgid "Reservation History"
 msgstr ""
 
@@ -4927,20 +4924,13 @@ msgstr ""
 msgid "Go to laboratory"
 msgstr ""
 
+msgid "Add Permission"
+msgstr ""
+
 msgid "Permission Management"
 msgstr ""
 
 msgid "Permission Type"
-msgstr ""
-
-msgid "Activate account at"
-msgstr ""
-
-#, python-format
-msgid "Link is valid for %(expiration_days)s days."
-msgstr ""
-
-msgid "Account activation on"
 msgstr ""
 
 msgid "Your username and password didn't match. Please try again."
@@ -5003,10 +4993,6 @@ msgid "We will send you a email to verify you are were you say you are"
 msgstr ""
 
 msgid "Send email"
-msgstr ""
-
-#, python-format
-msgid "Password reset on %(site_name)s"
 msgstr ""
 
 msgid "Welcome to Organilab"

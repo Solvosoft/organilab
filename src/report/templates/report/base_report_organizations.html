@@ -94,7 +94,7 @@
 	const report_urls = {
 		create_request : "{% url 'report:create_organization_report_request' org_pk=org_pk %}",
 		generate_report : "{% url 'report:generate_organization_report' org_pk=org_pk %}",
-		report_status: "{% url 'report:report_status' org_pk=org_pk lab_pk=0 %}"
+		report_status: "{% url 'report:report_organization_status' org_pk=org_pk %}"
 
 	}
 

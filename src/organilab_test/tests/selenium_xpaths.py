@@ -243,3 +243,186 @@ def sidebar_menu_item(li_index, sub_li_index=None):
             sub_li_index,
         )
     return base
+
+
+# ---------------------------------------------------------------------------
+# CRUD genérico de gentelella (ObjectCRUD / obj_api_management.js)
+# ---------------------------------------------------------------------------
+# Doce páginas del proyecto son la misma pantalla con otro dataset: una
+# DataTable `<id>`, un botón de alta que DataTables pinta como botón de la barra
+# de herramientas, y una columna de acciones con <i> que llaman a
+# call_obj_crud_event().  Ver obj_api_management.js: `btn_class.create` es
+# 'btn-outline-success mr-4', `btn_class.clear_filters` 'btn-outline-secondary
+# mr-4', y los iconos por defecto son fa-eye / fa-edit / fa-trash.
+#
+# Se selecciona por CLASE y no por el `titleAttr` ("Create"), porque ese texto
+# pasa por gettext y en la corrida en español no coincide.
+
+GT_ICON_DETAIL = "fa-eye"
+GT_ICON_UPDATE = "fa-edit"
+GT_ICON_DELETE = "fa-trash"
+
+
+def gt_crud_create_btn(table_id):
+    """Botón de alta de una tabla ObjectCRUD."""
+    return (
+        "//*[@id='%s_wrapper']//button[contains(@class, 'btn-outline-success')]"
+        % table_id
+    )
+
+
+def gt_crud_clear_filters_btn(table_id):
+    """Botón «limpiar filtros» de una tabla ObjectCRUD."""
+    return (
+        "//*[@id='%s_wrapper']//button[contains(@class, 'btn-outline-secondary')]"
+        % table_id
+    )
+
+
+def gt_crud_row_action(table_id, icon, row=1):
+    """Acción por fila de una tabla ObjectCRUD, localizada por su icono.
+
+    `icon` es una de las constantes GT_ICON_* (o cualquier clase de Font
+    Awesome). Se busca por icono y no por posición dentro de la celda porque el
+    orden de las acciones depende de los permisos del usuario.
+    """
+    return (
+        "//*[@id='%s']//tbody/tr[%d]//i[contains(@class, '%s')]"
+        % (table_id, row, icon)
+    )
+
+
+def gt_modal_delete_btn(modal_id):
+    """Botón de confirmación del modal de borrado (`btn_class: '.delbtn'`)."""
+    return "//*[@id='%s']//button[contains(@class, 'delbtn')]" % modal_id
+
+
+def datatable_page_btn(table_id, page):
+    """Botón de una página concreta del paginador (1-based).
+
+    Agnóstico del tag a propósito: DataTables 2 pinta `dt-paging-button` sobre
+    el <button>, pero con el estilizado de Bootstrap 5 la clase puede acabar en
+    el <li> que lo envuelve. Se busca el elemento con ese número dentro del
+    contenedor de paginación, sea cual sea.
+    """
+    return (
+        "//*[@id='%s_wrapper']//*[contains(@class, 'dt-paging')]"
+        "//*[normalize-space(text())='%s']" % (table_id, page)
+    )
+
+
+# ---------------------------------------------------------------------------
+# Reportes (base_report_form_view.html, base_report_organizations.html,
+# regency_report.html y general_organization_report.html)
+# ---------------------------------------------------------------------------
+# El ciclo es: rellenar el formulario -> #send dispara create_request -> el
+# panel de estado hace polling contra report_status -> aparece la descarga.
+# Con CELERY_ALWAYS_EAGER (test_settings) la tarea termina dentro del
+# create_request, así que se espera a la descarga y no a los 5 s de polling.
+REPORT_SEND_BTN = "//*[@id='send']"
+REPORT_STATUS_TEXT = "//*[@id='textstatus']"
+REPORT_STATUS_PANEL = (
+    "//*[contains(@class, 'statuspanel') and not(contains(@class, 'd-none'))]"
+)
+REPORT_DOWNLOAD_LINK = "//*[@id='download_file']"
+REPORT_MODAL = "//*[@id='reportModal']"
+REPORT_MODAL_DOWNLOAD = "//*[@id='download-report']"
+REPORT_ERROR_BOX = "//*[@id='diverrormessage']"
+REPORT_FIELD_ERRORS = "//*[contains(@class, 'report_form_errors')]"
+
+
+# ---------------------------------------------------------------------------
+# Asistentes por pasos (sga/substance/steps.html, sgalabel/steps.html)
+# ---------------------------------------------------------------------------
+def wizard_step(step):
+    """Pestaña del paso N del asistente (1-based).
+
+    El índice es semántico —el paso number N del asistente—, no una posición
+    arbitraria dentro de la plantilla.
+    """
+    return "//*[@id='wizard']//ul//li[%d]//a" % step
+
+
+# ---------------------------------------------------------------------------
+# Editor de plantillas SGA
+# ---------------------------------------------------------------------------
+SGA_EDITOR_IFRAME = "//*[@id='editoriframe']"
+SGA_EDITOR_SAVE = "//*[@id='editor_save']"
+# Modal de previsualización (personal_template.html, check_substances.html).
+SGA_LABEL_PREVIEW_MODAL = "//*[@id='svgtemplate']"
+
+
+# ---------------------------------------------------------------------------
+# Acordeón de Bootstrap (paso 4 del asistente de sustancias)
+# ---------------------------------------------------------------------------
+def accordion_toggle(collapse_id):
+    """Cabecera que despliega un panel del acordeón."""
+    return "//*[@data-bs-target='#%s' or @href='#%s']" % (collapse_id, collapse_id)
+
+
+def accordion_body(collapse_id):
+    """Cuerpo desplegado de un panel del acordeón."""
+    return "//*[@id='%s' and contains(@class, 'show')]" % collapse_id
+
+
+# ---------------------------------------------------------------------------
+# select2 acotado a un campo
+# ---------------------------------------------------------------------------
+def select2_field(field_id):
+    """Caja de un select2 concreto, por el id del <select> al que envuelve.
+
+    `select2_result()` opera sobre los resultados ya desplegados, que son
+    globales al documento; para ABRIR el desplegable correcto en una página con
+    varios select2 hace falta acotar por campo.
+    """
+    return (
+        "//*[@id='%s']/following-sibling::span"
+        "//span[contains(@class, 'select2-selection')]" % field_id
+    )
+
+
+# ---------------------------------------------------------------------------
+# Subida encadenada (chunked upload de gentelella)
+# ---------------------------------------------------------------------------
+# El <input type=file> visible solo alimenta la subida por trozos: el valor real
+# viaja en un campo oculto que el JS rellena al terminar.  Por eso se hace
+# send_keys sobre el input visible y se espera al indicador de estado, nunca al
+# campo oculto.
+def chunked_file_input(field_name):
+    return "//input[@type='file' and contains(@id, '%s')]" % field_name
+
+
+SDS_AUTOFILL_STATUS = "//*[contains(@class, 'sds-autofill-status')]"
+
+
+# ---------------------------------------------------------------------------
+# Catálogos SGA (base_modal_management.js) — OTRA familia de tablas
+# ---------------------------------------------------------------------------
+# Ojo: los catálogos de SGA (warning_words, danger_indications, prudence_advices,
+# recipient_size) NO usan el ObjectCRUD de gentelella, sino
+# `laboratory/js/base_modal_management.js` con un JS propio por catálogo. Las
+# diferencias que importan:
+#
+#   - el botón de alta es `btn btn-success`, no `btn-outline-success`
+#     (por suerte 'btn-outline-success' no contiene la subcadena 'btn-success',
+#      así que los dos selectores no se pisan);
+#   - la acción de borrar se pinta con `fa-close`, no con `fa-trash`
+#     (sga/api/serializers.py: get_actions);
+#   - el borrado confirma por SweetAlert, no por un modal `.delbtn`.
+SGA_ICON_UPDATE = "fa-edit"
+SGA_ICON_DELETE = "fa-close"
+
+
+def sga_catalog_add_btn(table_id):
+    """Botón «Add» de un catálogo SGA."""
+    return (
+        "//*[@id='%s_wrapper']//button[contains(@class, 'btn-success')]" % table_id
+    )
+
+
+def datatable_row_icon(table_id, icon, row=1):
+    """Acción por fila localizada por icono, válida para ambas familias de tabla."""
+    return (
+        "//*[@id='%s']//tbody/tr[%d]//i[contains(@class, '%s')]"
+        % (table_id, row, icon)
+    )

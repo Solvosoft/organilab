@@ -187,6 +187,10 @@ function make_reservation(){
 /*Function necessary for the datatables to work*/
 $(document).ready(function() {
    all_status = get_all_elements_with_name("status_num");
-   table = $('#table_id').DataTable();
+   // El mensaje de tabla vacia va por `language.emptyTable`: una fila
+   // `{% empty %}` con colspan descuadra las columnas y DataTables revienta.
+   table = $('#table_id').DataTable({
+      language: {emptyTable: gettext('No pending reservations.')}
+   });
    status_of_reservation_buttons(all_status);
 });

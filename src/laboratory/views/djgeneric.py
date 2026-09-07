@@ -276,8 +276,19 @@ class DetailView(djDetailView):
             organization_can_change_laboratory(
                 self.laboratory, self.organization, raise_exec=True
             )
-        if not check_user_access_kwargs_org_lab(self.org, self.lab, request.user):
-            raise Http404()
+        # Mismo reparto que CreateView/UpdateView/DeleteView/ListView: con
+        # building_pk la vista cuelga de un edificio, no de un laboratorio, y hay
+        # que resolverlo para que el contexto lo exponga. Sin esta rama
+        # `building` llegaba a None y las plantillas que hacen
+        # {% url ... building.pk %} reventaban con NoReverseMatch.
+        if "building_pk" not in kwargs:
+            if not check_user_access_kwargs_org_lab(self.org, self.lab, request.user):
+                raise Http404()
+        else:
+            self.building = get_object_or_404(
+                Buildings.objects.using(settings.READONLY_DATABASE),
+                pk=kwargs["building_pk"],
+            )
         return djDetailView.get(self, request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):

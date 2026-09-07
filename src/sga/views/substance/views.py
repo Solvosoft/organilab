@@ -75,7 +75,13 @@ def create_edit_sustance(request, org_pk, pk=None):
         postdata = request.POST
         filesdata = request.FILES
 
-    objform = SustanceObjectForm(postdata, instance=instance)
+    # `organization` es obligatorio y va oculto: sin initial se renderiza
+    # vacío y el formulario NUNCA valida, así que no se podía crear una
+    # sustancia desde el asistente. El JS de la pantalla solo oculta su
+    # etiqueta (substance_creation.js:2), no lo rellena.
+    objform = SustanceObjectForm(
+        postdata, instance=instance, initial={"organization": org_pk}
+    )
     suschacform = SustanceCharacteristicsForm(
         postdata, files=filesdata, instance=suscharobj
     )

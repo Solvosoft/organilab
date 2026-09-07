@@ -204,6 +204,17 @@ def cargar_cas_h(path_csv: str) -> Dict[str, str]:
     return dict(zip(df["cas"], df["h_codes"]))
 
 
+COLUMNAS_CUADRO3 = (
+    "cas",
+    "nombre",
+    "umbral_t",
+    "tipo_match",
+    "h_codes_match",
+    "nombre_patron",
+    "condiciones_especiales",
+)
+
+
 def cargar_cuadro3() -> pd.DataFrame:
     # df = pd.read_csv(path_csv, dtype=str).fillna("")
     danger_substances = list(
@@ -226,14 +237,16 @@ def cargar_cuadro3() -> pd.DataFrame:
             "condiciones_especiales",
         )
     )
-    df = pd.DataFrame(danger_substances)
+    # Sin filas, pd.DataFrame([]) no tiene NINGUNA columna, y la comprobación
+    # de abajo reventaba con un mensaje que culpa a un cuadro3.csv que esta
+    # función ya no lee: los datos salen de DangerSubstance desde que se
+    # migraron a la base. Una organización sin sustancias peligrosas cargadas es
+    # un caso normal, no un error, así que se devuelve el marco vacío con sus
+    # columnas y el reporte sale sin filas en vez de con un 500.
+    df = pd.DataFrame(danger_substances, columns=COLUMNAS_CUADRO3)
     df.rename(
         columns={"h_codes_match": "h_codes"},
     )
-    for col in ["cas", "nombre", "umbral_t"]:
-
-        if col not in df.columns:
-            raise ValueError("cuadro3.csv debe tener columnas: cas, nombre, umbral_t")
     df["umbral_t"] = pd.to_numeric(df["umbral_t"], errors="coerce").fillna(math.inf)
     df["cas"] = df["cas"].str.strip()
     if "tipo_match" not in df.columns:
@@ -246,17 +259,16 @@ def cargar_cuadro3() -> pd.DataFrame:
             df[col] = ""
         else:
             df[col] = df[col].astype(str).str.strip()
-    return df[
-        [
-            "cas",
-            "nombre",
-            "umbral_t",
-            "tipo_match",
-            "h_codes_match",
-            "nombre_patron",
-            "condiciones_especiales",
-        ]
-    ]
+    return df[list(COLUMNAS_CUADRO3)]
+
+
+COLUMNAS_UMBRAL_H = (
+    "h_code",
+    "categoria",
+    "seccion",
+    "condicion_proceso",
+    "umbral_t",
+)
 
 
 def cargar_umbral_por_H() -> pd.DataFrame:
@@ -272,15 +284,12 @@ def cargar_umbral_por_H() -> pd.DataFrame:
         )
         .values("h_code", "categoria", "seccion", "condicion_proceso", "umbral_t")
     )
-    df = pd.DataFrame(danger_categories)
+    # Mismo caso que en cargar_cuadro3(): sin filas el marco no tiene columnas
+    # y reventaba culpando a un cuadro4_h_umbral.csv que ya no se lee.
+    df = pd.DataFrame(danger_categories, columns=COLUMNAS_UMBRAL_H)
     df.rename(
         columns={"h_codes": "h_code"},
     )
-    for col in ["h_code", "umbral_t", "categoria"]:
-        if col not in df.columns:
-            raise ValueError(
-                "cuadro4_h_umbral.csv debe tener columnas: h_code, umbral_t, categoria"
-            )
     df["umbral_t"] = pd.to_numeric(df["umbral_t"], errors="coerce")
     df["h_code"] = df["h_code"].str.strip().str.upper()
     df["categoria"] = df["categoria"].str.strip()  # ya viene normalizada

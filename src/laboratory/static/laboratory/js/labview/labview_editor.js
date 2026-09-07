@@ -151,6 +151,16 @@ const LabviewEditor = {
 
     createShelf(furniturePk, row, col) {
         const types = document.container_types || [];
+        // Shelf.type no acepta nulos: sin catalogo `container_type` el POST
+        // solo devolveria un 400 ilegible, asi que se corta antes de pedir
+        // datos que no se van a poder guardar.
+        if (!types.length) {
+            return Swal.fire({
+                icon: 'error',
+                title: gettext('New shelf'),
+                text: gettext('There are no container types configured.')
+            }).then(() => null);
+        }
         const typeOptions = types.map(
             (t) => `<option value="${t.id}">${escapeHtml(t.description)}</option>`
         ).join('');
@@ -173,6 +183,10 @@ const LabviewEditor = {
 
                 if (!name) {
                     Swal.showValidationMessage(gettext('The name is required'));
+                    return false;
+                }
+                if (!type) {
+                    Swal.showValidationMessage(gettext('The type is required'));
                     return false;
                 }
                 return { name: name, type: parseInt(type, 10) };

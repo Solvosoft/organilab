@@ -156,7 +156,9 @@
 	<script type="text/javascript" src="{% static 'js/my_reservations.js' %}?v={% get_organilab_version %}"></script>
 	<script>
 		$(document).ready(function () {
-			$('#table_history').DataTable();
+			$('#table_history').DataTable({
+				language: {emptyTable: "{% trans 'No reservation history found.' %}"}
+			});
 		});
 	</script>
 {% endblock %}
