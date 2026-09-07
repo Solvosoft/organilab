@@ -2,15 +2,26 @@
 
 <div id="wizard" class="form_wizard wizard_horizontal">
     <ul class="wizard_steps anchor">
+						{% if not substance %}
         <li>
-            <a href="{% if not substance %}{% url 'sga:create_sustance' org_pk %}{% else %}{% url 'sga:update_substance' org_pk=org_pk pk=substance %}{% endif %}" class="{% if step == 1 %}selected{% else %}disabled{% endif %}" isdone="1" rel="1">
-                <span class="step_no">1</span>
+            <a href="{% if not substance %}{% url 'sga:step_zero' org_pk %}{% else %}{% url 'sga:update_substance' org_pk=org_pk pk=substance %}{% endif %}" class="{% if step == 0 %}selected{% else %}disabled{% endif %}" isdone="1" rel="0">
+                <span class="step_no">0</span>
                 <span class="step_descr">{% trans 'Create Substances' %}</span>
             </a>
         </li>
+					{% endif %}
 
-        {# Hasta que la sustancia no existe no hay pk con el que construir los #}
-        {# pasos siguientes, así que se muestran inertes en lugar de enlazados. #}
+        <li>
+									            {% if substance %}
+            <a href="{% if not substance %}{% url 'sga:create_sustance' org_pk %}{% else %}{% url 'sga:update_substance' org_pk=org_pk pk=substance %}{% endif %}" class="{% if step == 1 %}selected{% else %}disabled{% endif %}" isdone="0" rel="1">
+            {% else %}
+            <a class="disabled" isdone="0" rel="1">
+            {% endif %}
+                <span class="step_no">1</span>
+                <span class="step_descr">{% trans 'Update Substances' %}</span>
+            </a>
+        </li>
+
         <li>
             {% if substance %}
             <a href="{% url 'sga:step_four' org_pk=org_pk substance=substance %}" class="{% if step == 2 %}selected{% else %}disabled{% endif %}" isdone="0" rel="2">

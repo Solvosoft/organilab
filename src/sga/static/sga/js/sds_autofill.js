@@ -51,7 +51,7 @@
     box.setAttribute("aria-live", "polite");
     box.style.display = "none";
     box.style.marginTop = "8px";
-    tokenInput.parentNode.appendChild(box);
+    tokenInput.parentNode.parentNode.parentNode.appendChild(box);
     return box;
   }
 
@@ -66,7 +66,7 @@
     // El token consume el ChunkedUpload en servidor y deja el PDF en la ficha.
     data.append("security_sheet", token);
     data.append("csrfmiddlewaretoken", config.csrfToken);
-
+    data.append("name", document.querySelector('input[type="text"][name="name"]').value)
     setStatus(config.messages.uploading, "info");
 
     fetch(config.uploadUrl, {
@@ -170,14 +170,23 @@
     }
 
     setStatus(config.messages.extractedNeedsReload, "success");
-    var button = document.createElement("button");
-    button.type = "button";
-    button.className = "btn btn-sm btn-success";
-    button.style.marginLeft = "8px";
-    button.textContent = config.messages.loadExtracted;
-    button.addEventListener("click", function () {
-      window.location.reload();
-    });
-    statusBox.appendChild(button);
+    if(!document.querySelector('input[type="text"][name="name"]')) {
+        var button = document.createElement("button");
+        button.type = "button";
+        button.className = "btn btn-sm btn-success";
+        button.style.marginLeft = "8px";
+        button.textContent = config.messages.loadExtracted;
+        button.addEventListener("click", function () {
+            window.location.reload();
+        });
+        statusBox.appendChild(button);
+    }else{
+        var button = document.createElement("button");
+        button.type = "submit";
+        button.className = "btn btn-sm btn-success";
+        button.style.marginLeft = "8px";
+        button.textContent = gettext("Continue");
+        statusBox.appendChild(button);
+    }
   }
 })();

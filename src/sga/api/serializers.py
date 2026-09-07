@@ -256,20 +256,20 @@ class ReviewSubstanceSerializer(serializers.ModelSerializer):
         if not obj.is_approved:
             obj_kwargs.update({"pk": obj.pk})
             approve_url = reverse("sga:accept_substance", kwargs=obj_kwargs)
-            action += """ <a title='%s'  data-url='%s' class ='text-success btn_review'>
+            action += """ <a title='%s'  data-url='%s' class ='text-success btn_review ps-2'>
             <i class='icons fa fa-check'></i></a>""" % (
                 _("Approve"),
                 approve_url,
             )
 
-        action += """<a class ='text-warning m-1' title='%s' href='%s'>
+        action += """<a class ='text-warning m-1 ps-2' title='%s' href='%s'>
         <i class='icons fa fa-eye'></i></a>""" % (
             _("Detail"),
             detail_url,
         )
         leaf = SecurityLeaf.objects.filter(substance=obj.substance)
         if leaf.exists():
-            action += """<a class='text-danger m-1' title='%s' href='%s'>
+            action += """<a class='text-danger m-1 ps-2' title='%s' href='%s'>
             <i class='icons fa fa-file-pdf-o'
              aria-hidden='true'></i></a>""" % (
                 _("Generate PDF"),
