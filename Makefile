@@ -1,4 +1,4 @@
-.PHONY: help clean clean-pyc clean-build list setup check-env venv-info url-inventory url-inventory-check test-urls test test-parallel test-selenium test-selenium-4 test-selenium-xvfb test-selenium-bitacora docs release sdist
+.PHONY: help clean clean-pyc clean-build list setup check-env venv-info url-inventory url-inventory-check test-urls test test-parallel test-selenium test-selenium-4 test-selenium-single test-selenium-xvfb test-selenium-bitacora docs release sdist
 
 # Variables
 ROOT_DIR := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
@@ -123,20 +123,25 @@ test-parallel: ## - run tests in parallel (auto-detect workers)
 single-test: ## Run Django tests (optional: TEST=path.to.test, example: make single-test TEST=laboratory.tests.test_provider.ProviderViewTest)
 	cd src && $(PYTHON) manage.py test $(TEST) --no-input --exclude-tag=selenium
 
-test-selenium: ## Run Selenium tests, workers auto (optional: TEST=path.to.test, example: make test-selenium TEST=laboratory.tests.selenium_tests)
+test-selenium: ## Run Selenium tests, workers auto (optional: TEST=path.to.test, example: make test-selenium TEST=laboratory.tests.selenium_tests) [OJO: usa TU pantalla, abre Chrome encima de tu sesion]
 	cd src && $(PYTHON) manage.py test $(or $(TEST),) --tag=selenium --no-input --parallel -v 2
 
-test-selenium-parallel: ## Run Selenium tests with a fixed worker count (WORKERS=12 by default, optional: TEST=path.to.test)
+test-selenium-parallel: ## Run Selenium tests with a fixed worker count (WORKERS=12 by default, optional: TEST=path.to.test) [OJO: usa TU pantalla, abre Chrome encima de tu sesion]
 	cd src && $(PYTHON) manage.py test $(or $(TEST),) --tag=selenium --no-input --parallel $(or $(WORKERS),12) -v 2
 
 test-selenium-xvfb: ## Run Selenium tests headless via xvfb-run, workers auto (optional: TEST=path.to.test)
 	xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" sh -c "cd src && $(PYTHON) manage.py test $(or $(TEST),) --tag=selenium --no-input --parallel -v 2"
 
-test-selenium-fast: ## Run Selenium tests without GIF generation, workers auto (optional: TEST=path.to.test)
+test-selenium-fast: ## Run Selenium tests without GIF generation, workers auto (optional: TEST=path.to.test) [OJO: usa TU pantalla, abre Chrome encima de tu sesion]
 	cd src && GENERATE_SCREENSHOTS=False $(PYTHON) manage.py test $(or $(TEST),) --tag=selenium --no-input --parallel -v 2
 
-test-selenium-single-fast: ## Run a single Selenium test without GIF generation, serial (TEST=path.to.test)
+test-selenium-single-fast: ## Run a single Selenium test without GIF generation, serial (TEST=path.to.test) [OJO: usa TU pantalla, abre Chrome encima de tu sesion]
 	cd src && GENERATE_SCREENSHOTS=False $(PYTHON) manage.py test $(TEST) --tag=selenium --no-input -v 2
+
+test-selenium-single: ## Corre UN test Selenium en serie y en su PROPIA pantalla virtual (TEST=ruta.al.test; GIF=1 para generar el GIF)
+	@test -n "$(TEST)" || { echo "Falta TEST=ruta.al.test (este target corre un solo test a proposito)"; exit 2; }
+	xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" \
+		sh -c "cd src && $(if $(GIF),,GENERATE_SCREENSHOTS=False )$(PYTHON) manage.py test $(TEST) --tag=selenium --no-input -v 2"
 
 test-selenium-dev: ## Run Selenium tests fast, headless, reusing the DB (optional: TEST=...). OJO --keepdb: si la BD reciclada queda sin permisos, loaddata revienta en setUpClass; borrar test_organilab y relanzar
 	xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" \
@@ -180,11 +185,11 @@ docs_full: ##  - generate full docs, Sphinx HTML documentation, including API do
 	$(PYTHON) docs/fix_capacitacion_images.py
 
 messages: ##  - extract messages for translations
-	cd src && django-admin makemessages --all --no-location --no-obsolete && django-admin makemessages -d djangojs -l es  --ignore *.min.js --no-location --no-obsolete
+	cd src && $(PYTHON) -m django makemessages --all --no-location --no-obsolete && $(PYTHON) -m django makemessages -d djangojs -l es  --ignore *.min.js --no-location --no-obsolete
 
 trans: ##  - compile messages of translations
-	cd src && django-admin compilemessages --locale es
-	cd src && django-admin compilemessages --locale en
+	cd src && $(PYTHON) -m django compilemessages --locale es
+	cd src && $(PYTHON) -m django compilemessages --locale en
 
 release: ##  - package and upload a release
 	$(MAKE) clean && $(MAKE) trans && builddocker

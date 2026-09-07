@@ -51,7 +51,8 @@ const LabviewTable = {
             {data: 'container', name: 'container__object__name',
              title: gettext('Container'), type: 'string', visible: true},
             {data: null, name: 'actions', title: gettext('Actions'),
-             type: 'string',
+             type: 'string', orderable: false, searchable: false,
+             className: 'no-export-col',
              render: (row) => this.renderActions(row)}
         ];
 

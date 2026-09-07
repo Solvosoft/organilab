@@ -11,19 +11,12 @@ from report.views import base
 from report.views import reports_org
 from report.views import riskzones
 
+# Reportes de laboratorio. OJO: se monta bajo el mismo prefijo que
+# base_organization_reports, así que ninguna ruta puede repetirse entre ambas
+# listas: la primera en declararse gana la resolución y la otra queda muerta.
 base_reports = [
     path("create/", base.create_request_by_report, name="create_report_request"),
-    path(
-        "create/",
-        base.create_organization_request_by_report,
-        name="create_organization_report_request",
-    ),
     path("download/", base.download_report, name="generate_report"),
-    path(
-        "download/",
-        base.download__organization_report,
-        name="generate_organization_report",
-    ),
     path("table/<int:pk>/", base.report_table, name="report_table"),
     path("status/", base.report_status, name="report_status"),
 ]

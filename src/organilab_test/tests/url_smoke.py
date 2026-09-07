@@ -40,24 +40,9 @@ SMOKE_EXCLUDES = {
 # empieza a responder 200, la prueba falla y obliga a borrarla de aquí. Así la
 # lista no se convierte en un cementerio.
 KNOWN_BROKEN = {
-    "laboratory:furniture_create": (
-        "500: furniture_form.html:48 llama {% get_qr_svg_img furniture %} y en la vista "
-        "de creación no existe `furniture`; el tag recibe '' y revienta en "
-        "get_qr_by_instance (presentation/utils.py:51)"
-    ),
-    "riskmanagement:risk_report": (
-        "NoReverseMatch: report/base_report_organizations.html:97 pide "
-        "{% url 'report:report_status' org_pk=... lab_pk=0 %}, pero el patrón que gana el "
-        "nombre solo acepta org_pk (report/urls.py:28). Secuela de los nombres duplicados "
-        "de report/urls.py:136-137"
-    ),
-    "riskmanagement:incident_detail": (
-        "mismo NoReverseMatch: extiende base_report_organizations.html"
-    ),
-    "sga:edit_personal": (
-        "AttributeError: sga/views/editor.py:256 lee display_label.barcotesthtml sin "
-        "comprobar que exista; cualquier DisplayLabel sin código de barras revienta"
-    ),
+    # Vacío a propósito. Las entradas se asertan al revés: si una página listada
+    # aquí empieza a responder 200, la prueba falla y obliga a sacarla. Así la
+    # lista no se convierte en un cementerio.
 }
 
 

@@ -3,6 +3,7 @@
 {% load static %}
 {% load urlname_tags %}
 {% load gtsettings %}
+{% load organilab_tags %}
 {% block pre_head %}
 	{% define_urlname_action 'laboratory_process_list' %}
 {% endblock %}
@@ -38,5 +39,5 @@
 		update_url: "{% url "laboratory:api-laboratory-process-detail" org_pk lab_pk 0 %}"
 	}
 </script>
-<script src="{% static 'laboratory/js/laboratory_proccess.js' %}?v={% get_organilab_version"></script>
+<script src="{% static 'laboratory/js/laboratory_proccess.js' %}?v={% get_organilab_version %}"></script>
 {% endblock %}

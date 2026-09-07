@@ -12,7 +12,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 
-from laboratory.models import Laboratory
+from laboratory.models import Catalog, Laboratory
 from laboratory.views.djgeneric import ListView
 from laboratory.views.labview_helpers import (
     LabviewDeepLinkMixin,
@@ -98,7 +98,6 @@ class LabView(
 
     def get_container_types(self):
         """Container type choices for the shelf creation dialog."""
-        from laboratory.models import Catalog
         return list(
             Catalog.objects.filter(key="container_type")
             .values("id", "description")

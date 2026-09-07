@@ -143,6 +143,11 @@ def show_reserve_button(procedure):
 
 @register.simple_tag()
 def get_qr_svg_img(object, **kwargs):
+    # En las vistas de creación la instancia todavía no existe y la plantilla
+    # llama al tag igual (furniture_form.html): sin este guarda, get_qr_by_instance
+    # recibe la cadena vacía y revienta en get_for_model con AttributeError.
+    if not getattr(object, "pk", None):
+        return ""
     use_icon = kwargs.pop("icon", False)
     url = kwargs.pop("url", None)
     organization = kwargs["organization"]
