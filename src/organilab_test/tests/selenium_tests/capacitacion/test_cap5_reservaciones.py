@@ -3,6 +3,10 @@ from django.test import tag
 from organilab_test.tests.selenium_tests.capacitacion.base import (
     CapacitacionSeleniumBase,
 )
+from organilab_test.tests.selenium_xpaths import (
+    PAGE_MANAGE_RESERVATION,
+    PAGE_RESERVATIONS_LIST,
+)
 
 
 @tag("selenium")
@@ -18,7 +22,7 @@ class Cap5ReservationsTest(CapacitacionSeleniumBase):
         path_list = [
             # Esperar a que cargue la tabla de reservaciones
             {
-                "path": "//body",
+                "path": PAGE_RESERVATIONS_LIST,
                 "wait_ready": True,
                 "screenshot_name": "cap5_reservations_list",
                 "extra_action": "script",
@@ -77,12 +81,12 @@ class Cap5ManageReservationsTest(CapacitacionSeleniumBase):
         path_list = [
             # Ver la interfaz de reservaciones con opcion masiva
             {
-                "path": "//body",
+                "path": PAGE_RESERVATIONS_LIST,
                 "wait_ready": True,
             },
             # Capturar opciones de reservacion masiva
             {
-                "path": "//body",
+                "path": PAGE_RESERVATIONS_LIST,
                 "screenshot_name": "cap5_mass_reservation",
                 "extra_action": "script",
                 "value": "",
@@ -99,7 +103,7 @@ class Cap5ManageReservationsTest(CapacitacionSeleniumBase):
         path_list = [
             # Capturar detalle de reservacion pendiente con botones aprobar/rechazar
             {
-                "path": "//body",
+                "path": PAGE_MANAGE_RESERVATION,
                 "wait_ready": True,
                 "screenshot_name": "cap5_manage_reservation",
                 "extra_action": "script",
@@ -251,7 +255,7 @@ class Cap5ManageReservationsTest(CapacitacionSeleniumBase):
         path_list = [
             # Capturar formulario de devolucion de productos
             {
-                "path": "//body",
+                "path": PAGE_MANAGE_RESERVATION,
                 "wait_ready": True,
                 "screenshot_name": "cap5_return_products",
                 "extra_action": "script",
@@ -263,7 +267,7 @@ class Cap5ManageReservationsTest(CapacitacionSeleniumBase):
         # Capturar vista de reservacion cerrada
         path_list_closed = [
             {
-                "path": "//body",
+                "path": PAGE_MANAGE_RESERVATION,
                 "screenshot_name": "cap5_reservation_closed",
                 "extra_action": "script",
                 "value": "",
