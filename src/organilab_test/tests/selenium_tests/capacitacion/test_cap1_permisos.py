@@ -3,6 +3,10 @@ from django.test import tag
 from organilab_test.tests.selenium_tests.capacitacion.base import (
     CapacitacionSeleniumBase,
 )
+from organilab_test.tests.selenium_xpaths import (
+    PAGE_MY_LABS,
+    PAGE_RISKZONE_LIST,
+)
 
 
 @tag("selenium")
@@ -18,7 +22,7 @@ class Cap1RolesAndUsersTest(CapacitacionSeleniumBase):
         path_list_student = [
             # Ver la interfaz del estudiante - acceso limitado
             {
-                "path": "//body",
+                "path": PAGE_MY_LABS,
                 "wait_ready": True,
                 "screenshot_name": "cap1_student_view",
                 "extra_action": "script",
@@ -34,7 +38,7 @@ class Cap1RolesAndUsersTest(CapacitacionSeleniumBase):
         path_list_manager = [
             # Ver la interfaz del gestor - acceso ampliado
             {
-                "path": "//body",
+                "path": PAGE_MY_LABS,
                 "wait_ready": True,
                 "screenshot_name": "cap1_manager_view",
                 "extra_action": "script",
@@ -98,7 +102,7 @@ class Cap1RiskZonesTest(CapacitacionSeleniumBase):
         path_list = [
             # Capturar vista de zonas de riesgo
             {
-                "path": "//body",
+                "path": PAGE_RISKZONE_LIST,
                 "wait_ready": True,
                 "screenshot_name": "cap1_risk_zones_labs",
                 "extra_action": "script",

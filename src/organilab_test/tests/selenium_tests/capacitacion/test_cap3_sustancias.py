@@ -3,6 +3,12 @@ from django.test import tag
 from organilab_test.tests.selenium_tests.capacitacion.base import (
     CapacitacionSeleniumBase,
 )
+from organilab_test.tests.selenium_xpaths import (
+    PAGE_MSDS_INDEX,
+    PAGE_PRECURSOR_REPORT,
+    PAGE_SGA_LABEL_TEMPLATES,
+    PAGE_SUBSTANCE_WIZARD,
+)
 
 
 @tag("selenium")
@@ -53,7 +59,7 @@ class Cap3SubstancesTest(CapacitacionSeleniumBase):
         path_list = [
             # Capturar vista del formulario de etiqueta SGA
             {
-                "path": "//body",
+                "path": PAGE_SGA_LABEL_TEMPLATES,
                 "wait_ready": True,
                 "screenshot_name": "cap3_sga_label_form",
                 "extra_action": "script",
@@ -69,7 +75,7 @@ class Cap3SubstancesTest(CapacitacionSeleniumBase):
         path_list = [
             # Capturar vista del indice MSDS
             {
-                "path": "//body",
+                "path": PAGE_MSDS_INDEX,
                 "wait_ready": True,
                 "screenshot_name": "cap3_msds_list",
                 "extra_action": "script",
@@ -90,12 +96,12 @@ class Cap3ClassificationAndMSDSTest(CapacitacionSeleniumBase):
         path_list = [
             # Capturar formulario de clasificacion SGA
             {
-                "path": "//body",
+                "path": PAGE_SUBSTANCE_WIZARD,
                 "wait_ready": True,
             },
             # Scroll para mostrar los codigos H y P
             {
-                "path": "//body",
+                "path": PAGE_SUBSTANCE_WIZARD,
                 "scroll": "window.scrollTo(0, 300)",
                 "screenshot_name": "cap3_sga_classification",
                 "extra_action": "script",
@@ -135,7 +141,7 @@ class Cap3ClassificationAndMSDSTest(CapacitacionSeleniumBase):
         path_list = [
             # Capturar vista del reporte de precursores
             {
-                "path": "//body",
+                "path": PAGE_PRECURSOR_REPORT,
                 "wait_ready": True,
                 "screenshot_name": "cap3_precursor_report",
                 "extra_action": "script",
@@ -150,12 +156,12 @@ class Cap3ClassificationAndMSDSTest(CapacitacionSeleniumBase):
         path_list_config = [
             # Capturar la seccion de precursor en el formulario
             {
-                "path": "//body",
+                "path": PAGE_SUBSTANCE_WIZARD,
                 "wait_ready": True,
                 "scroll": "window.scrollTo(0, document.body.scrollHeight)",
             },
             {
-                "path": "//body",
+                "path": PAGE_SUBSTANCE_WIZARD,
                 "screenshot_name": "cap3_precursor_config",
                 "extra_action": "script",
                 "value": "",

@@ -426,3 +426,37 @@ def datatable_row_icon(table_id, icon, row=1):
         "//*[@id='%s']//tbody/tr[%d]//i[contains(@class, '%s')]"
         % (table_id, row, icon)
     )
+
+
+# ---------------------------------------------------------------------------
+# Marcadores de página
+# ---------------------------------------------------------------------------
+# Un elemento que **solo existe en esa pantalla**, para que una prueba de
+# navegación compruebe que llegó adonde dice.
+#
+# El motivo es concreto: media suite de capacitación esperaba `//body`, y una
+# página de error 403 también tiene `<body>`. Esas pruebas seguían verdes cuando
+# al rol del usuario le faltaba el permiso — precisamente el fallo que hay que
+# ver. En un proyecto con permisos por rol, organización y laboratorio, una
+# aserción que no distingue la pantalla real de la de error no comprueba nada.
+#
+# Se descubrió quitándole `is_superuser` a `lab_manager` en
+# `fixtures/selenium/capacitacion.json`: solo cayeron 3 de las 8 pruebas del
+# taller 5; las otras pasaban contra un 403.
+PAGE_MY_LABS = "//*[@id='searchform']"
+PAGE_RISKZONE_LIST = "//*[@id='btnsearch']"
+PAGE_ROOMS_LIST = "//*[@id='collapselabroom']"
+PAGE_REPORT_INDEX = "//*[@id='reportindex']"
+#: `sga:add_personal` monta la lista de plantillas de etiqueta personales.
+PAGE_SGA_LABEL_TEMPLATES = "//*[@id='table_template_list']"
+PAGE_MSDS_INDEX = "//*[@id='msdstable']"
+PAGE_SUBSTANCE_WIZARD = "//*[@id='wizard']"
+PAGE_PRECURSOR_REPORT = "//*[@id='logtable']"
+PAGE_PROCEDURE_LIST = "//*[@id='procedure']"
+PAGE_MY_PROCEDURES = "//*[@id='add_my_procedures']"
+PAGE_RESERVATIONS_LIST = "//*[@id='table_of_reservations']"
+PAGE_MANAGE_RESERVATION = "//*[@id='managereservation']"
+PAGE_ADMIN_CHANGELIST = "//*[@id='changelist']"
+
+#: El aviso de operación correcta, para las vistas cuyo contenido es el mensaje.
+FLASH_SUCCESS = "//div[contains(@class, 'alert-success')]"

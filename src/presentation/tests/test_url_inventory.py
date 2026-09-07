@@ -27,18 +27,28 @@ class UrlInventoryTest(TestCase):
         self.assertEqual([], unknown, "rutas sin clasificar: %s" % ", ".join(unknown))
 
     def test_el_inventario_commiteado_esta_al_dia(self):
-        """`roadmap/INVENTARIO_URLS.md` debe reflejar el código de hoy."""
+        """Los dos ficheros generados deben reflejar el código de hoy.
+
+        El CSV entra aquí por una razón concreta: durante toda su vida se generó
+        sin cobertura —`annotate_coverage()` estaba condicionada a `--coverage`,
+        que el Makefile no pasaba— y sus columnas `selenium` y `pruebas` valían
+        cero en las 1 681 filas. Nadie lo vio porque este guardián solo miraba el
+        markdown. Un fichero generado que no se comprueba no está vivo.
+        """
         from pathlib import Path
 
         from django.conf import settings
 
-        path = Path(settings.BASE_DIR).parent / "roadmap" / "INVENTARIO_URLS.md"
-        if not path.exists():
-            self.skipTest("todavía no se generó el inventario")
-        try:
-            call_command("url_inventory", check=str(path), verbosity=0)
-        except Exception as exc:  # noqa: BLE001
-            self.fail("%s\nRegeneralo con `make url-inventory`." % exc)
+        roadmap = Path(settings.BASE_DIR).parent / "roadmap"
+        for name in ("INVENTARIO_URLS.md", "inventario_urls.csv"):
+            path = roadmap / name
+            with self.subTest(fichero=name):
+                if not path.exists():
+                    self.skipTest("todavía no se generó %s" % name)
+                try:
+                    call_command("url_inventory", check=str(path), verbosity=0)
+                except Exception as exc:  # noqa: BLE001
+                    self.fail("%s\nRegeneralo con `make url-inventory`." % exc)
 
     def test_no_se_pierden_paginas(self):
         """Umbral de regresión: nadie convierte páginas en endpoints sin querer."""

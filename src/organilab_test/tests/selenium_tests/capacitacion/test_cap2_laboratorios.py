@@ -3,6 +3,10 @@ from django.test import tag
 from organilab_test.tests.selenium_tests.capacitacion.base import (
     CapacitacionSeleniumBase,
 )
+from organilab_test.tests.selenium_xpaths import (
+    PAGE_REPORT_INDEX,
+    PAGE_ROOMS_LIST,
+)
 
 
 @tag("selenium")
@@ -97,7 +101,7 @@ class Cap2LabStructureTest(CapacitacionSeleniumBase):
         path_list = [
             # Ver la estructura del laboratorio (tree de salas y muebles)
             {
-                "path": "//body",
+                "path": PAGE_ROOMS_LIST,
                 "wait_ready": True,
                 "screenshot_name": "cap2_lab_structure",
                 "extra_action": "script",
@@ -118,7 +122,7 @@ class Cap2InventoryTest(CapacitacionSeleniumBase):
         path_list = [
             # Capturar vista del inventario (arbol de salas, muebles y estantes)
             {
-                "path": "//body",
+                "path": PAGE_ROOMS_LIST,
                 "wait_ready": True,
                 "screenshot_name": "cap2_shelf_inventory",
                 "extra_action": "script",
@@ -260,7 +264,7 @@ class Cap2ReportsTest(CapacitacionSeleniumBase):
         path_list = [
             # Capturar vista del menu de reportes
             {
-                "path": "//body",
+                "path": PAGE_REPORT_INDEX,
                 "wait_ready": True,
                 "screenshot_name": "cap2_reports_menu",
                 "extra_action": "script",
@@ -276,12 +280,12 @@ class Cap2ReportsTest(CapacitacionSeleniumBase):
         path_list = [
             # Navegar a la seccion de reportes de inventario
             {
-                "path": "//body",
+                "path": PAGE_REPORT_INDEX,
                 "wait_ready": True,
             },
             # Capturar la pagina de opciones de reporte
             {
-                "path": "//body",
+                "path": PAGE_REPORT_INDEX,
                 "screenshot_name": "cap2_pdf_report",
                 "extra_action": "script",
                 "value": "",

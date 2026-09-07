@@ -16,8 +16,10 @@ Lo que no encaje sale como `desconocida`, y hay una prueba que lo prohíbe: la
 categoría existe para obligar a decidir, no para esconder casos.
 """
 
+import ast
 import inspect
 import re
+import textwrap
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -57,7 +59,6 @@ INFRA_MODULE_PREFIXES = (
 OVERRIDES = {
     # Fragmentos HTML que no extienden base.html pero que la heurística de
     # plantilla no puede juzgar sola (se inyectan en un modal por AJAX).
-    "academic:procedure_list": ("parcial", "renderiza academic/list.html, un fragmento de tabla"),
     "laboratory:furniture_update": ("parcial", "renderiza laboratory/dataconfig.html, la rejilla del mueble"),
     "riskmanagement:zone_type_add": ("parcial", "formulario embebido en el modal de zona"),
     "riskmanagement:iper_catalog_add": ("parcial", "formulario embebido en el modal de IPER"),
@@ -122,6 +123,10 @@ class UrlEntry:
     duplicated: bool = False
     covered_selenium: bool = False
     covered_tests: bool = False
+    #: Permisos que la vista exige, cuando se pueden leer sin ejecutarla. Es lo que
+    #: permite contrastar el catálogo de funcionalidades contra el código en vez de
+    #: mantener otra lista paralela.
+    permissions: tuple = ()
 
     @property
     def full_name(self):
@@ -283,6 +288,84 @@ def _source_text(callback):
         return ""
 
 
+def _decorator_permissions(source):
+    """Los permisos de un `permission_required`, esté donde esté el decorador.
+
+    Se parsea con `ast` en vez de con una expresión regular porque el repo lo escribe de
+    cuatro formas distintas y una regex acertaría solo en la primera:
+
+    - `@permission_required("app.perm")` sobre una vista función;
+    - con una tupla de permisos y repartido en cuatro líneas por el formateo;
+    - `@method_decorator(permission_required(...), name="dispatch")` sobre una CBV, que
+      es como lo hacen `academic` y buena parte de `laboratory`;
+    - anidado dentro de otro decorador.
+
+    Por eso se busca la llamada a `permission_required` **a cualquier profundidad** del
+    árbol del decorador, y solo entonces se leen sus literales: así `name="dispatch"` no
+    se cuela como si fuera un permiso.
+    """
+    try:
+        tree = ast.parse(textwrap.dedent(source))
+    except (SyntaxError, ValueError):
+        return []
+
+    found = []
+    for node in ast.iter_child_nodes(tree):
+        if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+            continue
+        for decorator in node.decorator_list:
+            for inner in ast.walk(decorator):
+                if not isinstance(inner, ast.Call):
+                    continue
+                target = inner.func
+                name = getattr(target, "id", None) or getattr(target, "attr", None)
+                if name != "permission_required":
+                    continue
+                for argument in inner.args:
+                    for literal in ast.walk(argument):
+                        if isinstance(literal, ast.Constant) and \
+                                isinstance(literal.value, str):
+                            found.append(literal.value)
+        # Solo la definición de más afuera: lo anidado es detalle de implementación.
+        break
+    return found
+
+
+def _permissions_of(callback):
+    """Los permisos que la vista exige, leídos sin ejecutarla.
+
+    Tres fuentes, por orden de fiabilidad: el atributo `permission_required` de la
+    clase (lo que usan las CBV con `PermissionRequiredMixin`), el mismo atributo pasado
+    por `as_view()`, y —para las vistas función— el decorador `@permission_required`
+    del código fuente.
+
+    Lo que se calcula en tiempo de ejecución queda fuera, y está bien: lo que no es
+    literal tampoco es documentable.
+    """
+    found = []
+
+    def _add(value):
+        if isinstance(value, str):
+            found.append(value)
+        elif isinstance(value, (list, tuple, set, frozenset)):
+            found.extend(item for item in value if isinstance(item, str))
+
+    view_class = getattr(callback, "view_class", None)
+    if view_class is not None:
+        _add(getattr(view_class, "permission_required", None))
+        initkwargs = getattr(callback, "view_initkwargs", None) or {}
+        _add(initkwargs.get("permission_required"))
+
+    if not found:
+        # Vista función: el decorador ya envolvió el callable, así que el atributo no
+        # existe. `getsource` de un objeto decorado devuelve el fuente con todos sus
+        # decoradores, que es justo lo que hace falta.
+        found.extend(_decorator_permissions(_source_text(callback)))
+
+    # Un codename sin app no identifica el permiso: hay repetidos entre aplicaciones.
+    return tuple(name for name in dict.fromkeys(found) if "." in name)
+
+
 def classify(callback, full_name, in_router, route=""):
     """Devuelve `(categoria, motivo, plantilla)`. Cascada: el primer acierto gana."""
     module = getattr(callback, "__module__", "") or ""
@@ -380,6 +463,7 @@ def build_inventory():
             template=template,
             kwargs=tuple(dict.fromkeys(groups)),
             model=model,
+            permissions=_permissions_of(callback),
         )
 
         if full_name in seen:
@@ -409,6 +493,11 @@ def annotate_coverage(entries, root=None):
 
     Distingue Selenium del resto por la ruta del fichero: es lo que permite ver
     de un vistazo qué se está probando con navegador sin necesitarlo.
+
+    **Es una pista, no una medición.** Solo dice que alguien escribió el nombre
+    de la ruta en un literal: no sabe si la prueba asertó nada, si está
+    `@skip`, ni —lo que más importa— con qué rol se ejecutó. Para eso está la
+    sonda de `presentation/probe.py`, que mide peticiones reales.
     """
     root = Path(root or Path(settings.BASE_DIR))
     # Además de `reverse()`, se reconocen los ayudantes de navegación de las
@@ -421,9 +510,7 @@ def annotate_coverage(entries, root=None):
     )
     selenium_names, test_names = set(), set()
 
-    for path in root.rglob("test*.py"):
-        if "/migrations/" in str(path):
-            continue
+    for path in _test_sources(root):
         try:
             text = path.read_text(encoding="utf-8")
         except (OSError, UnicodeDecodeError):
@@ -435,10 +522,35 @@ def annotate_coverage(entries, root=None):
             test_names |= found
 
     for entry in entries:
-        keys = {entry.full_name, entry.name}
+        # Con namespace se exige el nombre completo. Casar también por el nombre
+        # pelado hacía que un `reverse("index")` de cualquier app marcara como
+        # cubierta cualquier ruta llamada `index` de cualquier namespace.
+        keys = {entry.full_name} if entry.namespace else {entry.name}
         entry.covered_selenium = bool(keys & selenium_names)
         entry.covered_tests = bool(keys & test_names)
     return entries
+
+
+def _test_sources(root):
+    """Los ficheros de prueba, incluidos los ayudantes que no se llaman `test*`.
+
+    Barrer solo `test*.py` dejaba fuera los `base.py` de las suites Selenium
+    —`capacitacion/base.py`, `transversal/base.py`—, que es justamente donde
+    viven los `navigate_to_*` con su `reverse()` literal. El resultado eran
+    falsos negativos en las rutas que solo se visitan por ayudante.
+    """
+    seen = set()
+    for path in sorted(root.rglob("*.py")):
+        text = str(path)
+        if "/migrations/" in text:
+            continue
+        is_test_module = path.name.startswith("test")
+        in_test_package = "/tests/" in text or "/tests.py" in text
+        if not (is_test_module or in_test_package):
+            continue
+        if path not in seen:
+            seen.add(path)
+            yield path
 
 
 def counts_by_category(entries):
