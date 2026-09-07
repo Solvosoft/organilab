@@ -1205,3 +1205,15 @@ msgstr "¿Desea eliminar esta palabra de advertencia?"
 
 msgid "Weight"
 msgstr "Peso"
+
+msgid "Seveso List III"
+msgstr "Lista Seveso III"
+
+msgid "Maximum Limit"
+msgstr "Limíte Maximo"
+
+msgid "Minimum Limit"
+msgstr "Limite Minimo"
+
+msgid "Continue"
+msgstr "Continuar"

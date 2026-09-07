@@ -11,7 +11,7 @@
     <ul class="nav child_menu">
 						{% if perms.sga.add_substancecharacteristics %}
         <li>
-            <a href="{% url 'sga:create_sustance' org_pk=org_pk %}">
+            <a href="{% url 'sga:step_zero' org_pk=org_pk %}">
                 {% trans 'Create Substances' %}
             </a>
         </li>

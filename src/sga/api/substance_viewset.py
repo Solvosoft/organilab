@@ -46,7 +46,7 @@ class SubstanceViewSet(viewsets.ModelViewSet):
             # Sin esto la columna de laboratorios dispara una consulta por fila.
             .prefetch_related("laboratories")
         )
-        return queryset
+        return queryset.order_by("-creation_date")
 
     def list(self, request, org_pk, *args, **kwargs):
         self.organization = get_object_or_404(

@@ -2378,8 +2378,6 @@ msgstr "Serie"
 msgid "Plaque"
 msgstr "Placa"
 
-#, fuzzy
-#| msgid "Is dangerous?"
 msgid "Is Dangerous?"
 msgstr "¿Es peligroso?"
 
@@ -8227,38 +8225,6 @@ msgstr "¿Encontró el componente de códigos H?"
 msgid "Create it here!"
 msgstr "¡Créelo aquí!"
 
-msgid "Uploading the safety data sheet…"
-msgstr "Datos del proveedor de la ficha de datos de seguridad"
-
-msgid "Reading the safety data sheet. You can keep filling in the form."
-msgstr ""
-
-msgid "Data found. Loading it into the form…"
-msgstr ""
-
-msgid "Data found in the sheet. Loading it will discard what you have typed."
-msgstr ""
-
-msgid "Load extracted data"
-msgstr "Revisar datos extraídos"
-
-msgid ""
-"The sheet was saved, but no data could be read from it. Fill in the fields "
-"manually."
-msgstr ""
-
-msgid ""
-"The sheet was saved, but it could not be read. Fill in the fields manually."
-msgstr ""
-
-msgid "The safety data sheet could not be uploaded."
-msgstr "La plantilla de informe no se pudo actualizar."
-
-msgid ""
-"Reading the sheet is taking too long. Reload the page in a moment to see the "
-"result."
-msgstr ""
-
 msgid "Information about the Substance"
 msgstr "Información sobre la Sustancia"
 
@@ -8519,41 +8485,12 @@ msgstr "Cliente"
 msgid "Use save before finish"
 msgstr "Usar guardar antes de terminar"
 
-#, python-format
 msgid "New substance request: %(name)s"
 msgstr "Nueva solicitud de sustancia: %(name)s"
 
-#, python-format
-msgid ""
-"Hi,\n"
-"\n"
-"A new substance request has been submitted and requires your review.\n"
-"\n"
-"Name: %(name)s\n"
-"Requested by: %(user)s\n"
-"\n"
-"Please log in to review this request.\n"
-"\n"
-"Thanks,\n"
-"Organilab system"
-msgstr ""
-"Hola,\n"
-"\n"
-"Se ha enviado una nueva solicitud de sustancia y requiere su revisión.\n"
-"\n"
-"Nombre: %(name)s\n"
-"Solicitado por: %(user)s\n"
-"\n"
-"Por favor inicie sesión para revisar esta solicitud.\n"
-"\n"
-"Gracias,\n"
-"Sistema Organilab"
-
-#, python-format
 msgid "Approved substance '%(name)s' added to inventory"
 msgstr "Sustancia aprobada '%(name)s' desde solicitud"
 
-#, python-format
 msgid "Created SGA template '%(name)s' from editor"
 msgstr "Plantilla SGA '%(name)s' creada desde editor"
 
@@ -8655,18 +8592,75 @@ msgstr "Sustancia aprobada '%(name)s' desde solicitud"
 msgid "Created review substance"
 msgstr "Sustancia de revisión creada"
 
-#, python-format
-msgid "Substance '%(name)s' has been sent for review."
-msgstr ""
-
-msgid "Security sheet (SDS) is required to send this substance for review."
-msgstr ""
-
 msgid "Method not allowed"
 msgstr "No permitido"
 
-msgid "No security sheet was received."
-msgstr ""
-
 msgid "Created new substance"
 msgstr "Nueva sustancia creada"
+
+msgid "Updated builder information for substance '%(name)s'"
+msgstr "Información del constructor actualizada para sustancia '%(name)s'"
+
+msgid "Updated personal SGA template editor for substance '%(name)s'"
+msgstr "Editor de plantilla SGA personal actualizado para sustancia '%(name)s'"
+
+msgid "Updated personal SGA template for substance '%(name)s'"
+msgstr "Plantilla SGA personal actualizada para sustancia '%(name)s'"
+
+msgid "Updated SGA complement for substance '%(name)s'"
+msgstr "Complemento SGA actualizado para sustancia '%(name)s'"
+
+msgid "Approved substance"
+msgstr "Sustancia aprobada"
+
+msgid "Approved substance '%(name)s' from request"
+msgstr "Sustancia aprobada '%(name)s' desde solicitud"
+
+msgid "New substance request"
+msgstr "Nueva solicitud de sustancia"
+
+msgid "Hi,\n\n"
+        "A new substance request has been submitted and requires your review.\n\n"
+        "Name: %(name)s\n"
+        "Requested by: %(user)s\n\n"
+        "Please log in to review this request.\n\n"
+        "Thanks,\nOrganilab system"
+msgstr "Hola,\n\n"
+        "Se ha enviado una nueva solicitud de sustancia y requiere su revisión.\n\n"
+        "Nombre: %(name)s\n"
+        "Solicitado por: %(user)s\n\n"
+        "Por favor inicie sesión para revisar esta solicitud.\n\n"
+        "Gracias,\nSistema Organilab"
+
+msgid "Load extracted data"
+msgstr "Cargar los datos extraídos"
+
+msgid "Data found in the sheet. Loading it will discard what you have typed."
+msgstr "Datos encontrados en la hoja de cálculo. Al cargarla, se descartará lo que hayas escrito."
+
+msgid "Data found. Loading it into the form…"
+msgstr "Datos encontrados. Cargándolos en el formulario…"
+
+msgid "Reading the safety data sheet. You can keep filling in the form."
+msgstr "Lea la ficha de datos de seguridad. Puede seguir rellenando el formulario."
+
+msgid "Uploading the safety data sheet…"
+msgstr "Cargando la ficha de datos de seguridad…"
+
+msgid "The sheet was saved, but no data could be read from it. Fill in the fields manually."
+msgstr "La hoja de cálculo se guardó, pero no se pudo leer ningún dato. Rellene los campos manualmente."
+
+msgid "The sheet was saved, but it could not be read. Fill in the fields manually."
+msgstr "La hoja de cálculo se guardó, pero no se pudo leer. Rellene los campos manualmente."
+
+msgid "The safety data sheet could not be uploaded."
+msgstr "No se pudo cargar la ficha de datos de seguridad."
+
+msgid "Reading the sheet is taking too long. Reload the page in a moment to see the result."
+msgstr "La lectura de la hoja de cálculo está tardando demasiado. Recargue la página en un momento para ver el resultado."
+
+msgid "Substance '%(name)s' has been sent for review."
+msgstr "La sustancia '%(name)s' ha sido enviada para su análisis."
+
+msgid "Update Substances"
+msgstr "Actualizar Sustancia"
