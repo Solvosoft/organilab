@@ -2,11 +2,11 @@ import datetime
 
 from django.contrib.auth.models import User
 from django.db import models
-from django.conf import settings
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 
 from laboratory.models_utils import upload_files
+from organilab.model_defaults import get_default_language
 
 DELIVER = _("Delivered")
 WAIT = _("On hold")
@@ -27,7 +27,7 @@ class TaskReport(models.Model):
     file_type = models.CharField(max_length=30, blank=True, null=True)
     file = models.FileField(upload_to=upload_files, blank=True, null=True)
     data = models.JSONField(null=True, blank=True)
-    language = models.CharField(max_length=10, default=settings.LANGUAGE_CODE)
+    language = models.CharField(max_length=10, default=get_default_language)
 
     def __str__(self):
         return f"{self.pk} - {self.type_report} - {self.file_type}"

@@ -38,6 +38,30 @@ class MigrationStateTest(TestCase):
             "faltan migraciones por generar: %s" % sorted(changes),
         )
 
+    def test_language_defaults_do_not_freeze_the_environment_language(self):
+        """El estado no puede depender de qué settings generaron las migraciones.
+
+        La suite corre con ``LANGUAGE_CODE = "en"`` y producción con ``"es"``:
+        mientras los campos ``language`` llevaban ``default=settings.LANGUAGE_CODE``
+        el autodetector veía un ``AlterField`` pendiente en el entorno contrario,
+        y el contenedor lo repetía en cada arranque.  Con un callable el default
+        se serializa por referencia y sigue resolviéndose por entorno.
+        """
+        from auth_and_perms.models import Profile
+        from report.models import TaskReport
+
+        for model in (Profile, TaskReport):
+            with self.subTest(model=model.__name__):
+                field = model._meta.get_field("language")
+                default = field.deconstruct()[3]["default"]
+                self.assertTrue(
+                    callable(default),
+                    "%s.language congela el idioma del entorno" % model.__name__,
+                )
+                for language_code in ("es", "en"):
+                    with self.settings(LANGUAGE_CODE=language_code):
+                        self.assertEqual(field.get_default(), language_code)
+
     def test_the_labview_adds_no_schema_migration(self):
         """La etapa lleva una migración de datos y ninguna de esquema."""
         loader = MigrationLoader(None, ignore_no_migrations=True)
