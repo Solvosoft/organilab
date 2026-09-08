@@ -143,6 +143,11 @@ urlpatterns = [
         name="iper_clone",
     ),
     path(
+        "iper/<int:pk>/duplicate/",
+        iper_views.iper_duplicate,
+        name="iper_duplicate",
+    ),
+    path(
         "iper/<int:pk>/observation/",
         iper_views.iper_observation_add,
         name="iper_observation_add",

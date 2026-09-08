@@ -416,6 +416,7 @@ class IPERAssessmentForm(GTForm, forms.ModelForm):
                 pk__in=get_laboratories_from_organization(org_pk, user)
             )
         self.fields["laboratory"].queryset = labs
+        self.fields["laboratory"].label = _('Laboratory')
 
     class Meta:
         model = IPERAssessment
@@ -491,3 +492,27 @@ class IPERHistoryFilterForm(GTForm, forms.Form):
     grid_representation = [
         [["category"], ["risk_level"], ["date_from"], ["date_to"]],
     ]
+
+
+class IPERDuplicateForm(GTForm, forms.Form):
+    """Formulario para duplicar un IPERAssessment a otro laboratorio."""
+
+    laboratory = forms.ModelChoiceField(
+        queryset=Laboratory.objects.none(),
+        label=_("Laboratory"),
+        widget=AutocompleteSelect(
+            "labs_by_org",
+            attrs={"data-s2filter-organization": "#org"},
+        ),
+    )
+    assessment_date = forms.DateField(
+        label=_("Assessment date"),
+        widget=genwidgets.DateInput,
+    )
+
+    def __init__(self, *args, org_pk=None, user=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if user is not None and org_pk:
+            self.fields["laboratory"].queryset = Laboratory.objects.filter(
+                pk__in=get_laboratories_from_organization(org_pk, user)
+            )

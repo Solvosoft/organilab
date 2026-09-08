@@ -51,6 +51,13 @@
 					title="{% trans 'New version with empty hazards' %}">
 					<i class="fa fa-eraser"></i> {% trans 'Start clean' %}</a>
 			{% endif %}
+			{% if perms.risk_management.add_iperassessment and object.status == 'completed' %}
+				<button type="button" class="btn btn-sm btn-outline-secondary"
+						data-bs-toggle="modal" data-bs-target="#duplicateModal"
+						title="{% trans 'Create an independent copy' %}">
+					<i class="fa fa-clone"></i> {% trans 'Duplicate' %}
+				</button>
+			{% endif %}
 		</div>
 	</div>
 
@@ -179,6 +186,38 @@
 			</div>
 		</div>
 	</div>
+
+	<!-- Modal Duplicate -->
+	{% if perms.risk_management.add_iperassessment %}
+	<div class="modal fade" id="duplicateModal" tabindex="-1" aria-labelledby="duplicateModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="duplicateModalLabel">{% trans 'Duplicate IPER Assessment' %}</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<form id="duplicateForm" method="post"
+					  action="{% url 'riskmanagement:iper_duplicate' org_pk object.pk %}">
+					{% csrf_token %}
+					<div class="modal-body">
+						<p class="text-muted small">
+							{% trans 'Creates an independent copy (version 1) with all hazards and observations. The original assessment will not be modified.' %}
+						</p>
+						{{ duplicate_form }}
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+							{% trans 'Cancel' %}
+						</button>
+						<button type="submit" class="btn btn-success">
+							<i class="fa fa-clone"></i> {% trans 'Duplicate' %}
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	{% endif %}
 {% endblock %}
 {% block js %}
 	{{ hazard_form.media }}
@@ -213,5 +252,39 @@
 		document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function (el) {
 			new bootstrap.Tooltip(el, {html: false});
 		});
+
+		// Duplicate form AJAX
+		var duplicateForm = document.getElementById('duplicateForm');
+		if (duplicateForm) {
+			duplicateForm.addEventListener('submit', function(e) {
+				e.preventDefault();
+				var form = this;
+				var submitBtn = form.querySelector('button[type="submit"]');
+				submitBtn.disabled = true;
+				submitBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> {% trans "Duplicating..." %}';
+
+				fetch(form.action, {
+					method: 'POST',
+					body: new FormData(form),
+					headers: {'X-Requested-With': 'XMLHttpRequest'}
+				})
+				.then(function(r) { return r.json(); })
+				.then(function(data) {
+					if (data.success) {
+						window.location.href = data.redirect_url;
+					} else if (data.errors) {
+						var msg = Object.values(data.errors).flat().join('\n');
+						alert(msg || '{% trans "Error duplicating assessment" %}');
+						submitBtn.disabled = false;
+						submitBtn.innerHTML = '<i class="fa fa-clone"></i> {% trans "Duplicate" %}';
+					}
+				})
+				.catch(function(err) {
+					alert('{% trans "Error duplicating assessment" %}');
+					submitBtn.disabled = false;
+					submitBtn.innerHTML = '<i class="fa fa-clone"></i> {% trans "Duplicate" %}';
+				});
+			});
+		}
 	</script>
 {% endblock %}

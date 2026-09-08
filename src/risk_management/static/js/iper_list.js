@@ -73,7 +73,12 @@ const actions = {
         i_class: "fa fa-eye fa-lg me-2",
         link: true,
         url_fn: data => iper_detail_url.replace('/0/', '/' + data.id + '/'),
-    }],
+    },
+        {
+            name:"duplicate",
+            title: gettext("Duplicate"),
+            i_class: "fa fa-clone me-2"
+        }],
     title: gettext('Actions'),
     className: "no-export-col"
 }
@@ -91,5 +96,55 @@ const objconfig = {
 }
 
 const ocrud = ObjectCRUD("iper_crud", objconfig);
+ocrud.duplicate = function (data) {
+    // Set the assessment ID in the hidden field
+    document.getElementById('duplicate_assessment_id').value = data.id;
+    // Show the modal
+    const modal = new bootstrap.Modal(document.getElementById('duplicateModal'));
+    modal.show();
+}
+
+// Handle duplicate form submission
+document.addEventListener('DOMContentLoaded', function() {
+    const duplicateForm = document.getElementById('duplicateForm');
+    if (duplicateForm) {
+        duplicateForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const form = this;
+            const assessmentId = document.getElementById('duplicate_assessment_id').value;
+            const url = iper_duplicate_url.replace('/0/', '/' + assessmentId + '/');
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> ' + gettext('Duplicating...');
+
+            fetch(url, {
+                method: 'POST',
+                body: new FormData(form),
+                headers: {'X-Requested-With': 'XMLHttpRequest'}
+            })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (data.success) {
+                    window.location.href = data.redirect_url;
+                } else if (data.error) {
+                    alert(data.error);
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fa fa-clone"></i> ' + gettext('Duplicate');
+                    bootstrap.Modal.getInstance(document.getElementById('duplicateModal')).hide();
+                } else if (data.errors) {
+                    let msg = Object.values(data.errors).flat().join('\n');
+                    alert(msg || gettext('Error duplicating assessment'));
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fa fa-clone"></i> ' + gettext('Duplicate');
+                }
+            })
+            .catch(function(err) {
+                alert(gettext('Error duplicating assessment'));
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fa fa-clone"></i> ' + gettext('Duplicate');
+            });
+        });
+    }
+});
 
 ocrud.init();

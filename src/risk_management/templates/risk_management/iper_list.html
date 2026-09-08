@@ -36,6 +36,38 @@
 		{% trans 'Delete IPER assessment' as delete_title %}
 		{% include 'gentelella/blocks/modal_template_delete.html' with form_id="delete_obj_form" id="delete_obj_modal" title=delete_title url="" %}
 	{% endif %}
+
+	{% if perms.risk_management.add_iperassessment %}
+	<!-- Modal Duplicate -->
+	<div class="modal fade" id="duplicateModal" tabindex="-1" aria-labelledby="duplicateModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="duplicateModalLabel">{% trans 'Duplicate IPER Assessment' %}</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<form id="duplicateForm" method="post">
+					{% csrf_token %}
+					<input type="hidden" name="assessment_id" id="duplicate_assessment_id">
+					<div class="modal-body">
+						<p class="text-muted small">
+							{% trans 'Creates an independent copy (version 1) with all hazards and observations. The original assessment will not be modified.' %}
+						</p>
+						{{ duplicate_form }}
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+							{% trans 'Cancel' %}
+						</button>
+						<button type="submit" class="btn btn-success">
+							<i class="fa fa-clone"></i> {% trans 'Duplicate' %}
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	{% endif %}
 {% endblock %}
 {% block js %}
 	{{ block.super }}
@@ -47,6 +79,7 @@
 		}
 		// Página de detalle (no modal): la abre la acción "open" de la tabla.
 		const iper_detail_url = "{% url 'riskmanagement:iper_detail' org_pk 0 %}";
+		const iper_duplicate_url = "{% url 'riskmanagement:iper_duplicate' org_pk 0 %}";
 	</script>
 	<script src="{% static 'js/iper_list.js' %}?v={% get_organilab_version %}"></script>
 {% endblock %}
