@@ -389,6 +389,10 @@ class IPERAssessmentSerializer(serializers.ModelSerializer):
         return {
             "open": user.has_perm("risk_management.view_iperassessment"),
             "destroy": user.has_perm("risk_management.delete_iperassessment"),
+            "duplicate": (
+                user.has_perm("risk_management.add_iperassessment")
+                and obj.status == IPERAssessment.COMPLETED
+            ),
         }
 
     class Meta:
