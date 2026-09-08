@@ -11,6 +11,8 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django_otp.plugins.otp_totp.models import TOTPDevice
 
+from organilab.model_defaults import get_default_language, get_language_choices
+
 
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -28,8 +30,8 @@ class Profile(models.Model):
     )
     language = models.CharField(
         max_length=4,
-        default=settings.LANGUAGE_CODE,
-        choices=settings.LANGUAGES,
+        default=get_default_language,
+        choices=get_language_choices,
         verbose_name=_("Language"),
     )
     address = models.TextField(
