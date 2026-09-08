@@ -1217,3 +1217,12 @@ msgstr "Limite Minimo"
 
 msgid "Continue"
 msgstr "Continuar"
+
+msgid "Duplicate"
+msgstr "Duplicar"
+
+msgid "Error duplicating assessment"
+msgstr "Error al duplicar la evaluación"
+
+msgid "Duplicating..."
+msgstr "Duplicando..."
