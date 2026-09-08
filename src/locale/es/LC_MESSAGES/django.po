@@ -8664,3 +8664,27 @@ msgstr "La sustancia '%(name)s' ha sido enviada para su análisis."
 
 msgid "Update Substances"
 msgstr "Actualizar Sustancia"
+
+msgid "Duplicate IPER Assessment"
+msgstr "Duplicar seguimiento de riesgo"
+
+msgid "Duplicate"
+msgstr "Duplicar"
+
+msgid "Creates an independent copy (version 1) with all hazards and observations. The original assessment will not be modified."
+msgstr "Crea una copia independiente (versión 1) con todos los peligros y observaciones. La evaluación original no se modificará."
+
+msgid "Duplicated from IPER #%(id)s"
+msgstr "Duplicado de IPER #%(id)s"
+
+msgid "IPER assessment duplicated successfully."
+msgstr "El seguimiento de riesgo se ha duplicado correctamente."
+
+msgid "Only completed IPER assessments can be duplicated."
+msgstr "Solo se pueden duplicar las evaluaciones IPER completadas."
+
+msgid "Error duplicating assessment"
+msgstr "Error al duplicar la evaluación"
+
+msgid "Duplicating..."
+msgstr "Duplicando..."
