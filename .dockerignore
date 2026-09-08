@@ -36,3 +36,4 @@ Makefile
 __pycache__
 *.pyc
 *.pyo
+.registry.env 
