@@ -177,7 +177,7 @@ class DecreaseShelfObjectForm(GTForm):
     description = forms.CharField(
         widget=genwidgets.TextInput,
         max_length=255,
-        help_text="Describe the action",
+        help_text=_("Describe the action"),
         label=_("Description"),
         required=False,
     )
