@@ -15,6 +15,13 @@ if nginx_access_log:
 
 if os.getenv('ALLOWED_HOSTS', ''):
     MAPTEXT="""
+# El bucket por defecto (64 bytes) no admite un nombre de host largo: nginx
+# aborta el arranque con "could not build map_hash, you should increase
+# map_hash_bucket_size". Y aborta ENTERO -- gunicorn sigue vivo, asi que el
+# contenedor parece arrancado mientras nginx esta en FATAL y no responde nada.
+# Medido con organilab.solvomanager.devautodeploy.solvosoft.com (49 chars);
+# con dominios de un solo nivel nunca se veia.
+map_hash_bucket_size 128;
 map $proxy_add_x_forwarded_for $client_ip {
   "~^([^,]+)" $1;
   default     "";
