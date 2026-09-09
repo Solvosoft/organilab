@@ -2,6 +2,7 @@ from django.urls import reverse_lazy
 import os
 import sys
 from celery.schedules import crontab
+from kombu import Exchange, Queue
 from pathlib import Path
 from . import get_version
 
@@ -281,12 +282,73 @@ CELERY_CACHE_BACKEND = "django-cache"
 CELERY_ACCEPT_CONTENT = ["application/json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
-CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.db.DatabaseCache",
-        "LOCATION": "my_cache_table",
+
+# Colas quorum, replicadas entre los nodos del broker.
+#
+# Una cola CLASICA vive en el nodo donde se declaro y muere con el: en un
+# RabbitMQ en cluster, perder ese nodo se lleva por delante las tareas
+# encoladas y las que estuvieran en vuelo. Una quorum se replica por Raft entre
+# los miembros, que es lo unico que hace que el cluster sirva de algo.
+#
+# OJO CON LOS NOMBRES. `organilab/celery.py` llama a config_from_object SIN
+# `namespace="CELERY"`, asi que Celery NO reconoce los nombres modernos tipo
+# CELERY_TASK_QUEUES: hay que usar los heredados que si mapea
+# (CELERY_QUEUES -> task_queues, CELERY_DEFAULT_QUEUE -> task_default_queue).
+# Y en minuscula tampoco valdria, porque Django solo copia del modulo de
+# settings los nombres en MAYUSCULA. Equivocarse aqui NO da ningun error:
+# simplemente deja la configuracion sin aplicar y las colas salen clasicas.
+# Es el mismo tropiezo que ya documenta test_settings.py con
+# CELERY_ALWAYS_EAGER. Se comprueba de verdad con:
+#     rabbitmqctl list_queues name type
+CELERY_DEFAULT_QUEUE = "celery"
+CELERY_QUEUES = (
+    Queue(
+        CELERY_DEFAULT_QUEUE,
+        Exchange(CELERY_DEFAULT_QUEUE),
+        routing_key=CELERY_DEFAULT_QUEUE,
+        queue_arguments={"x-queue-type": "quorum"},
+    ),
+)
+# Sin confirmacion de publicacion, `.delay()` devuelve el control en cuanto el
+# mensaje sale del socket: si el nodo cae en ese instante, la tarea se pierde
+# sin que nadie se entere. Con confirm_publish el publish espera el ack del
+# broker.
+BROKER_TRANSPORT_OPTIONS = {"confirm_publish": True}
+# Cache. Por defecto la tabla en Postgres, que es lo que hace que el repo
+# arranque en local sin ninguna infraestructura extra. Con CACHE_URL puesta se
+# usa Redis, que es como corre en el cluster.
+#
+# En el cluster la URL trae el USUARIO ACL del tenant, no la contrasena de
+# administracion: redis://<slug>:<pass>@redis:6379/0. Ese usuario solo puede
+# tocar claves bajo su propio prefijo.
+#
+# CACHE_KEY_PREFIX es la otra mitad del aislamiento y NO es opcional cuando hay
+# ACL: django-redis compone las claves como <KEY_PREFIX>:<version>:<clave>, asi
+# que con el slug quedan `<slug>:1:...` y casan con el patron `~<slug>:*` que el
+# ACL concede. Sin prefijo, TODA operacion de cache falla con NOPERM.
+#
+# Y ojo con cache.clear(): django-redis lo implementa con FLUSHDB, que esta en
+# @dangerous y el ACL deniega. Para invalidar por lotes va delete_pattern(),
+# que usa SCAN.
+CACHE_URL = os.getenv("CACHE_URL", "")
+
+if CACHE_URL:
+    CACHES = {
+        "default": {
+            "BACKEND": "django_redis.cache.RedisCache",
+            "LOCATION": CACHE_URL,
+            "KEY_PREFIX": os.getenv("CACHE_KEY_PREFIX", ""),
+            "TIMEOUT": int(os.getenv("CACHE_TIMEOUT", "300")),
+            "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
+        }
     }
-}
+else:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.db.DatabaseCache",
+            "LOCATION": "my_cache_table",
+        }
+    }
 # Widgets de mapa de djgentelella (MapPointInput/GTPointField): carga Leaflet
 # en las páginas base. Nominatim exige un Referer válido para la búsqueda.
 DEFAULT_JS_IMPORTS = {

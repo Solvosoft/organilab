@@ -52,3 +52,31 @@ class InitChecksTest(TestCase):
                               "LOCATION": "my_cache_table"}}
         with self.settings(CACHES=caches):
             self.assertEqual(Command().get_cache_table_name(), "my_cache_table")
+
+    def test_a_redis_cache_has_no_table_to_create(self):
+        """LOCATION significa algo distinto en cada backend.
+
+        Con Redis es una URL, y pasársela a createcachetable intentaría crear
+        una tabla llamada como la URL. El backend es lo único que los
+        distingue: el nombre por sí solo no.
+        """
+        from auth_and_perms.management.commands.init_checks import Command
+
+        caches = {"default": {
+            "BACKEND": "django_redis.cache.RedisCache",
+            "LOCATION": "redis://acme:secreto@redis:6379/0",
+        }}
+        with self.settings(CACHES=caches):
+            self.assertIsNone(Command().get_cache_table_name())
+
+    def test_does_not_create_a_cache_table_when_the_cache_is_redis(self):
+        caches = {"default": {
+            "BACKEND": "django_redis.cache.RedisCache",
+            "LOCATION": "redis://acme:secreto@redis:6379/0",
+        }}
+        target = "auth_and_perms.management.commands.init_checks.call_command"
+        with self.settings(CACHES=caches), patch(target) as call:
+            self.call_init_checks()
+
+        called = [args[0] for args, _ in (c for c in call.call_args_list)]
+        self.assertNotIn("createcachetable", called)
