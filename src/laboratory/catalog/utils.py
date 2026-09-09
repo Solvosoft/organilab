@@ -88,8 +88,15 @@ def create_catalog(Catalog):
         ("IDMG", "Sustancias corrosivas"),
         ("IDMG", "Sustancias y artículos peligrosos diversos"),
     ]
-    new_instances = []
+    # get_or_create y no bulk_create: este comando lo corre el instalador del
+    # tenant y tambien una persona a mano cuando anade una entrada nueva a la
+    # lista de arriba. Con bulk_create, la segunda corrida DUPLICABA el catalogo
+    # entero -- y `Catalog` no tiene restriccion de unicidad, asi que
+    # ignore_conflicts tampoco lo habria evitado: no hay conflicto que detectar.
+    #
+    # Devuelve cuantas creo, para que quien lo corra vea si hizo algo.
+    created = 0
     for key, description in list_catalog:
-        new_instances.append(Catalog(key=key, description=description))
-
-    Catalog.objects.bulk_create(new_instances)
+        _, was_created = Catalog.objects.get_or_create(key=key, description=description)
+        created += bool(was_created)
+    return created
