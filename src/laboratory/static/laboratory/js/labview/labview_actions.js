@@ -51,8 +51,7 @@ const LabviewTable = {
             {data: 'container', name: 'container__object__name',
              title: gettext('Container'), type: 'string', visible: true},
             {data: null, name: 'actions', title: gettext('Actions'),
-             type: 'string', orderable: false, searchable: false,
-             className: 'no-export-col',
+             type: 'string',
              render: (row) => this.renderActions(row)}
         ];
 
@@ -212,6 +211,7 @@ const LabviewTable = {
                 data-shelfobject="${row.pk}" data-shelf="${shelf}"
                 data-is-box="${row.is_box ? 'true' : 'false'}"
                 data-quantity-units='${JSON.stringify(row.quantity_units || [])}'
+                data-expiration="${row.reactive_expiration_date || 'None'}"
                 ><i class="fa fa-minus text-danger"></i></a>`);
         }
         if (actions.log) {
