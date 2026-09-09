@@ -16,7 +16,10 @@ RUN pip install --no-cache-dir pip setuptools gunicorn && \
     pip install --no-cache-dir -r requirements.txt
 
 COPY src /organilab
+# Las dos locales se compilan aqui, no en el arranque: el entrypoint las
+# recompilaba en CADA arranque de CADA replica para producir los mismos .mo.
 RUN python manage.py compilemessages -l es --settings=organilab.settings && \
+    python manage.py compilemessages -l en --settings=organilab.settings && \
     mkdir -p /run/static/ && \
     STATIC_ROOT=/run/static/ python manage.py collectstatic --noinput --settings=organilab.settings
 
@@ -81,9 +84,10 @@ COPY --chown=organilab:organilab docs/source/_extra/capacitacion/ /run/docs/capa
 
 WORKDIR /organilab
 
-# Entrypoint
+# Entrypoint, y el instalador que el orquestador lanza como job aparte.
 COPY --chown=organilab:organilab docker/entrypoint.sh /run/entrypoint.sh
-RUN chmod +x /run/entrypoint.sh && \
+COPY --chown=organilab:organilab docker/install.sh /run/install.sh
+RUN chmod +x /run/entrypoint.sh /run/install.sh && \
     chown -R organilab:organilab /run/logs/ /run/supervisor/ && \
     sed -i 's/proxy_set_header X-Forwarded-Proto $scheme;/proxy_set_header X-Forwarded-Proto https;/g' /etc/nginx/proxy_params
 

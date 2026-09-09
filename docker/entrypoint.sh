@@ -5,12 +5,25 @@ mkdir -p ~/.local/share/fonts /run/logs/ /run/supervisor/
 fc-cache --really-force
 chown -R organilab:organilab /organilab /run/supervisor/
 
-# Migraciones y configuración inicial
-runuser -p -c "python manage.py migrate" organilab
-runuser -p -c "python manage.py init_checks" organilab
-runuser -p -c "python manage.py load_urlname_permissions" organilab
-runuser -p -c "django-admin compilemessages --locale es" organilab
-runuser -p -c "django-admin compilemessages --locale en" organilab
+# Migraciones y configuración inicial.
+#
+# Corre en CADA arranque de CADA contenedor, así que con más de una réplica son
+# migraciones en paralelo sobre la misma base. Vale para docker-compose y para
+# desarrollo, que es un contenedor de cada rol; no vale para un clúster.
+#
+# Donde haya un orquestador que sepa lanzar la instalación una sola vez (el
+# bootstrap.job del AppPack, que además la protege con una compuerta), se pone
+# ORGANILAB_BOOT_INSTALL=false y el arranque se limita a levantar el servicio.
+# El default es `true` para no cambiarle el comportamiento a nadie.
+#
+# Las traducciones ya vienen compiladas de la imagen (etapa builder), así que
+# aquí no se recompilan: eran dos `compilemessages` en cada arranque de cada
+# réplica que producían exactamente los mismos .mo.
+if [ "${ORGANILAB_BOOT_INSTALL:-true}" = "true" ]; then
+  runuser -p -c "python manage.py organilab_install" organilab || exit 1
+else
+  echo "ORGANILAB_BOOT_INSTALL=false: se omite la instalación en el arranque."
+fi
 
 # Selector de servicio según SERVICE_TYPE
 case "${SERVICE_TYPE}" in
