@@ -1048,5 +1048,6 @@ def step_zero(request, org_pk, pk=None):
         substance = get_object_or_404(Substance, pk=pk)
         substance.comercial_name = request.POST.get("name", "")
         substance.save()
+        print(454756)
         return redirect(reverse("sga:step_one", kwargs={"pk": pk, "org_pk": org_pk}))
     return render(request, "sga/substance/step_one.html", context)
