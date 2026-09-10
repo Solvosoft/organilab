@@ -40,7 +40,7 @@
   window.setInterval(function () {
     if (tokenInput.value && tokenInput.value !== lastToken) {
       lastToken = tokenInput.value;
-      upload(tokenInput.value);
+          upload(tokenInput.value);
     }
   }, 500);
 
@@ -170,23 +170,13 @@
     }
 
     setStatus(config.messages.extractedNeedsReload, "success");
-    if(!document.querySelector('input[type="text"][name="name"]')) {
+
         var button = document.createElement("button");
         button.type = "button";
         button.className = "btn btn-sm btn-success";
         button.style.marginLeft = "8px";
         button.textContent = config.messages.loadExtracted;
-        button.addEventListener("click", function () {
-            window.location.reload();
-        });
+        window.location.reload();
         statusBox.appendChild(button);
-    }else{
-        var button = document.createElement("button");
-        button.type = "submit";
-        button.className = "btn btn-sm btn-success";
-        button.style.marginLeft = "8px";
-        button.textContent = gettext("Continue");
-        statusBox.appendChild(button);
-    }
   }
 })();

@@ -25,6 +25,13 @@
         <div class="row">
         {{ form_zero }}}
         </div>
+        <div class="row">
+            <div class="col-md-12 text-center" style="margin-top: 15px;">
+                <button type="button" id="sds-process-btn" class="btn btn-success" disabled>
+                    <i class="fa fa-cogs"></i> {% trans "Continue" %}
+                </button>
+            </div>
+        </div>
     </form>
 </div>
 
@@ -32,7 +39,6 @@
 
 
 {% block js %}
-<script src="{% static 'laboratory/js/substance_creation.js' %}?v={% get_organilab_version %}"></script>
 <script>
     window.sdsAutofill = {
         uploadUrl: "{% if pk %}{% url 'sga:upload_sds_pk' org_pk=org_pk pk=pk %}{% else %}{% url 'sga:upload_sds' org_pk=org_pk %}{% endif %}",
@@ -52,5 +58,5 @@
         }
     };
 </script>
-<script src="{% static 'sga/js/sds_autofill.js' %}?v={% get_organilab_version %}"></script>
+<script src="{% static 'sga/js/sds_manual_upload.js' %}?v={% get_organilab_version %}"></script>
 {% endblock %}
