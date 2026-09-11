@@ -1,6 +1,11 @@
 /* Vista de laboratorio. Lo que no cubre Bootstrap: la tarjeta de un estante
  * dentro de la cuadricula y el apilado en pantallas estrechas. */
 
+/* Fix tooltip z-index conflict with gt-breadcrumb */
+.tooltip {
+	z-index: 9999 !important;
+}
+
 .labview-furniture-dot {
 	display: inline-block;
 	width: .75rem;
