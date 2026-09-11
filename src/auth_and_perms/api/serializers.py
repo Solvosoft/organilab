@@ -879,3 +879,37 @@ class UserRolesInLaboratorySerializer(serializers.Serializer):
     organization_name = serializers.CharField()
     laboratory_name = serializers.CharField()
     roles = serializers.ListField(child=serializers.DictField())
+
+
+class OrganizationStructureRelationsSerializer(serializers.ModelSerializer):
+    laboratory_name = serializers.SerializerMethodField()
+    actions = serializers.SerializerMethodField()
+
+    class Meta:
+        model = OrganizationStructureRelations
+        fields = ["id","laboratory_name","actions"]
+
+    def get_laboratory_name(self, obj):
+        if isinstance(obj, dict):
+            object_id = obj.get("object_id")
+        else:
+            object_id = obj.object_id
+
+        try:
+            return Laboratory.objects.get(pk=object_id).name
+        except Laboratory.DoesNotExist:
+            return str(object_id)
+
+
+    def get_actions(self, obj):
+        user = self.context["request"].user
+        return {
+            "list": user.has_perm("laboratory.view_organizationstructurerelations"),
+            "destroy": user.has_perm("laboratory.delete_organizationstructurerelations"),
+        }
+
+class OrganizationStructureRelationsDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=OrganizationStructureRelationsSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)

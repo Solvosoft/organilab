@@ -20,6 +20,7 @@ from rest_framework.views import APIView
 
 from api.utils import AllPermissionOrganization
 from auth_and_perms.api import filterset
+from auth_and_perms.api.filterset import OrganizationStructureRelationsFilter
 from auth_and_perms.api.serializers import (
     RolSerializer,
     ProfilePermissionRolOrganizationSerializer,
@@ -41,6 +42,8 @@ from auth_and_perms.api.serializers import (
     LaboratoryOrganizationDataTableSerializer,
     OrganizationLaboratoryDataTableSerializer,
     ProfileLaboratoryOrgRoles,
+    OrganizationStructureRelationsSerializer,
+    OrganizationStructureRelationsDataTableSerializer,
 )
 from auth_and_perms.forms import (
     LaboratoryAndOrganizationForm,
@@ -1242,3 +1245,98 @@ class UserRoles(viewsets.GenericViewSet):
             )
 
         return Response({"data": results})
+
+
+class OrganizationLabRelationDeleteViewSet(AuthAllPermBaseObjectManagement):
+    """
+    ViewSet to list and delete OrganizationStructureRelations for Laboratory content type.
+    Allows unlinking laboratories from an organization.
+    When deleting, also removes ProfilePermissions of users on that lab/org.
+    """
+
+    serializer_class = {
+        "list": OrganizationStructureRelationsDataTableSerializer,
+        "destroy": OrganizationStructureRelationsSerializer,
+    }
+
+    perms = {
+        "list": ["laboratory.view_organizationstructurerelations"],
+        "destroy": ["laboratory.delete_organizationstructurerelations"],
+    }
+    filterset_class = OrganizationStructureRelationsFilter
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    search_fields = ["object_id"]
+
+    queryset = OrganizationStructureRelations.objects.all()
+    pagination_class = LimitOffsetPagination
+
+    def get_organization(self):
+        """Get and cache the organization from URL kwargs."""
+        if not hasattr(self, "_organization"):
+            org_pk = self.kwargs.get("org_pk")
+            self._organization = get_object_or_404(
+                OrganizationStructure.objects.using(settings.READONLY_DATABASE),
+                pk=org_pk,
+            )
+            user_is_allowed_on_organization(self.request.user, self._organization)
+        return self._organization
+
+    def get_queryset(self):
+        """
+        Filter queryset by:
+        1. organization_id from URL parameter
+        2. content_type for Laboratory model
+        """
+        org_pk = self.kwargs.get("org_pk")
+
+        if not org_pk:
+            return OrganizationStructureRelations.objects.none()
+
+        lab_content_type = ContentType.objects.filter(
+            app_label="laboratory", model="laboratory"
+        ).first()
+
+        if not lab_content_type:
+            return OrganizationStructureRelations.objects.none()
+
+        return OrganizationStructureRelations.objects.filter(
+            organization_id=org_pk, content_type=lab_content_type
+        )
+
+    def perform_destroy(self, instance):
+        """
+        Delete the OrganizationStructureRelations instance.
+        Also removes ProfilePermissions of users linked to that lab in this org.
+        """
+        org = instance.organization
+        lab_id = instance.object_id
+
+        # Get laboratory name for log message
+        lab_name = _("Unknown")
+        try:
+            laboratory = Laboratory.objects.get(pk=lab_id)
+            lab_name = laboratory.name
+        except Laboratory.DoesNotExist:
+            lab_name = str(lab_id)
+
+        # 1. Remove ProfilePermissions of users on this lab/org
+        lab_content_type = ContentType.objects.get_for_model(Laboratory)
+        ProfilePermission.objects.filter(
+            content_type=lab_content_type,
+            object_id=lab_id,
+            organization=org,
+        ).delete()
+
+        # 2. Log the deletion
+        organilab_logentry(
+            self.request.user,
+            instance,
+            DELETION,
+            "organizationstructurerelations",
+            changed_data=["organization", "content_type", "object_id"],
+            change_message=_("Unlinked laboratory '%(lab)s' from organization '%(org)s'")
+            % {"lab": lab_name, "org": org.name},
+            relobj=org,
+        )
+
+        instance.delete()
