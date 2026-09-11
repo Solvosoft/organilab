@@ -8688,3 +8688,12 @@ msgstr "Error al duplicar la evaluación"
 
 msgid "Duplicating..."
 msgstr "Duplicando..."
+
+msgid "Laboratory Relations"
+msgstr "Laboratorios vinculados"
+
+msgid "Manage laboratories linked to this organization. Unlinking a laboratory will also remove user permissions for that laboratory in this organization."
+msgstr "Gestione los laboratorios vinculados a esta organización. Desvincular un laboratorio también eliminará los permisos de usuario para dicho laboratorio en esta organización."
+
+msgid "Unlink Laboratories"
+msgstr "Desvincular Laboratorios"
