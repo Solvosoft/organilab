@@ -53,10 +53,11 @@
 			</button>
 			{# La leyenda de colores por tipo de objeto; sin ella el usuario no #}
 			{# sabe que significa cada color de las etiquetas. #}
-			<span class="input-group-text">
-				<a data-bs-toggle="tooltip" data-bs-html="true"
-				   title="{{colors_tooltip}}"><i class="fa fa-info-circle"></i></a>
-			</span>
+<div class="input-group-text">
+        <a class="w-100" id="" type="button" data-bs-toggle="tooltip" data-bs-html="true" data-bs-container="body" title="{{colors_tooltip|safe}}">
+            <i class="fa fa-info-circle"></i>
+        </a>
+    </div>
 		</div>
 	</div>
 	<div class="col-12 col-lg-4 d-flex align-items-center gap-3">
@@ -150,4 +151,14 @@
 <script src="{% static 'laboratory/js/labview/labview_actions.js' %}?v={% get_organilab_version %}"></script>
 <script src="{% static 'laboratory/js/labview/labview_editor.js' %}?v={% get_organilab_version %}"></script>
 <script src="{% static 'laboratory/js/labview/labview.js' %}?v={% get_organilab_version %}"></script>
+<script>
+document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function(el) {
+    new bootstrap.Tooltip(el, {
+        placement: 'left',
+        popperConfig: {
+            strategy: 'fixed'
+        }
+    });
+});
+</script>
 {% endblock %}
