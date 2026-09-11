@@ -93,6 +93,13 @@
 														type="button" data-id="{{ node.0.pk }}"><i class="fa fa-university"></i> {% trans 'Related Laboratory' %}
 													</a></li>
 												{% endif %}
+											{% if node.0.parent != None %}
+													<li class="rolcontainer" title="{% trans 'Unlink Laboratories' %}"><a
+														href="{% url 'auth_and_perms:org_lab_relations_list' node.0.pk %}"
+														class="btn btn-sm btn-secondary">
+														<i class="fa fa-close"></i> {% trans 'Unlink Laboratories' %}
+													</a></li>
+												{% endif %}
 											{% endif %}
 
 										</ul>
