@@ -56,8 +56,21 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     fontconfig \
     nginx \
     supervisor \
-    gettext && \
+    gettext \
+    curl && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# `curl` no es opcional: el healthcheck que declara el stack del tenant es
+# `curl -fsS http://localhost/check_ok/ || exit 1`, y sin el binario la sonda
+# sale 127 SIEMPRE. El contenedor nunca llega a `healthy`, Swarm lo mata con
+# exit 137 y --peor-- `failure_action: rollback` restaura la imagen anterior,
+# asi que CADA intento de arreglar el tenant se deshace solo y el servicio se
+# queda en la version vieja pareciendo que el despliegue "no hizo nada".
+# Medido el 2026-09-12 en solvo-staging.
+#
+# No aumenta la superficie de ataque de forma apreciable: la imagen ya lleva
+# python3, que hace todo lo que hace curl y mas. Lo que aumentaria el riesgo
+# es dejar un tenant caido.
 
 RUN addgroup --system --gid $GUID $SYSTEMGROUP && \
     useradd --uid $UID --gid $GUID --system --no-create-home $USER && \
