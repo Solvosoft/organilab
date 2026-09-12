@@ -67,7 +67,7 @@ class ButtonBoxOrgTest(ManageOrganizationsSeleniumTest):
 
         Flow: Click log list icon for org pk=1.
 
-        GIF: docs/source/_static/gif/view_org_logs.gif
+        GIF: organilab_docs/source/_static/gif/view_org_logs.gif
         """
         path_list = [
             {"path": self.org_loglist_link(1)},
@@ -79,7 +79,7 @@ class ButtonBoxOrgTest(ManageOrganizationsSeleniumTest):
 
         Flow: Click rol list link for org pk=1 -> View role entries.
 
-        GIF: docs/source/_static/gif/view_org_roles.gif
+        GIF: organilab_docs/source/_static/gif/view_org_roles.gif
         """
         path_list = [
             {
@@ -93,7 +93,7 @@ class ButtonBoxOrgTest(ManageOrganizationsSeleniumTest):
 
         Flow: Click rol list link for org pk=1 -> View role entries.
 
-        GIF: docs/source/_static/gif/view_org_roles.gif
+        GIF: organilab_docs/source/_static/gif/view_org_roles.gif
         """
         path_list = [
             {
@@ -114,7 +114,7 @@ class ButtonBoxOrgTest(ManageOrganizationsSeleniumTest):
         Flow: Click change parent icon -> Select new parent in modal
         Select2 -> Submit modal.
 
-        GIF: docs/source/_static/gif/change_org_parent.gif
+        GIF: organilab_docs/source/_static/gif/change_org_parent.gif
         """
         path_list = [
             {"path": self.org_change_parent_btn(1)},
@@ -134,7 +134,7 @@ class ButtonBoxOrgTest(ManageOrganizationsSeleniumTest):
 
         Flow: Click delete icon for org pk=1 -> Confirm deletion.
 
-        GIF: docs/source/_static/gif/delete_org.gif
+        GIF: organilab_docs/source/_static/gif/delete_org.gif
         """
         path_list = [
             {"path": self.org_delete_link(1)},
@@ -151,7 +151,7 @@ class ButtonBoxOrgTest(ManageOrganizationsSeleniumTest):
         Flow: Click add sub-organization icon -> Fill name in modal
         -> Submit modal.
 
-        GIF: docs/source/_static/gif/add_org_descendant.gif
+        GIF: organilab_docs/source/_static/gif/add_org_descendant.gif
         """
         path_list = [
             {"path": self.org_add_child_btn(1)},

@@ -46,7 +46,7 @@ class ProtocolsSeleniumTest(OptimizedSeleniumBase):
 
         Flow: Navigate to protocol list -> View DataTable with protocols.
 
-        GIF: docs/source/_static/gif/view_protocols.gif
+        GIF: organilab_docs/source/_static/gif/view_protocols.gif
         """
         self.navigate_to_protocol_list()
         path_list = [
@@ -65,7 +65,7 @@ class ProtocolsSeleniumTest(OptimizedSeleniumBase):
         Fill form (name, short description, file via chunked upload)
         -> Submit.
 
-        GIF: docs/source/_static/gif/add_protocol.gif
+        GIF: organilab_docs/source/_static/gif/add_protocol.gif
         """
         self.add_chunked()
         script = (
@@ -122,7 +122,7 @@ class ProtocolsSeleniumTest(OptimizedSeleniumBase):
         Flow: Navigate to protocol list -> Click edit button on first
         row -> Update name and file -> Submit.
 
-        GIF: docs/source/_static/gif/update_protocol.gif
+        GIF: organilab_docs/source/_static/gif/update_protocol.gif
         """
         self.add_chunked()
         script = (
@@ -170,7 +170,7 @@ class ProtocolsSeleniumTest(OptimizedSeleniumBase):
         Flow: Navigate to protocol list -> Click delete button on
         first row -> Confirm deletion.
 
-        GIF: docs/source/_static/gif/delete_protocol.gif
+        GIF: organilab_docs/source/_static/gif/delete_protocol.gif
         """
         self.navigate_to_protocol_list()
         path_list = [
@@ -191,7 +191,7 @@ class ProtocolsSeleniumTest(OptimizedSeleniumBase):
         Flow: Navigate to protocol list -> Click download link on
         first row.
 
-        GIF: docs/source/_static/gif/download_protocol.gif
+        GIF: organilab_docs/source/_static/gif/download_protocol.gif
         """
         self.navigate_to_protocol_list()
         path_list = [

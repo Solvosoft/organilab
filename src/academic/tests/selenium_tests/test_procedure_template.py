@@ -66,7 +66,7 @@ class ProcedureTemplateSeleniumTest(OptimizedSeleniumBase):
         Flow: Navigate to procedure list -> Click edit icon on
         first row -> Update title and description -> Submit.
 
-        GIF: docs/source/_static/gif/update_procedure_template.gif
+        GIF: organilab_docs/source/_static/gif/update_procedure_template.gif
         """
         self.navigate_to_procedure_list()
         path_list = [
@@ -101,7 +101,7 @@ class ProcedureTemplateSeleniumTest(OptimizedSeleniumBase):
         Flow: Navigate to procedure list -> Click detail icon on
         first row -> Click back to list.
 
-        GIF: docs/source/_static/gif/detail_procedure_template.gif
+        GIF: organilab_docs/source/_static/gif/detail_procedure_template.gif
         """
         self.navigate_to_procedure_list()
         path_list = [
@@ -122,7 +122,7 @@ class ProcedureTemplateSeleniumTest(OptimizedSeleniumBase):
         Flow: Navigate to procedure list -> Click delete icon on
         first row -> Confirm in SweetAlert.
 
-        GIF: docs/source/_static/gif/delete_procedure_template.gif
+        GIF: organilab_docs/source/_static/gif/delete_procedure_template.gif
         """
         self.navigate_to_procedure_list()
         path_list = [
@@ -142,7 +142,7 @@ class ProcedureTemplateSeleniumTest(OptimizedSeleniumBase):
         Fill step form -> Add a textfield to the formio builder ->
         Submit -> Chain sub-operations.
 
-        GIF: docs/source/_static/gif/add_step.gif
+        GIF: organilab_docs/source/_static/gif/add_step.gif
         """
         self.navigate_to_procedure_list()
         set_form_schema = (
@@ -193,7 +193,7 @@ class ProcedureTemplateSeleniumTest(OptimizedSeleniumBase):
         Flow: Navigate to procedure list -> Click detail -> Click
         edit step -> Update title -> Submit -> Return to list.
 
-        GIF: docs/source/_static/gif/update_step.gif
+        GIF: organilab_docs/source/_static/gif/update_step.gif
         """
         self.navigate_to_procedure_list()
         path_list = [
@@ -236,7 +236,7 @@ class ProcedureTemplateSeleniumTest(OptimizedSeleniumBase):
         Flow: Navigate to procedure list -> Click detail -> Click
         delete step -> Confirm in SweetAlert -> Return to list.
 
-        GIF: docs/source/_static/gif/delete_step.gif
+        GIF: organilab_docs/source/_static/gif/delete_step.gif
         """
         self.navigate_to_procedure_list()
         path_list = [
@@ -264,7 +264,7 @@ class ProcedureTemplateSeleniumTest(OptimizedSeleniumBase):
         add object -> Fill object form (select object, quantity,
         unit) -> Save -> Submit step form.
 
-        GIF: docs/source/_static/gif/add_step_object.gif
+        GIF: organilab_docs/source/_static/gif/add_step_object.gif
         """
         self.navigate_to_procedure_list()
         path_list = [
@@ -320,7 +320,7 @@ class ProcedureTemplateSeleniumTest(OptimizedSeleniumBase):
         edit step -> Click delete on object row -> Confirm ->
         Submit step form.
 
-        GIF: docs/source/_static/gif/remove_step_object.gif
+        GIF: organilab_docs/source/_static/gif/remove_step_object.gif
         """
         self.navigate_to_procedure_list()
         self.create_directory_path(folder_name="remove_step_object")
@@ -355,7 +355,7 @@ class ProcedureTemplateSeleniumTest(OptimizedSeleniumBase):
         edit step -> Click add observation -> Enter description ->
         Save observation -> Submit step form.
 
-        GIF: docs/source/_static/gif/add_step_observation.gif
+        GIF: organilab_docs/source/_static/gif/add_step_observation.gif
         """
         self.navigate_to_procedure_list()
         self.create_directory_path(folder_name="add_step_observation")
@@ -397,7 +397,7 @@ class ProcedureTemplateSeleniumTest(OptimizedSeleniumBase):
         edit step -> Click delete on observation row -> Confirm ->
         Submit step form.
 
-        GIF: docs/source/_static/gif/remove_step_observation.gif
+        GIF: organilab_docs/source/_static/gif/remove_step_observation.gif
         """
         self.navigate_to_procedure_list()
         self.create_directory_path(folder_name="remove_step_observation")

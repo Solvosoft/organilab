@@ -43,7 +43,7 @@ FEATURES = (
         ),
         states=SUBSTANCE_STATES,
         priority="P1",
-        doc="docs/source/desc_funcionalidades/ingreso_sus.rst",
+        doc="organilab_docs/source/desc_funcionalidades/ingreso_sus.rst",
         steps=(
             Step(
                 id="abrir_asistente",

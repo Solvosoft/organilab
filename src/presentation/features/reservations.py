@@ -49,7 +49,7 @@ FEATURES = (
         ),
         states=RESERVATION_STATES,
         priority="P1",
-        doc="docs/source/desc_funcionalidades/reservas_mo.rst",
+        doc="organilab_docs/source/desc_funcionalidades/reservas_mo.rst",
         steps=(
             Step(
                 id="reservar_directo",

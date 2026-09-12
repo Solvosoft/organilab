@@ -159,7 +159,8 @@ encadena crear → actualizar → detalle → pasos → borrar; y
 vista llamando `create_gif_process` varias veces dentro del mismo `test_`, **con los
 nombres de carpeta originales**: la documentación sigue encontrando sus GIFs y desaparecen
 50 arranques de navegador. Antes de tocar nada hay que cruzar los `folder_name` contra
-`docs/source/**/*.rst`: los referenciados se promueven (crecen a tres o cuatro pasos
+los fuentes del repo de documentación (`organilab_docs/source/**/*.rst` y
+`source/_extra/capacitacion/**/*.html`): los referenciados se promueven (crecen a tres o cuatro pasos
 manteniendo el nombre), los que nadie referencia se fusionan y se borran.
 
 Reglas que acompañan, todas con causa conocida en esta rama:

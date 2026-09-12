@@ -47,7 +47,7 @@ class InformSeleniumTest(InformSeleniumBase):
 
         Flow: Navigate to inform list -> View page with DataTable.
 
-        GIF: docs/source/_static/gif/view_inform.gif
+        GIF: organilab_docs/source/_static/gif/view_inform.gif
         """
         self.navigate_to_inform_list()
         path_list = [
@@ -65,7 +65,7 @@ class InformSeleniumTest(InformSeleniumBase):
         Flow: Navigate to inform list -> Click add button -> Fill name
         -> Select template via Select2 -> Submit.
 
-        GIF: docs/source/_static/gif/add_inform.gif
+        GIF: organilab_docs/source/_static/gif/add_inform.gif
         """
         self.navigate_to_inform_list()
         path_list = [
@@ -100,7 +100,7 @@ class InformSeleniumTest(InformSeleniumBase):
         fields -> Click 'Send for review' -> Confirm in SweetAlert
         -> Chain finalize.
 
-        GIF: docs/source/_static/gif/review_inform.gif
+        GIF: organilab_docs/source/_static/gif/review_inform.gif
         """
         self.navigate_to_complete_inform(pk=15)
         path_list = [
@@ -141,7 +141,7 @@ class InformSeleniumTest(InformSeleniumBase):
         Flow: Navigate to inform list -> Click delete button on first
         row -> View result.
 
-        GIF: docs/source/_static/gif/remove_inform.gif
+        GIF: organilab_docs/source/_static/gif/remove_inform.gif
         """
         self.navigate_to_inform_list()
         path_list = [
@@ -163,7 +163,7 @@ class InformSeleniumTest(InformSeleniumBase):
         panel -> Click add comment -> Enter comment text in SweetAlert
         -> Confirm -> View comment.
 
-        GIF: docs/source/_static/gif/add_inform_observation.gif
+        GIF: organilab_docs/source/_static/gif/add_inform_observation.gif
         """
         self.navigate_to_complete_inform(pk=15)
         path_list = [
@@ -202,7 +202,7 @@ class InformSeleniumTest(InformSeleniumBase):
         Flow: Click edit icon on comment -> Clear and enter new text
         in SweetAlert -> Confirm -> Dismiss success alert.
 
-        GIF: docs/source/_static/gif/edit_inform_observation.gif
+        GIF: organilab_docs/source/_static/gif/edit_inform_observation.gif
         """
         path_list = [
             {
@@ -238,7 +238,7 @@ class InformSeleniumTest(InformSeleniumBase):
         Flow: Click delete icon on comment -> Confirm in SweetAlert
         -> Dismiss success alert.
 
-        GIF: docs/source/_static/gif/remove_inform_observation.gif
+        GIF: organilab_docs/source/_static/gif/remove_inform_observation.gif
         """
         path_list = [
             {
@@ -261,7 +261,7 @@ class InformSeleniumTest(InformSeleniumBase):
         Flow: Navigate to inform list -> Click complete button on first
         row -> Click finalize button -> Confirm in SweetAlert.
 
-        GIF: docs/source/_static/gif/finalize_inform.gif
+        GIF: organilab_docs/source/_static/gif/finalize_inform.gif
         """
         self.navigate_to_inform_list()
         path_list = [

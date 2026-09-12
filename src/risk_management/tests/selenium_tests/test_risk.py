@@ -149,7 +149,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
 
         Flow: Navigate to risk zone list -> Verify page title is visible.
 
-        GIF: docs/source/_static/gif/view_risk.gif
+        GIF: organilab_docs/source/_static/gif/view_risk.gif
         """
         self.navigate_to_riskzone_list()
         path_list = [
@@ -166,7 +166,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
         Flow: Navigate to lab index -> Click risk management sidebar item
         -> Click risk zone sub-item -> Verify risk zone list title.
 
-        GIF: docs/source/_static/gif/view_risk_sidebar.gif
+        GIF: organilab_docs/source/_static/gif/view_risk_sidebar.gif
         """
         self.navigate_to_riskzone_list()
         path_list = [
@@ -184,7 +184,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
         select, num workers, zone type select -> Submit -> Verify return
         to list.
 
-        GIF: docs/source/_static/gif/add_risk.gif
+        GIF: organilab_docs/source/_static/gif/add_risk.gif
         """
         self.navigate_to_riskzone_create()
         path_list = [
@@ -229,7 +229,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
         Flow: Navigate to risk zone update form (pk=5) -> Clear and fill
         name -> Submit -> Verify return to list.
 
-        GIF: docs/source/_static/gif/edit_risk.gif
+        GIF: organilab_docs/source/_static/gif/edit_risk.gif
         """
         self.navigate_to_riskzone_update(pk=5)
         path_list = [
@@ -256,7 +256,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
         Flow: Navigate to risk zone delete confirmation (pk=5) -> Click
         confirm button -> Verify return to list.
 
-        GIF: docs/source/_static/gif/remove_risk.gif
+        GIF: organilab_docs/source/_static/gif/remove_risk.gif
         """
         self.navigate_to_riskzone_delete(pk=5)
         path_list = [
@@ -278,7 +278,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
         button next to zone_type field -> Fill name and priority validator
         in modal -> Submit modal -> Verify zone type is selectable.
 
-        GIF: docs/source/_static/gif/add_zone_type.gif
+        GIF: organilab_docs/source/_static/gif/add_zone_type.gif
         """
         self.navigate_to_riskzone_create()
         path_list = [
@@ -311,7 +311,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
         Flow: Navigate to risk zone detail (pk=5) -> Verify detail title
         is visible.
 
-        GIF: docs/source/_static/gif/view_risk_detail.gif
+        GIF: organilab_docs/source/_static/gif/view_risk_detail.gif
         """
         self.navigate_to_riskzone_detail(pk=5)
         path_list = [
@@ -327,7 +327,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
         Flow: Navigate to risk zone detail (pk=5) -> Click edit button
         -> Verify navigation to update form.
 
-        GIF: docs/source/_static/gif/update_risk_two.gif
+        GIF: organilab_docs/source/_static/gif/update_risk_two.gif
         """
         self.navigate_to_riskzone_detail(pk=5)
         path_list = [
@@ -347,7 +347,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
         Flow: Navigate to risk zone detail (pk=5) -> Verify incidents
         table is visible.
 
-        GIF: docs/source/_static/gif/view_incidents.gif
+        GIF: organilab_docs/source/_static/gif/view_incidents.gif
         """
         self.navigate_to_riskzone_detail(pk=5)
         path_list = [
@@ -366,7 +366,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
         in DataTable toolbar -> Fill incident form in modal (short
         description, incident date, causes, impacts, etc.) -> Submit.
 
-        GIF: docs/source/_static/gif/add_incidents.gif
+        GIF: organilab_docs/source/_static/gif/add_incidents.gif
         """
         self.navigate_to_riskzone_detail(pk=5)
         path_list = [
@@ -446,7 +446,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
         Flow: Navigate to risk zone detail (pk=5) -> Click edit icon on
         first incident row -> Update fields in modal -> Submit.
 
-        GIF: docs/source/_static/gif/update_incidents.gif
+        GIF: organilab_docs/source/_static/gif/update_incidents.gif
         """
         self.navigate_to_riskzone_detail(pk=5)
         path_list = [
@@ -531,7 +531,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
         Flow: Navigate to risk zone detail (pk=5) -> Click delete icon
         on first incident row -> Confirm deletion in modal.
 
-        GIF: docs/source/_static/gif/remove_incidents.gif
+        GIF: organilab_docs/source/_static/gif/remove_incidents.gif
         """
         self.navigate_to_riskzone_detail(pk=5)
         path_list = [
@@ -553,7 +553,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
         Flow: Navigate to risk zone detail (pk=5) -> Click download
         dropdown toggle -> Select a download format.
 
-        GIF: docs/source/_static/gif/download_incidents.gif
+        GIF: organilab_docs/source/_static/gif/download_incidents.gif
         """
         self.navigate_to_riskzone_detail(pk=5)
         path_list = [
@@ -580,7 +580,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
         of workers to 8 -> Set start time to 07:00 -> Set end time to
         17:00 -> Submit form.
 
-        GIF: docs/source/_static/gif/add_workday.gif
+        GIF: organilab_docs/source/_static/gif/add_workday.gif
         """
         self.navigate_to_riskzone_list()
         path_list = [
@@ -631,7 +631,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
 
         Flow: Navigate to buildings list -> Verify page heading is visible.
 
-        GIF: docs/source/_static/gif/view_buildings.gif
+        GIF: organilab_docs/source/_static/gif/view_buildings.gif
         """
         self.navigate_to_buildings_list()
         path_list = [
@@ -649,7 +649,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
         Flow: Navigate to building create form -> Fill name and phone
         -> Submit -> Verify return to list.
 
-        GIF: docs/source/_static/gif/add_building.gif
+        GIF: organilab_docs/source/_static/gif/add_building.gif
         """
         self.navigate_to_buildings_create()
         path_list = [
@@ -689,7 +689,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
         Flow: Navigate to buildings list -> Click edit icon on first row
         (redirects to form page) -> Modify name -> Submit.
 
-        GIF: docs/source/_static/gif/edit_building.gif
+        GIF: organilab_docs/source/_static/gif/edit_building.gif
         """
         self.navigate_to_buildings_list()
         path_list = [
@@ -724,7 +724,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
         Flow: Navigate to buildings list -> Click delete icon on first
         row -> Confirm deletion in modal.
 
-        GIF: docs/source/_static/gif/delete_building.gif
+        GIF: organilab_docs/source/_static/gif/delete_building.gif
         """
         self.navigate_to_buildings_list()
         path_list = [
@@ -746,7 +746,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
 
         Flow: Navigate to regents list -> Verify page heading is visible.
 
-        GIF: docs/source/_static/gif/view_regents.gif
+        GIF: organilab_docs/source/_static/gif/view_regents.gif
         """
         self.navigate_to_regents_list()
         path_list = [
@@ -765,7 +765,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
         toolbar -> Fill user (autocomplete), type_regent, laboratories
         in modal -> Submit.
 
-        GIF: docs/source/_static/gif/add_regent.gif
+        GIF: organilab_docs/source/_static/gif/add_regent.gif
         """
         self.navigate_to_regents_list()
         path_list = [
@@ -802,7 +802,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
         Flow: Navigate to regents list -> Click edit icon on first row
         -> Modify type_regent in modal -> Submit.
 
-        GIF: docs/source/_static/gif/edit_regent.gif
+        GIF: organilab_docs/source/_static/gif/edit_regent.gif
         """
         self.navigate_to_regents_list()
         path_list = [
@@ -829,7 +829,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
         Flow: Navigate to regents list -> Click delete icon on first
         row -> Confirm deletion in modal.
 
-        GIF: docs/source/_static/gif/delete_regent.gif
+        GIF: organilab_docs/source/_static/gif/delete_regent.gif
         """
         self.navigate_to_regents_list()
         path_list = [
@@ -851,7 +851,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
 
         Flow: Navigate to structures list -> Verify page heading is visible.
 
-        GIF: docs/source/_static/gif/view_structures.gif
+        GIF: organilab_docs/source/_static/gif/view_structures.gif
         """
         self.navigate_to_structures_list()
         path_list = [
@@ -869,7 +869,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
         Flow: Navigate to structure create form -> Fill name -> Submit
         -> Verify return to list.
 
-        GIF: docs/source/_static/gif/add_structure.gif
+        GIF: organilab_docs/source/_static/gif/add_structure.gif
         """
         self.navigate_to_structures_create()
         path_list = [
@@ -896,7 +896,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
         Flow: Navigate to structures list -> Click edit icon on first row
         (redirects to form page) -> Modify name -> Submit.
 
-        GIF: docs/source/_static/gif/edit_structure.gif
+        GIF: organilab_docs/source/_static/gif/edit_structure.gif
         """
         self.navigate_to_structures_list()
         path_list = [
@@ -934,7 +934,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
         Flow: Navigate to structures list -> Click delete icon on first
         row -> Confirm deletion in modal.
 
-        GIF: docs/source/_static/gif/delete_structure.gif
+        GIF: organilab_docs/source/_static/gif/delete_structure.gif
         """
         self.navigate_to_structures_list()
         path_list = [
@@ -956,7 +956,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
 
         Flow: Navigate to zone dashboard -> Verify page heading is visible.
 
-        GIF: docs/source/_static/gif/view_zone_dashboard.gif
+        GIF: organilab_docs/source/_static/gif/view_zone_dashboard.gif
         """
         self.navigate_to_zone_dashboard()
         path_list = [

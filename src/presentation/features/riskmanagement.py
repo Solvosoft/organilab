@@ -33,7 +33,7 @@ FEATURES = (
             "panel con su reporte."
         ),
         priority="P2",
-        doc="docs/source/desc_funcionalidades/riesgo_gest.rst",
+        doc="organilab_docs/source/desc_funcionalidades/riesgo_gest.rst",
         steps=(
             Step(
                 id="listar_zonas",

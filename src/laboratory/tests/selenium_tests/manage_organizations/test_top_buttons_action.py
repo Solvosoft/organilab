@@ -12,7 +12,7 @@ class TopButtonsActionTest(ManageOrganizationsSeleniumTest):
         Flow: Click 'Add organization' span -> Fill name in modal ->
         Submit modal.
 
-        GIF: docs/source/_static/gif/create_org.gif
+        GIF: organilab_docs/source/_static/gif/create_org.gif
         """
         path_list = [
             {"path": "//span[@class='addOrgStructureEmpty']"},

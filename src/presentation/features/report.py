@@ -40,7 +40,7 @@ FEATURES = (
             "(`report/models.py:10-18`)",
         ),
         priority="P1",
-        doc="docs/source/general_usage/reports.rst",
+        doc="organilab_docs/source/general_usage/reports.rst",
         steps=(
             Step(
                 id="elegir",

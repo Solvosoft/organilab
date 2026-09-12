@@ -67,9 +67,6 @@ instance/
 # Scrapy stuff:
 .scrapy
 
-# Sphinx documentation
-docs/_build/
-
 # PyBuilder
 target/
 
@@ -122,7 +119,6 @@ package-lock.json
 venv39/
 coverage.json
 backups
-docs/capacitacion/
 # Claude Code
 .claude/
 CLAUDE.md

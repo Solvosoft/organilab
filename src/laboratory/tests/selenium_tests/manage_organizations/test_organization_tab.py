@@ -22,7 +22,7 @@ class OrganizationTabTest(ManageOrganizationsSeleniumTest):
         user -> Confirm SweetAlert -> Switch to org tab -> Select profile
         -> Select lab -> Save.
 
-        GIF: docs/source/_static/gif/relate_user_to_org_and_lab_from_tab_org.gif
+        GIF: organilab_docs/source/_static/gif/relate_user_to_org_and_lab_from_tab_org.gif
         """
         path_list = self.tab_org + [
             {
@@ -71,7 +71,7 @@ class OrganizationTabTest(ManageOrganizationsSeleniumTest):
         Flow: Select org -> Click 'By organization' tab -> Click
         'Apply as role' icon -> Select role in modal -> Save.
 
-        GIF: docs/source/_static/gif/add_permission_rol_to_user_from_tab_org.gif
+        GIF: organilab_docs/source/_static/gif/add_permission_rol_to_user_from_tab_org.gif
         """
         path_list = self.tab_org + [
             {"path": self.rol_btn("orpermelement"), "wait_dt": True, "sleep": 2},
@@ -84,7 +84,7 @@ class OrganizationTabTest(ManageOrganizationsSeleniumTest):
         Flow: Select org -> Click 'By organization' tab -> Click
         'Apply as role' icon -> Uncheck permission -> Save.
 
-        GIF: docs/source/_static/gif/remove_permission_rol_to_user_from_tab_org.gif
+        GIF: organilab_docs/source/_static/gif/remove_permission_rol_to_user_from_tab_org.gif
         """
         path_list = self.tab_org + [
             {"path": self.rol_btn("orpermelement"), "wait_dt": True, "sleep": 2},
@@ -98,7 +98,7 @@ class OrganizationTabTest(ManageOrganizationsSeleniumTest):
         'Apply as role' -> Clear existing selection -> Select different
         role -> Check use permission -> Save.
 
-        GIF: docs/source/_static/gif/use_selected_permission_rol_to_user_from_tab_org.gif
+        GIF: organilab_docs/source/_static/gif/use_selected_permission_rol_to_user_from_tab_org.gif
         """
         path_list = self.tab_org + [
             {"path": self.rol_btn("orpermelement"), "wait_dt": True, "sleep": 2},
@@ -120,7 +120,7 @@ class OrganizationTabTest(ManageOrganizationsSeleniumTest):
         Flow: Select org -> Click 'By organization' tab -> Click delete
         icon on user row -> Confirm SweetAlert.
 
-        GIF: docs/source/_static/gif/delete_relation_user_org_from_tab_org.gif
+        GIF: organilab_docs/source/_static/gif/delete_relation_user_org_from_tab_org.gif
         """
         path_list = self.tab_org + [
             {
@@ -149,7 +149,7 @@ class OrganizationTabTest(ManageOrganizationsSeleniumTest):
         Flow: Select org -> Click 'By organization' tab -> Click delete
         icon on user row -> Check 'Deactivate user' -> Confirm SweetAlert.
 
-        GIF: docs/source/_static/gif/delete_relation_user_org_and_deactivate_user_from_tab_org.gif
+        GIF: organilab_docs/source/_static/gif/delete_relation_user_org_and_deactivate_user_from_tab_org.gif
         """
         path_list = self.tab_org + [
             {

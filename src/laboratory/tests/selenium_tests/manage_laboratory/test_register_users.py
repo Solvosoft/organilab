@@ -47,7 +47,7 @@ class RegisterUserQRSeleniumTest(LaboratorySeleniumBase):
 
         Flow: Navigate to register user QR list -> View table.
 
-        GIF: docs/source/_static/gif/view_register_user_QR.gif
+        GIF: organilab_docs/source/_static/gif/view_register_user_QR.gif
         """
         self.navigate_to_register_user_qr_list()
         path_list = [
@@ -66,7 +66,7 @@ class RegisterUserQRSeleniumTest(LaboratorySeleniumBase):
         button -> Select role -> Select organization -> Fill code
         -> Submit.
 
-        GIF: docs/source/_static/gif/create_register_user_QR.gif
+        GIF: organilab_docs/source/_static/gif/create_register_user_QR.gif
         """
         self.navigate_to_register_user_qr_list()
         path_list = [
@@ -110,7 +110,7 @@ class RegisterUserQRSeleniumTest(LaboratorySeleniumBase):
         Flow: Navigate to register user QR list -> Click edit button
         on first row -> Change role -> Change organization -> Submit.
 
-        GIF: docs/source/_static/gif/update_register_user_QR.gif
+        GIF: organilab_docs/source/_static/gif/update_register_user_QR.gif
         """
         self.navigate_to_register_user_qr_list()
         path_list = [
@@ -145,7 +145,7 @@ class RegisterUserQRSeleniumTest(LaboratorySeleniumBase):
         Flow: Navigate to register user QR list -> Click delete
         button on first row -> Confirm deletion.
 
-        GIF: docs/source/_static/gif/delete_register_user_QR.gif
+        GIF: organilab_docs/source/_static/gif/delete_register_user_QR.gif
         """
         self.navigate_to_register_user_qr_list()
         path_list = [
@@ -165,7 +165,7 @@ class RegisterUserQRSeleniumTest(LaboratorySeleniumBase):
         Flow: Navigate to register user QR list -> Click download
         button on first row.
 
-        GIF: docs/source/_static/gif/download_register_user_QR.gif
+        GIF: organilab_docs/source/_static/gif/download_register_user_QR.gif
         """
         self.navigate_to_register_user_qr_list()
         path_list = [
@@ -181,7 +181,7 @@ class RegisterUserQRSeleniumTest(LaboratorySeleniumBase):
         Flow: Navigate to register user QR list -> Click history
         button on first row.
 
-        GIF: docs/source/_static/gif/logentry_register_user_QR.gif
+        GIF: organilab_docs/source/_static/gif/logentry_register_user_QR.gif
         """
         self.navigate_to_register_user_qr_list()
         path_list = [

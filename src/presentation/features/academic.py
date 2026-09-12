@@ -30,7 +30,7 @@ FEATURES = (
             "se instancia para cada grupo y lo que dispara la reserva del material."
         ),
         priority="P2",
-        doc="docs/source/administrative_usage/procedure.rst",
+        doc="organilab_docs/source/administrative_usage/procedure.rst",
         steps=(
             Step(
                 id="crear_plantilla",
@@ -96,7 +96,7 @@ FEATURES = (
         ),
         states=PROCEDURE_STATES,
         priority="P2",
-        doc="docs/source/general_usage/procedure.rst",
+        doc="organilab_docs/source/general_usage/procedure.rst",
         steps=(
             Step(
                 id="instanciar",

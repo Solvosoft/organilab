@@ -36,7 +36,7 @@ class Cap3BoxesTest(CapacitacionSeleniumBase):
            numero de cajas, unidades por caja
         5. Guardar cambios
 
-        GIF: docs/source/_static/gif/cap3_create_box.gif
+        GIF: organilab_docs/source/_static/gif/cap3_create_box.gif
         """
         self.navigate_to_rooms(org_pk=4, lab_pk=1)
 
@@ -164,7 +164,7 @@ class Cap3BoxesTest(CapacitacionSeleniumBase):
         Fixture: ShelfObject pk=4, shelf=1, object=2 (Butanona), is_box=True,
                  quantity_units=[{code:CAJA-001, units:10}, {code:CAJA-002, units:10}]
 
-        GIF: docs/source/_static/gif/cap3_decrease_box.gif
+        GIF: organilab_docs/source/_static/gif/cap3_decrease_box.gif
         """
         self.navigate_to_rooms(org_pk=4, lab_pk=1)
 
@@ -233,7 +233,7 @@ class Cap3BoxesTest(CapacitacionSeleniumBase):
 
         Fixture: ShelfObject pk=4, shelf=1, object=2 (Butanona), is_box=True
 
-        GIF: docs/source/_static/gif/cap3_increase_box.gif
+        GIF: organilab_docs/source/_static/gif/cap3_increase_box.gif
         """
         self.navigate_to_rooms(org_pk=4, lab_pk=1)
 
