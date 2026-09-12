@@ -1,15 +1,40 @@
-.PHONY: feature-coverage feature-coverage-fast feature-catalog feature-catalog-check feature-roles feature-gaps help clean clean-pyc clean-build list setup check-env venv-info url-inventory url-inventory-check test-urls test test-parallel test-selenium test-selenium-4 test-selenium-single test-selenium-xvfb test-selenium-bitacora docs release sdist
+.PHONY: registry-login registry-push prod-build-push feature-coverage feature-coverage-fast feature-catalog feature-catalog-check feature-roles feature-gaps help clean clean-pyc clean-build list setup check-env venv-info url-inventory url-inventory-check test-urls test test-parallel test-selenium test-selenium-4 test-selenium-single test-selenium-xvfb test-selenium-bitacora docs docs-screenshots release sdist
 
 # Variables
 ROOT_DIR := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 VENV ?= $(ROOT_DIR)/.venv
+VENV_BIN := $(VENV)/bin
 # Si el entorno virtual existe se usa siempre, sin necesidad de activarlo; si no,
 # se cae al python del PATH para no romper quien ya trabaje dentro de otro venv.
 PYTHON ?= $(shell test -x $(VENV)/bin/python && echo $(VENV)/bin/python || command -v python || command -v python3)
 SYSTEM_PYTHON ?= python3
 
+# Enlaza el Makefile con el entorno virtual: si .venv existe, todas las recetas
+# (incluidos los `sh -c` bajo xvfb-run y los binarios de consola como celery o
+# django-admin) lo ven sin activarlo a mano.
+# Equivale a hacer `source .venv/bin/activate` en cada receta.
+ifneq ($(wildcard $(VENV_BIN)/python),)
+export VIRTUAL_ENV := $(VENV)
+ifeq (,$(findstring $(VENV_BIN):,$(PATH)))
+export PATH := $(VENV_BIN):$(PATH)
+endif
+endif
+
+# La documentación vive en un repositorio aparte (Solvosoft/organilab_docs), que se
+# espera clonado al lado de este. Solo dos cosas lo tocan desde acá: el target `docs`,
+# que delega en su Makefile, y la suite Selenium, que escribe ahí los GIF/PNG.
+ORGANILAB_DOCS ?= $(ROOT_DIR)/../organilab_docs
+export DOCS_STATIC_DIR ?= $(ORGANILAB_DOCS)/source/
+
 setup_version := `$(PYTHON) src/organilab/__init__.py`
 current_path := `pwd`
+
+# Registro privado de imágenes. Las credenciales (REGISTRY_USER y REGISTRY_PASSWORD)
+# viven en $(REGISTRY_ENV), que está fuera de git.
+REGISTRY     = registry.alce.visualcon.net
+REGISTRY_ENV = .registry.env
+IMAGE        = organilab
+REMOTE_IMAGE = $(REGISTRY)/$(IMAGE)
 
 
 ##--------------------------------------------------------
@@ -32,18 +57,22 @@ help: ## Mostrar esta ayuda
 ##--------------------------------------------------------
 
 setup: ##  - crea .venv (si no existe) e instala runtime + dependencias de prueba
-	@test -x $(VENV)/bin/python || $(SYSTEM_PYTHON) -m venv $(VENV)
-	$(VENV)/bin/python -m pip install --upgrade pip
-	$(VENV)/bin/python -m pip install -r requirements.txt
-	$(VENV)/bin/python -m pip install -r test_requirements.txt
+	@test -x $(VENV_BIN)/python || $(SYSTEM_PYTHON) -m venv $(VENV)
+	$(VENV_BIN)/python -m pip install --upgrade pip
+	$(VENV_BIN)/python -m pip install -r requirements.txt
+	$(VENV_BIN)/python -m pip install -r test_requirements.txt
+	@$(MAKE) --no-print-directory venv-info
 	@$(MAKE) --no-print-directory check-env
 
 check-env: ##  - verifica dependencias, chromedriver y conexión a PostgreSQL
 	@$(PYTHON) scripts/check_env.py
 
 venv-info: ##  - muestra qué intérprete usarán los targets
-	@echo "VENV   = $(VENV)"
-	@echo "PYTHON = $(PYTHON)"
+	@echo "VENV           = $(VENV)"
+	@echo "PYTHON         = $(PYTHON)"
+	@echo "ORGANILAB_DOCS = $(ORGANILAB_DOCS)"
+	@echo "PATH           = $(PATH)"
+	@test -x $(VENV_BIN)/python || echo "AVISO: $(VENV) no existe todavía; corré 'make setup'."
 
 ##--------------------------------------------------------
 ## Project setup & server
@@ -61,7 +90,7 @@ database_config: ##  - init config data base
 	cd src && $(PYTHON) manage.py migrate && $(PYTHON) manage.py init_checks && $(PYTHON) manage.py load_urlname_permissions
 
 run_docker_selenium: ##  - run project in docker with selenium
-	 docker run --network="host"  -v $(current_path)/src:/organilab/src  -v $(current_path)/fixtures:/organilab/fixtures -v $(current_path)/docs:/organilab/docs  -ti organilabselenium:$(setup_version) $(run)
+	 docker run --network="host"  -v $(current_path)/src:/organilab/src  -v $(current_path)/fixtures:/organilab/fixtures  -ti organilabselenium:$(setup_version) $(run)
 
 migrate: ## - makemigrations && migrate
 	cd src && $(PYTHON) manage.py makemigrations && \
@@ -167,22 +196,18 @@ test-selenium-bitacora: ## Corre Selenium headless sin GIF y deja el log complet
 	@echo "-------------------"
 	@echo "Log completo: $(BITACORA)"
 
-docs: clean ##  - generate Sphinx HTML documentation, including API docs
-	$(PYTHON) -m pip install 'sphinx==8.2.3' sphinx-rtd-theme==3.0.2 sphinxcontrib-video==0.4.2
-	$(MAKE) -C docs clean
-	$(MAKE) -C docs html
-	sphinx-build -b linkcheck ./docs/source ./docs/build/
-	sphinx-build -b html ./docs/source ./docs/build/
-	$(PYTHON) docs/fix_capacitacion_images.py
+docs: ## - construye la documentación en el repo vecino organilab_docs
+	@test -d $(ORGANILAB_DOCS) || { \
+		echo "Falta $(ORGANILAB_DOCS)."; \
+		echo "Cloná Solvosoft/organilab_docs al lado de este repo, o pasá ORGANILAB_DOCS=/ruta."; \
+		exit 1; }
+	ORGANILAB_SRC=$(ROOT_DIR)/src $(MAKE) -C $(ORGANILAB_DOCS) html
 
-docs_full: ##  - generate full docs, Sphinx HTML documentation, including API docs
-	xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" sh -c "cd src && $(PYTHON) manage.py test  --no-input --tag=selenium --parallel"
-	$(MAKE) -C docs clean
-	$(MAKE) -C docs html
-	$(PYTHON) -m pip install 'sphinx==8.2.3' sphinx-rtd-theme==3.0.2 sphinxcontrib-video==0.4.2
-	sphinx-build -b linkcheck ./docs/source ./docs/build/
-	sphinx-build -b html ./docs/source ./docs/build/
-	$(PYTHON) docs/fix_capacitacion_images.py
+docs-screenshots: ## - regenera los GIF/PNG de la documentación (suite Selenium completa, headless)
+	@test -d $(ORGANILAB_DOCS) || { echo "Falta $(ORGANILAB_DOCS)"; exit 1; }
+	xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" \
+		sh -c "cd src && $(PYTHON) manage.py test --no-input --tag=selenium --parallel"
+	@echo "Imágenes actualizadas en $(ORGANILAB_DOCS)/source/_static/; commitealas en ese repo."
 
 messages: ##  - extract messages for translations
 	cd src && $(PYTHON) -m django makemessages --all --no-location --no-obsolete && $(PYTHON) -m django makemessages -d djangojs -l es  --ignore *.min.js --no-location --no-obsolete
@@ -200,10 +225,25 @@ dist: ##  - print current version of organilab
 	git push origin "refs/tags/v$(setup_version)"
 
 build_docker: ##  - build docker images
-	$(MAKE) docs
 	docker pull python:3.13-trixie
 	docker pull python:3.13-slim-trixie
 	docker build --no-cache  -t organilab:$(setup_version) -t organilab:latest .
+
+registry-login: ## Login al registro privado usando credenciales de .registry.env
+	@test -f $(REGISTRY_ENV) || { echo "Falta $(REGISTRY_ENV) con REGISTRY_USER y REGISTRY_PASSWORD"; exit 1; }
+	@set -a; . ./$(REGISTRY_ENV); set +a; \
+		test -n "$$REGISTRY_USER" -a -n "$$REGISTRY_PASSWORD" || { echo "REGISTRY_USER o REGISTRY_PASSWORD vacíos en $(REGISTRY_ENV)"; exit 1; }; \
+		echo "$$REGISTRY_PASSWORD" | docker login $(REGISTRY) -u "$$REGISTRY_USER" --password-stdin
+
+registry-push: registry-login ## Etiqueta y sube la imagen local organilab al registro privado
+	docker tag $(IMAGE):$(setup_version) $(REMOTE_IMAGE):$(setup_version)
+	docker tag $(IMAGE):$(setup_version) $(REMOTE_IMAGE):latest
+	docker push $(REMOTE_IMAGE):$(setup_version)
+	docker push $(REMOTE_IMAGE):latest
+
+prod-build-push: registry-login ## Construye la imagen de producción y la sube al registro privado
+	$(MAKE) build_docker
+	$(MAKE) registry-push
 
 build_docker_selenium: ##  - build docker images with selenium
 	docker build -f docker/Dockerfile.selenium -t organilabselenium:$(setup_version)  .

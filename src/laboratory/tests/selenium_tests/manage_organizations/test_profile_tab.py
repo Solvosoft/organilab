@@ -16,7 +16,7 @@ class ProfileTabTest(ManageOrganizationsSeleniumTest):
         profile in first Select2 -> Select permission group in second
         Select2 -> Save changes.
 
-        GIF: docs/source/_static/gif/change_profile_permission_group_by_org.gif
+        GIF: organilab_docs/source/_static/gif/change_profile_permission_group_by_org.gif
         """
         path_list = self.select_organization + [
             {

@@ -47,7 +47,7 @@ class LabRoomSeleniumTest(OptimizedSeleniumBase):
 
         Flow: Navigate to rooms list -> View room tree.
 
-        GIF: docs/source/_static/gif/view_room.gif
+        GIF: organilab_docs/source/_static/gif/view_room.gif
         """
         self.navigate_to_rooms_list()
         path_list = [
@@ -63,7 +63,7 @@ class LabRoomSeleniumTest(OptimizedSeleniumBase):
         Flow: Navigate to lab index -> Click rooms link in view
         section.
 
-        GIF: docs/source/_static/gif/view_room_navbar.gif
+        GIF: organilab_docs/source/_static/gif/view_room_navbar.gif
         """
         self.navigate_to_lab_index()
         path_list = [
@@ -80,7 +80,7 @@ class LabRoomSeleniumTest(OptimizedSeleniumBase):
         Flow: Navigate to room management -> Fill room name ->
         Submit create form.
 
-        GIF: docs/source/_static/gif/add_room.gif
+        GIF: organilab_docs/source/_static/gif/add_room.gif
         """
         self.navigate_to_rooms_create()
         path_list = [
@@ -105,7 +105,7 @@ class LabRoomSeleniumTest(OptimizedSeleniumBase):
         Flow: Navigate to room management -> Click edit button
         on a room -> Clear and enter new name -> Submit.
 
-        GIF: docs/source/_static/gif/update_room.gif
+        GIF: organilab_docs/source/_static/gif/update_room.gif
         """
         self.navigate_to_rooms_create()
         path_list = [
@@ -134,7 +134,7 @@ class LabRoomSeleniumTest(OptimizedSeleniumBase):
         Flow: Navigate to room management -> Click delete button
         on a room -> Confirm deletion.
 
-        GIF: docs/source/_static/gif/delete_room.gif
+        GIF: organilab_docs/source/_static/gif/delete_room.gif
         """
         self.navigate_to_rooms_create()
         path_list = [
@@ -166,7 +166,7 @@ class LabRoomSeleniumTest(OptimizedSeleniumBase):
 
         Flow: Navigate to room management -> Click rebuild QR link.
 
-        GIF: docs/source/_static/gif/update_qr.gif
+        GIF: organilab_docs/source/_static/gif/update_qr.gif
         """
         self.navigate_to_rooms_create()
         path_list = [

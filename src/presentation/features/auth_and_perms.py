@@ -73,7 +73,7 @@ FEATURES = (
             "Es donde se materializa el eje de roles que este catálogo usa."
         ),
         priority="P1",
-        doc="docs/source/administrative_usage/perms.rst",
+        doc="organilab_docs/source/administrative_usage/perms.rst",
         steps=(
             Step(
                 id="panel",

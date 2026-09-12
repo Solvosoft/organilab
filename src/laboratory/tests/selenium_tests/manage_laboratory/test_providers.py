@@ -29,7 +29,7 @@ class ProviderSeleniumTest(OptimizedSeleniumBase):
 
         Flow: Navigate to provider list -> View DataTable with providers.
 
-        GIF: docs/source/_static/gif/view_providers.gif
+        GIF: organilab_docs/source/_static/gif/view_providers.gif
         """
         self.navigate_to_provider_list()
         path_list = [
@@ -47,7 +47,7 @@ class ProviderSeleniumTest(OptimizedSeleniumBase):
         Flow: Navigate to provider list -> Click create button ->
         Fill form (name, phone, email, legal identity) -> Save.
 
-        GIF: docs/source/_static/gif/add_provider.gif
+        GIF: organilab_docs/source/_static/gif/add_provider.gif
         """
         self.navigate_to_provider_list()
         path_list = [
@@ -115,7 +115,7 @@ class ProviderSeleniumTest(OptimizedSeleniumBase):
         Flow: Navigate to provider list -> Click edit icon on first
         row -> Update phone number and legal identity -> Save.
 
-        GIF: docs/source/_static/gif/update_provider.gif
+        GIF: organilab_docs/source/_static/gif/update_provider.gif
         """
         self.navigate_to_provider_list()
         path_list = [

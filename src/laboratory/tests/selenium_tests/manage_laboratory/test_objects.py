@@ -64,7 +64,7 @@ class ObjectDropdowmSeleniumTest(ObjectSeleniumBase):
         Flow: Navigate to lab index -> Click Objects dropdown ->
         Select Material sub-item.
 
-        GIF: docs/source/_static/gif/view_material_dropdown.gif
+        GIF: organilab_docs/source/_static/gif/view_material_dropdown.gif
         """
         self.navigate_to_lab_index()
         path_list = [
@@ -82,7 +82,7 @@ class ObjectDropdowmSeleniumTest(ObjectSeleniumBase):
 
         Flow: Navigate to lab index -> Click Reactive link.
 
-        GIF: docs/source/_static/gif/view_reactive_dropdown.gif
+        GIF: organilab_docs/source/_static/gif/view_reactive_dropdown.gif
         """
         self.navigate_to_lab_index()
         path_list = [
@@ -102,7 +102,7 @@ class ObjectSeleniumTest(ObjectSeleniumBase):
         Flow: Navigate to lab index -> Click 'Material' link in
         administration list.
 
-        GIF: docs/source/_static/gif/view_materials.gif
+        GIF: organilab_docs/source/_static/gif/view_materials.gif
         """
         self.navigate_to_lab_index()
         path_list = [
@@ -122,7 +122,7 @@ class ObjectSeleniumTest(ObjectSeleniumBase):
         Flow: Navigate to object view -> Click create button in DataTable
         toolbar -> Fill modal form (code, name, synonym, description) -> Save.
 
-        GIF: docs/source/_static/gif/add_material_object.gif
+        GIF: organilab_docs/source/_static/gif/add_material_object.gif
         """
         self.navigate_to_object_view()
         path_list = [
@@ -176,7 +176,7 @@ class ObjectSeleniumTest(ObjectSeleniumBase):
         Flow: Navigate to object view -> Click edit icon on first row ->
         Modify fields in update modal -> Save.
 
-        GIF: docs/source/_static/gif/update_material_object.gif
+        GIF: organilab_docs/source/_static/gif/update_material_object.gif
         """
         self.navigate_to_object_view()
         path_list = [
@@ -227,7 +227,7 @@ class ObjectSeleniumTest(ObjectSeleniumBase):
     @modifies_db
     def test_add_object_material_is_container(self):
         """
-        GIF: docs/source/_static/gif/cap3_precursor_config.gif
+        GIF: organilab_docs/source/_static/gif/cap3_precursor_config.gif
         """
         self.navigate_to_object_view()
         path_list = [
@@ -301,7 +301,7 @@ class ObjectSeleniumTest(ObjectSeleniumBase):
         Flow: Navigate to object view -> Click delete icon on first
         row -> Confirm deletion in modal.
 
-        GIF: docs/source/_static/gif/delete_material_object.gif
+        GIF: organilab_docs/source/_static/gif/delete_material_object.gif
         """
         self.navigate_to_object_view()
         path_list = [
@@ -322,7 +322,7 @@ class ObjectSeleniumTest(ObjectSeleniumBase):
         Flow: Navigate to object view -> Enter search term 'Balones' ->
         Clear and search again with 'Ba'.
 
-        GIF: docs/source/_static/gif/search_material_object.gif
+        GIF: organilab_docs/source/_static/gif/search_material_object.gif
         """
         self.navigate_to_object_view()
         path_list = [
@@ -354,7 +354,7 @@ class ObjectSeleniumTest(ObjectSeleniumBase):
 
         Flow: Navigate to substance list -> Verify page content.
 
-        GIF: docs/source/_static/gif/view_reactive_objects.gif
+        GIF: organilab_docs/source/_static/gif/view_reactive_objects.gif
         """
         self.navigate_to_substance_list()
         path_list = [
@@ -375,7 +375,7 @@ class ObjectSeleniumTest(ObjectSeleniumBase):
         substance form (name, code, synonym, description,
         molecular formula, CAS, model, serie, plaque) -> Save.
 
-        GIF: docs/source/_static/gif/add_reactive_object.gif
+        GIF: organilab_docs/source/_static/gif/add_reactive_object.gif
         """
         self.navigate_to_substance_list()
         path_list = [
@@ -428,7 +428,7 @@ class ObjectSeleniumTest(ObjectSeleniumBase):
     @modifies_db
     def test_add_reactive_object_classification(self):
         """
-        GIF: docs/source/_static/gif/cap3_sga_classification.gif
+        GIF: organilab_docs/source/_static/gif/cap3_sga_classification.gif
         """
         self.navigate_to_substance_list()
 
@@ -554,7 +554,7 @@ class ObjectSeleniumTest(ObjectSeleniumBase):
     @modifies_db
     def test_add_reactive_object_precursor(self):
         """
-        GIF: docs/source/_static/gif/cap3_precursor_config.gif
+        GIF: organilab_docs/source/_static/gif/cap3_precursor_config.gif
         """
         self.navigate_to_substance_list()
 
@@ -653,7 +653,7 @@ class ObjectSeleniumTest(ObjectSeleniumBase):
         Flow: Navigate to substance list -> Click edit icon on first
         row -> Modify fields in update modal -> Save.
 
-        GIF: docs/source/_static/gif/update_reactive_object.gif
+        GIF: organilab_docs/source/_static/gif/update_reactive_object.gif
         """
         self.navigate_to_substance_list()
         path_list = [
@@ -731,7 +731,7 @@ class ObjectSeleniumTest(ObjectSeleniumBase):
         Flow: Navigate to substance list -> Click delete icon on first
         row -> Confirm deletion in modal.
 
-        GIF: docs/source/_static/gif/delete_reactive_object.gif
+        GIF: organilab_docs/source/_static/gif/delete_reactive_object.gif
         """
         self.navigate_to_substance_list()
         path_list = [
@@ -752,7 +752,7 @@ class ObjectSeleniumTest(ObjectSeleniumBase):
         Flow: Navigate to substance list -> Type 'Alcohol' in search
         input -> Verify filtered results.
 
-        GIF: docs/source/_static/gif/search_reactive_object.gif
+        GIF: organilab_docs/source/_static/gif/search_reactive_object.gif
         """
         self.navigate_to_substance_list()
         path_list = [
@@ -780,7 +780,7 @@ class ObjectFeaturesSeleniumTest(ObjectSeleniumBase):
         Flow: Navigate to object features -> Verify DataTable and
         features list are visible.
 
-        GIF: docs/source/_static/gif/view_object_features.gif
+        GIF: organilab_docs/source/_static/gif/view_object_features.gif
         """
         self.navigate_to_object_features()
         path_list = [
@@ -796,7 +796,7 @@ class ObjectFeaturesSeleniumTest(ObjectSeleniumBase):
 
         Flow: Navigate to lab index -> Click 'Object features' link.
 
-        GIF: docs/source/_static/gif/view_object_features_dropdown.gif
+        GIF: organilab_docs/source/_static/gif/view_object_features_dropdown.gif
         """
         self.navigate_to_lab_index()
         path_list = [
@@ -813,7 +813,7 @@ class ObjectFeaturesSeleniumTest(ObjectSeleniumBase):
         Flow: Navigate to object features -> Click create button ->
         Fill name and description in modal -> Save.
 
-        GIF: docs/source/_static/gif/view_object_features.gif
+        GIF: organilab_docs/source/_static/gif/view_object_features.gif
         """
         self.navigate_to_object_features()
         path_list = [
@@ -853,7 +853,7 @@ class ObjectFeaturesSeleniumTest(ObjectSeleniumBase):
         Flow: Navigate to object features -> Click edit icon on first
         row -> Update name and description in modal -> Save.
 
-        GIF: docs/source/_static/gif/view_object_features.gif
+        GIF: organilab_docs/source/_static/gif/view_object_features.gif
         """
         self.navigate_to_object_features()
         path_list = [
@@ -893,7 +893,7 @@ class ObjectFeaturesSeleniumTest(ObjectSeleniumBase):
         Flow: Navigate to object features -> Click delete icon on first
         row -> Confirm deletion in modal.
 
-        GIF: docs/source/_static/gif/view_object_features.gif
+        GIF: organilab_docs/source/_static/gif/view_object_features.gif
         """
         self.navigate_to_object_features()
         path_list = [

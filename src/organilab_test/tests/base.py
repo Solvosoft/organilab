@@ -1117,7 +1117,8 @@ class SeleniumBase(StaticLiveServerTestCase):
             6. Cursor will be hidden before of action and show after it.
             7. In every path takes 3 screenshots after any movement or action.(A more complete gif(less skips between screenshots))
             8. In the second screenshot(inside the path loop) it will save the screenshot if it is necessary.(screenshot_name parameter in object path)
-            9. Finally, the git result will be created in docs/source/_static/gif/folder_name.gif
+            9. Finally, the gif result will be created in <DOCS_SOURCE_DIR>/_static/gif/folder_name.gif
+               (DOCS_SOURCE_DIR apunta al repo de documentación organilab_docs; ver settings)
 
         When GENERATE_SCREENSHOTS is False, all test actions (find_element, do_action,
         apply_utils, assert_no_server_error) still execute, but screenshot capture,

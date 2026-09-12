@@ -138,7 +138,7 @@ class Cap2InventoryTest(CapacitacionSeleniumBase):
         Seleccionar estante -> Clic en boton ojo de un registro ->
         Scroll en el modal de detalles.
 
-        GIF: docs/source/_static/gif/cap2_view_shelf_object_details.gif
+        GIF: organilab_docs/source/_static/gif/cap2_view_shelf_object_details.gif
         """
         self.navigate_to_rooms(org_pk=4, lab_pk=1)
         path_list = [
@@ -220,7 +220,7 @@ class Cap2InventoryTest(CapacitacionSeleniumBase):
         Seleccionar estante -> Clic en boton ojo de un registro ->
         Scroll en el modal de detalles.
 
-        GIF: docs/source/_static/gif/cap2_view_shelf_object_details.gif
+        GIF: organilab_docs/source/_static/gif/cap2_view_shelf_object_details.gif
         """
         self.navigate_to_rooms(org_pk=4, lab_pk=1)
         path_list = [
@@ -300,7 +300,7 @@ class Cap2ReportsTest(CapacitacionSeleniumBase):
         Seleccionar estante -> Clic en boton ojo de un registro ->
         Scroll en el modal de detalles.
 
-        GIF: docs/source/_static/gif/cap2_view_shelf_object_details.gif
+        GIF: organilab_docs/source/_static/gif/cap2_view_shelf_object_details.gif
         """
         self.navigate_to_rooms(org_pk=4, lab_pk=1)
         path_list = [

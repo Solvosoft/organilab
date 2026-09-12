@@ -17,7 +17,7 @@ class EquipmentDropdowmSeleniumTest(ObjectSeleniumBase):
 
         Flow: Navigate to lab index -> Click Equipment link.
 
-        GIF: docs/source/_static/gif/view_equipment_dropdown.gif
+        GIF: organilab_docs/source/_static/gif/view_equipment_dropdown.gif
         """
         self.navigate_to_lab_index()
         path_list = [
@@ -32,7 +32,7 @@ class EquipmentDropdowmSeleniumTest(ObjectSeleniumBase):
 
         Flow: Navigate to equipment list -> Scroll through DataTable.
 
-        GIF: docs/source/_static/gif/view_equipments.gif
+        GIF: organilab_docs/source/_static/gif/view_equipments.gif
         """
         self.navigate_to_equipment_list()
         path_list = [
@@ -57,7 +57,7 @@ class EquipmentDropdowmSeleniumTest(ObjectSeleniumBase):
         plaque, voltage, amperage, providers, special conditions,
         clean period) -> Save.
 
-        GIF: docs/source/_static/gif/add_equipment_object.gif
+        GIF: organilab_docs/source/_static/gif/add_equipment_object.gif
         """
         self.navigate_to_equipment_list()
         path_list = [
@@ -189,7 +189,7 @@ class EquipmentDropdowmSeleniumTest(ObjectSeleniumBase):
         Update synonym, description, model, serie, plaque, voltage,
         amperage, providers, clean period -> Save.
 
-        GIF: docs/source/_static/gif/update_equipment_object.gif
+        GIF: organilab_docs/source/_static/gif/update_equipment_object.gif
         """
         self.navigate_to_equipment_list()
         path_list = [
@@ -292,7 +292,7 @@ class EquipmentDropdowmSeleniumTest(ObjectSeleniumBase):
         Flow: Navigate to equipment list -> Click delete icon on first row ->
         Confirm deletion in modal.
 
-        GIF: docs/source/_static/gif/delete_equipment_object.gif
+        GIF: organilab_docs/source/_static/gif/delete_equipment_object.gif
         """
         self.navigate_to_equipment_list()
         path_list = [
@@ -313,7 +313,7 @@ class EquipmentDropdowmSeleniumTest(ObjectSeleniumBase):
         Clear -> Search by name column -> Clear -> Search by code
         column -> Clear.
 
-        GIF: docs/source/_static/gif/search_equipment_object.gif
+        GIF: organilab_docs/source/_static/gif/search_equipment_object.gif
         """
         self.navigate_to_equipment_list()
 

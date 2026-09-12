@@ -21,7 +21,7 @@ class ButtonBoxCollapseOrgNameTest(ManageOrganizationsSeleniumTest):
         Flow: Expand org node -> Click 'Add Rol' -> Fill role name in
         modal -> Save.
 
-        GIF: docs/source/_static/gif/add_role_to_org_without_copy_permissions_from_others_roles.gif
+        GIF: organilab_docs/source/_static/gif/add_role_to_org_without_copy_permissions_from_others_roles.gif
         """
         path_list = self.role_button_box + [
             {
@@ -47,7 +47,7 @@ class ButtonBoxCollapseOrgNameTest(ManageOrganizationsSeleniumTest):
         Flow: Expand org node -> Click 'Add Rol' -> Fill role name ->
         Check 'Copy permissions' -> Select source role -> Save.
 
-        GIF: docs/source/_static/gif/add_role_to_org_copy_permissions_from_others_roles.gif
+        GIF: organilab_docs/source/_static/gif/add_role_to_org_copy_permissions_from_others_roles.gif
         """
         path_list = self.role_button_box + [
             {
@@ -86,7 +86,7 @@ class ButtonBoxCollapseOrgNameTest(ManageOrganizationsSeleniumTest):
         Flow: Expand org node -> Click 'Add Rol' -> Switch to 'Copy Rols'
         tab -> Select source role -> Save.
 
-        GIF: docs/source/_static/gif/copy_role_to_org.gif
+        GIF: organilab_docs/source/_static/gif/copy_role_to_org.gif
         """
         path_list = self.role_button_box + [
             {
@@ -112,7 +112,7 @@ class ButtonBoxCollapseOrgNameTest(ManageOrganizationsSeleniumTest):
         Flow: Expand org node -> Click 'Add User' link -> Fill user
         registration form (name, email, phone, ID, job) -> Submit.
 
-        GIF: docs/source/_static/gif/add_user_to_org_from_button_box.gif
+        GIF: organilab_docs/source/_static/gif/add_user_to_org_from_button_box.gif
         """
         path_list = [
             {"path": self.org_node_h6(1)},
@@ -176,7 +176,7 @@ class ButtonBoxCollapseOrgNameTest(ManageOrganizationsSeleniumTest):
         Flow: Expand child org node (pk=2) -> Click 'Related Users' ->
         Select user in modal -> Submit.
 
-        GIF: docs/source/_static/gif/relate_user_to_org_from_button_box.gif
+        GIF: organilab_docs/source/_static/gif/relate_user_to_org_from_button_box.gif
         """
         path_list = [
             {"path": self.org_node_h6(1)},
@@ -201,7 +201,7 @@ class ButtonBoxCollapseOrgNameTest(ManageOrganizationsSeleniumTest):
         Flow: Expand org node -> Click 'Add Laboratory' -> Fill lab form
         (name, phone, location) -> Submit.
 
-        GIF: docs/source/_static/gif/add_laboratory_to_org.gif
+        GIF: organilab_docs/source/_static/gif/add_laboratory_to_org.gif
         """
         path_list = [
             {"path": self.org_node_h6(1)},
@@ -240,7 +240,7 @@ class ButtonBoxCollapseOrgNameTest(ManageOrganizationsSeleniumTest):
         Flow: Expand child org node (pk=2) -> Click 'Related Laboratory'
         -> Select lab in modal -> Submit.
 
-        GIF: docs/source/_static/gif/relate_external_laboratory_to_org.gif
+        GIF: organilab_docs/source/_static/gif/relate_external_laboratory_to_org.gif
         """
         path_list = [
             {"path": self.org_node_h6(1)},
@@ -263,7 +263,7 @@ class ButtonBoxCollapseOrgNameTest(ManageOrganizationsSeleniumTest):
         Flow: Expand second root org node (pk=3) -> Expand child (pk=4)
         -> Click 'Related Laboratory' -> Select lab -> Submit.
 
-        GIF: docs/source/_static/gif/relate_org_base_laboratory_to_org_child.gif
+        GIF: organilab_docs/source/_static/gif/relate_org_base_laboratory_to_org_child.gif
         """
         path_list = [
             {"path": self.org_node_h6(3)},

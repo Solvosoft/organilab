@@ -33,7 +33,6 @@ RUN python manage.py loaddevstatic --settings=organilab.settings
 RUN python manage.py collectstatic  --noinput --settings=organilab.settings
 
 ADD docker/entrypoint.sh /run/
-ADD docs/source/_extra/capacitacion /run/docs/capacitacion/
 RUN chown -R organilab:organilab /run/
 
 RUN chmod +x /run/entrypoint.sh

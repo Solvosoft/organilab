@@ -26,7 +26,7 @@ FEATURES = (
             "cada URL del sistema es esta fila."
         ),
         priority="P1",
-        doc="docs/source/desc_funcionalidades/gestion_lab.rst",
+        doc="organilab_docs/source/desc_funcionalidades/gestion_lab.rst",
         steps=(
             Step(
                 id="crear",
@@ -117,7 +117,7 @@ FEATURES = (
             "demás."
         ),
         priority="P1",
-        doc="docs/source/administrative_usage/laboratory.rst",
+        doc="organilab_docs/source/administrative_usage/laboratory.rst",
         steps=(
             Step(
                 id="crear_lab",
@@ -181,7 +181,7 @@ FEATURES = (
             "porcentaje de ocupación. Incluye el QR propio de cada nivel."
         ),
         priority="P1",
-        doc="docs/source/desc_funcionalidades/salas_muebl.rst",
+        doc="organilab_docs/source/desc_funcionalidades/salas_muebl.rst",
         steps=(
             Step(
                 id="salas",

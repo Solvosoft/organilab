@@ -68,7 +68,7 @@ Non-app directories:
 | `src/organilab/` | Django project config: `settings.py`, `test_settings.py`, `urls.py`, `celery.py`, `wsgi.py`/`asgi.py`. `__init__.py` exports version + Celery app. |
 | `src/locale/` | i18n translation files (`es`, `en`). |
 | `src/organilab_test/` | Shared test infrastructure (base classes, fixtures). |
-| `docs/` | Sphinx documentation. |
+| _(fuera del repo)_ | La documentación Sphinx y la capacitación viven en [Solvosoft/organilab_docs](https://github.com/Solvosoft/organilab_docs), que se espera clonado al lado de este repo. |
 | `docker/` | `docker-compose.yml` and Dockerfile for local stack. |
 | `Makefile` (root) | All dev commands (see §14). |
 

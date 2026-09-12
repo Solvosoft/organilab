@@ -85,7 +85,7 @@ class InformsSeleniumTest(OptimizedSeleniumBase):
 
         Flow: Navigate to form list -> View page with DataTable.
 
-        GIF: docs/source/_static/gif/view_inform_templates.gif
+        GIF: organilab_docs/source/_static/gif/view_inform_templates.gif
         """
         self.navigate_to_form_list()
         path_list = [
@@ -102,7 +102,7 @@ class InformsSeleniumTest(OptimizedSeleniumBase):
         Flow: Navigate to form list -> Click create button -> Enter
         template name in SweetAlert -> Confirm -> View edit page.
 
-        GIF: docs/source/_static/gif/add_inform_template.gif
+        GIF: organilab_docs/source/_static/gif/add_inform_template.gif
         """
         self.navigate_to_form_list()
         path_list = [
@@ -137,7 +137,7 @@ class InformsSeleniumTest(OptimizedSeleniumBase):
         -> Click rename button -> Enter new name in SweetAlert
         -> Confirm -> Dismiss success alert.
 
-        GIF: docs/source/_static/gif/update_name_inform_template.gif
+        GIF: organilab_docs/source/_static/gif/update_name_inform_template.gif
         """
         self.navigate_to_form_list()
         path_list = [
@@ -176,7 +176,7 @@ class InformsSeleniumTest(OptimizedSeleniumBase):
         -> Hover on a component to show action buttons -> Click remove
         -> Save form -> Return to form list -> Confirm in SweetAlert.
 
-        GIF: docs/source/_static/gif/remove_inform_template_element.gif
+        GIF: organilab_docs/source/_static/gif/remove_inform_template_element.gif
         """
         self.navigate_to_form_list()
         path_list = [
@@ -218,7 +218,7 @@ class InformsSeleniumTest(OptimizedSeleniumBase):
         (set default value) -> View Validation tab -> Save component
         -> Save form -> Return to form list -> Preview form.
 
-        GIF: docs/source/_static/gif/edit_textfield_inform_template.gif
+        GIF: organilab_docs/source/_static/gif/edit_textfield_inform_template.gif
         """
         self.navigate_to_form_list()
         path_list = [
@@ -288,7 +288,7 @@ class InformsSeleniumTest(OptimizedSeleniumBase):
         (set default value) -> View Validation tab -> Save component
         -> Save form -> Return to form list -> Preview form.
 
-        GIF: docs/source/_static/gif/number_input_inform_template.gif
+        GIF: organilab_docs/source/_static/gif/number_input_inform_template.gif
         """
         self.navigate_to_form_list()
         path_list = [
@@ -337,7 +337,7 @@ class InformsSeleniumTest(OptimizedSeleniumBase):
         -> View Validation tab -> Save component -> Save form
         -> Return to form list -> Preview form.
 
-        GIF: docs/source/_static/gif/password_input_inform_template.gif
+        GIF: organilab_docs/source/_static/gif/password_input_inform_template.gif
         """
         self.navigate_to_form_list()
         path_list = [
@@ -378,7 +378,7 @@ class InformsSeleniumTest(OptimizedSeleniumBase):
         -> View Data tab -> View Validation tab -> Save component
         -> Save form -> Return to form list -> Preview form.
 
-        GIF: docs/source/_static/gif/checkbox_input_inform_template.gif
+        GIF: organilab_docs/source/_static/gif/checkbox_input_inform_template.gif
         """
         self.navigate_to_form_list()
         path_list = [
@@ -428,7 +428,7 @@ class InformsSeleniumTest(OptimizedSeleniumBase):
         -> Save component -> Save form -> Return to form list
         -> Preview form.
 
-        GIF: docs/source/_static/gif/radio_input_inform_template.gif
+        GIF: organilab_docs/source/_static/gif/radio_input_inform_template.gif
         """
         self.navigate_to_form_list()
         path_list = [
@@ -485,7 +485,7 @@ class InformsSeleniumTest(OptimizedSeleniumBase):
         Flow: Navigate to form list -> Click preview button on third
         row -> View Formio form preview -> Return to form list.
 
-        GIF: docs/source/_static/gif/view_inform_template.gif
+        GIF: organilab_docs/source/_static/gif/view_inform_template.gif
         """
         self.navigate_to_form_list()
         path_list = [
@@ -507,7 +507,7 @@ class InformsSeleniumTest(OptimizedSeleniumBase):
         Flow: Navigate to form list -> Click delete button on third
         row -> Confirm in SweetAlert -> Dismiss success alert.
 
-        GIF: docs/source/_static/gif/remove_inform_template.gif
+        GIF: organilab_docs/source/_static/gif/remove_inform_template.gif
         """
         self.navigate_to_form_list()
         path_list = [
@@ -531,7 +531,7 @@ class InformsSeleniumTest(OptimizedSeleniumBase):
         Flow: Click preview on first row -> View preview -> Return
         to form list.
 
-        GIF: docs/source/_static/gif/drag_drop_form.gif
+        GIF: organilab_docs/source/_static/gif/drag_drop_form.gif
         """
         path_list = [
             {

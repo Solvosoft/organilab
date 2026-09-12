@@ -42,7 +42,7 @@ class ReactiveReorderSeleniumTest(ReactiveReorderSeleniumBase):
         row -> Fill amount and description in modal -> Select measurement unit
         -> Submit form.
 
-        GIF: docs/source/_static/gif/increase_reactive.gif
+        GIF: organilab_docs/source/_static/gif/increase_reactive.gif
         """
         self.navigate_to_lab_index()
         self.navigate_to_reactive_reorder()
@@ -103,7 +103,7 @@ class ReactiveReorderSeleniumTest(ReactiveReorderSeleniumBase):
         row -> Fill amount and description in modal -> Select measurement unit
         -> Submit form.
 
-        GIF: docs/source/_static/gif/decrease_reactive.gif
+        GIF: organilab_docs/source/_static/gif/decrease_reactive.gif
         """
         self.navigate_to_lab_index()
         self.navigate_to_reactive_reorder()

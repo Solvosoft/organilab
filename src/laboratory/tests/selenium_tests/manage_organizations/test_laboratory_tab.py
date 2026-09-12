@@ -43,7 +43,7 @@ class LaboratoryTabTest(ManageOrganizationsSeleniumTest):
         Enter email -> Find user -> Switch to organization tab -> Select
         user profile -> Save.
 
-        GIF: docs/source/_static/gif/relate_user_to_org_and_lab_from_tab_lab.gif
+        GIF: organilab_docs/source/_static/gif/relate_user_to_org_and_lab_from_tab_lab.gif
         """
         path_list = self.tab_lab + [
             {
@@ -99,7 +99,7 @@ class LaboratoryTabTest(ManageOrganizationsSeleniumTest):
         Flow: Select org -> 'By laboratory' tab -> Select lab -> Click
         'Apply as role' icon -> Select role in modal -> Save.
 
-        GIF: docs/source/_static/gif/add_permission_rol_to_user_from_tab_lab.gif
+        GIF: organilab_docs/source/_static/gif/add_permission_rol_to_user_from_tab_lab.gif
         """
         path_list = (
             self.select_laboratory_tab_lab
@@ -114,7 +114,7 @@ class LaboratoryTabTest(ManageOrganizationsSeleniumTest):
         Flow: Select org -> 'By laboratory' tab -> Select lab -> Click
         'Apply as role' icon -> Uncheck permission -> Save.
 
-        GIF: docs/source/_static/gif/remove_permission_rol_to_user_from_tab_lab.gif
+        GIF: organilab_docs/source/_static/gif/remove_permission_rol_to_user_from_tab_lab.gif
         """
         path_list = (
             self.select_laboratory_tab_lab
@@ -130,7 +130,7 @@ class LaboratoryTabTest(ManageOrganizationsSeleniumTest):
         'Apply as role' -> Remove existing role selection -> Select
         different role -> Check use permission -> Save.
 
-        GIF: docs/source/_static/gif/use_selected_permission_rol_to_user_from_tab_lab.gif
+        GIF: organilab_docs/source/_static/gif/use_selected_permission_rol_to_user_from_tab_lab.gif
         """
         path_list = (
             self.select_laboratory_tab_lab
@@ -156,7 +156,7 @@ class LaboratoryTabTest(ManageOrganizationsSeleniumTest):
         Flow: Select org -> 'By laboratory' tab -> Select lab -> Click
         on user row -> Click delete icon -> Confirm SweetAlert.
 
-        GIF: docs/source/_static/gif/delete_relation_user_lab_from_tab_lab.gif
+        GIF: organilab_docs/source/_static/gif/delete_relation_user_lab_from_tab_lab.gif
         """
         path_list = self.select_laboratory_tab_lab + [
             {
@@ -186,7 +186,7 @@ class LaboratoryTabTest(ManageOrganizationsSeleniumTest):
         user row -> Click delete icon -> Check 'Deactivate user'
         -> Confirm SweetAlert.
 
-        GIF: docs/source/_static/gif/delete_relation_user_lab_and_deactivate_user_from_tab_lab.gif
+        GIF: organilab_docs/source/_static/gif/delete_relation_user_lab_and_deactivate_user_from_tab_lab.gif
         """
         path_list = self.select_laboratory_tab_lab + [
             {

@@ -28,7 +28,7 @@ FEATURES = (
             "equipos— son la misma pantalla filtrada por el tipo de objeto."
         ),
         priority="P1",
-        doc="docs/source/desc_funcionalidades/materia_con.rst",
+        doc="organilab_docs/source/desc_funcionalidades/materia_con.rst",
         steps=(
             Step(
                 id="listar",
@@ -85,7 +85,7 @@ FEATURES = (
             "del laboratorio."
         ),
         priority="P1",
-        doc="docs/source/desc_funcionalidades/admin_estan.rst",
+        doc="organilab_docs/source/desc_funcionalidades/admin_estan.rst",
         steps=(
             Step(
                 id="listar",
@@ -285,7 +285,7 @@ FEATURES = (
             "(`laboratory/models.py:1643-1674`)",
         ),
         priority="P2",
-        doc="docs/source/administrative_usage/informs.rst",
+        doc="organilab_docs/source/administrative_usage/informs.rst",
         steps=(
             Step(
                 id="programar",

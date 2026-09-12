@@ -36,7 +36,7 @@ class MyProcedureSeleniumTest(OptimizedSeleniumBase):
 
         Flow: Navigate to my procedures list -> View page.
 
-        GIF: docs/source/_static/gif/view_my_procedure.gif
+        GIF: organilab_docs/source/_static/gif/view_my_procedure.gif
         """
         self.navigate_to_my_procedures()
         path_list = [
@@ -54,7 +54,7 @@ class MyProcedureSeleniumTest(OptimizedSeleniumBase):
         Flow: Navigate to my procedures list -> Click create button
         -> Fill name -> Select procedure template -> Save.
 
-        GIF: docs/source/_static/gif/add_my_procedure.gif
+        GIF: organilab_docs/source/_static/gif/add_my_procedure.gif
         """
         self.navigate_to_my_procedures()
         path_list = [
@@ -93,7 +93,7 @@ class MyProcedureSeleniumTest(OptimizedSeleniumBase):
         Flow: Navigate to my procedures list -> Click delete icon
         on first row -> Confirm in SweetAlert.
 
-        GIF: docs/source/_static/gif/delete_myprocedure.gif
+        GIF: organilab_docs/source/_static/gif/delete_myprocedure.gif
         """
         self.navigate_to_my_procedures()
         path_list = [
@@ -119,7 +119,7 @@ class MyProcedureSeleniumTest(OptimizedSeleniumBase):
         on first row -> Set initial date -> Set final date -> Save
         -> Confirm.
 
-        GIF: docs/source/_static/gif/myprocedure_reservation.gif
+        GIF: organilab_docs/source/_static/gif/myprocedure_reservation.gif
         """
         tomorrow = date.today() + relativedelta(days=1)
         day_after = date.today() + relativedelta(days=2)
@@ -190,7 +190,7 @@ class MyProcedureSeleniumTest(OptimizedSeleniumBase):
         on first row -> Select a step -> Fill formio form field ->
         Save form -> Click add comment -> Enter comment -> Save.
 
-        GIF: docs/source/_static/gif/add_my_procedure_observation.gif
+        GIF: organilab_docs/source/_static/gif/add_my_procedure_observation.gif
         """
         self.navigate_to_my_procedures()
         path_list = [
@@ -265,7 +265,7 @@ class MyProcedureSeleniumTest(OptimizedSeleniumBase):
         Select step -> Click edit observation icon -> Update comment
         -> Confirm.
 
-        GIF: docs/source/_static/gif/update_my_procedure_observation.gif
+        GIF: organilab_docs/source/_static/gif/update_my_procedure_observation.gif
         """
         self.navigate_to_my_procedures()
         path_list = [
@@ -323,7 +323,7 @@ class MyProcedureSeleniumTest(OptimizedSeleniumBase):
         Flow: Navigate to my procedures list -> Click edit icon ->
         Select step -> Click delete observation icon -> Confirm.
 
-        GIF: docs/source/_static/gif/delete_my_procedure_observation.gif
+        GIF: organilab_docs/source/_static/gif/delete_my_procedure_observation.gif
         """
         self.navigate_to_my_procedures()
         path_list = [
@@ -368,7 +368,7 @@ class MyProcedureSeleniumTest(OptimizedSeleniumBase):
         Flow: Navigate to my procedures list -> Click edit icon ->
         Click finalize button -> Confirm.
 
-        GIF: docs/source/_static/gif/finalize_my_procedure.gif
+        GIF: organilab_docs/source/_static/gif/finalize_my_procedure.gif
         """
         self.navigate_to_my_procedures()
         path_list = [
@@ -395,7 +395,7 @@ class MyProcedureSeleniumTest(OptimizedSeleniumBase):
         Flow: Navigate to my procedures list -> Click edit icon ->
         Click review/finalize button -> Confirm -> Chain finalize.
 
-        GIF: docs/source/_static/gif/review_my_procedure.gif
+        GIF: organilab_docs/source/_static/gif/review_my_procedure.gif
         """
         self.navigate_to_my_procedures()
         path_list = [
@@ -423,7 +423,7 @@ class MyProcedureSeleniumTest(OptimizedSeleniumBase):
         Read the href of the download icon on first row ->
         Assert the URL contains the download endpoint.
 
-        GIF: docs/source/_static/gif/download_myprocedure_pdf.gif
+        GIF: organilab_docs/source/_static/gif/download_myprocedure_pdf.gif
         """
         self.navigate_to_my_procedures()
         path_list = [

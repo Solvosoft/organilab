@@ -242,7 +242,13 @@ TINYMCE_UPLOAD_PATH = Path(MEDIA_ROOT) / "editorupload/"
 
 FIXTURE_DIRS = os.getenv("FIXTURE_DIRS", str(BASE_DIR.parent / "fixtures/")).split(",")
 
-DOCS_SOURCE_DIR = os.getenv("DOCS_STATIC_DIR", str(BASE_DIR.parent / "docs/source/"))
+# La documentación vive en un repositorio aparte (Solvosoft/organilab_docs). Solo la
+# suite Selenium escribe acá: deja los PNG en <DOCS_SOURCE_DIR>/_static/ y los GIF en
+# _static/gif/ (ver organilab_test/tests/base.py). El default asume el repo clonado al
+# lado de este; en otro layout se fija DOCS_STATIC_DIR.
+DOCS_SOURCE_DIR = os.getenv(
+    "DOCS_STATIC_DIR", str(BASE_DIR.parent.parent / "organilab_docs" / "source")
+)
 
 # Authentication settings
 LOGIN_REDIRECT_URL = reverse_lazy("pending_tasks:view_task")
@@ -575,6 +581,9 @@ OIDC_OP_LOGOUT_URL_METHOD = "authentication.views.oidc_logout_url"
 OIDC_POST_LOGOUT_REDIRECT_URL = os.getenv("OIDC_POST_LOGOUT_REDIRECT_URL", "")
 
 # Capacitation
+# El micrositio de capacitación ya no se empaqueta en la imagen: se publica desde
+# Solvosoft/organilab_docs (Sphinx lo copia a la raíz del build vía html_extra_path).
+# En despliegue se sobreescribe con la env var si se sirve desde otro dominio.
 CAPACITATION_URL = os.getenv(
-    "CAPACITATION_URL", "https://organilab.una.ac.cr/docs/capacitacion/"
+    "CAPACITATION_URL", "https://organilab.readthedocs.io/en/latest/capacitacion/"
 )

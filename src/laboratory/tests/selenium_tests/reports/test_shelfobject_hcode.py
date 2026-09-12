@@ -38,7 +38,7 @@ class ShelfObjectHcodeSeleniumTest(ShelfObjectHcodeSeleniumBase):
         Wait for DataTable to load -> Click edit button on first row ->
         Select a process condition in the modal -> Submit form.
 
-        GIF: docs/source/_static/gif/update_process_condition.gif
+        GIF: organilab_docs/source/_static/gif/update_process_condition.gif
         """
         self.navigate_to_hcode_view()
         path_list = [
