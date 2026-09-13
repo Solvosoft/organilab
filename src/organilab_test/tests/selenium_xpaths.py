@@ -457,6 +457,9 @@ PAGE_MY_PROCEDURES = "//*[@id='add_my_procedures']"
 PAGE_RESERVATIONS_LIST = "//*[@id='table_of_reservations']"
 PAGE_MANAGE_RESERVATION = "//*[@id='managereservation']"
 PAGE_ADMIN_CHANGELIST = "//*[@id='changelist']"
+#: El wrapper lo crea DataTables al inicializar, así que prueba que la pantalla
+#: del CRUD arrancó de verdad, no solo que el HTML se renderizó.
+PAGE_OBJECT_FEATURES = "//*[@id='table_wrapper']"
 
 #: El aviso de operación correcta, para las vistas cuyo contenido es el mensaje.
 FLASH_SUCCESS = "//div[contains(@class, 'alert-success')]"

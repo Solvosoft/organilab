@@ -506,6 +506,13 @@ class SeleniumBase(StaticLiveServerTestCase):
         self.dir.mkdir(exist_ok=True)
         path_with_folder_name.mkdir(exist_ok=True)
 
+        # Los frames se numeran desde 1 en cada corrida, pero el directorio tmp
+        # sobrevive entre ejecuciones y get_gif_images hace glob de todo lo que
+        # encuentre: sin esta limpieza una corrida corta deja los PNG altos de la
+        # anterior y el GIF sale mezclando pasos de dos versiones del test.
+        for stale_frame in path_with_folder_name.glob("*.png"):
+            stale_frame.unlink()
+
         self.dir = path_with_folder_name
 
     def create_screenshot(self, order=1, time_out=None, name="", save_screenshot=False):
