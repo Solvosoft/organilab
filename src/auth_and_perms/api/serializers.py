@@ -887,7 +887,7 @@ class OrganizationStructureRelationsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = OrganizationStructureRelations
-        fields = ["id","laboratory_name","actions"]
+        fields = ["id", "laboratory_name", "actions"]
 
     def get_laboratory_name(self, obj):
         if isinstance(obj, dict):
@@ -900,13 +900,13 @@ class OrganizationStructureRelationsSerializer(serializers.ModelSerializer):
         except Laboratory.DoesNotExist:
             return str(object_id)
 
-
     def get_actions(self, obj):
         user = self.context["request"].user
         return {
             "list": user.has_perm("laboratory.view_organizationstructurerelations"),
             "destroy": user.has_perm("laboratory.delete_organizationstructurerelations"),
         }
+
 
 class OrganizationStructureRelationsDataTableSerializer(serializers.Serializer):
     data = serializers.ListField(child=OrganizationStructureRelationsSerializer(), required=True)

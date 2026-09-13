@@ -469,6 +469,7 @@ class DangerSubstanceCategoryForm(forms.ModelForm, GTForm):
             "threshold": genwidgets.TextInput,
         }
 
-class StepOneForm(GTForm,forms.Form):
-    name = forms.CharField(required=False, label=_("Name"), widget=genwidgets.TextInput(attrs={"required":True}))
+
+class StepOneForm(GTForm, forms.Form):
+    name = forms.CharField(required=False, label=_("Name"), widget=genwidgets.TextInput(attrs={"required": True}))
     security_sheet = forms.FileField(required=False, label=_("Security sheet"), widget=genwidgets.FileInput)
