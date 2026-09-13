@@ -10,22 +10,22 @@ el resto se cubre con pruebas de cliente o unitarias.
 
 | Categoría | Rutas |
 |---|---:|
-| `pagina` | 173 |
+| `pagina` | 176 |
 | `parcial` | 4 |
-| `api` | 696 |
+| `api` | 706 |
 | `autocomplete` | 6 |
 | `ajax` | 10 |
-| `json` | 44 |
+| `json` | 45 |
 | `descarga` | 18 |
 | `accion` | 29 |
 | `infra` | 701 |
-| **total** | **1681** |
+| **total** | **1695** |
 
-Páginas: 173, de las cuales **57 sin ninguna prueba**.
+Páginas: 176, de las cuales **60 sin ninguna prueba**.
 
 ## Rutas por app
 
-Se omiten las categorías `api` e `infra` (1397 rutas de routers DRF y de
+Se omiten las categorías `api` e `infra` (1407 rutas de routers DRF y de
 la administración de Django): están en `inventario_urls.csv`.
 
 ### academic — 9 páginas, 0 sin prueba
@@ -48,7 +48,7 @@ la administración de Django): están en `inventario_urls.csv`.
 | `procedure_update` | `/academic/<int:org_pk>/procedure/procedure_update/<int:pk>/` | pagina | `academic.views.ProcedureUpdateView` | `academic/procedure_create.html` | org_pk, pk | — | sí |
 | `update_step` | `/academic/<int:org_pk>/procedure/step/<int:pk>/update/` | pagina | `academic.views.ProcedureStepUpdateView` | `academic/procedure_steps.html` | org_pk, pk | — | sí |
 
-### auth_and_perms — 8 páginas, 3 sin prueba
+### auth_and_perms — 9 páginas, 4 sin prueba
 
 | Nombre | Patrón | Categoría | Vista | Plantilla | kwargs | Selenium | Pruebas |
 |---|---|---|---|---|---|:-:|:-:|
@@ -72,6 +72,7 @@ la administración de Django): están en `inventario_urls.csv`.
 | `lab_org_list` | `/perms/lab_org_list/` | pagina | `auth_and_perms.views.organizationstructure.get_labs_orgs` | `auth_and_perms/lab_org_list.html` | — | — | — |
 | `list_rol_by_org` | `/perms/organization/manage/rols/list/<int:org_pk>/` | pagina | `auth_and_perms.views.organizationstructure.ListRolByOrganization` | `auth_and_perms/rol_list.html` | org_pk | — | sí |
 | `map_of_laboratories` | `/perms/<int:org_pk>/organization/map/laboratories/` | pagina | `auth_and_perms.views.select_organization.map_of_laboratories_view` | `auth_and_perms/map_of_laboratories.html` | org_pk | — | — |
+| `org_lab_relations_list` | `/perms/organization/<int:org_pk>/lab_relations/list/` | pagina | `auth_and_perms.views.organizationstructure.org_lab_relations_view` | `auth_and_perms/org_lab_relations_list.html` | org_pk | — | — |
 | `organizationManager` | `/perms/organization/manage/` | pagina | `auth_and_perms.views.organizationstructure.organization_manage_view` | `auth_and_perms/list_organizations.html` | — | sí | sí |
 | `select_organization_by_user` | `/perms/organizations/` | pagina | `auth_and_perms.views.select_organization.select_organization_by_user` | `auth_and_perms/select_organization.html` | — | sí | sí |
 
@@ -301,6 +302,7 @@ la administración de Django): están en `inventario_urls.csv`.
 | `iper_toggle_anonymous` | `/risk/<int:org_pk>/iper/<int:pk>/toggle-anonymous/` | accion | `risk_management.iper_views.iper_toggle_anonymous` | — | org_pk, pk | — | — |
 | `iper_toggle_status` | `/risk/<int:org_pk>/iper/<int:pk>/toggle-status/` | accion | `risk_management.iper_views.iper_toggle_status` | — | org_pk, pk | — | — |
 | `incident_report` | `/risk/<int:org_pk>/incident/report/<int:risk_pk>/<int:pk>/` | descarga | `risk_management.incidents.report_incidentreport` | `risk_management/incidentreport_pdf.html` | org_pk, risk_pk, pk | — | sí |
+| `iper_duplicate` | `/risk/<int:org_pk>/iper/<int:pk>/duplicate/` | json | `risk_management.iper_views.iper_duplicate` | — | org_pk, pk | — | — |
 | `iper_lab_help` | `/risk/<int:org_pk>/iper/labdata/<int:lab_pk>/` | json | `risk_management.iper_views.iper_lab_help` | — | org_pk, lab_pk | — | sí |
 | `buildings_create` | `/risk/<int:org_pk>/buildings/create/` | pagina | `risk_management.views.buildings_actions` | `risk_management/buildings.html` | org_pk | sí | — |
 | `buildings_list` | `/risk/<int:org_pk>/buildings/` | pagina | `risk_management.views.buildings_view` | `risk_management/building_list.html` | org_pk | sí | — |
@@ -332,7 +334,7 @@ la administración de Django): están en `inventario_urls.csv`.
 | `iper_catalog_add` | `/risk/<int:org_pk>/iper/catalog/add/` | parcial | `risk_management.iper_views.iper_catalog_add` | — | org_pk | — | — |
 | `zone_type_add` | `/risk/<int:org_pk>/zone_type/add/` | parcial | `risk_management.views.add_zone_type_view` | — | org_pk | — | sí |
 
-### sga — 29 páginas, 12 sin prueba
+### sga — 31 páginas, 14 sin prueba
 
 | Nombre | Patrón | Categoría | Vista | Plantilla | kwargs | Selenium | Pruebas |
 |---|---|---|---|---|---|:-:|:-:|
@@ -380,6 +382,8 @@ la administración de Django): están en `inventario_urls.csv`.
 | `sgalabel_step_two` | `/sga/<int:org_pk>/sgalabel/step_two/<int:pk>` | pagina | `sga.views.editor.sgalabel_step_two` | `sgalabel/step_two.html` | org_pk, pk | — | — |
 | `step_four` | `/sga/<int:org_pk>/substance/step_four/<int:substance>/` | pagina | `sga.views.substance.views.step_four` | `sga/substance/step_four.html` | org_pk, substance | — | sí |
 | `step_one` | `/sga/<int:org_pk>/substance/step_one/<int:pk>/` | pagina | `sga.views.substance.views.create_edit_sustance` | `sga/substance/create_sustance.html` | org_pk, pk | — | sí |
+| `step_zero` | `/sga/<int:org_pk>/substance/step_zero/` | pagina | `sga.views.substance.views.step_zero` | `sga/substance/step_one.html` | org_pk | — | — |
+| `step_zero_pk` | `/sga/<int:org_pk>/substance/step_zero/<int:pk>/` | pagina | `sga.views.substance.views.step_zero` | `sga/substance/step_one.html` | org_pk, pk | — | — |
 | `update_danger_indication` | `/sga/<int:org_pk>/substance/update_danger_indication/<str:pk>/` | pagina | `sga.views.substance.views.change_danger_indication` | `sga/substance/sga_components.html` | org_pk, pk | — | sí |
 | `update_prudence_advice` | `/sga/<int:org_pk>/substance/update_prudence_advice/<int:pk>/` | pagina | `sga.views.substance.views.change_prudence_advice` | `sga/substance/sga_components.html` | org_pk, pk | — | sí |
 | `update_substance` | `/sga/<int:org_pk>/update_substance/<int:pk>/` | pagina | `sga.views.substance.views.create_edit_sustance` | `sga/substance/create_sustance.html` | org_pk, pk | sí | sí |
