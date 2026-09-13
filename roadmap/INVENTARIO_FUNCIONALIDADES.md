@@ -92,6 +92,7 @@ La pantalla desde la que un administrador arma su inquilino: da de alta usuarios
 | **Quitar un rol de la organización** | Administrativo superior, Organization Management, Administrador de Laboratorio, Administrativo de centro de trabajo | `auth_and_perms.delete_rol` | — | `auth_and_perms:del_rol_by_org` |
 | **Copiar el juego de roles a otra organización** | Administrativo superior, Organization Management, Administrador de Laboratorio, Administrativo de centro de trabajo | `laboratory.change_organizationstructure` | — | `auth_and_perms:copy_rols` |
 | **Habilitar organizaciones hijas y relacionar modelos** | Administrativo superior, Organization Management, Administrador de Laboratorio, Administrativo de centro de trabajo | `laboratory.change_organizationstructure` | — | `auth_and_perms:enable_child_organizations`<br>`auth_and_perms:add_contenttype_to_org` |
+| **Listar y desvincular los laboratorios de la organización** | Administrativo superior, Organization Management, Administrador de Laboratorio, Administrativo de centro de trabajo | `laboratory.view_organizationstructurerelations`<br>`laboratory.delete_organizationstructurerelations` | — | `auth_and_perms:org_lab_relations_list` |
 | **Consultar quién administra la organización** | Administrativo superior, Organization Management, Administrador de Laboratorio, Administrativo de centro de trabajo | — | — | `auth_and_perms:get_org_administrators` |
 
 Hallazgos:
@@ -613,6 +614,7 @@ Estados que atraviesa:
 | **Identificar peligros y valorar el riesgo** | Administrador de Laboratorio, Regente asignado al laboratorio, Administrador IPER | `risk_management.change_iperassessment` | — | `riskmanagement:iper_hazard_create`<br>`riskmanagement:iper_hazard_update`<br>`riskmanagement:iper_hazard_delete`<br>`riskmanagement:iper_update` |
 | **Marcar la evaluación como completada (o devolverla a borrador)** | Administrador de Laboratorio, Regente asignado al laboratorio, Administrador IPER | `risk_management.change_iperassessment` | "draft" ⇄ "completed"; una obsoleta ya no puede cambiar (`iper_views.py:350-360`) | `riskmanagement:iper_toggle_status` |
 | **Clonar la evaluación para actualizarla** | Administrador de Laboratorio, Regente asignado al laboratorio, Administrador IPER | `risk_management.add_iperassessment` | la versión anterior pasa a "obsolete" | `riskmanagement:iper_clone` |
+| **Duplicar una evaluación completada como evaluación nueva** | Administrador de Laboratorio, Regente asignado al laboratorio, Administrador IPER | `risk_management.add_iperassessment` | la original no cambia de estado; solo se duplica desde "completed" (`iper_views.py:585-589`) | `riskmanagement:iper_duplicate` |
 | **Observar la evaluación sin poder modificarla** | Auditor IPER | `risk_management.add_iperobservation` | — | `riskmanagement:iper_observation_add` |
 | **Listar evaluaciones, ver el detalle y su histórico** | Auditor IPER, Administrador IPER, Administrador de Laboratorio, Regente, Solo Lectura | `risk_management.view_iperassessment` | — | `riskmanagement:iper_list`<br>`riskmanagement:iper_detail`<br>`riskmanagement:iper_history`<br>`riskmanagement:iper_lab_help` |
 | **Ver el panel consolidado de IPER** | Administrador IPER, Administrativo superior, Auditor IPER | `risk_management.view_iper_dashboard` | — | `riskmanagement:iper_dashboard` |
@@ -647,7 +649,7 @@ Tarea programada que consolida los registros de establecimiento del día. No tie
 
 ### `SGA-01` — Registrar una sustancia y llevarla hasta su aprobación
 
-*sga · ui · prioridad P1 · cobertura por ruta: completa · Selenium: sí*
+*sga · ui · prioridad P1 · cobertura por ruta: parcial · Selenium: sí*
 
 Un redactor abre el asistente, describe la sustancia y sus características, completa la ficha de seguridad y la manda a revisión. Un revisor la mira en la bandeja, deja observaciones si hace falta, y la aprueba: al aprobarla se emiten los códigos de sustancia-laboratorio y se crea el objeto de inventario correspondiente.
 
@@ -658,7 +660,7 @@ Estados que atraviesa:
 
 | Paso | Actores | Permiso | Transición | Rutas |
 |---|---|---|---|---|
-| **Abrir el asistente y describir la sustancia (paso 1)** | SGA, Administrador de Laboratorio, Técnico de Laboratorio, Lectura y agregado de sustancias, Manejo de sustancias del laboratorio | `laboratory.change_object`<br>`auth_and_perms.institution_can_access` | crea Substance en DRAFT(0) en el primer POST válido | `sga:create_sustance`<br>`sga:step_one`<br>`sga:update_substance` |
+| **Abrir el asistente y describir la sustancia (pasos 0 y 1)** | SGA, Administrador de Laboratorio, Técnico de Laboratorio, Lectura y agregado de sustancias, Manejo de sustancias del laboratorio | `laboratory.change_object`<br>`auth_and_perms.institution_can_access` | crea Substance en DRAFT(0) en el primer POST válido | `sga:create_sustance`<br>`sga:step_zero`<br>`sga:step_zero_pk`<br>`sga:step_one`<br>`sga:update_substance` |
 | **Completar la hoja de seguridad (paso 4)** | SGA, Administrador de Laboratorio, Técnico de Laboratorio, Lectura y agregado de sustancias, Manejo de sustancias del laboratorio | `sga.change_securityleaf`<br>`auth_and_perms.institution_can_access` | — | `sga:step_four` |
 | **Subir la ficha de datos de seguridad y seguir la extracción** | SGA, Administrador de Laboratorio, Técnico de Laboratorio, Lectura y agregado de sustancias, Manejo de sustancias del laboratorio | `sga.change_substancecharacteristics`<br>`auth_and_perms.institution_can_access` | dispara la tarea de extracción; el estado se consulta por polling | `sga:upload_sds`<br>`sga:upload_sds_pk`<br>`sga:sds_task_status` |
 | **Añadir el proveedor de la sustancia** | SGA, Administrador de Laboratorio, Técnico de Laboratorio, Lectura y agregado de sustancias, Manejo de sustancias del laboratorio | `sga.add_provider` | — | `sga:add_sga_provider` |

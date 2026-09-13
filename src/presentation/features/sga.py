@@ -47,12 +47,15 @@ FEATURES = (
         steps=(
             Step(
                 id="abrir_asistente",
-                name="Abrir el asistente y describir la sustancia (paso 1)",
+                name="Abrir el asistente y describir la sustancia (pasos 0 y 1)",
                 actors=REDACTORES,
-                routes=("sga:create_sustance", "sga:step_one", "sga:update_substance"),
+                routes=("sga:create_sustance", "sga:step_zero", "sga:step_zero_pk",
+                        "sga:step_one", "sga:update_substance"),
                 permissions=("laboratory.change_object", GATE),
                 transition="crea Substance en DRAFT(0) en el primer POST válido",
-                source="src/sga/views/substance/views.py:58-136",
+                # step_zero es la portada del asistente: pide nombre y hoja de
+                # seguridad y redirige a step_one.
+                source="src/sga/views/substance/views.py:58-136, step_zero",
             ),
             Step(
                 id="ficha_seguridad",

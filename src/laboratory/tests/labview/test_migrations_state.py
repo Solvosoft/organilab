@@ -7,7 +7,10 @@ comprueba lo mismo desde la suite: que el labview no añade esquema (por diseño
 lleva una única migración de datos) y que no queda ningún cambio pendiente.
 """
 
+from pathlib import Path
+
 from django.apps import apps
+from django.conf import settings
 from django.db.migrations.autodetector import MigrationAutodetector
 from django.db.migrations.loader import MigrationLoader
 from django.db.migrations.questioner import NonInteractiveMigrationQuestioner
@@ -15,17 +18,40 @@ from django.db.migrations.state import ProjectState
 from django.test import TestCase
 
 
+def _first_party_labels():
+    """Las apps cuyo código vive en este repositorio.
+
+    El guardián sólo puede exigir migraciones de lo que este repo puede commitear.
+    `djreservation`, por ejemplo, declara `default_auto_field = BigAutoField` en su
+    AppConfig pero sólo publica migraciones hasta la 0007 con ids `AutoField`: Django
+    detecta un cambio pendiente para siempre y la única forma de "arreglarlo" es
+    escribir una migración dentro del paquete instalado, que es justo lo que no
+    sobrevive a un entorno limpio como el de CI.
+    """
+    root = Path(settings.BASE_DIR).resolve()
+    labels = set()
+    for config in apps.get_app_configs():
+        try:
+            if root in Path(config.path).resolve().parents:
+                labels.add(config.label)
+        except (OSError, ValueError):
+            continue
+    return labels
+
+
 def pending_changes():
-    """``{app_label: [migraciones que faltarían]}``."""
+    """``{app_label: [migraciones que faltarían]}``, sólo de las apps de este repo."""
     loader = MigrationLoader(None, ignore_no_migrations=True)
     autodetector = MigrationAutodetector(
         loader.project_state(),
         ProjectState.from_apps(apps),
         NonInteractiveMigrationQuestioner(specified_apps=set(), dry_run=True),
     )
-    return autodetector.changes(
+    changes = autodetector.changes(
         graph=loader.graph, trim_to_apps=None, convert_apps=None, migration_name=None
     )
+    first_party = _first_party_labels()
+    return {k: v for k, v in changes.items() if k in first_party}
 
 
 class MigrationStateTest(TestCase):

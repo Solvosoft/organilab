@@ -132,6 +132,20 @@ FEATURES = (
                 source="src/auth_and_perms/views/organizationstructure.py",
             ),
             Step(
+                id="labs_vinculados",
+                name="Listar y desvincular los laboratorios de la organización",
+                actors=ADMINISTRADORES,
+                routes=("auth_and_perms:org_lab_relations_list",),
+                permissions=(
+                    "laboratory.view_organizationstructurerelations",
+                    "laboratory.delete_organizationstructurerelations",
+                ),
+                source=(
+                    "src/auth_and_perms/views/organizationstructure.py"
+                    " org_lab_relations_view"
+                ),
+            ),
+            Step(
                 id="administradores",
                 name="Consultar quién administra la organización",
                 actors=ADMINISTRADORES,

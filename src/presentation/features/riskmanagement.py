@@ -267,6 +267,19 @@ FEATURES = (
                 source="src/risk_management/iper_views.py iper_clone_for_update",
             ),
             Step(
+                id="duplicar",
+                name="Duplicar una evaluación completada como evaluación nueva",
+                actors=("administrador_laboratorio", "regente_lab",
+                        "administrador_iper"),
+                routes=("riskmanagement:iper_duplicate",),
+                permissions=("risk_management.add_iperassessment",),
+                transition=(
+                    "la original no cambia de estado; solo se duplica desde "
+                    '"completed" (`iper_views.py:585-589`)'
+                ),
+                source="src/risk_management/iper_views.py iper_duplicate",
+            ),
+            Step(
                 id="auditar",
                 name="Observar la evaluación sin poder modificarla",
                 actors=("auditor_iper",),

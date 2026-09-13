@@ -171,6 +171,20 @@ def _is_router(resolver):
 
 
 def _source_of(callback):
+    """`fichero:linea` de la vista, en una forma que no dependa del entorno.
+
+    El fichero commiteado se compara byte a byte con el que genera la suite (ver
+    `url_inventory --check`), asi que la ruta tiene que salir igual en cualquier
+    maquina. Dos casos:
+
+    - codigo del repo: ruta relativa a la raiz.
+    - codigo de terceros: la mayoria de las vistas pasan por un decorador de
+      Django, asi que la ruta apunta a site-packages. Donde vive site-packages
+      cambia con el entorno (`.venv/lib/...` en local, el toolcache de Python en
+      GitHub Actions), de modo que se recorta a partir de `site-packages/`. Sin
+      ese recorte el guardian del CSV es rojo permanente en CI aunque nadie haya
+      tocado ninguna ruta.
+    """
     try:
         file = inspect.getsourcefile(callback)
         line = inspect.getsourcelines(callback)[1]
@@ -182,6 +196,9 @@ def _source_of(callback):
         file = str(Path(file).relative_to(Path(settings.BASE_DIR).parent))
     except ValueError:
         pass
+    parts = Path(file).parts
+    if "site-packages" in parts:
+        file = str(Path(*parts[parts.index("site-packages"):]))
     return "%s:%s" % (file, line)
 
 
