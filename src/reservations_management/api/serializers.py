@@ -16,6 +16,7 @@ class ReservedProductSerializer(serializers.ModelSerializer):
         model = ReservedProducts
         fields = "__all__"
 
+
 class ValidateReservedProductsSerializer(serializers.Serializer):
     id = serializers.PrimaryKeyRelatedField(
         queryset=ReservedProducts.objects.using(settings.READONLY_DATABASE)

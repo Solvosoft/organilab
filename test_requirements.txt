@@ -8,3 +8,7 @@ black==25.1.0
 sphinxcontrib-video==0.4.1
 pycodestyle==2.14.0
 Faker==37.8.0
+# Sin tblib, manage.py test --parallel no puede serializar el traceback de un
+# fallo entre procesos y aborta la corrida entera con "cannot pickle
+# 'traceback' object" en cuanto una prueba falla.
+tblib==3.2.2

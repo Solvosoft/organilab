@@ -4,7 +4,8 @@ from pathlib import Path
 from django.core.management.base import BaseCommand
 from django.db.models import Q, Count
 from django.core import serializers
-from laboratory.models import SustanceCharacteristics, Object, Catalog
+from laboratory.models import Object, Catalog
+from sga.models import SubstanceCharacteristics
 import json
 from django.conf import settings
 
@@ -42,11 +43,11 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         sustances = (
-            SustanceCharacteristics.objects.all()
+            SubstanceCharacteristics.objects.all()
             .annotate(c=Count("h_code"))
             .order_by("c")[900:]
         )
-        objs = Object.objects.filter(pk__in=sustances.values_list("obj", flat=True))
+        objs = Object.objects.filter(pk__in=sustances.values_list("object_related", flat=True))
 
         # with open("objs.json", "w") as out:
         #    serializers.serialize('json', sustances, stream=out)
@@ -56,9 +57,9 @@ class Command(BaseCommand):
         instances = json.loads(data)
         new_instances = []
         for instance in instances:
-            scha = SustanceCharacteristics.objects.get(pk=instance["pk"])
+            scha = SubstanceCharacteristics.objects.get(pk=instance["pk"])
 
-            instance["fields"]["obj"] = get_obj(scha.obj)
+            instance["fields"]["obj"] = get_obj(scha.object_related)
             if instance["fields"]["security_sheet"]:
                 instance["fields"]["security_sheet_name"] = get_name_security_sheet(
                     instance["fields"]["security_sheet"]

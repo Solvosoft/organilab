@@ -1,6 +1,7 @@
 from django.test import tag
 
 from laboratory.tests.selenium_tests.manage_organizations.base import ManageOrganizationsSeleniumTest
+from organilab_test.tests.selenium_xpaths import select2_result
 
 
 @tag('selenium')
@@ -56,7 +57,7 @@ class OrganizationTabTest(ManageOrganizationsSeleniumTest):
                 "sleep": 1,
             },
             {
-                "path": "//ul[contains(@class, 'select2-results__options')]/li",
+                "path": select2_result(1),
             },
             {
                 "path": "//*[@id='relprofilewithlaboratorybtn']",
@@ -73,7 +74,7 @@ class OrganizationTabTest(ManageOrganizationsSeleniumTest):
         GIF: docs/source/_static/gif/add_permission_rol_to_user_from_tab_org.gif
         """
         path_list = self.tab_org + [
-            {"path": "//span[contains(@class,'applyasrole')]", "sleep": 2},
+            {"path": self.rol_btn("orpermelement"), "wait_dt": True, "sleep": 2},
         ] + self.add_permission_rol
         self.create_gif_process(path_list, "add_permission_rol_to_user_from_tab_org")
 
@@ -86,7 +87,7 @@ class OrganizationTabTest(ManageOrganizationsSeleniumTest):
         GIF: docs/source/_static/gif/remove_permission_rol_to_user_from_tab_org.gif
         """
         path_list = self.tab_org + [
-            {"path": "//span[contains(@class,'applyasrole')]", "sleep": 2},
+            {"path": self.rol_btn("orpermelement"), "wait_dt": True, "sleep": 2},
         ] + self.remove_and_save_permission_rol
         self.create_gif_process(path_list, "remove_permission_rol_to_user_from_tab_org")
 
@@ -100,13 +101,13 @@ class OrganizationTabTest(ManageOrganizationsSeleniumTest):
         GIF: docs/source/_static/gif/use_selected_permission_rol_to_user_from_tab_org.gif
         """
         path_list = self.tab_org + [
-            {"path": "//span[contains(@class,'applyasrole')]", "sleep": 2},
+            {"path": self.rol_btn("orpermelement"), "wait_dt": True, "sleep": 2},
             {
                 "path": "//*[@id='modal1']//span[contains(@class, 'select2-selection')]",
                 "sleep": 1,
             },
             {
-                "path": "//ul[contains(@class, 'select2-results__options')]/li[2]",
+                "path": select2_result(2),
             },
         ] + self.use_and_save_permission_rol
         self.create_gif_process(
@@ -123,13 +124,21 @@ class OrganizationTabTest(ManageOrganizationsSeleniumTest):
         """
         path_list = self.tab_org + [
             {
-                "path": "//*[@id='orpermelement']//tbody/tr[1]//i[contains(@class, 'fa-trash') or contains(@class, 'deleterelation')]",
+                "path": self.delete_profile_btn("orpermelement"),
                 "scroll": "window.scrollTo(0, 250)",
+                "wait_dt": True,
                 "sleep": 2,
             },
             {
                 "path": "//button[contains(@class, 'swal2-confirm')]",
                 "sleep": 2,
+            },
+            # Confirming only closes the dialog; without waiting for the table
+            # to reload the test would pass even if nothing was deleted.
+            {
+                "path": "//*[@id='orpermelement']",
+                "presence_only": True,
+                "wait_dt": True,
             },
         ]
         self.create_gif_process(path_list, "delete_relation_user_org_from_tab_org")
@@ -144,8 +153,9 @@ class OrganizationTabTest(ManageOrganizationsSeleniumTest):
         """
         path_list = self.tab_org + [
             {
-                "path": "//*[@id='orpermelement']//tbody/tr[1]//i[contains(@class, 'fa-trash') or contains(@class, 'deleterelation')]",
+                "path": self.delete_profile_btn("orpermelement"),
                 "scroll": "window.scrollTo(0, 250)",
+                "wait_dt": True,
                 "sleep": 2,
             },
             {
@@ -154,6 +164,11 @@ class OrganizationTabTest(ManageOrganizationsSeleniumTest):
             },
             {
                 "path": "//button[contains(@class, 'swal2-confirm')]",
+            },
+            {
+                "path": "//*[@id='orpermelement']",
+                "presence_only": True,
+                "wait_dt": True,
             },
         ]
         self.create_gif_process(

@@ -1,6 +1,6 @@
 from django_filters import rest_framework as filters
 
-from laboratory.models import SDSTraceability
+from sga.models import SDSTraceability
 
 
 class SDSTraceabilityFilterSet(filters.FilterSet):
@@ -11,6 +11,6 @@ class SDSTraceabilityFilterSet(filters.FilterSet):
             "is_verified": ["exact"],
             "source": ["icontains"],
             "verified_date": ["exact"],
-            "sustance_characteristics__cas_id_number": ["icontains"],
-            "sustance_characteristics__obj__name": ["icontains"],
+            "sga_substance_characteristics__cas_id_number": ["icontains"],
+            "sga_substance_characteristics__object_related__name": ["icontains"],
         }

@@ -1,4 +1,5 @@
 from django.test import tag
+from organilab_test.tests.selenium_xpaths import select2_result
 
 from laboratory.tests.selenium_tests.manage_laboratory.test_objects import (
     ObjectSeleniumBase,
@@ -106,7 +107,7 @@ class EquipmentDropdowmSeleniumTest(ObjectSeleniumBase):
                 "scroll": "$('#create_obj_modal').scrollTop(300);",
             },
             {
-                "path": "//ul[contains(@class, 'select2-results__options')]/li[1]",
+                "path": select2_result(1),
                 "scroll": "$('#create_obj_modal').scrollTop(450);",
             },
             {
@@ -155,7 +156,7 @@ class EquipmentDropdowmSeleniumTest(ObjectSeleniumBase):
                 "path": "//select[@id='id_create-providers']/following-sibling::span//span[contains(@class, 'select2-selection')]",
             },
             {
-                "path": "//ul[contains(@class, 'select2-results__options')]/li",
+                "path": select2_result(1),
             },
             {
                 "path": "//form[@id='create_obj_form']//textarea[@name='create-use_specials_conditions']",
@@ -267,7 +268,7 @@ class EquipmentDropdowmSeleniumTest(ObjectSeleniumBase):
                 "path": "//select[@id='id_update-providers']/following-sibling::span//span[contains(@class, 'select2-selection')]",
             },
             {
-                "path": "//ul[contains(@class, 'select2-results__options')]/li",
+                "path": select2_result(1),
             },
             {
                 "path": "//form[@id='update_obj_form']//input[@name='update-clean_period_according_to_provider']",
@@ -316,7 +317,10 @@ class EquipmentDropdowmSeleniumTest(ObjectSeleniumBase):
         """
         self.navigate_to_equipment_list()
 
-        general_search_input = "//*[@id='equipment_table_filter']//input"
+        # DataTables 2 renombró <tabla>_filter a dt-search.
+        general_search_input = (
+            "//*[@id='equipment_table_wrapper']//div[contains(@class, 'dt-search')]//input"
+        )
         code_input_search = "//*[@id='equipment_table']//thead/tr[2]/th[2]/input"
         name_input_search = "//*[@id='equipment_table']//thead/tr[2]/th[3]/input"
         clean_filters_btn = "//*[@id='equipment_table_wrapper']//button[.//i[contains(@class, 'fa-eraser')]]"

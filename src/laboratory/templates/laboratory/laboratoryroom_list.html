@@ -7,6 +7,7 @@
 {% block pre_head %}
     {% define_true  "use_datatables" %}
     {% define_urlname_action 'laboratory_view_principal' %}
+    {% define_urlname_action 'recipient_size' %}
 {% endblock %}
 {% block title %}{% trans 'Laboratory rooms' %}{% endblock %}
 {# Container #}
@@ -116,7 +117,6 @@
 {{search_by_url|json_script:"search_by_url"}}
 {{suggestions_tag|json_script:"suggestions_tag"}}
 <script>
-const has_perm = {{ perms.laboratory.view_tranferobject|yesno:"true,false" }};
 const can_add_shelfobject = {{ perms.laboratory.add_shelfobject|yesno:"true,false" }};
 document.urls = {
     shelfobject_create: "{% url 'laboratory:shelfobject_create' lab_pk=laboratory org_pk=org_pk  %}",
@@ -140,6 +140,13 @@ const view_search = false;
 document.search_by_url = JSON.parse(document.getElementById('search_by_url').textContent);
 document.suggestions_tag = JSON.parse(document.getElementById('suggestions_tag').textContent);
 document.url_container_list = "{% url 'laboratory:shelf_containers' org_pk=org_pk lab_pk=laboratory %}";
+document.delete_recipient_url = "{% url 'laboratory:api-shelfobject-delete-recipient' org_pk=org_pk lab_pk=laboratory pk=0 %}";
+
+		const has_perm = {
+			"create": {{ perms.sga.add_recipientsize|yesno:"true,false" }},
+			"remove": {{ perms.sga.delete_recipientsize|yesno:"true,false" }},
+			"transfer": {{ perms.laboratory.view_tranferobject|yesno:"true,false" }}
+		}
 </script>
 
 <script src="{% static 'js/shelfobjectedit.js' %}?v={% get_organilab_version %}"></script>
@@ -147,6 +154,8 @@ document.url_container_list = "{% url 'laboratory:shelf_containers' org_pk=org_p
         src="{% static 'laboratory/js/shelfobject_utils.js'%}?v={% get_organilab_version %}"></script>
 <script type="text/javascript"
         src="{% static 'laboratory/js/base_modal_management.js'%}?v={% get_organilab_version %}"></script>
+<script type="text/javascript"
+        src="{% static 'laboratory/js/shelfobject_action_helpers.js'%}?v={% get_organilab_version %}"></script>
 <script type="text/javascript" src="{% static 'laboratory/js/laboratory.js'%}?v={% get_organilab_version %}"></script>
 <script type="text/javascript"
         src="{% static 'laboratory/js/detail_modal_creation.js' %}?v={% get_organilab_version %}"></script>

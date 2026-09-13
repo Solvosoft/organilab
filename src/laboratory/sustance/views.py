@@ -18,7 +18,7 @@ def create_edit_sustance(request, org_pk, lab_pk, pk=None):
     laboratory = get_object_or_404(Laboratory, pk=lab_pk)
     suscharobj = None
     if instance:
-        suscharobj = instance.sustancecharacteristics
+        suscharobj = instance.substancharacteristics_object.first()
     postdata = None
     filesdata = None
     if request.method == "POST":
@@ -37,7 +37,7 @@ def create_edit_sustance(request, org_pk, lab_pk, pk=None):
             obj.save()
             objform.save_m2m()
             suscharinst = suschacform.save(commit=False)
-            suscharinst.obj = obj
+            suscharinst.object_related = obj
 
             molecular_formula = suschacform.cleaned_data["molecular_formula"]
             if isValidate_molecular_formula(molecular_formula):

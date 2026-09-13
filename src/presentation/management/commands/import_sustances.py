@@ -7,12 +7,11 @@ from django.core.files.base import ContentFile
 
 from laboratory.models import (
     Object,
-    SustanceCharacteristics,
     OrganizationStructure,
     ObjectFeatures,
     Catalog,
 )
-from sga.models import DangerIndication
+from sga.models import DangerIndication, SubstanceCharacteristics
 
 
 class Command(BaseCommand):
@@ -76,12 +75,15 @@ class Command(BaseCommand):
         for files in options["json_file"]:
             elements = json.load(files)
             for instance in elements:
-                instance["fields"]["obj"] = self.get_object(instance, options["org_pk"])
+                instance["fields"]["object_related"] = self.get_object(instance, options["org_pk"])
                 instance["fields"]["security_sheet"] = self.get_sheet(
                     instance["fields"]
                 )
                 if "security_sheet_name" in instance["fields"]:
                     del instance["fields"]["security_sheet_name"]
+                # Remove old field name if present
+                if "obj" in instance["fields"]:
+                    del instance["fields"]["obj"]
 
                 instance["fields"]["iarc"] = self.get_catalog(
                     instance["fields"]["iarc"], True
@@ -109,7 +111,7 @@ class Command(BaseCommand):
                 del instance["fields"]["storage_class"]
                 del instance["fields"]["h_code"]
 
-                createdinstance = SustanceCharacteristics.objects.create(
+                createdinstance = SubstanceCharacteristics.objects.create(
                     **instance["fields"]
                 )
 

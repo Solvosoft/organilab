@@ -3,6 +3,7 @@ from django.test import tag
 from django.urls import reverse
 from laboratory.models import OrganizationStructure
 from organilab_test.tests.base import OptimizedSeleniumBase, modifies_db
+from organilab_test.tests.selenium_xpaths import select2_result
 
 
 @tag("selenium")
@@ -27,29 +28,21 @@ class FurnitureSeleniumTest(OptimizedSeleniumBase):
             + str(reverse("laboratory:labindex", kwargs={"org_pk": 1, "lab_pk": 1}))
         )
         path_list = [
-            {"path": ".//div[1]/div/div[3]/div/div/div[2]/div[2]/div[2]/ul/li[1]/a"},
+            {"path": "//div[contains(@class, 'right_col')]//a[contains(@href, '/rooms/create')]"},
+            {"path": "(//button[@data-bs-target='#furnitureModal'])[1]"},
             {
-                "path": ".//div[1]/div/div[3]/div/div/div[2]/div[1]/div/ul/li/div/div[1]/div/div[3]/div/button[2]"
-            },
-            {
-                "path": ".//*[@id='furnitureModal']/div/div/form/div[2]/div[1]/div/input",
+                "path": "//*[@id='furnitureModal']//input[@id='id_name']",
                 "extra_action": "clearinput",
             },
             {
-                "path": ".//*[@id='furnitureModal']/div/div/form/div[2]/div[1]/div/input",
+                "path": "//*[@id='furnitureModal']//input[@id='id_name']",
                 "extra_action": "setvalue",
                 "value": "Generico",
             },
-            {
-                "path": ".//div[1]/div/div[3]/div/div/div[2]/div[2]/div/div/form/div[2]/div[2]/div/span"
-            },
-            {"path": ".//span/span/span[2]/ul/li[1]"},
-            {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div/div/form/div[3]/button[2]"
-            },
-            {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[1]/form/div[1]/div[2]/button"
-            },
+            {"path": "//*[@id='furnitureModal']//span[contains(@class, 'select2-selection')]"},
+            {"path": select2_result(1)},
+            {"path": "//*[@id='furnitureModal']//button[@type='submit']"},
+            {"path": "//*[@id='save_button1']//button[@type='submit']", "wait_ready": True},
         ]
         self.create_gif_process(path_list, "add_furniture")
 
@@ -60,30 +53,23 @@ class FurnitureSeleniumTest(OptimizedSeleniumBase):
             + str(reverse("laboratory:labindex", kwargs={"org_pk": 1, "lab_pk": 1}))
         )
         path_list = [
-            {"path": ".//div[1]/div/div[3]/div/div/div[2]/div[2]/div[2]/ul/li[1]/a"},
+            {"path": "//div[contains(@class, 'right_col')]//a[contains(@href, '/rooms/create')]"},
+            {"path": "(//button[@data-bs-toggle='popover'])[1]", "sleep": 1},
+            {"path": "(//div[contains(@class, 'popover')]//a)[1]", "sleep": 1},
             {
-                "path": ".//div[1]/div/div[3]/div/div/div[2]/div[1]/div/ul/li/div/div[1]/div/div[3]/div/button[1]"
+                "path": "//span[@aria-controls='select2-id_labroom-container']",
+                "wait_ready": True,
             },
-            {"path": ".//div[3]/div[2]/ul/li[1]/a"},
-            {
-                "path": ".//div[1]/div/div[3]/div/div/div[1]/form/div[1]/div[1]/div[1]/div/span/span[1]/span"
-            },
-            {
-                "path": ".//div[1]/div/div[3]/div/div/div[1]/form/div[1]/div[1]/div[1]/div/span/span[1]/span"
-            },
+            {"path": "//span[@aria-controls='select2-id_labroom-container']"},
             {"path": ".//*[@id='id_name']", "extra_action": "clearinput"},
             {
                 "path": ".//*[@id='id_name']",
                 "extra_action": "setvalue",
                 "value": "Generico 2",
             },
-            {
-                "path": ".//div[1]/div/div[3]/div/div/div[1]/form/div[1]/div[1]/div[3]/div/div/span/span[1]/span"
-            },
-            {
-                "path": ".//div[1]/div/div[3]/div/div/div[1]/form/div[1]/div[1]/div[3]/div/div/span/span[1]/span"
-            },
-            {"path": ".//div[1]/div/div[3]/div/div/div[1]/form/div[1]/div[2]/button"},
+            {"path": "//span[@aria-controls='select2-id_type-container']"},
+            {"path": "//span[@aria-controls='select2-id_type-container']"},
+            {"path": "//*[@id='save_button1']//button[@type='submit']"},
         ]
         self.create_gif_process(path_list, "update_furniture")
 
@@ -94,25 +80,22 @@ class FurnitureSeleniumTest(OptimizedSeleniumBase):
             + str(reverse("laboratory:labindex", kwargs={"org_pk": 1, "lab_pk": 1}))
         )
         path_list = [
-            {"path": ".//div[1]/div/div[3]/div/div/div[2]/div[2]/div[2]/ul/li[1]/a"},
+            {"path": "//div[contains(@class, 'right_col')]//a[contains(@href, '/rooms/create')]"},
+            {"path": "(//button[@data-bs-toggle='popover'])[1]", "sleep": 1},
+            {"path": "(//div[contains(@class, 'popover')]//a)[1]", "sleep": 1},
             {
-                "path": ".//div[1]/div/div[3]/div/div/div[2]/div[1]/div/ul/li/div/div[1]/div/div[3]/div/button[1]"
+                "path": "//span[@aria-controls='select2-id_labroom-container']",
+                "wait_ready": True,
             },
-            {"path": ".//div[3]/div[2]/ul/li[1]/a"},
-            {
-                "path": ".//div[1]/div/div[3]/div/div/div[1]/form/div[1]/div[1]/div[1]/div/span/span[1]/span"
-            },
-            {"path": ".//span/span/span[2]/ul/li[2]"},
+            {"path": select2_result(2)},
             {"path": ".//*[@id='id_name']", "extra_action": "clearinput"},
             {
                 "path": ".//*[@id='id_name']",
                 "extra_action": "setvalue",
                 "value": "Generico 2",
             },
-            {"path": ".//div[1]/div/div[3]/div/div/div[1]/form/div[1]/div[2]/button"},
-            {
-                "path": ".//div[1]/div/div[3]/div/div/div[2]/div[1]/div/ul/li[2]/div/div[1]/div/div[3]/div/button[1]"
-            },
+            {"path": "//*[@id='save_button1']//button[@type='submit']"},
+            {"path": "(//button[@data-bs-toggle='popover'])[2]", "sleep": 1},
         ]
         self.create_gif_process(path_list, "move_furniture")
 
@@ -123,11 +106,9 @@ class FurnitureSeleniumTest(OptimizedSeleniumBase):
             + str(reverse("laboratory:labindex", kwargs={"org_pk": 1, "lab_pk": 1}))
         )
         path_list = [
-            {"path": ".//div[1]/div/div[3]/div/div/div[2]/div[2]/div[2]/ul/li[1]/a"},
-            {
-                "path": ".//div[1]/div/div[3]/div/div/div[2]/div[1]/div/ul/li/div/div[1]/div/div[3]/div/button[1]"
-            },
-            {"path": ".//div[3]/div[2]/ul/li[1]/a"},
+            {"path": "//div[contains(@class, 'right_col')]//a[contains(@href, '/rooms/create')]"},
+            {"path": "(//button[@data-bs-toggle='popover'])[1]", "sleep": 1},
+            {"path": "(//div[contains(@class, 'popover')]//a)[1]", "sleep": 1},
             {
                 "path": "//a[contains(@class, 'btn-danger') and contains(@href, 'delete')]",
                 "wait_ready": True,
@@ -146,18 +127,16 @@ class FurnitureSeleniumTest(OptimizedSeleniumBase):
             + str(reverse("laboratory:labindex", kwargs={"org_pk": 1, "lab_pk": 1}))
         )
         path_list = [
-            {"path": ".//div[1]/div/div[3]/div/div/div[2]/div[2]/div[2]/ul/li[1]/a"},
+            {"path": "//div[contains(@class, 'right_col')]//a[contains(@href, '/rooms/create')]"},
+            {"path": "(//button[@data-bs-toggle='popover'])[1]", "sleep": 1},
+            {"path": "(//div[contains(@class, 'popover')]//a)[1]", "sleep": 1},
+            {"path": ".//*[@id='add_type_id']", "wait_ready": True},
+            {"path": "//*[@id='modal_type_id']//input | //*[@id='modal_type_id']//textarea", "sleep": 1},
             {
-                "path": ".//div[1]/div/div[3]/div/div/div[2]/div[1]/div/ul/li/div/div[1]/div/div[3]/div/button[1]"
-            },
-            {"path": ".//div[3]/div[2]/ul/li[1]/a"},
-            {"path": ".//*[@id='add_type_id']"},
-            {"path": ".//*[@id='id_description']", "extra_action": "clearinput"},
-            {
-                "path": ".//*[@id='id_description']",
+                "path": "//*[@id='modal_type_id']//input[@type='text'] | //*[@id='modal_type_id']//textarea",
                 "extra_action": "setvalue",
                 "value": "Recolector",
             },
-            {"path": ".//div[3]/div/div/div[3]/button[2]"},
+            {"path": "//*[@id='modal_type_id']//button[contains(@class, 'btnsubmit')]"},
         ]
         self.create_gif_process(path_list, "add_furniture_type")

@@ -101,4 +101,11 @@ class ProtocolDeleteView(DeleteView):
             "protocol",
             relobj=self.object.laboratory,
         )
-        return super().form_valid(form)
+        # Soft delete a la papelera: el DeleteView genérico haría un delete()
+        # sin contexto; aquí se registra quién borró y a qué organización y
+        # laboratorio pertenecía, que es lo que acota la pantalla de papelera.
+        self.object.delete(
+            user=self.request.user,
+            related_objects=[self.organization, self.object.laboratory],
+        )
+        return HttpResponseRedirect(self.get_success_url())

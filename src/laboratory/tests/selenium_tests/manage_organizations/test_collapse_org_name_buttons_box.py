@@ -2,6 +2,7 @@ from django.test import tag
 from laboratory.tests.selenium_tests.manage_organizations.base import (
     ManageOrganizationsSeleniumTest,
 )
+from organilab_test.tests.selenium_xpaths import select2_result
 
 
 @tag("selenium")
@@ -61,7 +62,7 @@ class ButtonBoxCollapseOrgNameTest(ManageOrganizationsSeleniumTest):
             {
                 "path": "//*[@id='selectroldiv']",
                 "extra_action": "script",
-                "value": "$('#id_relate_rols').iCheck('check'); setTimeout(function(){ $('#rolS2container').show(); }, 500);",
+                "value": "$('#id_relate_rols').prop('checked', true).trigger('change'); setTimeout(function(){ $('#rolS2container').show(); }, 500);",
                 "sleep": 2,
             },
             {
@@ -69,7 +70,7 @@ class ButtonBoxCollapseOrgNameTest(ManageOrganizationsSeleniumTest):
                 "sleep": 3,
             },
             {
-                "path": "//ul[contains(@class, 'select2-results__options')]/li",
+                "path": select2_result(1),
             },
             {
                 "path": "//*[@id='saveroluserorg']",
@@ -97,7 +98,7 @@ class ButtonBoxCollapseOrgNameTest(ManageOrganizationsSeleniumTest):
                 "sleep": 1,
             },
             {
-                "path": "//ul[contains(@class, 'select2-results__options')]/li[1]",
+                "path": select2_result(1),
             },
             {
                 "path": "//*[@id='saveroluserorg']",
@@ -186,7 +187,7 @@ class ButtonBoxCollapseOrgNameTest(ManageOrganizationsSeleniumTest):
                 "sleep": 2,
             },
             {
-                "path": "//ul[contains(@class, 'select2-results__options')]/li[1]",
+                "path": select2_result(1),
             },
             {
                 "path": "//*[@id='modaluser2']//button[@type='submit']",
@@ -250,9 +251,9 @@ class ButtonBoxCollapseOrgNameTest(ManageOrganizationsSeleniumTest):
                 "sleep": 2,
             },
             {
-                "path": "//ul[contains(@class, 'select2-results__options')]/li[1]",
+                "path": select2_result(1),
             },
-            {"path": self.get_submit_button_path("relOrganizationmodal")},
+            {"path": self.org_rel_lab_save_btn()},
         ]
         self.create_gif_process(path_list, "relate_external_laboratory_to_org")
 
@@ -273,8 +274,8 @@ class ButtonBoxCollapseOrgNameTest(ManageOrganizationsSeleniumTest):
                 "sleep": 2,
             },
             {
-                "path": "//ul[contains(@class, 'select2-results__options')]/li[1]",
+                "path": select2_result(1),
             },
-            {"path": self.get_submit_button_path("relOrganizationmodal")},
+            {"path": self.org_rel_lab_save_btn()},
         ]
         self.create_gif_process(path_list, "relate_org_base_laboratory_to_org_child")

@@ -607,3 +607,28 @@ def extract_catalog_fields(text, catalogs, lang='es'):
         'storage_class': _extract_storage_class(text, catalogs.get('storage_class', []), lang),
         'precursor_type': _extract_precursor_type(text, catalogs.get('Precursor', []), lang),
     }
+
+
+CATALOG_KEYS = [
+    'IARC',
+    'IDMG',
+    'white_organ',
+    'ue_code',
+    'nfpa',
+    'storage_class',
+    'Precursor',
+]
+
+
+def build_catalog_dict():
+    """Construye el dict de catálogos que espera `extract_catalog_fields`.
+
+    Vive aquí, junto a su único consumidor, para que cualquier flujo que extraiga
+    datos de una ficha pueda reutilizarlo sin depender de las vistas de msds.
+    """
+    from laboratory.models import Catalog
+
+    return {
+        key: list(Catalog.objects.filter(key=key).values_list('pk', 'description'))
+        for key in CATALOG_KEYS
+    }

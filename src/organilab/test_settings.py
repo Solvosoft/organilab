@@ -50,8 +50,13 @@ LOGGING = {
     },
 }
 
-CELERY_TASK_ALWAYS_EAGER = True
-CELERY_TASK_EAGER_PROPAGATES = True
+# `organilab/celery.py` llama a config_from_object sin `namespace="CELERY"`, así
+# que Celery no reconoce los nombres tipo CELERY_TASK_*: hay que usar los
+# heredados que sí mapea (CELERY_ALWAYS_EAGER -> task_always_eager). Con los
+# nombres equivocados las tareas intentaban conectarse al broker en los tests.
+CELERY_ALWAYS_EAGER = True
+CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
+CELERY_STORE_EAGER_RESULT = True
 
 TESTING_MODE = True
 GENERATE_SCREENSHOTS = os.getenv("GENERATE_SCREENSHOTS", "True") == "True"
@@ -59,7 +64,8 @@ GENERATE_SCREENSHOTS = os.getenv("GENERATE_SCREENSHOTS", "True") == "True"
 # Directory for temporary selenium screenshots (PNGs used to build GIFs).
 # Override with SELENIUM_SCREENSHOTS_DIR env var to keep them in a known location for debugging.
 # Default: system temp directory (e.g. /tmp/organilab_selenium_screenshots/)
-import tempfile
+import tempfile  # noqa: E402
+
 SELENIUM_SCREENSHOTS_DIR = os.getenv(
     "SELENIUM_SCREENSHOTS_DIR",
     os.path.join(tempfile.gettempdir(), "organilab_selenium_screenshots"),

@@ -18,3 +18,8 @@ def remove_stale_contenttypes():
 @app.task()
 def delete_expired_uploads():
     call_command("delete_expired_uploads")
+
+
+@app.task()
+def process_email_notifications():
+    call_command("process_notifications")

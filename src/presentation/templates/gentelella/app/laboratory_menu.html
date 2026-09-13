@@ -10,6 +10,11 @@
    {% if perms.laboratory.view_laboratory %}
     <li><a href="{% url 'laboratory:rooms_list' lab_pk=laboratory org_pk=org_pk %}">
      {% trans 'Laboratory view' %}</a></li>
+    {# La vista nueva convive con la anterior hasta validarla; sin entrada de #}
+    {# menu no hay forma de llegar a ella desde la interfaz. La etapa 14 (F7) #}
+    {# deja una sola cuando se apruebe. #}
+    <li><a href="{% url 'laboratory:labview' lab_pk=laboratory org_pk=org_pk %}">
+     {% trans 'Laboratory view (new)' %}</a></li>
     <li>
      <hr class="dropdown-divider">
     </li>

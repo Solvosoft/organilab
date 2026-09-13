@@ -31,7 +31,10 @@ class ReviewSubstanceViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        return queryset.annotate(comercial_name=F("substance__comercial_name"))
+        return queryset.annotate(
+            comercial_name=F("substance__comercial_name")
+            # Sin esto la columna de laboratorios dispara una consulta por fila.
+        ).prefetch_related("substance__laboratories")
 
     def filter_queryset(self, queryset):
         queryset = super().filter_queryset(queryset)

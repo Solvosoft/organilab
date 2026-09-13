@@ -1,5 +1,4 @@
 import datetime
-import json
 import uuid
 from gc import enable
 from pathlib import Path
@@ -14,10 +13,13 @@ from django.db.models import Sum, Q, Max, Min, JSONField
 from django.db.models.expressions import F
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
-from location_field.models.plain import PlainLocationField
+from djgentelella.fields.maps import GTPointField
+from djgentelella.models import DeletedWithTrash
 from tree_queries.fields import TreeNodeForeignKey
 from tree_queries.models import TreeNode
 from tree_queries.query import TreeQuerySet
+
+from laboratory import dataconfig as dataconfig_utils
 
 from auth_and_perms.models import ProfilePermission
 from presentation.models import AbstractOrganizationRef
@@ -138,30 +140,25 @@ class Object(AbstractOrganizationRef):
 
     @property
     def is_precursor(self):
-        if hasattr(self, "sustancecharacteristics") and self.sustancecharacteristics:
-            return self.sustancecharacteristics.is_precursor
+        sga_char = self.substancharacteristics_object.first()
+        if sga_char:
+            return sga_char.is_precursor
         return False
 
     @property
     def cas_code(self):
-        if hasattr(self, "sustancecharacteristics") and self.sustancecharacteristics:
-            if self.sustancecharacteristics.cas_id_number:
-                return self.sustancecharacteristics.cas_id_number
-            else:
-                return ""
-        return False
+        sga_char = self.substancharacteristics_object.first()
+        if sga_char and sga_char.cas_id_number:
+            return sga_char.cas_id_number
+        return ""
 
     @property
     def get_storage_class(self):
-        if hasattr(self, "sustancecharacteristics") and self.sustancecharacteristics:
-            if self.sustancecharacteristics.storage_class:
-                return ", ".join(
-                    self.sustancecharacteristics.storage_class.values_list(
-                        "description", flat=True
-                    )
-                )
-            else:
-                return ""
+        sga_char = self.substancharacteristics_object.first()
+        if sga_char and sga_char.storage_class:
+            return ", ".join(
+                sga_char.storage_class.values_list("description", flat=True)
+            )
         return ""
 
     class Meta:
@@ -181,6 +178,14 @@ class Object(AbstractOrganizationRef):
 
 
 class SustanceCharacteristics(models.Model):
+    """OBSOLETO: sustituido por sga.SubstanceCharacteristics.
+
+    Sus filas se conservan un ciclo como respaldo de la migración de datos
+    (laboratory.0209) y de su reversa. No escribir aquí ni añadir consumidores
+    nuevos: la fuente de verdad es sga.SubstanceCharacteristics, accesible desde
+    un Object mediante `substancharacteristics_object`.
+    """
+
     obj = models.OneToOneField(Object, on_delete=models.CASCADE)
     iarc = catalog.GTForeignKey(
         Catalog,
@@ -277,58 +282,6 @@ class SustanceCharacteristics(models.Model):
     class Meta:
         verbose_name = _("Sustance characteristic")
         verbose_name_plural = _("Sustance characteristics")
-
-
-class SDSTraceability(BaseCreationObj):
-    SDS_SOURCE_CHOICES = [
-        ("merck", "Merck/Sigma-Aldrich"),
-        ("pubchem", "PubChem"),
-        ("fisher", "Fisher/Thermo"),
-        ("panreac", "Panreac"),
-        ("carlo_erba", "Carlo Erba"),
-        ("jt_baker", "JT Baker"),
-        ("honeywell", "Honeywell/Fluka"),
-        ("unknown", _("Unknown")),
-        ("manual", _("Manual upload")),
-    ]
-
-    sustance_characteristics = models.ForeignKey(
-        SustanceCharacteristics,
-        on_delete=models.CASCADE,
-        related_name="sds_traceability",
-    )
-    source = models.CharField(
-        _("SDS source"), max_length=50, choices=SDS_SOURCE_CHOICES, default="unknown"
-    )
-    revision_date = models.DateField(_("SDS revision date"), null=True, blank=True)
-    download_url = models.URLField(
-        _("Download URL"), max_length=500, blank=True, default=""
-    )
-    security_sheet = models.FileField(
-        _("Security sheet"), upload_to=upload_files, null=True, blank=True
-    )
-    verified_by = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-        verbose_name=_("Verified by"),
-        related_name="sds_verified_by",
-    )
-    verified_date = models.DateField(
-        null=True, blank=True, verbose_name=_("Verified date")
-    )
-    is_verified = models.BooleanField(default=False, verbose_name=_("Is verified"))
-
-    class Meta:
-        verbose_name = _("SDS traceability")
-        verbose_name_plural = _("SDS traceability records")
-        ordering = ["-creation_date"]
-
-    def __str__(self):
-        return (
-            f"{self.sustance_characteristics_id} - {self.source} ({self.creation_date})"
-        )
 
 
 class ShelfObjectLimits(models.Model):
@@ -539,8 +492,11 @@ class ShelfObject(models.Model):
         help_text=_("Original number of units per box at creation time"),
     )
 
+    # Holgura deliberada: el código completo concatena las siglas, el
+    # identificador de la sustancia, el periodo y el consecutivo, así que su
+    # longitud crece con los datos y ajustarla al caso actual la dejaría corta.
     shelfobject_code = models.CharField(
-        max_length=30, verbose_name=_("Unit code"), null=True, blank=True
+        max_length=50, verbose_name=_("Unit code"), null=True, blank=True
     )
 
     @staticmethod
@@ -944,97 +900,33 @@ class Furniture(BaseCreationObj):
     color = models.CharField(default="#73879C", max_length=10)
     dataconfig = models.TextField(_("Data configuration"))
 
+    def get_grid(self):
+        """Matriz ``filas -> celdas -> [pk de Shelf]`` de este mueble.
+
+        Las filas son irregulares a propósito: la forma la define el usuario
+        según cómo sea su laboratorio.
+        """
+        return dataconfig_utils.parse(self.dataconfig)
+
     def remove_shelf_dataconfig(self, shelf_pk):
         if self.dataconfig:
-            dataconfig = json.loads(self.dataconfig)
-
-            for irow, row in enumerate(dataconfig):
-                for icol, col in enumerate(row):
-                    if col:
-                        val = None
-                        if isinstance(col, str):
-                            val = col.split(",")
-                        elif isinstance(col, int):
-                            val = [col]
-                            if shelf_pk in val:
-                                val.set("")
-                        elif isinstance(col, list):
-                            val = col
-                            if shelf_pk in val:
-                                col.remove(shelf_pk)
-                        else:
-                            continue
-
-                        if int(shelf_pk) in val:
-                            val.remove(int(shelf_pk))
-
-            self.dataconfig = str(dataconfig)
-            self.save()
+            dataconfig_utils.DataconfigService(self).remove_shelf(shelf_pk)
 
     def change_shelf_dataconfig(self, shelf_row, shelf_col, shelf_pk):
-        if self.dataconfig:
-            dataconfig = json.loads(self.dataconfig)
-
-            for irow, row in enumerate(dataconfig):
-                for icol, col in enumerate(row):
-                    if col:
-                        val = None
-                        if isinstance(col, str):
-                            val = col.split(",")
-                        elif isinstance(col, int):
-                            val = [col]
-                        elif isinstance(col, list):
-                            val = col
-                        else:
-                            continue
-                        # remove old postion
-                        if int(shelf_pk) in val:
-                            val.remove(int(shelf_pk))
-
-                        if shelf_row == irow and shelf_col == icol:
-                            val.append(shelf_pk)
-
-                    else:  # add id when it is white
-                        if shelf_row == irow and shelf_col == icol:
-                            col.append(shelf_pk)
-            self.dataconfig = str(dataconfig)
-            self.save()
+        dataconfig_utils.DataconfigService(self).place_shelf(
+            shelf_pk, shelf_row, shelf_col
+        )
 
     def get_position_shelf(self, shelf_pk):
-        if self.dataconfig:
-            dataconfig = json.loads(self.dataconfig)
-
-            for irow, row in enumerate(dataconfig):
-                for icol, col in enumerate(row):
-                    if col:
-                        val = None
-                        if isinstance(col, str):
-                            val = col.split(",")
-                        elif isinstance(col, int):
-                            val = [col]
-                        elif isinstance(col, list):
-                            val = col
-                        else:
-                            continue
-                        if shelf_pk in (val):
-                            return [irow, icol]
-
-        return [None, None]
+        row, col = dataconfig_utils.get_position(self.get_grid(), shelf_pk)
+        return [row, col]
 
     def get_row_count(self):
-        if self.dataconfig:
-            dataconfig = json.loads(self.dataconfig)
-            count = len(dataconfig)
-            return count
-        return 0
+        return len(self.get_grid())
 
     def get_col_count(self):
-        if self.dataconfig:
-            dataconfig = json.loads(self.dataconfig)
-            for irow, row in enumerate(dataconfig):
-                count = len(row)
-                return count
-        return 0
+        grid = self.get_grid()
+        return len(grid[0]) if grid else 0
 
     class Meta:
         verbose_name = _("Piece of furniture")
@@ -1163,7 +1055,7 @@ class OrganizationStructureManager(models.Manager):
                 enable_child = (
                     org.parent.enable_child_organizations if org.parent else False
                 )
-                if descendants and enable_child == False:
+                if descendants and enable_child is False:
                     descendant_pks = org.descendants(include_self=False).values_list(
                         "pk", flat=True
                     )
@@ -1243,6 +1135,13 @@ class OrganizationStructureManager(models.Manager):
 
 class OrganizationStructure(TreeNode):
     name = models.CharField(_("Name"), max_length=255)
+    # Sigla que identifica a la organización dentro del código de las
+    # sustancias. Se deriva del nombre pero es editable: quien la lee en una
+    # etiqueta debe reconocer la unidad, y eso lo sabe la unidad misma.
+    code = models.CharField(
+        _("Code"), max_length=3, null=True, blank=True,
+        help_text=_("Three-letter code used in substance codes"),
+    )
     position = models.IntegerField(default=0)
     # No debe usarse para validar permisos, su intención es permitir relacionarlos en la
     # vista de administración, para los permisos usar ProfilePermission
@@ -1429,10 +1328,17 @@ class OrganizationStructureRelations(models.Model):
 
 class Laboratory(BaseCreationObj):
     name = models.CharField(_("Laboratory name"), default="", max_length=255)
+    # Sigla que identifica al laboratorio dentro del código de las sustancias.
+    # Única en todo el sistema: dos laboratorios con la misma sigla harían
+    # ambiguo el código impreso en una etiqueta, que es justo lo que evita.
+    code = models.CharField(
+        _("Code"), max_length=3, null=True, blank=True, unique=True,
+        help_text=_("Three-letter code used in substance codes"),
+    )
     phone_number = models.CharField(_("Phone"), default="", max_length=25)
 
     location = models.CharField(_("Location"), default="", max_length=255)
-    geolocation = PlainLocationField(
+    geolocation = GTPointField(
         default="9.895804362670006,-84.1552734375",
         zoom=15,
         verbose_name=_("Geolocation"),
@@ -1786,19 +1692,7 @@ class CommentInform(models.Model):
         return f"{self.created_by} - {self.create_at}"
 
 
-class LabOrgLogEntry(models.Model):
-    log_entry = models.ForeignKey(
-        "admin.LogEntry", on_delete=models.CASCADE, verbose_name=_("Log Entry")
-    )
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
-    content_object = GenericForeignKey("content_type", "object_id")
-
-    def __str__(self):
-        return f"{self.log_entry}"
-
-
-class Protocol(BaseCreationObj):
+class Protocol(BaseCreationObj, DeletedWithTrash):
     name = models.CharField(_("Name"), max_length=300)
     file = models.FileField(
         upload_to=upload_files,
@@ -2018,7 +1912,7 @@ class LabOrOrgRequest(models.Model):
     # Laboratory fields
     phone_number = models.CharField(_("Phone"), max_length=25, blank=True)
     location = models.CharField(_("Location"), max_length=255, blank=True)
-    geolocation = PlainLocationField(
+    geolocation = GTPointField(
         default="9.895804362670006,-84.1552734375",
         zoom=15,
         verbose_name=_("Geolocation"),
@@ -2109,3 +2003,34 @@ class TemporalUploadReactive(BaseCreationObj):
         related_name="shelf_temp",
     )
     data = JSONField()
+
+
+class ShelfObjectCodeCounter(models.Model):
+    """Consecutivo del lote, por sustancia-laboratorio y mes.
+
+    El contador se guarda en vez de calcularse contando envases porque un envase
+    puede borrarse o trasladarse, y el número ya está impreso en una etiqueta: si
+    se recalculara, dos envases distintos acabarían compartiéndolo.
+
+    La clave incluye la sustancia y el laboratorio porque el consecutivo debe
+    responder «cuántos envases de este reactivo se prepararon aquí este mes»; el
+    reinicio mensual mantiene el número corto y lo ata a su periodo.
+    """
+
+    substance_laboratory = models.ForeignKey(
+        "sga.SubstanceLaboratory",
+        on_delete=models.CASCADE,
+        verbose_name=_("Substance laboratory"),
+        related_name="code_counters",
+    )
+    year = models.PositiveIntegerField(verbose_name=_("Year"))
+    month = models.PositiveSmallIntegerField(verbose_name=_("Month"))
+    counter = models.PositiveIntegerField(default=0, verbose_name=_("Counter"))
+
+    class Meta:
+        unique_together = ("substance_laboratory", "year", "month")
+        verbose_name = _("Shelf object code counter")
+        verbose_name_plural = _("Shelf object code counters")
+
+    def __str__(self):
+        return f"{self.substance_laboratory_id} {self.year}-{self.month:02d}: {self.counter}"

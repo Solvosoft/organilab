@@ -39,6 +39,7 @@ def update_estudiante():
             "laboratory.change_shelfobjectlog",
             "laboratory.view_shelf",
             "laboratory.view_provider",
+            "sga.view_recipientsize",
         ],
     )
 
@@ -52,6 +53,8 @@ def update_depositante_residuos():
         rol,
         [
             "laboratory.add_shelfobject",
+            "sga.view_recipientsize",
+            "sga.add_recipientsize",
         ],
     )
 
@@ -77,7 +80,6 @@ def update_depositante_residuos():
             "sga.view_warningword",
             "sga.view_prudenceadvice",
             "sga.view_substanceobservation",
-            "sga.view_recipientsize",
             "laboratory.do_report",
             "laboratory.change_protocol",
             "laboratory.add_protocol",
@@ -145,12 +147,8 @@ def update_depositante_residuos():
             "sga.add_substance",
             "msds.add_msdsobject",
             "sga.change_substancecharacteristics",
-            "sga.add_recipientsize",
             "auth_and_perms.view_profilepermission",
             "auth_and_perms.change_profilepermission",
-            "blog.add_entry",
-            "blog.change_entry",
-            "blog.view_entry",
             "laboratory.view_organizationstructure",
             "laboratory.view_precursorreport",
             "risk_management.view_incidentreport",
@@ -191,6 +189,9 @@ def update_creador_laboratorios():
             "laboratory.view_inform",
             "laboratory.add_inform",
             "laboratory.change_inform",
+            "sga.view_recipientsize",
+            "sga.add_recipientsize",
+            "sga.delete_recipientsize",
         ],
     )
     remove_permissions(
@@ -221,6 +222,9 @@ def update_administrador_laboratorio():
             "laboratory.view_labororgrequest",
             "laboratory.change_labororgrequest",
             "laboratory.delete_labororgrequest",
+            "sga.view_recipientsize",
+            "sga.add_recipientsize",
+            "sga.delete_recipientsize",
         ],
     )
 
@@ -235,9 +239,7 @@ def update_administrador_laboratorio():
             "sga.add_prudenceadvice",
             "sga.change_prudenceadvice",
             "sga.delete_prudenceadvice",
-            "sga.add_recipientsize",
             "sga.change_recipientsize",
-            "sga.delete_recipientsize",
             "sga.change_securityleaf",
             "sga.add_substance",
             "sga.change_substance",
@@ -273,6 +275,8 @@ def update_lectura_agregado_sustancias():
             "academic.view_myprocedure",
             "laboratory.view_shelfobject",
             "laboratory.view_shelf",
+            "sga.view_recipientsize",
+            "sga.add_recipientsize",
         ],
     )
     remove_permissions(
@@ -358,10 +362,8 @@ def update_lectura_agregado_sustancias():
             "sga.change_provider",
             "sga.delete_provider",
             "sga.view_displaylabel",
-            "sga.add_recipientsize",
             "sga.change_recipientsize",
             "sga.delete_recipientsize",
-            "sga.view_recipientsize",
             "sga.add_substancecharacteristics",
             "sga.view_substancecharacteristics",
             "sga.change_substancecharacteristics",
@@ -390,7 +392,6 @@ def update_lectura_agregado_sustancias():
             "sga.view_securityleaf",
             "sga.view_substanceobservation",
             "sga.view_substance",
-            "sga.view_recipientsize",
             "sga.view_label",
             "laboratory.view_registeruserqr",
             "reservations_management.view_reservations",
@@ -399,9 +400,6 @@ def update_lectura_agregado_sustancias():
             "academic.add_procedurerequiredobject",
             "academic.add_procedurestep",
             "academic.change_procedurestep",
-            "blog.add_entry",
-            "blog.change_entry",
-            "blog.view_entry",
             "djreservation.add_reservation",
             "laboratory.delete_protocol",
             "reservations_management.add_reservations",
@@ -409,6 +407,8 @@ def update_lectura_agregado_sustancias():
             "reservations_management.change_reservedproducts",
             "reservations_management.add_reservedproducts",
             "reservations_management.add_reservations",
+            "sga.view_recipientsize",
+            "sga.add_recipientsize",
         ],
     )
     remove_permissions(
@@ -422,7 +422,6 @@ def update_lectura_agregado_sustancias():
             "sga.add_prudenceadvice",
             "sga.change_prudenceadvice",
             "sga.delete_prudenceadvice",
-            "sga.add_recipientsize",
             "sga.change_recipientsize",
             "sga.delete_recipientsize",
             "sga.change_securityleaf",
@@ -457,6 +456,9 @@ def update_asistente_laboratorio():
         rol,
         [
             "laboratory.can_manage_reorder",
+            "sga.view_recipientsize",
+            "sga.add_recipientsize",
+            "sga.delete_recipientsize",
         ],
     )
 
@@ -471,19 +473,14 @@ def update_asistente_laboratorio():
             "sga.add_displaylabel",
             "sga.change_displaylabel",
             "sga.delete_displaylabel",
-            "sga.view_displaylabel",
             "sga.add_label",
-            "sga.view_label",
             "sga.add_provider",
             "sga.view_provider",
             "sga.add_prudenceadvice",
             "sga.change_prudenceadvice",
             "sga.delete_prudenceadvice",
             "sga.view_prudenceadvice",
-            "sga.add_recipientsize",
             "sga.change_recipientsize",
-            "sga.delete_recipientsize",
-            "sga.view_recipientsize",
             "sga.change_securityleaf",
             "sga.view_securityleaf",
             "sga.add_sgacomplement",
@@ -502,7 +499,6 @@ def update_asistente_laboratorio():
             "sga.view_substanceobservation",
             "sga.add_templatesga",
             "sga.change_templatesga",
-            "sga.view_templatesga",
             "sga.add_warningword",
             "sga.change_warningword",
             "sga.view_warningword",
@@ -595,6 +591,7 @@ def update_tesista_modulo_desechos():
             "laboratory.view_shelf",
             "laboratory.view_catalog",
             "risk_management.view_riskzone",
+            "sga.view_recipientsize",
         ],
     )
 
@@ -705,7 +702,6 @@ def update_tesista_modulo_desechos():
             "sga.view_substanceobservation",
             "sga.change_sgacomplement",
             "sga.view_sgacomplement",
-            "sga.view_recipientsize",
             "sga.delete_substance",
             "sga.view_templatesga",
             "sga.change_securityleaf",
@@ -734,11 +730,6 @@ def update_tesista_modulo_desechos():
             "auth_and_perms.change_rol",
             "auth.add_user",
             "auth.change_user",
-            "blog.add_entry",
-            "blog.change_entry",
-            "blog.view_entry",
-            "blog.delete_entry",
-            "blog.add_category",
             "djgentelella.can_manage_permissions",
             "academic.add_commentprocedurestep",
             "academic.delete_procedure",
@@ -778,7 +769,7 @@ def update_solo_lectura():
             "academic.view_procedure",
             "laboratory.view_inform",
             "risk_management.view_buildings",
-            "laboratory.view_sustancecharacteristics",
+            "sga.view_substancecharacteristics",
             "risk_management.view_structure",
             "laboratory.view_object",
             "laboratory.view_laboratoryprocess",
@@ -787,6 +778,7 @@ def update_solo_lectura():
             "risk_management.view_regent",
             "risk_management.view_workday",
             "reservations_management.view_reservations",
+            "sga.view_recipientsize",
         ],
     )
 
@@ -809,7 +801,6 @@ def update_solo_lectura():
             "academic.change_commentprocedurestep",
             "academic.delete_commentprocedurestep",
             "academic.change_myprocedure",
-            "blog.change_entry",
             "djreservation.add_reservation",
             "laboratory.add_registeruserqr",
             "laboratory.change_furniture",
@@ -830,9 +821,6 @@ def update_solo_lectura():
             "laboratory.view_organizationstructurerelations",
             "laboratory.add_registeruserqr",
             "auth_and_perms.view_profilepermission",
-            "blog.add_entry",
-            "blog.change_entry",
-            "blog.view_entry",
         ],
     )
 
@@ -856,6 +844,9 @@ def update_tecnico_laboratorio():
             "risk_management.view_structure",
             "risk_management.view_regent",
             "risk_management.view_workday",
+            "sga.view_recipientsize",
+            "sga.add_recipientsize",
+            "sga.delete_recipientsize",
         ],
     )
 
@@ -897,7 +888,7 @@ def update_tecnico_laboratorio():
             "laboratory.delete_registeruserqr",
             "laboratory.change_registeruserqr",
             "laboratory.delete_shelf",
-            "laboratory.delete_sustancecharacteristics",
+            "sga.delete_substancecharacteristics",
             "msds.add_msdsobject",
             "msds.change_msdsobject",
             "msds.delete_msdsobject",
@@ -918,9 +909,7 @@ def update_tecnico_laboratorio():
             "sga.add_prudenceadvice",
             "sga.change_prudenceadvice",
             "sga.delete_prudenceadvice",
-            "sga.add_recipientsize",
             "sga.change_recipientsize",
-            "sga.delete_recipientsize",
             "sga.change_securityleaf",
             "sga.add_substance",
             "sga.change_substance",
@@ -946,10 +935,7 @@ def update_tecnico_laboratorio():
             "sga.delete_pictogram",
             "sga.delete_warningword",
             "sga.delete_warningclass",
-            "sga.add_recipientsize",
             "sga.change_recipientsize",
-            "sga.delete_recipientsize",
-            "sga.view_recipientsize",
             "sga.change_templatesga",
             "sga.view_builderinformation",
             "sga.view_substance",
@@ -980,17 +966,14 @@ def update_sga():
             "sga.delete_pictogram",
             "sga.delete_warningword",
             "sga.delete_warningclass",
-            "sga.add_recipientsize",
-            "sga.change_recipientsize",
-            "sga.delete_recipientsize",
-            "sga.view_recipientsize",
-            "sga.change_templatesga",
-            "sga.view_builderinformation",
             "sga.view_substance",
             "sga.change_substance",
             "auth_and_perms.institution_can_access",
         ],
     )
+    # El etiquetado es parte del módulo: lo otorga update_labeling_roles(),
+    # que corre al final. Antes se removía aquí, dejando al rol del módulo SGA
+    # sin el flujo de etiquetas que su propia descripción le atribuye.
 
 
 def update_regente():
@@ -1036,11 +1019,6 @@ def update_administrador_superior():
             "auth.add_user",
             "auth.change_user",
             "auth.view_user",
-            "blog.add_category",
-            "blog.add_entry",
-            "blog.change_entry",
-            "blog.delete_entry",
-            "blog.view_entry",
             "djreservation.add_product",
             "djreservation.change_product",
             "djreservation.delete_product",
@@ -1076,7 +1054,6 @@ def update_administrativo_centro_trabajo():
             "sga.change_substanceobservation",
             "sga.delete_substanceobservation",
             "sga.add_templatesga",
-            "sga.view_recipientsize",
             "sga.change_recipientsize",
             "msds.add_msdsobject",
             "msds.change_msdsobject",
@@ -1101,16 +1078,11 @@ def update_administrativo_centro_trabajo():
             "auth_and_perms.change_rol",
             "auth_and_perms.add_rol",
             "auth_and_perms.view_profilepermission",
-            "blog.delete_entry",
-            "blog.change_entry",
-            "blog.add_entry",
-            "blog.view_entry",
             "djgentelella.can_manage_permissions",
             "laboratory.change_catalog",
             "laboratory.delete_catalog",
             "laboratory.change_equipmenttype",
             "laboratory.delete_equipmenttype",
-            "blog.add_category",
             "laboratory.change_objectfeatures",
         ],
     )
@@ -1121,8 +1093,78 @@ def update_administrativo_centro_trabajo():
             "laboratory.view_informscheduler",
             "laboratory.change_informscheduler",
             "laboratory.can_manage_reorder",
+            "sga.view_recipientsize",
+            "sga.add_recipientsize",
+            "sga.delete_recipientsize",
         ],
     )
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Etiquetado SGA
+# ──────────────────────────────────────────────────────────────────────────────
+# El flujo va del tamaño del recipiente (RecipientSize, que fija las dimensiones
+# físicas) a la etiqueta concreta (Label / DisplayLabel) construida sobre una
+# plantilla (TemplateSGA) con la información institucional del encabezado
+# (BuilderInformation). Se agrupa aquí para repartirlo como un flujo completo y
+# no como permisos sueltos que unos roles reciben a medias.
+#
+# Generar o previsualizar una etiqueta (sga:generate_label,
+# sga:engine_label_preview) sólo lee: el motor la renderiza al vuelo y no
+# persiste nada. Por eso los roles operativos se quedan en GENERATE, y crear o
+# editar plantillas queda reservado a FULL.
+
+LABELING_GENERATE = [
+    "sga.view_recipientsize",
+    "sga.view_label",
+    "sga.view_displaylabel",
+    "sga.view_templatesga",
+]
+
+LABELING_FULL = LABELING_GENERATE + [
+    "sga.add_recipientsize",
+    "sga.change_recipientsize",
+    "sga.delete_recipientsize",
+    "sga.add_label",
+    "sga.change_label",
+    "sga.delete_label",
+    "sga.add_displaylabel",
+    "sga.change_displaylabel",
+    "sga.delete_displaylabel",
+    "sga.add_templatesga",
+    "sga.change_templatesga",
+    "sga.delete_templatesga",
+    "sga.view_builderinformation",
+    "sga.add_builderinformation",
+    "sga.change_builderinformation",
+]
+
+
+def update_labeling_roles():
+    """Reparte el flujo de etiquetado sobre los roles existentes.
+
+    Corre al final de `handle()` para ser la autoridad sobre el etiquetado: las
+    funciones por rol no deben añadir ni remover estos permisos por su cuenta.
+    """
+    full_roles = ["SGA", "Administrativo superior"]
+    generate_roles = [
+        "Administrador de Laboratorio",
+        "Administrativo de centro de trabajo",
+        "Técnico de Laboratorio",
+        "Asistente de laboratorio",
+    ]
+    for name in full_roles:
+        rol = Rol.objects.filter(name=name).first()
+        if rol:
+            add_permissions(rol, LABELING_FULL)
+        else:
+            print(f"WARNING: Rol '{name}' not found, skipping.")
+    for name in generate_roles:
+        rol = Rol.objects.filter(name=name).first()
+        if rol:
+            add_permissions(rol, LABELING_GENERATE)
+        else:
+            print(f"WARNING: Rol '{name}' not found, skipping.")
 
 
 IPER_FULL = [
@@ -1305,6 +1347,24 @@ ROL_DESCRIPTIONS = {
 }
 
 
+def update_papelera():
+    # Papelera org-scoped (djgentelella Trash): ver la pantalla, restaurar
+    # (change) y borrar definitivamente (delete). Solo roles administrativos.
+    for name in ["Administrador de Laboratorio", "Administrativo superior"]:
+        rol = Rol.objects.filter(name=name).first()
+        if not rol:
+            print(f"WARNING: Rol '{name}' not found, skipping.")
+            continue
+        add_permissions(
+            rol,
+            [
+                "djgentelella.view_trash",
+                "djgentelella.change_trash",
+                "djgentelella.delete_trash",
+            ],
+        )
+
+
 def update_descriptions():
     for name, description in ROL_DESCRIPTIONS.items():
         rol = Rol.objects.filter(name=name).first()
@@ -1333,7 +1393,9 @@ class Command(BaseCommand):
         update_tecnico_laboratorio()
         update_administrativo_centro_trabajo()
         update_administrador_superior()
+        update_labeling_roles()
         update_iper_roles()
         create_auditor_iper()
         create_administrador_iper()
+        update_papelera()
         update_descriptions()

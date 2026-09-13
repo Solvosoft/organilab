@@ -149,6 +149,20 @@ class Substance(AbstractOrganizationRef):
     synonymous = models.TextField(verbose_name=_("Synonymous"), null=True, blank=True)
     agrochemical = models.BooleanField(default=False, verbose_name=_("Agrochemical"))
     description = models.TextField(blank=True, null=True, verbose_name=_("Description"))
+    # Una misma sustancia se solicita para varios laboratorios a la vez. No da
+    # visibilidad —los objetos de inventario son de la organización, no del
+    # laboratorio—: encamina la solicitud, deja el alta en la bitácora de cada
+    # laboratorio y, sobre todo, determina qué código recibe en cada uno.
+    laboratories = models.ManyToManyField(
+        "laboratory.Laboratory",
+        verbose_name=_("Laboratories"),
+        related_name="substances_lab",
+        through="SubstanceLaboratory",
+        blank=True,
+    )
+    features = models.ManyToManyField(
+        "laboratory.ObjectFeatures", verbose_name=_("Object features")
+    )
 
     @property
     def warning_word(self):
@@ -168,8 +182,44 @@ class Substance(AbstractOrganizationRef):
         verbose_name_plural = _("Substances")
 
 
+class SubstanceLaboratory(models.Model):
+    """Una sustancia aprobada para un laboratorio, con el código que le toca.
+
+    El código identifica la pareja, no la sustancia sola: la misma sustancia en
+    varios laboratorios recibe un código por cada uno, y solo difieren en el
+    tramo del laboratorio. Es la parte estable del código; el lote con año, mes y
+    consecutivo lo añade cada `ShelfObject`, que es el envase que se etiqueta.
+
+    La relación es explícita —y no un M2M automático— precisamente para poder
+    colgarle ese código: es un dato de la pareja, no de ninguno de los extremos.
+    """
+
+    substance = models.ForeignKey(Substance, on_delete=models.CASCADE)
+    laboratory = models.ForeignKey("laboratory.Laboratory", on_delete=models.CASCADE)
+    code = models.CharField(
+        _("Code"), max_length=50, null=True, blank=True, db_index=True
+    )
+    creation_date = models.DateTimeField(auto_now_add=True, null=True)
+
+    class Meta:
+        db_table = "sga_substance_laboratories"
+        unique_together = ("substance", "laboratory")
+        verbose_name = _("Substance laboratory")
+        verbose_name_plural = _("Substance laboratories")
+
+    def __str__(self):
+        return self.code or f"{self.substance_id} - {self.laboratory_id}"
+
+
 class SubstanceCharacteristics(models.Model):
     substance = models.OneToOneField(Substance, on_delete=models.CASCADE, null=True)
+    object_related = models.ForeignKey(
+        "laboratory.Object",
+        on_delete=models.SET_NULL,
+        related_name="substancharacteristics_object",
+        null=True,
+        blank=True,
+    )
     iarc = catalog.GTForeignKey(
         "laboratory.Catalog",
         related_name="gt_iarcrel_sga",
@@ -263,6 +313,42 @@ class SubstanceCharacteristics(models.Model):
     concentration = models.CharField(
         max_length=30, verbose_name=_("Concentration"), null=True, blank=True
     )
+    density = models.FloatField(
+        verbose_name=_("Density"),
+        help_text=_(
+            "It belongs to the regulations of decree 44741, "
+            "only use dot like 0.344 on decimal"
+        ),
+        default=0,
+    )
+    is_dangerous = models.BooleanField(
+        default=False,
+        verbose_name=_("Is Dangerous?"),
+        help_text=_("It belongs to the regulations of decree 44741"),
+    )
+    has_threshold = models.BooleanField(
+        default=False,
+        verbose_name=_("Has threshold?"),
+        help_text=_("It belongs to the regulations of decree 44741"),
+    )
+    threshold = models.FloatField(
+        default=0.0,
+        verbose_name=_("Threshold"),
+        help_text=_("It belongs to the regulations of decree 44741"),
+        null=True,
+        blank=True,
+    )
+    is_pure = models.BooleanField(
+        default=False,
+        verbose_name=_("Is pure?"),
+        help_text=_("It belongs to the regulations of decree 44741"),
+    )
+    img_representation = models.ImageField(
+        upload_to="sustances_images/",
+        verbose_name=_("Image representation"),
+        null=True,
+        blank=True,
+    )
 
     class Meta:
         verbose_name = _("Substance characteristic SGA")
@@ -312,6 +398,13 @@ class RecipientSize(models.Model):
     width = models.FloatField(default=10, verbose_name=_("Width"))
     width_unit = models.CharField(
         max_length=5, default="cm", verbose_name=_("Width Unit"), choices=CHOICES
+    )
+    laboratory = models.ForeignKey(
+        "laboratory.laboratory",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        verbose_name=_("Laboratory"),
     )
 
     def __str__(self):
@@ -954,3 +1047,73 @@ class DangerSubstanceCategory(models.Model):
 
     def __str__(self):
         return self.note
+
+
+class SDSTraceability(models.Model):
+    """Bitácora de las fichas de seguridad de una sustancia.
+
+    Pertenece a `sga` porque su única relación de negocio es con
+    `sga.SubstanceCharacteristics`. La tabla física lleva nombre de `laboratory`:
+    renombrarla no aportaría nada funcional y obligaría a mover datos.
+
+    Es un historial, no un estado: cada subida o descarga añade su entrada en vez
+    de sustituir la anterior, que es lo que permite ver cómo ha evolucionado la
+    ficha de una sustancia. Quien necesite la vigente toma la más reciente.
+
+    Los tres primeros campos replican `laboratory.BaseCreationObj` en lugar de
+    heredarlos: `laboratory.models` importa de `sga.models`, así que heredar
+    cerraría un ciclo de imports.
+    """
+
+    SDS_SOURCE_CHOICES = [
+        ("merck", "Merck/Sigma-Aldrich"),
+        ("pubchem", "PubChem"),
+        ("fisher", "Fisher/Thermo"),
+        ("panreac", "Panreac"),
+        ("carlo_erba", "Carlo Erba"),
+        ("jt_baker", "JT Baker"),
+        ("honeywell", "Honeywell/Fluka"),
+        ("unknown", _("Unknown")),
+        ("manual", _("Manual upload")),
+    ]
+
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    creation_date = models.DateTimeField(auto_now_add=True)
+    last_update = models.DateTimeField(auto_now=True)
+
+    sga_substance_characteristics = models.ForeignKey(
+        "sga.SubstanceCharacteristics",
+        on_delete=models.CASCADE,
+        related_name="sds_traceability",
+    )
+    source = models.CharField(
+        _("SDS source"), max_length=50, choices=SDS_SOURCE_CHOICES, default="unknown"
+    )
+    revision_date = models.DateField(_("SDS revision date"), null=True, blank=True)
+    download_url = models.URLField(
+        _("Download URL"), max_length=500, blank=True, default=""
+    )
+    security_sheet = models.FileField(
+        _("Security sheet"), upload_to=upload_files, null=True, blank=True
+    )
+    verified_by = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        verbose_name=_("Verified by"),
+        related_name="sds_verified_by",
+    )
+    verified_date = models.DateField(
+        null=True, blank=True, verbose_name=_("Verified date")
+    )
+    is_verified = models.BooleanField(default=False, verbose_name=_("Is verified"))
+
+    class Meta:
+        verbose_name = _("SDS traceability")
+        verbose_name_plural = _("SDS traceability records")
+        ordering = ["-creation_date"]
+        db_table = "laboratory_sdstraceability"
+
+    def __str__(self):
+        return f"{self.sga_substance_characteristics_id} - {self.source} ({self.creation_date})"

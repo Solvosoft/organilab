@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n urlname_tags %}
+{% load i18n urlname_tags organilab_tags static %}
 {% block title %}{% trans 'IPER assessments' %}{% endblock %}
 {% block pre_head %}
 	{% define_urlname_action 'iper_list' %}
@@ -27,65 +27,8 @@
 						<i class="fa fa-plus"></i> {% trans 'New assessment' %}</a>
 				{% endif %}
 			</div>
-			<form method="get" action="" class="mb-3">
-				<div class="input-group custom-search-form" style="max-width:320px;float:right;">
-					<input class="form-control" name="q" value="{{ q }}" placeholder="{% trans 'Search...' %}" type="text">
-					<button id="btnsearch" type="submit" class="btn btn-outline-secondary"><i class="fa fa-search"></i></button>
-				</div>
-			</form>
-			<table class="table table-hover">
-				<thead>
-					<tr>
-						<th>{% trans 'Laboratory' %}</th>
-						<th>{% trans 'Date' %}</th>
-						<th>{% trans 'Version' %}</th>
-						<th>{% trans 'Status' %}</th>
-						<th>{% trans 'Responsible' %}</th>
-						<th>{% trans 'Next update' %}</th>
-						<th></th>
-					</tr>
-				</thead>
-				<tbody>
-					{% for object in object_list %}
-						<tr>
-							<td>
-								{% if object.is_anonymous %}
-									<span class="text-muted fst-italic">{% trans 'Anonymous' %}</span>
-									<i class="fa fa-lock text-muted ms-1" title="{% trans 'Laboratory name hidden' %}"></i>
-								{% else %}
-									{{ object.laboratory.name }}
-									<i class="fa fa-unlock text-success ms-1" title="{% trans 'Laboratory name visible' %}"></i>
-								{% endif %}
-							</td>
-							<td>{{ object.assessment_date }}</td>
-							<td>{{ object.version }}</td>
-							<td><span class="badge {% if object.status == 'completed' %}bg-success{% elif object.status == 'obsolete' %}bg-dark{% else %}bg-secondary{% endif %}">{{ object.get_status_display }}</span></td>
-							<td>{{ object.responsible|default:"—" }}</td>
-							<td>{{ object.due_date|default:"—" }}</td>
-							<td class="text-end">
-								<a class="btn btn-sm btn-outline-primary" href="{% url 'riskmanagement:iper_detail' org_pk object.pk %}">
-									<i class="fa fa-eye"></i> {% trans 'Open' %}</a>
-								{% if perms.risk_management.delete_iperassessment %}
-								<button type="button" class="btn btn-sm btn-outline-danger ms-1"
-									data-bs-toggle="modal" data-bs-target="#delete_obj_modal"
-									data-delete-url="{% url 'riskmanagement:iper_delete' org_pk object.pk %}"
-									data-delete-label="{{ object.laboratory.name }} v{{ object.version }} ({{ object.assessment_date }})">
-									<i class="fa fa-trash"></i> {% trans 'Delete' %}</button>
-								{% endif %}
-							</td>
-						</tr>
-					{% empty %}
-						<tr><td colspan="7" class="text-muted text-center">{% trans 'No assessments yet.' %}</td></tr>
-					{% endfor %}
-				</tbody>
+			<table class="table table-hover table-striped w-100 table-responsive" id="table-iper">
 			</table>
-			{% if is_paginated %}
-				<nav><ul class="pager">
-					{% if page_obj.has_previous %}<li><a href="{{ pgparams }}page={{ page_obj.previous_page_number }}">{% trans 'Previous' %}</a></li>{% endif %}
-					<li>{% trans 'Page' %} {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</li>
-					{% if page_obj.has_next %}<li><a href="{{ pgparams }}page={{ page_obj.next_page_number }}">{% trans 'Next' %}</a></li>{% endif %}
-				</ul></nav>
-			{% endif %}
 		</div>
 	</div>
 
@@ -95,22 +38,15 @@
 	{% endif %}
 {% endblock %}
 {% block js %}
-{% if perms.risk_management.delete_iperassessment %}
-<script>
-(function () {
-	var modal = document.getElementById('delete_obj_modal');
-	if (!modal) return;
-	modal.addEventListener('show.bs.modal', function (event) {
-		var btn = event.relatedTarget;
-		var url = btn.getAttribute('data-delete-url');
-		var label = btn.getAttribute('data-delete-label');
-		modal.querySelector('.objtext').textContent = label;
-		modal.querySelector('form').setAttribute('action', url);
-	});
-	modal.querySelector('.delbtn').addEventListener('click', function () {
-		modal.querySelector('form').submit();
-	});
-})();
-</script>
-{% endif %}
+	{{ block.super }}
+	<script>
+		const has_delete_perm = {{ perms.risk_management.delete_iperassessment|yesno:"true,false" }};
+		const object_urls = {
+			list_url: "{% url 'riskmanagement:api-iperassessment-list' org_pk %}",
+			destroy_url: "{% url 'riskmanagement:api-iperassessment-detail' org_pk 0 %}",
+		}
+		// Página de detalle (no modal): la abre la acción "open" de la tabla.
+		const iper_detail_url = "{% url 'riskmanagement:iper_detail' org_pk 0 %}";
+	</script>
+	<script src="{% static 'js/iper_list.js' %}?v={% get_organilab_version %}"></script>
 {% endblock %}

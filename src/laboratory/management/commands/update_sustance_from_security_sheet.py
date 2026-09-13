@@ -7,7 +7,8 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.db import connections
 
-from laboratory.models import Catalog, SustanceCharacteristics
+from laboratory.models import Catalog
+from sga.models import SubstanceCharacteristics
 from laboratory.utils_pdf import extract_catalog_fields, extract_msds_data
 
 # Catalog keys used for catalog field extraction
@@ -25,7 +26,7 @@ _M2M_CATALOG_FIELDS = ['white_organ', 'ue_code', 'nfpa', 'storage_class']
 
 
 def _resolve_pdf_path(sc):
-    """Resolve the PDF path for a SustanceCharacteristics in MEDIA_ROOT."""
+    """Resolve the PDF path for a SubstanceCharacteristics in MEDIA_ROOT."""
     if not sc.security_sheet or not sc.security_sheet.name:
         return None
 
@@ -38,7 +39,7 @@ def _resolve_pdf_path(sc):
 
 def _process_one(sc_pk, catalog_data, dry_run, only_empty, update_sds=False, sds_max_years=5,
                  sds_delay=2, sources=None):
-    """Process a single SustanceCharacteristics. Returns a result dict.
+    """Process a single SubstanceCharacteristics. Returns a result dict.
 
     Runs in a worker process — closes inherited DB connections so each
     process opens its own fresh connection.
@@ -46,8 +47,7 @@ def _process_one(sc_pk, catalog_data, dry_run, only_empty, update_sds=False, sds
     django.setup()
     connections.close_all()
 
-    from laboratory.models import SustanceCharacteristics
-    from sga.models import DangerIndication  # noqa: F811
+    from sga.models import SubstanceCharacteristics, DangerIndication  # noqa: F811
 
     result = {
         'pk': sc_pk,
@@ -56,13 +56,13 @@ def _process_one(sc_pk, catalog_data, dry_run, only_empty, update_sds=False, sds
         'stderr': [],
     }
     try:
-        sc = SustanceCharacteristics.objects.select_related('obj').get(pk=sc_pk)
-    except SustanceCharacteristics.DoesNotExist:
+        sc = SubstanceCharacteristics.objects.select_related('object_related').get(pk=sc_pk)
+    except SubstanceCharacteristics.DoesNotExist:
         result['status'] = 'error'
         result['stderr'].append(f"[ERROR] PK={sc_pk}: not found")
         return result
 
-    name = str(sc.obj) if sc.obj else f"PK={sc.pk}"
+    name = str(sc.object_related) if sc.object_related else f"PK={sc.pk}"
     file_path = os.path.join(settings.MEDIA_ROOT, sc.security_sheet.name) if sc.security_sheet else ''
     file_exists = sc.security_sheet and file_path and os.path.exists(file_path)
 
@@ -121,17 +121,17 @@ def _process_one(sc_pk, catalog_data, dry_run, only_empty, update_sds=False, sds
 
     # Create traceability record for existing PDFs if none exists
     try:
-        from laboratory.models import SDSTraceability
+        from sga.models import SDSTraceability
         from laboratory.management.commands.identify_sds_sources import _identify_source, _extract_revision_date, _parse_date
         from laboratory.sds_sources import SOURCE_NAME_TO_KEY
 
-        if not SDSTraceability.objects.filter(sustance_characteristics=sc).exists():
+        if not SDSTraceability.objects.filter(sga_substance_characteristics=sc).exists():
             source_name = _identify_source(pdf_text) if pdf_text else 'Sin identificar'
             source_key = SOURCE_NAME_TO_KEY.get(source_name, 'unknown')
             rev_date_str = _extract_revision_date(pdf_text) if pdf_text else ''
             rev_date = _parse_date(rev_date_str)
             SDSTraceability.objects.create(
-                sustance_characteristics=sc,
+                sga_substance_characteristics=sc,
                 source=source_key,
                 revision_date=rev_date,
             )
@@ -231,7 +231,7 @@ def _process_one(sc_pk, catalog_data, dry_run, only_empty, update_sds=False, sds
 
 
 class Command(BaseCommand):
-    help = "Extract data from security_sheet PDFs and update SustanceCharacteristics fields"
+    help = "Extract data from security_sheet PDFs and update SubstanceCharacteristics fields"
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -248,7 +248,7 @@ class Command(BaseCommand):
             '--ids',
             nargs='+',
             type=int,
-            help='Specific SustanceCharacteristics PKs to process',
+            help='Specific SubstanceCharacteristics PKs to process',
         )
         parser.add_argument(
             '--workers',
@@ -289,7 +289,7 @@ class Command(BaseCommand):
                 Catalog.objects.filter(key=key).order_by('pk').values_list('pk', 'description')
             )
 
-        qs = SustanceCharacteristics.objects.exclude(
+        qs = SubstanceCharacteristics.objects.exclude(
             security_sheet=''
         ).exclude(
             security_sheet__isnull=True

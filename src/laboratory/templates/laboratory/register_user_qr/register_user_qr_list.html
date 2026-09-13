@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static i18n %}
-{% load gtsettings %}
+{% load gtsettings organilab_tags %}
 {% load urlname_tags %}
 {% block pre_head %}
 	{% define_urlname_action 'manage_register_user_qrcode' %}
@@ -34,54 +34,7 @@
 <div align="center">
     <div id="forms" style="width: 90%;">
         {% csrf_token %}
-        <table class="table table-hover table" id="form_table">
-            <thead>
-            <tr>
-                <th>
-                    {% trans 'Creation date' %}
-                </th>
-                <th>
-                    {% trans 'Last update' %}
-                </th>
-                <th>
-                    {% trans 'Created by' %}
-                </th>
-                <th>
-                    {% trans 'Organization' %}
-                </th>
-
-                <th>
-                    &nbsp;
-                </th>
-            </tr>
-            </thead>
-            <tbody>
-
-            {% for obj in object_list %}
-            <tr>
-                <td>
-                    {{obj.creation_date}}
-                </td>
-                <td>
-                    {{obj.last_update}}
-                </td>
-                <td>
-                    {% if obj.created_by.get_full_name %}{{ obj.created_by.get_full_name }}{% else %}{{ obj.created_by.username }}{% endif %}
-                </td>
-                <td>
-                    {{obj.organization_register.name}}
-                </td>
-
-                <td style="width: 120px">
-                    <a title="{% trans 'Edit' %}" class="btn btn-sm btn-outline-warning" href="{% url 'laboratory:manage_register_user_qr' org_pk laboratory obj.pk %}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
-                    <a title="{% trans 'Download' %}" class="btn btn-sm btn-outline-info" href="{% url 'laboratory:download_register_user_qr' org_pk laboratory obj.pk %}"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></a>
-                    <a title="{% trans 'History' %}" class="btn btn-sm btn-outline-success" href="{% url 'laboratory:logentry_register_user_qr' org_pk laboratory obj.pk %}"><i class="fa fa-file-text-o"></i></a>
-                    <a title="{% trans 'Delete' %}" class="btn btn-sm btn-outline-danger" href="{% url 'laboratory:delete_register_user_qr' org_pk laboratory obj.pk %}"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
-
-                </td>
-            </tr>
-            {% endfor %}
-            </tbody>
+        <table class="table table-hover w-100" id="form_table">
         </table>
     </div>
 </div>
@@ -90,6 +43,18 @@
 
 
 {% block js %}
+{{ block.super }}
 <script>
+    const object_urls = {
+        list_url: "{% url 'laboratory:api-registeruserqr-list' org_pk laboratory %}",
+    }
+    // Acciones por fila: páginas propias; el 0 final es el placeholder del pk.
+    const row_action_urls = {
+        edit: "{% url 'laboratory:manage_register_user_qr' org_pk laboratory 0 %}",
+        download: "{% url 'laboratory:download_register_user_qr' org_pk laboratory 0 %}",
+        logentry: "{% url 'laboratory:logentry_register_user_qr' org_pk laboratory 0 %}",
+        delete: "{% url 'laboratory:delete_register_user_qr' org_pk laboratory 0 %}",
+    }
 </script>
+<script src="{% static 'js/register_user_qr_list.js' %}?v={% get_organilab_version %}"></script>
 {% endblock %}

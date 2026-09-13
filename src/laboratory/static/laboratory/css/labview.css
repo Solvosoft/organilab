@@ -1,0 +1,46 @@
+/* Vista de laboratorio. Lo que no cubre Bootstrap: la tarjeta de un estante
+ * dentro de la cuadricula y el apilado en pantallas estrechas. */
+
+.labview-furniture-dot {
+	display: inline-block;
+	width: .75rem;
+	height: .75rem;
+	border-radius: 50%;
+}
+
+.labview-shelf {
+	padding: .35rem .5rem;
+	background: var(--bs-body-bg, #fff);
+	border-radius: var(--bs-border-radius-sm, .25rem);
+}
+
+.labview-shelf strong {
+	font-size: .9rem;
+}
+
+/* El mapa scrollea por dentro para que la tabla siga a la vista en escritorio;
+ * en pantallas estrechas se apilan y el limite estorba. */
+@media (min-width: 992px) {
+	#labview_map {
+		max-height: calc(100vh - 14rem);
+		overflow-y: auto;
+	}
+}
+
+.labview-shelf-dot {
+	display: inline-block;
+	width: .6rem;
+	height: .6rem;
+	border-radius: 50%;
+	flex: 0 0 auto;
+}
+
+.labview-shelf-desc {
+	color: var(--bs-secondary-color, #6c757d);
+}
+
+/* Coincidencias de la busqueda: se marcan todas, aunque solo se navegue a una. */
+.pg-item.labview-match {
+	outline: 2px solid var(--bs-warning, #ffc107);
+	outline-offset: 1px;
+}

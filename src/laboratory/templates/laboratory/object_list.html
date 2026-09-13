@@ -42,21 +42,8 @@
 	{% include 'gentelella/blocks/modal_template_delete.html' with form=form_delete form_id="delete_obj_form" id="delete_obj_modal" title=delete_obj_tittle url=detail_obj_url %}
 
 	<!-- Modal de Detalle de Material -->
-	<div class="modal fade" id="object_detail_modal" tabindex="-1" role="dialog" aria-labelledby="object_detail_modalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-lg" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="object_detail_modalLabel">{% trans 'Material Detail' %}</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
-				</div>
-				<div class="modal-body" id="object_detail_modal_body">
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-				</div>
-			</div>
-		</div>
-	</div>
+	{% trans 'Material Detail' as object_detail_title %}
+	{% include 'gentelella/blocks/modal_template_detail.html' with id="object_detail_modal" title=object_detail_title modal_class="modal-lg modal-dialog-scrollable" %}
 
 {% endblock %}
 

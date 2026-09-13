@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% load gtsettings organilab_tags %}
+{% load timejs %}
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_true  "use_datatables" %}
+    {% define_urlname_action 'trash_list' %}
+{% endblock %}
+
+{% block title %}{% trans 'Trash' %}{% endblock %}
+
+{% block content %}
+<h1 class="text-center">{% trans 'Trash' %}</h1>
+<div align="center">
+    <div id="trash" style="width: 90%;">
+        {% csrf_token %}
+        <table class="table table-hover w-100" id="trash_table"></table>
+    </div>
+</div>
+
+{% url 'laboratory:api-trash-detail' org_pk 0 as destroy_trash_url %}
+{% trans 'Delete permanently' as delete_trash_title %}
+{% include 'gentelella/blocks/modal_template_delete.html' with form_id="delete_trash_form" id="delete_trash_modal" title=delete_trash_title url=destroy_trash_url %}
+{% endblock %}
+
+{% block js %}
+{{ block.super }}
+<script>
+    document.datetime_format = "{% get_datetime_format %}";
+    const trash_urls = {
+        list_url: "{% url 'laboratory:api-trash-list' org_pk %}",
+        restore_url: "{% url 'laboratory:api-trash-restore' org_pk 0 %}",
+        destroy_url: "{% url 'laboratory:api-trash-detail' org_pk 0 %}",
+    }
+</script>
+<script src="{% static 'js/trash_list.js' %}?v={% get_organilab_version %}"></script>
+{% endblock %}

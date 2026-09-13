@@ -4,7 +4,6 @@ from django.utils.translation import gettext as _
 from laboratory.logsustances import log_object_change
 from laboratory.models import (
     Object,
-    SustanceCharacteristics,
     MaterialCapacity,
     Catalog,
     ShelfObject,
@@ -14,6 +13,7 @@ from laboratory.models import (
 from laboratory.shelfobject.utils import build_shelfobject_qr
 from laboratory.utils import organilab_logentry
 from laboratory.utils_base_unit import get_conversion_from_two_units
+from sga.models import SubstanceCharacteristics
 
 
 def create_reactive_limits(laboratory, object, quantity, measurement_unit):
@@ -41,13 +41,13 @@ def validate_shelf(shelf, shelfobject_unit, quantity):
 
 
 def get_reactive_by_cas_or_name(user, cas, name, molecular_formula, organization):
-    substace_char = SustanceCharacteristics.objects.filter(
+    substace_char = SubstanceCharacteristics.objects.filter(
         cas_id_number=cas, molecular_formula=molecular_formula
     )
     obj = Object.objects.filter(
         type=0,
         name=name.capitalize(),
-        sustancecharacteristics__in=substace_char,
+        substancharacteristics_object__in=substace_char,
         organization=organization,
     ).distinct()
     if obj.exists() and obj.count() == 1:
@@ -67,14 +67,14 @@ def get_reactive_by_cas_or_name(user, cas, name, molecular_formula, organization
         changed_data=["name", "type", "is_pure"],
         relobj=organization.root,
     )
-    sus = SustanceCharacteristics.objects.create(
-        obj=new_obj, cas_id_number=cas, molecular_formula=molecular_formula
+    sus = SubstanceCharacteristics.objects.create(
+        object_related=new_obj, cas_id_number=cas, molecular_formula=molecular_formula
     )
     organilab_logentry(
         user,
         sus,
         ADDITION,
-        "sustancecharacteristics",
+        "substancecharacteristics",
         changed_data=["cas_id_number", "molecular_formula"],
         relobj=organization.root,
     )

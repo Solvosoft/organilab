@@ -1,3 +1,5 @@
+import logging
+
 from django.core.files.base import ContentFile
 from django.utils.translation import gettext as _
 
@@ -9,6 +11,8 @@ from report.utils import (
     load_dataset_by_column,
     format_datetime,
 )
+
+logger = logging.getLogger("organilab")
 
 
 def get_dataset_report_discard_objects(report, laboratory, column_list=None):
@@ -92,13 +96,32 @@ def report_discard_object_doc(report):
     labs = report.data.get("laboratory", [])
     labs = organization.get_my_laboratories if len(labs) == 0 else labs
 
+    # El payload guarda los pks elegidos el día que se pidió el reporte, y un
+    # laboratorio puede haberse borrado desde entonces. Se resuelven de una
+    # consulta y los ausentes se omiten con aviso: un informe parcial sobre los
+    # laboratorios que existen es útil, una excepción no. La variante HTML los
+    # filtra igual, de modo que ambas dan el mismo resultado.
+    laboratories = {
+        lab.pk: lab for lab in Laboratory.objects.filter(pk__in=list(labs))
+    }
+    missing = [pk for pk in labs if pk not in laboratories]
+    if missing:
+        logger.warning(
+            "Reporte %s: se omiten %d laboratorios que ya no existen: %s",
+            report.pk,
+            len(missing),
+            missing,
+        )
+
     for lab in labs:
-        laboratory = Laboratory.objects.get(pk=lab)
+        laboratory = laboratories.get(lab)
+        if laboratory is None:
+            continue
 
         doc += [[laboratory.name], content] + get_dataset_report_discard_objects(
             report, lab, None
         )
-    total_labs = len(labs) * 2 + 1
+    total_labs = len(laboratories) * 2 + 1
     record_total = len(doc) - total_labs
     report_name = get_report_name(report)
     doc.insert(0, [report_name])

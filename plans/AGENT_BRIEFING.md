@@ -135,6 +135,26 @@ Recognize these three mixins — most models inherit one of them:
 When adding a new model, ask: *should it be org-scoped?* If yes, inherit
 `AbstractOrganizationRef`.
 
+### `DeletedWithTrash` — soft delete into the trash
+
+A fourth mixin, `DeletedWithTrash` (from `djgentelella.models`), turns a model's
+delete into a recoverable one. Pilots: `Protocol` (`src/laboratory/models.py`)
+and `Procedure` (`src/academic/models.py`).
+
+**The rule that matters:** delete with
+`obj.delete(user=request.user, related_objects=[organization, laboratory])`.
+`related_objects` must be **model instances** (a bare pk raises `ValueError`),
+and they are what makes the row visible in the org-scoped trash screen — its
+`scope_queryset()` joins `TrashRelation` against the organization in the URL.
+**A plain `obj.delete()` still soft-deletes, but with no relation the object is
+invisible and unrecoverable.** The same trap applies to
+`Model.objects.filter(...).delete()` and `parent.child_set.all().delete()`,
+whose `delete()` is also soft once the mixin is on: use `hard_delete()` for
+technical cleanups.
+
+Django's CASCADE collector and the admin's "delete selected" bypass the model's
+`delete()` entirely — those are hard deletes.
+
 ---
 
 ## 6. Multi-tenancy & permission flow (end to end)
@@ -238,10 +258,22 @@ router in the app's `urls.py`.
 
 ## 11. Frontend
 
-- Admin UI uses **djgentelella** (Gentelella template). Base template:
-  `src/presentation/templates/base.html` (extends `gentelella/base.html`).
+- Admin UI uses **djgentelella 0.6.0** (Gentelella template; checkout editable de
+  `~/Desktop/desarrollo/django-gentelella-widgets`, rama `development` — ver
+  `roadmap/README.md`). Base template: `src/presentation/templates/base.html`
+  (extends `gentelella/base.html`).
+- Stack UI post-migración: **Bootstrap 5** (inputs nativos, sin iCheck/switchery),
+  **DataTables 2** (`layout`, clases `dt-*`), **Chart.js 4**, **TinyMCE 8**,
+  **Leaflet** vía `GTPointField`/`MapPointInput` (sin django-location-field).
+- Modales y tablas nuevas siguen el patrón `AuthAllPermBaseObjectManagement` +
+  `ObjectCRUD` (`gentelella/blocks/modal_template*.html`); variantes propias en
+  `src/presentation/templates/modal_template*.html`. Inline CRUD de hijos:
+  `BaseInlineObjectManagement` (ej. `academic/api/views.py`).
+- Correos/notificaciones: `djgentelella.async_notification` (el paquete standalone
+  `async_notifications` y markitup salieron en la migración).
 - Per-app `templates/` and `static/{css,js,img}` directories; shared assets in
-  `src/presentation/static/`.
+  `src/presentation/static/` (incluye `django_ajax/` vendorizado, pendiente de
+  salida total con el sub-proyecto labview).
 - **Dynamic forms** use **Formio.js** in `derb`: `src/derb/static/formio/`
   (`FormioController.js`, plus custom components `CustomSelect.js`,
   `CustomTextInput.js`, `CustomSection.js`, and `formio.full.min.js`).
@@ -262,8 +294,8 @@ router in the app's `urls.py`.
   `django-celery-beat` for scheduling. In tests, `CELERY_TASK_ALWAYS_EAGER = True`.
 - **Notable third-party libs:** `djgentelella` (UI + base object-management viewsets),
   `djangorestframework`, `tree_queries` (TreeNode hierarchies), `mozilla_django_oidc`,
-  `django-otp` (TOTP), `weasyprint` (PDF), `location_field`, `async_notifications`,
-  Sentry/Glitchtip.
+  `django-otp` (TOTP), `weasyprint` (PDF), Sentry/Glitchtip. (`location_field` y
+  `async_notifications` se retiraron en la migración a djgentelella 0.6.0.)
 - **Scheduled tasks** (`CELERYBEAT_SCHEDULE`): daily emails, product-limit checks,
   precursor reports (monthly), max-stock registration, shelf-object expiration emails,
   establishment logs, org-lab relation cleanup.
@@ -327,6 +359,8 @@ fixtures), `load_urlname_permissions` (sync URL-based perms), and sga loaders
 | Touch chemical safety / labels | `src/sga/` |
 | Touch dynamic forms | `src/derb/` + `src/derb/static/formio/` |
 | Add a scheduled job | `CELERYBEAT_SCHEDULE` in `src/organilab/settings.py` + a task in the relevant app |
+| Write to the audit log | `organilab_logentry()` in `src/laboratory/utils.py` — a bridge over `djgentelella.history.add_log`; pass `relobj=` instances so the entry shows in the org-scoped log (`laboratory:logentry_list`) |
+| Delete something recoverably | `DeletedWithTrash` (§5) + `delete(user=…, related_objects=[org, lab])`; screen at `laboratory:trash_list` (`src/laboratory/views/trash.py`) |
 | Add/run tests | `src/<app>/tests/`; `make single-test TEST=...` |
 | Edit user-facing strings | wrap in `gettext`, then `make messages` + `make trans` (`src/locale/es/...`) |
 | Find a URL | Root `src/organilab/urls.py` → app `urls.py` |

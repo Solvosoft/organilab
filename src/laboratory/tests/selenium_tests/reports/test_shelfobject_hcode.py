@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.test import tag
 from django.urls import reverse
 from organilab_test.tests.base import OptimizedSeleniumBase, modifies_db
+from organilab_test.tests.selenium_xpaths import select2_result
 
 
 class ShelfObjectHcodeSeleniumBase(OptimizedSeleniumBase):
@@ -49,14 +50,25 @@ class ShelfObjectHcodeSeleniumTest(ShelfObjectHcodeSeleniumBase):
                     "var d=t.row(0).data();"
                     "if(d){ocrud.update(d);}"
                 ),
-                "sleep": 3,
+                "sleep": 30,
             },
+            # El select2 existe oculto desde que carga la página, así que hay
+            # que esperar a que el modal esté realmente abierto: si no, el
+            # click cae sobre un elemento que aún no es interactuable.
             {
-                "path": "//*[@id='update_obj_form']//div/div/span/span/span",
+                "path": "//*[@id='update_obj_modal'][contains(@class, 'show')]",
+                "presence_only": True,
+                "sleep": 30,
+            },
+            # El formulario sólo tiene el campo process_condition, así que no
+            # hace falta la cadena posicional de <div>/<span> que dependía de
+            # la plantilla de djgentelella.
+            {
+                "path": "//*[@id='update_obj_form']//span[contains(@class, 'select2-selection')]",
                 "sleep": 1,
             },
             {
-                "path": "/html/body/span/span/span[2]/ul/li[2]",
+                "path": select2_result(2),
             },
             {
                 "path": "//*[@id='update_obj_modal']//button[contains(@class, 'formadd')]",

@@ -30,10 +30,18 @@ formmodal.addBtnForm = function(instance) {
                 });
             },
             error: function( request, status, error ){
+                let error_msg = gettext('An error has occurred');
+                if (request.responseJSON) {
+                    if (request.responseJSON.detail) {
+                        error_msg = request.responseJSON.detail;
+                    } else if (request.responseJSON.errors && request.responseJSON.errors.__all__) {
+                        error_msg = request.responseJSON.errors.__all__.join(' ');
+                    }
+                }
                 Swal.fire({
                   icon: 'error',
                   title: gettext('Error'),
-                  text: gettext('An error has occurred'),
+                  text: error_msg,
                 }).then(function(result) {
                 datatableelement.ajax.reload();
                 })
@@ -112,10 +120,18 @@ function delete_warning_word(pk){
                 })
             },
             error: function( request, status, error ){
+                let error_msg = gettext('An error has occurred');
+                if (request.responseJSON) {
+                    if (request.responseJSON.detail) {
+                        error_msg = request.responseJSON.detail;
+                    } else if (request.responseJSON.errors && request.responseJSON.errors.__all__) {
+                        error_msg = request.responseJSON.errors.__all__.join(' ');
+                    }
+                }
                 Swal.fire({
                   icon: 'error',
                   title: gettext('Error'),
-                  text: gettext('An error has occurred'),
+                  text: error_msg,
                 }).then(function(result) {
                 datatableelement.ajax.reload();
                 })
@@ -143,8 +159,12 @@ datatableelement=createDataTable('#warningwordtable', document.url_warnings_tabl
         {data: "actions", name: "actions", title: gettext('Actions'), type: "string", visible: true, sortable: false, filterable: false}
     ],
     buttons: buttons,
-    dom: "<'d-flex justify-content-between'<'m-2'l>" +
-    "<'m-2'B><'m-2 d-flex justify-content-start'f>>" +
-    "<'row'tr><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 m-auto'p>>",
+    layout: {
+        topStart: 'pageLength',
+        top: 'buttons',
+        topEnd: 'search',
+        bottomStart: 'info',
+        bottomEnd: 'paging'
+    },
 }, addfilter=false);
 

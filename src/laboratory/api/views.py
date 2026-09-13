@@ -1,16 +1,18 @@
 import logging
 
 from django.conf import settings
-from django.contrib.admin.models import LogEntry, DELETION, CHANGE, ADDITION
+from django.contrib.admin.models import DELETION, CHANGE, ADDITION
 from django.contrib.auth.decorators import permission_required, login_required
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import Value, DateField, Q
-from django.http import JsonResponse
+from django.db.models import Value, DateField, Q, Subquery
+from django.http import JsonResponse, Http404
 from django.shortcuts import get_object_or_404, render
 from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
 from django_filters.rest_framework import DjangoFilterBackend
+from djgentelella.history.api import HistoryViewSet
 from djgentelella.objectmanagement import AuthAllPermBaseObjectManagement
+from djgentelella.trash.api import TrashViewSet
 from rest_framework import status, viewsets, mixins
 from rest_framework.authentication import SessionAuthentication, BaseAuthentication
 from rest_framework.decorators import action
@@ -65,6 +67,7 @@ from laboratory.api.serializers import (
     LabOrOrgRequestDataTableSerializer,
     LabOrOrgRequestReviewSerializer,
     LabOrOrgRequestReviewDataTableSerializer,
+    RegisterUserQRDataTableSerializer,
 )
 from laboratory.forms import ObservationShelfObjectForm
 from laboratory.models import (
@@ -85,6 +88,7 @@ from laboratory.models import (
     ObjectFeatures,
     ShelfObjectObservation,
     LabOrOrgRequest,
+    RegisterUserQR,
     OrganizationStructureRelations,
 )
 from laboratory.qr_utils import get_or_create_qr_shelf_object
@@ -96,10 +100,11 @@ from laboratory.shelfobject.serializers import (
 )
 from laboratory.shelfobject.utils import save_increase_decrease_shelf_object
 from laboratory.utils import (
-    get_logentries_org_management,
+    get_laboratories_from_organization,
     get_pk_org_ancestors_decendants,
     PermissionByLaboratoryInOrganization,
     organilab_logentry,
+    check_user_access_kwargs_org_lab,
 )
 from laboratory.lab_or_org_request_notifications import (
     notify_request_created,
@@ -285,7 +290,17 @@ class CommentAPI(viewsets.ModelViewSet):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-class ProtocolViewSet(viewsets.ModelViewSet):
+class ProtocolViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    """Solo listado: la pantalla de protocolos no crea ni edita por aquí.
+
+    Era un ModelViewSet completo con solo IsAuthenticated, así que exponía
+    create/update/destroy sin validar organización ni laboratorio (el filtro
+    por lab_pk solo corre en el listado). Peor: su destroy llamaba al
+    delete() de DeletedWithTrash sin usuario ni related_objects, y un
+    protocolo sin TrashRelation nunca aparece en la papelera org-scoped —
+    quedaba borrado, invisible e irrecuperable.
+    """
+
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = serializers.ProtocolDataTableSerializer
@@ -297,33 +312,43 @@ class ProtocolViewSet(viewsets.ModelViewSet):
     ordering_fields = ["pk"]
     ordering = ("pk",)
 
-    def filter_queryset(self, queryset):
-        queryset = super().filter_queryset(queryset)
+    def scope_queryset(self, queryset):
         lab_pk = self.request.GET.get("lab_pk", None)
-        if lab_pk:
-            queryset = queryset.filter(laboratory__pk=lab_pk)
-        else:
-            queryset = queryset.none()
-        return queryset
+        if not lab_pk:
+            return queryset.none()
+        return queryset.filter(laboratory__pk=lab_pk)
+
+    def filter_queryset(self, queryset):
+        return self.scope_queryset(super().filter_queryset(queryset))
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         data = self.paginate_queryset(queryset)
         response = {
             "data": data,
-            "recordsTotal": Protocol.objects.count(),
+            # Scoped al laboratorio: el count global fugaba el volumen de
+            # toda la plataforma a cualquier inquilino.
+            "recordsTotal": self.scope_queryset(self.get_queryset()).count(),
             "recordsFiltered": queryset.count(),
             "draw": self.request.GET.get("draw", 1),
         }
         return Response(self.get_serializer(response).data)
 
 
-class LogEntryViewSet(viewsets.ModelViewSet):
-    authentication_classes = [SessionAuthentication]
+class LogEntryViewSet(HistoryViewSet):
+    """Bitácora org-scoped sobre el HistoryViewSet de la lib.
+
+    El alcance multi-tenant va por el join de HistoryRelation (org + labs de
+    la org), sin materializar pks en memoria; recordsTotal es el universo
+    scoped (el count global fugaba el volumen de toda la plataforma). La
+    rama QR filtra por la RELACIÓN al RegisterUserQR en vez de comparar
+    change_message traducido (que rompía al cambiar de idioma). Los logs QR
+    anteriores a esta migración no llevan esa relación y no se listan aquí.
+    """
+
     permission_classes = [IsAuthenticated]
+    perms = {}
     serializer_class = serializers.LogEntryDataTableSerializer
-    queryset = LogEntry.objects.all().exclude(user__username="solvoadmin")
-    pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     search_fields = ["object_repr", "action_flag"]
     filterset_class = LogEntryFilterSet
@@ -331,56 +356,85 @@ class LogEntryViewSet(viewsets.ModelViewSet):
     ordering = ("-pk",)
     can_use_inactive_organization = True
 
-    def get_queryset(self):
-        filters = {}
+    def get_serializer_class(self):
+        if self.request.GET.get("qr_obj", ""):
+            return LogEntryUserDataTableSerializer
+        return self.serializer_class
+
+    def get_serializer(self, *args, **kwargs):
+        kwargs.setdefault("context", self.get_serializer_context())
+        return self.get_serializer_class()(*args, **kwargs)
+
+    def scope_queryset(self, queryset):
+        qr_obj = self.request.GET.get("qr_obj", "")
+        if qr_obj:
+            if not qr_obj.isnumeric():
+                return queryset.none()
+            return queryset.filter(
+                gt_relations__content_type__app_label="laboratory",
+                gt_relations__content_type__model="registeruserqr",
+                gt_relations__object_id=int(qr_obj),
+            ).distinct()
+
         org = self.request.GET.get("org_pk", None)
-        qr_obj = self.request.GET.get("qr_obj", None)
-        queryset = self.queryset.none()
+        orga = OrganizationStructure.objects.filter(pk=org).first()
+        if not orga:
+            return queryset.none()
+        user_is_allowed_on_organization(self.request.user, orga)
+        laboratories = get_laboratories_from_organization(
+            orga.pk, self.request.user
+        ).values("pk")
+        return queryset.filter(
+            Q(
+                gt_relations__content_type__app_label="laboratory",
+                gt_relations__content_type__model="laboratory",
+                gt_relations__object_id__in=Subquery(laboratories),
+            )
+            | Q(
+                gt_relations__content_type__app_label="laboratory",
+                gt_relations__content_type__model="organizationstructure",
+                gt_relations__object_id=orga.pk,
+            )
+        ).distinct()
 
-        if not qr_obj:
-            orga = OrganizationStructure.objects.filter(pk=org).first()
-            log_entries = get_logentries_org_management(self, org, self.request.user)
-            logs = set()
-            if orga:
-                logs = self.queryset.filter(
-                    content_type__app_label="laboratory",
-                    content_type__model__in=["laboratory", "organizationstructure"],
-                    object_id__in=set(orga.get_my_laboratories),
-                ).values_list("pk", flat=True)
-            filters.update({"pk__in": set(logs).union(set(log_entries))})
-        else:
-            if qr_obj.isnumeric():
-                self.serializer_class = LogEntryUserDataTableSerializer
-                qr_obj = int(qr_obj)
-                detail = [
-                    _("[{'changed': {'fields': ['Login', %d]}}]") % (qr_obj),
-                    _("[{'added': {'fields': ['Register', %d]}}]") % (qr_obj),
-                ]
 
-                filters.update(
-                    {
-                        "action_flag__in": [1, 2],
-                        "content_type__app_label": "auth",
-                        "content_type__model": "user",
-                        "change_message__in": detail,
-                    }
-                )
+class OrganizationTrashViewSet(TrashViewSet):
+    """Papelera org-scoped sobre el TrashViewSet de la lib.
 
-        if filters:
-            queryset = self.queryset.filter(**filters).distinct()
+    El alcance va por el join de TrashRelation con la organización de la URL
+    (todo borrado a papelera registra esa relación al ejecutarse) y aplica
+    tanto al listado como a restore/destroy, que resuelven por get_object().
+    recordsTotal es el universo scoped. Los permisos son los de la lib
+    (djgentelella.view/change/delete_trash), otorgados por rol vía
+    update_roles.
+    """
 
-        return queryset
+    def get_organization(self):
+        if not hasattr(self, "_organization"):
+            self._organization = get_object_or_404(
+                OrganizationStructure, pk=self.kwargs.get("org_pk")
+            )
+        return self._organization
 
-    def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
-        data = self.paginate_queryset(queryset)
-        response = {
-            "data": data,
-            "recordsTotal": LogEntry.objects.count(),
-            "recordsFiltered": queryset.count(),
-            "draw": self.request.GET.get("draw", 1),
-        }
-        return Response(self.get_serializer(response).data)
+    def scope_queryset(self, queryset):
+        organization = self.get_organization()
+        user_is_allowed_on_organization(self.request.user, organization)
+        return queryset.filter(
+            gt_relations__content_type__app_label="laboratory",
+            gt_relations__content_type__model="organizationstructure",
+            gt_relations__object_id=organization.pk,
+        ).distinct()
+
+    def get_log_related_objects(self, trash):
+        # El contexto que registró el borrado (organización, laboratorio…) se
+        # propaga al log del restore/hard delete, y así la bitácora
+        # org-scoped también lista esas acciones.
+        related = [
+            relation.content_object
+            for relation in trash.gt_relations.all()
+            if relation.content_object is not None
+        ]
+        return related or [self.get_organization()]
 
 
 class InformViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
@@ -1068,14 +1122,14 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
         return response_data, reactive_changed_data, reactive_ch_changed_data
 
     def get_reactive_ch_serializer(self, instance, request, partial):
-        if hasattr(instance, "sustancecharacteristics"):
-            reactive_ch_instance = instance.sustancecharacteristics
+        sga_char = instance.substancharacteristics_object.first()
+        if sga_char:
             reactive_ch_serializer = ValidateReactiveCharacteristicsSerializer(
-                reactive_ch_instance, data=request.data, partial=partial
+                sga_char, data=request.data, partial=partial
             )
         else:
-            data = request.data
-            data.update({"object": instance.pk})
+            data = request.data.copy()
+            data.update({"object_related": instance.pk})
             reactive_ch_serializer = ValidateReactiveCharacteristicsSerializer(
                 data=data, partial=partial
             )
@@ -1116,7 +1170,7 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
         if reactive_serializer.is_valid():
             if reactive_ch_serializer.is_valid():
                 instance = reactive_serializer.save()
-                reactive_ch_serializer.save(obj=instance)
+                reactive_ch_serializer.save(object_related=instance)
                 instance.organization = organization
 
                 response_data, reactive_changed_data, reactive_ch_changed_data = (
@@ -1140,12 +1194,13 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
                     relobj=organization,
                 )
 
-                if hasattr(instance, "sustancecharacteristics"):
+                sga_char = instance.substancharacteristics_object.first()
+                if sga_char:
                     organilab_logentry(
                         request.user,
-                        instance.sustancecharacteristics,
+                        sga_char,
                         ADDITION,
-                        "sustance characteristics",
+                        "substance characteristics",
                         changed_data=reactive_ch_changed_data,
                         change_message=_(
                             "Created substance characteristics for '%(name)s'"
@@ -1168,18 +1223,19 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
             raise ValidationError(errors)
 
     def destroy(self, request, *args, **kwargs):
-        # ReactiveCharacteristics has OnetoOne relation with Object(Equipment) -->
-        # ON DELETE CASCADE
         self.org_pk = kwargs["org_pk"]
         organization = get_object_or_404(
             OrganizationStructure.objects.using(settings.READONLY_DATABASE),
             pk=self.org_pk,
         )
         instance = self.get_object()
-        reactive_ch_instance = None
-
-        if hasattr(instance, "sustancecharacteristics"):
-            reactive_ch_instance = instance.sustancecharacteristics
+        sga_char = instance.substancharacteristics_object.first()
+        # object_related es SET_NULL, así que borrar el objeto no arrastra sus
+        # características: hay que hacerlo aquí. Pero si la fila está compartida
+        # con una Substance de SGA (la comparten tras aprobar una sustancia),
+        # borrarla se llevaría por delante CAS, códigos H y la ficha de esa
+        # sustancia, que no tiene nada que ver con este objeto de inventario.
+        sga_char_is_shared = bool(sga_char and sga_char.substance_id)
 
         destroy = super().destroy(request, *args, **kwargs)
 
@@ -1194,17 +1250,18 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
             relobj=organization,
         )
 
-        if reactive_ch_instance:
+        if sga_char and not sga_char_is_shared:
             organilab_logentry(
                 request.user,
-                reactive_ch_instance,
+                sga_char,
                 DELETION,
-                "sustance characteristics",
+                "substance characteristics",
                 changed_data=["cas_id_number", "molecular_formula"],
                 change_message=_("Deleted substance characteristics for '%(name)s'")
                 % {"name": instance.name},
                 relobj=organization,
             )
+            sga_char.delete()
         return destroy
 
     def update(self, request, *args, **kwargs):
@@ -1252,7 +1309,7 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
                     relobj=organization,
                 )
 
-                if not hasattr(instance, "sustancecharacteristics"):
+                if not instance.substancharacteristics_object.exists():
                     reactive_ch_action = ADDITION
 
                 action_msg = (
@@ -1262,7 +1319,7 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
                     request.user,
                     reactive_ch,
                     reactive_ch_action,
-                    "sustance characteristics",
+                    "substance characteristics",
                     changed_data=reactive_ch_changed_data,
                     change_message=_(
                         "%(action)s substance characteristics for '%(name)s'"
@@ -1399,7 +1456,7 @@ class ShelfObjectHcodeViewset(AuthAllPermBaseObjectManagement):
 
     queryset = ShelfObject.objects.filter(
         object__type=Object.REACTIVE,
-        object__sustancecharacteristics__h_code__code__in=[
+        object__substancharacteristics_object__h_code__code__in=[
             "H220",
             "H222",
             "H223",
@@ -1410,7 +1467,7 @@ class ShelfObjectHcodeViewset(AuthAllPermBaseObjectManagement):
     ).distinct()
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-    search_fields = ["object__name", "object__sustancecharacteristics__h_code__code"]
+    search_fields = ["object__name", "object__substancharacteristics_object__h_code__code"]
     ordering_fields = ["pk"]
     filterset_class = None
 
@@ -1723,7 +1780,7 @@ class ObjectViewSet(AuthAllPermBaseObjectManagement):
             ADDITION,
             "object",
             changed_data=[],  # no necesaria en create
-            relobj=org.root,  # para LabOrgLogEntry
+            relobj=org.root,  # para HistoryRelation
         )
 
     def perform_update(self, serializer):
@@ -1814,7 +1871,7 @@ class ShelObjectReactiveViewset(AuthAllPermBaseObjectManagement):
         "quantity",
         "measurement_unit__description",
         "measurement_unit__key",
-        "object__sustancecharacteristics__cas_id_number",
+        "object__substancharacteristics_object__cas_id_number",
     ]
     filterset_class = filterset.ShelObjectReactiveFilter
     ordering_fields = ["id"]
@@ -2118,3 +2175,51 @@ class LabOrOrgRequestReviewViewSet(AuthAllPermBaseObjectManagement):
         )
         notify_request_status_changed(instance)
         return Response({"detail": _("Request rejected.")}, status=status.HTTP_200_OK)
+
+
+class RegisterUserQRViewSet(AuthAllPermBaseObjectManagement):
+    # Solo listado: alta/edición, PDF, historial y borrado siguen siendo
+    # páginas propias (manage_register_user_qr y compañía); la tabla las abre
+    # como enlaces por fila.
+    serializer_class = {
+        "list": RegisterUserQRDataTableSerializer,
+    }
+    perms = {
+        "list": ["laboratory.view_registeruserqr"],
+    }
+
+    queryset = RegisterUserQR.objects.all()
+    pagination_class = LimitOffsetPagination
+    filter_backends = (SearchFilter, OrderingFilter)
+    search_fields = [
+        "created_by__username",
+        "created_by__first_name",
+        "created_by__last_name",
+        "organization_register__name",
+    ]
+    ordering_fields = [
+        "id",
+        "creation_date",
+        "last_update",
+        "created_by__username",
+        "organization_register__name",
+    ]
+    ordering = ("creation_date", "last_update", "organization_register__name")
+
+    def get_queryset(self):
+        org_pk = self.kwargs.get("org_pk")
+        lab_pk = self.kwargs.get("lab_pk")
+        # Mismo control multi-tenant que hacía la ListView vieja vía djgeneric.
+        if not check_user_access_kwargs_org_lab(org_pk, lab_pk, self.request.user):
+            raise Http404()
+        queryset = super().get_queryset()
+        content_type = ContentType.objects.filter(
+            app_label="laboratory", model="laboratory"
+        ).first()
+        organization = get_object_or_404(OrganizationStructure, pk=org_pk)
+        org_base_list = list(organization.descendants(include_self=True))
+        return queryset.filter(
+            organization_register__in=org_base_list,
+            content_type=content_type,
+            object_id=lab_pk,
+        ).select_related("created_by", "organization_register")

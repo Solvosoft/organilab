@@ -1,7 +1,14 @@
-.PHONY: help clean clean-pyc clean-build list test test-parallel test-selenium test-selenium-4 test-selenium-xvfb docs release sdist
+.PHONY: help clean clean-pyc clean-build list setup check-env venv-info url-inventory url-inventory-check test-urls test test-parallel test-selenium test-selenium-4 test-selenium-xvfb test-selenium-bitacora docs release sdist
 
 # Variables
-setup_version := `python3 src/organilab/__init__.py`
+ROOT_DIR := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
+VENV ?= $(ROOT_DIR)/.venv
+# Si el entorno virtual existe se usa siempre, sin necesidad de activarlo; si no,
+# se cae al python del PATH para no romper quien ya trabaje dentro de otro venv.
+PYTHON ?= $(shell test -x $(VENV)/bin/python && echo $(VENV)/bin/python || command -v python || command -v python3)
+SYSTEM_PYTHON ?= python3
+
+setup_version := `$(PYTHON) src/organilab/__init__.py`
 current_path := `pwd`
 
 
@@ -21,36 +28,54 @@ help: ## Mostrar esta ayuda
 
 
 ##--------------------------------------------------------
+## Entorno virtual
+##--------------------------------------------------------
+
+setup: ##  - crea .venv (si no existe) e instala runtime + dependencias de prueba
+	@test -x $(VENV)/bin/python || $(SYSTEM_PYTHON) -m venv $(VENV)
+	$(VENV)/bin/python -m pip install --upgrade pip
+	$(VENV)/bin/python -m pip install -r requirements.txt
+	$(VENV)/bin/python -m pip install -r test_requirements.txt
+	@$(MAKE) --no-print-directory check-env
+
+check-env: ##  - verifica dependencias, chromedriver y conexión a PostgreSQL
+	@$(PYTHON) scripts/check_env.py
+
+venv-info: ##  - muestra qué intérprete usarán los targets
+	@echo "VENV   = $(VENV)"
+	@echo "PYTHON = $(PYTHON)"
+
+##--------------------------------------------------------
 ## Project setup & server
 ##--------------------------------------------------------
 
 start: ##  - run project local
-	cd src && python manage.py migrate \
-	&& python manage.py init_checks \
-	&& python manage.py load_urlname_permissions
+	cd src && $(PYTHON) manage.py migrate \
+	&& $(PYTHON) manage.py init_checks \
+	&& $(PYTHON) manage.py load_urlname_permissions
 
 run_celery: ##  - run celery for development mode
 	./run_celery.sh
 
 database_config: ##  - init config data base
-	cd src && python manage.py migrate && python manage.py init_checks && python manage.py load_urlname_permissions
+	cd src && $(PYTHON) manage.py migrate && $(PYTHON) manage.py init_checks && $(PYTHON) manage.py load_urlname_permissions
 
 run_docker_selenium: ##  - run project in docker with selenium
 	 docker run --network="host"  -v $(current_path)/src:/organilab/src  -v $(current_path)/fixtures:/organilab/fixtures -v $(current_path)/docs:/organilab/docs  -ti organilabselenium:$(setup_version) $(run)
 
 migrate: ## - makemigrations && migrate
-	cd src && python manage.py makemigrations && \
-	python manage.py migrate
+	cd src && $(PYTHON) manage.py makemigrations && \
+	$(PYTHON) manage.py migrate
 
 requirements: ## - install all dependencies
-	pip install -r requirements.txt
+	$(PYTHON) -m pip install -r requirements.txt
 
 test-requirements: ## - install all test dependencies
-	pip install -r test_requirements.txt
+	$(PYTHON) -m pip install -r test_requirements.txt
 
 create-profile: ## - create user and user profile
-	cd src && python manage.py createsuperuser && \
-	python manage.py shell -c "\
+	cd src && $(PYTHON) manage.py createsuperuser && \
+	$(PYTHON) manage.py shell -c "\
 	from auth_and_perms.models import Profile; \
 	from django.contrib.auth.models import User; \
 	user = User.objects.last(); \
@@ -59,7 +84,7 @@ create-profile: ## - create user and user profile
 check-move-organization-data: ## Validate organization migration (Example: make check-move-organization-data FROM=5 TO=9)
 	@echo "Validating organization data migration..."
 	@echo "FROM=$(FROM) → TO=$(TO)"
-	cd src && python manage.py move_organization_data --from-org $(FROM) --to-org $(TO) --dry-run
+	cd src && $(PYTHON) manage.py move_organization_data --from-org $(FROM) --to-org $(TO) --dry-run
 
 
 move-organization-data: ## Execute organization migration (Example: make move-move-organization-data FROM=5 TO=9)
@@ -67,7 +92,7 @@ move-organization-data: ## Execute organization migration (Example: make move-mo
 	@echo "FROM=$(FROM) → TO=$(TO)"
 	@read -p "Do you want to continue? [y/N]: " confirm; \
 	if [ "$$confirm" = "y" ]; then \
-		cd src && python manage.py move_organization_data --from-org $(FROM) --to-org $(TO); \
+		cd src && $(PYTHON) manage.py move_organization_data --from-org $(FROM) --to-org $(TO); \
 	else \
 		echo "Operation cancelled"; \
 	fi
@@ -90,46 +115,69 @@ clean: ##  - remove build artifacts and remove Python file artifacts
 	$(MAKE) clean-build && $(MAKE)  clean-pyc
 
 test: ##  - run tests quickly with the default Python
-	cd src && python manage.py test  --no-input --exclude-tag=selenium
+	cd src && $(PYTHON) manage.py test  --no-input --exclude-tag=selenium
 
 test-parallel: ## - run tests in parallel (auto-detect workers)
-	cd src && python manage.py test --no-input --exclude-tag=selenium --parallel -v 2
+	cd src && $(PYTHON) manage.py test --no-input --exclude-tag=selenium --parallel -v 2
 
 single-test: ## Run Django tests (optional: TEST=path.to.test, example: make single-test TEST=laboratory.tests.test_provider.ProviderViewTest)
-	cd src && python manage.py test $(TEST) --no-input --exclude-tag=selenium
+	cd src && $(PYTHON) manage.py test $(TEST) --no-input --exclude-tag=selenium
 
-test-selenium: ## Run Selenium tests (optional: TEST=path.to.test, example: make test-selenium TEST=laboratory.tests.selenium_tests)
-	cd src && python manage.py test $(or $(TEST),) --tag=selenium --no-input --parallel -v 2
+test-selenium: ## Run Selenium tests, workers auto (optional: TEST=path.to.test, example: make test-selenium TEST=laboratory.tests.selenium_tests)
+	cd src && $(PYTHON) manage.py test $(or $(TEST),) --tag=selenium --no-input --parallel -v 2
 
-test-selenium-parallel: ## Run Selenium tests with 4 workers (optional: TEST=path.to.test)
-	cd src && python manage.py test $(or $(TEST),) --tag=selenium --no-input --parallel 20 -v 2
+test-selenium-parallel: ## Run Selenium tests with a fixed worker count (WORKERS=12 by default, optional: TEST=path.to.test)
+	cd src && $(PYTHON) manage.py test $(or $(TEST),) --tag=selenium --no-input --parallel $(or $(WORKERS),12) -v 2
 
-test-selenium-xvfb: ## Run Selenium tests with virtual display via xvfb-run (optional: TEST=path.to.test)
-	xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" sh -c "cd src && python manage.py test $(or $(TEST),) --tag=selenium --no-input --parallel 12 -v 2"
+test-selenium-xvfb: ## Run Selenium tests headless via xvfb-run, workers auto (optional: TEST=path.to.test)
+	xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" sh -c "cd src && $(PYTHON) manage.py test $(or $(TEST),) --tag=selenium --no-input --parallel -v 2"
 
-test-selenium-fast: ## Run Selenium tests without GIF generation (fast mode, optional: TEST=path.to.test)
-	cd src && GENERATE_SCREENSHOTS=False python manage.py test $(or $(TEST),) --tag=selenium --no-input --parallel -v 2
+test-selenium-fast: ## Run Selenium tests without GIF generation, workers auto (optional: TEST=path.to.test)
+	cd src && GENERATE_SCREENSHOTS=False $(PYTHON) manage.py test $(or $(TEST),) --tag=selenium --no-input --parallel -v 2
 
-test-selenium-single-fast: ## Run a single Selenium test without GIF generation (TEST=path.to.test)
-	cd src && GENERATE_SCREENSHOTS=False python manage.py test $(TEST) --tag=selenium --no-input -v 2
+test-selenium-single-fast: ## Run a single Selenium test without GIF generation, serial (TEST=path.to.test)
+	cd src && GENERATE_SCREENSHOTS=False $(PYTHON) manage.py test $(TEST) --tag=selenium --no-input -v 2
 
+test-selenium-dev: ## Run Selenium tests fast, headless, reusing the DB (optional: TEST=...). OJO --keepdb: si la BD reciclada queda sin permisos, loaddata revienta en setUpClass; borrar test_organilab y relanzar
+	xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" \
+		sh -c "cd src && GENERATE_SCREENSHOTS=False $(PYTHON) manage.py test $(or $(TEST),) --tag=selenium --no-input --keepdb --parallel -v 2"
+
+
+##--------------------------------------------------------
+## Bitácora de Selenium
+##--------------------------------------------------------
+
+BITACORA_DIR ?= $(ROOT_DIR)/selenium-results
+BITACORA ?= $(BITACORA_DIR)/bitacora_$(shell date +%Y%m%d_%H%M%S).log
+
+test-selenium-bitacora: ## Corre Selenium headless sin GIF y deja el log completo en selenium-results/ (optional: TEST=..., WORKERS=N, BITACORA=ruta.log)
+	@mkdir -p $(BITACORA_DIR)
+	@echo "Bitácora: $(BITACORA)"
+	-@xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" \
+		sh -c "cd src && GENERATE_SCREENSHOTS=False $(PYTHON) manage.py test $(or $(TEST),) --tag=selenium --no-input --parallel $(or $(WORKERS),) -v 2" \
+		> $(BITACORA) 2>&1
+	@echo
+	@echo "----- resumen -----"
+	@grep -E '^(FAIL|ERROR): |^Ran |^OK|^FAILED|^SKIP: ' $(BITACORA) || echo "sin fallos registrados"
+	@echo "-------------------"
+	@echo "Log completo: $(BITACORA)"
 
 docs: clean ##  - generate Sphinx HTML documentation, including API docs
-	pip install 'sphinx==8.2.3' sphinx-rtd-theme==3.0.2 sphinxcontrib-video==0.4.2
+	$(PYTHON) -m pip install 'sphinx==8.2.3' sphinx-rtd-theme==3.0.2 sphinxcontrib-video==0.4.2
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
 	sphinx-build -b linkcheck ./docs/source ./docs/build/
 	sphinx-build -b html ./docs/source ./docs/build/
-	python docs/fix_capacitacion_images.py
+	$(PYTHON) docs/fix_capacitacion_images.py
 
 docs_full: ##  - generate full docs, Sphinx HTML documentation, including API docs
-	xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" sh -c "cd src && python manage.py test  --no-input --tag=selenium --parallel 12"
+	xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" sh -c "cd src && $(PYTHON) manage.py test  --no-input --tag=selenium --parallel"
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
-	pip install 'sphinx==8.2.3' sphinx-rtd-theme==3.0.2 sphinxcontrib-video==0.4.2
+	$(PYTHON) -m pip install 'sphinx==8.2.3' sphinx-rtd-theme==3.0.2 sphinxcontrib-video==0.4.2
 	sphinx-build -b linkcheck ./docs/source ./docs/build/
 	sphinx-build -b html ./docs/source ./docs/build/
-	python docs/fix_capacitacion_images.py
+	$(PYTHON) docs/fix_capacitacion_images.py
 
 messages: ##  - extract messages for translations
 	cd src && django-admin makemessages --all --no-location --no-obsolete && django-admin makemessages -d djangojs -l es  --ignore *.min.js --no-location --no-obsolete
@@ -156,7 +204,26 @@ build_docker_selenium: ##  - build docker images with selenium
 	docker build -f docker/Dockerfile.selenium -t organilabselenium:$(setup_version)  .
 
 load-perms: ## - load permissions
-	$(MAKE) trans  && cd src  && python manage.py load_urlname_permissions
+	$(MAKE) trans  && cd src  && $(PYTHON) manage.py load_urlname_permissions
+
+##--------------------------------------------------------
+## Inventario de rutas
+##--------------------------------------------------------
+
+# Se genera con test_settings y DEBUG=False a propósito: es el urlconf que ve el
+# guardián de presentation/tests/test_url_inventory.py (Django fuerza DEBUG=False
+# al correr pruebas), y `organilab/urls.py:106` monta rutas distintas según DEBUG.
+# Sin fijarlo, el fichero commiteado dependería del entorno de quien lo regenere.
+url-inventory: ## - regenera roadmap/INVENTARIO_URLS.md y el CSV con la clasificación de rutas
+	cd src && DEBUG=False $(PYTHON) manage.py url_inventory --settings=organilab.test_settings --format md -o $(ROOT_DIR)/roadmap/INVENTARIO_URLS.md
+	cd src && DEBUG=False $(PYTHON) manage.py url_inventory --settings=organilab.test_settings --format csv -o $(ROOT_DIR)/roadmap/inventario_urls.csv
+	cd src && DEBUG=False $(PYTHON) manage.py url_inventory --settings=organilab.test_settings
+
+url-inventory-check: ## - falla si el inventario commiteado quedó desactualizado
+	cd src && DEBUG=False $(PYTHON) manage.py url_inventory --settings=organilab.test_settings --check $(ROOT_DIR)/roadmap/INVENTARIO_URLS.md
+
+test-urls: ## - smoke de las vistas navegables, sin navegador
+	cd src && $(PYTHON) manage.py test organilab_test.tests.test_url_smoke --no-input -v 2
 
 ##--------------------------------------------------------
 ## Project utils
@@ -165,7 +232,7 @@ lint: ## - check style with flake8
 	pycodestyle --exclude=*/migrations/*  --max-line-length=200 src
 
 update_sds: ## - update SDS files in batches
-	cd src && python manage.py update_sds --batch-size 10 --batch-delay 30 --delay 2
+	cd src && $(PYTHON) manage.py update_sds --batch-size 10 --batch-delay 30 --delay 2
 
 clean_orphan_media: ## - elimina archivos en MEDIA_ROOT no referenciados en la BD
-	cd src && python manage.py clean_orphan_media
+	cd src && $(PYTHON) manage.py clean_orphan_media

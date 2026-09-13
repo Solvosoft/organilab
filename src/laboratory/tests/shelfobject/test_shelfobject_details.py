@@ -139,3 +139,24 @@ class ShelfObjectDetailsTest(ShelfObjectAPITest):
             )
         )
         self.assertEqual(response.status_code, 403)
+
+    def test_details_read_the_sga_characteristics(self):
+        """Blinda la migración: los datos vienen del modelo SGA, no del antiguo."""
+        from laboratory.models import SustanceCharacteristics
+        from sga.models import SubstanceCharacteristics
+
+        self.assertTrue(
+            SubstanceCharacteristics.objects.filter(object_related__pk=2).exists()
+        )
+        self.assertEqual(SustanceCharacteristics.objects.count(), 0)
+
+        response = self.client.get(
+            reverse(
+                "laboratory:api-shelfobject-details",
+                kwargs={"org_pk": self.org_pk, "lab_pk": self.lab.id, "pk": 2},
+            )
+        )
+        # Campos que solo existen en el modelo nuevo.
+        self.assertContains(response=response, text="density")
+        self.assertContains(response=response, text="is_dangerous")
+        self.assertContains(response=response, text="is_pure")

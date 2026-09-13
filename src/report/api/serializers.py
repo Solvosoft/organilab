@@ -156,7 +156,7 @@ class PrecursorReportValuesValidateSerializer(serializers.ModelSerializer):
     )
     object = serializers.PrimaryKeyRelatedField(
         queryset=Object.objects.filter(
-            type=0, sustancecharacteristics__is_precursor=True
+            type=0, substancharacteristics_object__is_precursor=True
         ),
         required=True,
     )

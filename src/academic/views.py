@@ -25,7 +25,6 @@ from academic.forms import (
     ReservationForm,
     MyProcedureForm,
     CommentProcedureStepForm,
-    AddObjectStepForm,
     ValidateProcedureReservationForm,
 )
 from academic.models import (
@@ -76,7 +75,7 @@ def add_steps_wrapper(request, org_pk, pk):
         changed_data=["procedure"],
         change_message=_("Added step to procedure '%(name)s'")
         % {"name": procedure.title},
-        relobj=org_pk,
+        relobj=organization,
     )
     return redirect(
         reverse("academic:update_step", kwargs={"pk": proc_step.pk, "org_pk": org_pk})
@@ -384,8 +383,8 @@ class ProcedureStepCreateView(FormView):
 
     def get_context_data(self, **kwargs):
         context = super(ProcedureStepCreateView, self).get_context_data()
-        context["object_form"] = ObjectForm
-        context["observation_form"] = ObservationForm
+        context["object_form"] = ObjectForm(prefix="reqobj")
+        context["observation_form"] = ObservationForm(prefix="obs")
         context["form_schema"] = json.dumps({})
         context["org_pk"] = self.kwargs.get("org_pk")
         return context
@@ -459,8 +458,8 @@ class ProcedureStepUpdateView(DJUpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(ProcedureStepUpdateView, self).get_context_data()
-        context["object_form"] = ObjectForm
-        context["observation_form"] = ObservationForm
+        context["object_form"] = ObjectForm(prefix="reqobj")
+        context["observation_form"] = ObservationForm(prefix="obs")
         step = ProcedureStep.objects.get(pk=int(self.kwargs["pk"]))
         context["step"] = step
         context["form_schema"] = json.dumps(step.form.schema if step.form else {})
@@ -531,52 +530,6 @@ class ProcedureStepUpdateView(DJUpdateView):
 
 
 @login_required
-@permission_required("academic.add_procedurerequiredobject", raise_exception=True)
-def save_object(request, org_pk, pk):
-    organization = get_object_or_404(
-        OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
-    )
-    user_is_allowed_on_organization(request.user, organization)
-    """ Add a Required object """
-    form = AddObjectStepForm(request.POST)
-    step = get_object_or_404(ProcedureStep, pk=pk)
-    state = status.HTTP_200_OK
-    form_errors = None
-    msg = _("There is no object in the inventory with this unit of measurement")
-    if form.is_valid():
-        unit = form.cleaned_data["unit"]
-        obj = form.cleaned_data["object"]
-        objects = ProcedureRequiredObject.objects.create(
-            step=step,
-            object=obj,
-            quantity=form.cleaned_data["quantity"],
-            measurement_unit=unit,
-        )
-
-        organilab_logentry(
-            request.user,
-            objects,
-            ADDITION,
-            changed_data=form.changed_data,
-            change_message=_(
-                "Added required object '%(obj)s' (%(qty)s %(unit)s) to procedure step"
-            )
-            % {
-                "obj": str(objects.object),
-                "qty": objects.quantity,
-                "unit": str(objects.measurement_unit),
-            },
-            relobj=org_pk,
-        )
-    else:
-        form_errors = form.errors
-        state = status.HTTP_400_BAD_REQUEST
-    return JsonResponse(
-        {"data": get_objects(pk), "msg": msg, "form": form_errors}, status=state
-    )
-
-
-@login_required
 @permission_required("academic.delete_procedurestep", raise_exception=True)
 def delete_step(request, org_pk):
     organization = get_object_or_404(
@@ -594,104 +547,6 @@ def delete_step(request, org_pk):
     )
     step.delete()
     return JsonResponse({"data": True})
-
-
-@login_required
-@permission_required("academic.delete_procedurerequiredobject", raise_exception=True)
-def remove_object(request, org_pk, pk):
-    organization = get_object_or_404(
-        OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
-    )
-    user_is_allowed_on_organization(request.user, organization)
-    obj = ProcedureRequiredObject.objects.get(pk=int(request.POST["pk"]))
-    organilab_logentry(
-        request.user,
-        obj,
-        DELETION,
-        changed_data=["object", "quantity", "measurement_unit", "step"],
-        change_message=_("Removed required object '%(obj)s' from procedure step")
-        % {"obj": str(obj.object)},
-    )
-    obj.delete()
-    return JsonResponse({"data": get_objects(pk)})
-
-
-def get_objects(pk):
-    objects_list = ProcedureRequiredObject.objects.filter(step__id=pk)
-    aux = []
-    for data in objects_list:
-        aux.append(
-            {
-                "obj": str(data.object),
-                "unit": str(data.measurement_unit),
-                "id": data.pk,
-                "amount": data.quantity,
-            }
-        )
-    result = json.dumps(aux)
-    return result
-
-
-@login_required
-@permission_required("academic.add_procedureobservations", raise_exception=True)
-def save_observation(request, org_pk, pk):
-    organization = get_object_or_404(
-        OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
-    )
-    user_is_allowed_on_organization(request.user, organization)
-
-    step = get_object_or_404(ProcedureStep, pk=pk)
-    form = ObservationForm(request.POST)
-    result = status.HTTP_200_OK
-    form_errors = {}
-    if form.is_valid():
-        objects = ProcedureObservations.objects.create(
-            step=step, description=form.cleaned_data["procedure_description"]
-        )
-        objects.save()
-        organilab_logentry(
-            request.user,
-            objects,
-            ADDITION,
-            changed_data=["description", "step"],
-            change_message=_("Added observation to procedure step '%(title)s'")
-            % {"title": step.title},
-        )
-    else:
-        form_errors = form.errors
-        result = status.HTTP_400_BAD_REQUEST
-    return JsonResponse(
-        {"data": get_observations(pk), "errors": form_errors}, status=result
-    )
-
-
-def get_observations(pk):
-    obsevations = ProcedureObservations.objects.filter(step__id=pk)
-    aux = []
-    for data in obsevations:
-        aux.append({"description": data.description, "id": data.pk})
-    result = json.dumps(aux)
-    return result
-
-
-@login_required
-@permission_required("academic.delete_procedureobservations", raise_exception=True)
-def remove_observation(request, org_pk, pk):
-    organization = get_object_or_404(
-        OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
-    )
-    user_is_allowed_on_organization(request.user, organization)
-
-    obj = get_object_or_404(ProcedureObservations, pk=int(request.POST["pk"]))
-    organilab_logentry(
-        request.user,
-        obj,
-        DELETION,
-        changed_data=["description", "step"],
-        change_message=_("Removed observation from procedure step"),
-    )
-    obj.delete()
-    return JsonResponse({"data": get_observations(pk)})
 
 
 @login_required
@@ -740,8 +595,11 @@ def delete_procedure(request, org_pk):
         DELETION,
         changed_data=["name", "title", "description"],
         change_message=_("Deleted procedure '%(name)s'") % {"name": procedure.title},
+        relobj=organization,
     )
-    procedure.delete()
+    # Soft delete a la papelera org-scoped: la relación con la organización es
+    # lo que permite listarlo y restaurarlo desde su pantalla.
+    procedure.delete(user=request.user, related_objects=[organization])
     return JsonResponse({"data": True})
 
 

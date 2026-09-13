@@ -37,7 +37,6 @@ from laboratory.models import (
     Provider,
     Furniture,
     LaboratoryRoom,
-    SustanceCharacteristics,
     REQUESTED,
     ShelfObjectMaintenance,
     OrganizationStructure,
@@ -67,7 +66,7 @@ from laboratory.shelfobject.utils import (
     get_selected_container,
     group_object_errors_for_serializer,
 )
-from sga.models import Pictogram
+from sga.models import Pictogram, RecipientSize, SubstanceCharacteristics
 
 logger = logging.getLogger("organilab")
 
@@ -358,7 +357,9 @@ class IncreaseShelfObjectSerializer(serializers.Serializer):
                 related_units = get_related_units(64, query_unit)
             elif related_units is None:
                 related_units = get_related_units(measurement_unit.pk, query_unit)
-            if increase_unit not in related_units:
+            # Sin unidades relacionadas la unidad no es convertible: se rechaza
+            # el incremento en vez de comparar contra None, que rompía la vista.
+            if related_units is None or increase_unit not in related_units:
                 updated_errors["measurement_unit"] = _("Measurement unit is not valid")
 
         if errors or updated_errors:
@@ -470,7 +471,9 @@ class DecreaseShelfObjectSerializer(serializers.Serializer):
             elif related_units is None:
                 related_units = get_related_units(measurement_unit.pk, query_unit)
 
-            if decreased_unit not in related_units:
+            # Igual que en el incremento: sin unidades relacionadas la unidad no
+            # es convertible y se rechaza, en vez de comparar contra None.
+            if related_units is None or decreased_unit not in related_units:
                 decrease_errors["measurement_unit"] = _("Measurement unit is not valid")
 
         if shelf_object.quantity < converted_amount:
@@ -1235,7 +1238,7 @@ class SubstanceCharacteristicsDetailSerializer(serializers.ModelSerializer):
     nfpa = CatalogDetailSerializer(many=True)
 
     class Meta:
-        model = SustanceCharacteristics
+        model = SubstanceCharacteristics
         fields = "__all__"
 
 
@@ -1276,11 +1279,11 @@ class ShelfObjectDetailSerializer(
         fields = "__all__"
 
     def get_substance_characteristics(self, obj):
-        if hasattr(obj.object, "sustancecharacteristics"):
-            characteristics = SubstanceCharacteristicsDetailSerializer(
-                obj.object.sustancecharacteristics
-            )
+        sga_char = obj.object.substancharacteristics_object.first()
+        if sga_char:
+            characteristics = SubstanceCharacteristicsDetailSerializer(sga_char)
             return characteristics.data
+        return None
 
     def get_object_detail(self, obj):
         return obj.get_object_detail()
@@ -1679,6 +1682,18 @@ class MoveShelfObjectSerializer(ValidateShelfSerializer):
             shelf_object.measurement_unit, shelf.measurement_unit, shelf_object.quantity
         )
 
+        # Sin unidad base registrada no hay conversión posible: error de
+        # validación, no un 500 al sumar None más adelante.
+        if converted_quantity is None:
+            raise serializers.ValidationError(
+                {
+                    "shelf": _(
+                        "The object measurement unit cannot be converted to the "
+                        "shelf measurement unit."
+                    )
+                }
+            )
+
         errors = validate_measurement_unit_and_quantity(
             shelf,
             shelf_object.object,
@@ -2071,6 +2086,18 @@ class TransferInShelfObjectApproveWithContainerSerializer(
                 shelf.measurement_unit,
                 transfer_object.object.quantity,
             )
+
+            # Sin unidad base registrada la conversión devuelve None: error de
+            # validación, no un 500 (comparación None<=None / quantity nulo).
+            if converted_quantity is None or converted_quantity_object is None:
+                raise serializers.ValidationError(
+                    {
+                        "shelf": _(
+                            "The transferred object measurement unit cannot be "
+                            "converted to the shelf measurement unit."
+                        )
+                    }
+                )
 
             data["transfer_object"].quantity = converted_quantity
             # data['transfer_object'].object.measurement_unit = shelf.measurement_unit
@@ -3499,3 +3526,53 @@ class DecreaseReactiveShelfObjectSerializer(serializers.Serializer):
             raise serializers.ValidationError(decrease_errors)
 
         return data
+
+
+class RecipientSizeSerializer(serializers.ModelSerializer):
+    height = serializers.FloatField(required=False, allow_null=True)
+    width = serializers.FloatField(required=False, allow_null=True)
+    unit = serializers.SerializerMethodField()
+
+    def get_unit(self, obj):
+        return _("Centimeters")
+
+    class Meta:
+        model = RecipientSize
+        fields = ["id", "name", "height", "width", "unit"]
+
+
+class RecipientSizeDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=RecipientSizeSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+
+class RecipientSizeCreateSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(max_length=150, required=True)
+    height = serializers.FloatField(min_value=0, required=True)
+    width = serializers.FloatField(min_value=0, required=True)
+    height_unit = serializers.ChoiceField(
+        choices=RecipientSize.CHOICES, default="cm", required=False
+    )
+    width_unit = serializers.ChoiceField(
+        choices=RecipientSize.CHOICES, default="cm", required=False
+    )
+
+    class Meta:
+        model = RecipientSize
+        fields = ["name", "height", "height_unit", "width", "width_unit"]
+
+
+class RecipientSizeDeleteSerializer(serializers.Serializer):
+    recipient_size = serializers.PrimaryKeyRelatedField(
+        queryset=RecipientSize.objects.using(settings.READONLY_DATABASE)
+    )
+
+    def validate_recipient_size(self, value):
+        laboratory_id = self.context.get("laboratory_id")
+        if value.laboratory_id != laboratory_id:
+            raise serializers.ValidationError(
+                _("The recipient size does not belong to this laboratory.")
+            )
+        return value

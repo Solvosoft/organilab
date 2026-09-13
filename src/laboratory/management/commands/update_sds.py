@@ -2,7 +2,7 @@ import time
 
 from django.core.management.base import BaseCommand
 
-from laboratory.models import SustanceCharacteristics
+from sga.models import SubstanceCharacteristics
 from laboratory.sds_sources import get_sources, update_sds_for_substance
 
 
@@ -31,7 +31,7 @@ class Command(BaseCommand):
             '--ids',
             nargs='+',
             type=int,
-            help='Specific SustanceCharacteristics PKs to process',
+            help='Specific SubstanceCharacteristics PKs to process',
         )
         parser.add_argument(
             '--batch-size',
@@ -95,7 +95,7 @@ class Command(BaseCommand):
                 self.stderr.write("No sources left after exclusion. Aborting.")
                 return
 
-        qs = SustanceCharacteristics.objects.select_related('obj', 'obj__organization')
+        qs = SubstanceCharacteristics.objects.select_related('object_related', 'object_related__organization')
 
         # Only process substances with a CAS number (required for source lookup)
         qs = qs.filter(cas_id_number__isnull=False).exclude(cas_id_number='')
@@ -105,10 +105,10 @@ class Command(BaseCommand):
             qs = qs.filter(Q(security_sheet='') | Q(security_sheet__isnull=True))
 
         if only_pubchem:
-            from laboratory.models import SDSTraceability
+            from sga.models import SDSTraceability
             pubchem_sc_ids = SDSTraceability.objects.filter(
                 source='pubchem'
-            ).values_list('sustance_characteristics_id', flat=True).distinct()
+            ).values_list('sga_substance_characteristics_id', flat=True).distinct()
             qs = qs.filter(pk__in=pubchem_sc_ids)
 
         if ids:
@@ -143,8 +143,8 @@ class Command(BaseCommand):
             batch_updated = 0
             batch_errors = 0
 
-            batch_qs = SustanceCharacteristics.objects.select_related(
-                'obj', 'obj__organization'
+            batch_qs = SubstanceCharacteristics.objects.select_related(
+                'object_related', 'object_related__organization'
             ).filter(pk__in=batch_pks)
 
             for sc in batch_qs:

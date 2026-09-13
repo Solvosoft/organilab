@@ -3,6 +3,7 @@ from datetime import date
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth.models import User
 from django.test import tag
+from organilab_test.tests.selenium_xpaths import select2_result
 from django.urls import reverse
 
 from organilab_test.tests.base import OptimizedSeleniumBase, modifies_db
@@ -77,7 +78,7 @@ class MyProcedureSeleniumTest(OptimizedSeleniumBase):
                 "sleep": 1,
             },
             {
-                "path": "//ul[contains(@class, 'select2-results__options')]/li[1]",
+                "path": select2_result(1),
             },
             {
                 "path": "//*[@id='add_my_procedures']//button[contains(@class, 'btn-primary')]",
@@ -282,9 +283,17 @@ class MyProcedureSeleniumTest(OptimizedSeleniumBase):
                 "value": "null",
                 "sleep": 3,
             },
+            # La tabla de observaciones vive dentro de un <details> cerrado
+            # (complete_my_procedure.html) y el JS sólo abre el del formulario,
+            # así que los botones existen pero no son clicables hasta abrirlo.
             {
-                "path": "//i[contains(@class, 'beditbtn')]",
+                "path": "//details[@id='observation']/summary",
                 "scroll": "window.scrollTo(0, 0)",
+                "sleep": 1,
+            },
+            {
+                "path": "(//table[@id='datatableelement']//tbody//i[contains(@class, 'beditbtn')])[1]",
+                "wait_dt": True,
                 "sleep": 1,
             },
             {

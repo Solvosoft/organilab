@@ -200,7 +200,7 @@ img {
     margin-top:3.3rem
 }
 
-.dataTables_wrapper div:last-child {
+.dt-container div:last-child {
     margin-top: 2em;
 }
 

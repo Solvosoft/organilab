@@ -54,7 +54,7 @@ ADD_PERMISSIONS = [
     "academic.view_procedure",
     "laboratory.view_inform",
     "risk_management.view_buildings",
-    "laboratory.view_sustancecharacteristics",  # reagent / substance characteristics
+    "sga.view_substancecharacteristics",  # reagent / substance characteristics
     "risk_management.view_structure",
     "laboratory.view_object",
     "laboratory.view_laboratoryprocess",

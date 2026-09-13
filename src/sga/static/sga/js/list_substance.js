@@ -58,9 +58,11 @@ datatableelement=createDataTable("#substance_table", document.urls.substance_tab
             {data: "pk", name: "pk", title: gettext("Id"), type: "string", visible: false},
             {data: "creation_date", name: "creation_date", title: gettext("Creation Date"), type: "date",  render: DataTable.render.datetime(), visible: true},
             {data: "created_by", name: "created_by", title: gettext("User"), type: "string", visible: true},
-            {data: "comercial_name", name: "comercial_name", title: gettext("Comercial Name"), type: "string", visible: true },
-            {data: "agrochemical", name: "agrochemical", title: gettext("Agrochemical"), type: "boolean", render: objShowBool, visible: true},
-            {data: "uipa_name", name: "uipa_name", title: gettext("UIPA Name"), type: "string", visible: true},
+            {data: "comercial_name", name: "comercial_name", title: gettext("Name"), type: "string", visible: true },
+            {data: "cas_id_number", name: "cas_id_number", title: gettext("CAS"), type: "string", visible: true},
+            {data: "status", name: "status", title: gettext("Status"), type: "string", visible: true},
+            {data: "organization", name: "organization", title: gettext("Organization"), type: "string", visible: true},
+            {data: "laboratories", name: "laboratories", title: gettext("Laboratories"), type: "string", visible: true, sortable: false},
             {data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: true, filterable: false, sortable: false},
         ],
         buttons: [
@@ -71,9 +73,13 @@ datatableelement=createDataTable("#substance_table", document.urls.substance_tab
                 className: 'btn-sm btn-success ml-4',
             },
         ],
-        dom: "<'d-flex justify-content-between'<'m-2'l>" +
-        "<'m-2'B><'m-2 d-flex justify-content-start'f>>" +
-        "<'row'tr><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 m-auto'p>>",
+        layout: {
+            topStart: 'pageLength',
+            top: 'buttons',
+            topEnd: 'search',
+            bottomStart: 'info',
+            bottomEnd: 'paging'
+        },
         ajax: {
             url: document.urls.substance_table_url,
             type: 'GET',

@@ -43,6 +43,8 @@ class SubstanceViewSet(viewsets.ModelViewSet):
             .get_queryset()
             .filter(organization=self.organization)
             .annotate(cas_id=F("substancecharacteristics__cas_id_number"))
+            # Sin esto la columna de laboratorios dispara una consulta por fila.
+            .prefetch_related("laboratories")
         )
         return queryset
 

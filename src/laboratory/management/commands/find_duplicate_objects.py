@@ -82,12 +82,9 @@ class Command(BaseCommand):
                 org_name = obj.organization.name if obj.organization else "N/A"
 
                 has_security_sheet = "No"
-                if (
-                    hasattr(obj, "sustancecharacteristics")
-                    and obj.sustancecharacteristics
-                ):
-                    if obj.sustancecharacteristics.security_sheet:
-                        has_security_sheet = "Sí"
+                sga_char = obj.substancharacteristics_object.first()
+                if sga_char and sga_char.security_sheet:
+                    has_security_sheet = "Sí"
 
                 has_shelfobject = "No"
                 if ShelfObject.objects.filter(object=obj).exists():

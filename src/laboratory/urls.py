@@ -25,6 +25,7 @@ from laboratory.views.shelfobject import (
     view_equipment_shelfobject_detail,
     shelf_object_reagents,
     shelf_object_hcode,
+    generate_shelfobject_label,
 )
 from sga.api.sga_components_viewsets import (
     WarningWordAPI,
@@ -58,6 +59,8 @@ from laboratory.api.views import (
     ObjectViewSet,
     ShelObjectReactiveViewset,
     ShelfObjectHcodeViewset,
+    RegisterUserQRViewSet,
+    OrganizationTrashViewSet,
 )
 from laboratory.functions import return_laboratory_of_shelf_id
 from laboratory.protocol.views import (
@@ -70,7 +73,14 @@ from laboratory.reservation import ShelfObjectReservation
 from laboratory.search import SearchDisposalObject
 from laboratory.views import furniture, reports, shelfs, objectfeature
 from laboratory.views import inform_period
-from laboratory.views import labroom, shelfobject, laboratory, organizations
+from laboratory.views import (
+    labroom,
+    labview,
+    shelfobject,
+    laboratory,
+    organizations,
+)
+from laboratory.api.labview import viewsets as labview_api
 from laboratory.views.informs import (
     get_informs,
     create_informs,
@@ -83,6 +93,7 @@ from laboratory.views.laboratory import (
     laboratory_process_list,
 )
 from laboratory.views.logentry import get_logentry_from_organization
+from laboratory.views.trash import get_trash_from_organization
 from laboratory.views.my_reservations import MyReservationView
 from laboratory.views.objects import (
     ObjectView,
@@ -164,6 +175,7 @@ lab_shelf_urls = [
 
 lab_rooms_urls = [
     path("", labroom.LaboratoryRoomsList.as_view(), name="rooms_list"),
+    path("labview/", labview.LabView.as_view(), name="labview"),
     path("create", labroom.LabroomCreate.as_view(), name="rooms_create"),
     path(
         "rebuild_laboratory_qr",
@@ -205,6 +217,11 @@ shelf_object_urls = [
         "detail/<int:pk>/",
         shelfobject.ShelfObjectDetail.as_view(),
         name="shelfobject_detail",
+    ),
+    path(
+        "label/<int:pk>/",
+        shelfobject.generate_shelfobject_label,
+        name="shelfobject_label",
     ),
     path(
         "edit/<int:pk>/", shelfobject.ShelfObjectEdit.as_view(), name="shelfobject_edit"
@@ -305,6 +322,7 @@ organization_urls = [
     path("profile/<int:pk>/password", password_change, name="password_change"),
     path("profile/info/<int:org_pk>/<int:pk>", get_profile, name="profile_detail"),
     path("logentry/<int:org_pk>", get_logentry_from_organization, name="logentry_list"),
+    path("trash/<int:org_pk>", get_trash_from_organization, name="trash_list"),
     path("reports/<int:org_pk>/", reports.report_index, name="reports"),
 ]
 
@@ -429,7 +447,13 @@ informs_period_urls = [
     ),
 ]
 
+register_user_qr_router = DefaultRouter()
+register_user_qr_router.register(
+    "api_registeruserqr", RegisterUserQRViewSet, basename="api-registeruserqr"
+)
+
 user_register_qr = [
+    path("api/", include(register_user_qr_router.urls)),
     path(
         "list/", laboratory.RegisterUserQRList.as_view(), name="list_register_user_qr"
     ),
@@ -478,6 +502,8 @@ comment_router = DefaultRouter()
 comment_router.register("api_inform", CommentAPI, basename="api-inform")
 router.register("api_protocol", ProtocolViewSet, basename="api-protocol")
 router.register("api_logentry", LogEntryViewSet, basename="api-logentry")
+trash_router = DefaultRouter()
+trash_router.register("api_trash", OrganizationTrashViewSet, basename="api-trash")
 router.register("api_informs", InformViewSet, basename="api-informs")
 shelObjectReactive_router = DefaultRouter()
 shelObjectReactive_router.register(
@@ -528,6 +554,30 @@ shelfobjectrouter.register(
 
 shelfobjectrouter.register(
     "api_search_labview", ShelfObjectApi.SearchLabView, basename="api-search-labview"
+)
+
+# labview: los CRUDs por nivel, el arbol y la tabla con acciones como datos.
+labview_router = DefaultRouter()
+labview_router.register(
+    "api_labview_labroom",
+    labview_api.LabRoomManagement,
+    basename="api-labview-labroom",
+)
+labview_router.register(
+    "api_labview_furniture",
+    labview_api.FurnitureManagement,
+    basename="api-labview-furniture",
+)
+labview_router.register(
+    "api_labview_shelf", labview_api.ShelfManagement, basename="api-labview-shelf"
+)
+labview_router.register(
+    "api_labview_tree", labview_api.LabviewTreeViewSet, basename="api-labview-tree"
+)
+labview_router.register(
+    "api_labview_shelfobject_table",
+    labview_api.LabviewShelfObjectTableViewSet,
+    basename="api-labview-shelfobjecttable",
 )
 
 shelfcontainerrouter = DefaultRouter()
@@ -639,6 +689,9 @@ urlpatterns += organization_urls + [
     ),
     path("so/api/<int:org_pk>/<int:lab_pk>/", include(shelfobjectrouter.urls)),
     path(
+        "labview/api/<int:org_pk>/<int:lab_pk>/", include(labview_router.urls)
+    ),
+    path(
         "so/api/<int:org_pk>/<int:lab_pk>/<int:shelf>/",
         include(shelfcontainerrouter.urls),
     ),
@@ -658,6 +711,7 @@ urlpatterns += organization_urls + [
     path("catalogs/", include(catalogs_urls)),
     path("inform/api/<int:org_pk>/", include(comment_router.urls)),
     path("inform/api/", include(router.urls)),
+    path("trash/api/<int:org_pk>/", include(trash_router.urls)),
     path("register_user_qr/<int:org_pk>/<int:lab_pk>/", include(user_register_qr)),
     path("spc/api/<int:org_pk>/<int:lab_pk>/", include(stepcommentsrouter.urls)),
     path("sga_components/api/<int:org_pk>/", include(sgacomponentsrouter.urls)),
@@ -710,5 +764,10 @@ urlpatterns += organization_urls + [
         "<int:org_pk>/<int:lab_pk>/load_archive/create_shelfobjects/<uuid:key>/",
         upload_reactives,
         name="load_archive_create_shelfobjects",
+    ),
+    path(
+        "<int:org_pk>/<int:lab_pk>/<int:pk>/generate_shelfobject_label/<int:recipient>/",
+        generate_shelfobject_label,
+        name="generate_shelfobject_label",
     ),
 ]
