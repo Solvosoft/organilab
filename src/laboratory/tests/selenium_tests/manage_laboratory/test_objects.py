@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.test import tag
-from organilab_test.tests.selenium_xpaths import select2_result
+from organilab_test.tests.selenium_xpaths import PAGE_OBJECT_FEATURES, select2_result
 from django.urls import reverse
 from organilab_test.tests.base import OptimizedSeleniumBase, modifies_db
 
@@ -785,7 +785,8 @@ class ObjectFeaturesSeleniumTest(ObjectSeleniumBase):
         self.navigate_to_object_features()
         path_list = [
             {
-                "path": "//body",
+                "path": PAGE_OBJECT_FEATURES,
+                "presence_only": True,
                 "screenshot_name": "object_features_view",
             },
         ]
@@ -813,7 +814,7 @@ class ObjectFeaturesSeleniumTest(ObjectSeleniumBase):
         Flow: Navigate to object features -> Click create button ->
         Fill name and description in modal -> Save.
 
-        GIF: organilab_docs/source/_static/gif/view_object_features.gif
+        GIF: organilab_docs/source/_static/gif/create_object_features.gif
         """
         self.navigate_to_object_features()
         path_list = [
@@ -853,7 +854,7 @@ class ObjectFeaturesSeleniumTest(ObjectSeleniumBase):
         Flow: Navigate to object features -> Click edit icon on first
         row -> Update name and description in modal -> Save.
 
-        GIF: organilab_docs/source/_static/gif/view_object_features.gif
+        GIF: organilab_docs/source/_static/gif/update_object_features.gif
         """
         self.navigate_to_object_features()
         path_list = [
@@ -884,7 +885,7 @@ class ObjectFeaturesSeleniumTest(ObjectSeleniumBase):
                 "path": "//*[@id='update_obj_modal']//button[contains(@class, 'btn-primary')]",
             },
         ]
-        self.create_gif_process(path_list, "view_object_features")
+        self.create_gif_process(path_list, "update_object_features")
 
     @modifies_db
     def test_delete_object_features(self):
@@ -893,7 +894,7 @@ class ObjectFeaturesSeleniumTest(ObjectSeleniumBase):
         Flow: Navigate to object features -> Click delete icon on first
         row -> Confirm deletion in modal.
 
-        GIF: organilab_docs/source/_static/gif/view_object_features.gif
+        GIF: organilab_docs/source/_static/gif/delete_object_features.gif
         """
         self.navigate_to_object_features()
         path_list = [
@@ -906,4 +907,4 @@ class ObjectFeaturesSeleniumTest(ObjectSeleniumBase):
                 "sleep": 1,
             },
         ]
-        self.create_gif_process(path_list, "view_object_features")
+        self.create_gif_process(path_list, "delete_object_features")
