@@ -631,3 +631,22 @@ def enable_child_organizations(request):
         relobj=organization,
     )
     return redirect(reverse("auth_and_perms:organizationManager"))
+
+
+@login_required
+@permission_required("laboratory.view_organizationstructurerelations", raise_exception=True)
+def org_lab_relations_view(request, org_pk):
+    """
+    View to list and delete OrganizationStructureRelations for Laboratory content type.
+    Shows a DataTable with laboratories linked to the organization.
+    """
+    user_is_allowed_on_organization(request.user, org_pk)
+    org = get_object_or_404(OrganizationStructure, pk=org_pk)
+    return render(
+        request,
+        "auth_and_perms/org_lab_relations_list.html",
+        context={
+            "org_pk": org_pk,
+            "organization": org,
+        },
+    )

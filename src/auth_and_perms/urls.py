@@ -19,10 +19,11 @@ from auth_and_perms.api.viewsets import (
     OrganizationLaboratoryViewset,
     LaboratoryOrganizationRoles,
     UserRoles,
+    OrganizationLabRelationDeleteViewSet,
 )
 from auth_and_perms.views import organizationstructure as orgstruct
 
-from rest_framework.routers import SimpleRouter
+from rest_framework.routers import SimpleRouter, DefaultRouter
 
 from auth_and_perms.views import user_org_creation
 from auth_and_perms.views import fva_rest_authentication
@@ -36,6 +37,14 @@ from authentication.views import SignDataRequestViewSet
 routes = SimpleRouter()
 
 routes.register("rol", RolAPI, "api-rol")
+
+# Router for OrganizationStructureRelations (lab relations)
+org_lab_relation_router = DefaultRouter()
+org_lab_relation_router.register(
+    "api_org_lab_relation",
+    OrganizationLabRelationDeleteViewSet,
+    basename="api-org-lab-relation",
+)
 routes.register(
     "profilepermissionrol", UpdateRolOrganizationProfilePermission, "api-rolbyorg"
 )
@@ -187,5 +196,15 @@ urlpatterns = [
         "enable_child_organizations/",
         orgstruct.enable_child_organizations,
         name="enable_child_organizations",
+    ),
+    # Organization Lab Relations CRUDAL
+    path(
+        "organization/<int:org_pk>/lab_relations/",
+        include(org_lab_relation_router.urls),
+    ),
+    path(
+        "organization/<int:org_pk>/lab_relations/list/",
+        orgstruct.org_lab_relations_view,
+        name="org_lab_relations_list",
     ),
 ]
