@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load i18n static gtsettings %}
+{% load organilab_tags %}
+
+{% block pre_head %}
+    {% define_true "use_datatables" %}
+{% endblock %}
+
+{% block title %}{% trans 'Laboratory Relations' %} - {{ organization.name }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h2 class="text-center mb-4">
+        {% trans 'Laboratory Relations' %} - {{ organization.name }}
+    </h2>
+    <p class="text-muted text-center">
+        {% trans 'Manage laboratories linked to this organization. Unlinking a laboratory will also remove user permissions for that laboratory in this organization.' %}
+    </p>
+
+    <div class="row">
+        <div class="col-12">
+            <table class="table table-hover table-striped w-100" id="lab_relations_table"></table>
+        </div>
+    </div>
+</div>
+
+{% url 'auth_and_perms:api-org-lab-relation-detail' org_pk 0 as destroy_url %}
+{% include 'gentelella/blocks/modal_template_delete.html' with form_id="delete_relation_form" id="delete_relation_modal" title=_("Unlink Laboratory") url=destroy_url %}
+
+{% endblock %}
+
+{% block js %}
+{{ block.super }}
+<script>
+const object_urls = {
+    list_url: "{% url 'auth_and_perms:api-org-lab-relation-list' org_pk %}",
+    destroy_url: "{% url 'auth_and_perms:api-org-lab-relation-detail' org_pk 0 %}",
+}
+</script>
+<script src="{% static 'js/auth_and_perms/org_lab_relations.js' %}?v={% get_organilab_version %}"></script>
+{% endblock %}

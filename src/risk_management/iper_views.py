@@ -37,6 +37,7 @@ from pending_tasks.utils import create_pending_task
 from report.utils import create_notification
 from risk_management.forms import (
     IPERAssessmentForm,
+    IPERDuplicateForm,
     IPERHazardForm,
     IPERHistoryFilterForm,
     IPERObservationForm,
@@ -65,7 +66,9 @@ from risk_management.iper_defaults import (
 )
 from risk_management.models import (
     IPERAssessment,
+    IPERConfig,
     IPERHazard,
+    IPERObservation,
     RiskZone,
 )
 from risk_management.models_utils import add_months, get_iper_config
@@ -111,6 +114,11 @@ class IPERAssessmentList(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["org_pk"] = self.kwargs["org_pk"]
+        context["duplicate_form"] = IPERDuplicateForm(
+            org_pk=self.kwargs["org_pk"],
+            user=self.request.user,
+            initial={"assessment_date": now().date()},
+        )
         return context
 
 
@@ -314,6 +322,14 @@ class IPERAssessmentDetail(DetailView):
                 },
             },
             ensure_ascii=False,
+        )
+        context["duplicate_form"] = IPERDuplicateForm(
+            org_pk=self.org,
+            user=self.request.user,
+            initial={
+                "laboratory": self.object.laboratory,
+                "assessment_date": now().date(),
+            },
         )
         return context
 
@@ -555,6 +571,99 @@ def iper_clone_for_update(request, org_pk, pk):
     return redirect(
         reverse("riskmanagement:iper_detail", kwargs={"org_pk": org_pk, "pk": new.pk})
     )
+
+
+# --- duplicado independiente ----------------------------------------------
+@login_required
+@permission_required("risk_management.add_iperassessment", raise_exception=True)
+def iper_duplicate(request, org_pk, pk):
+    """Duplica un IPERAssessment de forma independiente (sin versionado)."""
+    user_is_allowed_on_organization(request.user, org_pk)
+    org = get_object_or_404(OrganizationStructure, pk=org_pk)
+    original = get_object_or_404(IPERAssessment, pk=pk, organization__pk=org_pk)
+
+    if original.status != IPERAssessment.COMPLETED:
+        return JsonResponse(
+            {"error": str(_("Only completed IPER assessments can be duplicated."))},
+            status=400,
+        )
+
+    if request.method != "POST":
+        return JsonResponse({"error": "POST required"}, status=405)
+
+    form = IPERDuplicateForm(request.POST, org_pk=org_pk, user=request.user)
+    if not form.is_valid():
+        return JsonResponse({"errors": form.errors}, status=400)
+
+    laboratory = form.cleaned_data["laboratory"]
+    assessment_date = form.cleaned_data["assessment_date"]
+
+    # 1. Crear nuevo IPERAssessment
+    new = IPERAssessment(
+        organization=org,
+        laboratory=laboratory,
+        assessment_date=assessment_date,
+        responsible=request.user,
+        created_by=request.user,
+        status=IPERAssessment.DRAFT,
+        version=1,
+        previous=None,
+        source=IPERAssessment.ON_DEMAND,
+        is_anonymous=original.is_anonymous,
+    )
+
+    # 2. IPERConfig: buscar existente o crear
+    cfg = get_iper_config(org, laboratory)
+    if not cfg:
+        cfg = IPERConfig.objects.create(
+            organization=org.ancestors(include_self=True).filter(parent__isnull=True).first() or org,
+            laboratory=laboratory,
+            period_months=12,
+            reminder_days_before=30,
+            is_active=True,
+            created_by=request.user,
+        )
+    new.due_date = add_months(assessment_date, cfg.period_months)
+    new.save()
+
+    # 3. Clonar IPERHazard con M2M
+    for hazard in original.hazards.all():
+        shelfobjects = list(hazard.related_shelfobjects.all())
+        hazard.pk = None
+        hazard._state.adding = True
+        hazard.assessment = new
+        hazard.save()
+        if shelfobjects:
+            hazard.related_shelfobjects.set(shelfobjects)
+
+    # 4. Clonar IPERObservation
+    for obs in original.observations.all():
+        obs.pk = None
+        obs._state.adding = True
+        obs.assessment = new
+        obs.author = request.user
+        obs.save()
+
+    # 5. Log
+    organilab_logentry(
+        request.user,
+        new,
+        ADDITION,
+        "iperassessment",
+        changed_data=["laboratory"],
+        change_message=_("Duplicated from IPER #%(id)s") % {"id": pk},
+        relobj=[laboratory],
+    )
+
+    # 6. Retornar URL de redirect
+    return JsonResponse({
+        "success": True,
+        "redirect_url": reverse(
+            "riskmanagement:iper_detail",
+            kwargs={"org_pk": org_pk, "pk": new.pk}
+        ),
+        "message": str(_("IPER assessment duplicated successfully.")),
+    })
 
 
 # --- solicitud por zona de riesgo -----------------------------------------

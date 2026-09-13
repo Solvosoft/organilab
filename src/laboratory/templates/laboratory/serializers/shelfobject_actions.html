@@ -39,7 +39,8 @@
 	<a class="ms-2" onclick="return show_decrease_modal(this, event);" data-modalid="decreasesomodal"
 				title="{% trans 'Substract' %}" data-shelfobject="{{ shelfobject.pk }}" data-shelf="{{ shelfobject.shelf.pk }}"
 				data-is-box="{{ shelfobject.is_box|yesno:'true,false' }}"
-				data-quantity-units="{{ shelfobject.quantity_units }}"><i
+				data-quantity-units="{{ shelfobject.quantity_units }}"		data-expiration="{{ shelfobject.reactive_expiration_date }}">
+		<i
 		class="fa fa-minus text-danger" aria-hidden="true"></i></a>
 {% endif %}
 {% if perms.laboratory.view_shelfobject and perms.laboratory.view_shelfobjectobservation %}
