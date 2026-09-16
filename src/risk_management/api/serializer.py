@@ -6,7 +6,7 @@ from djgentelella.serializers.selects import GTS2SerializerBase
 from rest_framework import serializers
 from rest_framework.generics import get_object_or_404
 
-from laboratory.models import Laboratory, OrganizationStructure
+from laboratory.models import Catalog, Laboratory, OrganizationStructure
 from laboratory.utils import get_users_from_organization
 from risk_management.models import (
     Regent,
@@ -325,6 +325,20 @@ class RiskZoneSerializer(serializers.Serializer):
         allow_null=True,
         allow_empty=True,
     )
+    unit = serializers.PrimaryKeyRelatedField(
+        required=False,
+        allow_null=True,
+        queryset=Catalog.objects.filter(key="units", baseunit__isnull=False).distinct(),
+    )
+
+    def get_fields(self):
+        fields = super().get_fields()
+        organization = self.context.get("organization")
+        if organization is not None:
+            # Solo zonas y edificios de la organización consultada.
+            fields["risk_zone"].child_relation.queryset = RiskZone.objects.filter(organization=organization)
+            fields["buildings"].child_relation.queryset = Buildings.objects.filter(organization=organization)
+        return fields
 
 
 class DataWorkdaySerializer(serializers.Serializer):

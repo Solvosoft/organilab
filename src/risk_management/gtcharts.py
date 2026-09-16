@@ -24,7 +24,6 @@ from laboratory.models import (
     Object,
     Laboratory,
 )
-from laboratory.utils_base_unit import get_conversion_units
 from risk_management.api.serializer import RiskZoneSerializer
 from risk_management.models import (
     RiskZone,
@@ -87,7 +86,8 @@ class BaseChart:
         return color
 
     def get_extra_filters(self):
-        serializer = RiskZoneSerializer(data=self.request.query_params)
+        serializer = RiskZoneSerializer(data=self.request.query_params, context={"organization": self.organization})
+        self.unit = None
         self.filters = {
             "in_where_laboratory__organization__pk": self.organization.pk,
             "object__type": "0",
@@ -95,8 +95,10 @@ class BaseChart:
         self.no_labs = False
         laboratories = []
         if serializer.is_valid():
+            self.unit = serializer.validated_data.get("unit")
             has_filter = False
-            if "risk_zone" in serializer.validated_data:
+            # Sin el parámetro, el QueryDict valida una lista vacía: no es un filtro.
+            if serializer.validated_data.get("risk_zone"):
                 risk_zones = [
                     risk.pk for risk in serializer.validated_data["risk_zone"]
                 ]
@@ -105,7 +107,7 @@ class BaseChart:
                 ).values_list("buildings__laboratories__pk", flat=True)
                 laboratories += risk_zone
                 has_filter = True
-            if "buildings" in serializer.validated_data:
+            if serializer.validated_data.get("buildings"):
                 buildings = [
                     building.pk for building in serializer.validated_data["buildings"]
                 ]
@@ -124,6 +126,68 @@ class BaseChart:
                     self.no_labs = True
 
 
+class UnitGroupedChartMixin:
+    """Suma las cantidades por categoría, con una serie por unidad base.
+
+    Agrupa en la base de datos ``quantity_base_unit`` por categoría y por unidad
+    base. Sin el filtro ``unit`` muestra una serie por cada unidad base con
+    datos; con él, solo la de esa unidad. Las subclases definen
+    ``category_path`` y ``get_categories()``.
+    """
+
+    category_path = None
+    base_unit_path = "measurement_unit__unit__measurement_unit_base"
+
+    def get_categories(self):
+        raise NotImplementedError
+
+    def get_labels(self):
+        self.get_extra_filters()
+        rows = ShelfObject.objects.none()
+        if not self.no_labs:
+            filters = dict(self.filters)
+            filters[f"{self.category_path}__isnull"] = False
+            filters[f"{self.base_unit_path}__isnull"] = False
+            if self.unit is not None:
+                filters[self.base_unit_path] = self.unit
+            rows = (
+                ShelfObject.objects.filter(**filters)
+                .values(self.category_path, self.base_unit_path)
+                .annotate(total=Sum("quantity_base_unit"))
+            )
+        totals = {}
+        for row in rows:
+            key = (row[self.category_path], row[self.base_unit_path])
+            totals[key] = totals.get(key, 0) + (row["total"] or 0)
+
+        labels = []
+        categories = []
+        for pk, label in self.get_categories():
+            if any(total > 0 for (category, _unit), total in totals.items() if category == pk):
+                labels.append(label)
+                categories.append(pk)
+
+        base_units = {unit for (category, unit), total in totals.items() if total > 0 and category in categories}
+        self.unit_series = []
+        for unit in Catalog.objects.filter(pk__in=base_units).order_by("description"):
+            data = [round(float(totals.get((category, unit.pk), 0)), 2) for category in categories]
+            self.unit_series.append((unit.description, data))
+
+        if not labels:
+            labels.append(_("No data registered"))
+            unit_label = self.unit.description if self.unit is not None else _("No data registered")
+            self.unit_series = [(unit_label, [0])]
+        return labels
+
+    def get_datasets(self):
+        self.index = randint(0, len(self.colors))
+        datasets = []
+        for label, data in self.unit_series:
+            color = self.get_color()
+            datasets.append({"label": label, "backgroundColor": color, "borderColor": color, "borderWidth": 1, "data": data})
+        return datasets
+
+
 class LaboratoryPermission(permissions.BasePermission):
 
     def has_permission(self, request, view):
@@ -131,7 +195,7 @@ class LaboratoryPermission(permissions.BasePermission):
 
 
 @register_lookups(prefix="dangerIndication", basename="dangerindicationchart")
-class LaboratoryDangerIndicationChart(BaseChart, HorizontalBarChart):
+class LaboratoryDangerIndicationChart(UnitGroupedChartMixin, BaseChart, HorizontalBarChart):
     permission_classes = [LaboratoryPermission]
     django_permissions_list = ["risk_management.view_riskzone"]
 
@@ -164,98 +228,14 @@ class LaboratoryDangerIndicationChart(BaseChart, HorizontalBarChart):
         })
         return options
 
-    def get_labels(self):
-        labels = []
-        self.litro_data = []
-        self.kilo_data = []
-        self.libra_data = []
-        self.liquid_data_total = 0
-        self.get_extra_filters()
+    category_path = "object__substancharacteristics_object__h_code"
 
-        queryset = ShelfObject.objects.filter(**self.filters).distinct()
-        if self.no_labs:
-            queryset = queryset.none()
-
-        for dangerindication in DangerIndication.objects.all():
-            litro_amount = 0
-            kilo_amount = 0
-            libra_amount = 0
-            for obj in queryset.filter(
-                object__substancharacteristics_object__h_code=dangerindication
-            ):
-                base_unit = BaseUnitValues.objects.filter(
-                    measurement_unit=obj.measurement_unit
-                ).first()
-                if (
-                    base_unit
-                    and base_unit.measurement_unit_base.description == "Kilogramos"
-                ):
-                    kilo_amount += get_conversion_units(
-                        obj.measurement_unit, obj.quantity
-                    )
-                elif (
-                    base_unit
-                    and base_unit.measurement_unit_base.description == "Litros"
-                ):
-                    litro_amount += get_conversion_units(
-                        obj.measurement_unit, obj.quantity
-                    )
-                elif (
-                    base_unit and base_unit.measurement_unit_base.description == "Libra"
-                ):
-                    libra_amount += get_conversion_units(
-                        obj.measurement_unit,
-                    )
-                else:
-                    logger.error(
-                        f"Error in base unit {obj.measurement_unit}, obj: {obj.pk}"
-                    )
-
-            if litro_amount > 0 or kilo_amount > 0 or libra_amount > 0:
-                labels.append(dangerindication.code)
-                self.litro_data.append(round(float(litro_amount), 2))
-                self.kilo_data.append(round(float(kilo_amount), 2))
-                self.libra_data.append(round(float(libra_amount), 2))
-
-        if not labels:
-            labels.append(_("No data registered"))
-            self.litro_data.append(0)
-            self.kilo_data.append(0)
-            self.libra_data.append(0)
-        return labels
-
-    def get_datasets(self):
-        self.index = randint(0, len(self.colors))
-        color_1 = self.get_color()
-        color_2 = self.get_color()
-        color_3 = self.get_color()
-        return [
-            {
-                "label": _("Litro (L)"),
-                "backgroundColor": color_1,
-                "borderColor": color_1,
-                "borderWidth": 1,
-                "data": self.litro_data,
-            },
-            {
-                "label": _("Kilogramo (Kg)"),
-                "backgroundColor": color_2,
-                "borderColor": color_2,
-                "borderWidth": 1,
-                "data": self.kilo_data,
-            },
-            {
-                "label": _("Libra (Lb)"),
-                "backgroundColor": color_3,
-                "borderColor": color_3,
-                "borderWidth": 1,
-                "data": self.libra_data,
-            },
-        ]
+    def get_categories(self):
+        return DangerIndication.objects.values_list("pk", "code")
 
 
 @register_lookups(prefix="white_organ", basename="whiteorganchart")
-class LaboratoryWhiteOrganChart(BaseChart, HorizontalBarChart):
+class LaboratoryWhiteOrganChart(UnitGroupedChartMixin, BaseChart, HorizontalBarChart):
     permission_classes = [LaboratoryPermission]
     django_permissions_list = ["risk_management.view_riskzone"]
 
@@ -288,100 +268,14 @@ class LaboratoryWhiteOrganChart(BaseChart, HorizontalBarChart):
         })
         return options
 
-    def get_labels(self):
-        self.catalogs = Catalog.objects.filter(key="white_organ").values(
-            "pk", "description"
-        )
-        labels = []
-        self.litro_data = []
-        self.kilo_data = []
-        self.libra_data = []
-        self.get_extra_filters()
+    category_path = "object__substancharacteristics_object__white_organ"
 
-        queryset = ShelfObject.objects.filter(**self.filters).distinct()
-        if self.no_labs:
-            queryset = queryset.none()
-
-        for catalog in self.catalogs:
-            litro_amount = 0
-            kilo_amount = 0
-            libra_amount = 0
-            for obj in queryset.filter(
-                object__substancharacteristics_object__white_organ__pk=catalog["pk"]
-            ):
-                base_unit = BaseUnitValues.objects.filter(
-                    measurement_unit=obj.measurement_unit
-                ).first()
-                if (
-                    base_unit
-                    and base_unit.measurement_unit_base.description == "Kilogramos"
-                ):
-                    kilo_amount += get_conversion_units(
-                        obj.measurement_unit, obj.quantity
-                    )
-                elif (
-                    base_unit
-                    and base_unit.measurement_unit_base.description == "Litros"
-                ):
-                    litro_amount += get_conversion_units(
-                        obj.measurement_unit, obj.quantity
-                    )
-                elif (
-                    base_unit and base_unit.measurement_unit_base.description == "Libra"
-                ):
-                    libra_amount += get_conversion_units(
-                        obj.measurement_unit, obj.quantity
-                    )
-                else:
-                    logger.error(
-                        f"Error in base unit {obj.measurement_unit}, obj: {obj.pk}"
-                    )
-
-            if litro_amount > 0 or kilo_amount > 0 or libra_amount > 0:
-                labels.append(catalog["description"])
-                self.litro_data.append(round(float(litro_amount), 2))
-                self.kilo_data.append(round(float(kilo_amount), 2))
-                self.libra_data.append(round(float(libra_amount), 2))
-
-        if not labels:
-            labels.append(_("No data registered"))
-            self.litro_data.append(0)
-            self.kilo_data.append(0)
-            self.libra_data.append(0)
-        return labels
-
-    def get_datasets(self):
-        self.index = randint(0, len(self.colors))
-        color_1 = self.get_color()
-        color_2 = self.get_color()
-        color_3 = self.get_color()
-        return [
-            {
-                "label": _("Litro (L)"),
-                "backgroundColor": color_1,
-                "borderColor": color_1,
-                "borderWidth": 1,
-                "data": self.litro_data,
-            },
-            {
-                "label": _("Kilogramo (Kg)"),
-                "backgroundColor": color_2,
-                "borderColor": color_2,
-                "borderWidth": 1,
-                "data": self.kilo_data,
-            },
-            {
-                "label": _("Libra (Lb)"),
-                "backgroundColor": color_3,
-                "borderColor": color_3,
-                "borderWidth": 1,
-                "data": self.libra_data,
-            },
-        ]
+    def get_categories(self):
+        return Catalog.objects.filter(key="white_organ").values_list("pk", "description")
 
 
 @register_lookups(prefix="precursor_type", basename="precursortypechart")
-class LaboratoryPrecursorTypeChart(BaseChart, HorizontalBarChart):
+class LaboratoryPrecursorTypeChart(UnitGroupedChartMixin, BaseChart, HorizontalBarChart):
     permission_classes = [LaboratoryPermission]
     django_permissions_list = ["risk_management.view_riskzone"]
 
@@ -414,99 +308,14 @@ class LaboratoryPrecursorTypeChart(BaseChart, HorizontalBarChart):
         })
         return options
 
-    def get_labels(self):
-        self.catalogs = Catalog.objects.filter(key="Precursor").values(
-            "pk", "description"
-        )
-        self.get_extra_filters()
-        queryset = ShelfObject.objects.filter(**self.filters).distinct()
-        if self.no_labs:
-            queryset = queryset.none()
-        labels = []
-        self.litro_data = []
-        self.kilo_data = []
-        self.libra_data = []
+    category_path = "object__substancharacteristics_object__precursor_type"
 
-        for catalog in self.catalogs:
-            litro_amount = 0
-            kilo_amount = 0
-            libra_amount = 0
-            for obj in queryset.filter(
-                object__substancharacteristics_object__precursor_type__pk=catalog["pk"]
-            ):
-                base_unit = BaseUnitValues.objects.filter(
-                    measurement_unit=obj.measurement_unit
-                ).first()
-                if (
-                    base_unit
-                    and base_unit.measurement_unit_base.description == "Kilogramos"
-                ):
-                    kilo_amount += get_conversion_units(
-                        obj.measurement_unit, obj.quantity
-                    )
-                elif (
-                    base_unit
-                    and base_unit.measurement_unit_base.description == "Litros"
-                ):
-                    litro_amount += get_conversion_units(
-                        obj.measurement_unit, obj.quantity
-                    )
-                elif (
-                    base_unit and base_unit.measurement_unit_base.description == "Libra"
-                ):
-                    libra_amount += get_conversion_units(
-                        obj.measurement_unit, obj.quantity
-                    )
-                else:
-                    logger.error(
-                        f"Error in base unit {obj.measurement_unit}, obj: {obj.pk}"
-                    )
-
-            if litro_amount > 0 or kilo_amount > 0 or libra_amount > 0:
-                labels.append(catalog["description"])
-                self.litro_data.append(round(float(litro_amount), 2))
-                self.kilo_data.append(round(float(kilo_amount), 2))
-                self.libra_data.append(round(float(libra_amount), 2))
-
-        if not labels:
-            labels.append(_("No data registered"))
-            self.litro_data.append(0)
-            self.kilo_data.append(0)
-            self.libra_data.append(0)
-        return labels
-
-    def get_datasets(self):
-        self.index = randint(0, len(self.colors))
-        color_1 = self.get_color()
-        color_2 = self.get_color()
-        color_3 = self.get_color()
-        return [
-            {
-                "label": _("Litro (L)"),
-                "backgroundColor": color_1,
-                "borderColor": color_1,
-                "borderWidth": 1,
-                "data": self.litro_data,
-            },
-            {
-                "label": _("Kilogramo (Kg)"),
-                "backgroundColor": color_2,
-                "borderColor": color_2,
-                "borderWidth": 1,
-                "data": self.kilo_data,
-            },
-            {
-                "label": _("Libra (Lb)"),
-                "backgroundColor": color_3,
-                "borderColor": color_3,
-                "borderWidth": 1,
-                "data": self.libra_data,
-            },
-        ]
+    def get_categories(self):
+        return Catalog.objects.filter(key="Precursor").values_list("pk", "description")
 
 
 @register_lookups(prefix="nfpa", basename="nfpachart")
-class LaboratoryNFPAChart(BaseChart, HorizontalBarChart):
+class LaboratoryNFPAChart(UnitGroupedChartMixin, BaseChart, HorizontalBarChart):
     permission_classes = [LaboratoryPermission]
     django_permissions_list = ["risk_management.view_riskzone"]
 
@@ -539,97 +348,14 @@ class LaboratoryNFPAChart(BaseChart, HorizontalBarChart):
         })
         return options
 
-    def get_labels(self):
-        self.catalogs = Catalog.objects.filter(key="nfpa").values("pk", "description")
-        self.litro_data = []
-        self.kilo_data = []
-        self.libra_data = []
-        labels = []
-        self.get_extra_filters()
-        queryset = ShelfObject.objects.filter(**self.filters).distinct()
-        if self.no_labs:
-            queryset = queryset.none()
+    category_path = "object__substancharacteristics_object__nfpa"
 
-        for catalog in self.catalogs:
-            litro_amount = 0
-            kilo_amount = 0
-            libra_amount = 0
-            for obj in queryset.filter(
-                object__substancharacteristics_object__nfpa__pk=catalog["pk"]
-            ):
-                base_unit = BaseUnitValues.objects.filter(
-                    measurement_unit=obj.measurement_unit
-                ).first()
-                if (
-                    base_unit
-                    and base_unit.measurement_unit_base.description == "Kilogramos"
-                ):
-                    kilo_amount += get_conversion_units(
-                        obj.measurement_unit, obj.quantity
-                    )
-                elif (
-                    base_unit
-                    and base_unit.measurement_unit_base.description == "Litros"
-                ):
-                    litro_amount += get_conversion_units(
-                        obj.measurement_unit, obj.quantity
-                    )
-                elif (
-                    base_unit and base_unit.measurement_unit_base.description == "Libra"
-                ):
-                    libra_amount += get_conversion_units(
-                        obj.measurement_unit, obj.quantity
-                    )
-                else:
-                    logger.error(
-                        f"Error in base unit {obj.measurement_unit}, obj: {obj.pk}"
-                    )
-
-            if litro_amount > 0 or kilo_amount > 0 or libra_amount > 0:
-                labels.append(catalog["description"])
-                self.litro_data.append(round(float(litro_amount), 2))
-                self.kilo_data.append(round(float(kilo_amount), 2))
-                self.libra_data.append(round(float(libra_amount), 2))
-
-        if not labels:
-            labels.append(_("No data registered"))
-            self.litro_data.append(0)
-            self.kilo_data.append(0)
-            self.libra_data.append(0)
-        return labels
-
-    def get_datasets(self):
-        self.index = randint(0, len(self.colors))
-        color_1 = self.get_color()
-        color_2 = self.get_color()
-        color_3 = self.get_color()
-        return [
-            {
-                "label": _("Litro (L)"),
-                "backgroundColor": color_1,
-                "borderColor": color_1,
-                "borderWidth": 1,
-                "data": self.litro_data,
-            },
-            {
-                "label": _("Kilogramo (Kg)"),
-                "backgroundColor": color_2,
-                "borderColor": color_2,
-                "borderWidth": 1,
-                "data": self.kilo_data,
-            },
-            {
-                "label": _("Libra (Lb)"),
-                "backgroundColor": color_3,
-                "borderColor": color_3,
-                "borderWidth": 1,
-                "data": self.libra_data,
-            },
-        ]
+    def get_categories(self):
+        return Catalog.objects.filter(key="nfpa").values_list("pk", "description")
 
 
 @register_lookups(prefix="ue_code", basename="uecodechart")
-class LaboratoryUECodeChart(BaseChart, HorizontalBarChart):
+class LaboratoryUECodeChart(UnitGroupedChartMixin, BaseChart, HorizontalBarChart):
     permission_classes = [LaboratoryPermission]
     django_permissions_list = ["risk_management.view_riskzone"]
 
@@ -662,100 +388,14 @@ class LaboratoryUECodeChart(BaseChart, HorizontalBarChart):
         })
         return options
 
-    def get_labels(self):
-        self.catalogs = Catalog.objects.filter(key="ue_code").values(
-            "pk", "description"
-        )
-        self.aggrateparams = {}
-        labels = []
-        self.litro_data = []
-        self.kilo_data = []
-        self.libra_data = []
-        self.get_extra_filters()
-        queryset = ShelfObject.objects.filter(**self.filters).distinct()
-        if self.no_labs:
-            queryset = queryset.none()
+    category_path = "object__substancharacteristics_object__ue_code"
 
-        for catalog in self.catalogs:
-            litro_amount = 0
-            kilo_amount = 0
-            libra_amount = 0
-            for obj in queryset.filter(
-                object__substancharacteristics_object__ue_code__pk=catalog["pk"]
-            ):
-                base_unit = BaseUnitValues.objects.filter(
-                    measurement_unit=obj.measurement_unit
-                ).first()
-                if (
-                    base_unit
-                    and base_unit.measurement_unit_base.description == "Kilogramos"
-                ):
-                    kilo_amount += get_conversion_units(
-                        obj.measurement_unit, obj.quantity
-                    )
-                elif (
-                    base_unit
-                    and base_unit.measurement_unit_base.description == "Litros"
-                ):
-                    litro_amount += get_conversion_units(
-                        obj.measurement_unit, obj.quantity
-                    )
-                elif (
-                    base_unit and base_unit.measurement_unit_base.description == "Libra"
-                ):
-                    libra_amount += get_conversion_units(
-                        obj.measurement_unit, obj.quantity
-                    )
-                else:
-                    logger.error(
-                        f"Error in base unit {obj.measurement_unit}, obj: {obj.pk}"
-                    )
-
-            if litro_amount > 0 or kilo_amount > 0 or libra_amount > 0:
-                labels.append(catalog["description"])
-                self.litro_data.append(round(float(litro_amount), 2))
-                self.kilo_data.append(round(float(kilo_amount), 2))
-                self.libra_data.append(round(float(libra_amount), 2))
-
-        if not labels:
-            labels.append(_("No data registered"))
-            self.litro_data.append(0)
-            self.kilo_data.append(0)
-            self.libra_data.append(0)
-        return labels
-
-    def get_datasets(self):
-        self.index = randint(0, len(self.colors))
-        color_1 = self.get_color()
-        color_2 = self.get_color()
-        color_3 = self.get_color()
-        return [
-            {
-                "label": _("Litro (L)"),
-                "backgroundColor": color_1,
-                "borderColor": color_1,
-                "borderWidth": 1,
-                "data": self.litro_data,
-            },
-            {
-                "label": _("Kilogramo (Kg)"),
-                "backgroundColor": color_2,
-                "borderColor": color_2,
-                "borderWidth": 1,
-                "data": self.kilo_data,
-            },
-            {
-                "label": _("Libra (Lb)"),
-                "backgroundColor": color_3,
-                "borderColor": color_3,
-                "borderWidth": 1,
-                "data": self.libra_data,
-            },
-        ]
+    def get_categories(self):
+        return Catalog.objects.filter(key="ue_code").values_list("pk", "description")
 
 
 @register_lookups(prefix="storage_class", basename="storageclasschart")
-class LaboratoryStorageClassChart(BaseChart, HorizontalBarChart):
+class LaboratoryStorageClassChart(UnitGroupedChartMixin, BaseChart, HorizontalBarChart):
     permission_classes = [LaboratoryPermission]
     django_permissions_list = ["risk_management.view_riskzone"]
 
@@ -788,95 +428,10 @@ class LaboratoryStorageClassChart(BaseChart, HorizontalBarChart):
         })
         return options
 
-    def get_labels(self):
-        self.catalogs = Catalog.objects.filter(key="storage_class").values(
-            "pk", "description"
-        )
-        self.litro_data = []
-        self.kilo_data = []
-        self.libra_data = []
-        labels = []
-        self.get_extra_filters()
-        queryset = ShelfObject.objects.filter(**self.filters).distinct()
-        if self.no_labs:
-            queryset = queryset.none()
+    category_path = "object__substancharacteristics_object__storage_class"
 
-        for catalog in self.catalogs:
-            litro_amount = 0
-            kilo_amount = 0
-            libra_amount = 0
-            for obj in queryset.filter(
-                object__substancharacteristics_object__storage_class__pk=catalog["pk"]
-            ):
-                base_unit = BaseUnitValues.objects.filter(
-                    measurement_unit=obj.measurement_unit
-                ).first()
-                if (
-                    base_unit
-                    and base_unit.measurement_unit_base.description == "Kilogramos"
-                ):
-                    kilo_amount += get_conversion_units(
-                        obj.measurement_unit, obj.quantity
-                    )
-                elif (
-                    base_unit
-                    and base_unit.measurement_unit_base.description == "Litros"
-                ):
-                    litro_amount += get_conversion_units(
-                        obj.measurement_unit, obj.quantity
-                    )
-                elif (
-                    base_unit and base_unit.measurement_unit_base.description == "Libra"
-                ):
-                    libra_amount += get_conversion_units(
-                        obj.measurement_unit, obj.quantity
-                    )
-                else:
-                    logger.error(
-                        f"Error in base unit {obj.measurement_unit}, obj: {obj.pk}"
-                    )
-
-            if litro_amount > 0 or kilo_amount > 0 or libra_amount > 0:
-                labels.append(catalog["description"])
-                self.litro_data.append(round(float(litro_amount), 2))
-                self.kilo_data.append(round(float(kilo_amount), 2))
-                self.libra_data.append(round(float(libra_amount), 2))
-
-        if not labels:
-            labels.append(_("No data registered"))
-            self.litro_data.append(0)
-            self.kilo_data.append(0)
-            self.libra_data.append(0)
-        return labels
-
-    def get_datasets(self):
-        self.index = randint(0, len(self.colors))
-        color_1 = self.get_color()
-        color_2 = self.get_color()
-        color_3 = self.get_color()
-        return [
-            {
-                "label": _("Litro (L)"),
-                "backgroundColor": color_1,
-                "borderColor": color_1,
-                "borderWidth": 1,
-                "data": self.litro_data,
-            },
-            {
-                "label": _("Kilogramo (Kg)"),
-                "backgroundColor": color_2,
-                "borderColor": color_2,
-                "borderWidth": 1,
-                "data": self.kilo_data,
-            },
-            {
-                "label": _("Libra (Lb)"),
-                "backgroundColor": color_3,
-                "borderColor": color_3,
-                "borderWidth": 1,
-                "data": self.libra_data,
-            },
-        ]
+    def get_categories(self):
+        return Catalog.objects.filter(key="storage_class").values_list("pk", "description")
 
 
 @register_lookups(prefix="substance_tons", basename="substancetonschart")

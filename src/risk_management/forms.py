@@ -359,6 +359,12 @@ class RiskZoneListForm(GTForm, forms.Form):
         widget=genwidgets.SelectMultiple(attrs={"class": "form-control"}),
         label=_("Buildings"),
     )
+    unit = forms.ModelChoiceField(
+        queryset=Catalog.objects.filter(key="units", baseunit__isnull=False).distinct(),
+        required=False,
+        widget=genwidgets.Select(attrs={"class": "form-control"}),
+        label=_("Base unit"),
+    )
 
     default_render_type = "as_grid"
 
@@ -369,6 +375,9 @@ class RiskZoneListForm(GTForm, forms.Form):
             ],
             [
                 "buildings",
+            ],
+            [
+                "unit",
             ],
         ],
     ]
