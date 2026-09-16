@@ -1283,6 +1283,7 @@ AMBIENTAL_READONLY = [
     "ambiental.view_measurementpoint",
     "ambiental.view_consumptionrecord",
     "ambiental.view_normalizationbase",
+    "laboratory.do_report",
 ]
 
 AMBIENTAL_REGISTRO = AMBIENTAL_READONLY + [

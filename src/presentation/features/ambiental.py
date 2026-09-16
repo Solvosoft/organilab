@@ -88,4 +88,28 @@ FEATURES = (
             ),
         ),
     ),
+    Feature(
+        id="AMB-04",
+        name="Reportar el consumo: detalle, consolidado y costos",
+        module="ambiental",
+        kind="ui",
+        description=(
+            "Los reportes de consumo por edificio, recurso y período, en pantalla, PDF u "
+            "hoja de cálculo, sobre la cola de reportes de `report`. El consolidado suma "
+            "por mes facturado (`period_end`) y separa unidades distintas."
+        ),
+        priority="P2",
+        steps=(
+            Step(
+                id="reportes_consumo",
+                name="Pedir el reporte de detalle, consolidado o costos",
+                actors=CONSULTA_AMBIENTAL,
+                routes=("ambiental:report_consumption_detail",
+                        "ambiental:report_consumption_summary",
+                        "ambiental:report_consumption_cost"),
+                permissions=("ambiental.view_consumptionrecord", "laboratory.do_report"),
+                source="src/ambiental/views.py AmbientalReportView, src/ambiental/reports.py",
+            ),
+        ),
+    ),
 )

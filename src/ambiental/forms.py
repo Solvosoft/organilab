@@ -6,9 +6,10 @@ from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets.files import FileChunkedUpload
 from djgentelella.widgets.selects import AutocompleteSelect, AutocompleteSelectMultiple
 
-from ambiental.ambiental_defaults import EXTRA_FIELDS
+from ambiental.ambiental_defaults import EXTRA_FIELDS, KEY_RESOURCE_TYPE
 from ambiental.models import ConsumptionRecord, MeasurementPoint, NormalizationBase
-from laboratory.models import Provider
+from laboratory.models import Catalog, Provider
+from report.forms import ReportBase
 from risk_management.models import Buildings
 
 
@@ -120,3 +121,39 @@ class NormalizationBaseForm(GTForm, forms.ModelForm):
             "year": genwidgets.NumberInput(attrs={"min": "1900", "max": "2200"}),
             "value": genwidgets.NumberInput(attrs={"step": "any", "min": "0"}),
         }
+
+
+class AmbientalReportForm(ReportBase):
+    """Filtros comunes de los reportes ambientales.
+
+    ``cleaned_data`` termina guardado como JSON en ``TaskReport.data``: los campos de
+    modelo se limpian a listas de pks.
+    """
+
+    building = forms.ModelMultipleChoiceField(
+        queryset=Buildings.objects.none(),
+        required=False,
+        label=_("Buildings"),
+        widget=genwidgets.SelectMultiple,
+    )
+    resource_type = forms.ModelMultipleChoiceField(
+        queryset=Catalog.objects.filter(key=KEY_RESOURCE_TYPE),
+        required=False,
+        label=_("Resource type"),
+        widget=genwidgets.SelectMultiple,
+    )
+    period = forms.CharField(
+        widget=genwidgets.DateRangeInput, required=False, label=_("Period")
+    )
+
+    def __init__(self, *args, org_pk=None, user=None, **kwargs):
+        self.user = user
+        super().__init__(*args, **kwargs)
+        if org_pk:
+            self.fields["building"].queryset = Buildings.objects.filter(organization__pk=org_pk)
+
+    def clean_building(self):
+        return list(self.cleaned_data["building"].values_list("pk", flat=True))
+
+    def clean_resource_type(self):
+        return list(self.cleaned_data["resource_type"].values_list("pk", flat=True))

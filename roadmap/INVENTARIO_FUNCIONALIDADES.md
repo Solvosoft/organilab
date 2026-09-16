@@ -15,8 +15,8 @@ con ese rol.
 
 | Métrica | Valor |
 |---|---:|
-| Funcionalidades catalogadas | 47 |
-| Sin ninguna prueba | 11 |
+| Funcionalidades catalogadas | 48 |
+| Sin ninguna prueba | 12 |
 | Rutas navegables huérfanas | 0 |
 | Apps pendientes de catalogar | 2 |
 | Roles canónicos | 21 |
@@ -95,6 +95,16 @@ Los denominadores de los indicadores. Se precargan con el área del edificio y l
 | Paso | Actores | Permiso | Transición | Rutas |
 |---|---|---|---|---|
 | **Consultar, precargar y corregir las bases de normalización** | Administrador ambiental, Administrativo superior, Encargado de registro ambiental, Analista ambiental | `ambiental.view_normalizationbase` | — | `ambiental:normalizationbase_list` |
+
+### `AMB-04` — Reportar el consumo: detalle, consolidado y costos
+
+*ambiental · ui · prioridad P2 · cobertura por ruta: **sin prueba** · Selenium: —*
+
+Los reportes de consumo por edificio, recurso y período, en pantalla, PDF u hoja de cálculo, sobre la cola de reportes de `report`. El consolidado suma por mes facturado (`period_end`) y separa unidades distintas.
+
+| Paso | Actores | Permiso | Transición | Rutas |
+|---|---|---|---|---|
+| **Pedir el reporte de detalle, consolidado o costos** | Administrador ambiental, Administrativo superior, Encargado de registro ambiental, Analista ambiental | `ambiental.view_consumptionrecord`<br>`laboratory.do_report` | — | `ambiental:report_consumption_detail`<br>`ambiental:report_consumption_summary`<br>`ambiental:report_consumption_cost` |
 
 ### `ORG-01` — Elegir organización y orientarse en el árbol
 

@@ -3533,6 +3533,42 @@ URLNAME_PERMISSIONS = {
             "permission": "ambiental.preload_normalizationbase",
         },
     ],
+    "report_consumption_detail": [
+        {
+            "name": "Consumption detail report",
+            "category": "Ambiental",
+            "permission": "laboratory.do_report",
+        },
+        {
+            "name": "View consumption records",
+            "category": "Ambiental",
+            "permission": "ambiental.view_consumptionrecord",
+        },
+    ],
+    "report_consumption_summary": [
+        {
+            "name": "Consumption summary report",
+            "category": "Ambiental",
+            "permission": "laboratory.do_report",
+        },
+        {
+            "name": "View consumption records",
+            "category": "Ambiental",
+            "permission": "ambiental.view_consumptionrecord",
+        },
+    ],
+    "report_consumption_cost": [
+        {
+            "name": "Consumption cost report",
+            "category": "Ambiental",
+            "permission": "laboratory.do_report",
+        },
+        {
+            "name": "View consumption records",
+            "category": "Ambiental",
+            "permission": "ambiental.view_consumptionrecord",
+        },
+    ],
     # La papelera es de la biblioteca: sus permisos viven en djgentelella,
     # no en laboratory. update_roles.update_papelera() ya se los da a los
     # roles fijos; esto es lo que permite configurarlos por organización.

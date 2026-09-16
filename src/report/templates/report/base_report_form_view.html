@@ -15,7 +15,7 @@
 
 {% block content %}
 
-	{% if perms.laboratory.do_report and perms.laboratory.view_object %}
+	{% if report_allowed or perms.laboratory.do_report and perms.laboratory.view_object %}
 		<div class="row p-3 mt-1">
 			<div class='col-md-10 offset-md-1'>
 				<div class="container">
