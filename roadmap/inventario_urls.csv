@@ -68,7 +68,7 @@ namespace,nombre,patrón,vista,archivo:línea,categoría,plantilla,kwargs,seleni
 ,dangerindicationchart-list,/gtapis/^dangerIndication/$,risk_management.gtcharts.LaboratoryDangerIndicationChart,site-packages/django/views/decorators/csrf.py:491,api,,,0,0
 ,dangerindicationchart-detail,/gtapis/^dangerIndication/(?P<pk>[^/.]+)/$,risk_management.gtcharts.LaboratoryDangerIndicationChart,site-packages/django/views/decorators/csrf.py:491,api,,pk,0,0
 ,whiteorganchart-list,/gtapis/^white_organ/$,risk_management.gtcharts.LaboratoryWhiteOrganChart,site-packages/django/views/decorators/csrf.py:491,api,,,0,0
-,whiteorganchart-detail,/gtapis/^white_organ/(?P<pk>[^/.]+)/$,risk_management.gtcharts.LaboratoryWhiteOrganChart,site-packages/django/views/decorators/csrf.py:491,api,,pk,0,0
+,whiteorganchart-detail,/gtapis/^white_organ/(?P<pk>[^/.]+)/$,risk_management.gtcharts.LaboratoryWhiteOrganChart,site-packages/django/views/decorators/csrf.py:491,api,,pk,0,1
 ,precursortypechart-list,/gtapis/^precursor_type/$,risk_management.gtcharts.LaboratoryPrecursorTypeChart,site-packages/django/views/decorators/csrf.py:491,api,,,0,0
 ,precursortypechart-detail,/gtapis/^precursor_type/(?P<pk>[^/.]+)/$,risk_management.gtcharts.LaboratoryPrecursorTypeChart,site-packages/django/views/decorators/csrf.py:491,api,,pk,0,0
 ,nfpachart-list,/gtapis/^nfpa/$,risk_management.gtcharts.LaboratoryNFPAChart,site-packages/django/views/decorators/csrf.py:491,api,,,0,0
@@ -1204,6 +1204,11 @@ admin,laboratory_catalog_add,/admin/laboratory/catalog/add/,django.contrib.admin
 admin,laboratory_catalog_history,/admin/laboratory/catalog/<path:object_id>/history/,django.contrib.admin.options.ModelAdmin.history_view,site-packages/django/contrib/admin/options.py:2274,infra,,object_id,0,0
 admin,laboratory_catalog_delete,/admin/laboratory/catalog/<path:object_id>/delete/,django.contrib.admin.options.ModelAdmin.delete_view,site-packages/django/contrib/admin/options.py:2201,infra,,object_id,0,0
 admin,laboratory_catalog_change,/admin/laboratory/catalog/<path:object_id>/change/,django.contrib.admin.options.ModelAdmin.change_view,site-packages/django/contrib/admin/options.py:1986,infra,,object_id,0,0
+admin,laboratory_baseunitvalues_changelist,/admin/laboratory/baseunitvalues/,django.contrib.admin.options.ModelAdmin.changelist_view,site-packages/django/contrib/admin/options.py:2012,infra,,,0,0
+admin,laboratory_baseunitvalues_add,/admin/laboratory/baseunitvalues/add/,django.contrib.admin.options.ModelAdmin.add_view,site-packages/django/contrib/admin/options.py:1983,infra,,,0,0
+admin,laboratory_baseunitvalues_history,/admin/laboratory/baseunitvalues/<path:object_id>/history/,django.contrib.admin.options.ModelAdmin.history_view,site-packages/django/contrib/admin/options.py:2274,infra,,object_id,0,0
+admin,laboratory_baseunitvalues_delete,/admin/laboratory/baseunitvalues/<path:object_id>/delete/,django.contrib.admin.options.ModelAdmin.delete_view,site-packages/django/contrib/admin/options.py:2201,infra,,object_id,0,0
+admin,laboratory_baseunitvalues_change,/admin/laboratory/baseunitvalues/<path:object_id>/change/,django.contrib.admin.options.ModelAdmin.change_view,site-packages/django/contrib/admin/options.py:1986,infra,,object_id,0,0
 admin,laboratory_blockedlistnotification_changelist,/admin/laboratory/blockedlistnotification/,django.contrib.admin.options.ModelAdmin.changelist_view,site-packages/django/contrib/admin/options.py:2012,infra,,,0,0
 admin,laboratory_blockedlistnotification_add,/admin/laboratory/blockedlistnotification/add/,django.contrib.admin.options.ModelAdmin.add_view,site-packages/django/contrib/admin/options.py:1983,infra,,,0,0
 admin,laboratory_blockedlistnotification_history,/admin/laboratory/blockedlistnotification/<path:object_id>/history/,django.contrib.admin.options.ModelAdmin.history_view,site-packages/django/contrib/admin/options.py:2274,infra,,object_id,0,0

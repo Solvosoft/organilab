@@ -18,14 +18,14 @@ el resto se cubre con pruebas de cliente o unitarias.
 | `json` | 45 |
 | `descarga` | 18 |
 | `accion` | 29 |
-| `infra` | 701 |
-| **total** | **1695** |
+| `infra` | 706 |
+| **total** | **1700** |
 
 Páginas: 176, de las cuales **60 sin ninguna prueba**.
 
 ## Rutas por app
 
-Se omiten las categorías `api` e `infra` (1407 rutas de routers DRF y de
+Se omiten las categorías `api` e `infra` (1412 rutas de routers DRF y de
 la administración de Django): están en `inventario_urls.csv`.
 
 ### academic — 9 páginas, 0 sin prueba

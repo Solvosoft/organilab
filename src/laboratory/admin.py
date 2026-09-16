@@ -676,6 +676,13 @@ class CatalogAdmin(admin.ModelAdmin):
     list_filter = ("key",)
 
 
+@admin.register(models.BaseUnitValues)
+class BaseUnitValuesAdmin(admin.ModelAdmin):
+    list_display = ("id", "measurement_unit", "measurement_unit_base", "si_value")
+    list_select_related = ("measurement_unit", "measurement_unit_base")
+    search_fields = ("measurement_unit__description", "measurement_unit_base__description")
+
+
 @admin.register(models.BlockedListNotification)
 class BlockedListNotificationAdmin(admin.ModelAdmin):
     list_display = ("id", "object", "laboratory", "user")
