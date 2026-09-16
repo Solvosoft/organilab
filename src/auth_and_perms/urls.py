@@ -21,7 +21,9 @@ from auth_and_perms.api.viewsets import (
     UserRoles,
     OrganizationLabRelationDeleteViewSet,
 )
+from auth_and_perms.api.platform_users import PlatformUserViewSet
 from auth_and_perms.views import organizationstructure as orgstruct
+from auth_and_perms.views.platform_users import platform_users
 
 from rest_framework.routers import SimpleRouter, DefaultRouter
 
@@ -64,6 +66,7 @@ routes.register(
 )
 
 routes.register("userlist", UserListViewset, "api-userlist")
+routes.register("platformusers", PlatformUserViewSet, "api-platformusers")
 routes.register("laborglist", LaboratoryOrganizationViewset, "api-laborglist")
 routes.register("orglablist", OrganizationLaboratoryViewset, "api-orglablist")
 routes.register("laborgroles", LaboratoryOrganizationRoles, "api-laborgroles")
@@ -191,6 +194,7 @@ urlpatterns = [
         name="api_laboratory_geolocations",
     ),
     path("get_users/", user_org_creation.get_users, name="get_users"),
+    path("platform_users/", platform_users, name="platform_users"),
     path("lab_org_list/", orgstruct.get_labs_orgs, name="lab_org_list"),
     path(
         "enable_child_organizations/",

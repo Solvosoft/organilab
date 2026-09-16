@@ -1,5 +1,6 @@
 import random
 import uuid
+from datetime import timedelta
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -8,6 +9,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.validators import RegexValidator
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django_otp.plugins.otp_totp.models import TOTPDevice
 
@@ -68,6 +70,10 @@ class Profile(models.Model):
             (
                 "change_own_profile",
                 _("Can change own user/profile data"),
+            ),
+            (
+                "can_manage_users",
+                _("Can delete and merge users of the whole platform"),
             ),
         ]
 
@@ -268,3 +274,48 @@ class GroupDescription(models.Model):
 
     def __str__(self):
         return self.group.name
+
+
+def get_user_deletion_expiration():
+    return timezone.now() + timedelta(days=settings.USER_DELETION_GRACE_DAYS)
+
+
+class UserDeletionRequest(models.Model):
+    """Usuario programado para eliminarse al vencer `expiration_date`.
+
+    Mientras no vence, el usuario puede evitarlo iniciando sesión: la tarea
+    periódica descarta la solicitud si hay un inicio de sesión posterior a su
+    creación.
+    """
+
+    MANUAL = 1
+    INACTIVE = 2
+    REASONS = ((MANUAL, _("Manual")), (INACTIVE, _("Inactive user")))
+
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name="deletion_request",
+        verbose_name=_("User"),
+    )
+    reason = models.PositiveSmallIntegerField(
+        choices=REASONS, default=MANUAL, verbose_name=_("Reason")
+    )
+    creation_date = models.DateTimeField(auto_now_add=True, verbose_name=_("Creation date"))
+    expiration_date = models.DateTimeField(
+        default=get_user_deletion_expiration, verbose_name=_("Expiration date")
+    )
+    warnings_sent = models.JSONField(
+        default=list,
+        blank=True,
+        verbose_name=_("Warnings sent"),
+        help_text=_("Days before expiration for which a warning was already sent"),
+    )
+
+    class Meta:
+        verbose_name = _("User deletion request")
+        verbose_name_plural = _("User deletion requests")
+        ordering = ("expiration_date",)
+
+    def __str__(self):
+        return "%s (%s)" % (self.user, self.expiration_date)

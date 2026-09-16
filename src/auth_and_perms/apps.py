@@ -7,6 +7,9 @@ class AuthAndPermsConfig(AppConfig):
 
     def ready(self):
         import auth_and_perms.signals
+        from auth_and_perms.user_notifications import register_email_contexts
+
+        register_email_contexts()
         from django.contrib import admin
         from django.contrib.admin.models import LogEntry
         from auth_and_perms.admin import ExtendedLogEntryAdmin

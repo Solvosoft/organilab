@@ -150,5 +150,17 @@ admin.site.register(models.Rol, RolAdmin)
 admin.site.register(models.ProfilePermission, ProfilePermissionAdmin)
 admin.site.register(models.ImpostorLog, ImpostorAdmin)
 admin.site.register(models.GroupDescription)
+
+
+@admin.register(models.UserDeletionRequest)
+class UserDeletionRequestAdmin(admin.ModelAdmin):
+    # Borrar la solicitud la cancela; la eliminación la hace la tarea diaria.
+    list_display = ("user", "reason", "creation_date", "expiration_date", "warnings_sent")
+    list_filter = ("reason",)
+    search_fields = ("user__username", "user__email")
+    raw_id_fields = ("user",)
+    readonly_fields = ("warnings_sent",)
+
+
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)

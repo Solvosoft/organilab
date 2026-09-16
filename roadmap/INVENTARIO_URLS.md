@@ -10,22 +10,22 @@ el resto se cubre con pruebas de cliente o unitarias.
 
 | Categoría | Rutas |
 |---|---:|
-| `pagina` | 176 |
+| `pagina` | 177 |
 | `parcial` | 4 |
-| `api` | 706 |
+| `api` | 710 |
 | `autocomplete` | 6 |
 | `ajax` | 10 |
 | `json` | 45 |
 | `descarga` | 18 |
 | `accion` | 29 |
-| `infra` | 706 |
-| **total** | **1700** |
+| `infra` | 711 |
+| **total** | **1710** |
 
-Páginas: 176, de las cuales **60 sin ninguna prueba**.
+Páginas: 177, de las cuales **60 sin ninguna prueba**.
 
 ## Rutas por app
 
-Se omiten las categorías `api` e `infra` (1412 rutas de routers DRF y de
+Se omiten las categorías `api` e `infra` (1421 rutas de routers DRF y de
 la administración de Django): están en `inventario_urls.csv`.
 
 ### academic — 9 páginas, 0 sin prueba
@@ -48,7 +48,7 @@ la administración de Django): están en `inventario_urls.csv`.
 | `procedure_update` | `/academic/<int:org_pk>/procedure/procedure_update/<int:pk>/` | pagina | `academic.views.ProcedureUpdateView` | `academic/procedure_create.html` | org_pk, pk | — | sí |
 | `update_step` | `/academic/<int:org_pk>/procedure/step/<int:pk>/update/` | pagina | `academic.views.ProcedureStepUpdateView` | `academic/procedure_steps.html` | org_pk, pk | — | sí |
 
-### auth_and_perms — 9 páginas, 4 sin prueba
+### auth_and_perms — 10 páginas, 4 sin prueba
 
 | Nombre | Patrón | Categoría | Vista | Plantilla | kwargs | Selenium | Pruebas |
 |---|---|---|---|---|---|:-:|:-:|
@@ -74,6 +74,7 @@ la administración de Django): están en `inventario_urls.csv`.
 | `map_of_laboratories` | `/perms/<int:org_pk>/organization/map/laboratories/` | pagina | `auth_and_perms.views.select_organization.map_of_laboratories_view` | `auth_and_perms/map_of_laboratories.html` | org_pk | — | — |
 | `org_lab_relations_list` | `/perms/organization/<int:org_pk>/lab_relations/list/` | pagina | `auth_and_perms.views.organizationstructure.org_lab_relations_view` | `auth_and_perms/org_lab_relations_list.html` | org_pk | — | — |
 | `organizationManager` | `/perms/organization/manage/` | pagina | `auth_and_perms.views.organizationstructure.organization_manage_view` | `auth_and_perms/list_organizations.html` | — | sí | sí |
+| `platform_users` | `/perms/platform_users/` | pagina | `auth_and_perms.views.platform_users.platform_users` | `auth_and_perms/platform_users.html` | — | — | sí |
 | `select_organization_by_user` | `/perms/organizations/` | pagina | `auth_and_perms.views.select_organization.select_organization_by_user` | `auth_and_perms/select_organization.html` | — | sí | sí |
 
 ### authentication — 1 páginas, 0 sin prueba

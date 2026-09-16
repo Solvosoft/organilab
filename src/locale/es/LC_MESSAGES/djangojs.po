@@ -1226,3 +1226,32 @@ msgstr "Error al duplicar la evaluación"
 
 msgid "Duplicating..."
 msgstr "Duplicando..."
+
+msgid "Last login"
+msgstr "Último inicio de sesión"
+
+msgid "Date joined"
+msgstr "Fecha de registro"
+
+msgid "Merge another user into this one"
+msgstr "Fusionar otro usuario en este"
+
+msgid ""
+"The user is deleted; the information it created is kept and assigned to the "
+"system user."
+msgstr ""
+"El usuario se elimina; la información que creó se conserva y se asigna al "
+"usuario del sistema."
+
+msgid ""
+"The selected user will be deleted after moving its information. This cannot "
+"be undone."
+msgstr ""
+"El usuario seleccionado se eliminará después de mover su información. Esta "
+"acción no se puede deshacer."
+
+msgid "Merge"
+msgstr "Fusionar"
+
+msgid "Users merged"
+msgstr "Usuarios fusionados"

@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+{% load gtsettings organilab_tags %}
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_true "use_datatables" %}
+    {% define_urlname_action 'platform_users' %}
+{% endblock %}
+
+{% block title %}{% trans 'Platform users' %}{% endblock %}
+
+{% block content %}
+<h1 class="text-center">{% trans 'Platform users' %}</h1>
+<div class="alert alert-warning">
+    {% trans 'Deleting or merging a user affects every organization. The records of a deleted user are kept and assigned to the system user.' %}
+</div>
+<div class="row">
+    {% csrf_token %}
+    <table class="table table-striped w-100" id="platform_users_table"></table>
+</div>
+
+{% url 'auth_and_perms:api-platformusers-detail' 0 as destroy_user_url %}
+{% trans 'Delete user' as delete_user_title %}
+{% include 'gentelella/blocks/modal_template_delete.html' with form_id="delete_user_form" id="delete_user_modal" title=delete_user_title url=destroy_user_url %}
+
+<div id="merge_user_modal" class="modal fade" tabindex="-1" aria-labelledby="merge_user_label" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="merge_user_label">{% trans 'Merge users' %}</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
+            </div>
+            <div class="modal-body">
+                <p>{% trans 'The user that remains is' %} <strong id="merge_target_name"></strong>.</p>
+                <form id="merge_user_form">{{ merge_form }}</form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+                <button type="button" class="btn btn-danger" id="merge_user_submit">{% trans 'Merge' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+{{ block.super }}
+<script>
+    const platform_users_urls = {
+        list_url: "{% url 'auth_and_perms:api-platformusers-list' %}",
+        destroy_url: "{% url 'auth_and_perms:api-platformusers-detail' 0 %}",
+        merge_url: "{% url 'auth_and_perms:api-platformusers-merge' 0 %}",
+    }
+</script>
+<script src="{% static 'js/auth_and_perms/platform_users.js' %}?v={% get_organilab_version %}"></script>
+{% endblock %}

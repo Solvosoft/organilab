@@ -239,4 +239,57 @@ FEATURES = (
             "corrida; necesitan prueba propia.",
         ),
     ),
+    Feature(
+        id="ORG-05",
+        name="Eliminar y fusionar usuarios de la plataforma",
+        module="auth_and_perms",
+        kind="ui",
+        description=(
+            "Gestión de usuarios por encima de las organizaciones: eliminar un usuario "
+            "conservando lo que creó (pasa al usuario centinela) y fusionar un usuario "
+            "duplicado en otro. Una tarea diaria programa, avisa y elimina a quien lleva "
+            "más de un año sin iniciar sesión."
+        ),
+        priority="P2",
+        steps=(
+            Step(
+                id="listar_usuarios_plataforma",
+                name="Listar los usuarios de toda la plataforma",
+                actors=("superusuario",),
+                routes=("auth_and_perms:platform_users",),
+                permissions=("auth_and_perms.can_manage_users",),
+                source="src/auth_and_perms/views/platform_users.py",
+            ),
+            Step(
+                id="eliminar_usuario",
+                name="Eliminar un usuario conservando sus datos",
+                actors=("superusuario",),
+                routes=(),
+                permissions=("auth_and_perms.can_manage_users",),
+                transition="reasigna datos y bitácoras al centinela y borra el usuario",
+                source="src/auth_and_perms/user_merge.py delete_user",
+            ),
+            Step(
+                id="fusionar_usuarios",
+                name="Fusionar un usuario duplicado en otro",
+                actors=("superusuario",),
+                routes=(),
+                permissions=("auth_and_perms.can_manage_users",),
+                transition="mueve datos, roles y pertenencias al destino y borra el origen",
+                source="src/auth_and_perms/user_merge.py merge_users",
+            ),
+            Step(
+                id="limpiar_inactivos",
+                name="Programar, avisar y eliminar usuarios inactivos",
+                actors=("sistema",),
+                routes=(),
+                source="src/auth_and_perms/tasks.py manage_inactive_users",
+            ),
+        ),
+        notes=(
+            "`can_manage_users` no lo otorga ningún `Rol`: los roles de organización "
+            "incluyen `auth.change_user`, y un usuario pertenece a varias "
+            "organizaciones, así que borrar o fusionar es de plataforma.",
+        ),
+    ),
 )

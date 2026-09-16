@@ -336,3 +336,12 @@ class RolListForm(GTForm, forms.Form):
         widget=genwidgets.Select,
         label=_("Filter by organization"),
     )
+
+
+class MergePlatformUserForm(GTForm, forms.Form):
+    source = forms.ModelChoiceField(
+        queryset=User.objects.all(),
+        widget=AutocompleteSelect("platformusers", attrs={"data-dropdownparent": "#merge_user_modal"}),
+        label=_("User to merge"),
+        help_text=_("This user is deleted and all its information is moved to the selected user."),
+    )

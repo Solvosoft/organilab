@@ -8704,3 +8704,136 @@ msgstr "Generar reporte de precursores"
 #, python-format
 msgid "Precursor reports created: %(created)d. Already existing: %(existing)d."
 msgstr "Reportes de precursores creados: %(created)d. Ya existentes: %(existing)d."
+
+msgid "User to merge"
+msgstr "Usuario a fusionar"
+
+msgid ""
+"This user is deleted and all its information is moved to the selected user."
+msgstr ""
+"Este usuario se elimina y toda su información pasa al usuario seleccionado."
+
+msgid "Can delete and merge users of the whole platform"
+msgstr "Puede eliminar y fusionar usuarios de toda la plataforma"
+
+msgid "Manual"
+msgstr "Manual"
+
+msgid "Inactive user"
+msgstr "Usuario inactivo"
+
+msgid "Creation date"
+msgstr "Fecha de creación"
+
+msgid "Warnings sent"
+msgstr "Avisos enviados"
+
+msgid "Days before expiration for which a warning was already sent"
+msgstr "Días antes del vencimiento para los que ya se envió un aviso"
+
+msgid "User deletion request"
+msgstr "Solicitud de eliminación de usuario"
+
+msgid "User deletion requests"
+msgstr "Solicitudes de eliminación de usuarios"
+
+msgid "Platform users"
+msgstr "Usuarios de la plataforma"
+
+msgid ""
+"Deleting or merging a user affects every organization. The records of a "
+"deleted user are kept and assigned to the system user."
+msgstr ""
+"Eliminar o fusionar un usuario afecta a todas las organizaciones. Los "
+"registros de un usuario eliminado se conservan y se asignan al usuario del "
+"sistema."
+
+msgid "Delete user"
+msgstr "Eliminar usuario"
+
+msgid "Merge users"
+msgstr "Fusionar usuarios"
+
+msgid "The user that remains is"
+msgstr "El usuario que permanece es"
+
+msgid "Merge"
+msgstr "Fusionar"
+
+#, python-format
+msgid ""
+"The sentinel user (%(username)s) does not exist; users cannot be deleted "
+"without losing their data."
+msgstr ""
+"El usuario centinela (%(username)s) no existe; no se pueden eliminar "
+"usuarios sin perder sus datos."
+
+msgid "You cannot delete or merge your own user."
+msgstr "No puede eliminar ni fusionar su propio usuario."
+
+msgid "The sentinel user cannot be deleted or merged."
+msgstr "El usuario centinela no se puede eliminar ni fusionar."
+
+msgid "Only a superuser can delete or merge a superuser."
+msgstr "Solo un superusuario puede eliminar o fusionar a un superusuario."
+
+msgid "A user cannot be merged with itself."
+msgstr "Un usuario no se puede fusionar consigo mismo."
+
+msgid "Your Organilab account was merged"
+msgstr "Su cuenta de Organilab fue fusionada"
+
+msgid "Your Organilab account was deleted"
+msgstr "Su cuenta de Organilab fue eliminada"
+
+#, python-format
+msgid "Your Organilab account will be deleted in %(days)d days"
+msgstr "Su cuenta de Organilab será eliminada en %(days)d días"
+
+#, python-format
+msgid ""
+"Hi %(name)s,\n"
+"\n"
+"Your Organilab account %(source)s was merged into the account %(target)s. From now on use %(target)s to log in; your information is available there.\n"
+"\n"
+"Thanks,\n"
+"Organilab system"
+msgstr ""
+"Hola %(name)s,\n"
+"\n"
+"Su cuenta de Organilab %(source)s fue fusionada en la cuenta %(target)s. A partir de ahora use %(target)s para iniciar sesión; su información está disponible ahí.\n"
+"\n"
+"Gracias,\n"
+"Sistema Organilab"
+
+#, python-format
+msgid ""
+"Hi %(name)s,\n"
+"\n"
+"Your Organilab account %(username)s was deleted. The records you created remain in the system to preserve its history.\n"
+"\n"
+"Thanks,\n"
+"Organilab system"
+msgstr ""
+"Hola %(name)s,\n"
+"\n"
+"Su cuenta de Organilab %(username)s fue eliminada. Los registros que creó se conservan en el sistema para mantener su historial.\n"
+"\n"
+"Gracias,\n"
+"Sistema Organilab"
+
+#, python-format
+msgid ""
+"Hi %(name)s,\n"
+"\n"
+"Your Organilab account %(username)s has not been used for a long time and will be deleted on %(date)s. If you want to keep it, just log in before that date.\n"
+"\n"
+"Thanks,\n"
+"Organilab system"
+msgstr ""
+"Hola %(name)s,\n"
+"\n"
+"Su cuenta de Organilab %(username)s no se ha usado en mucho tiempo y será eliminada el %(date)s. Si desea conservarla, basta con iniciar sesión antes de esa fecha.\n"
+"\n"
+"Gracias,\n"
+"Sistema Organilab"

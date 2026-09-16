@@ -1,4 +1,11 @@
 {% load i18n %}
+{% if user.is_superuser or perms.auth_and_perms.can_manage_users %}
+<li>
+    <a href="{% url 'auth_and_perms:platform_users' %}" title="{% trans 'Platform users' %}">
+        <i class="fa fa-user-times"></i> {% trans 'Platform users' %}
+    </a>
+</li>
+{% endif %}
 {% if perms.laboratory.can_manage_org_permissions %}
 <li>
         <a>

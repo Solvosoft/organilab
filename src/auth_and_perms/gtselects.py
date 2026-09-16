@@ -18,6 +18,7 @@ from auth_and_perms.api.serializers import (
     ValidateOrganizationSerializer,
 )
 from auth_and_perms.models import Rol, ProfilePermission
+from auth_and_perms.permissions import CanManagePlatformUsers
 from auth_and_perms.node_tree import (
     get_org_parents_info,
     get_tree_organization_pks_by_user,
@@ -714,3 +715,17 @@ class ObjectByOrganization(BaseSelect2View):
 
     def get_text_display(self, obj):
         return str(obj)
+
+
+@register_lookups(prefix="platformusers", basename="platformusers")
+class PlatformUsersS2(BaseSelect2View):
+    """Usuarios de toda la plataforma, para elegir cuál fusionar."""
+
+    model = User
+    fields = ["username", "first_name", "last_name", "email"]
+    pagination_class = GPaginatorMoreElements
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated, CanManagePlatformUsers]
+
+    def get_queryset(self):
+        return super().get_queryset().exclude(username=settings.DELETED_USER_SENTINEL_USERNAME).order_by("username")

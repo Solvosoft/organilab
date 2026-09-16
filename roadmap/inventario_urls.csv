@@ -28,6 +28,7 @@ namespace,nombre,patrón,vista,archivo:línea,categoría,plantilla,kwargs,seleni
 ,usersbyorg-list,/gtapis/^usersbyorg/$,auth_and_perms.gtselects.UsersByOrganization,site-packages/django/views/decorators/csrf.py:491,api,,,0,1
 ,orgtree-list,/gtapis/^orgtree/$,auth_and_perms.gtselects.OrgTree,site-packages/django/views/decorators/csrf.py:491,api,,,0,1
 ,objbyorg-list,/gtapis/^objbyorg/$,auth_and_perms.gtselects.ObjectByOrganization,site-packages/django/views/decorators/csrf.py:491,api,,,0,1
+,platformusers-list,/gtapis/^platformusers/$,auth_and_perms.gtselects.PlatformUsersS2,site-packages/django/views/decorators/csrf.py:491,api,,,0,1
 ,objectlimitschart-list,/gtapis/^objectlimits/$,laboratory.gtcharts.ObjectLimitsClassChart,site-packages/django/views/decorators/csrf.py:491,api,,,0,0
 ,objectlimitschart-detail,/gtapis/^objectlimits/(?P<pk>[^/.]+)/$,laboratory.gtcharts.ObjectLimitsClassChart,site-packages/django/views/decorators/csrf.py:491,api,,pk,0,0
 ,rolsearch-list,/gtapis/^rol/$,laboratory.gtselects.RolGModelLookup,site-packages/django/views/decorators/csrf.py:491,api,,,0,0
@@ -170,6 +171,9 @@ auth_and_perms,api-userlist-list,/perms/api/^userlist/$,auth_and_perms.api.views
 auth_and_perms,api-userlist-detail-template,/perms/api/^userlist/detail_template/$,auth_and_perms.api.viewsets.UserListViewset,site-packages/django/views/decorators/csrf.py:491,api,,,0,0
 auth_and_perms,api-userlist-detail,/perms/api/^userlist/(?P<pk>[^/.]+)/$,auth_and_perms.api.viewsets.UserListViewset,site-packages/django/views/decorators/csrf.py:491,api,,pk,0,0
 auth_and_perms,api-userlist-get-values-for-update,/perms/api/^userlist/(?P<pk>[^/.]+)/get_values_for_update/$,auth_and_perms.api.viewsets.UserListViewset,site-packages/django/views/decorators/csrf.py:491,api,,pk,0,0
+auth_and_perms,api-platformusers-list,/perms/api/^platformusers/$,auth_and_perms.api.platform_users.PlatformUserViewSet,site-packages/django/views/decorators/csrf.py:491,api,,,0,1
+auth_and_perms,api-platformusers-detail,/perms/api/^platformusers/(?P<pk>[^/.]+)/$,auth_and_perms.api.platform_users.PlatformUserViewSet,site-packages/django/views/decorators/csrf.py:491,api,,pk,0,1
+auth_and_perms,api-platformusers-merge,/perms/api/^platformusers/(?P<pk>[^/.]+)/merge/$,auth_and_perms.api.platform_users.PlatformUserViewSet,site-packages/django/views/decorators/csrf.py:491,api,,pk,0,1
 auth_and_perms,api-laborglist-list,/perms/api/^laborglist/$,auth_and_perms.api.viewsets.LaboratoryOrganizationViewset,site-packages/django/views/decorators/csrf.py:491,api,,,0,0
 auth_and_perms,api-orglablist-list,/perms/api/^orglablist/$,auth_and_perms.api.viewsets.OrganizationLaboratoryViewset,site-packages/django/views/decorators/csrf.py:491,api,,,0,0
 auth_and_perms,api-laborgroles-list,/perms/api/^laborgroles/$,auth_and_perms.api.viewsets.LaboratoryOrganizationRoles,site-packages/django/views/decorators/csrf.py:491,api,,,0,0
@@ -198,6 +202,7 @@ auth_and_perms,update_rol,/perms/update_rol/<int:org_pk>/<int:pk>/,auth_and_perm
 auth_and_perms,get_rol,/perms/get_rol/<int:pk>/,auth_and_perms.views.organizationstructure.get_rol,site-packages/django/contrib/auth/decorators.py:559,json,,pk,0,0
 auth_and_perms,api_laboratory_geolocations,/perms/api/laboratory_geolocations/,auth_and_perms.api.viewsets.LaboratoryGeolocationsAPI,site-packages/django/views/decorators/csrf.py:97,api,,,0,0
 auth_and_perms,get_users,/perms/get_users/,auth_and_perms.views.user_org_creation.get_users,site-packages/django/contrib/auth/decorators.py:243,pagina,auth_and_perms/user_list.html,,0,0
+auth_and_perms,platform_users,/perms/platform_users/,auth_and_perms.views.platform_users.platform_users,site-packages/django/contrib/auth/decorators.py:7,pagina,auth_and_perms/platform_users.html,,0,1
 auth_and_perms,lab_org_list,/perms/lab_org_list/,auth_and_perms.views.organizationstructure.get_labs_orgs,site-packages/django/contrib/auth/decorators.py:595,pagina,auth_and_perms/lab_org_list.html,,0,0
 auth_and_perms,enable_child_organizations,/perms/enable_child_organizations/,auth_and_perms.views.organizationstructure.enable_child_organizations,site-packages/django/contrib/auth/decorators.py:602,accion,,,0,0
 auth_and_perms,api-org-lab-relation-list,/perms/organization/<int:org_pk>/lab_relations/^api_org_lab_relation/$,auth_and_perms.api.viewsets.OrganizationLabRelationDeleteViewSet,site-packages/django/views/decorators/csrf.py:491,api,,org_pk,0,1
@@ -1068,6 +1073,11 @@ admin,auth_and_perms_groupdescription_add,/admin/auth_and_perms/groupdescription
 admin,auth_and_perms_groupdescription_history,/admin/auth_and_perms/groupdescription/<path:object_id>/history/,django.contrib.admin.options.ModelAdmin.history_view,site-packages/django/contrib/admin/options.py:2274,infra,,object_id,0,0
 admin,auth_and_perms_groupdescription_delete,/admin/auth_and_perms/groupdescription/<path:object_id>/delete/,django.contrib.admin.options.ModelAdmin.delete_view,site-packages/django/contrib/admin/options.py:2201,infra,,object_id,0,0
 admin,auth_and_perms_groupdescription_change,/admin/auth_and_perms/groupdescription/<path:object_id>/change/,django.contrib.admin.options.ModelAdmin.change_view,site-packages/django/contrib/admin/options.py:1986,infra,,object_id,0,0
+admin,auth_and_perms_userdeletionrequest_changelist,/admin/auth_and_perms/userdeletionrequest/,django.contrib.admin.options.ModelAdmin.changelist_view,site-packages/django/contrib/admin/options.py:2012,infra,,,0,0
+admin,auth_and_perms_userdeletionrequest_add,/admin/auth_and_perms/userdeletionrequest/add/,django.contrib.admin.options.ModelAdmin.add_view,site-packages/django/contrib/admin/options.py:1983,infra,,,0,0
+admin,auth_and_perms_userdeletionrequest_history,/admin/auth_and_perms/userdeletionrequest/<path:object_id>/history/,django.contrib.admin.options.ModelAdmin.history_view,site-packages/django/contrib/admin/options.py:2274,infra,,object_id,0,0
+admin,auth_and_perms_userdeletionrequest_delete,/admin/auth_and_perms/userdeletionrequest/<path:object_id>/delete/,django.contrib.admin.options.ModelAdmin.delete_view,site-packages/django/contrib/admin/options.py:2201,infra,,object_id,0,0
+admin,auth_and_perms_userdeletionrequest_change,/admin/auth_and_perms/userdeletionrequest/<path:object_id>/change/,django.contrib.admin.options.ModelAdmin.change_view,site-packages/django/contrib/admin/options.py:1986,infra,,object_id,0,0
 admin,auth_user_password_change,/admin/auth/user/<id>/password/,django.contrib.auth.admin.UserAdmin.user_change_password,site-packages/django/utils/decorators.py:154,infra,,id,0,0
 admin,auth_user_changelist,/admin/auth/user/,django.contrib.admin.options.ModelAdmin.changelist_view,site-packages/django/contrib/admin/options.py:2012,infra,,,0,0
 admin,auth_user_add,/admin/auth/user/add/,django.contrib.auth.admin.UserAdmin.add_view,site-packages/django/contrib/admin/options.py:117,infra,,,0,0

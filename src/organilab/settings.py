@@ -280,6 +280,13 @@ DELETED_USER_SENTINEL_USERNAME = os.getenv(
 # centinela que conserva la traza al borrar usuarios.
 GT_HISTORY_ANONYMOUS_USERNAME = DELETED_USER_SENTINEL_USERNAME
 
+# Limpieza de usuarios: quien no inicia sesión en USER_INACTIVITY_DAYS días queda
+# programado para eliminarse tras USER_DELETION_GRACE_DAYS; se le avisa los días
+# de USER_DELETION_WARNING_DAYS antes. Sus datos pasan al usuario centinela.
+USER_INACTIVITY_DAYS = int(os.getenv("USER_INACTIVITY_DAYS", 365))
+USER_DELETION_GRACE_DAYS = int(os.getenv("USER_DELETION_GRACE_DAYS", 30))
+USER_DELETION_WARNING_DAYS = (8, 1)
+
 # Celery settings
 BROKER_URL = os.getenv("BROKER_URL", "amqp://guest:guest@localhost:5672/organilabvhost")
 CELERY_TIMEZONE = TIME_ZONE
@@ -384,6 +391,10 @@ CELERYBEAT_SCHEDULE = {
     "create_precursor_reports": {
         "task": "laboratory.tasks.create_precursor_reports",
         "schedule": crontab(minute=2, hour=0, day_of_month=1),
+    },
+    "manage_inactive_users": {
+        "task": "auth_and_perms.tasks.manage_inactive_users",
+        "schedule": crontab(minute=40, hour=3),
     },
     "verify_precursor_reports": {
         "task": "laboratory.tasks.verify_precursor_reports",

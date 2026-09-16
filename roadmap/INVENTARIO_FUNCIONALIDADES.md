@@ -15,7 +15,7 @@ con ese rol.
 
 | Métrica | Valor |
 |---|---:|
-| Funcionalidades catalogadas | 44 |
+| Funcionalidades catalogadas | 45 |
 | Sin ninguna prueba | 11 |
 | Rutas navegables huérfanas | 0 |
 | Apps pendientes de catalogar | 2 |
@@ -130,6 +130,23 @@ Hallazgos:
 
 - HALLAZGO-ORG-2: **no hay restricción de privilegio.** Las cuatro guardas (`impostor.py:19-63`) comprueban que el suplantado pertenezca a la misma organización, que no sea uno mismo y que no haya otra sesión activa — pero no que el suplantador tenga al menos tantos permisos como el suplantado. Quien tenga `change_impostorlog` puede entrar como el administrador de su organización. Es una escalada de privilegios por diseño, y la auditoría en `ImpostorLog` es el único control.
 - Las dos rutas están fuera del smoke porque rompen la sesión de la corrida; necesitan prueba propia.
+
+### `ORG-05` — Eliminar y fusionar usuarios de la plataforma
+
+*auth_and_perms · ui · prioridad P2 · cobertura por ruta: completa · Selenium: —*
+
+Gestión de usuarios por encima de las organizaciones: eliminar un usuario conservando lo que creó (pasa al usuario centinela) y fusionar un usuario duplicado en otro. Una tarea diaria programa, avisa y elimina a quien lleva más de un año sin iniciar sesión.
+
+| Paso | Actores | Permiso | Transición | Rutas |
+|---|---|---|---|---|
+| **Listar los usuarios de toda la plataforma** | Superusuario | `auth_and_perms.can_manage_users` | — | `auth_and_perms:platform_users` |
+| **Eliminar un usuario conservando sus datos** | Superusuario | `auth_and_perms.can_manage_users` | reasigna datos y bitácoras al centinela y borra el usuario | — |
+| **Fusionar un usuario duplicado en otro** | Superusuario | `auth_and_perms.can_manage_users` | mueve datos, roles y pertenencias al destino y borra el origen | — |
+| **Programar, avisar y eliminar usuarios inactivos** | Sistema | — | — | — |
+
+Hallazgos:
+
+- `can_manage_users` no lo otorga ningún `Rol`: los roles de organización incluyen `auth.change_user`, y un usuario pertenece a varias organizaciones, así que borrar o fusionar es de plataforma.
 
 ### `INV-01` — Mantener el catálogo de objetos: reactivos, materiales y equipos
 
