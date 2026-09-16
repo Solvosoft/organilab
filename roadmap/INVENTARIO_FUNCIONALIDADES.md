@@ -15,7 +15,7 @@ con ese rol.
 
 | Métrica | Valor |
 |---|---:|
-| Funcionalidades catalogadas | 45 |
+| Funcionalidades catalogadas | 46 |
 | Sin ninguna prueba | 11 |
 | Rutas navegables huérfanas | 0 |
 | Apps pendientes de catalogar | 2 |
@@ -71,6 +71,20 @@ Se da de alta cada medidor, tanque o punto de acopio con el número que trae el 
 | Paso | Actores | Permiso | Transición | Rutas |
 |---|---|---|---|---|
 | **Listar, crear, editar y retirar puntos de medición** | Administrador ambiental, Administrativo superior, Encargado de registro ambiental, Analista ambiental | `ambiental.view_measurementpoint` | — | `ambiental:measurementpoint_list` |
+
+### `AMB-02` — Registrar el consumo de un edificio
+
+*ambiental · ui · prioridad P2 · cobertura por ruta: completa · Selenium: —*
+
+Se elige el edificio, luego el punto de medición y se registra el período facturado con su cantidad, costo y recibo. El recurso del punto decide la unidad y los campos extra; un período que se traslapa con otro registro del mismo punto se rechaza para no duplicar el consumo.
+
+Estados que atraviesa:
+
+- `ConsumptionRecord.is_deleted: False → True (papelera de la organización)`
+
+| Paso | Actores | Permiso | Transición | Rutas |
+|---|---|---|---|---|
+| **Registrar, corregir o retirar el consumo de un período** | Administrador ambiental, Administrativo superior, Encargado de registro ambiental | `ambiental.view_consumptionrecord` | — | `ambiental:consumptionrecord_list` |
 
 ### `ORG-01` — Elegir organización y orientarse en el árbol
 

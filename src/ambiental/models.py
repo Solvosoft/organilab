@@ -1,11 +1,24 @@
+from decimal import ROUND_HALF_UP, Decimal
+
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from djgentelella.models import DeletedWithTrash
 
-from ambiental.ambiental_defaults import KEY_POINT_TYPE, KEY_RESOURCE_TYPE
+from ambiental.ambiental_defaults import (
+    KEY_MEASURE_UNIT,
+    KEY_POINT_TYPE,
+    KEY_RESOURCE_TYPE,
+    KEY_WASTE_TREATMENT,
+    get_resource_info,
+)
 from laboratory import catalog
-from laboratory.models import Catalog, Laboratory
+from laboratory.models import Catalog, Laboratory, Provider
+from laboratory.models_utils import upload_files
 from presentation.models import AbstractOrganizationRef
+
+CENT = Decimal("0.01")
+TEN_THOUSANDTH = Decimal("0.0001")
 
 
 class MeasurementPoint(AbstractOrganizationRef, DeletedWithTrash):
@@ -63,3 +76,139 @@ class MeasurementPoint(AbstractOrganizationRef, DeletedWithTrash):
 
     def __str__(self):
         return "%s - %s" % (self.code, self.name)
+
+
+class ConsumptionRecord(AbstractOrganizationRef, DeletedWithTrash):
+    """Cuánto consumió (o desechó) un punto de medición en un período.
+
+    Un solo modelo para todos los recursos: lo que cambia entre ellos (placa del
+    vehículo, código de residuo, número de manifiesto) va en ``extra_data``,
+    validado contra los campos que ``ambiental_defaults`` declara para el recurso.
+    Un residuo es un registro con ``is_waste``: comparte reportes e indicadores.
+
+    Para reportes, indicadores y alertas el registro cuenta en el mes de
+    ``period_end`` (el mes facturado); no se prorratea por días.
+    """
+
+    MANUAL = "manual"
+    IMPORT = "import"
+    SOURCES = (
+        (MANUAL, _("Manual")),
+        (IMPORT, _("Import")),
+    )
+
+    point = models.ForeignKey(
+        MeasurementPoint,
+        on_delete=models.PROTECT,
+        verbose_name=_("Measurement point"),
+        related_name="records",
+    )
+    period_start = models.DateField(verbose_name=_("Period start"))
+    period_end = models.DateField(verbose_name=_("Period end"))
+    quantity = models.DecimalField(
+        max_digits=14, decimal_places=4, verbose_name=_("Quantity")
+    )
+    unit = catalog.GTForeignKey(
+        Catalog,
+        on_delete=models.PROTECT,
+        verbose_name=_("Unit"),
+        key_name="key",
+        key_value=KEY_MEASURE_UNIT,
+        related_name="ambiental_record_units",
+    )
+    unit_cost = models.DecimalField(
+        max_digits=14,
+        decimal_places=4,
+        null=True,
+        blank=True,
+        verbose_name=_("Unit cost"),
+    )
+    total_cost = models.DecimalField(
+        max_digits=14,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        verbose_name=_("Total cost"),
+    )
+    is_waste = models.BooleanField(default=False, verbose_name=_("Is waste"))
+    treatment = catalog.GTForeignKey(
+        Catalog,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name=_("Waste treatment"),
+        key_name="key",
+        key_value=KEY_WASTE_TREATMENT,
+        related_name="ambiental_record_treatments",
+    )
+    waste_manager = models.ForeignKey(
+        Provider,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name=_("Authorized waste manager"),
+        related_name="ambiental_records",
+    )
+    document = models.FileField(
+        upload_to=upload_files,
+        null=True,
+        blank=True,
+        verbose_name=_("Supporting document"),
+        help_text=_("Bill, receipt or waste manifest"),
+    )
+    extra_data = models.JSONField(default=dict, blank=True, verbose_name=_("Extra data"))
+    source = models.CharField(
+        max_length=20, choices=SOURCES, default=MANUAL, verbose_name=_("Source")
+    )
+    note = models.TextField(blank=True, default="", verbose_name=_("Note"))
+
+    class Meta:
+        verbose_name = _("Consumption record")
+        verbose_name_plural = _("Consumption records")
+        ordering = ["-period_end", "pk"]
+        unique_together = ("point", "period_start", "period_end")
+        indexes = [
+            models.Index(fields=["organization", "period_start"]),
+            models.Index(fields=["point", "period_start"]),
+        ]
+
+    def __str__(self):
+        return "%s: %s - %s" % (self.point, self.period_start, self.period_end)
+
+    @property
+    def resource_info(self):
+        return get_resource_info(self.point.resource_type)
+
+    def complete_costs(self):
+        """Completa el costo que falte: total = cantidad x unitario, o al revés."""
+        if self.quantity is None:
+            return
+        quantity = Decimal(self.quantity)
+        if self.total_cost is None and self.unit_cost is not None:
+            self.total_cost = (quantity * Decimal(self.unit_cost)).quantize(
+                CENT, rounding=ROUND_HALF_UP
+            )
+        elif self.unit_cost is None and self.total_cost is not None and quantity:
+            self.unit_cost = (Decimal(self.total_cost) / quantity).quantize(
+                TEN_THOUSANDTH, rounding=ROUND_HALF_UP
+            )
+
+    def clean(self):
+        super().clean()
+        if self.period_start and self.period_end and self.period_end < self.period_start:
+            raise ValidationError(
+                {"period_end": _("The period end must be after the period start.")}
+            )
+        allowed = set(self.resource_info["extra_fields"]) if self.point_id else set()
+        unknown = set(self.extra_data or {}) - allowed
+        if unknown:
+            raise ValidationError(
+                {"extra_data": _("Fields not allowed for this resource: %(fields)s")
+                 % {"fields": ", ".join(sorted(unknown))}}
+            )
+
+    def save(self, *args, **kwargs):
+        self.complete_costs()
+        if self.point_id and self.resource_info["is_waste"]:
+            self.is_waste = True
+        super().save(*args, **kwargs)

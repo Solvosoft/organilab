@@ -12,6 +12,7 @@
     "ACAD-02/reservar_material": "solo superusuario",
     "ACAD-02/retirar": "solo superusuario",
     "AMB-01/gestionar_puntos": "ejercitado",
+    "AMB-02/registrar_consumo": "ejercitado",
     "DERB-01/borrar": "solo superusuario",
     "DERB-01/crear": "solo superusuario",
     "DERB-01/editar": "solo superusuario",
@@ -173,10 +174,11 @@
     "SGA-05/recipientes": "solo superusuario",
     "TASK-01/ver_bandeja": "solo superusuario"
   },
-  "peticiones_observadas": 4922,
+  "peticiones_observadas": 4947,
   "roles_ejercitados": {
     "administrador_ambiental": [
-      "AMB-01/gestionar_puntos"
+      "AMB-01/gestionar_puntos",
+      "AMB-02/registrar_consumo"
     ],
     "administrador_laboratorio": [
       "LAB-03/mis_labs",
@@ -187,7 +189,8 @@
       "RES-01/validar_disponibilidad"
     ],
     "analista_ambiental": [
-      "AMB-01/gestionar_puntos"
+      "AMB-01/gestionar_puntos",
+      "AMB-02/registrar_consumo"
     ],
     "estudiante": [
       "LAB-03/mis_labs"
@@ -197,7 +200,8 @@
       "RES-01/ver_mis_reservas"
     ],
     "registro_ambiental": [
-      "AMB-01/gestionar_puntos"
+      "AMB-01/gestionar_puntos",
+      "AMB-02/registrar_consumo"
     ]
   },
   "roles_nunca_ejercitados": [

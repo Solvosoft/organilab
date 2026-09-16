@@ -3484,6 +3484,28 @@ URLNAME_PERMISSIONS = {
             "permission": "ambiental.delete_measurementpoint",
         },
     ],
+    "consumptionrecord_list": [
+        {
+            "name": "View consumption records",
+            "category": "Ambiental",
+            "permission": "ambiental.view_consumptionrecord",
+        },
+        {
+            "name": "Add consumption record",
+            "category": "Ambiental",
+            "permission": "ambiental.add_consumptionrecord",
+        },
+        {
+            "name": "Change consumption record",
+            "category": "Ambiental",
+            "permission": "ambiental.change_consumptionrecord",
+        },
+        {
+            "name": "Delete consumption record",
+            "category": "Ambiental",
+            "permission": "ambiental.delete_consumptionrecord",
+        },
+    ],
     # La papelera es de la biblioteca: sus permisos viven en djgentelella,
     # no en laboratory. update_roles.update_papelera() ya se los da a los
     # roles fijos; esto es lo que permite configurarlos por organización.

@@ -2,7 +2,10 @@ from django.core.exceptions import PermissionDenied
 from djgentelella.groute import register_lookups
 from djgentelella.permission_management import AnyPermissionByAction
 from djgentelella.views.select2autocomplete import BaseSelect2View
+from rest_framework import serializers
 from rest_framework.authentication import SessionAuthentication
+
+from ambiental.api.serializers import resource_info_payload
 
 from ambiental.models import MeasurementPoint
 from auth_and_perms.organization_utils import user_is_allowed_on_organization
@@ -81,8 +84,24 @@ class AmbientalMeasurementPoints(AmbientalOrganizationSelect):
     perms = {"list": ["ambiental.view_measurementpoint"]}
 
     def scope_queryset(self, queryset, organization):
-        queryset = queryset.filter(organization=organization)
+        queryset = queryset.filter(organization=organization).select_related("resource_type")
         building = self.get_building()
         if building:
             queryset = queryset.filter(building__pk=building)
         return queryset
+
+    def get_serializer_class(self):
+        # Cada opción lleva la unidad y los campos del recurso: al elegir el punto,
+        # el formulario de consumo precarga la unidad y muestra solo lo que aplica.
+        base = super().get_serializer_class()
+
+        class PointSerializer(base):
+            resource_info = serializers.SerializerMethodField()
+
+            def get_resource_info(self, obj):
+                return resource_info_payload(obj)
+
+            class Meta(base.Meta):
+                fields = base.Meta.fields + ["resource_info"]
+
+        return PointSerializer

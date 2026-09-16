@@ -1,6 +1,6 @@
 {% load i18n %}
 
-{% if perms.ambiental.view_measurementpoint %}
+{% if perms.ambiental.view_measurementpoint or perms.ambiental.view_consumptionrecord %}
 	<li>
 		<a>
 			<i class="fa fa-leaf" aria-hidden="true"></i>
@@ -8,6 +8,14 @@
 			<span class="fa fa-chevron-down"></span>
 		</a>
 		<ul class="nav child_menu">
+			{% if perms.ambiental.view_consumptionrecord %}
+				<li>
+					<a href="{% url 'ambiental:consumptionrecord_list' org_pk %}"
+						title="{% trans 'Consumption records' %}">
+						<i class="fa fa-tint" aria-hidden="true"></i>
+						{% trans 'Consumption records' %}</a>
+				</li>
+			{% endif %}
 			{% if perms.ambiental.view_measurementpoint %}
 				<li>
 					<a href="{% url 'ambiental:measurementpoint_list' org_pk %}"

@@ -38,4 +38,31 @@ FEATURES = (
             ),
         ),
     ),
+    Feature(
+        id="AMB-02",
+        name="Registrar el consumo de un edificio",
+        module="ambiental",
+        kind="ui",
+        description=(
+            "Se elige el edificio, luego el punto de medición y se registra el período "
+            "facturado con su cantidad, costo y recibo. El recurso del punto decide la "
+            "unidad y los campos extra; un período que se traslapa con otro registro del "
+            "mismo punto se rechaza para no duplicar el consumo."
+        ),
+        priority="P2",
+        states=(
+            "ConsumptionRecord.is_deleted: False → True (papelera de la organización)",
+        ),
+        steps=(
+            Step(
+                id="registrar_consumo",
+                name="Registrar, corregir o retirar el consumo de un período",
+                actors=ADMIN_AMBIENTAL + ("registro_ambiental",),
+                routes=("ambiental:consumptionrecord_list",),
+                permissions=("ambiental.view_consumptionrecord",),
+                source="src/ambiental/views.py consumptionrecord_list, "
+                       "src/ambiental/api/viewsets.py ConsumptionRecordViewSet",
+            ),
+        ),
+    ),
 )

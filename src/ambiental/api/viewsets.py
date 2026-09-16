@@ -1,6 +1,6 @@
 from ambiental.api import filtersets, serializers
 from ambiental.api.mixins import AmbientalViewSet
-from ambiental.models import MeasurementPoint
+from ambiental.models import ConsumptionRecord, MeasurementPoint
 
 
 class MeasurementPointViewSet(AmbientalViewSet):
@@ -29,3 +29,31 @@ class MeasurementPointViewSet(AmbientalViewSet):
 
     def get_related_objects(self, instance):
         return [instance.building]
+
+
+class ConsumptionRecordViewSet(AmbientalViewSet):
+    serializer_class = {
+        "list": serializers.ConsumptionRecordDataTableSerializer,
+        "create": serializers.ConsumptionRecordSaveSerializer,
+        "update": serializers.ConsumptionRecordSaveSerializer,
+        "retrieve": serializers.ConsumptionRecordSerializer,
+        "get_values_for_update": serializers.ConsumptionRecordSerializer,
+    }
+    perms = {
+        "list": ["ambiental.view_consumptionrecord"],
+        "create": ["ambiental.add_consumptionrecord"],
+        "update": ["ambiental.change_consumptionrecord"],
+        "retrieve": ["ambiental.view_consumptionrecord"],
+        "get_values_for_update": ["ambiental.change_consumptionrecord"],
+        "destroy": ["ambiental.delete_consumptionrecord"],
+    }
+    queryset = ConsumptionRecord.objects.select_related(
+        "point__building", "point__resource_type", "unit", "treatment", "waste_manager"
+    )
+    search_fields = ["point__code", "point__name", "point__building__name", "note"]
+    filterset_class = filtersets.ConsumptionRecordFilter
+    ordering_fields = ["period_start", "period_end", "quantity", "total_cost"]
+    ordering = ("-period_end",)
+
+    def get_related_objects(self, instance):
+        return [instance.point.building]
