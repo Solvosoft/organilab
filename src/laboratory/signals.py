@@ -2,7 +2,7 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_save
 
 from auth_and_perms.models import Profile
-from laboratory.models import ShelfObject, OrganizationStructure, BaseUnitValues
+from laboratory.models import ShelfObject, OrganizationStructure
 from django.conf import settings
 from djgentelella.async_notification.sending import send_email_from_template
 from laboratory.models import BlockedListNotification
@@ -41,18 +41,15 @@ def assign_shelfobject_code(sender, **kwargs):
 
 @receiver(pre_save, sender=ShelfObject)
 def shelf_object_base_quantity(sender, **kwargs):
+    """Guarda la cantidad convertida a la unidad base en cada guardado.
+
+    Antes solo convertía cuando el valor era None; como el campo vale 0 por
+    defecto, en la práctica copiaba la cantidad sin convertir.
+    """
     instance = kwargs.get("instance")
     if hasattr(instance, "measurement_unit") and hasattr(instance, "quantity"):
-        try:
-            if instance.quantity_base_unit is None:
-                instance.quantity_base_unit = get_conversion_units(
-                    instance.measurement_unit, instance.quantity
-                )
-            else:
-                instance.quantity_base_unit = instance.quantity
-
-        except BaseUnitValues.DoesNotExist as e:
-            None
+        converted = get_conversion_units(instance.measurement_unit, instance.quantity)
+        instance.quantity_base_unit = instance.quantity if converted is None else converted
 
 
 @receiver(pre_save, sender=OrganizationStructure)

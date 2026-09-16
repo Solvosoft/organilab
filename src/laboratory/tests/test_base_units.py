@@ -1,7 +1,11 @@
+import importlib
+
+from django.apps import apps
 from django.db.models.signals import pre_save
 from django.test import TestCase
 
 from laboratory.models import ShelfObject, Catalog, Object
+from laboratory.utils_base_unit import get_conversion_units
 
 
 class BaseUnitTest(TestCase):
@@ -117,4 +121,35 @@ class BaseUnitTest(TestCase):
         obj = Object.objects.get(pk=1)
         inst = ShelfObject(object=obj, quantity=-0.10, measurement_unit=new_catalog, quantity_base_unit=None)
         pre_save.send(sender=ShelfObject, instance=inst)
-        self.assertEqual(inst.quantity_base_unit, None)
+        # Sin factor de conversión, la cantidad se guarda tal cual.
+        self.assertEqual(inst.quantity_base_unit, -0.10)
+
+    def test_converts_with_default_value(self):
+        # El campo vale 0 por defecto: antes se copiaba la cantidad sin convertir.
+        gram = Catalog.objects.get(description='Gramos', key='units')
+        inst = ShelfObject(object=Object.objects.get(pk=1), quantity=20, measurement_unit=gram)
+        pre_save.send(sender=ShelfObject, instance=inst)
+        self.assertEqual(inst.quantity_base_unit, 0.02)
+
+    def test_reconverts_when_quantity_changes(self):
+        gram = Catalog.objects.get(description='Gramos', key='units')
+        inst = ShelfObject(object=Object.objects.get(pk=1), quantity=20, measurement_unit=gram)
+        pre_save.send(sender=ShelfObject, instance=inst)
+        inst.quantity = 500
+        pre_save.send(sender=ShelfObject, instance=inst)
+        self.assertEqual(inst.quantity_base_unit, 0.5)
+
+
+class RecomputeQuantityBaseUnitMigrationTest(TestCase):
+    fixtures = ["laboratory_data.json"]
+
+    def test_backfill_converts_stored_values(self):
+        recompute = importlib.import_module("laboratory.migrations.0224_recompute_quantity_base_unit").recompute
+        for shelfobject in ShelfObject.objects.all():
+            ShelfObject.objects.filter(pk=shelfobject.pk).update(quantity_base_unit=shelfobject.quantity)
+        recompute(apps, None)
+        for shelfobject in ShelfObject.objects.all():
+            expected = get_conversion_units(shelfobject.measurement_unit, shelfobject.quantity)
+            if expected is None:
+                expected = shelfobject.quantity
+            self.assertAlmostEqual(shelfobject.quantity_base_unit, expected, msg=shelfobject.pk)
