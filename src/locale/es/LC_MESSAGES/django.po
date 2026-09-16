@@ -1,8 +1,9 @@
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-06 15:38-0600\n"
+"POT-Creation-Date: 2026-09-16 17:44-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -331,6 +332,226 @@ msgstr "Reserva creada para '%(obj)s' (%(amount)s unidades)"
 msgid "Created box reservation for '%(obj)s' (%(boxes)s boxes)"
 msgstr "Reserva de caja creada para '%(obj)s' (%(boxes)s cajas)"
 
+msgid "Vehicle plate"
+msgstr "Placa del vehículo"
+
+msgid "Fuel type"
+msgstr "Tipo de combustible"
+
+msgid "Paper type"
+msgstr "Tipo de papel"
+
+msgid "Waste code"
+msgstr "Código de residuo"
+
+msgid "Manifest number"
+msgstr "Número de manifiesto"
+
+msgid "Created"
+msgstr "Creado"
+
+msgid "Deleted"
+msgstr "Eliminado"
+
+msgid "There is already a measurement point with this code for this resource."
+msgstr "Ya existe un punto de medición con este código para este recurso."
+
+msgid ""
+"There is already a measurement point with this code for this resource in the "
+"trash; restore it instead of creating a new one."
+msgstr ""
+"Ya existe un punto de medición con este código para este recurso en la "
+"papelera; restáurelo en lugar de crear uno nuevo."
+
+msgid "The period end must be after the period start."
+msgstr "El fin del período debe ser posterior al inicio."
+
+msgid "This field is required."
+msgstr "Este campo es requerido."
+
+#, python-format
+msgid ""
+"This measurement point already has a record from %(start)s to %(end)s that "
+"overlaps this period; edit that record instead."
+msgstr ""
+"Este punto de medición ya tiene un registro del %(start)s al %(end)s que se "
+"traslapa con este período; edite ese registro."
+
+#, python-format
+msgid ""
+"This measurement point has a record in the trash from %(start)s to %(end)s "
+"that overlaps this period; restore it instead."
+msgstr ""
+"Este punto de medición tiene en la papelera un registro del %(start)s al "
+"%(end)s que se traslapa con este período; restáurelo."
+
+msgid "Manual"
+msgstr "Manual"
+
+msgid "Preloaded"
+msgstr "Precargado"
+
+msgid "This building already has this base for that year; edit it instead."
+msgstr "Este edificio ya tiene esta base para ese año; edítela."
+
+#, python-format
+msgid "%(created)d bases created, %(updated)d updated, %(skipped)d skipped."
+msgstr ""
+"%(created)d bases creadas, %(updated)d actualizadas, %(skipped)d omitidas."
+
+msgid "Environmental management"
+msgstr "Gestión ambiental"
+
+msgid "Building"
+msgstr "Edificio"
+
+msgid "Code"
+msgstr "Código"
+
+msgid "Meter or service number, as it appears on the bill"
+msgstr "Número de medidor o de servicio, como aparece en el recibo"
+
+msgid "Point type"
+msgstr "Tipo de punto"
+
+msgid "Resource type"
+msgstr "Tipo de recurso"
+
+msgid "Laboratories"
+msgstr "Laboratorios"
+
+msgid "Number of meters"
+msgstr "Cantidad de medidores"
+
+msgid "Measurement point"
+msgstr "Punto de medición"
+
+msgid "Measurement points"
+msgstr "Puntos de medición"
+
+msgid "Import"
+msgstr "Importación"
+
+msgid "Period start"
+msgstr "Inicio del período"
+
+msgid "Period end"
+msgstr "Fin del período"
+
+msgid "Quantity"
+msgstr "Cantidad"
+
+msgid "Unit cost"
+msgstr "Costo unitario"
+
+msgid "Total cost"
+msgstr "Costo total"
+
+msgid "Is waste"
+msgstr "Es residuo"
+
+msgid "Waste treatment"
+msgstr "Tratamiento del residuo"
+
+msgid "Authorized waste manager"
+msgstr "Gestor autorizado de residuos"
+
+msgid "Supporting document"
+msgstr "Documento de respaldo"
+
+msgid "Bill, receipt or waste manifest"
+msgstr "Factura, recibo o manifiesto de residuos"
+
+msgid "Extra data"
+msgstr "Datos adicionales"
+
+msgid "Source"
+msgstr "Origen"
+
+msgid "Note"
+msgstr "Nota"
+
+msgid "Consumption record"
+msgstr "Registro de consumo"
+
+msgid "Consumption records"
+msgstr "Registros de consumo"
+
+#, python-format
+msgid "Fields not allowed for this resource: %(fields)s"
+msgstr "Campos no permitidos para este recurso: %(fields)s"
+
+msgid "Normalizer"
+msgstr "Normalizador"
+
+msgid "Year"
+msgstr "Año"
+
+msgid "Value"
+msgstr "Valor"
+
+msgid "Entered manually"
+msgstr "Ingresado manualmente"
+
+msgid "Preloading never overwrites a value entered manually"
+msgstr "La precarga nunca sobrescribe un valor ingresado manualmente"
+
+msgid "Normalization base"
+msgstr "Base de normalización"
+
+msgid "Normalization bases"
+msgstr "Bases de normalización"
+
+msgid "Can preload normalization bases"
+msgstr "Puede precargar bases de normalización"
+
+msgid ""
+"Choose a building to see and record the consumption of its measurement "
+"points."
+msgstr ""
+"Elija un edificio para ver y registrar el consumo de sus puntos de medición."
+
+msgid "Record consumption"
+msgstr "Registrar consumo"
+
+msgid "Update consumption record"
+msgstr "Actualizar registro de consumo"
+
+msgid "Delete consumption record"
+msgstr "Eliminar registro de consumo"
+
+msgid ""
+"Meters, tanks and collection points of each building. Consumption is "
+"recorded against them."
+msgstr ""
+"Medidores, tanques y puntos de acopio de cada edificio. Los consumos se "
+"registran sobre ellos."
+
+msgid "Register measurement point"
+msgstr "Registrar punto de medición"
+
+msgid "Update measurement point"
+msgstr "Actualizar punto de medición"
+
+msgid "Delete measurement point"
+msgstr "Eliminar punto de medición"
+
+msgid ""
+"Square meters and people per building and year. Indicators divide "
+"consumption by these values; a year without a base uses the previous one."
+msgstr ""
+"Metros cuadrados y personas por edificio y año. Los indicadores dividen el "
+"consumo entre estos valores; un año sin base usa la del anterior."
+
+msgid "Register normalization base"
+msgstr "Registrar base de normalización"
+
+msgid "Update normalization base"
+msgstr "Actualizar base de normalización"
+
+msgid "Delete normalization base"
+msgstr "Eliminar base de normalización"
+
 msgid "Reassigned on user delete"
 msgstr "Reasignado por borrado de usuario"
 
@@ -503,6 +724,11 @@ msgstr ""
 msgid "Organization parameter is required"
 msgstr "Organización padre:"
 
+#, fuzzy, python-format
+#| msgid "Unlinked the laboratories %(labs)r from the organization %(org)r"
+msgid "Unlinked laboratory '%(lab)s' from organization '%(org)s'"
+msgstr "Se desvincularon los laboratorios %(labs)r de la organización %(org)r"
+
 msgid "Rols"
 msgstr "Roles"
 
@@ -544,9 +770,6 @@ msgstr "Idioma"
 
 msgid "It will used to login when you want to login with digital signature"
 msgstr "Este campo será usado cuando se autentique con firma digital"
-
-msgid "Laboratories"
-msgstr "Laboratorios"
 
 msgid "User"
 msgstr "Usuario"
@@ -788,6 +1011,9 @@ msgstr "Agregar Laboratorio"
 msgid "Related Laboratory"
 msgstr "Relacionar Laboratorio"
 
+msgid "Unlink Laboratories"
+msgstr "Desvincular Laboratorios"
+
 #, fuzzy
 #| msgid "Disable child organizations filter?"
 msgid "Disable child organizations filter"
@@ -936,6 +1162,22 @@ msgstr "¿Desea habilitar el filtro de organizaciones hijas?"
 
 msgid "Administrators"
 msgstr "Administradores"
+
+msgid "Laboratory Relations"
+msgstr "Laboratorios vinculados"
+
+msgid ""
+"Manage laboratories linked to this organization. Unlinking a laboratory will "
+"also remove user permissions for that laboratory in this organization."
+msgstr ""
+"Gestione los laboratorios vinculados a esta organización. Desvincular un "
+"laboratorio también eliminará los permisos de usuario para dicho laboratorio "
+"en esta organización."
+
+#, fuzzy
+#| msgid "Unlink Laboratories"
+msgid "Unlink Laboratory"
+msgstr "Desvincular Laboratorios"
 
 msgid "My laboratories"
 msgstr "Mis Laboratorios"
@@ -1463,9 +1705,6 @@ msgstr "¿Es bioacumulable?"
 msgid "Maximum limit cannot be lower than minimum limit."
 msgstr "El límite máximo no puede ser menor que el límite mínimo."
 
-msgid "This field is required."
-msgstr "Este campo es requerido."
-
 msgid "Ensure this value is greater than or equal to 1e-07."
 msgstr "Asegúrese que el valor es mayor o igual que 1e-07."
 
@@ -1804,9 +2043,6 @@ msgstr "Equipo '%(name)s' actualizado"
 msgid "Updated"
 msgstr "¡Actualizado!"
 
-msgid "Created"
-msgstr "Creado"
-
 #, python-format
 msgid "%(action)s equipment characteristics for '%(name)s'"
 msgstr "%(action)s características de equipo para '%(name)s'"
@@ -2040,9 +2276,6 @@ msgstr ""
 msgid "This account is inactive."
 msgstr "Su cuenta está activa."
 
-msgid "Code"
-msgstr "Código"
-
 msgid "Code didn't match."
 msgstr "El código no coincide."
 
@@ -2175,9 +2408,6 @@ msgstr "Nombre de la sustancia"
 msgid "Reagents"
 msgstr "Reactivos"
 
-msgid "Year"
-msgstr "Año"
-
 msgid "Name of the product"
 msgstr "Nombre del producto"
 
@@ -2275,9 +2505,6 @@ msgstr "Noviembre"
 
 msgid "December"
 msgstr "Diciembre"
-
-msgid "Quantity"
-msgstr "Cantidad"
 
 #, python-format
 msgid "New %(type)s request: %(name)s"
@@ -2560,9 +2787,6 @@ msgstr "¿Tiene garantía?"
 
 msgid "Contract of maintenance"
 msgstr "Contrato de mantenimiento"
-
-msgid "Note"
-msgstr "Nota"
 
 msgid "Is available to use?"
 msgstr "¿Esta disponible de usar?"
@@ -6101,9 +6325,6 @@ msgstr "Cuadro 4, 3 o ninguna"
 msgid "Exceeds THRESHOLD OR NA, if the previous (column) is none"
 msgstr "Supera UMBRAL O NA, si el anterior(columna) es ninguno"
 
-msgid "Building"
-msgstr "Edificio"
-
 msgid "Risk Zone"
 msgstr "Zona de riesgo"
 
@@ -6470,6 +6691,9 @@ msgstr "Desde"
 
 msgid "To"
 msgstr "Hasta"
+
+msgid "Assessment date"
+msgstr "Fecha de evaluación"
 
 msgid "Sustances per Danger Indications"
 msgstr "Sustancias por indicación de peligro"
@@ -6885,6 +7109,16 @@ msgstr ""
 msgid "Cloned IPER assessment to version %(version)s"
 msgstr "Evaluación IPER clonada a versión %(version)s"
 
+msgid "Only completed IPER assessments can be duplicated."
+msgstr "Solo se pueden duplicar las evaluaciones IPER completadas."
+
+#, python-format
+msgid "Duplicated from IPER #%(id)s"
+msgstr "Duplicado de IPER #%(id)s"
+
+msgid "IPER assessment duplicated successfully."
+msgstr "El seguimiento de riesgo se ha duplicado correctamente."
+
 msgid "Update the IPER risk assessment"
 msgstr "Actualizar la evaluación de riesgo IPER"
 
@@ -7110,9 +7344,6 @@ msgstr "Bajo demanda"
 msgid "Risk zone request"
 msgstr "Solicitud de zona de riesgo"
 
-msgid "Assessment date"
-msgstr "Fecha de evaluación"
-
 msgid "Version"
 msgstr "Versión"
 
@@ -7121,9 +7352,6 @@ msgstr "Versión anterior"
 
 msgid "Next update due date"
 msgstr "Fecha de vencimiento de la próxima actualización"
-
-msgid "Source"
-msgstr "Origen"
 
 msgid "When enabled, the laboratory name is hidden in public listings."
 msgstr ""
@@ -7281,6 +7509,14 @@ msgstr "Nueva versión sin peligros"
 msgid "Start clean"
 msgstr "Empezar de cero"
 
+#, fuzzy
+#| msgid "Create maintenance"
+msgid "Create an independent copy"
+msgstr "Crear mantenimiento"
+
+msgid "Duplicate"
+msgstr "Duplicar"
+
 msgid "Identified hazards"
 msgstr "Peligros identificados"
 
@@ -7314,11 +7550,27 @@ msgstr "Ayuda del laboratorio"
 msgid "Loading inventory and hazards…"
 msgstr "Cargando inventario y peligros…"
 
+msgid "Duplicate IPER Assessment"
+msgstr "Duplicar seguimiento de riesgo"
+
+msgid ""
+"Creates an independent copy (version 1) with all hazards and observations. "
+"The original assessment will not be modified."
+msgstr ""
+"Crea una copia independiente (versión 1) con todos los peligros y "
+"observaciones. La evaluación original no se modificará."
+
 msgid "Items in"
 msgstr "Artículos en"
 
 msgid "Could not load help."
 msgstr "No se pudo cargar la ayuda."
+
+msgid "Duplicating..."
+msgstr "Duplicando..."
+
+msgid "Error duplicating assessment"
+msgstr "Error al duplicar la evaluación"
 
 msgid "Identification of Hazards and Risk Assessment (INTE T55)"
 msgstr "Identificación de Peligros y Evaluación de Riesgos (INTE T55)"
@@ -8225,6 +8477,47 @@ msgstr "¿Encontró el componente de códigos H?"
 msgid "Create it here!"
 msgstr "¡Créelo aquí!"
 
+msgid "Uploading the safety data sheet…"
+msgstr "Cargando la ficha de datos de seguridad…"
+
+msgid "Reading the safety data sheet. You can keep filling in the form."
+msgstr ""
+"Lea la ficha de datos de seguridad. Puede seguir rellenando el formulario."
+
+msgid "Data found. Loading it into the form…"
+msgstr "Datos encontrados. Cargándolos en el formulario…"
+
+msgid "Data found in the sheet. Loading it will discard what you have typed."
+msgstr ""
+"Datos encontrados en la hoja de cálculo. Al cargarla, se descartará lo que "
+"hayas escrito."
+
+msgid "Load extracted data"
+msgstr "Cargar los datos extraídos"
+
+msgid ""
+"The sheet was saved, but no data could be read from it. Fill in the fields "
+"manually."
+msgstr ""
+"La hoja de cálculo se guardó, pero no se pudo leer ningún dato. Rellene los "
+"campos manualmente."
+
+msgid ""
+"The sheet was saved, but it could not be read. Fill in the fields manually."
+msgstr ""
+"La hoja de cálculo se guardó, pero no se pudo leer. Rellene los campos "
+"manualmente."
+
+msgid "The safety data sheet could not be uploaded."
+msgstr "No se pudo cargar la ficha de datos de seguridad."
+
+msgid ""
+"Reading the sheet is taking too long. Reload the page in a moment to see the "
+"result."
+msgstr ""
+"La lectura de la hoja de cálculo está tardando demasiado. Recargue la página "
+"en un momento para ver el resultado."
+
 msgid "Information about the Substance"
 msgstr "Información sobre la Sustancia"
 
@@ -8421,6 +8714,9 @@ msgstr "Controles de exposición/protección individual"
 msgid "Add Provider"
 msgstr "Agregar Proveedor"
 
+msgid "Update Substances"
+msgstr "Actualizar Sustancia"
+
 msgid "Security Leafs"
 msgstr "Hojas de Seguridad"
 
@@ -8485,12 +8781,41 @@ msgstr "Cliente"
 msgid "Use save before finish"
 msgstr "Usar guardar antes de terminar"
 
+#, python-format
 msgid "New substance request: %(name)s"
 msgstr "Nueva solicitud de sustancia: %(name)s"
 
+#, python-format
+msgid ""
+"Hi,\n"
+"\n"
+"A new substance request has been submitted and requires your review.\n"
+"\n"
+"Name: %(name)s\n"
+"Requested by: %(user)s\n"
+"\n"
+"Please log in to review this request.\n"
+"\n"
+"Thanks,\n"
+"Organilab system"
+msgstr ""
+"Hola,\n"
+"\n"
+"Se ha enviado una nueva solicitud de sustancia y requiere su revisión.\n"
+"\n"
+"Nombre: %(name)s\n"
+"Solicitado por: %(user)s\n"
+"\n"
+"Por favor inicie sesión para revisar esta solicitud.\n"
+"\n"
+"Gracias,\n"
+"Sistema Organilab"
+
+#, python-format
 msgid "Approved substance '%(name)s' added to inventory"
 msgstr "Sustancia aprobada '%(name)s' desde solicitud"
 
+#, python-format
 msgid "Created SGA template '%(name)s' from editor"
 msgstr "Plantilla SGA '%(name)s' creada desde editor"
 
@@ -8592,108 +8917,18 @@ msgstr "Sustancia aprobada '%(name)s' desde solicitud"
 msgid "Created review substance"
 msgstr "Sustancia de revisión creada"
 
-msgid "Method not allowed"
-msgstr "No permitido"
-
-msgid "Created new substance"
-msgstr "Nueva sustancia creada"
-
-msgid "Updated builder information for substance '%(name)s'"
-msgstr "Información del constructor actualizada para sustancia '%(name)s'"
-
-msgid "Updated personal SGA template editor for substance '%(name)s'"
-msgstr "Editor de plantilla SGA personal actualizado para sustancia '%(name)s'"
-
-msgid "Updated personal SGA template for substance '%(name)s'"
-msgstr "Plantilla SGA personal actualizada para sustancia '%(name)s'"
-
-msgid "Updated SGA complement for substance '%(name)s'"
-msgstr "Complemento SGA actualizado para sustancia '%(name)s'"
-
-msgid "Approved substance"
-msgstr "Sustancia aprobada"
-
-msgid "Approved substance '%(name)s' from request"
-msgstr "Sustancia aprobada '%(name)s' desde solicitud"
-
-msgid "New substance request"
-msgstr "Nueva solicitud de sustancia"
-
-msgid "Hi,\n\n"
-        "A new substance request has been submitted and requires your review.\n\n"
-        "Name: %(name)s\n"
-        "Requested by: %(user)s\n\n"
-        "Please log in to review this request.\n\n"
-        "Thanks,\nOrganilab system"
-msgstr "Hola,\n\n"
-        "Se ha enviado una nueva solicitud de sustancia y requiere su revisión.\n\n"
-        "Nombre: %(name)s\n"
-        "Solicitado por: %(user)s\n\n"
-        "Por favor inicie sesión para revisar esta solicitud.\n\n"
-        "Gracias,\nSistema Organilab"
-
-msgid "Load extracted data"
-msgstr "Cargar los datos extraídos"
-
-msgid "Data found in the sheet. Loading it will discard what you have typed."
-msgstr "Datos encontrados en la hoja de cálculo. Al cargarla, se descartará lo que hayas escrito."
-
-msgid "Data found. Loading it into the form…"
-msgstr "Datos encontrados. Cargándolos en el formulario…"
-
-msgid "Reading the safety data sheet. You can keep filling in the form."
-msgstr "Lea la ficha de datos de seguridad. Puede seguir rellenando el formulario."
-
-msgid "Uploading the safety data sheet…"
-msgstr "Cargando la ficha de datos de seguridad…"
-
-msgid "The sheet was saved, but no data could be read from it. Fill in the fields manually."
-msgstr "La hoja de cálculo se guardó, pero no se pudo leer ningún dato. Rellene los campos manualmente."
-
-msgid "The sheet was saved, but it could not be read. Fill in the fields manually."
-msgstr "La hoja de cálculo se guardó, pero no se pudo leer. Rellene los campos manualmente."
-
-msgid "The safety data sheet could not be uploaded."
-msgstr "No se pudo cargar la ficha de datos de seguridad."
-
-msgid "Reading the sheet is taking too long. Reload the page in a moment to see the result."
-msgstr "La lectura de la hoja de cálculo está tardando demasiado. Recargue la página en un momento para ver el resultado."
-
+#, python-format
 msgid "Substance '%(name)s' has been sent for review."
 msgstr "La sustancia '%(name)s' ha sido enviada para su análisis."
 
-msgid "Update Substances"
-msgstr "Actualizar Sustancia"
+msgid "Security sheet (SDS) is required to send this substance for review."
+msgstr ""
 
-msgid "Duplicate IPER Assessment"
-msgstr "Duplicar seguimiento de riesgo"
+msgid "Method not allowed"
+msgstr "No permitido"
 
-msgid "Duplicate"
-msgstr "Duplicar"
+msgid "No security sheet was received."
+msgstr ""
 
-msgid "Creates an independent copy (version 1) with all hazards and observations. The original assessment will not be modified."
-msgstr "Crea una copia independiente (versión 1) con todos los peligros y observaciones. La evaluación original no se modificará."
-
-msgid "Duplicated from IPER #%(id)s"
-msgstr "Duplicado de IPER #%(id)s"
-
-msgid "IPER assessment duplicated successfully."
-msgstr "El seguimiento de riesgo se ha duplicado correctamente."
-
-msgid "Only completed IPER assessments can be duplicated."
-msgstr "Solo se pueden duplicar las evaluaciones IPER completadas."
-
-msgid "Error duplicating assessment"
-msgstr "Error al duplicar la evaluación"
-
-msgid "Duplicating..."
-msgstr "Duplicando..."
-
-msgid "Laboratory Relations"
-msgstr "Laboratorios vinculados"
-
-msgid "Manage laboratories linked to this organization. Unlinking a laboratory will also remove user permissions for that laboratory in this organization."
-msgstr "Gestione los laboratorios vinculados a esta organización. Desvincular un laboratorio también eliminará los permisos de usuario para dicho laboratorio en esta organización."
-
-msgid "Unlink Laboratories"
-msgstr "Desvincular Laboratorios"
+msgid "Created new substance"
+msgstr "Nueva sustancia creada"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-06 15:38-0600\n"
+"POT-Creation-Date: 2026-09-16 17:44-0600\n"
 "PO-Revision-Date: 2024-04-12 23:50-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -147,6 +147,70 @@ msgstr "Cancelado"
 msgid "Reserved"
 msgstr "Reservar"
 
+msgid "Building"
+msgstr "Edificio"
+
+msgid "Measurement point"
+msgstr "Punto de medición"
+
+msgid "Resource type"
+msgstr "Tipo de recurso"
+
+msgid "Period start"
+msgstr "Inicio del período"
+
+msgid "Period end"
+msgstr "Fin del período"
+
+msgid "Quantity"
+msgstr "Cantidad"
+
+msgid "Total cost"
+msgstr "Costo total"
+
+msgid "Document"
+msgstr "Documento"
+
+msgid "Download"
+msgstr "Descargar"
+
+msgid "Code"
+msgstr "Código"
+
+msgid "Point type"
+msgstr "Tipo de punto"
+
+msgid "Laboratories"
+msgstr "Laboratorios"
+
+msgid "Number of meters"
+msgstr "Cantidad de medidores"
+
+msgid "Preload bases"
+msgstr "Precargar bases"
+
+msgid ""
+"Square meters come from each building and people from the workdays of its "
+"risk zones. Values entered manually are kept."
+msgstr ""
+"Los metros cuadrados salen de cada edificio y las personas de las jornadas "
+"de sus zonas de riesgo. Los valores ingresados manualmente se conservan."
+
+msgid "Year"
+msgstr "Año"
+
+msgid "Preload"
+msgstr "Precargar"
+
+msgid "Normalizer"
+msgstr "Normalizador"
+
+msgid "Value"
+msgstr "Valor"
+
+msgid "Origin"
+msgstr "Origen"
+
 msgid "Associated laboratories"
 msgstr "Laboratorios asociados"
 
@@ -161,6 +225,9 @@ msgstr ""
 
 msgid "No roles assigned"
 msgstr "No se asignaron roles"
+
+msgid "Laboratory"
+msgstr "Laboratorio"
 
 msgid "Email"
 msgstr "Correo electrónico"
@@ -266,12 +333,6 @@ msgstr "Objeto en estante"
 msgid "Shelf"
 msgstr "Estante"
 
-msgid "Quantity"
-msgstr "Cantidad"
-
-msgid "Laboratory"
-msgstr "Laboratorio"
-
 msgid "Id"
 msgstr "Id"
 
@@ -280,9 +341,6 @@ msgstr "Nombre de usuario"
 
 msgid "Organization"
 msgstr "Organización"
-
-msgid "Laboratories"
-msgstr "Laboratorios"
 
 msgid "Select an option from the available APIs in Organilab"
 msgstr "Seleccione una API de las disponibles en Organilab"
@@ -325,9 +383,6 @@ msgstr "Creado por"
 
 msgid "Edit"
 msgstr "Editar"
-
-msgid "Download"
-msgstr "Descargar"
 
 msgid "History"
 msgstr "Historial"
@@ -430,9 +485,6 @@ msgstr "Seleccionar caja"
 
 msgid "unit(s)"
 msgstr "unidad(es)"
-
-msgid "Code"
-msgstr "Código"
 
 msgid "Synonym"
 msgstr "Sinónimo"
@@ -1078,6 +1130,15 @@ msgstr "Próxima actualización"
 msgid "Open"
 msgstr "Abrir"
 
+msgid "Duplicate"
+msgstr "Duplicar"
+
+msgid "Duplicating..."
+msgstr "Duplicando..."
+
+msgid "Error duplicating assessment"
+msgstr "Error al duplicar la evaluación"
+
 msgid "Chemical"
 msgstr "Químico"
 
@@ -1205,24 +1266,3 @@ msgstr "¿Desea eliminar esta palabra de advertencia?"
 
 msgid "Weight"
 msgstr "Peso"
-
-msgid "Seveso List III"
-msgstr "Lista Seveso III"
-
-msgid "Maximum Limit"
-msgstr "Limíte Maximo"
-
-msgid "Minimum Limit"
-msgstr "Limite Minimo"
-
-msgid "Continue"
-msgstr "Continuar"
-
-msgid "Duplicate"
-msgstr "Duplicar"
-
-msgid "Error duplicating assessment"
-msgstr "Error al duplicar la evaluación"
-
-msgid "Duplicating..."
-msgstr "Duplicando..."

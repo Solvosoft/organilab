@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-06 15:38-0600\n"
+"POT-Creation-Date: 2026-09-16 17:44-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -323,6 +323,214 @@ msgstr ""
 msgid "Created box reservation for '%(obj)s' (%(boxes)s boxes)"
 msgstr ""
 
+msgid "Vehicle plate"
+msgstr ""
+
+msgid "Fuel type"
+msgstr ""
+
+msgid "Paper type"
+msgstr ""
+
+msgid "Waste code"
+msgstr ""
+
+msgid "Manifest number"
+msgstr ""
+
+msgid "Created"
+msgstr ""
+
+msgid "Deleted"
+msgstr ""
+
+msgid "There is already a measurement point with this code for this resource."
+msgstr ""
+
+msgid ""
+"There is already a measurement point with this code for this resource in the "
+"trash; restore it instead of creating a new one."
+msgstr ""
+
+msgid "The period end must be after the period start."
+msgstr ""
+
+msgid "This field is required."
+msgstr ""
+
+#, python-format
+msgid ""
+"This measurement point already has a record from %(start)s to %(end)s that "
+"overlaps this period; edit that record instead."
+msgstr ""
+
+#, python-format
+msgid ""
+"This measurement point has a record in the trash from %(start)s to %(end)s "
+"that overlaps this period; restore it instead."
+msgstr ""
+
+msgid "Manual"
+msgstr ""
+
+msgid "Preloaded"
+msgstr ""
+
+msgid "This building already has this base for that year; edit it instead."
+msgstr ""
+
+#, python-format
+msgid "%(created)d bases created, %(updated)d updated, %(skipped)d skipped."
+msgstr ""
+
+msgid "Environmental management"
+msgstr ""
+
+msgid "Building"
+msgstr ""
+
+msgid "Code"
+msgstr ""
+
+msgid "Meter or service number, as it appears on the bill"
+msgstr ""
+
+msgid "Point type"
+msgstr ""
+
+msgid "Resource type"
+msgstr ""
+
+msgid "Laboratories"
+msgstr ""
+
+msgid "Number of meters"
+msgstr ""
+
+msgid "Measurement point"
+msgstr ""
+
+msgid "Measurement points"
+msgstr ""
+
+msgid "Import"
+msgstr ""
+
+msgid "Period start"
+msgstr ""
+
+msgid "Period end"
+msgstr ""
+
+msgid "Quantity"
+msgstr ""
+
+msgid "Unit cost"
+msgstr ""
+
+msgid "Total cost"
+msgstr ""
+
+msgid "Is waste"
+msgstr ""
+
+msgid "Waste treatment"
+msgstr ""
+
+msgid "Authorized waste manager"
+msgstr ""
+
+msgid "Supporting document"
+msgstr ""
+
+msgid "Bill, receipt or waste manifest"
+msgstr ""
+
+msgid "Extra data"
+msgstr ""
+
+msgid "Source"
+msgstr ""
+
+msgid "Note"
+msgstr ""
+
+msgid "Consumption record"
+msgstr ""
+
+msgid "Consumption records"
+msgstr ""
+
+#, python-format
+msgid "Fields not allowed for this resource: %(fields)s"
+msgstr ""
+
+msgid "Normalizer"
+msgstr ""
+
+msgid "Year"
+msgstr ""
+
+msgid "Value"
+msgstr ""
+
+msgid "Entered manually"
+msgstr ""
+
+msgid "Preloading never overwrites a value entered manually"
+msgstr ""
+
+msgid "Normalization base"
+msgstr ""
+
+msgid "Normalization bases"
+msgstr ""
+
+msgid "Can preload normalization bases"
+msgstr ""
+
+msgid ""
+"Choose a building to see and record the consumption of its measurement "
+"points."
+msgstr ""
+
+msgid "Record consumption"
+msgstr ""
+
+msgid "Update consumption record"
+msgstr ""
+
+msgid "Delete consumption record"
+msgstr ""
+
+msgid ""
+"Meters, tanks and collection points of each building. Consumption is "
+"recorded against them."
+msgstr ""
+
+msgid "Register measurement point"
+msgstr ""
+
+msgid "Update measurement point"
+msgstr ""
+
+msgid "Delete measurement point"
+msgstr ""
+
+msgid ""
+"Square meters and people per building and year. Indicators divide "
+"consumption by these values; a year without a base uses the previous one."
+msgstr ""
+
+msgid "Register normalization base"
+msgstr ""
+
+msgid "Update normalization base"
+msgstr ""
+
+msgid "Delete normalization base"
+msgstr ""
+
 msgid "Reassigned on user delete"
 msgstr ""
 
@@ -477,6 +685,10 @@ msgstr ""
 msgid "Organization parameter is required"
 msgstr ""
 
+#, python-format
+msgid "Unlinked laboratory '%(lab)s' from organization '%(org)s'"
+msgstr ""
+
 msgid "Rols"
 msgstr ""
 
@@ -517,9 +729,6 @@ msgid "Language"
 msgstr ""
 
 msgid "It will used to login when you want to login with digital signature"
-msgstr ""
-
-msgid "Laboratories"
 msgstr ""
 
 msgid "User"
@@ -744,6 +953,9 @@ msgstr ""
 msgid "Related Laboratory"
 msgstr ""
 
+msgid "Unlink Laboratories"
+msgstr ""
+
 msgid "Disable child organizations filter"
 msgstr ""
 
@@ -879,6 +1091,17 @@ msgid "Do you want to enable the child organizations filter?"
 msgstr ""
 
 msgid "Administrators"
+msgstr ""
+
+msgid "Laboratory Relations"
+msgstr ""
+
+msgid ""
+"Manage laboratories linked to this organization. Unlinking a laboratory will "
+"also remove user permissions for that laboratory in this organization."
+msgstr ""
+
+msgid "Unlink Laboratory"
 msgstr ""
 
 msgid "My laboratories"
@@ -1358,9 +1581,6 @@ msgstr ""
 msgid "Maximum limit cannot be lower than minimum limit."
 msgstr ""
 
-msgid "This field is required."
-msgstr ""
-
 msgid "Ensure this value is greater than or equal to 1e-07."
 msgstr ""
 
@@ -1674,9 +1894,6 @@ msgstr ""
 msgid "Updated"
 msgstr ""
 
-msgid "Created"
-msgstr ""
-
 #, python-format
 msgid "%(action)s equipment characteristics for '%(name)s'"
 msgstr ""
@@ -1902,9 +2119,6 @@ msgstr ""
 msgid "This account is inactive."
 msgstr ""
 
-msgid "Code"
-msgstr ""
-
 msgid "Code didn't match."
 msgstr ""
 
@@ -2033,9 +2247,6 @@ msgstr ""
 msgid "Reagents"
 msgstr ""
 
-msgid "Year"
-msgstr ""
-
 msgid "Name of the product"
 msgstr ""
 
@@ -2129,9 +2340,6 @@ msgid "November"
 msgstr ""
 
 msgid "December"
-msgstr ""
-
-msgid "Quantity"
 msgstr ""
 
 #, python-format
@@ -2399,9 +2607,6 @@ msgid "Has guarantee?"
 msgstr ""
 
 msgid "Contract of maintenance"
-msgstr ""
-
-msgid "Note"
 msgstr ""
 
 msgid "Is available to use?"
@@ -5642,9 +5847,6 @@ msgstr ""
 msgid "Exceeds THRESHOLD OR NA, if the previous (column) is none"
 msgstr ""
 
-msgid "Building"
-msgstr ""
-
 msgid "Risk Zone"
 msgstr ""
 
@@ -5967,6 +6169,9 @@ msgid "From"
 msgstr ""
 
 msgid "To"
+msgstr ""
+
+msgid "Assessment date"
 msgstr ""
 
 msgid "Sustances per Danger Indications"
@@ -6392,6 +6597,16 @@ msgstr ""
 msgid "Cloned IPER assessment to version %(version)s"
 msgstr ""
 
+msgid "Only completed IPER assessments can be duplicated."
+msgstr ""
+
+#, python-format
+msgid "Duplicated from IPER #%(id)s"
+msgstr ""
+
+msgid "IPER assessment duplicated successfully."
+msgstr ""
+
 msgid "Update the IPER risk assessment"
 msgstr ""
 
@@ -6607,9 +6822,6 @@ msgstr ""
 msgid "Risk zone request"
 msgstr ""
 
-msgid "Assessment date"
-msgstr ""
-
 msgid "Version"
 msgstr ""
 
@@ -6617,9 +6829,6 @@ msgid "Previous version"
 msgstr ""
 
 msgid "Next update due date"
-msgstr ""
-
-msgid "Source"
 msgstr ""
 
 msgid "When enabled, the laboratory name is hidden in public listings."
@@ -6771,6 +6980,12 @@ msgstr ""
 msgid "Start clean"
 msgstr ""
 
+msgid "Create an independent copy"
+msgstr ""
+
+msgid "Duplicate"
+msgstr ""
+
 msgid "Identified hazards"
 msgstr ""
 
@@ -6804,10 +7019,24 @@ msgstr ""
 msgid "Loading inventory and hazards…"
 msgstr ""
 
+msgid "Duplicate IPER Assessment"
+msgstr ""
+
+msgid ""
+"Creates an independent copy (version 1) with all hazards and observations. "
+"The original assessment will not be modified."
+msgstr ""
+
 msgid "Items in"
 msgstr ""
 
 msgid "Could not load help."
+msgstr ""
+
+msgid "Duplicating..."
+msgstr ""
+
+msgid "Error duplicating assessment"
 msgstr ""
 
 msgid "Identification of Hazards and Risk Assessment (INTE T55)"
@@ -7906,6 +8135,9 @@ msgid "Exposure controls/personal protection"
 msgstr ""
 
 msgid "Add Provider"
+msgstr ""
+
+msgid "Update Substances"
 msgstr ""
 
 msgid "Security Leafs"
