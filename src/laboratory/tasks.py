@@ -20,7 +20,6 @@ from laboratory.models import (
     Catalog,
     ShelfObject,
     Laboratory,
-    PrecursorReport,
     InformScheduler,
     Furniture,
     Object,
@@ -33,11 +32,8 @@ from sga.models import SDSTraceability, SubstanceCharacteristics
 from pending_tasks.models import PendingTask
 from pending_tasks.utils import create_pending_task
 from .limit_shelfobject import send_email_limit_objs
-from .task_utils import (
-    create_informsperiods,
-    save_object_report_precursor,
-    build_precursor_report_from_reports,
-)
+from .precursor_reports import ensure_precursor_reports
+from .task_utils import create_informsperiods
 from .utils_base_unit import get_conversion_units
 
 app = importlib.import_module(settings.CELERY_MODULE).app
@@ -91,36 +87,13 @@ def setup_daily_tasks(sender, **kwargs):
 
 @app.task()
 def create_precursor_reports():
-    day = date.today()
-
-    for lab in Laboratory.objects.all():
-        previos_report = PrecursorReport.objects.filter(laboratory=lab)
-
-        if previos_report.exists():
-            previos_report = previos_report.last()
-        else:
-            previos_report = None
-        month_belong = day.month - 1
-        if day.month == 1:
-            month_belong = 12
-        report = PrecursorReport.objects.create(
-            month=day.month,
-            year=day.year,
-            laboratory=lab,
-            consecutive=add_consecutive(lab),
-            month_belong=month_belong,
-        )
-        save_object_report_precursor(report)
-        build_precursor_report_from_reports(report, previos_report)
+    ensure_precursor_reports(Laboratory.objects.all())
 
 
-def add_consecutive(lab):
-    report = PrecursorReport.objects.filter(laboratory=lab).last()
-    consecutive = 1
-    if report is not None:
-        consecutive = int(report.consecutive) + 1
-
-    return consecutive
+@app.task()
+def verify_precursor_reports():
+    """Crea los reportes del periodo que falten (por ejemplo, si la tarea mensual no corrió)."""
+    ensure_precursor_reports(Laboratory.objects.all())
 
 
 @app.task

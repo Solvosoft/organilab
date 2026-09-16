@@ -1,58 +1,57 @@
+import calendar
+
 from dateutil.relativedelta import relativedelta
-from django.contrib.admin.models import CHANGE, ADDITION
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 from django.db.models import Count, Min
 from django.utils.timezone import now
 
-from laboratory.models import ObjectLogChange, PrecursorReport, Laboratory
-from laboratory.task_utils import (
-    save_object_report_precursor,
-    build_precursor_report_from_reports,
-)
-from laboratory.tasks import add_consecutive
-import calendar
+from laboratory.models import Laboratory, PrecursorReport
+from laboratory.precursor_reports import ensure_precursor_report
 
 
 class Command(BaseCommand):
-    help = "Create the report or precursors"
+    help = (
+        "Rebuild the precursor reports of the given laboratories from their object log changes. "
+        "The existing reports of those laboratories are deleted first."
+    )
 
-    def get_change_log(self):
-        PrecursorReport.objects.all().delete()
+    def add_arguments(self, parser):
+        parser.add_argument(
+            "--laboratory",
+            action="append",
+            type=int,
+            required=True,
+            help="Laboratory pk to rebuild (repeatable)",
+        )
+        parser.add_argument(
+            "--yes",
+            action="store_true",
+            help="Confirm the deletion of the existing reports of the selected laboratories",
+        )
 
-        actual_date = now()
-        # ObjectLogChange.objects.filter(subject="Update", diff_value__lte=0).update(type_action=CHANGE)
-        # ObjectLogChange.objects.filter(subject="Update", diff_value__gte=0).update(type_action=ADDITION)
+    def handle(self, *args, **options):
         labs = (
-            Laboratory.objects.filter(pk=55)
+            Laboratory.objects.filter(pk__in=options["laboratory"])
             .annotate(
                 changelog_count=Count("objectlogchange"),
                 update_time_min=Min("objectlogchange__update_time"),
             )
             .filter(changelog_count__gt=0)
         )
+        existing = PrecursorReport.objects.filter(laboratory__in=labs)
+        if not options["yes"]:
+            raise CommandError(
+                "%d existing reports in %d laboratories would be deleted; run again with --yes to confirm"
+                % (existing.count(), labs.count())
+            )
+        existing.delete()
 
+        actual_date = now()
         for lab in labs:
             current_time = lab.update_time_min
-            previos_report = None
+            created = 0
             while current_time < actual_date:
                 current_time = current_time + relativedelta(months=+1)
-                current_time = current_time.replace(
-                    day=calendar.monthrange(current_time.year, current_time.month)[1]
-                )
-                month_belong = current_time.month - 1
-                if current_time.month == 1:
-                    month_belong = 12
-
-                report = PrecursorReport.objects.create(
-                    month=current_time.month,
-                    year=current_time.year,
-                    laboratory=lab,
-                    consecutive=add_consecutive(lab),
-                    month_belong=month_belong,
-                )
-                save_object_report_precursor(report)
-                build_precursor_report_from_reports(report, previos_report)
-                previos_report = report
-
-    def handle(self, *args, **options):
-        self.get_change_log()
+                current_time = current_time.replace(day=calendar.monthrange(current_time.year, current_time.month)[1])
+                created += ensure_precursor_report(lab, today=current_time.date())[1]
+            self.stdout.write(f"Laboratory {lab.pk}: {created} reports created")

@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 from auth_and_perms.admin import DELETED_USER_TAG_MARKERS
 from laboratory import models
+from laboratory.precursor_reports import ensure_precursor_reports
 from laboratory.task_utils import create_informsperiods
 from presentation.utils import update_qr_instance
 from django.core import serializers
@@ -145,6 +146,15 @@ def create_informs(admin, request, queryset):
         create_informsperiods(instance)
 
 
+@admin.action(description=_("Generate precursor report"))
+def generate_precursor_report(modeladmin, request, queryset):
+    created = ensure_precursor_reports(queryset)
+    modeladmin.message_user(
+        request,
+        _("Precursor reports created: %(created)d. Already existing: %(existing)d.") % {"created": created, "existing": queryset.count() - created},
+    )
+
+
 @admin.action(description="Export Laboratory")
 def export_laboratory(admin, request, queryset):
     response = HttpResponse(
@@ -177,6 +187,7 @@ class PrecursorReportAdmin(admin.ModelAdmin):
     search_fields = ["laboratory__name", "month", "year"]
     list_filter = ["laboratory__name", "month", "year"]
     list_display = ["consecutive", "laboratory", "month", "year"]
+    ordering = ("laboratory", "-consecutive")
     inlines = (PrecursorReportValuesInline,)
 
 
@@ -249,7 +260,7 @@ class UserOrganizationAdmin(OrganizationInfoAdminMixin, admin.ModelAdmin):
 
 @admin.register(models.Laboratory)
 class LaboratoryAdmin(OrganizationInfoAdminMixin, admin.ModelAdmin):
-    actions = [export_laboratory]
+    actions = [export_laboratory, generate_precursor_report]
     search_fields = ["name", "organization__name"]
     list_filter = [("organization", admin.RelatedOnlyFieldListFilter)]
     list_display = (

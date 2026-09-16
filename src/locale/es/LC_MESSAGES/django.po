@@ -8697,3 +8697,10 @@ msgstr "Gestione los laboratorios vinculados a esta organización. Desvincular u
 
 msgid "Unlink Laboratories"
 msgstr "Desvincular Laboratorios"
+
+msgid "Generate precursor report"
+msgstr "Generar reporte de precursores"
+
+#, python-format
+msgid "Precursor reports created: %(created)d. Already existing: %(existing)d."
+msgstr "Reportes de precursores creados: %(created)d. Ya existentes: %(existing)d."

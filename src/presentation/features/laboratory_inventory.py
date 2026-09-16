@@ -259,7 +259,7 @@ FEATURES = (
                 name="Preparar el reporte mensual de precursores",
                 actors=("sistema",),
                 routes=(),
-                source="src/laboratory/tasks.py:197 create_precursor_reports",
+                source="src/laboratory/precursor_reports.py ensure_precursor_reports (tareas create_precursor_reports y verify_precursor_reports)",
             ),
             Step(
                 id="limpieza",

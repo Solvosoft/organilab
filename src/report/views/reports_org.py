@@ -207,12 +207,12 @@ class PrecursorsView(ReportListView):
             if default_lab:
                 form.initial["laboratory"] = default_lab
                 qs = PrecursorReport.objects.filter(laboratory=default_lab).order_by(
-                    "-pk"
+                    "-consecutive"
                 )
 
         elif form.is_valid():
             lab = form.cleaned_data["laboratory"]
-            qs = PrecursorReport.objects.filter(laboratory=lab).order_by("-pk")
+            qs = PrecursorReport.objects.filter(laboratory=lab).order_by("-consecutive")
 
         context.update({"filter_form": form, "datalist": qs})
         return context

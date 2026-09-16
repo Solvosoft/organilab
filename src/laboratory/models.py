@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.validators import FileExtensionValidator
-from django.db import models
+from django.db import models, transaction
 from django.db.models import Sum, Q, Max, Min, JSONField
 from django.db.models.expressions import F
 from django.utils.text import slugify
@@ -1622,6 +1622,17 @@ class PrecursorReport(models.Model):
     consecutive = models.IntegerField(default=1)
     report_values = models.ManyToManyField(Object, through=PrecursorReportValues)
     month_belong = models.IntegerField(default=0)
+
+    def save(self, *args, **kwargs):
+        if not self._state.adding:
+            return super().save(*args, **kwargs)
+        # El consecutivo se numera por laboratorio; el bloqueo evita que dos
+        # ejecuciones simultáneas tomen el mismo número.
+        with transaction.atomic():
+            Laboratory.objects.select_for_update().filter(pk=self.laboratory_id).first()
+            last = PrecursorReport.objects.filter(laboratory_id=self.laboratory_id).aggregate(value=Max("consecutive"))["value"]
+            self.consecutive = (last or 0) + 1
+            return super().save(*args, **kwargs)
 
     def get_date_range(self):
         last_day = calendar.monthrange(self.year, self.month_belong)[1]
