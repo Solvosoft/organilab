@@ -1,11 +1,15 @@
+import os
+import tempfile
 from io import StringIO
 
 from django.core.management import call_command
+from django.core.management.base import CommandError
 from django.test import TestCase
 
 from laboratory.management.commands.sync_sds_from_old_db import (
     build_sga_map_by_object,
 )
+from laboratory.models import Laboratory, Object, ShelfObject
 from sga.models import SubstanceCharacteristics
 
 
@@ -69,3 +73,62 @@ class UpdateSDSForSubstanceTest(TestCase):
 
         self.assertEqual(result["status"], "dry_run")
         self.assertEqual(result["name"], str(characteristics.object_related))
+
+
+class CheckInWhereLaboratoryCommandTest(TestCase):
+    """`in_where_laboratory` debe coincidir con el laboratorio del estante.
+
+    Sin `--fix` el comando solo reporta y revierte la transacción; con `--fix`
+    corrige el valor a partir de la cadena estante → mueble → sala → laboratorio.
+    """
+
+    fixtures = ["laboratory_data.json"]
+
+    def setUp(self):
+        self.shelfobject = ShelfObject.objects.select_related("shelf__furniture__labroom").get(pk=1)
+        self.chain_lab_id = self.shelfobject.shelf.furniture.labroom.laboratory_id
+        self.other_lab = Laboratory.objects.exclude(pk=self.chain_lab_id).first()
+        ShelfObject.objects.filter(pk=1).update(in_where_laboratory=self.other_lab)
+
+    def run_command(self, *args):
+        out = StringIO()
+        call_command("check_in_where_laboratory", *args, stdout=out)
+        return out.getvalue()
+
+    def test_reports_mismatch_without_changing_data(self):
+        output = self.run_command("--summary-only")
+        self.assertIn("Laboratory mismatches: 1", output)
+        self.shelfobject.refresh_from_db()
+        self.assertEqual(self.shelfobject.in_where_laboratory_id, self.other_lab.pk)
+
+    def test_fix_restores_chain_laboratory(self):
+        output = self.run_command("--summary-only", "--fix")
+        self.assertNotIn("Fixed: 0", output)
+        self.shelfobject.refresh_from_db()
+        self.assertEqual(self.shelfobject.in_where_laboratory_id, self.chain_lab_id)
+
+
+class CheckShelfObjectChainCommandTest(TestCase):
+    fixtures = ["laboratory_data.json"]
+
+    def test_summary_counts_every_object(self):
+        out = StringIO()
+        call_command("check_shelfobject_chain", "--summary-only", stdout=out)
+        self.assertIn(f"Total reviewed: {Object.objects.count()}", out.getvalue())
+
+
+class CheckObjectsFromFileCommandTest(TestCase):
+    fixtures = ["laboratory_data.json"]
+
+    def test_missing_file_raises(self):
+        with self.assertRaises(CommandError):
+            call_command("check_objects_from_file", "--file", "/nonexistent/ids.txt", stdout=StringIO())
+
+    def test_reports_ids_not_found(self):
+        existing = ShelfObject.objects.order_by("pk").first().object_id
+        with tempfile.NamedTemporaryFile("w", suffix=".txt", delete=False) as handler:
+            handler.write(f"{existing}\n999999\nabc\n")
+        self.addCleanup(os.remove, handler.name)
+        out = StringIO()
+        call_command("check_objects_from_file", "--file", handler.name, stdout=out)
+        self.assertIn("999999", out.getvalue())
