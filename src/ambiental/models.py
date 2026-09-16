@@ -7,6 +7,7 @@ from djgentelella.models import DeletedWithTrash
 
 from ambiental.ambiental_defaults import (
     KEY_MEASURE_UNIT,
+    KEY_NORMALIZER,
     KEY_POINT_TYPE,
     KEY_RESOURCE_TYPE,
     KEY_WASTE_TREATMENT,
@@ -212,3 +213,47 @@ class ConsumptionRecord(AbstractOrganizationRef, DeletedWithTrash):
         if self.point_id and self.resource_info["is_waste"]:
             self.is_waste = True
         super().save(*args, **kwargs)
+
+
+class NormalizationBase(AbstractOrganizationRef):
+    """El denominador de un indicador: los m² o las personas de un edificio en un año.
+
+    Se precarga con lo que Organilab ya sabe (``Buildings.area`` y las jornadas de las
+    zonas de riesgo del edificio) y quien administra lo corrige. Una fila escrita a
+    mano (``is_manual``) no la vuelve a pisar la precarga. Si un año no tiene base,
+    ``normalization.get_base`` hereda la del último año anterior.
+    """
+
+    normalizer = catalog.GTForeignKey(
+        Catalog,
+        on_delete=models.PROTECT,
+        verbose_name=_("Normalizer"),
+        key_name="key",
+        key_value=KEY_NORMALIZER,
+        related_name="ambiental_normalization_bases",
+    )
+    building = models.ForeignKey(
+        "risk_management.Buildings",
+        on_delete=models.CASCADE,
+        verbose_name=_("Building"),
+        related_name="normalization_bases",
+    )
+    year = models.PositiveSmallIntegerField(verbose_name=_("Year"))
+    value = models.DecimalField(max_digits=12, decimal_places=2, verbose_name=_("Value"))
+    is_manual = models.BooleanField(
+        default=True,
+        verbose_name=_("Entered manually"),
+        help_text=_("Preloading never overwrites a value entered manually"),
+    )
+
+    class Meta:
+        verbose_name = _("Normalization base")
+        verbose_name_plural = _("Normalization bases")
+        ordering = ["-year", "pk"]
+        unique_together = ("organization", "normalizer", "building", "year")
+        permissions = [
+            ("preload_normalizationbase", _("Can preload normalization bases")),
+        ]
+
+    def __str__(self):
+        return "%s %s %s: %s" % (self.building, self.year, self.normalizer, self.value)

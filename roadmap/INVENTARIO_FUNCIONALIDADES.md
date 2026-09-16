@@ -15,7 +15,7 @@ con ese rol.
 
 | Métrica | Valor |
 |---|---:|
-| Funcionalidades catalogadas | 46 |
+| Funcionalidades catalogadas | 47 |
 | Sin ninguna prueba | 11 |
 | Rutas navegables huérfanas | 0 |
 | Apps pendientes de catalogar | 2 |
@@ -85,6 +85,16 @@ Estados que atraviesa:
 | Paso | Actores | Permiso | Transición | Rutas |
 |---|---|---|---|---|
 | **Registrar, corregir o retirar el consumo de un período** | Administrador ambiental, Administrativo superior, Encargado de registro ambiental | `ambiental.view_consumptionrecord` | — | `ambiental:consumptionrecord_list` |
+
+### `AMB-03` — Definir los m² y las personas de cada edificio por año
+
+*ambiental · ui · prioridad P3 · cobertura por ruta: completa · Selenium: —*
+
+Los denominadores de los indicadores. Se precargan con el área del edificio y las jornadas de sus zonas de riesgo, y se corrigen a mano; la precarga nunca pisa un valor escrito por una persona. Un año sin base hereda el anterior.
+
+| Paso | Actores | Permiso | Transición | Rutas |
+|---|---|---|---|---|
+| **Consultar, precargar y corregir las bases de normalización** | Administrador ambiental, Administrativo superior, Encargado de registro ambiental, Analista ambiental | `ambiental.view_normalizationbase` | — | `ambiental:normalizationbase_list` |
 
 ### `ORG-01` — Elegir organización y orientarse en el árbol
 

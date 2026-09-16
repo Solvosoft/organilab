@@ -7,7 +7,7 @@ from djgentelella.widgets.files import FileChunkedUpload
 from djgentelella.widgets.selects import AutocompleteSelect, AutocompleteSelectMultiple
 
 from ambiental.ambiental_defaults import EXTRA_FIELDS
-from ambiental.models import ConsumptionRecord, MeasurementPoint
+from ambiental.models import ConsumptionRecord, MeasurementPoint, NormalizationBase
 from laboratory.models import Provider
 from risk_management.models import Buildings
 
@@ -105,4 +105,18 @@ class ConsumptionRecordForm(GTForm, forms.ModelForm):
             "treatment": genwidgets.Select(attrs={"data-ambiental-waste": "1"}),
             "waste_manager": genwidgets.Select(attrs={"data-ambiental-waste": "1"}),
             "note": genwidgets.Textarea(attrs={"rows": 2}),
+        }
+
+
+class NormalizationBaseForm(GTForm, forms.ModelForm):
+    class Meta:
+        model = NormalizationBase
+        fields = ["building", "normalizer", "year", "value"]
+        widgets = {
+            "building": AutocompleteSelect(
+                "ambiental_buildings", attrs={"data-s2filter-org_pk": "#org"}
+            ),
+            "normalizer": genwidgets.Select,
+            "year": genwidgets.NumberInput(attrs={"min": "1900", "max": "2200"}),
+            "value": genwidgets.NumberInput(attrs={"step": "any", "min": "0"}),
         }

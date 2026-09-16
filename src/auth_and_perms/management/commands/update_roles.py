@@ -1282,6 +1282,7 @@ def create_administrador_iper():
 AMBIENTAL_READONLY = [
     "ambiental.view_measurementpoint",
     "ambiental.view_consumptionrecord",
+    "ambiental.view_normalizationbase",
 ]
 
 AMBIENTAL_REGISTRO = AMBIENTAL_READONLY + [
@@ -1294,6 +1295,10 @@ AMBIENTAL_FULL = AMBIENTAL_REGISTRO + [
     "ambiental.add_measurementpoint",
     "ambiental.change_measurementpoint",
     "ambiental.delete_measurementpoint",
+    "ambiental.add_normalizationbase",
+    "ambiental.change_normalizationbase",
+    "ambiental.delete_normalizationbase",
+    "ambiental.preload_normalizationbase",
 ]
 
 AMBIENTAL_ROLES = {

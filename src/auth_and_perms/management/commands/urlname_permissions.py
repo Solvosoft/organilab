@@ -3506,6 +3506,33 @@ URLNAME_PERMISSIONS = {
             "permission": "ambiental.delete_consumptionrecord",
         },
     ],
+    "normalizationbase_list": [
+        {
+            "name": "View normalization bases",
+            "category": "Ambiental",
+            "permission": "ambiental.view_normalizationbase",
+        },
+        {
+            "name": "Add normalization base",
+            "category": "Ambiental",
+            "permission": "ambiental.add_normalizationbase",
+        },
+        {
+            "name": "Change normalization base",
+            "category": "Ambiental",
+            "permission": "ambiental.change_normalizationbase",
+        },
+        {
+            "name": "Delete normalization base",
+            "category": "Ambiental",
+            "permission": "ambiental.delete_normalizationbase",
+        },
+        {
+            "name": "Preload normalization bases",
+            "category": "Ambiental",
+            "permission": "ambiental.preload_normalizationbase",
+        },
+    ],
     # La papelera es de la biblioteca: sus permisos viven en djgentelella,
     # no en laboratory. update_roles.update_papelera() ya se los da a los
     # roles fijos; esto es lo que permite configurarlos por organización.

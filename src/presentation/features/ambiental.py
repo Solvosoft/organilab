@@ -65,4 +65,27 @@ FEATURES = (
             ),
         ),
     ),
+    Feature(
+        id="AMB-03",
+        name="Definir los m² y las personas de cada edificio por año",
+        module="ambiental",
+        kind="ui",
+        description=(
+            "Los denominadores de los indicadores. Se precargan con el área del edificio y "
+            "las jornadas de sus zonas de riesgo, y se corrigen a mano; la precarga nunca "
+            "pisa un valor escrito por una persona. Un año sin base hereda el anterior."
+        ),
+        priority="P3",
+        steps=(
+            Step(
+                id="gestionar_bases",
+                name="Consultar, precargar y corregir las bases de normalización",
+                actors=CONSULTA_AMBIENTAL,
+                routes=("ambiental:normalizationbase_list",),
+                permissions=("ambiental.view_normalizationbase",),
+                source="src/ambiental/views.py normalizationbase_list, "
+                       "src/ambiental/normalization.py preload_bases",
+            ),
+        ),
+    ),
 )

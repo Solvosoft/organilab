@@ -1,6 +1,13 @@
+from django.contrib.admin.models import ADDITION, CHANGE, DELETION
+from django.utils.translation import gettext_lazy as _
+from rest_framework import status
+from rest_framework.decorators import action
+from rest_framework.response import Response
+
 from ambiental.api import filtersets, serializers
 from ambiental.api.mixins import AmbientalViewSet
-from ambiental.models import ConsumptionRecord, MeasurementPoint
+from ambiental.models import ConsumptionRecord, MeasurementPoint, NormalizationBase
+from ambiental.normalization import preload_bases
 
 
 class MeasurementPointViewSet(AmbientalViewSet):
@@ -57,3 +64,63 @@ class ConsumptionRecordViewSet(AmbientalViewSet):
 
     def get_related_objects(self, instance):
         return [instance.point.building]
+
+
+class NormalizationBaseViewSet(AmbientalViewSet):
+    serializer_class = {
+        "list": serializers.NormalizationBaseDataTableSerializer,
+        "create": serializers.NormalizationBaseSaveSerializer,
+        "update": serializers.NormalizationBaseSaveSerializer,
+        "retrieve": serializers.NormalizationBaseSerializer,
+        "get_values_for_update": serializers.NormalizationBaseSerializer,
+        "preload": serializers.PreloadSerializer,
+    }
+    perms = {
+        "list": ["ambiental.view_normalizationbase"],
+        "create": ["ambiental.add_normalizationbase"],
+        "update": ["ambiental.change_normalizationbase"],
+        "retrieve": ["ambiental.view_normalizationbase"],
+        "get_values_for_update": ["ambiental.change_normalizationbase"],
+        "destroy": ["ambiental.delete_normalizationbase"],
+        "preload": ["ambiental.preload_normalizationbase"],
+    }
+    queryset = NormalizationBase.objects.select_related("normalizer", "building")
+    search_fields = ["building__name", "normalizer__description"]
+    filterset_class = filtersets.NormalizationBaseFilter
+    ordering_fields = ["year", "building__name", "value"]
+    ordering = ("-year",)
+
+    def get_related_objects(self, instance):
+        return [instance.building]
+
+    def perform_destroy(self, instance):
+        # Sin papelera: una base es un dato derivado que la precarga vuelve a crear.
+        if self.should_log(instance):
+            self._add_log(instance, DELETION, None, _("Deleted"))
+        instance.delete()
+
+    @action(detail=False, methods=["post"])
+    def preload(self, request, org_pk=None):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        result = preload_bases(
+            self.get_organization(), serializer.validated_data["year"], user=request.user
+        )
+        for base in result["created"]:
+            self._add_log(base, ADDITION, [], _("Preloaded"))
+        for base in result["updated"]:
+            self._add_log(base, CHANGE, ["value"], _("Preloaded"))
+        return Response(
+            {
+                "detail": _("%(created)d bases created, %(updated)d updated, %(skipped)d skipped.")
+                % {
+                    "created": len(result["created"]),
+                    "updated": len(result["updated"]),
+                    "skipped": result["skipped"],
+                },
+                "created": len(result["created"]),
+                "updated": len(result["updated"]),
+                "skipped": result["skipped"],
+            },
+            status=status.HTTP_200_OK,
+        )

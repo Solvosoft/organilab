@@ -13,6 +13,7 @@
     "ACAD-02/retirar": "solo superusuario",
     "AMB-01/gestionar_puntos": "ejercitado",
     "AMB-02/registrar_consumo": "ejercitado",
+    "AMB-03/gestionar_bases": "ejercitado",
     "DERB-01/borrar": "solo superusuario",
     "DERB-01/crear": "solo superusuario",
     "DERB-01/editar": "solo superusuario",
@@ -174,11 +175,12 @@
     "SGA-05/recipientes": "solo superusuario",
     "TASK-01/ver_bandeja": "solo superusuario"
   },
-  "peticiones_observadas": 4947,
+  "peticiones_observadas": 4955,
   "roles_ejercitados": {
     "administrador_ambiental": [
       "AMB-01/gestionar_puntos",
-      "AMB-02/registrar_consumo"
+      "AMB-02/registrar_consumo",
+      "AMB-03/gestionar_bases"
     ],
     "administrador_laboratorio": [
       "LAB-03/mis_labs",
@@ -190,7 +192,8 @@
     ],
     "analista_ambiental": [
       "AMB-01/gestionar_puntos",
-      "AMB-02/registrar_consumo"
+      "AMB-02/registrar_consumo",
+      "AMB-03/gestionar_bases"
     ],
     "estudiante": [
       "LAB-03/mis_labs"
@@ -201,7 +204,8 @@
     ],
     "registro_ambiental": [
       "AMB-01/gestionar_puntos",
-      "AMB-02/registrar_consumo"
+      "AMB-02/registrar_consumo",
+      "AMB-03/gestionar_bases"
     ]
   },
   "roles_nunca_ejercitados": [

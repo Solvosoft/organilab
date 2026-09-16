@@ -1,7 +1,12 @@
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import get_object_or_404, render
 
-from ambiental.forms import BuildingFilterForm, ConsumptionRecordForm, MeasurementPointForm
+from ambiental.forms import (
+    BuildingFilterForm,
+    ConsumptionRecordForm,
+    MeasurementPointForm,
+    NormalizationBaseForm,
+)
 from auth_and_perms.organization_utils import user_is_allowed_on_organization
 from laboratory.models import OrganizationStructure
 
@@ -30,3 +35,15 @@ def consumptionrecord_list(request, org_pk):
         "form_update": ConsumptionRecordForm(prefix="update", organization=organization),
     }
     return render(request, "ambiental/consumptionrecord_list.html", context=context)
+
+
+@login_required
+@permission_required("ambiental.view_normalizationbase", raise_exception=True)
+def normalizationbase_list(request, org_pk):
+    user_is_allowed_on_organization(request.user, org_pk)
+    context = {
+        "org_pk": org_pk,
+        "form_create": NormalizationBaseForm(prefix="create"),
+        "form_update": NormalizationBaseForm(prefix="update"),
+    }
+    return render(request, "ambiental/normalizationbase_list.html", context=context)

@@ -11,6 +11,9 @@ router.register(
 router.register(
     "consumptionrecord", viewsets.ConsumptionRecordViewSet, basename="api-consumptionrecord"
 )
+router.register(
+    "normalizationbase", viewsets.NormalizationBaseViewSet, basename="api-normalizationbase"
+)
 
 urlpatterns = [
     path(
@@ -22,6 +25,11 @@ urlpatterns = [
         "consumption/",
         views.consumptionrecord_list,
         name="consumptionrecord_list",
+    ),
+    path(
+        "normalization_bases/",
+        views.normalizationbase_list,
+        name="normalizationbase_list",
     ),
     path("api/", include(router.urls)),
 ]

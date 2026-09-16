@@ -9,12 +9,13 @@ from rest_framework import serializers
 from ambiental.ambiental_defaults import (
     EXTRA_FIELDS,
     KEY_MEASURE_UNIT,
+    KEY_NORMALIZER,
     KEY_POINT_TYPE,
     KEY_RESOURCE_TYPE,
     KEY_WASTE_TREATMENT,
     get_resource_info,
 )
-from ambiental.models import ConsumptionRecord, MeasurementPoint
+from ambiental.models import ConsumptionRecord, MeasurementPoint, NormalizationBase
 from laboratory.models import Catalog, Laboratory, Provider
 from risk_management.models import Buildings
 
@@ -339,3 +340,65 @@ class ConsumptionRecordSaveSerializer(OrganizationScopedSerializer):
             "document",
             "note",
         )
+
+
+# ---------------------------------------------------------------------------
+# Bases de normalización
+# ---------------------------------------------------------------------------
+
+
+class NormalizationBaseSerializer(serializers.ModelSerializer):
+    normalizer = GTS2SerializerBase()
+    building = GTS2SerializerBase()
+    origin = serializers.SerializerMethodField()
+    actions = serializers.SerializerMethodField()
+
+    def get_origin(self, obj):
+        return _("Manual") if obj.is_manual else _("Preloaded")
+
+    def get_actions(self, obj):
+        return actions_for(self.context["request"].user, "normalizationbase")
+
+    class Meta:
+        model = NormalizationBase
+        fields = ("id", "normalizer", "building", "year", "value", "is_manual", "origin", "actions")
+
+
+class NormalizationBaseDataTableSerializer(DataTableSerializer):
+    data = serializers.ListField(child=NormalizationBaseSerializer(), required=True)
+
+
+class NormalizationBaseSaveSerializer(OrganizationScopedSerializer):
+    normalizer = serializers.PrimaryKeyRelatedField(
+        queryset=Catalog.objects.filter(key=KEY_NORMALIZER)
+    )
+    building = serializers.PrimaryKeyRelatedField(queryset=Buildings.objects.none())
+    year = serializers.IntegerField(min_value=1900, max_value=2200)
+    value = serializers.DecimalField(max_digits=12, decimal_places=2, min_value=0)
+
+    def scope_fields(self, fields, organization):
+        fields["building"].queryset = Buildings.objects.filter(organization=organization)
+
+    def validate(self, attrs):
+        lookup = {
+            name: attrs.get(name, getattr(self.instance, name, None))
+            for name in ("normalizer", "building", "year")
+        }
+        duplicated = NormalizationBase.objects.filter(organization=self.get_organization(), **lookup)
+        if self.instance is not None:
+            duplicated = duplicated.exclude(pk=self.instance.pk)
+        if duplicated.exists():
+            raise serializers.ValidationError(
+                {"year": [_("This building already has this base for that year; edit it instead.")]}
+            )
+        # Lo que escribe una persona manda sobre lo deducido: la precarga no lo pisa.
+        attrs["is_manual"] = True
+        return attrs
+
+    class Meta:
+        model = NormalizationBase
+        fields = ("normalizer", "building", "year", "value")
+
+
+class PreloadSerializer(serializers.Serializer):
+    year = serializers.IntegerField(min_value=1900, max_value=2200)
