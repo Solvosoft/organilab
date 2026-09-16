@@ -98,6 +98,11 @@ class RiskUrlSmokeTest(UrlSmokeMixin, TestCase):
     expected_skips = 4
 
 
+class AmbientalUrlSmokeTest(UrlSmokeMixin, TestCase):
+    fixtures = ["object.json", "riskmanagement_data.json"]
+    namespaces = ("ambiental",)
+
+
 class AcademicUrlSmokeTest(UrlSmokeMixin, TestCase):
     fixtures = ["object.json", "procedure.json", "my_procedure.json"]
     namespaces = ("academic",)

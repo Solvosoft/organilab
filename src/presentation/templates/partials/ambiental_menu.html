@@ -1,0 +1,21 @@
+{% load i18n %}
+
+{% if perms.ambiental.view_measurementpoint %}
+	<li>
+		<a>
+			<i class="fa fa-leaf" aria-hidden="true"></i>
+			{% trans 'Environmental management' %}
+			<span class="fa fa-chevron-down"></span>
+		</a>
+		<ul class="nav child_menu">
+			{% if perms.ambiental.view_measurementpoint %}
+				<li>
+					<a href="{% url 'ambiental:measurementpoint_list' org_pk %}"
+						title="{% trans 'Measurement points' %}">
+						<i class="fa fa-tachometer" aria-hidden="true"></i>
+						{% trans 'Measurement points' %}</a>
+				</li>
+			{% endif %}
+		</ul>
+	</li>
+{% endif %}

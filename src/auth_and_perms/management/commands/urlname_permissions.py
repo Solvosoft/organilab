@@ -3461,6 +3461,29 @@ URLNAME_PERMISSIONS = {
             "permission": "sga.view_recipientsize",
         },
     ],
+    # Módulo ambiental: consumos y residuos por edificio.
+    "measurementpoint_list": [
+        {
+            "name": "View measurement points",
+            "category": "Ambiental",
+            "permission": "ambiental.view_measurementpoint",
+        },
+        {
+            "name": "Add measurement point",
+            "category": "Ambiental",
+            "permission": "ambiental.add_measurementpoint",
+        },
+        {
+            "name": "Change measurement point",
+            "category": "Ambiental",
+            "permission": "ambiental.change_measurementpoint",
+        },
+        {
+            "name": "Delete measurement point",
+            "category": "Ambiental",
+            "permission": "ambiental.delete_measurementpoint",
+        },
+    ],
     # La papelera es de la biblioteca: sus permisos viven en djgentelella,
     # no en laboratory. update_roles.update_papelera() ya se los da a los
     # roles fijos; esto es lo que permite configurarlos por organización.

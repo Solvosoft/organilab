@@ -88,6 +88,7 @@ INSTALLED_APPS = [
     "djgentelella.async_notification",
     "django_celery_results",
     "risk_management",
+    "ambiental",
     "djgentelella",
     "djgentelella.chunked_upload",
     "api.apps.ApiConfig",

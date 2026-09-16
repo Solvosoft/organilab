@@ -1275,6 +1275,55 @@ def create_administrador_iper():
         )
 
 
+# ---------------------------------------------------------------------------
+# Módulo ambiental: consumos y residuos por edificio
+# ---------------------------------------------------------------------------
+
+AMBIENTAL_READONLY = [
+    "ambiental.view_measurementpoint",
+]
+
+AMBIENTAL_REGISTRO = AMBIENTAL_READONLY + []
+
+AMBIENTAL_FULL = AMBIENTAL_REGISTRO + [
+    "ambiental.add_measurementpoint",
+    "ambiental.change_measurementpoint",
+    "ambiental.delete_measurementpoint",
+]
+
+AMBIENTAL_ROLES = {
+    "Administrador ambiental": (
+        AMBIENTAL_FULL,
+        "Configura el módulo ambiental de la organización: puntos de medición de "
+        "cada edificio, bases de normalización y reglas de alerta. Registra y "
+        "consulta consumos y residuos.",
+    ),
+    "Encargado de registro ambiental": (
+        AMBIENTAL_REGISTRO,
+        "Registra los consumos (agua, electricidad, combustible...) y los residuos "
+        "de los puntos de medición a partir de recibos y manifiestos.",
+    ),
+    "Analista ambiental": (
+        AMBIENTAL_READONLY,
+        "Consulta en solo lectura los consumos, indicadores y reportes ambientales "
+        "de la organización.",
+    ),
+}
+
+
+def update_ambiental_roles():
+    for name, (perms, description) in AMBIENTAL_ROLES.items():
+        rol = Rol.objects.filter(name=name).first()
+        if not rol:
+            rol = Rol.objects.create(name=name, description=description)
+        add_permissions(rol, perms)
+    rol = Rol.objects.filter(name="Administrativo superior").first()
+    if rol:
+        add_permissions(rol, AMBIENTAL_FULL)
+    else:
+        print("WARNING: Rol 'Administrativo superior' not found, skipping.")
+
+
 ROL_DESCRIPTIONS = {
     "Administrador de Laboratorio": (
         "Gestiona de forma integral el laboratorio: inventario, académico, "
@@ -1397,5 +1446,6 @@ class Command(BaseCommand):
         update_iper_roles()
         create_auditor_iper()
         create_administrador_iper()
+        update_ambiental_roles()
         update_papelera()
         update_descriptions()

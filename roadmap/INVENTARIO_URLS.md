@@ -10,22 +10,22 @@ el resto se cubre con pruebas de cliente o unitarias.
 
 | Categoría | Rutas |
 |---|---:|
-| `pagina` | 176 |
+| `pagina` | 177 |
 | `parcial` | 4 |
-| `api` | 706 |
+| `api` | 719 |
 | `autocomplete` | 6 |
 | `ajax` | 10 |
 | `json` | 45 |
 | `descarga` | 18 |
 | `accion` | 29 |
 | `infra` | 701 |
-| **total** | **1695** |
+| **total** | **1709** |
 
-Páginas: 176, de las cuales **60 sin ninguna prueba**.
+Páginas: 177, de las cuales **60 sin ninguna prueba**.
 
 ## Rutas por app
 
-Se omiten las categorías `api` e `infra` (1407 rutas de routers DRF y de
+Se omiten las categorías `api` e `infra` (1420 rutas de routers DRF y de
 la administración de Django): están en `inventario_urls.csv`.
 
 ### academic — 9 páginas, 0 sin prueba
@@ -47,6 +47,12 @@ la administración de Django): están en `inventario_urls.csv`.
 | `procedure_step` | `/academic/<int:org_pk>/procedure/procedure/<int:pk>/step/` | pagina | `academic.views.ProcedureStepCreateView` | `academic/procedure_steps.html` | org_pk, pk | — | sí |
 | `procedure_update` | `/academic/<int:org_pk>/procedure/procedure_update/<int:pk>/` | pagina | `academic.views.ProcedureUpdateView` | `academic/procedure_create.html` | org_pk, pk | — | sí |
 | `update_step` | `/academic/<int:org_pk>/procedure/step/<int:pk>/update/` | pagina | `academic.views.ProcedureStepUpdateView` | `academic/procedure_steps.html` | org_pk, pk | — | sí |
+
+### ambiental — 1 páginas, 0 sin prueba
+
+| Nombre | Patrón | Categoría | Vista | Plantilla | kwargs | Selenium | Pruebas |
+|---|---|---|---|---|---|:-:|:-:|
+| `measurementpoint_list` | `/ambiental/<int:org_pk>/measurement_points/` | pagina | `ambiental.views.measurementpoint_list` | `ambiental/measurementpoint_list.html` | org_pk | — | sí |
 
 ### auth_and_perms — 9 páginas, 4 sin prueba
 

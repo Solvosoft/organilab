@@ -37,6 +37,7 @@ from reservations_management.api.urls import (
 )
 from reservations_management.urls import urlpatterns as reservation_management_urls
 from risk_management import urls as risk_urls
+from ambiental import urls as ambiental_urls
 from presentation.urls import root_urls as presentation_root_urls
 from sga import urls as sga_urls
 from derb import urls as derb_urls
@@ -68,6 +69,10 @@ urlpatterns = (
         path(
             "risk/<int:org_pk>/",
             include((risk_urls, "riskmanagement"), namespace="riskmanagement"),
+        ),
+        path(
+            "ambiental/<int:org_pk>/",
+            include((ambiental_urls, "ambiental"), namespace="ambiental"),
         ),
         path("derb/<int:org_pk>/", include((derb_urls, "derb"), namespace="derb")),
         path(

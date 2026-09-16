@@ -1,0 +1,88 @@
+from django.core.exceptions import PermissionDenied
+from djgentelella.groute import register_lookups
+from djgentelella.permission_management import AnyPermissionByAction
+from djgentelella.views.select2autocomplete import BaseSelect2View
+from rest_framework.authentication import SessionAuthentication
+
+from ambiental.models import MeasurementPoint
+from auth_and_perms.organization_utils import user_is_allowed_on_organization
+from laboratory.gtselects import GPaginatorMoreElements
+from laboratory.models import Laboratory, OrganizationStructure
+from risk_management.models import Buildings
+
+
+class AmbientalOrganizationSelect(BaseSelect2View):
+    """Base de los autocompletes del módulo: todo se acota a la organización.
+
+    A diferencia de los autocompletes de ``risk_management``, aquí se comprueba
+    que el usuario pertenezca a la organización pedida: sin eso, cualquiera con
+    el permiso de modelo podría listar los edificios de otra institución
+    cambiando ``org_pk`` en la URL.
+    """
+
+    authentication_classes = [SessionAuthentication]
+    pagination_class = GPaginatorMoreElements
+    permission_classes = (AnyPermissionByAction,)
+
+    def get_organization(self):
+        org_pk = self.request.GET.get("org_pk")
+        if not org_pk or not str(org_pk).isdigit():
+            return None
+        organization = OrganizationStructure.objects.filter(pk=org_pk).first()
+        if organization is None:
+            return None
+        try:
+            user_is_allowed_on_organization(self.request.user, organization)
+        except PermissionDenied:
+            return None
+        return organization
+
+    def get_queryset(self):
+        organization = self.get_organization()
+        if organization is None:
+            return self.model.objects.none()
+        return self.scope_queryset(super().get_queryset(), organization)
+
+    def scope_queryset(self, queryset, organization):
+        return queryset.filter(organization=organization)
+
+    def get_building(self):
+        building = self.request.GET.get("building")
+        if building and str(building).isdigit():
+            return building
+        return None
+
+
+@register_lookups(prefix="ambiental_buildings", basename="ambiental_buildings")
+class AmbientalBuildings(AmbientalOrganizationSelect):
+    model = Buildings
+    fields = ["name"]
+    order_by = "name"
+    perms = {"list": ["ambiental.view_measurementpoint"]}
+
+
+@register_lookups(prefix="ambiental_laboratories", basename="ambiental_laboratories")
+class AmbientalLaboratories(AmbientalOrganizationSelect):
+    model = Laboratory
+    fields = ["name"]
+    order_by = "name"
+    perms = {"list": ["ambiental.view_measurementpoint"]}
+
+    def scope_queryset(self, queryset, organization):
+        return queryset.filter(pk__in=organization.get_my_laboratories).distinct()
+
+
+@register_lookups(prefix="ambiental_points", basename="ambiental_points")
+class AmbientalMeasurementPoints(AmbientalOrganizationSelect):
+    model = MeasurementPoint
+    fields = ["code", "name"]
+    order_by = "code"
+    text_separator = " - "
+    perms = {"list": ["ambiental.view_measurementpoint"]}
+
+    def scope_queryset(self, queryset, organization):
+        queryset = queryset.filter(organization=organization)
+        building = self.get_building()
+        if building:
+            queryset = queryset.filter(building__pk=building)
+        return queryset

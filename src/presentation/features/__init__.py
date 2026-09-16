@@ -7,13 +7,13 @@ revisarse. Un fichero por app cabe en un diff y tiene dueño.
 """
 
 from presentation.features import (
-    academic, auth_and_perms, laboratory_inventory, laboratory_structure, misc,
+    academic, ambiental, auth_and_perms, laboratory_inventory, laboratory_structure, misc,
     report, reservations, riskmanagement, sga,
 )
 
 #: Orden de lectura del catálogo.
 FEATURES = ()
-for _module in (academic, auth_and_perms, laboratory_inventory,
+for _module in (academic, ambiental, auth_and_perms, laboratory_inventory,
                 laboratory_structure, misc, report, reservations,
                 riskmanagement, sga):
     FEATURES += _module.FEATURES

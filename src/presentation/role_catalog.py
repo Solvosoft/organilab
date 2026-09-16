@@ -111,6 +111,18 @@ CANONICAL_ROLES = (
          "auth_and_perms/management/commands/update_roles.py:1254",
          "IPER completo, incluidos `manage_iper_catalog` y `request_iper`. Se autocrea "
          "si no existe."),
+    _rol("administrador_ambiental", "Administrador ambiental",
+         "auth_and_perms/management/commands/update_roles.py:1296",
+         "Módulo ambiental completo: puntos de medición, consumos, bases de "
+         "normalización y reglas de alerta. Se autocrea si no existe."),
+    _rol("registro_ambiental", "Encargado de registro ambiental",
+         "auth_and_perms/management/commands/update_roles.py:1302",
+         "Registra consumos y residuos de los puntos de medición; no configura los "
+         "puntos ni las reglas. Se autocrea si no existe."),
+    _rol("analista_ambiental", "Analista ambiental",
+         "auth_and_perms/management/commands/update_roles.py:1307",
+         "Solo lectura de consumos, indicadores y reportes ambientales. Se autocrea "
+         "si no existe."),
     _rol("manejo_sustancias", "Manejo de sustancias del laboratorio",
          "auth_and_perms/management/commands/add_static_rol.py:17",
          "Rol construido con PKs de permiso escritas a mano (`:19-51`): depende del "

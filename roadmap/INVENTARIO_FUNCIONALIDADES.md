@@ -15,11 +15,11 @@ con ese rol.
 
 | Métrica | Valor |
 |---|---:|
-| Funcionalidades catalogadas | 44 |
+| Funcionalidades catalogadas | 45 |
 | Sin ninguna prueba | 11 |
 | Rutas navegables huérfanas | 0 |
 | Apps pendientes de catalogar | 2 |
-| Roles canónicos | 18 |
+| Roles canónicos | 21 |
 | Roles canónicos sin aparecer en ningún paso | 0 |
 
 ## Funcionalidades
@@ -61,6 +61,16 @@ Hallazgos:
 
 - HALLAZGO-ACAD-1: **no hay rol revisor.** `MyProcedure` declara los tres estados de un flujo de revisión, pero `complete_my_procedure` (`views.py:253`) toma el `status` directamente del POST bajo el mismo `change_myprocedure` que sirve para editarlo. Quien ejecuta el procedimiento se lo aprueba a sí mismo: el estado «In Review» no tiene quien lo revise. Compárese con `laboratory.Inform` (`laboratory/models.py:1643-1674`), que tiene los mismos tres estados **y sí** un permiso de aprobación aparte (`laboratory.can_manage_inform_status`).
 - La reserva masiva nace aquí pero se aprueba y se cierra en RES-01: es el único flujo del sistema que cruza dos módulos con actores distintos.
+
+### `AMB-01` — Configurar los puntos de medición de cada edificio
+
+*ambiental · ui · prioridad P2 · cobertura por ruta: completa · Selenium: —*
+
+Se da de alta cada medidor, tanque o punto de acopio con el número que trae el recibo, el recurso que mide y el edificio al que pertenece. Retirar un punto lo manda a la papelera de la organización y conserva su historial.
+
+| Paso | Actores | Permiso | Transición | Rutas |
+|---|---|---|---|---|
+| **Listar, crear, editar y retirar puntos de medición** | Administrador ambiental, Administrativo superior, Encargado de registro ambiental, Analista ambiental | `ambiental.view_measurementpoint` | — | `ambiental:measurementpoint_list` |
 
 ### `ORG-01` — Elegir organización y orientarse en el árbol
 
@@ -753,6 +763,9 @@ Los datos maestros que la etiqueta imprime: la empresa que figura como responsab
 | Administrativo de centro de trabajo | sí | `auth_and_perms/management/commands/update_roles.py:1030` |
 | Auditor IPER | sí | `auth_and_perms/management/commands/update_roles.py:1231` |
 | Administrador IPER | sí | `auth_and_perms/management/commands/update_roles.py:1254` |
+| Administrador ambiental | sí | `auth_and_perms/management/commands/update_roles.py:1296` |
+| Encargado de registro ambiental | sí | `auth_and_perms/management/commands/update_roles.py:1302` |
+| Analista ambiental | sí | `auth_and_perms/management/commands/update_roles.py:1307` |
 | Manejo de sustancias del laboratorio | sí | `auth_and_perms/management/commands/add_static_rol.py:17` |
 | Organization Management | sí | `auth_and_perms/views/user_org_creation.py:95` |
 
