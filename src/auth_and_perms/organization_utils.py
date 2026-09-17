@@ -111,6 +111,10 @@ def profile_permission_scope_query(profile, user, org_pk=None, lab_pk=None,
       distinguir inquilinos.
     - **Por organización efectiva**, cuando la URL trae `org_pk`: la organización del
       árbol en la que el perfil tiene realmente sus permisos.
+    - **Por edificio**, cuando la URL trae `org_pk`: los roles asignados sobre edificios
+      de esa organización. Dejan **entrar** a las pantallas del módulo ambiental; qué
+      edificio puede tocar cada uno lo decide `ambiental.access.BuildingAccess`, porque
+      esta bolsa une los roles de todos los edificios.
 
     `effective_org` y la lista de laboratorios los calcula quien llama, porque en el
     middleware salen de consultas que además deciden si hay que devolver 404.
@@ -133,6 +137,14 @@ def profile_permission_scope_query(profile, user, org_pk=None, lab_pk=None,
             content_type__model="laboratory",
         )
 
+    if org_pk:
+        query |= Q(
+            profile=profile,
+            organization_id=org_pk,
+            content_type__app_label="risk_management",
+            content_type__model="buildings",
+        )
+
     if org_pk and effective_org is not None:
         query |= Q(
             profile=profile,
@@ -142,3 +154,58 @@ def profile_permission_scope_query(profile, user, org_pk=None, lab_pk=None,
         )
 
     return query
+
+
+class AllPermissions(frozenset):
+    """Conjunto de permisos de un superusuario: contiene cualquier permiso."""
+
+    def __contains__(self, item):
+        return True
+
+
+def organization_permissions(user, organization):
+    """Permisos que el usuario tiene **en toda la organización**.
+
+    Salen de los roles de su organización efectiva y de su perfil global, más los
+    permisos directos y de grupo. A diferencia de lo que arma `ProfileMiddleware`, no
+    suman roles de laboratorio ni de edificio: sirve para decidir acciones que abarcan
+    toda la organización (parámetros, reglas de alerta, ver todos los edificios).
+    """
+    from django.db.models import Q
+
+    if not user.is_authenticated or not user.is_active:
+        return frozenset()
+    if user.is_superuser:
+        return AllPermissions()
+    profile = getattr(user, "profile", None)
+    perms = set()
+    if profile is not None:
+        query = profile_permission_scope_query(profile, user)
+        effective_org = organization.get_effective_org_for_profile(profile)
+        if effective_org is not None:
+            query |= Q(
+                profile=profile,
+                object_id=effective_org.pk,
+                content_type__app_label="laboratory",
+                content_type__model="organizationstructure",
+            )
+        perms |= {
+            "%s.%s" % (app, codename)
+            for app, codename in ProfilePermission.objects.filter(query).values_list(
+                "rol__permissions__content_type__app_label", "rol__permissions__codename"
+            )
+            if codename
+        }
+    perms |= {
+        "%s.%s" % (app, codename)
+        for app, codename in user.user_permissions.values_list("content_type__app_label", "codename")
+    }
+    from django.contrib.auth.models import Permission
+
+    perms |= {
+        "%s.%s" % (app, codename)
+        for app, codename in Permission.objects.filter(group__user=user).values_list(
+            "content_type__app_label", "codename"
+        )
+    }
+    return frozenset(perms)

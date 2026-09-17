@@ -17,6 +17,7 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django.utils.translation import gettext as _
 
+from ambiental.access import BuildingAccess
 from ambiental.models import ConsumptionAlert, ConsumptionRecord, MeasurementPoint
 from presentation.alerts import (
     TRIGGER_ABSOLUTE,
@@ -38,7 +39,28 @@ def first_of_month(date):
 
 def point_responsibles(point):
     """El encargado del edificio y los responsables de sus laboratorios."""
-    building = point.building
+    return point_responsibles_of(point.building)
+
+
+def building_recipient_filter(organization, building):
+    """Los roles de la regla solo avisan a quien ve el edificio del punto.
+
+    El encargado del edificio y los responsables de sus laboratorios se avisan siempre:
+    son parte del edificio aunque no tengan un rol ambiental.
+    """
+    responsibles = set()
+
+    def allowed(user):
+        if not responsibles:
+            responsibles.update(user.pk for user in point_responsibles_of(building))
+        if user.pk in responsibles:
+            return True
+        return BuildingAccess(user, organization).has("ambiental.view_consumptionalert", building)
+
+    return allowed
+
+
+def point_responsibles_of(building):
     if building is None:
         return []
     user_ids = set(
@@ -71,6 +93,7 @@ def raise_alert(rule, point, period, message, record=None, reference=None, regis
             message,
             obj=alert,
             responsible_users=point_responsibles(point),
+            recipient_filter=building_recipient_filter(rule.organization, point.building),
             context={"point": point, "alert": alert},
             link=reverse("ambiental:consumptionalert_list", kwargs={"org_pk": rule.organization_id}),
         )

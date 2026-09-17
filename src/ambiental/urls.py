@@ -2,7 +2,7 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
 from ambiental import forms, views
-from ambiental.api import viewsets
+from ambiental.api import building_access, viewsets
 
 router = DefaultRouter()
 router.register(
@@ -10,6 +10,9 @@ router.register(
 )
 router.register(
     "consumptionrecord", viewsets.ConsumptionRecordViewSet, basename="api-consumptionrecord"
+)
+router.register(
+    "buildingaccess", building_access.BuildingAccessViewSet, basename="api-buildingaccess"
 )
 router.register(
     "consumptionalert", viewsets.ConsumptionAlertViewSet, basename="api-consumptionalert"
@@ -71,5 +74,6 @@ urlpatterns = [
         name="report_waste_manifest",
     ),
     path("alerts/", views.consumptionalert_list, name="consumptionalert_list"),
+    path("building_access/", views.building_access_list, name="building_access_list"),
     path("api/", include(router.urls)),
 ]

@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.core.exceptions import PermissionDenied
 from djgentelella.groute import register_lookups
 from djgentelella.permission_management import AnyPermissionByAction
@@ -5,6 +6,7 @@ from djgentelella.views.select2autocomplete import BaseSelect2View
 from rest_framework import serializers
 from rest_framework.authentication import SessionAuthentication
 
+from ambiental.access import BuildingAccess
 from ambiental.ambiental_defaults import RESOURCE_TYPES
 from ambiental.api.serializers import resource_info_payload
 
@@ -47,8 +49,17 @@ class AmbientalOrganizationSelect(BaseSelect2View):
             return self.model.objects.none()
         return self.scope_queryset(super().get_queryset(), organization)
 
+    #: Permiso con el que se decide qué edificios ve el autocomplete. Con
+    #: ``?perm=manage`` se ofrecen solo los edificios donde puede asignar acceso.
+    building_perm = "ambiental.view_measurementpoint"
+    perm_aliases = {"manage": "ambiental.manage_building_access"}
+
     def scope_queryset(self, queryset, organization):
         return queryset.filter(organization=organization)
+
+    def visible_buildings(self, organization):
+        perm = self.perm_aliases.get(self.request.GET.get("perm"), self.building_perm)
+        return BuildingAccess.for_request(self.request, organization).buildings(perm)
 
     def get_building(self):
         building = self.request.GET.get("building")
@@ -64,6 +75,9 @@ class AmbientalBuildings(AmbientalOrganizationSelect):
     order_by = "name"
     perms = {"list": ["ambiental.view_measurementpoint"]}
 
+    def scope_queryset(self, queryset, organization):
+        return queryset.filter(pk__in=self.visible_buildings(organization))
+
 
 @register_lookups(prefix="ambiental_laboratories", basename="ambiental_laboratories")
 class AmbientalLaboratories(AmbientalOrganizationSelect):
@@ -73,7 +87,13 @@ class AmbientalLaboratories(AmbientalOrganizationSelect):
     perms = {"list": ["ambiental.view_measurementpoint"]}
 
     def scope_queryset(self, queryset, organization):
-        return queryset.filter(pk__in=organization.get_my_laboratories).distinct()
+        queryset = queryset.filter(pk__in=organization.get_my_laboratories)
+        perm = self.perm_aliases.get(self.request.GET.get("perm"), self.building_perm)
+        ids = BuildingAccess.for_request(self.request, organization).building_ids(perm)
+        if ids is not None:
+            # Con acceso solo por edificio, únicamente los laboratorios de esos edificios.
+            queryset = queryset.filter(buildings__in=ids)
+        return queryset.distinct()
 
 
 @register_lookups(prefix="ambiental_points", basename="ambiental_points")
@@ -85,7 +105,9 @@ class AmbientalMeasurementPoints(AmbientalOrganizationSelect):
     perms = {"list": ["ambiental.view_measurementpoint"]}
 
     def scope_queryset(self, queryset, organization):
-        queryset = queryset.filter(organization=organization).select_related("resource_type")
+        queryset = queryset.filter(
+            organization=organization, building__in=self.visible_buildings(organization)
+        ).select_related("resource_type")
         building = self.get_building()
         if building:
             queryset = queryset.filter(building__pk=building)
@@ -113,3 +135,23 @@ class AmbientalMeasurementPoints(AmbientalOrganizationSelect):
                 fields = base.Meta.fields + ["resource_info"]
 
         return PointSerializer
+
+
+@register_lookups(prefix="ambiental_users", basename="ambiental_users")
+class AmbientalUsers(AmbientalOrganizationSelect):
+    """Personas a las que se puede dar acceso a un edificio de la organización."""
+
+    model = get_user_model()
+    fields = ["username", "first_name", "last_name"]
+    order_by = "username"
+    perms = {"list": ["ambiental.manage_building_access"]}
+
+    def scope_queryset(self, queryset, organization):
+        from ambiental.api.building_access import organization_users
+
+        return queryset.filter(pk__in=organization_users(organization))
+
+    def get_text_display(self, obj):
+        from ambiental.api.building_access import user_display
+
+        return user_display(obj)

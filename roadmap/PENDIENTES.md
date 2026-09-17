@@ -27,12 +27,13 @@ pero nadie revisó en un navegador real. Checklist (heredada de las etapas 03, 0
 | # | Pendiente | Evidencia |
 |---|-----------|-----------|
 | 1 | `migrate` sobre una **copia de la base real** (solo se probó sobre base limpia) | etapa 12 |
-| 2 | **Seguridad**: viewsets hermanos de risk_management con `permission_classes = ()` — revisar | `src/risk_management/api/viewset.py:64,119,182,225,294` |
+| 2 | **Seguridad**: viewsets hermanos de risk_management con `permission_classes = ()` — revisar (`BuildingViewSet` ya corregido) | `src/risk_management/api/viewset.py` (Regent, Structure, Incident, Workdays) |
 | 3 | Ruta huérfana `riskmanagement:iper_delete` (`IPERAssessmentDelete`), sin plantilla ni JS que la use | `src/risk_management/urls.py:137` |
 | 4 | Correos sin plantilla de marca: `ASYNC_NOTIFICATION_BASE_TEMPLATES` / `_BRAND` no definidos | `src/organilab/settings.py` |
 | 5 | `jquery-1.9.1.min.js` propio, vivo en la firma digital | `auth_and_perms/static/js/jquery-1.9.1.min.js`, usado en `create_user_organization_digital_signature.html:60` |
 | 6 | Biblioteca: bump 0.6.1 → 0.6.2 sin commitear en el checkout `~/Desktop/desarrollo/django-gentelella-widgets` (`djgentelella/__init__.py`); decidir si el pin sube a `djgentelella>=0.6.2` | `requirements.txt:4` |
 | 7 | Rama local `dj060` obsoleta (su punta no está en la historia actual) | `git branch` |
 | 8 | **Seguridad**: `report_table` no acota el `TaskReport` por organización ni por quien lo pidió; cualquier pk es visible con `do_report` | `src/report/views/base.py` `report_table` |
+| 11 | **Seguridad**: el `lab_pk` de la URL o del GET entra al alcance de permisos sin validar que el laboratorio pertenezca a `org_pk` | `src/auth_and_perms/organization_utils.py` `profile_permission_scope_query` |
 | 9 | Smoke en navegador de las pantallas `ambiental` y `platform` (ObjectCRUD, select2 filtrado, gráficos) | `plans/ENVIRONMENT_PLAN.md` §4 |
 | 10 | `roadmap/cobertura_por_rol.json`: los pasos AMB-* y PLAT-* se midieron solo con sus pruebas y se mezclaron a mano; `COBERTURA_POR_ROL.md` no se regeneró. Correr `make feature-coverage` | `roadmap/cobertura_por_rol.json` |

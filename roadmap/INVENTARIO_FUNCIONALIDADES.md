@@ -15,8 +15,8 @@ con ese rol.
 
 | Métrica | Valor |
 |---|---:|
-| Funcionalidades catalogadas | 55 |
-| Sin ninguna prueba | 11 |
+| Funcionalidades catalogadas | 56 |
+| Sin ninguna prueba | 12 |
 | Rutas navegables huérfanas | 0 |
 | Apps pendientes de catalogar | 2 |
 | Roles canónicos | 21 |
@@ -147,6 +147,16 @@ Una tarea mensual evalúa las reglas de alerta del proceso `ambiental.consumptio
 |---|---|---|---|---|
 | **Evaluar las reglas de consumo y crear las alertas** | Administrador ambiental | — | — | — |
 | **Consultar las alertas y marcarlas como revisadas** | Administrador ambiental, Administrativo superior, Encargado de registro ambiental, Analista ambiental | `ambiental.view_consumptionalert` | — | `ambiental:consumptionalert_list` |
+
+### `AMB-09` — Dar acceso a las personas por edificio
+
+*ambiental · ui · prioridad P1 · cobertura por ruta: **sin prueba** · Selenium: —*
+
+Asigna a una persona un rol ambiental (administrador, encargado de registro o analista) sobre un edificio concreto. Quien administra solo un edificio puede dar acceso a ese edificio y a ningún otro; sacar a la persona de la organización o borrar el edificio borra sus accesos.
+
+| Paso | Actores | Permiso | Transición | Rutas |
+|---|---|---|---|---|
+| **Asignar, cambiar o quitar roles ambientales en un edificio** | Administrador ambiental, Administrativo superior | `ambiental.manage_building_access` | — | `ambiental:building_access_list` |
 
 ### `ORG-01` — Elegir organización y orientarse en el árbol
 

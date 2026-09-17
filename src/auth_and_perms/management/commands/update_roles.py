@@ -1304,6 +1304,7 @@ AMBIENTAL_FULL = AMBIENTAL_REGISTRO + [
     "ambiental.delete_normalizationbase",
     "ambiental.preload_normalizationbase",
     "ambiental.review_consumptionalert",
+    "ambiental.manage_building_access",
 ]
 
 AMBIENTAL_ROLES = {

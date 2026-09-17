@@ -83,8 +83,12 @@ def threshold_value(rule):
     return convert(rule.threshold[field])
 
 
-def rule_recipients(rule, responsible_users=()):
-    """Responsables (si la regla lo pide) más los usuarios con los roles de la regla."""
+def rule_recipients(rule, responsible_users=(), recipient_filter=None):
+    """Responsables (si la regla lo pide) más los usuarios con los roles de la regla.
+
+    ``recipient_filter`` (``user -> bool``) permite al proceso descartar a quien no debe
+    enterarse, p. ej. a quien no ve el edificio de la alerta.
+    """
     from auth_and_perms.models import ProfilePermission
 
     users = {user.pk: user for user in responsible_users if user is not None} if rule.notify_responsible else {}
@@ -95,10 +99,13 @@ def rule_recipients(rule, responsible_users=()):
         ).values_list("profile__user", flat=True)
         for user in get_user_model().objects.filter(pk__in=user_ids):
             users.setdefault(user.pk, user)
-    return list(users.values())
+    recipients = list(users.values())
+    if recipient_filter is not None:
+        recipients = [user for user in recipients if recipient_filter(user)]
+    return recipients
 
 
-def fire_alert(rule, message, obj=None, responsible_users=(), context=None, link=""):
+def fire_alert(rule, message, obj=None, responsible_users=(), context=None, link="", recipient_filter=None):
     """Registra el disparo de la regla y avisa a quien corresponda."""
     from django.contrib.contenttypes.models import ContentType
 
@@ -107,7 +114,7 @@ def fire_alert(rule, message, obj=None, responsible_users=(), context=None, link
     from presentation.notifications import send_process_email
     from report.utils import create_notification
 
-    users = rule_recipients(rule, responsible_users)
+    users = rule_recipients(rule, responsible_users, recipient_filter)
     event = AlertEvent.objects.create(
         rule=rule,
         organization=rule.organization,

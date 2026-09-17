@@ -3619,6 +3619,13 @@ URLNAME_PERMISSIONS = {
             "permission": "ambiental.view_consumptionrecord",
         },
     ],
+    "building_access_list": [
+        {
+            "name": "Manage access to buildings",
+            "category": "Ambiental",
+            "permission": "ambiental.manage_building_access",
+        },
+    ],
     "consumptionalert_list": [
         {
             "name": "View consumption alerts",

@@ -50,18 +50,21 @@ PRELOADERS = {
 }
 
 
-def preload_bases(organization, year, user=None):
+def preload_bases(organization, year, user=None, buildings=None):
     """Crea o actualiza las bases deducidas del año para cada edificio de la organización.
 
     Devuelve las bases tocadas y lo que se saltó, para que quien llama deje bitácora.
-    Nunca pisa una base escrita a mano.
+    Nunca pisa una base escrita a mano. ``buildings`` acota los edificios (por defecto,
+    todos los de la organización).
     """
     result = {"created": [], "updated": [], "skipped": 0}
     normalizers = {
         item.description: item
         for item in Catalog.objects.filter(key=KEY_NORMALIZER, description__in=PRELOADERS)
     }
-    for building in Buildings.objects.filter(organization=organization):
+    if buildings is None:
+        buildings = Buildings.objects.filter(organization=organization)
+    for building in buildings:
         for description, preloader in PRELOADERS.items():
             normalizer = normalizers.get(description)
             value = preloader(building)

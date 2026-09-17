@@ -8,6 +8,7 @@ class AmbientalConfig(AppConfig):
     verbose_name = _("Environmental management")
 
     def ready(self):
+        import ambiental.signals  # noqa: F401
         from djgentelella.async_notification.registry import register_context
 
         from presentation.alerts import (

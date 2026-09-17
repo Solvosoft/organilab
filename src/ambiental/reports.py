@@ -15,11 +15,11 @@ from decimal import Decimal
 from django.core.files.base import ContentFile
 from django.utils.translation import gettext as _
 
+from ambiental.access import BuildingAccess
 from ambiental.ambiental_defaults import KEY_NORMALIZER, KEY_RESOURCE_TYPE
 from ambiental.indicators import compare_periods, compute_indicator
 from ambiental.models import ConsumptionRecord
 from laboratory.models import Catalog, OrganizationStructure
-from risk_management.models import Buildings
 from laboratory.report_utils import ExcelGraphBuilder
 from report.utils import format_datetime, get_report_name, set_format_table_columns
 
@@ -46,11 +46,20 @@ def parse_period(value):
     return start.date(), end.date()
 
 
+def report_access(report):
+    """Lo que puede ver quien pidió el reporte: el reporte no amplía su acceso."""
+    organization = OrganizationStructure.objects.get(pk=report.data["organization"])
+    return organization, BuildingAccess(report.created_by, organization)
+
+
 def report_records(report, period_field="period"):
-    """Los registros de la organización que cumplen los filtros del reporte."""
+    """Los registros que cumplen los filtros y que quien pidió el reporte puede ver."""
     data = report.data
-    queryset = ConsumptionRecord.objects.filter(
-        organization__pk=data["organization"]
+    organization, access = report_access(report)
+    queryset = access.filter(
+        ConsumptionRecord.objects.filter(organization=organization),
+        "ambiental.view_consumptionrecord",
+        "point__building",
     ).select_related(
         "point__building", "point__resource_type", "unit", "treatment",
         "waste_manager", "created_by",
@@ -221,8 +230,8 @@ report_consumption_cost_doc = doc_report(consumption_cost_rows)
 def report_scope(report):
     """Organización, edificios y recursos que abarca el reporte."""
     data = report.data
-    organization = OrganizationStructure.objects.get(pk=data["organization"])
-    buildings = Buildings.objects.filter(organization=organization).order_by("name")
+    organization, access = report_access(report)
+    buildings = access.buildings("ambiental.view_consumptionrecord").order_by("name")
     if data.get("building"):
         buildings = buildings.filter(pk__in=data["building"])
     resources = Catalog.objects.filter(key=KEY_RESOURCE_TYPE).order_by("pk")

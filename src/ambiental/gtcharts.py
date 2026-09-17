@@ -22,12 +22,14 @@ from ambiental.ambiental_defaults import (
     NORMALIZER_PERSON,
     RESOURCE_WATER,
 )
+from ambiental.access import BuildingAccess
 from ambiental.indicators import compute_indicator
 from ambiental.models import ConsumptionRecord
 from auth_and_perms.organization_utils import user_is_allowed_on_organization
 from laboratory.models import Catalog, OrganizationStructure
 from risk_management.gtcharts import BaseChart, LaboratoryPermission
-from risk_management.models import Buildings
+
+VIEW_PERM = "ambiental.view_consumptionrecord"
 
 MONTHS = (
     _("Jan"), _("Feb"), _("Mar"), _("Apr"), _("May"), _("Jun"),
@@ -57,6 +59,7 @@ class AmbientalBaseChart(BaseChart):
         self.request = request
         self.organization = get_object_or_404(OrganizationStructure, pk=pk)
         user_is_allowed_on_organization(request.user, self.organization)
+        self.access = BuildingAccess.for_request(request, self.organization)
         self.load_filters()
         return Response(self.serializer_class(self.get_graph_data()).data)
 
@@ -69,14 +72,16 @@ class AmbientalBaseChart(BaseChart):
         self.building = None
         if data.get("building"):
             self.building = get_object_or_404(
-                Buildings, pk=data["building"], organization=self.organization
+                self.access.buildings(VIEW_PERM), pk=data["building"]
             )
         self.resource_type = data.get("resource_type")
         self.normalizer = data.get("normalizer")
 
     def records(self):
-        queryset = ConsumptionRecord.objects.filter(
-            organization=self.organization, period_end__year=self.year
+        queryset = self.access.filter(
+            ConsumptionRecord.objects.filter(organization=self.organization, period_end__year=self.year),
+            VIEW_PERM,
+            "point__building",
         )
         if self.building is not None:
             queryset = queryset.filter(point__building=self.building)
@@ -166,7 +171,7 @@ class BuildingRankingChart(AmbientalBaseChart, HorizontalBarChart):
     def get_labels(self):
         start = datetime.date(self.year, 1, 1)
         end = datetime.date(self.year, 12, 31)
-        buildings = Buildings.objects.filter(organization=self.organization)
+        buildings = self.access.buildings(VIEW_PERM)
         if self.building is not None:
             buildings = buildings.filter(pk=self.building.pk)
         ranking = []

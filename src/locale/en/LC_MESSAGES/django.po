@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-16 20:19-0600\n"
+"POT-Creation-Date: 2026-09-16 21:31-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -354,6 +354,15 @@ msgstr ""
 msgid "Manifest number"
 msgstr ""
 
+msgid "To move an access, delete it and create a new one."
+msgstr ""
+
+msgid "Building access granted"
+msgstr ""
+
+msgid "Building access changed"
+msgstr ""
+
 msgid "There is already a measurement point with this code for this resource."
 msgstr ""
 
@@ -429,6 +438,12 @@ msgstr ""
 msgid "Year"
 msgstr ""
 
+msgid "User"
+msgstr ""
+
+msgid "Roles"
+msgstr ""
+
 msgid "Jan"
 msgstr ""
 
@@ -496,6 +511,9 @@ msgid "Measurement point"
 msgstr ""
 
 msgid "Measurement points"
+msgstr ""
+
+msgid "Can manage access to buildings"
 msgstr ""
 
 msgid "Import"
@@ -655,6 +673,24 @@ msgstr ""
 msgid "Delivery date"
 msgstr ""
 
+msgid "Building access"
+msgstr ""
+
+msgid ""
+"Environmental roles assigned on a specific building. A person only sees and "
+"manages the buildings where they have a role; environmental roles assigned "
+"on the whole organization cover all its buildings."
+msgstr ""
+
+msgid "Give access to a building"
+msgstr ""
+
+msgid "Change roles in the building"
+msgstr ""
+
+msgid "Remove access to the building"
+msgstr ""
+
 msgid ""
 "Atypical consumption detected by the alert rules. Review each one and leave "
 "a note that explains it; reviewed alerts stay in the history."
@@ -747,9 +783,6 @@ msgid "Waste and manifests report"
 msgstr ""
 
 msgid "Reassigned on user delete"
-msgstr ""
-
-msgid "Roles"
 msgstr ""
 
 msgid "No roles assigned"
@@ -853,6 +886,10 @@ msgid "Removed laboratory permission from user '%(user)s'"
 msgstr ""
 
 #, python-format
+msgid "Removed building permission from user '%(user)s'"
+msgstr ""
+
+#, python-format
 msgid "Removed organization permission from user '%(user)s'"
 msgstr ""
 
@@ -941,9 +978,6 @@ msgid "Language"
 msgstr ""
 
 msgid "It will used to login when you want to login with digital signature"
-msgstr ""
-
-msgid "User"
 msgstr ""
 
 msgid "Laboratory"

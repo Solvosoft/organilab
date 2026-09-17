@@ -21,6 +21,7 @@
     "AMB-07/reporte_residuos": "ejercitado",
     "AMB-08/detectar": "fuera del alcance de la sonda",
     "AMB-08/revisar": "ejercitado",
+    "AMB-09/acceso_edificios": "ejercitado",
     "DERB-01/borrar": "solo superusuario",
     "DERB-01/crear": "solo superusuario",
     "DERB-01/editar": "solo superusuario",
@@ -185,7 +186,7 @@
     "SGA-05/recipientes": "solo superusuario",
     "TASK-01/ver_bandeja": "solo superusuario"
   },
-  "peticiones_observadas": 5018,
+  "peticiones_observadas": 5049,
   "roles_ejercitados": {
     "administrador_ambiental": [
       "AMB-01/gestionar_puntos",
@@ -197,7 +198,9 @@
       "AMB-07/registrar_residuo",
       "AMB-07/reporte_residuos",
       "AMB-08/revisar",
+      "AMB-09/acceso_edificios",
       "PLAT-01/parametros",
+      "PLAT-02/notificaciones",
       "PLAT-03/reglas"
     ],
     "administrador_laboratorio": [

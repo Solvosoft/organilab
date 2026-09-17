@@ -12,6 +12,7 @@ from django.views.generic import TemplateView
 
 from ambiental.forms import (
     AmbientalReportForm,
+    BuildingAccessForm,
     BuildingFilterForm,
     ComparisonReportForm,
     DashboardFilterForm,
@@ -20,6 +21,7 @@ from ambiental.forms import (
     MeasurementPointForm,
     NormalizationBaseForm,
 )
+from ambiental.access import BuildingAccess
 from ambiental.ambiental_defaults import KEY_RESOURCE_TYPE, get_resource_info
 from ambiental.indicators import compare_periods
 from ambiental.models import ConsumptionRecord
@@ -137,9 +139,11 @@ def month_bounds(date):
     return start, end
 
 
-def latest_month_cards(organization, year, building=None):
+def latest_month_cards(organization, year, building=None, buildings=None):
     """Por recurso: el último mes con registros del año contra el mes anterior."""
     records = ConsumptionRecord.objects.filter(organization=organization, period_end__year=year)
+    if buildings is not None:
+        records = records.filter(point__building__in=buildings)
     if building is not None:
         records = records.filter(point__building=building)
     cards = []
@@ -147,7 +151,9 @@ def latest_month_cards(organization, year, building=None):
         last = records.filter(point__resource_type=resource).order_by("-period_end").first()
         current = month_bounds(last.period_end)
         previous = month_bounds(current[0] - datetime.timedelta(days=1))
-        before, now_row = compare_periods(organization, resource, [previous, current], building)
+        before, now_row = compare_periods(
+            organization, resource, [previous, current], building, buildings
+        )
         cards.append({
             "resource": resource.description,
             "icon": get_resource_info(resource)["icon"],
@@ -174,7 +180,10 @@ class AmbientalDashboard(TemplateView):
         org_pk = self.kwargs["org_pk"]
         organization = get_object_or_404(OrganizationStructure, pk=org_pk)
         user_is_allowed_on_organization(self.request.user, organization)
-        form = DashboardFilterForm(self.request.GET or None, organization=organization)
+        visible = BuildingAccess.for_request(self.request, organization).buildings(
+            "ambiental.view_consumptionrecord"
+        )
+        form = DashboardFilterForm(self.request.GET or None, organization=organization, buildings=visible)
         filters = {"org_pk": org_pk, "year": datetime.date.today().year}
         building = None
         if form.is_valid():
@@ -188,9 +197,9 @@ class AmbientalDashboard(TemplateView):
         context.update(
             {
                 "org_pk": org_pk,
-                "form": form if form.is_bound else DashboardFilterForm(organization=organization),
+                "form": form if form.is_bound else DashboardFilterForm(organization=organization, buildings=visible),
                 "year": filters["year"],
-                "cards": latest_month_cards(organization, filters["year"], building),
+                "cards": latest_month_cards(organization, filters["year"], building, visible),
                 "consumption_chart": reverse("ambientalmonthlyconsumptionchart-detail", kwargs={"pk": org_pk}) + query,
                 "cost_chart": reverse("ambientalmonthlycostchart-detail", kwargs={"pk": org_pk}) + query,
                 "ranking_chart": reverse("ambientalbuildingrankingchart-detail", kwargs={"pk": org_pk}) + query,
@@ -204,3 +213,16 @@ class AmbientalDashboard(TemplateView):
 def consumptionalert_list(request, org_pk):
     user_is_allowed_on_organization(request.user, org_pk)
     return render(request, "ambiental/consumptionalert_list.html", context={"org_pk": org_pk})
+
+
+@login_required
+@permission_required("ambiental.manage_building_access", raise_exception=True)
+def building_access_list(request, org_pk):
+    """Quién tiene qué rol ambiental en cada edificio."""
+    user_is_allowed_on_organization(request.user, org_pk)
+    context = {
+        "org_pk": org_pk,
+        "form_create": BuildingAccessForm(prefix="create"),
+        "form_update": BuildingAccessForm(prefix="update"),
+    }
+    return render(request, "ambiental/building_access_list.html", context=context)

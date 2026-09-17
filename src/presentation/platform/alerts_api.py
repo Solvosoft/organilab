@@ -15,6 +15,7 @@ from presentation.alerts import (
 )
 from presentation.api_mixins import OrganizationLogsViewSet
 from presentation.models import AlertEvent, AlertRule
+from presentation.platform.base import OrganizationPermissionMixin
 
 THRESHOLD_INPUTS = {field: trigger for trigger, (field, _label, _convert) in THRESHOLD_FIELDS.items()}
 
@@ -124,7 +125,7 @@ class AlertRuleFilter(FilterSet):
         fields = {"name": ["icontains"], "process": ["exact"], "trigger": ["exact"], "is_active": ["exact"]}
 
 
-class AlertRuleViewSet(OrganizationLogsViewSet):
+class AlertRuleViewSet(OrganizationPermissionMixin, OrganizationLogsViewSet):
     serializer_class = {
         "list": AlertRuleDataTableSerializer,
         "create": AlertRuleSaveSerializer,
@@ -170,7 +171,7 @@ class AlertEventFilter(FilterSet):
         fields = {"rule": ["exact"], "level": ["exact"], "message": ["icontains"]}
 
 
-class AlertEventViewSet(OrganizationLogsViewSet):
+class AlertEventViewSet(OrganizationPermissionMixin, OrganizationLogsViewSet):
     serializer_class = {"list": AlertEventDataTableSerializer}
     perms = {"list": ["presentation.view_alertrule"]}
     http_method_names = ["get"]

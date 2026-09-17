@@ -7,6 +7,12 @@ edificio; los laboratorios del punto son informativos hasta que exista prorrateo
 
 Todas las pantallas son `ObjectCRUD` sobre APIs de `BaseViewSetWithLogs`: la vista HTML
 solo exige el permiso de consulta y el resto de acciones las controla la API por acción.
+
+**Acceso por edificio.** Un rol ambiental asignado en la organización cubre todos sus
+edificios; asignado sobre un edificio (`ProfilePermission` con content type `Buildings`) solo
+cubre ese edificio. Todo lo de AMB-01 a AMB-08 se acota con `ambiental.access.BuildingAccess`:
+listas, selects, reportes, panel y alertas muestran solo los edificios visibles, y cada cambio
+se valida con el rol que la persona tiene en ese edificio.
 """
 
 from presentation.feature_catalog import Feature, Step
@@ -217,6 +223,29 @@ FEATURES = (
                 routes=("ambiental:consumptionalert_list",),
                 permissions=("ambiental.view_consumptionalert",),
                 source="src/ambiental/api/viewsets.py ConsumptionAlertViewSet.review",
+            ),
+        ),
+    ),
+    Feature(
+        id="AMB-09",
+        name="Dar acceso a las personas por edificio",
+        module="ambiental",
+        kind="ui",
+        description=(
+            "Asigna a una persona un rol ambiental (administrador, encargado de registro o "
+            "analista) sobre un edificio concreto. Quien administra solo un edificio puede dar "
+            "acceso a ese edificio y a ningún otro; sacar a la persona de la organización o "
+            "borrar el edificio borra sus accesos."
+        ),
+        priority="P1",
+        steps=(
+            Step(
+                id="acceso_edificios",
+                name="Asignar, cambiar o quitar roles ambientales en un edificio",
+                actors=("administrador_ambiental", "administrativo_superior"),
+                routes=("ambiental:building_access_list",),
+                permissions=("ambiental.manage_building_access",),
+                source="src/ambiental/api/building_access.py BuildingAccessViewSet",
             ),
         ),
     ),

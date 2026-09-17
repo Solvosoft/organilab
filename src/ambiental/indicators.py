@@ -17,7 +17,8 @@ INDICATOR_PRECISION = Decimal("0.0001")
 PERCENT_PRECISION = Decimal("0.01")
 
 
-def records_for(organization, resource_type, date_from, date_to, building=None):
+def records_for(organization, resource_type, date_from, date_to, building=None, buildings=None):
+    """Registros del recurso en el rango; ``buildings`` acota a los edificios visibles."""
     queryset = ConsumptionRecord.objects.filter(
         organization=organization,
         point__resource_type=resource_type,
@@ -25,6 +26,8 @@ def records_for(organization, resource_type, date_from, date_to, building=None):
     )
     if building is not None:
         queryset = queryset.filter(point__building=building)
+    if buildings is not None:
+        queryset = queryset.filter(point__building__in=buildings)
     return queryset
 
 
@@ -83,12 +86,12 @@ def variation(previous, current):
     return {"absolute": absolute, "percent": percent}
 
 
-def compare_periods(organization, resource_type, periods, building=None):
+def compare_periods(organization, resource_type, periods, building=None, buildings=None):
     """Totales de cada período y su variación respecto al período anterior de la lista."""
     rows = []
     previous = None
     for date_from, date_to in periods:
-        records = records_for(organization, resource_type, date_from, date_to, building)
+        records = records_for(organization, resource_type, date_from, date_to, building, buildings)
         total, unit, mixed = single_total(records)
         row = {
             "date_from": date_from,

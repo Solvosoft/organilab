@@ -29,6 +29,22 @@
 - **djgentelella como base**: ObjectCRUD, `BaseViewSetWithLogs`, `DeletedWithTrash`, chunked upload,
   select2 con `data-s2filter-*`, `chartjs`, `async_notification`.
 
+### Acceso por edificio
+
+- Un rol ambiental asignado **en la organización** cubre todos sus edificios; asignado **sobre un
+  edificio** (`ProfilePermission` con content type `risk_management.Buildings`) cubre solo ese
+  edificio, y cada permiso se evalúa contra el rol de ese edificio (se puede ser administrador en
+  uno y analista en otro). No se hereda de roles de laboratorio ni del «Responsable» del edificio.
+- `ProfileMiddleware` suma los roles de edificio de la organización de la URL
+  (`profile_permission_scope_query`) solo para dejar entrar a las pantallas. Lo que autoriza cada
+  objeto es `src/ambiental/access.py` `BuildingAccess`: APIs, selects, reportes (con el acceso de
+  quien pidió el reporte), panel, gráficos y destinatarios de alertas.
+- La plataforma (parámetros, correos, reglas) exige roles de organización
+  (`organization_permissions`), no de edificio.
+- Pantalla `ambiental:building_access_list` (permiso `manage_building_access`): un administrador de
+  edificio solo da acceso a su edificio. Sacar a la persona de la organización o borrar el edificio
+  borra sus accesos.
+
 ## 2. Dónde está cada cosa
 
 | Pieza | Archivo |
@@ -42,7 +58,8 @@
 | Panel y gráficos | `src/ambiental/views.py` `AmbientalDashboard`, `src/ambiental/gtcharts.py` |
 | Alertas | `src/ambiental/alerts.py`, tarea `src/ambiental/tasks.py` (`CELERYBEAT_SCHEDULE`, día 2 de cada mes) |
 | Roles | `update_roles.py` `update_ambiental_roles`: Administrador ambiental, Encargado de registro ambiental, Analista ambiental |
-| Catálogo de funcionalidades | `src/presentation/features/ambiental.py` (AMB-01 a AMB-08) |
+| Acceso por edificio | `src/ambiental/access.py`, `src/ambiental/api/building_access.py` |
+| Catálogo de funcionalidades | `src/presentation/features/ambiental.py` (AMB-01 a AMB-09) |
 
 Parámetros que usa (`presentation/parameters.py`): `ambiental.require_document`,
 `ambiental.alert_window_months`.

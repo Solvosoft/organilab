@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-16 19:06-0600\n"
+"POT-Creation-Date: 2026-09-16 21:31-0600\n"
 "PO-Revision-Date: 2024-04-12 23:50-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -147,14 +147,20 @@ msgstr "Cancelado"
 msgid "Reserved"
 msgstr "Reservar"
 
+msgid "Building"
+msgstr "Edificio"
+
+msgid "User"
+msgstr "Usuario"
+
+msgid "Roles"
+msgstr "Roles"
+
 msgid "Mark as reviewed"
 msgstr "Marcar como revisada"
 
 msgid "Period"
 msgstr "Período"
-
-msgid "Building"
-msgstr "Edificio"
 
 msgid "Measurement point"
 msgstr "Punto de medición"
@@ -241,12 +247,6 @@ msgstr "Laboratorios asociados"
 
 msgid "Partner organizations"
 msgstr "Organizaciones asociadas"
-
-msgid "User"
-msgstr "Usuario"
-
-msgid "Roles"
-msgstr ""
 
 msgid "No roles assigned"
 msgstr "No se asignaron roles"

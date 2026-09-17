@@ -40,6 +40,7 @@ class MeasurementPointViewSet(AmbientalViewSet):
 
 
 class ConsumptionRecordViewSet(AmbientalViewSet):
+    building_field = "point__building"
     serializer_class = {
         "list": serializers.ConsumptionRecordDataTableSerializer,
         "create": serializers.ConsumptionRecordSaveSerializer,
@@ -99,7 +100,10 @@ class NormalizationBaseViewSet(AmbientalViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         result = preload_bases(
-            self.get_organization(), serializer.validated_data["year"], user=request.user
+            self.get_organization(),
+            serializer.validated_data["year"],
+            user=request.user,
+            buildings=self.get_access().buildings("ambiental.preload_normalizationbase"),
         )
         for base in result["created"]:
             self._add_log(base, ADDITION, [], _("Preloaded"))
@@ -122,6 +126,7 @@ class NormalizationBaseViewSet(AmbientalViewSet):
 
 
 class ConsumptionAlertViewSet(AmbientalViewSet):
+    building_field = "point__building"
     serializer_class = {
         "list": serializers.ConsumptionAlertDataTableSerializer,
         "retrieve": serializers.ConsumptionAlertSerializer,
@@ -145,6 +150,7 @@ class ConsumptionAlertViewSet(AmbientalViewSet):
     @action(detail=True, methods=["post"])
     def review(self, request, org_pk=None, pk=None):
         alert = self.get_object()
+        self.check_building("ambiental.review_consumptionalert", alert.point.building)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         alert.reviewed = True

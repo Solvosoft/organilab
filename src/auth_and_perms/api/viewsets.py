@@ -668,6 +668,27 @@ class DeleteUserFromContenttypeViewSet(mixins.ListModelMixin, viewsets.GenericVi
                 )
             pps.delete()
 
+        # Roles por edificio (módulo ambiental): sin esto quedarían filas que ya no
+        # alcanzan a nadie pero seguirían dando acceso si la persona vuelve a la organización.
+        pps_buildings = ProfilePermission.objects.filter(
+            profile=user.profile,
+            content_type__app_label="risk_management",
+            content_type__model="buildings",
+            organization__pk__in=org_ids,
+        )
+        for pp in pps_buildings:
+            organilab_logentry(
+                user,
+                pp,
+                DELETION,
+                "profilepermission",
+                changed_data=["profile", "content_type", "object_id"],
+                change_message=_("Removed building permission from user '%(user)s'")
+                % {"user": user.username},
+                relobj=organization,
+            )
+        pps_buildings.delete()
+
         pps_orgs = ProfilePermission.objects.filter(
             profile=user.profile,
             content_type__app_label="laboratory",

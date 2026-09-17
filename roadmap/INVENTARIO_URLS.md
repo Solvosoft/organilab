@@ -10,22 +10,22 @@ el resto se cubre con pruebas de cliente o unitarias.
 
 | Categoría | Rutas |
 |---|---:|
-| `pagina` | 191 |
+| `pagina` | 192 |
 | `parcial` | 4 |
-| `api` | 787 |
+| `api` | 796 |
 | `autocomplete` | 6 |
 | `ajax` | 10 |
 | `json` | 45 |
 | `descarga` | 18 |
 | `accion` | 29 |
 | `infra` | 701 |
-| **total** | **1791** |
+| **total** | **1801** |
 
-Páginas: 191, de las cuales **60 sin ninguna prueba**.
+Páginas: 192, de las cuales **61 sin ninguna prueba**.
 
 ## Rutas por app
 
-Se omiten las categorías `api` e `infra` (1488 rutas de routers DRF y de
+Se omiten las categorías `api` e `infra` (1497 rutas de routers DRF y de
 la administración de Django): están en `inventario_urls.csv`.
 
 ### academic — 9 páginas, 0 sin prueba
@@ -48,11 +48,12 @@ la administración de Django): están en `inventario_urls.csv`.
 | `procedure_update` | `/academic/<int:org_pk>/procedure/procedure_update/<int:pk>/` | pagina | `academic.views.ProcedureUpdateView` | `academic/procedure_create.html` | org_pk, pk | — | sí |
 | `update_step` | `/academic/<int:org_pk>/procedure/step/<int:pk>/update/` | pagina | `academic.views.ProcedureStepUpdateView` | `academic/procedure_steps.html` | org_pk, pk | — | sí |
 
-### ambiental — 12 páginas, 0 sin prueba
+### ambiental — 13 páginas, 1 sin prueba
 
 | Nombre | Patrón | Categoría | Vista | Plantilla | kwargs | Selenium | Pruebas |
 |---|---|---|---|---|---|:-:|:-:|
 | `ambiental_dashboard` | `/ambiental/<int:org_pk>/dashboard/` | pagina | `ambiental.views.AmbientalDashboard` | `ambiental/dashboard.html` | org_pk | — | sí |
+| `building_access_list` | `/ambiental/<int:org_pk>/building_access/` | pagina | `ambiental.views.building_access_list` | `ambiental/building_access_list.html` | org_pk | — | — |
 | `consumptionalert_list` | `/ambiental/<int:org_pk>/alerts/` | pagina | `ambiental.views.consumptionalert_list` | `ambiental/consumptionalert_list.html` | org_pk | — | sí |
 | `consumptionrecord_list` | `/ambiental/<int:org_pk>/consumption/` | pagina | `ambiental.views.consumptionrecord_list` | `ambiental/consumptionrecord_list.html` | org_pk | — | sí |
 | `measurementpoint_list` | `/ambiental/<int:org_pk>/measurement_points/` | pagina | `ambiental.views.measurementpoint_list` | `ambiental/measurementpoint_list.html` | org_pk | — | sí |

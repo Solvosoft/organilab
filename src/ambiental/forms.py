@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from djgentelella.forms.forms import GTForm
@@ -6,9 +7,11 @@ from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets.files import FileChunkedUpload
 from djgentelella.widgets.selects import AutocompleteSelect, AutocompleteSelectMultiple
 
+from ambiental.access import BUILDING_ROLES, BuildingAccess
+from auth_and_perms.models import Rol
 from ambiental.ambiental_defaults import EXTRA_FIELDS, KEY_NORMALIZER, KEY_RESOURCE_TYPE
 from ambiental.models import ConsumptionRecord, MeasurementPoint, NormalizationBase
-from laboratory.models import Catalog, Provider
+from laboratory.models import Catalog, OrganizationStructure, Provider
 from report.forms import ReportBase
 from risk_management.models import Buildings
 
@@ -149,8 +152,11 @@ class AmbientalReportForm(ReportBase):
     def __init__(self, *args, org_pk=None, user=None, **kwargs):
         self.user = user
         super().__init__(*args, **kwargs)
-        if org_pk:
-            self.fields["building"].queryset = Buildings.objects.filter(organization__pk=org_pk)
+        if org_pk and user is not None:
+            organization = OrganizationStructure.objects.get(pk=org_pk)
+            self.fields["building"].queryset = BuildingAccess(user, organization).buildings(
+                "ambiental.view_consumptionrecord"
+            )
 
     def clean_building(self):
         return list(self.cleaned_data["building"].values_list("pk", flat=True))
@@ -203,7 +209,26 @@ class DashboardFilterForm(GTForm, forms.Form):
         label=_("Normalizer"), widget=genwidgets.Select,
     )
 
-    def __init__(self, *args, organization=None, **kwargs):
+    def __init__(self, *args, organization=None, buildings=None, **kwargs):
         super().__init__(*args, **kwargs)
-        if organization is not None:
+        if buildings is not None:
+            self.fields["building"].queryset = buildings
+        elif organization is not None:
             self.fields["building"].queryset = Buildings.objects.filter(organization=organization)
+
+
+class BuildingAccessForm(GTForm, forms.Form):
+    user = forms.ModelChoiceField(
+        queryset=get_user_model().objects.none(), label=_("User"),
+        widget=AutocompleteSelect("ambiental_users", attrs={"data-s2filter-org_pk": "#org"}),
+    )
+    building = forms.ModelChoiceField(
+        queryset=Buildings.objects.none(), label=_("Building"),
+        widget=AutocompleteSelect(
+            "ambiental_buildings", attrs={"data-s2filter-org_pk": "#org", "data-s2filter-perm": "#access_perm"}
+        ),
+    )
+    rol = forms.ModelMultipleChoiceField(
+        queryset=Rol.objects.filter(name__in=BUILDING_ROLES), label=_("Roles"),
+        widget=genwidgets.SelectMultiple,
+    )

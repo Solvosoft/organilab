@@ -56,6 +56,14 @@
 						{% trans 'Consumption alerts' %}</a>
 				</li>
 			{% endif %}
+			{% if perms.ambiental.manage_building_access %}
+				<li>
+					<a href="{% url 'ambiental:building_access_list' org_pk %}"
+						title="{% trans 'Building access' %}">
+						<i class="fa fa-key" aria-hidden="true"></i>
+						{% trans 'Building access' %}</a>
+				</li>
+			{% endif %}
 		</ul>
 	</li>
 {% endif %}

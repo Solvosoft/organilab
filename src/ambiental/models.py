@@ -75,6 +75,9 @@ class MeasurementPoint(AbstractOrganizationRef, DeletedWithTrash):
         verbose_name_plural = _("Measurement points")
         ordering = ["pk"]
         unique_together = ("organization", "code", "resource_type")
+        permissions = [
+            ("manage_building_access", _("Can manage access to buildings")),
+        ]
 
     def __str__(self):
         return "%s - %s" % (self.code, self.name)

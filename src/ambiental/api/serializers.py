@@ -35,14 +35,18 @@ def date_field(**kwargs):
     )
 
 
-def actions_for(user, model_name, extra=None):
-    """Acciones de fila que el datatable de ObjectCRUD muestra u oculta."""
-    actions = {
-        "update": user.has_perm("ambiental.change_%s" % model_name),
-        "destroy": user.has_perm("ambiental.delete_%s" % model_name),
+def actions_for(serializer, model_name, building, extra_perms=None):
+    """Acciones de fila que el datatable muestra u oculta, según el rol en ese edificio."""
+    access = serializer.context.get("building_access")
+    perms = {
+        "update": "ambiental.change_%s" % model_name,
+        "destroy": "ambiental.delete_%s" % model_name,
     }
-    actions.update(extra or {})
-    return actions
+    perms.update(extra_perms or {})
+    if access is None:
+        user = serializer.context["request"].user
+        return {action: user.has_perm(perm) for action, perm in perms.items()}
+    return {action: access.has(perm, building) for action, perm in perms.items()}
 
 
 class DataTableSerializer(serializers.Serializer):
@@ -56,6 +60,13 @@ class OrganizationScopedSerializer(serializers.ModelSerializer):
 
     def get_organization(self):
         return self.context.get("organization")
+
+    def visible_buildings(self, organization, perm):
+        """Edificios que el usuario puede ver: los demás ni se ofrecen ni se aceptan."""
+        access = self.context.get("building_access")
+        if access is None:
+            return Buildings.objects.filter(organization=organization)
+        return access.buildings(perm)
 
     def scope_fields(self, fields, organization):
         pass
@@ -81,7 +92,7 @@ class MeasurementPointSerializer(serializers.ModelSerializer):
     actions = serializers.SerializerMethodField()
 
     def get_actions(self, obj):
-        return actions_for(self.context["request"].user, "measurementpoint")
+        return actions_for(self, "measurementpoint", obj.building_id)
 
     class Meta:
         model = MeasurementPoint
@@ -109,7 +120,7 @@ class MeasurementPointSaveSerializer(OrganizationScopedSerializer):
     )
 
     def scope_fields(self, fields, organization):
-        fields["building"].queryset = Buildings.objects.filter(organization=organization)
+        fields["building"].queryset = self.visible_buildings(organization, "ambiental.view_measurementpoint")
         fields["laboratories"].child_relation.queryset = Laboratory.objects.filter(
             pk__in=organization.get_my_laboratories
         )
@@ -206,7 +217,7 @@ class ConsumptionRecordSerializer(serializers.ModelSerializer):
         return resource_info_payload(obj.point)
 
     def get_actions(self, obj):
-        return actions_for(self.context["request"].user, "consumptionrecord")
+        return actions_for(self, "consumptionrecord", obj.point.building_id)
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
@@ -269,7 +280,10 @@ class ConsumptionRecordSaveSerializer(OrganizationScopedSerializer):
         return fields
 
     def scope_fields(self, fields, organization):
-        fields["point"].queryset = MeasurementPoint.objects.filter(organization=organization)
+        fields["point"].queryset = MeasurementPoint.objects.filter(
+            organization=organization,
+            building__in=self.visible_buildings(organization, "ambiental.view_consumptionrecord"),
+        )
         fields["waste_manager"].queryset = Provider.objects.filter(
             Q(laboratory__in=organization.get_my_laboratories) | Q(laboratory__isnull=True)
         )
@@ -365,7 +379,7 @@ class NormalizationBaseSerializer(serializers.ModelSerializer):
         return _("Manual") if obj.is_manual else _("Preloaded")
 
     def get_actions(self, obj):
-        return actions_for(self.context["request"].user, "normalizationbase")
+        return actions_for(self, "normalizationbase", obj.building_id)
 
     class Meta:
         model = NormalizationBase
@@ -385,7 +399,7 @@ class NormalizationBaseSaveSerializer(OrganizationScopedSerializer):
     value = serializers.DecimalField(max_digits=12, decimal_places=2, min_value=0)
 
     def scope_fields(self, fields, organization):
-        fields["building"].queryset = Buildings.objects.filter(organization=organization)
+        fields["building"].queryset = self.visible_buildings(organization, "ambiental.view_normalizationbase")
 
     def validate(self, attrs):
         lookup = {
@@ -431,8 +445,12 @@ class ConsumptionAlertSerializer(serializers.ModelSerializer):
         return {"id": building.pk, "text": building.name} if building else None
 
     def get_actions(self, obj):
-        user = self.context["request"].user
-        return {"review": not obj.reviewed and user.has_perm("ambiental.review_consumptionalert")}
+        if obj.reviewed:
+            return {"review": False}
+        return actions_for(
+            self, "consumptionalert", obj.point.building_id,
+            extra_perms={"review": "ambiental.review_consumptionalert"},
+        )
 
     class Meta:
         model = ConsumptionAlert

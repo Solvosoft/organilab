@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-16 20:19-0600\n"
+"POT-Creation-Date: 2026-09-16 21:31-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -367,6 +367,15 @@ msgstr "Código de residuo"
 msgid "Manifest number"
 msgstr "Número de manifiesto"
 
+msgid "To move an access, delete it and create a new one."
+msgstr "Para mover un acceso, elimínelo y cree uno nuevo."
+
+msgid "Building access granted"
+msgstr "Acceso al edificio otorgado"
+
+msgid "Building access changed"
+msgstr "Acceso al edificio modificado"
+
 msgid "There is already a measurement point with this code for this resource."
 msgstr "Ya existe un punto de medición con este código para este recurso."
 
@@ -450,6 +459,12 @@ msgstr "Período con el que se compara"
 msgid "Year"
 msgstr "Año"
 
+msgid "User"
+msgstr "Usuario"
+
+msgid "Roles"
+msgstr "Rol"
+
 msgid "Jan"
 msgstr "Ene"
 
@@ -518,6 +533,9 @@ msgstr "Punto de medición"
 
 msgid "Measurement points"
 msgstr "Puntos de medición"
+
+msgid "Can manage access to buildings"
+msgstr "Puede gestionar el acceso a los edificios"
 
 msgid "Import"
 msgstr "Importación"
@@ -676,6 +694,27 @@ msgstr "Costo actual"
 msgid "Delivery date"
 msgstr "Fecha de entrega"
 
+msgid "Building access"
+msgstr "Acceso por edificio"
+
+msgid ""
+"Environmental roles assigned on a specific building. A person only sees and "
+"manages the buildings where they have a role; environmental roles assigned "
+"on the whole organization cover all its buildings."
+msgstr ""
+"Roles ambientales asignados sobre un edificio concreto. Una persona solo ve "
+"y gestiona los edificios donde tiene un rol; los roles ambientales asignados "
+"en toda la organización cubren todos sus edificios."
+
+msgid "Give access to a building"
+msgstr "Dar acceso a un edificio"
+
+msgid "Change roles in the building"
+msgstr "Cambiar roles en el edificio"
+
+msgid "Remove access to the building"
+msgstr "Quitar acceso al edificio"
+
 msgid ""
 "Atypical consumption detected by the alert rules. Review each one and leave "
 "a note that explains it; reviewed alerts stay in the history."
@@ -778,9 +817,6 @@ msgstr "Reporte de residuos y manifiestos"
 
 msgid "Reassigned on user delete"
 msgstr "Reasignado por borrado de usuario"
-
-msgid "Roles"
-msgstr "Rol"
 
 msgid "No roles assigned"
 msgstr "No se asignaron roles"
@@ -894,6 +930,10 @@ msgid "Removed laboratory permission from user '%(user)s'"
 msgstr "Permiso de laboratorio removido del usuario '%(user)s'"
 
 #, python-format
+msgid "Removed building permission from user '%(user)s'"
+msgstr "Se quitó el permiso de edificio al usuario '%(user)s'"
+
+#, python-format
 msgid "Removed organization permission from user '%(user)s'"
 msgstr "Permiso de organización removido del usuario '%(user)s'"
 
@@ -991,9 +1031,6 @@ msgstr "Idioma"
 
 msgid "It will used to login when you want to login with digital signature"
 msgstr "Este campo será usado cuando se autentique con firma digital"
-
-msgid "User"
-msgstr "Usuario"
 
 msgid "Laboratory"
 msgstr "Laboratorio"

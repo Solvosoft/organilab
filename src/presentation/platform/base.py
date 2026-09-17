@@ -1,17 +1,35 @@
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
 from djgentelella.history.utils import add_log
 from djgentelella.permission_management import AllPermissionByAction
 from rest_framework import viewsets
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 
-from auth_and_perms.organization_utils import user_is_allowed_on_organization
+from auth_and_perms.organization_utils import organization_permissions, user_is_allowed_on_organization
 from laboratory.models import OrganizationStructure
 
-__all__ = ["ADDITION", "CHANGE", "DELETION", "RegistryViewSet"]
+__all__ = ["ADDITION", "CHANGE", "DELETION", "OrganizationPermissionMixin", "RegistryViewSet"]
 
 
-class RegistryViewSet(viewsets.ViewSet):
+class OrganizationPermissionMixin:
+    """Exige que los permisos de la acción vengan de un rol **de la organización**.
+
+    ``ProfileMiddleware`` también suma roles de laboratorio y de edificio; con ellos se
+    entra a las pantallas de un edificio, pero no se cambia la configuración de toda la
+    organización (parámetros, correos, reglas de alerta).
+    """
+
+    def initial(self, request, *args, **kwargs):
+        super().initial(request, *args, **kwargs)
+        perms = (getattr(self, "perms", {}) or {}).get(self.action) or []
+        organization = self.get_organization()
+        available = organization_permissions(request.user, organization)
+        if any(perm not in available for perm in perms):
+            raise PermissionDenied
+
+
+class RegistryViewSet(OrganizationPermissionMixin, viewsets.ViewSet):
     """Base de las APIs cuyas filas salen de un registro en código, no de una tabla.
 
     Parámetros y notificaciones listan lo que el código declara (``PARAMETERS``, los
