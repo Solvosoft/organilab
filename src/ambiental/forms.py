@@ -183,3 +183,27 @@ class ComparisonReportForm(AmbientalReportForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["period"].required = True
+
+
+class DashboardFilterForm(GTForm, forms.Form):
+    year = forms.IntegerField(
+        required=False, min_value=1900, max_value=2200, label=_("Year"),
+        widget=genwidgets.NumberInput,
+    )
+    building = forms.ModelChoiceField(
+        queryset=Buildings.objects.none(), required=False, label=_("Building"),
+        widget=genwidgets.Select,
+    )
+    resource_type = forms.ModelChoiceField(
+        queryset=Catalog.objects.filter(key=KEY_RESOURCE_TYPE), required=False,
+        label=_("Resource type"), widget=genwidgets.Select,
+    )
+    normalizer = forms.ModelChoiceField(
+        queryset=Catalog.objects.filter(key=KEY_NORMALIZER), required=False,
+        label=_("Normalizer"), widget=genwidgets.Select,
+    )
+
+    def __init__(self, *args, organization=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if organization is not None:
+            self.fields["building"].queryset = Buildings.objects.filter(organization=organization)

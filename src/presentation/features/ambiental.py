@@ -136,4 +136,26 @@ FEATURES = (
             ),
         ),
     ),
+    Feature(
+        id="AMB-06",
+        name="Ver el panel ambiental del año",
+        module="ambiental",
+        kind="ui",
+        description=(
+            "Tarjetas con el último mes de cada recurso contra el anterior, consumo y costo "
+            "mensuales y el ranking de edificios por indicador, filtrables por año, "
+            "edificio, recurso y normalizador."
+        ),
+        priority="P3",
+        steps=(
+            Step(
+                id="panel",
+                name="Abrir el panel y filtrarlo",
+                actors=CONSULTA_AMBIENTAL,
+                routes=("ambiental:ambiental_dashboard",),
+                permissions=("ambiental.view_ambiental_dashboard",),
+                source="src/ambiental/views.py AmbientalDashboard, src/ambiental/gtcharts.py",
+            ),
+        ),
+    ),
 )

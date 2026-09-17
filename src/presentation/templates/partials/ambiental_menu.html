@@ -8,6 +8,14 @@
 			<span class="fa fa-chevron-down"></span>
 		</a>
 		<ul class="nav child_menu">
+			{% if perms.ambiental.view_ambiental_dashboard %}
+				<li>
+					<a href="{% url 'ambiental:ambiental_dashboard' org_pk %}"
+						title="{% trans 'Environmental dashboard' %}">
+						<i class="fa fa-line-chart" aria-hidden="true"></i>
+						{% trans 'Environmental dashboard' %}</a>
+				</li>
+			{% endif %}
 			{% if perms.ambiental.view_consumptionrecord %}
 				<li>
 					<a href="{% url 'ambiental:consumptionrecord_list' org_pk %}"

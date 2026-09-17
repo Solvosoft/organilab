@@ -102,3 +102,56 @@ class IndicatorTest(ReportTestCase):
                 with self.subTest(report=name, rol=rol_name):
                     response = self.client.get(reverse("ambiental:" + name, kwargs={"org_pk": self.organization.pk}))
                     self.assertEqual(response.status_code, 200)
+
+
+class DashboardTest(ReportTestCase):
+
+    def chart(self, basename, organization=None, **params):
+        organization = organization or self.organization
+        params.setdefault("org_pk", organization.pk)
+        return self.client.get(
+            reverse(basename + "-detail", kwargs={"pk": organization.pk}), params
+        )
+
+    def test_dashboard_renders_cards_for_each_role(self):
+        for rol_name in ("Administrador ambiental", "Encargado de registro ambiental", "Analista ambiental"):
+            user = self.make_user("d_" + rol_name.split()[0], self.organization, rol_name)
+            self.client.force_login(user)
+            with self.subTest(rol=rol_name):
+                response = self.client.get(
+                    reverse("ambiental:ambiental_dashboard", kwargs={"org_pk": self.organization.pk}),
+                    {"year": 2026},
+                )
+                self.assertEqual(response.status_code, 200)
+                cards = {card["resource"]: card for card in response.context["cards"]}
+                self.assertEqual(cards["Agua"]["quantity"], Decimal("45"))
+                self.assertEqual(cards["Agua"]["percent"], Decimal("50.00"))
+
+    def test_monthly_consumption_chart(self):
+        data = self.chart("ambientalmonthlyconsumptionchart", year=2026).json()
+        self.assertEqual(len(data["data"]["labels"]), 12)
+        series = {dataset["label"]: dataset["data"] for dataset in data["data"]["datasets"]}
+        self.assertEqual(series["Agua m³"][:2], [30.0, 45.0])
+
+    def test_cost_chart_filters_by_building(self):
+        data = self.chart("ambientalmonthlycostchart", year=2026, building=self.building.pk).json()
+        series = {dataset["label"]: dataset["data"] for dataset in data["data"]["datasets"]}
+        self.assertEqual(series["Electricidad"][0], 120000.0)
+
+    def test_ranking_chart(self):
+        person = Catalog.objects.get(key=KEY_NORMALIZER, description=NORMALIZER_PERSON)
+        NormalizationBase.objects.create(
+            organization=self.organization, building=self.building, normalizer=person,
+            year=2026, value=Decimal("15"),
+        )
+        data = self.chart("ambientalbuildingrankingchart", year=2026).json()
+        self.assertEqual(data["data"]["labels"], ["Edificio A"])
+        self.assertEqual(data["data"]["datasets"][0]["data"], [5.0])
+
+    def test_chart_of_other_organization_is_denied(self):
+        response = self.chart("ambientalmonthlyconsumptionchart", organization=self.other_organization)
+        self.assertIn(response.status_code, (403, 404))
+
+    def test_building_of_other_organization_is_404(self):
+        response = self.chart("ambientalmonthlycostchart", building=self.other_building.pk)
+        self.assertEqual(response.status_code, 404)

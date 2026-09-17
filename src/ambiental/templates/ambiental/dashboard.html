@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load i18n gtsettings urlname_tags %}
+
+{% block pre_head %}
+	{% define_true "use_chartjs" %}
+	{% define_urlname_action 'ambiental_dashboard' %}
+{% endblock %}
+
+{% block title %}{% trans 'Environmental dashboard' %}{% endblock %}
+{% block content %}
+	<input type="hidden" value="{{ org_pk }}" id="org">
+	<div class="row">
+		<div class="col-12 text-center">
+			<h1>{% trans 'Environmental dashboard' %} {{ year }}</h1>
+		</div>
+	</div>
+	<div class="card mb-3">
+		<div class="card-body">
+			<form method="get" class="row">
+				<div class="col-md-10">{{ form.as_inline }}</div>
+				<div class="col-md-2 d-flex align-items-end">
+					<button type="submit" class="btn btn-outline-primary w-100">{% trans 'Filter' %}</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<div class="row">
+		{% for card in cards %}
+			<div class="col-md-3 mb-3">
+				<div class="card h-100">
+					<div class="card-body">
+						<h5 class="card-title"><i class="fa {{ card.icon }}" aria-hidden="true"></i> {{ card.resource }}</h5>
+						<p class="text-muted mb-1">{{ card.month|date:"F Y" }}</p>
+						{% if card.mixed_units %}
+							<p class="mb-1">{% trans 'Mixed units' %}</p>
+						{% else %}
+							<p class="h4 mb-1">{{ card.quantity|floatformat:"-2" }} {{ card.unit }}</p>
+						{% endif %}
+						{% if card.percent is not None %}
+							<p class="mb-1 {% if card.percent > 0 %}text-danger{% else %}text-success{% endif %}">
+								<i class="fa {% if card.percent > 0 %}fa-arrow-up{% else %}fa-arrow-down{% endif %}" aria-hidden="true"></i>
+								{{ card.percent|floatformat:"-2" }} % {% trans 'vs. previous month' %}
+							</p>
+						{% endif %}
+						{% if card.cost is not None %}
+							<p class="mb-0">{% trans 'Cost' %}: {{ card.cost|floatformat:"-2" }}</p>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+		{% empty %}
+			<div class="col-12">
+				<div class="alert alert-info">{% trans 'There are no consumption records for this year.' %}</div>
+			</div>
+		{% endfor %}
+	</div>
+
+	<div class="row">
+		<div class="col-md-6 mb-4">
+			<div class="card"><div class="card-header">{% trans 'Monthly consumption' %}</div>
+				<div class="card-body">
+					{% include 'gentelella/widgets/chartjs.html' with graph_url=consumption_chart %}
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6 mb-4">
+			<div class="card"><div class="card-header">{% trans 'Monthly cost by resource' %}</div>
+				<div class="card-body">
+					{% include 'gentelella/widgets/chartjs.html' with graph_url=cost_chart %}
+				</div>
+			</div>
+		</div>
+		<div class="col-md-12 mb-4">
+			<div class="card"><div class="card-header">{% trans 'Buildings ranking' %}</div>
+				<div class="card-body">
+					{% include 'gentelella/widgets/chartjs.html' with graph_url=ranking_chart %}
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

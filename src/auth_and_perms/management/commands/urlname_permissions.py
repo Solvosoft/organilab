@@ -3593,6 +3593,13 @@ URLNAME_PERMISSIONS = {
             "permission": "ambiental.view_consumptionrecord",
         },
     ],
+    "ambiental_dashboard": [
+        {
+            "name": "View environmental dashboard",
+            "category": "Ambiental",
+            "permission": "ambiental.view_ambiental_dashboard",
+        },
+    ],
     # La papelera es de la biblioteca: sus permisos viven en djgentelella,
     # no en laboratory. update_roles.update_papelera() ya se los da a los
     # roles fijos; esto es lo que permite configurarlos por organización.

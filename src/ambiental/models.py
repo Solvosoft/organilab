@@ -168,6 +168,9 @@ class ConsumptionRecord(AbstractOrganizationRef, DeletedWithTrash):
         verbose_name_plural = _("Consumption records")
         ordering = ["-period_end", "pk"]
         unique_together = ("point", "period_start", "period_end")
+        permissions = [
+            ("view_ambiental_dashboard", _("Can view the environmental dashboard")),
+        ]
         indexes = [
             models.Index(fields=["organization", "period_start"]),
             models.Index(fields=["point", "period_start"]),

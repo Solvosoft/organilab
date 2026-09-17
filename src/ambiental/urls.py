@@ -60,5 +60,6 @@ urlpatterns = [
         ),
         name="report_consumption_comparison",
     ),
+    path("dashboard/", views.AmbientalDashboard.as_view(), name="ambiental_dashboard"),
     path("api/", include(router.urls)),
 ]

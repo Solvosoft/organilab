@@ -10,22 +10,22 @@ el resto se cubre con pruebas de cliente o unitarias.
 
 | Categoría | Rutas |
 |---|---:|
-| `pagina` | 184 |
+| `pagina` | 185 |
 | `parcial` | 4 |
-| `api` | 737 |
+| `api` | 743 |
 | `autocomplete` | 6 |
 | `ajax` | 10 |
 | `json` | 45 |
 | `descarga` | 18 |
 | `accion` | 29 |
 | `infra` | 701 |
-| **total** | **1734** |
+| **total** | **1741** |
 
-Páginas: 184, de las cuales **65 sin ninguna prueba**.
+Páginas: 185, de las cuales **65 sin ninguna prueba**.
 
 ## Rutas por app
 
-Se omiten las categorías `api` e `infra` (1438 rutas de routers DRF y de
+Se omiten las categorías `api` e `infra` (1444 rutas de routers DRF y de
 la administración de Django): están en `inventario_urls.csv`.
 
 ### academic — 9 páginas, 0 sin prueba
@@ -48,10 +48,11 @@ la administración de Django): están en `inventario_urls.csv`.
 | `procedure_update` | `/academic/<int:org_pk>/procedure/procedure_update/<int:pk>/` | pagina | `academic.views.ProcedureUpdateView` | `academic/procedure_create.html` | org_pk, pk | — | sí |
 | `update_step` | `/academic/<int:org_pk>/procedure/step/<int:pk>/update/` | pagina | `academic.views.ProcedureStepUpdateView` | `academic/procedure_steps.html` | org_pk, pk | — | sí |
 
-### ambiental — 8 páginas, 5 sin prueba
+### ambiental — 9 páginas, 5 sin prueba
 
 | Nombre | Patrón | Categoría | Vista | Plantilla | kwargs | Selenium | Pruebas |
 |---|---|---|---|---|---|:-:|:-:|
+| `ambiental_dashboard` | `/ambiental/<int:org_pk>/dashboard/` | pagina | `ambiental.views.AmbientalDashboard` | `ambiental/dashboard.html` | org_pk | — | sí |
 | `consumptionrecord_list` | `/ambiental/<int:org_pk>/consumption/` | pagina | `ambiental.views.consumptionrecord_list` | `ambiental/consumptionrecord_list.html` | org_pk | — | sí |
 | `measurementpoint_list` | `/ambiental/<int:org_pk>/measurement_points/` | pagina | `ambiental.views.measurementpoint_list` | `ambiental/measurementpoint_list.html` | org_pk | — | sí |
 | `normalizationbase_list` | `/ambiental/<int:org_pk>/normalization_bases/` | pagina | `ambiental.views.normalizationbase_list` | `ambiental/normalizationbase_list.html` | org_pk | — | sí |

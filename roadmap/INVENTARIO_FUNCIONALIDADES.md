@@ -15,7 +15,7 @@ con ese rol.
 
 | Métrica | Valor |
 |---|---:|
-| Funcionalidades catalogadas | 49 |
+| Funcionalidades catalogadas | 50 |
 | Sin ninguna prueba | 13 |
 | Rutas navegables huérfanas | 0 |
 | Apps pendientes de catalogar | 2 |
@@ -115,6 +115,16 @@ El consumo dividido por los m² o las personas del edificio, con la base y el to
 | Paso | Actores | Permiso | Transición | Rutas |
 |---|---|---|---|---|
 | **Pedir el reporte de indicadores o el de comparación entre períodos** | Administrador ambiental, Administrativo superior, Encargado de registro ambiental, Analista ambiental | `ambiental.view_consumptionrecord`<br>`laboratory.do_report` | — | `ambiental:report_environmental_indicators`<br>`ambiental:report_consumption_comparison` |
+
+### `AMB-06` — Ver el panel ambiental del año
+
+*ambiental · ui · prioridad P3 · cobertura por ruta: completa · Selenium: —*
+
+Tarjetas con el último mes de cada recurso contra el anterior, consumo y costo mensuales y el ranking de edificios por indicador, filtrables por año, edificio, recurso y normalizador.
+
+| Paso | Actores | Permiso | Transición | Rutas |
+|---|---|---|---|---|
+| **Abrir el panel y filtrarlo** | Administrador ambiental, Administrativo superior, Encargado de registro ambiental, Analista ambiental | `ambiental.view_ambiental_dashboard` | — | `ambiental:ambiental_dashboard` |
 
 ### `ORG-01` — Elegir organización y orientarse en el árbol
 
