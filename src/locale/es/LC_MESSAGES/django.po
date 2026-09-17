@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-16 17:44-0600\n"
+"POT-Creation-Date: 2026-09-16 18:25-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -405,6 +405,72 @@ msgstr "Gestión ambiental"
 msgid "Building"
 msgstr "Edificio"
 
+msgid "Buildings"
+msgstr "Edificios"
+
+msgid "Resource type"
+msgstr "Tipo de recurso"
+
+msgid "Period"
+msgstr "PerÍodo"
+
+msgid "Normalizer"
+msgstr "Normalizador"
+
+msgid "Period to compare with"
+msgstr "Período con el que se compara"
+
+msgid "Year"
+msgstr "Año"
+
+msgid "Jan"
+msgstr "Ene"
+
+msgid "Feb"
+msgstr "Feb"
+
+msgid "Mar"
+msgstr "Mar"
+
+msgid "Apr"
+msgstr "Abr"
+
+msgid "May"
+msgstr "Mayo"
+
+msgid "Jun"
+msgstr "Jun"
+
+msgid "Jul"
+msgstr "Jul"
+
+msgid "Aug"
+msgstr "Ago"
+
+msgid "Sep"
+msgstr "Sep"
+
+msgid "Oct"
+msgstr "Oct"
+
+msgid "Nov"
+msgstr "Nov"
+
+msgid "Dec"
+msgstr "Dic"
+
+msgid "Monthly consumption"
+msgstr "Consumo mensual"
+
+msgid "Monthly cost by resource"
+msgstr "Costo mensual por recurso"
+
+msgid "Buildings ranking"
+msgstr "Ranking de edificios"
+
+msgid "Indicator"
+msgstr "Indicador"
+
 msgid "Code"
 msgstr "Código"
 
@@ -413,9 +479,6 @@ msgstr "Número de medidor o de servicio, como aparece en el recibo"
 
 msgid "Point type"
 msgstr "Tipo de punto"
-
-msgid "Resource type"
-msgstr "Tipo de recurso"
 
 msgid "Laboratories"
 msgstr "Laboratorios"
@@ -477,15 +540,12 @@ msgstr "Registro de consumo"
 msgid "Consumption records"
 msgstr "Registros de consumo"
 
+msgid "Can view the environmental dashboard"
+msgstr "Puede ver el panel ambiental"
+
 #, python-format
 msgid "Fields not allowed for this resource: %(fields)s"
 msgstr "Campos no permitidos para este recurso: %(fields)s"
-
-msgid "Normalizer"
-msgstr "Normalizador"
-
-msgid "Year"
-msgstr "Año"
 
 msgid "Value"
 msgstr "Valor"
@@ -505,6 +565,67 @@ msgstr "Bases de normalización"
 msgid "Can preload normalization bases"
 msgstr "Puede precargar bases de normalización"
 
+msgid "Registered by"
+msgstr "Registrado por"
+
+msgid "Yes"
+msgstr "Si"
+
+msgid "No"
+msgstr "No"
+
+msgid "Month"
+msgstr "Mes"
+
+msgid "Average unit cost"
+msgstr "Costo unitario promedio"
+
+msgid "Consumption"
+msgstr "Consumo"
+
+msgid "Base"
+msgstr "Base"
+
+msgid "Base year"
+msgstr "Año de la base"
+
+msgid "Mixed units"
+msgstr "Unidades mezcladas"
+
+msgid "No base"
+msgstr "Sin base"
+
+msgid "Previous period"
+msgstr "Período anterior"
+
+msgid "Current period"
+msgstr "Período actual"
+
+msgid "Absolute variation"
+msgstr "Variación absoluta"
+
+msgid "Variation (%)"
+msgstr "Variación (%)"
+
+msgid "Previous cost"
+msgstr "Costo anterior"
+
+msgid "Current cost"
+msgstr "Costo actual"
+
+msgid "Delivery date"
+msgstr "Fecha de entrega"
+
+msgid "Waste records"
+msgstr "Registros de residuos"
+
+msgid ""
+"Choose a building to see and record the waste delivered from its collection "
+"points, with treatment, authorized manager and manifest."
+msgstr ""
+"Elija un edificio para ver y registrar los residuos entregados desde sus "
+"puntos de acopio, con tratamiento, gestor autorizado y manifiesto."
+
 msgid ""
 "Choose a building to see and record the consumption of its measurement "
 "points."
@@ -519,6 +640,21 @@ msgstr "Actualizar registro de consumo"
 
 msgid "Delete consumption record"
 msgstr "Eliminar registro de consumo"
+
+msgid "Environmental dashboard"
+msgstr "Panel ambiental"
+
+msgid "Filter"
+msgstr "Filtrar"
+
+msgid "vs. previous month"
+msgstr "vs. mes anterior"
+
+msgid "Cost"
+msgstr "Costo"
+
+msgid "There are no consumption records for this year."
+msgstr "No hay registros de consumo para este año."
 
 msgid ""
 "Meters, tanks and collection points of each building. Consumption is "
@@ -552,11 +688,26 @@ msgstr "Actualizar base de normalización"
 msgid "Delete normalization base"
 msgstr "Eliminar base de normalización"
 
+msgid "Consumption detail report"
+msgstr "Reporte detallado de consumos"
+
+msgid "Consumption summary report"
+msgstr "Reporte consolidado de consumos"
+
+msgid "Consumption cost report"
+msgstr "Reporte de costos de consumo"
+
+msgid "Environmental indicators report"
+msgstr "Reporte de indicadores ambientales"
+
+msgid "Consumption comparison report"
+msgstr "Reporte comparativo de consumos"
+
+msgid "Waste and manifests report"
+msgstr "Reporte de residuos y manifiestos"
+
 msgid "Reassigned on user delete"
 msgstr "Reasignado por borrado de usuario"
-
-msgid "Yes"
-msgstr "Si"
 
 msgid "Roles"
 msgstr "Rol"
@@ -2482,9 +2633,6 @@ msgstr "Marzo"
 msgid "April"
 msgstr "Abril"
 
-msgid "May"
-msgstr "Mayo"
-
 msgid "June"
 msgstr "Junio"
 
@@ -3077,9 +3225,6 @@ msgstr "Solicitudes de laboratorio u organización"
 msgid "Substance laboratory"
 msgstr "Observación de sustancia"
 
-msgid "Month"
-msgstr "Mes"
-
 #, fuzzy
 #| msgid "Country"
 msgid "Counter"
@@ -3094,9 +3239,6 @@ msgstr "Garantía de objeto en estante"
 #| msgid "Shelf objects"
 msgid "Shelf object code counters"
 msgstr "Estante de los objetos"
-
-msgid "No"
-msgstr "No"
 
 msgid "Product added successful"
 msgstr "Producto Agregado exitosamente"
@@ -4106,9 +4248,6 @@ msgstr "Eliminar características de objetos"
 
 msgid "Stats"
 msgstr "Estadísticas"
-
-msgid "Filter"
-msgstr "Filtrar"
 
 msgid "Delete object"
 msgstr "Borrar objeto"
@@ -5877,9 +6016,6 @@ msgstr "Si deseas delimitar la consulta selecciona muebles (Opcional)"
 msgid "Filter Furniture"
 msgstr "Filtrar mueble"
 
-msgid "Period"
-msgstr "PerÍodo"
-
 msgid "Resume"
 msgstr "Resumen"
 
@@ -5902,9 +6038,6 @@ msgstr "Mueble no permitido"
 
 msgid "Task report doesn't exists"
 msgstr "Tarea de reporte no existe"
-
-msgid "Buildings"
-msgstr "Edificios"
 
 msgid "Delivered"
 msgstr "Entregado"

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-16 17:44-0600\n"
+"POT-Creation-Date: 2026-09-16 18:25-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -389,6 +389,72 @@ msgstr ""
 msgid "Building"
 msgstr ""
 
+msgid "Buildings"
+msgstr ""
+
+msgid "Resource type"
+msgstr ""
+
+msgid "Period"
+msgstr ""
+
+msgid "Normalizer"
+msgstr ""
+
+msgid "Period to compare with"
+msgstr ""
+
+msgid "Year"
+msgstr ""
+
+msgid "Jan"
+msgstr ""
+
+msgid "Feb"
+msgstr ""
+
+msgid "Mar"
+msgstr ""
+
+msgid "Apr"
+msgstr ""
+
+msgid "May"
+msgstr ""
+
+msgid "Jun"
+msgstr ""
+
+msgid "Jul"
+msgstr ""
+
+msgid "Aug"
+msgstr ""
+
+msgid "Sep"
+msgstr ""
+
+msgid "Oct"
+msgstr ""
+
+msgid "Nov"
+msgstr ""
+
+msgid "Dec"
+msgstr ""
+
+msgid "Monthly consumption"
+msgstr ""
+
+msgid "Monthly cost by resource"
+msgstr ""
+
+msgid "Buildings ranking"
+msgstr ""
+
+msgid "Indicator"
+msgstr ""
+
 msgid "Code"
 msgstr ""
 
@@ -396,9 +462,6 @@ msgid "Meter or service number, as it appears on the bill"
 msgstr ""
 
 msgid "Point type"
-msgstr ""
-
-msgid "Resource type"
 msgstr ""
 
 msgid "Laboratories"
@@ -461,14 +524,11 @@ msgstr ""
 msgid "Consumption records"
 msgstr ""
 
+msgid "Can view the environmental dashboard"
+msgstr ""
+
 #, python-format
 msgid "Fields not allowed for this resource: %(fields)s"
-msgstr ""
-
-msgid "Normalizer"
-msgstr ""
-
-msgid "Year"
 msgstr ""
 
 msgid "Value"
@@ -489,6 +549,65 @@ msgstr ""
 msgid "Can preload normalization bases"
 msgstr ""
 
+msgid "Registered by"
+msgstr ""
+
+msgid "Yes"
+msgstr ""
+
+msgid "No"
+msgstr ""
+
+msgid "Month"
+msgstr ""
+
+msgid "Average unit cost"
+msgstr ""
+
+msgid "Consumption"
+msgstr ""
+
+msgid "Base"
+msgstr ""
+
+msgid "Base year"
+msgstr ""
+
+msgid "Mixed units"
+msgstr ""
+
+msgid "No base"
+msgstr ""
+
+msgid "Previous period"
+msgstr ""
+
+msgid "Current period"
+msgstr ""
+
+msgid "Absolute variation"
+msgstr ""
+
+msgid "Variation (%)"
+msgstr ""
+
+msgid "Previous cost"
+msgstr ""
+
+msgid "Current cost"
+msgstr ""
+
+msgid "Delivery date"
+msgstr ""
+
+msgid "Waste records"
+msgstr ""
+
+msgid ""
+"Choose a building to see and record the waste delivered from its collection "
+"points, with treatment, authorized manager and manifest."
+msgstr ""
+
 msgid ""
 "Choose a building to see and record the consumption of its measurement "
 "points."
@@ -501,6 +620,21 @@ msgid "Update consumption record"
 msgstr ""
 
 msgid "Delete consumption record"
+msgstr ""
+
+msgid "Environmental dashboard"
+msgstr ""
+
+msgid "Filter"
+msgstr ""
+
+msgid "vs. previous month"
+msgstr ""
+
+msgid "Cost"
+msgstr ""
+
+msgid "There are no consumption records for this year."
 msgstr ""
 
 msgid ""
@@ -531,10 +665,25 @@ msgstr ""
 msgid "Delete normalization base"
 msgstr ""
 
-msgid "Reassigned on user delete"
+msgid "Consumption detail report"
 msgstr ""
 
-msgid "Yes"
+msgid "Consumption summary report"
+msgstr ""
+
+msgid "Consumption cost report"
+msgstr ""
+
+msgid "Environmental indicators report"
+msgstr ""
+
+msgid "Consumption comparison report"
+msgstr ""
+
+msgid "Waste and manifests report"
+msgstr ""
+
+msgid "Reassigned on user delete"
 msgstr ""
 
 msgid "Roles"
@@ -2318,9 +2467,6 @@ msgstr ""
 msgid "April"
 msgstr ""
 
-msgid "May"
-msgstr ""
-
 msgid "June"
 msgstr ""
 
@@ -2888,9 +3034,6 @@ msgstr ""
 msgid "Substance laboratory"
 msgstr ""
 
-msgid "Month"
-msgstr ""
-
 msgid "Counter"
 msgstr ""
 
@@ -2898,9 +3041,6 @@ msgid "Shelf object code counter"
 msgstr ""
 
 msgid "Shelf object code counters"
-msgstr ""
-
-msgid "No"
 msgstr ""
 
 msgid "Product added successful"
@@ -3814,9 +3954,6 @@ msgid "Delete Object Feature"
 msgstr ""
 
 msgid "Stats"
-msgstr ""
-
-msgid "Filter"
 msgstr ""
 
 msgid "Delete object"
@@ -5425,9 +5562,6 @@ msgstr ""
 msgid "Filter Furniture"
 msgstr ""
 
-msgid "Period"
-msgstr ""
-
 msgid "Resume"
 msgstr ""
 
@@ -5447,9 +5581,6 @@ msgid "Furniture is not allowed"
 msgstr ""
 
 msgid "Task report doesn't exists"
-msgstr ""
-
-msgid "Buildings"
 msgstr ""
 
 msgid "Delivered"
