@@ -51,6 +51,18 @@
 						<i class="fa fa-money" aria-hidden="true"></i>
 						{% trans 'Consumption cost report' %}</a>
 				</li>
+				<li>
+					<a href="{% url 'ambiental:report_environmental_indicators' org_pk %}"
+						title="{% trans 'Environmental indicators report' %}">
+						<i class="fa fa-percent" aria-hidden="true"></i>
+						{% trans 'Environmental indicators report' %}</a>
+				</li>
+				<li>
+					<a href="{% url 'ambiental:report_consumption_comparison' org_pk %}"
+						title="{% trans 'Consumption comparison report' %}">
+						<i class="fa fa-exchange" aria-hidden="true"></i>
+						{% trans 'Consumption comparison report' %}</a>
+				</li>
 			{% endif %}
 		</ul>
 	</li>

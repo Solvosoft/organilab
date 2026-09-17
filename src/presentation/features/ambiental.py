@@ -112,4 +112,28 @@ FEATURES = (
             ),
         ),
     ),
+    Feature(
+        id="AMB-05",
+        name="Comparar edificios y períodos con indicadores normalizados",
+        module="ambiental",
+        kind="ui",
+        description=(
+            "El consumo dividido por los m² o las personas del edificio, con la base y el "
+            "total crudo a la vista para que el número sea auditable, y la comparación de "
+            "un período contra otro con variación absoluta y porcentual. Unidades mezcladas "
+            "en un mismo recurso no se suman: se marcan."
+        ),
+        priority="P2",
+        steps=(
+            Step(
+                id="indicadores",
+                name="Pedir el reporte de indicadores o el de comparación entre períodos",
+                actors=CONSULTA_AMBIENTAL,
+                routes=("ambiental:report_environmental_indicators",
+                        "ambiental:report_consumption_comparison"),
+                permissions=("ambiental.view_consumptionrecord", "laboratory.do_report"),
+                source="src/ambiental/indicators.py, src/ambiental/reports.py",
+            ),
+        ),
+    ),
 )

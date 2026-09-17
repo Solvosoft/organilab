@@ -15,6 +15,7 @@
     "AMB-02/registrar_consumo": "ejercitado",
     "AMB-03/gestionar_bases": "ejercitado",
     "AMB-04/reportes_consumo": "ejercitado",
+    "AMB-05/indicadores": "ejercitado",
     "DERB-01/borrar": "solo superusuario",
     "DERB-01/crear": "solo superusuario",
     "DERB-01/editar": "solo superusuario",
@@ -176,13 +177,14 @@
     "SGA-05/recipientes": "solo superusuario",
     "TASK-01/ver_bandeja": "solo superusuario"
   },
-  "peticiones_observadas": 4965,
+  "peticiones_observadas": 4971,
   "roles_ejercitados": {
     "administrador_ambiental": [
       "AMB-01/gestionar_puntos",
       "AMB-02/registrar_consumo",
       "AMB-03/gestionar_bases",
-      "AMB-04/reportes_consumo"
+      "AMB-04/reportes_consumo",
+      "AMB-05/indicadores"
     ],
     "administrador_laboratorio": [
       "LAB-03/mis_labs",
@@ -196,7 +198,8 @@
       "AMB-01/gestionar_puntos",
       "AMB-02/registrar_consumo",
       "AMB-03/gestionar_bases",
-      "AMB-04/reportes_consumo"
+      "AMB-04/reportes_consumo",
+      "AMB-05/indicadores"
     ],
     "estudiante": [
       "LAB-03/mis_labs"
@@ -209,7 +212,8 @@
       "AMB-01/gestionar_puntos",
       "AMB-02/registrar_consumo",
       "AMB-03/gestionar_bases",
-      "AMB-04/reportes_consumo"
+      "AMB-04/reportes_consumo",
+      "AMB-05/indicadores"
     ]
   },
   "roles_nunca_ejercitados": [

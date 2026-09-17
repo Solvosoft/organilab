@@ -1,7 +1,7 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from ambiental import views
+from ambiental import forms, views
 from ambiental.api import viewsets
 
 router = DefaultRouter()
@@ -45,6 +45,20 @@ urlpatterns = [
         "reports/consumption_cost/",
         views.AmbientalReportView.as_view(report_name="report_consumption_cost"),
         name="report_consumption_cost",
+    ),
+    path(
+        "reports/environmental_indicators/",
+        views.AmbientalReportView.as_view(
+            report_name="report_environmental_indicators", form_class=forms.IndicatorReportForm
+        ),
+        name="report_environmental_indicators",
+    ),
+    path(
+        "reports/consumption_comparison/",
+        views.AmbientalReportView.as_view(
+            report_name="report_consumption_comparison", form_class=forms.ComparisonReportForm
+        ),
+        name="report_consumption_comparison",
     ),
     path("api/", include(router.urls)),
 ]

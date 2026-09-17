@@ -15,8 +15,8 @@ con ese rol.
 
 | Métrica | Valor |
 |---|---:|
-| Funcionalidades catalogadas | 48 |
-| Sin ninguna prueba | 12 |
+| Funcionalidades catalogadas | 49 |
+| Sin ninguna prueba | 13 |
 | Rutas navegables huérfanas | 0 |
 | Apps pendientes de catalogar | 2 |
 | Roles canónicos | 21 |
@@ -105,6 +105,16 @@ Los reportes de consumo por edificio, recurso y período, en pantalla, PDF u hoj
 | Paso | Actores | Permiso | Transición | Rutas |
 |---|---|---|---|---|
 | **Pedir el reporte de detalle, consolidado o costos** | Administrador ambiental, Administrativo superior, Encargado de registro ambiental, Analista ambiental | `ambiental.view_consumptionrecord`<br>`laboratory.do_report` | — | `ambiental:report_consumption_detail`<br>`ambiental:report_consumption_summary`<br>`ambiental:report_consumption_cost` |
+
+### `AMB-05` — Comparar edificios y períodos con indicadores normalizados
+
+*ambiental · ui · prioridad P2 · cobertura por ruta: **sin prueba** · Selenium: —*
+
+El consumo dividido por los m² o las personas del edificio, con la base y el total crudo a la vista para que el número sea auditable, y la comparación de un período contra otro con variación absoluta y porcentual. Unidades mezcladas en un mismo recurso no se suman: se marcan.
+
+| Paso | Actores | Permiso | Transición | Rutas |
+|---|---|---|---|---|
+| **Pedir el reporte de indicadores o el de comparación entre períodos** | Administrador ambiental, Administrativo superior, Encargado de registro ambiental, Analista ambiental | `ambiental.view_consumptionrecord`<br>`laboratory.do_report` | — | `ambiental:report_environmental_indicators`<br>`ambiental:report_consumption_comparison` |
 
 ### `ORG-01` — Elegir organización y orientarse en el árbol
 

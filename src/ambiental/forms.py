@@ -6,7 +6,7 @@ from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets.files import FileChunkedUpload
 from djgentelella.widgets.selects import AutocompleteSelect, AutocompleteSelectMultiple
 
-from ambiental.ambiental_defaults import EXTRA_FIELDS, KEY_RESOURCE_TYPE
+from ambiental.ambiental_defaults import EXTRA_FIELDS, KEY_NORMALIZER, KEY_RESOURCE_TYPE
 from ambiental.models import ConsumptionRecord, MeasurementPoint, NormalizationBase
 from laboratory.models import Catalog, Provider
 from report.forms import ReportBase
@@ -157,3 +157,29 @@ class AmbientalReportForm(ReportBase):
 
     def clean_resource_type(self):
         return list(self.cleaned_data["resource_type"].values_list("pk", flat=True))
+
+
+class IndicatorReportForm(AmbientalReportForm):
+    normalizer = forms.ModelMultipleChoiceField(
+        queryset=Catalog.objects.filter(key=KEY_NORMALIZER),
+        required=False,
+        label=_("Normalizer"),
+        widget=genwidgets.SelectMultiple,
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["period"].required = True
+
+    def clean_normalizer(self):
+        return list(self.cleaned_data["normalizer"].values_list("pk", flat=True))
+
+
+class ComparisonReportForm(AmbientalReportForm):
+    comparison_period = forms.CharField(
+        widget=genwidgets.DateRangeInput, required=True, label=_("Period to compare with")
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["period"].required = True

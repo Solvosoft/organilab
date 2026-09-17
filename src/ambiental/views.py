@@ -9,6 +9,8 @@ from django.views.generic import TemplateView
 from ambiental.forms import (
     AmbientalReportForm,
     BuildingFilterForm,
+    ComparisonReportForm,
+    IndicatorReportForm,
     ConsumptionRecordForm,
     MeasurementPointForm,
     NormalizationBaseForm,
@@ -59,6 +61,8 @@ REPORT_TITLES = {
     "report_consumption_detail": _("Consumption detail report"),
     "report_consumption_summary": _("Consumption summary report"),
     "report_consumption_cost": _("Consumption cost report"),
+    "report_environmental_indicators": _("Environmental indicators report"),
+    "report_consumption_comparison": _("Consumption comparison report"),
 }
 
 

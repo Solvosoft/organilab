@@ -163,4 +163,22 @@ REPORT_FORMS = {
         "xlsx": "ambiental.reports.report_consumption_cost_doc",
         "ods": "ambiental.reports.report_consumption_cost_doc",
     },
+    "report_environmental_indicators": {
+        "task": "report.tasks.task_report",
+        "form": "ambiental.forms.IndicatorReportForm",
+        "html": "ambiental.reports.report_environmental_indicators_html",
+        "pdf": "report.views.base.base_pdf",
+        "xls": "ambiental.reports.report_environmental_indicators_doc",
+        "xlsx": "ambiental.reports.report_environmental_indicators_doc",
+        "ods": "ambiental.reports.report_environmental_indicators_doc",
+    },
+    "report_consumption_comparison": {
+        "task": "report.tasks.task_report",
+        "form": "ambiental.forms.ComparisonReportForm",
+        "html": "ambiental.reports.report_consumption_comparison_html",
+        "pdf": "report.views.base.base_pdf",
+        "xls": "ambiental.reports.report_consumption_comparison_doc",
+        "xlsx": "ambiental.reports.report_consumption_comparison_doc",
+        "ods": "ambiental.reports.report_consumption_comparison_doc",
+    },
 }

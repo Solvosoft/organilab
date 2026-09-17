@@ -15,7 +15,11 @@ from decimal import Decimal
 from django.core.files.base import ContentFile
 from django.utils.translation import gettext as _
 
+from ambiental.ambiental_defaults import KEY_NORMALIZER, KEY_RESOURCE_TYPE
+from ambiental.indicators import compare_periods, compute_indicator
 from ambiental.models import ConsumptionRecord
+from laboratory.models import Catalog, OrganizationStructure
+from risk_management.models import Buildings
 from laboratory.report_utils import ExcelGraphBuilder
 from report.utils import format_datetime, get_report_name, set_format_table_columns
 
@@ -207,3 +211,97 @@ report_consumption_summary_html = html_report(consumption_summary_rows)
 report_consumption_summary_doc = doc_report(consumption_summary_rows)
 report_consumption_cost_html = html_report(consumption_cost_rows)
 report_consumption_cost_doc = doc_report(consumption_cost_rows)
+
+
+# ---------------------------------------------------------------------------
+# Paso 5: indicadores y comparación entre períodos
+# ---------------------------------------------------------------------------
+
+
+def report_scope(report):
+    """Organización, edificios y recursos que abarca el reporte."""
+    data = report.data
+    organization = OrganizationStructure.objects.get(pk=data["organization"])
+    buildings = Buildings.objects.filter(organization=organization).order_by("name")
+    if data.get("building"):
+        buildings = buildings.filter(pk__in=data["building"])
+    resources = Catalog.objects.filter(key=KEY_RESOURCE_TYPE).order_by("pk")
+    if data.get("resource_type"):
+        resources = resources.filter(pk__in=data["resource_type"])
+    return organization, buildings, resources
+
+
+def environmental_indicator_rows(report):
+    columns = [
+        ("building", _("Building")),
+        ("resource", _("Resource type")),
+        ("normalizer", _("Normalizer")),
+        ("raw_total", _("Consumption")),
+        ("unit", _("Unit")),
+        ("base", _("Base")),
+        ("base_year", _("Base year")),
+        ("value", _("Indicator")),
+    ]
+    organization, buildings, resources = report_scope(report)
+    start, end = parse_period(report.data.get("period"))
+    normalizers = Catalog.objects.filter(key=KEY_NORMALIZER).order_by("pk")
+    if report.data.get("normalizer"):
+        normalizers = normalizers.filter(pk__in=report.data["normalizer"])
+    rows = []
+    for building in buildings:
+        for resource in resources:
+            for normalizer in normalizers:
+                result = compute_indicator(organization, building, resource, normalizer, start, end)
+                if not result["records"]:
+                    continue
+                value = as_text(result["value"])
+                if result["mixed_units"]:
+                    value = _("Mixed units")
+                elif result["value"] is None:
+                    value = _("No base")
+                rows.append([
+                    building.name, resource.description, normalizer.description,
+                    as_text(result["raw_total"]), result["unit"] or "",
+                    as_text(result["base"]), as_text(result["base_year"]), value,
+                ])
+    return columns, rows
+
+
+def consumption_comparison_rows(report):
+    columns = [
+        ("building", _("Building")),
+        ("resource", _("Resource type")),
+        ("previous", _("Previous period")),
+        ("current", _("Current period")),
+        ("unit", _("Unit")),
+        ("absolute", _("Absolute variation")),
+        ("percent", _("Variation (%)")),
+        ("previous_cost", _("Previous cost")),
+        ("current_cost", _("Current cost")),
+    ]
+    organization, buildings, resources = report_scope(report)
+    periods = [
+        parse_period(report.data.get("comparison_period")),
+        parse_period(report.data.get("period")),
+    ]
+    rows = []
+    for building in buildings:
+        for resource in resources:
+            previous, current = compare_periods(organization, resource, periods, building)
+            if previous["quantity"] is None and current["quantity"] is None and not current["mixed_units"]:
+                continue
+            rows.append([
+                building.name, resource.description,
+                as_text(previous["quantity"]), as_text(current["quantity"]),
+                current["unit"] or previous["unit"] or "",
+                _("Mixed units") if current["mixed_units"] else as_text(current["absolute"]),
+                as_text(current["percent"]),
+                as_text(previous["cost"]), as_text(current["cost"]),
+            ])
+    return columns, rows
+
+
+report_environmental_indicators_html = html_report(environmental_indicator_rows)
+report_environmental_indicators_doc = doc_report(environmental_indicator_rows)
+report_consumption_comparison_html = html_report(consumption_comparison_rows)
+report_consumption_comparison_doc = doc_report(consumption_comparison_rows)
