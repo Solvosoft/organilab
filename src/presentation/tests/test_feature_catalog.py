@@ -236,7 +236,7 @@ class RoleCoverageBaselineTest(TestCase):
     """
 
     #: Solo puede bajar. Cada prueba nueva que ejercite un rol de verdad lo baja.
-    MAX_ROLES_SIN_EJERCITAR = 15
+    MAX_ROLES_SIN_EJERCITAR = 14
     MAX_PASOS_SOLO_SUPERUSUARIO = 131
 
     @classmethod

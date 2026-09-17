@@ -1,4 +1,4 @@
-from django.contrib.admin.models import ADDITION, CHANGE, DELETION
+from django.contrib.admin.models import ADDITION, CHANGE
 from django.utils.translation import gettext_lazy as _
 from rest_framework import status
 from rest_framework.decorators import action
@@ -92,12 +92,6 @@ class NormalizationBaseViewSet(AmbientalViewSet):
 
     def get_related_objects(self, instance):
         return [instance.building]
-
-    def perform_destroy(self, instance):
-        # Sin papelera: una base es un dato derivado que la precarga vuelve a crear.
-        if self.should_log(instance):
-            self._add_log(instance, DELETION, None, _("Deleted"))
-        instance.delete()
 
     @action(detail=False, methods=["post"])
     def preload(self, request, org_pk=None):

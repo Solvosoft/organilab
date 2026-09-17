@@ -232,3 +232,44 @@ class QRModel(models.Model):
     organization = models.ForeignKey(
         "laboratory.OrganizationStructure", null=True, on_delete=models.CASCADE
     )
+
+
+class SystemParameter(AbstractOrganizationRef):
+    """El valor propio de un parámetro del sistema en una organización.
+
+    Qué parámetros existen, su tipo, su valor por defecto y quién los puede cambiar lo
+    declara ``presentation/parameters.py``: aquí solo se guarda el valor que una
+    organización fija. Sin fila, la organización hereda el de sus ancestros o el
+    valor por defecto (ver ``presentation.parameters.resolve_parameter``).
+    """
+
+    key = models.CharField(max_length=150, verbose_name=_("Key"))
+    raw_value = models.TextField(blank=True, default="", verbose_name=_("Value"))
+
+    class Meta:
+        verbose_name = _("System parameter")
+        verbose_name_plural = _("System parameters")
+        ordering = ["key"]
+        unique_together = ("organization", "key")
+
+    def __str__(self):
+        return "%s = %s" % (self.key, self.raw_value)
+
+    @property
+    def value(self):
+        from presentation.parameters import cast_value, get_definition
+
+        return cast_value(get_definition(self.key)["type"], self.raw_value)
+
+    def clean(self):
+        from django.core.exceptions import ValidationError
+
+        from presentation.parameters import PARAMETERS, cast_value
+
+        super().clean()
+        if self.key not in PARAMETERS:
+            raise ValidationError({"key": _("Unknown parameter.")})
+        try:
+            cast_value(PARAMETERS[self.key]["type"], self.raw_value)
+        except (TypeError, ValueError):
+            raise ValidationError({"raw_value": _("Invalid value for this parameter.")})

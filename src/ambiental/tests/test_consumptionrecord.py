@@ -223,3 +223,22 @@ class ConsumptionRecordViewTest(AmbientalTestCase):
                 )
                 self.assertEqual(response.status_code, 200)
                 self.assertContains(response, "table-consumptionrecord")
+
+
+class RequireDocumentParameterTest(AmbientalTestCase):
+
+    def test_parameter_makes_document_mandatory(self):
+        from presentation.models import SystemParameter
+
+        SystemParameter.objects.create(
+            organization=self.organization, key="ambiental.require_document", raw_value="true"
+        )
+        point = self.make_point()
+        response = self.client.post(
+            reverse("ambiental:api-consumptionrecord-list", kwargs={"org_pk": self.organization.pk}),
+            data=json.dumps({"point": point.pk, "period_start": "2026-01-01",
+                             "period_end": "2026-01-31", "quantity": "1"}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("document", response.json())

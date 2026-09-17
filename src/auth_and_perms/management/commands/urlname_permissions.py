@@ -3619,6 +3619,19 @@ URLNAME_PERMISSIONS = {
             "permission": "ambiental.view_consumptionrecord",
         },
     ],
+    # Administración de plataforma: parámetros, notificaciones y alertas.
+    "systemparameter_list": [
+        {
+            "name": "View system parameters",
+            "category": "Plataforma",
+            "permission": "presentation.view_systemparameter",
+        },
+        {
+            "name": "Change system parameters",
+            "category": "Plataforma",
+            "permission": "presentation.change_systemparameter",
+        },
+    ],
     # La papelera es de la biblioteca: sus permisos viven en djgentelella,
     # no en laboratory. update_roles.update_papelera() ya se los da a los
     # roles fijos; esto es lo que permite configurarlos por organización.

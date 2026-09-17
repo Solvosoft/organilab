@@ -1,0 +1,21 @@
+{% load i18n %}
+
+{% if perms.presentation.view_systemparameter %}
+	<li>
+		<a>
+			<i class="fa fa-cogs" aria-hidden="true"></i>
+			{% trans 'Platform administration' %}
+			<span class="fa fa-chevron-down"></span>
+		</a>
+		<ul class="nav child_menu">
+			{% if perms.presentation.view_systemparameter %}
+				<li>
+					<a href="{% url 'platform:systemparameter_list' org_pk %}"
+						title="{% trans 'System parameters' %}">
+						<i class="fa fa-sliders" aria-hidden="true"></i>
+						{% trans 'System parameters' %}</a>
+				</li>
+			{% endif %}
+		</ul>
+	</li>
+{% endif %}

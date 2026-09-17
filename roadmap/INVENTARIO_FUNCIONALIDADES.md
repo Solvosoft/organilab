@@ -15,7 +15,7 @@ con ese rol.
 
 | Métrica | Valor |
 |---|---:|
-| Funcionalidades catalogadas | 51 |
+| Funcionalidades catalogadas | 52 |
 | Sin ninguna prueba | 14 |
 | Rutas navegables huérfanas | 0 |
 | Apps pendientes de catalogar | 2 |
@@ -519,6 +519,16 @@ El sistema de tutoriales contextuales: se listan, se marca el progreso, se apaga
 | **Ver los tutoriales disponibles** | Estudiante, Profesor, Técnico de Laboratorio, Asistente de laboratorio, Administrador de Laboratorio, Administrativo superior, Regente, Solo Lectura | `auth_and_perms.institution_can_access` | — | `tutorials` |
 | **Marcar progreso, apagar y reactivar un tutorial** | Estudiante, Profesor, Técnico de Laboratorio, Asistente de laboratorio, Administrador de Laboratorio, Administrativo superior, Regente, Solo Lectura | — | — | `tutorial_progress_api`<br>`tutorial_toggle_api`<br>`tutorial_reactivate_api` |
 | **Enviar retroalimentación sobre el producto** | Estudiante, Profesor, Técnico de Laboratorio, Asistente de laboratorio, Administrador de Laboratorio, Administrativo superior, Regente, Solo Lectura | `auth_and_perms.institution_can_access` | — | `feedback` |
+
+### `PLAT-01` — Ajustar los parámetros del sistema de la organización
+
+*presentation · ui · prioridad P3 · cobertura por ruta: completa · Selenium: —*
+
+Cada parámetro muestra su valor efectivo y de dónde sale: propio, heredado de un ancestro o el valor por defecto. Restaurar borra el valor propio y vuelve a heredar. Solo se listan los parámetros cuyo permiso tiene el usuario.
+
+| Paso | Actores | Permiso | Transición | Rutas |
+|---|---|---|---|---|
+| **Consultar, cambiar o restaurar un parámetro** | Administrativo superior, Administrador ambiental | `presentation.view_systemparameter` | — | `platform:systemparameter_list` |
 
 ### `REP-01` — Pedir un reporte, esperar a que se genere y descargarlo
 

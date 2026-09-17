@@ -17,6 +17,7 @@ from ambiental.ambiental_defaults import (
 )
 from ambiental.models import ConsumptionRecord, MeasurementPoint, NormalizationBase
 from laboratory.models import Catalog, Laboratory, Provider
+from presentation.parameters import get_parameter
 from risk_management.models import Buildings
 
 
@@ -303,6 +304,13 @@ class ConsumptionRecordSaveSerializer(OrganizationScopedSerializer):
             attrs["waste_manager"] = None
         if attrs.get("document") is False:
             attrs["document"] = None
+        has_document = attrs.get("document") or (
+            "document" not in attrs and self.instance is not None and self.instance.document
+        )
+        if not has_document and get_parameter(self.get_organization(), "ambiental.require_document"):
+            raise serializers.ValidationError(
+                {"document": [_("This organization requires the bill, receipt or manifest.")]}
+            )
 
         overlapping = ConsumptionRecord.objects_with_deleted.filter(
             point=point, period_start__lte=end, period_end__gte=start

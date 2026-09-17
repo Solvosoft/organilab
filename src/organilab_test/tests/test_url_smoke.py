@@ -100,7 +100,7 @@ class RiskUrlSmokeTest(UrlSmokeMixin, TestCase):
 
 class AmbientalUrlSmokeTest(UrlSmokeMixin, TestCase):
     fixtures = ["object.json", "riskmanagement_data.json"]
-    namespaces = ("ambiental",)
+    namespaces = ("ambiental", "platform")
 
 
 class AcademicUrlSmokeTest(UrlSmokeMixin, TestCase):

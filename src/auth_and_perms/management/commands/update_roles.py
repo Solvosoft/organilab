@@ -1323,15 +1323,24 @@ AMBIENTAL_ROLES = {
 }
 
 
+PLATFORM_ADMIN = [
+    "presentation.view_systemparameter",
+    "presentation.change_systemparameter",
+]
+
+
 def update_ambiental_roles():
     for name, (perms, description) in AMBIENTAL_ROLES.items():
         rol = Rol.objects.filter(name=name).first()
         if not rol:
             rol = Rol.objects.create(name=name, description=description)
         add_permissions(rol, perms)
+    # Los parámetros ambientales los cambia el administrador ambiental; la pantalla
+    # solo le muestra los que su permiso habilita (presentation/parameters.py).
+    add_permissions(Rol.objects.get(name="Administrador ambiental"), PLATFORM_ADMIN)
     rol = Rol.objects.filter(name="Administrativo superior").first()
     if rol:
-        add_permissions(rol, AMBIENTAL_FULL)
+        add_permissions(rol, AMBIENTAL_FULL + PLATFORM_ADMIN)
     else:
         print("WARNING: Rol 'Administrativo superior' not found, skipping.")
 
