@@ -197,3 +197,10 @@ class AmbientalDashboard(TemplateView):
             }
         )
         return context
+
+
+@login_required
+@permission_required("ambiental.view_consumptionalert", raise_exception=True)
+def consumptionalert_list(request, org_pk):
+    user_is_allowed_on_organization(request.user, org_pk)
+    return render(request, "ambiental/consumptionalert_list.html", context={"org_pk": org_pk})

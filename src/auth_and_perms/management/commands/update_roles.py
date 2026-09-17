@@ -1285,6 +1285,7 @@ AMBIENTAL_READONLY = [
     "ambiental.view_normalizationbase",
     "laboratory.do_report",
     "ambiental.view_ambiental_dashboard",
+    "ambiental.view_consumptionalert",
 ]
 
 AMBIENTAL_REGISTRO = AMBIENTAL_READONLY + [
@@ -1301,6 +1302,7 @@ AMBIENTAL_FULL = AMBIENTAL_REGISTRO + [
     "ambiental.change_normalizationbase",
     "ambiental.delete_normalizationbase",
     "ambiental.preload_normalizationbase",
+    "ambiental.review_consumptionalert",
 ]
 
 AMBIENTAL_ROLES = {

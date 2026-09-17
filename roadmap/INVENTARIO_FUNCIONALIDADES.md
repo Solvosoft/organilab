@@ -15,7 +15,7 @@ con ese rol.
 
 | Métrica | Valor |
 |---|---:|
-| Funcionalidades catalogadas | 54 |
+| Funcionalidades catalogadas | 55 |
 | Sin ninguna prueba | 14 |
 | Rutas navegables huérfanas | 0 |
 | Apps pendientes de catalogar | 2 |
@@ -136,6 +136,17 @@ Un residuo es un registro de consumo de un punto de acopio: lleva tratamiento, g
 |---|---|---|---|---|
 | **Registrar la entrega de un residuo con su manifiesto** | Administrador ambiental, Administrativo superior, Encargado de registro ambiental | `ambiental.view_consumptionrecord` | — | `ambiental:waste_list` |
 | **Pedir el reporte de residuos y manifiestos** | Administrador ambiental, Administrativo superior, Encargado de registro ambiental, Analista ambiental | `ambiental.view_consumptionrecord`<br>`laboratory.do_report` | — | `ambiental:report_waste_manifest` |
+
+### `AMB-08` — Detectar consumos atípicos y revisarlos
+
+*ambiental · ui · prioridad P2 · cobertura por ruta: completa · Selenium: —*
+
+Una tarea mensual evalúa las reglas de alerta del proceso `ambiental.consumption`: el último período de cada punto contra su promedio, contra un umbral o por meses sin registro. Cada alerta avisa al encargado del edificio y a los responsables de sus laboratorios; quien la atiende la marca como revisada con una nota.
+
+| Paso | Actores | Permiso | Transición | Rutas |
+|---|---|---|---|---|
+| **Evaluar las reglas de consumo y crear las alertas** | Administrador ambiental | — | — | — |
+| **Consultar las alertas y marcarlas como revisadas** | Administrador ambiental, Administrativo superior, Encargado de registro ambiental, Analista ambiental | `ambiental.view_consumptionalert` | — | `ambiental:consumptionalert_list` |
 
 ### `ORG-01` — Elegir organización y orientarse en el árbol
 

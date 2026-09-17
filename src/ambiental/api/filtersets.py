@@ -1,7 +1,7 @@
 from django_filters import DateFromToRangeFilter, FilterSet
 from djgentelella.fields.drfdatetime import DateRangeTextWidget
 
-from ambiental.models import ConsumptionRecord, MeasurementPoint, NormalizationBase
+from ambiental.models import ConsumptionAlert, ConsumptionRecord, MeasurementPoint, NormalizationBase
 
 
 class MeasurementPointFilter(FilterSet):
@@ -41,4 +41,16 @@ class NormalizationBaseFilter(FilterSet):
             "building": ["exact"],
             "year": ["exact"],
             "is_manual": ["exact"],
+        }
+
+
+class ConsumptionAlertFilter(FilterSet):
+    class Meta:
+        model = ConsumptionAlert
+        fields = {
+            "point": ["exact"],
+            "point__building": ["exact"],
+            "reviewed": ["exact"],
+            "level": ["exact"],
+            "message": ["icontains"],
         }

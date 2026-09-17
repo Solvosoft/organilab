@@ -1,6 +1,7 @@
 from decimal import ROUND_HALF_UP, Decimal
 
 from django.core.exceptions import ValidationError
+from django.conf import settings
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from djgentelella.models import DeletedWithTrash
@@ -260,3 +261,69 @@ class NormalizationBase(AbstractOrganizationRef):
 
     def __str__(self):
         return "%s %s %s: %s" % (self.building, self.year, self.normalizer, self.value)
+
+
+class ConsumptionAlert(AbstractOrganizationRef):
+    """Un consumo atípico (o un punto sin registros) detectado por una regla de alerta.
+
+    La alerta no desaparece al revisarla: queda con la nota que la explica (fuga,
+    error de digitación, obra), que es lo que permite calibrar la regla después.
+    """
+
+    point = models.ForeignKey(
+        MeasurementPoint,
+        on_delete=models.CASCADE,
+        verbose_name=_("Measurement point"),
+        related_name="alerts",
+    )
+    record = models.ForeignKey(
+        ConsumptionRecord,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name=_("Consumption record"),
+        related_name="alerts",
+    )
+    rule = models.ForeignKey(
+        "presentation.AlertRule",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name=_("Alert rule"),
+        related_name="consumption_alerts",
+    )
+    period = models.DateField(verbose_name=_("Period"))
+    reference_value = models.DecimalField(
+        max_digits=14, decimal_places=4, null=True, blank=True, verbose_name=_("Reference value")
+    )
+    registered_value = models.DecimalField(
+        max_digits=14, decimal_places=4, null=True, blank=True, verbose_name=_("Registered value")
+    )
+    variation_pct = models.DecimalField(
+        max_digits=9, decimal_places=2, null=True, blank=True, verbose_name=_("Variation (%)")
+    )
+    level = models.CharField(max_length=20, verbose_name=_("Level"))
+    message = models.TextField(verbose_name=_("Message"))
+    reviewed = models.BooleanField(default=False, verbose_name=_("Reviewed"))
+    reviewed_note = models.TextField(blank=True, default="", verbose_name=_("Review note"))
+    reviewed_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name=_("Reviewed by"),
+        related_name="reviewed_consumption_alerts",
+    )
+    reviewed_at = models.DateTimeField(null=True, blank=True, verbose_name=_("Reviewed at"))
+
+    class Meta:
+        verbose_name = _("Consumption alert")
+        verbose_name_plural = _("Consumption alerts")
+        ordering = ["reviewed", "-period", "pk"]
+        unique_together = ("rule", "point", "period")
+        permissions = [
+            ("review_consumptionalert", _("Can review consumption alerts")),
+        ]
+
+    def __str__(self):
+        return self.message

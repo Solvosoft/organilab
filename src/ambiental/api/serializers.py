@@ -15,7 +15,7 @@ from ambiental.ambiental_defaults import (
     KEY_WASTE_TREATMENT,
     get_resource_info,
 )
-from ambiental.models import ConsumptionRecord, MeasurementPoint, NormalizationBase
+from ambiental.models import ConsumptionAlert, ConsumptionRecord, MeasurementPoint, NormalizationBase
 from laboratory.models import Catalog, Laboratory, Provider
 from presentation.parameters import get_parameter
 from risk_management.models import Buildings
@@ -410,3 +410,42 @@ class NormalizationBaseSaveSerializer(OrganizationScopedSerializer):
 
 class PreloadSerializer(serializers.Serializer):
     year = serializers.IntegerField(min_value=1900, max_value=2200)
+
+
+# ---------------------------------------------------------------------------
+# Alertas de consumo
+# ---------------------------------------------------------------------------
+
+
+class ConsumptionAlertSerializer(serializers.ModelSerializer):
+    point = GTS2SerializerBase()
+    building = serializers.SerializerMethodField()
+    rule = GTS2SerializerBase()
+    period = serializers.DateField(format="%m/%Y")
+    reviewed_by = serializers.StringRelatedField()
+    reviewed_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M")
+    actions = serializers.SerializerMethodField()
+
+    def get_building(self, obj):
+        building = obj.point.building
+        return {"id": building.pk, "text": building.name} if building else None
+
+    def get_actions(self, obj):
+        user = self.context["request"].user
+        return {"review": not obj.reviewed and user.has_perm("ambiental.review_consumptionalert")}
+
+    class Meta:
+        model = ConsumptionAlert
+        fields = (
+            "id", "point", "building", "rule", "period", "reference_value", "registered_value",
+            "variation_pct", "level", "message", "reviewed", "reviewed_note", "reviewed_by",
+            "reviewed_at", "actions",
+        )
+
+
+class ConsumptionAlertDataTableSerializer(DataTableSerializer):
+    data = serializers.ListField(child=ConsumptionAlertSerializer(), required=True)
+
+
+class ReviewSerializer(serializers.Serializer):
+    note = serializers.CharField(allow_blank=False, max_length=2000)

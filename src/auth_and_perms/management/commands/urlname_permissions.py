@@ -3619,6 +3619,18 @@ URLNAME_PERMISSIONS = {
             "permission": "ambiental.view_consumptionrecord",
         },
     ],
+    "consumptionalert_list": [
+        {
+            "name": "View consumption alerts",
+            "category": "Ambiental",
+            "permission": "ambiental.view_consumptionalert",
+        },
+        {
+            "name": "Review consumption alerts",
+            "category": "Ambiental",
+            "permission": "ambiental.review_consumptionalert",
+        },
+    ],
     # Administración de plataforma: parámetros, notificaciones y alertas.
     "systemparameter_list": [
         {

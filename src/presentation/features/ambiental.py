@@ -189,4 +189,35 @@ FEATURES = (
             ),
         ),
     ),
+    Feature(
+        id="AMB-08",
+        name="Detectar consumos atípicos y revisarlos",
+        module="ambiental",
+        kind="ui",
+        description=(
+            "Una tarea mensual evalúa las reglas de alerta del proceso "
+            "`ambiental.consumption`: el último período de cada punto contra su promedio, "
+            "contra un umbral o por meses sin registro. Cada alerta avisa al encargado del "
+            "edificio y a los responsables de sus laboratorios; quien la atiende la marca "
+            "como revisada con una nota."
+        ),
+        priority="P2",
+        steps=(
+            Step(
+                id="detectar",
+                name="Evaluar las reglas de consumo y crear las alertas",
+                actors=("administrador_ambiental",),
+                routes=(),
+                source="src/ambiental/tasks.py check_consumption_anomalies, src/ambiental/alerts.py",
+            ),
+            Step(
+                id="revisar",
+                name="Consultar las alertas y marcarlas como revisadas",
+                actors=CONSULTA_AMBIENTAL,
+                routes=("ambiental:consumptionalert_list",),
+                permissions=("ambiental.view_consumptionalert",),
+                source="src/ambiental/api/viewsets.py ConsumptionAlertViewSet.review",
+            ),
+        ),
+    ),
 )

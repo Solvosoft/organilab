@@ -12,6 +12,9 @@ router.register(
     "consumptionrecord", viewsets.ConsumptionRecordViewSet, basename="api-consumptionrecord"
 )
 router.register(
+    "consumptionalert", viewsets.ConsumptionAlertViewSet, basename="api-consumptionalert"
+)
+router.register(
     "normalizationbase", viewsets.NormalizationBaseViewSet, basename="api-normalizationbase"
 )
 
@@ -67,5 +70,6 @@ urlpatterns = [
         views.AmbientalReportView.as_view(report_name="report_waste_manifest"),
         name="report_waste_manifest",
     ),
+    path("alerts/", views.consumptionalert_list, name="consumptionalert_list"),
     path("api/", include(router.urls)),
 ]

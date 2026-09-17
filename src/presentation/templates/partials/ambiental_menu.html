@@ -48,6 +48,14 @@
 						{% trans 'Normalization bases' %}</a>
 				</li>
 			{% endif %}
+			{% if perms.ambiental.view_consumptionalert %}
+				<li>
+					<a href="{% url 'ambiental:consumptionalert_list' org_pk %}"
+						title="{% trans 'Consumption alerts' %}">
+						<i class="fa fa-bell" aria-hidden="true"></i>
+						{% trans 'Consumption alerts' %}</a>
+				</li>
+			{% endif %}
 			{% if perms.ambiental.view_consumptionrecord and perms.laboratory.do_report %}
 				<li>
 					<a href="{% url 'ambiental:report_consumption_detail' org_pk %}"

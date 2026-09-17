@@ -24,6 +24,9 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('presentation', '0004_qrmodel_organization'),
+        # Usa djgentelella.MenuItem: sin esta dependencia solo funcionaba si el orden
+        # del grafo aplicaba antes las migraciones de djgentelella.
+        ('djgentelella', '0011_remove_menuitem_level_remove_menuitem_lft_and_more'),
     ]
 
     operations = [
