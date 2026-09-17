@@ -95,12 +95,12 @@ class IndicatorTest(ReportTestCase):
         self.assertIn("comparison_period", form.errors)
 
     def test_pages_render(self):
-        for name in ("report_environmental_indicators", "report_consumption_comparison"):
+        for name in ("ambiental:report_environmental_indicators", "ambiental:report_consumption_comparison"):
             for rol_name in ("Administrador ambiental", "Encargado de registro ambiental", "Analista ambiental"):
                 user = self.make_user("i_%s_%s" % (name[-5:], rol_name.split()[0]), self.organization, rol_name)
                 self.client.force_login(user)
                 with self.subTest(report=name, rol=rol_name):
-                    response = self.client.get(reverse("ambiental:" + name, kwargs={"org_pk": self.organization.pk}))
+                    response = self.client.get(reverse(name, kwargs={"org_pk": self.organization.pk}))
                     self.assertEqual(response.status_code, 200)
 
 

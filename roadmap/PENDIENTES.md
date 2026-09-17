@@ -33,3 +33,6 @@ pero nadie revisó en un navegador real. Checklist (heredada de las etapas 03, 0
 | 5 | `jquery-1.9.1.min.js` propio, vivo en la firma digital | `auth_and_perms/static/js/jquery-1.9.1.min.js`, usado en `create_user_organization_digital_signature.html:60` |
 | 6 | Biblioteca: bump 0.6.1 → 0.6.2 sin commitear en el checkout `~/Desktop/desarrollo/django-gentelella-widgets` (`djgentelella/__init__.py`); decidir si el pin sube a `djgentelella>=0.6.2` | `requirements.txt:4` |
 | 7 | Rama local `dj060` obsoleta (su punta no está en la historia actual) | `git branch` |
+| 8 | **Seguridad**: `report_table` no acota el `TaskReport` por organización ni por quien lo pidió; cualquier pk es visible con `do_report` | `src/report/views/base.py` `report_table` |
+| 9 | Smoke en navegador de las pantallas `ambiental` y `platform` (ObjectCRUD, select2 filtrado, gráficos) | `plans/ENVIRONMENT_PLAN.md` §4 |
+| 10 | `roadmap/cobertura_por_rol.json`: los pasos AMB-* y PLAT-* se midieron solo con sus pruebas y se mezclaron a mano; `COBERTURA_POR_ROL.md` no se regeneró. Correr `make feature-coverage` | `roadmap/cobertura_por_rol.json` |

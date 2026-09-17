@@ -104,13 +104,14 @@ class ConsumptionReportsTest(ReportTestCase):
 class ReportPagesTest(ReportTestCase):
 
     def test_report_pages_render_for_each_role(self):
-        names = ("report_consumption_detail", "report_consumption_summary", "report_consumption_cost")
+        names = ("ambiental:report_consumption_detail", "ambiental:report_consumption_summary",
+                 "ambiental:report_consumption_cost")
         for rol_name in ("Administrador ambiental", "Encargado de registro ambiental", "Analista ambiental"):
             user = self.make_user("r_" + rol_name.split()[0], self.organization, rol_name)
             self.client.force_login(user)
             for name in names:
                 with self.subTest(rol=rol_name, report=name):
-                    response = self.client.get(reverse("ambiental:" + name, kwargs={"org_pk": self.organization.pk}))
+                    response = self.client.get(reverse(name, kwargs={"org_pk": self.organization.pk}))
                     self.assertEqual(response.status_code, 200)
                     self.assertContains(response, 'id="send"')
 

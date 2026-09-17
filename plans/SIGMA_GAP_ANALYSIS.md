@@ -3,8 +3,8 @@
 > **Qué es esto.** Resumen del análisis entre los *Requerimientos Mínimos del SIGMA* (MOPT, junio
 > 2026) y Organilab. La tabla requisito por requisito está en git (antes del 2026-09-16).
 >
-> **Estado (2026-09-16):** ninguno de los tres planes derivados tiene código, salvo lo que el
-> proyecto 13 (history/trash) ya dejó en la bitácora — ver cada plan.
+> **Estado (2026-09-16):** consumos (salvo importación) y la plataforma C/D/E están en la rama
+> `regenteambiental`; programas de gestión sigue sin código — ver cada plan.
 
 ---
 
@@ -12,9 +12,9 @@
 
 | # | Bloque | Hueco que cubre en Organilab | Plan | Estado |
 |---|--------|------------------------------|------|--------|
-| 1 | Plataforma: bitácora exportable con antes→después, justificación, parámetros, notificaciones y alertas configurables, FAQ/video/"Acerca de", expiración de sesión | Se **captura** auditoría pero casi no se **expone**; umbrales y correos hardcodeados | [`PLATFORM_ADMIN_PLAN.md`](PLATFORM_ADMIN_PLAN.md) | A y D parciales |
+| 1 | Plataforma: bitácora exportable con antes→después, justificación, parámetros, notificaciones y alertas configurables, FAQ/video/"Acerca de", expiración de sesión | Se **captura** auditoría pero casi no se **expone**; umbrales y correos hardcodeados | [`PLATFORM_ADMIN_PLAN.md`](PLATFORM_ADMIN_PLAN.md) | C, D y E hechos; A parcial |
 | 2 | Programas de gestión → planes anuales → acciones → actividades → seguimiento con % y evidencias; avance y ranking por dependencia | Los hallazgos (IPER, incidentes, límites) no tienen seguimiento planificado | [`MANAGEMENT_PLANS_PLAN.md`](MANAGEMENT_PLANS_PLAN.md) | No iniciado |
-| 3 | Consumos y residuos + indicadores normalizados + comparaciones + alertas por consumo atípico | No hay dónde registrar consumos; los denominadores (`Buildings.area`, `Structure.area`, jornadas) ya existen | [`ENVIRONMENT_PLAN.md`](ENVIRONMENT_PLAN.md) | No iniciado |
+| 3 | Consumos y residuos + indicadores normalizados + comparaciones + alertas por consumo atípico | No hay dónde registrar consumos; los denominadores (`Buildings.area`, `Structure.area`, jornadas) ya existen | [`ENVIRONMENT_PLAN.md`](ENVIRONMENT_PLAN.md) | Hecho salvo importación masiva |
 
 **Orden recomendado:** plataforma → programas → consumos (plataforma es transversal y barata;
 programas es el esqueleto del que cuelgan los consumos; consumos es el más caro y el que más depende

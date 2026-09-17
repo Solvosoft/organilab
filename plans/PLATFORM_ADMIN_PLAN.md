@@ -7,7 +7,7 @@
 > [`MANAGEMENT_PLANS_PLAN.md`](MANAGEMENT_PLANS_PLAN.md) y [`ENVIRONMENT_PLAN.md`](ENVIRONMENT_PLAN.md)
 > dependen de B, C y E.
 >
-> **Estado:** paso 0 (djgentelella 0.6.0) hecho. A y D parciales. B, C, E y F sin empezar.
+> **Estado:** paso 0 (djgentelella 0.6.0) hecho. C, D y E hechos en la rama `regenteambiental`. A parcial. B y F sin empezar.
 
 **Principios que se mantienen:** sin app nueva (ayuda/config en `presentation`, bitácora/justificación
 en `laboratory`); la bitácora sigue sobre `django.contrib.admin.LogEntry` + `HistoryRelation`, se amplía
@@ -47,42 +47,41 @@ lógico con `DeletedWithTrash`.
 - Endpoint `…/dependents/` → `{"count", "detail"}` para el modal (si es `@action`, declararlo en `perms`).
 - Aplica a parámetros (C), alertas (E) y programas/ejes/componentes/acciones. **No** a inventario.
 
-## C. Parámetros del sistema por organización — NO INICIADO
+## C. Parámetros del sistema por organización — HECHO (rama `regenteambiental`)
 
-- `SystemParameter(AbstractOrganizationRef)`: `key`, `description`, `data_type`
-  (int/float/bool/str/date/json), `raw_value`, `is_editable`; `unique_together (organization, key)`;
-  `clean()` valida tipo, `value` castea.
-- `get_parameter(org, key, default)` en `presentation/utils.py`: org → ancestros → `settings`, con
-  caché por request.
-- Registro declarativo por app en `presentation/parameters.py` (análogo a `REPORT_FORMS`).
-- Pantalla `/perms/<org_pk>/parameters/`: columna **Origen** (propio / heredado / defecto), edición en
-  línea por tipo, "Restaurar valor heredado".
-- `IPERConfig` queda como está.
+- `presentation.models.SystemParameter` guarda solo el valor propio (`key`, `raw_value`); tipo,
+  valor por defecto, textos y permiso para cambiarlo los declara `presentation/parameters.py`
+  (`PARAMETERS`).
+- `get_parameter(org, key, request=None)` / `resolve_parameter`: org → ancestro más cercano →
+  defecto (no lee `settings`), con caché por petición.
+- Pantalla `/platform/<org_pk>/parameters/` (namespace `platform`, no `/perms/`): columna Origen y
+  «Restaurar valor heredado»; se edita el valor como texto (sin widget por tipo). Solo lista los
+  parámetros cuyo permiso tiene el usuario.
+- **Pendiente:** registrar parámetros de otras apps; `IPERConfig` sigue como está.
 
-## D. Notificaciones administrables — PARCIAL
+## D. Notificaciones administrables — HECHO (rama `regenteambiental`)
 
-**Hecho:** procesos registrados con `register_context` (`laboratory/apps.py:10-47`,
-`authentication/apps.py:8`); envío con `send_email_from_template`. La UI (`EmailTemplate`, árbol de
-variables, preview, TinyMCE) la trae la biblioteca.
+- `presentation.models.NotificationSetting` (`code`, `is_active`, `override_subject`,
+  `override_message`), heredable a organizaciones hijas.
+- `presentation.notifications.send_process_email(org, code, context, recipients)` (en
+  `notifications.py`, no en `utils.py`).
+- Pantalla `/platform/<org_pk>/notifications/` con los procesos registrados y enlace a las
+  plantillas globales de la biblioteca.
+- **Pendiente:** registrar los procesos que aún no lo estén y que los envíos existentes
+  (`send_email_from_template` directo) pasen por `send_process_email`.
 
-**Falta:**
-- `NotificationSetting(AbstractOrganizationRef)`: `code`, `is_active`, `override_subject`,
-  `override_message` (la plantilla de la lib es global).
-- `presentation.utils.send_process_email(org, code, context, recipients)` que aplique estado y
-  overrides y delegue en la lib.
-- Entrada de menú de administración a la pantalla de plantillas.
-- Registrar los procesos que aún no lo estén.
+## E. Alertas configurables — HECHO (rama `regenteambiental`)
 
-## E. Alertas configurables — NO INICIADO
-
-- `AlertRule(AbstractOrganizationRef)`: `process` (código de `register_context`), `trigger`
-  (`Catalog key="alert_trigger"`), `threshold` JSON, `notification_code`, `notify_roles` M2M `Rol`,
-  `notify_responsible`, `create_task`, `is_active`.
-- Pantalla `ObjectCRUD` + `BaseViewSetWithLogs` con asistente de 3 pasos (qué vigilar / cuándo / a
-  quién) y pestaña de historial de disparos.
-- Al disparar: `send_process_email()` + `create_pending_task()` + `create_notification()` si amerita.
-- Migrar **primero solo** el vencimiento de `ShelfObject` (`laboratory/limit_shelfobject.py`); las
-  demás tareas de `CELERYBEAT_SCHEDULE` después, una por una con test.
+- `presentation.models.AlertRule` + `AlertEvent` (historial de disparos); disparadores sembrados en
+  `Catalog key="alert_trigger"`.
+- `presentation/alerts.py`: las apps registran sus procesos (`register_alert_process`, con evaluador,
+  disparadores válidos y permiso), `fire_alert` (evento + `send_process_email` + tarea pendiente +
+  campana si es crítica) y `run_alert_rules`.
+- Pantalla `/platform/<org_pk>/alerts/` con pestañas de reglas e historial (formulario único en vez de
+  asistente de 3 pasos).
+- Primer proceso: `ambiental.consumption` ([`ENVIRONMENT_PLAN.md`](ENVIRONMENT_PLAN.md)).
+- **Pendiente:** migrar el vencimiento de `ShelfObject` (`laboratory/limit_shelfobject.py`) y las
+  demás tareas de `CELERYBEAT_SCHEDULE`, una por una con test.
 
 ## F. Ayuda en línea — NO INICIADO
 
