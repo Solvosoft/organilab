@@ -34,4 +34,26 @@ FEATURES = (
             ),
         ),
     ),
+    Feature(
+        id="PLAT-02",
+        name="Decidir qué correos manda la organización y con qué texto",
+        module="presentation",
+        kind="ui",
+        description=(
+            "Lista los procesos con correo registrado (`register_context`). La "
+            "organización puede apagar uno o reemplazar su asunto y mensaje; la "
+            "configuración se hereda a las hijas. `send_process_email` la aplica al enviar."
+        ),
+        priority="P3",
+        steps=(
+            Step(
+                id="notificaciones",
+                name="Apagar, personalizar o restaurar el correo de un proceso",
+                actors=("administrativo_superior",),
+                routes=("platform:notificationsetting_list",),
+                permissions=("presentation.view_notificationsetting",),
+                source="src/presentation/platform/notifications_api.py, src/presentation/notifications.py",
+            ),
+        ),
+    ),
 )

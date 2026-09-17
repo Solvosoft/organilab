@@ -273,3 +273,29 @@ class SystemParameter(AbstractOrganizationRef):
             cast_value(PARAMETERS[self.key]["type"], self.raw_value)
         except (TypeError, ValueError):
             raise ValidationError({"raw_value": _("Invalid value for this parameter.")})
+
+
+class NotificationSetting(AbstractOrganizationRef):
+    """Cómo manda una organización el correo de un proceso registrado.
+
+    Las plantillas de ``djgentelella.async_notification`` son globales; esta fila
+    permite a una organización (y a sus hijas) apagar un correo o reemplazar su asunto y
+    su mensaje sin tocar la plantilla de las demás. Ver
+    ``presentation.notifications.send_process_email``.
+    """
+
+    code = models.SlugField(max_length=150, verbose_name=_("Code"))
+    is_active = models.BooleanField(default=True, verbose_name=_("Is active"))
+    override_subject = models.CharField(
+        max_length=500, blank=True, default="", verbose_name=_("Subject")
+    )
+    override_message = models.TextField(blank=True, default="", verbose_name=_("Message"))
+
+    class Meta:
+        verbose_name = _("Notification setting")
+        verbose_name_plural = _("Notification settings")
+        ordering = ["code"]
+        unique_together = ("organization", "code")
+
+    def __str__(self):
+        return self.code

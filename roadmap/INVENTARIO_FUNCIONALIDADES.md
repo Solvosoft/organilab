@@ -15,7 +15,7 @@ con ese rol.
 
 | Métrica | Valor |
 |---|---:|
-| Funcionalidades catalogadas | 52 |
+| Funcionalidades catalogadas | 53 |
 | Sin ninguna prueba | 14 |
 | Rutas navegables huérfanas | 0 |
 | Apps pendientes de catalogar | 2 |
@@ -529,6 +529,16 @@ Cada parámetro muestra su valor efectivo y de dónde sale: propio, heredado de 
 | Paso | Actores | Permiso | Transición | Rutas |
 |---|---|---|---|---|
 | **Consultar, cambiar o restaurar un parámetro** | Administrativo superior, Administrador ambiental | `presentation.view_systemparameter` | — | `platform:systemparameter_list` |
+
+### `PLAT-02` — Decidir qué correos manda la organización y con qué texto
+
+*presentation · ui · prioridad P3 · cobertura por ruta: completa · Selenium: —*
+
+Lista los procesos con correo registrado (`register_context`). La organización puede apagar uno o reemplazar su asunto y mensaje; la configuración se hereda a las hijas. `send_process_email` la aplica al enviar.
+
+| Paso | Actores | Permiso | Transición | Rutas |
+|---|---|---|---|---|
+| **Apagar, personalizar o restaurar el correo de un proceso** | Administrativo superior | `presentation.view_notificationsetting` | — | `platform:notificationsetting_list` |
 
 ### `REP-01` — Pedir un reporte, esperar a que se genere y descargarlo
 

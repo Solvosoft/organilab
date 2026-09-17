@@ -121,6 +121,7 @@
     "ORG-04/salir": "nunca ejercitado",
     "ORG-04/suplantar": "nunca ejercitado",
     "PLAT-01/parametros": "ejercitado",
+    "PLAT-02/notificaciones": "ejercitado",
     "REP-01/descargar": "solo superusuario",
     "REP-01/elegir": "solo superusuario",
     "REP-01/encolar": "solo superusuario",
@@ -181,7 +182,7 @@
     "SGA-05/recipientes": "solo superusuario",
     "TASK-01/ver_bandeja": "solo superusuario"
   },
-  "peticiones_observadas": 4998,
+  "peticiones_observadas": 5002,
   "roles_ejercitados": {
     "administrador_ambiental": [
       "AMB-01/gestionar_puntos",
@@ -203,7 +204,8 @@
       "RES-01/validar_disponibilidad"
     ],
     "administrativo_superior": [
-      "PLAT-01/parametros"
+      "PLAT-01/parametros",
+      "PLAT-02/notificaciones"
     ],
     "analista_ambiental": [
       "AMB-01/gestionar_puntos",

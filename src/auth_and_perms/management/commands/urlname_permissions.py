@@ -3632,6 +3632,18 @@ URLNAME_PERMISSIONS = {
             "permission": "presentation.change_systemparameter",
         },
     ],
+    "notificationsetting_list": [
+        {
+            "name": "View notification settings",
+            "category": "Plataforma",
+            "permission": "presentation.view_notificationsetting",
+        },
+        {
+            "name": "Change notification settings",
+            "category": "Plataforma",
+            "permission": "presentation.change_notificationsetting",
+        },
+    ],
     # La papelera es de la biblioteca: sus permisos viven en djgentelella,
     # no en laboratory. update_roles.update_papelera() ya se los da a los
     # roles fijos; esto es lo que permite configurarlos por organización.

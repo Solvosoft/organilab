@@ -1328,6 +1328,11 @@ PLATFORM_ADMIN = [
     "presentation.change_systemparameter",
 ]
 
+PLATFORM_NOTIFICATIONS = [
+    "presentation.view_notificationsetting",
+    "presentation.change_notificationsetting",
+]
+
 
 def update_ambiental_roles():
     for name, (perms, description) in AMBIENTAL_ROLES.items():
@@ -1340,7 +1345,7 @@ def update_ambiental_roles():
     add_permissions(Rol.objects.get(name="Administrador ambiental"), PLATFORM_ADMIN)
     rol = Rol.objects.filter(name="Administrativo superior").first()
     if rol:
-        add_permissions(rol, AMBIENTAL_FULL + PLATFORM_ADMIN)
+        add_permissions(rol, AMBIENTAL_FULL + PLATFORM_ADMIN + PLATFORM_NOTIFICATIONS)
     else:
         print("WARNING: Rol 'Administrativo superior' not found, skipping.")
 

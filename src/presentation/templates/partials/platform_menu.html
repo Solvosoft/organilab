@@ -1,6 +1,6 @@
 {% load i18n %}
 
-{% if perms.presentation.view_systemparameter %}
+{% if perms.presentation.view_systemparameter or perms.presentation.view_notificationsetting %}
 	<li>
 		<a>
 			<i class="fa fa-cogs" aria-hidden="true"></i>
@@ -14,6 +14,14 @@
 						title="{% trans 'System parameters' %}">
 						<i class="fa fa-sliders" aria-hidden="true"></i>
 						{% trans 'System parameters' %}</a>
+				</li>
+			{% endif %}
+			{% if perms.presentation.view_notificationsetting %}
+				<li>
+					<a href="{% url 'platform:notificationsetting_list' org_pk %}"
+						title="{% trans 'Notification settings' %}">
+						<i class="fa fa-envelope" aria-hidden="true"></i>
+						{% trans 'Notification settings' %}</a>
 				</li>
 			{% endif %}
 		</ul>
