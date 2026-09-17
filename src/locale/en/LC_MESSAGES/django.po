@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-16 19:06-0600\n"
+"POT-Creation-Date: 2026-09-16 20:19-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -4124,45 +4124,60 @@ msgstr ""
 msgid "Precursor"
 msgstr ""
 
-msgid ""
-"Sistema regencial para la gestión de riesgo en bodegas y laboratorios en los "
-"que se almacena reactivos y productos químicos"
+msgid "Report List"
+msgstr ""
+
+msgid "Search report"
 msgstr ""
 
 msgid "Regency Report"
 msgstr ""
 
+msgid ""
+"Regency system for risk management in warehouses and laboratories that store "
+"chemical reactives and products."
+msgstr ""
+
 msgid "Chemical inventory report"
 msgstr ""
 
-msgid "Occupational Health Report"
+msgid "Chemical substances in inventory with their hazard information."
 msgstr ""
 
-msgid "Furnitures"
-msgstr ""
-
-msgid "Reactive precursor objects"
-msgstr ""
-
-msgid "Object changes"
-msgstr ""
-
-msgid "Limited shelf objects"
-msgstr ""
-
-msgid "Precursor Report"
-msgstr ""
-
-msgid "Waste Report"
+msgid "Inventory and objects"
 msgstr ""
 
 msgid "Reactive Report"
 msgstr ""
 
-msgid "Risk Zone Report"
+msgid "Reactive Stock Report"
 msgstr ""
 
-msgid "Reactive Stock Report"
+msgid "Reactive precursor objects"
+msgstr ""
+
+msgid "Limited shelf objects"
+msgstr ""
+
+msgid "Object changes"
+msgstr ""
+
+msgid "Furnitures"
+msgstr ""
+
+msgid "Donations Report"
+msgstr ""
+
+msgid "Risk, safety and regulation"
+msgstr ""
+
+msgid "Occupational Health Report"
+msgstr ""
+
+msgid "Precursor Report"
+msgstr ""
+
+msgid "Risk Zone Report"
 msgstr ""
 
 msgid "Compatibility Report"
@@ -4171,7 +4186,29 @@ msgstr ""
 msgid "Compatibility Laboratory Report"
 msgstr ""
 
-msgid "Donations Report"
+msgid "Waste Report"
+msgstr ""
+
+msgid "Each consumption record with its period, quantity, cost and bill."
+msgstr ""
+
+msgid "Monthly totals by building and resource."
+msgstr ""
+
+msgid "Quantity, average unit cost and total cost per resource and month."
+msgstr ""
+
+msgid "Consumption per square meter or per person, with the base used."
+msgstr ""
+
+msgid "One period against another, with absolute and percentage variation."
+msgstr ""
+
+msgid ""
+"Delivered waste by type, treatment and authorized manager, with manifests."
+msgstr ""
+
+msgid "No report matches the search."
 msgstr ""
 
 msgid "Reservations"
@@ -5578,9 +5615,6 @@ msgid "Review Requests"
 msgstr ""
 
 msgid "Reports, Informs and Procedures"
-msgstr ""
-
-msgid "Report List"
 msgstr ""
 
 msgid "Platform administration"

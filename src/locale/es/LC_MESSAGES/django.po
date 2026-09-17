@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-16 19:06-0600\n"
+"POT-Creation-Date: 2026-09-16 20:19-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -4427,46 +4427,63 @@ msgstr "Diferencia"
 msgid "Precursor"
 msgstr "¿Es precursor?"
 
-msgid ""
-"Sistema regencial para la gestión de riesgo en bodegas y laboratorios en los "
-"que se almacena reactivos y productos químicos"
-msgstr ""
+msgid "Report List"
+msgstr "Listado de Reportes"
+
+msgid "Search report"
+msgstr "Buscar reporte"
 
 msgid "Regency Report"
 msgstr "Informe Regencial"
 
+msgid ""
+"Regency system for risk management in warehouses and laboratories that store "
+"chemical reactives and products."
+msgstr ""
+"Sistema regencial para la gestión de riesgo en bodegas y laboratorios en los "
+"que se almacenan reactivos y productos químicos."
+
 msgid "Chemical inventory report"
 msgstr "Informe de inventario de sustancias químicas"
 
-msgid "Occupational Health Report"
-msgstr "Reporte de Salud Laboral"
+msgid "Chemical substances in inventory with their hazard information."
+msgstr "Sustancias químicas del inventario con su información de peligro."
 
-msgid "Furnitures"
-msgstr "Muebles"
-
-msgid "Reactive precursor objects"
-msgstr "Objetos reactivos precursores"
-
-msgid "Object changes"
-msgstr "Movimiento de Objetos"
-
-msgid "Limited shelf objects"
-msgstr "Objetos en el límite"
-
-msgid "Precursor Report"
-msgstr "Reporte sobre precursores"
-
-msgid "Waste Report"
-msgstr "Reporte de desechos"
+msgid "Inventory and objects"
+msgstr "Inventario y objetos"
 
 msgid "Reactive Report"
 msgstr "Reporte de reactivos"
 
-msgid "Risk Zone Report"
-msgstr "Reporte de zona de riesgo"
-
 msgid "Reactive Stock Report"
 msgstr "Reporte de inventario de reactivos"
+
+msgid "Reactive precursor objects"
+msgstr "Objetos reactivos precursores"
+
+msgid "Limited shelf objects"
+msgstr "Objetos en el límite"
+
+msgid "Object changes"
+msgstr "Movimiento de Objetos"
+
+msgid "Furnitures"
+msgstr "Muebles"
+
+msgid "Donations Report"
+msgstr "Informe de donaciones"
+
+msgid "Risk, safety and regulation"
+msgstr "Riesgo, seguridad y regulación"
+
+msgid "Occupational Health Report"
+msgstr "Reporte de Salud Laboral"
+
+msgid "Precursor Report"
+msgstr "Reporte sobre precursores"
+
+msgid "Risk Zone Report"
+msgstr "Reporte de zona de riesgo"
 
 msgid "Compatibility Report"
 msgstr "Reporte de compatibilidad SGA"
@@ -4474,8 +4491,32 @@ msgstr "Reporte de compatibilidad SGA"
 msgid "Compatibility Laboratory Report"
 msgstr "Informe de laboratorio de compatibilidad"
 
-msgid "Donations Report"
-msgstr "Informe de donaciones"
+msgid "Waste Report"
+msgstr "Reporte de desechos"
+
+msgid "Each consumption record with its period, quantity, cost and bill."
+msgstr "Cada registro de consumo con su período, cantidad, costo y recibo."
+
+msgid "Monthly totals by building and resource."
+msgstr "Totales mensuales por edificio y recurso."
+
+msgid "Quantity, average unit cost and total cost per resource and month."
+msgstr "Cantidad, costo unitario promedio y costo total por recurso y mes."
+
+msgid "Consumption per square meter or per person, with the base used."
+msgstr "Consumo por metro cuadrado o por persona, con la base usada."
+
+msgid "One period against another, with absolute and percentage variation."
+msgstr "Un período contra otro, con variación absoluta y porcentual."
+
+msgid ""
+"Delivered waste by type, treatment and authorized manager, with manifests."
+msgstr ""
+"Residuos entregados por tipo, tratamiento y gestor autorizado, con sus "
+"manifiestos."
+
+msgid "No report matches the search."
+msgstr "Ningún reporte coincide con la búsqueda."
 
 # Reservations
 msgid "Reservations"
@@ -6030,9 +6071,6 @@ msgstr "Revisar Solicitudes"
 
 msgid "Reports, Informs and Procedures"
 msgstr "Reportes, Informes y Procedimientos"
-
-msgid "Report List"
-msgstr "Listado de Reportes"
 
 msgid "Platform administration"
 msgstr "Administración de plataforma"

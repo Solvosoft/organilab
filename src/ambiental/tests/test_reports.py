@@ -137,3 +137,18 @@ class ReportQueueTest(ReportTestCase):
         self.assertTrue(response.json()["result"], response.content)
         task = TaskReport.objects.get(pk=response.json()["report"])
         self.assertEqual(len(task.table_content["dataset"]), 2)
+
+
+class ReportIndexTest(ReportTestCase):
+    """Los reportes ambientales se listan en el índice común de reportes."""
+
+    def test_index_lists_environmental_reports_for_ambiental_roles(self):
+        for rol_name in ("Administrador ambiental", "Analista ambiental"):
+            self.client.force_login(self.make_user("idx_" + rol_name.split()[0], self.organization, rol_name))
+            with self.subTest(rol=rol_name):
+                response = self.client.get(reverse("laboratory:reports", kwargs={"org_pk": self.organization.pk}))
+                self.assertEqual(response.status_code, 200)
+                self.assertContains(
+                    response, reverse("ambiental:report_waste_manifest", kwargs={"org_pk": self.organization.pk})
+                )
+                self.assertContains(response, 'id="report-search"')

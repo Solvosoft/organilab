@@ -56,44 +56,6 @@
 						{% trans 'Consumption alerts' %}</a>
 				</li>
 			{% endif %}
-			{% if perms.ambiental.view_consumptionrecord and perms.laboratory.do_report %}
-				<li>
-					<a href="{% url 'ambiental:report_consumption_detail' org_pk %}"
-						title="{% trans 'Consumption detail report' %}">
-						<i class="fa fa-file-text" aria-hidden="true"></i>
-						{% trans 'Consumption detail report' %}</a>
-				</li>
-				<li>
-					<a href="{% url 'ambiental:report_consumption_summary' org_pk %}"
-						title="{% trans 'Consumption summary report' %}">
-						<i class="fa fa-file-text" aria-hidden="true"></i>
-						{% trans 'Consumption summary report' %}</a>
-				</li>
-				<li>
-					<a href="{% url 'ambiental:report_consumption_cost' org_pk %}"
-						title="{% trans 'Consumption cost report' %}">
-						<i class="fa fa-money" aria-hidden="true"></i>
-						{% trans 'Consumption cost report' %}</a>
-				</li>
-				<li>
-					<a href="{% url 'ambiental:report_environmental_indicators' org_pk %}"
-						title="{% trans 'Environmental indicators report' %}">
-						<i class="fa fa-percent" aria-hidden="true"></i>
-						{% trans 'Environmental indicators report' %}</a>
-				</li>
-				<li>
-					<a href="{% url 'ambiental:report_consumption_comparison' org_pk %}"
-						title="{% trans 'Consumption comparison report' %}">
-						<i class="fa fa-exchange" aria-hidden="true"></i>
-						{% trans 'Consumption comparison report' %}</a>
-				</li>
-				<li>
-					<a href="{% url 'ambiental:report_waste_manifest' org_pk %}"
-						title="{% trans 'Waste and manifests report' %}">
-						<i class="fa fa-truck" aria-hidden="true"></i>
-						{% trans 'Waste and manifests report' %}</a>
-				</li>
-			{% endif %}
 		</ul>
 	</li>
 {% endif %}
