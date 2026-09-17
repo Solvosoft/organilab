@@ -15,7 +15,7 @@ con ese rol.
 
 | Métrica | Valor |
 |---|---:|
-| Funcionalidades catalogadas | 53 |
+| Funcionalidades catalogadas | 54 |
 | Sin ninguna prueba | 14 |
 | Rutas navegables huérfanas | 0 |
 | Apps pendientes de catalogar | 2 |
@@ -539,6 +539,16 @@ Lista los procesos con correo registrado (`register_context`). La organización 
 | Paso | Actores | Permiso | Transición | Rutas |
 |---|---|---|---|---|
 | **Apagar, personalizar o restaurar el correo de un proceso** | Administrativo superior | `presentation.view_notificationsetting` | — | `platform:notificationsetting_list` |
+
+### `PLAT-03` — Configurar reglas de alerta y revisar sus disparos
+
+*presentation · ui · prioridad P2 · cobertura por ruta: completa · Selenium: —*
+
+Una regla dice qué proceso vigilar, con qué disparador y umbral, y a quién avisar: responsable, roles, correo del proceso, tarea pendiente y, si es crítica, notificación en la campana. Solo se ven los procesos cuyo permiso tiene el usuario; la pestaña de historial lista cada disparo.
+
+| Paso | Actores | Permiso | Transición | Rutas |
+|---|---|---|---|---|
+| **Crear, ajustar o desactivar una regla y consultar su historial** | Administrativo superior, Administrador ambiental | `presentation.view_alertrule` | — | `platform:alertrule_list` |
 
 ### `REP-01` — Pedir un reporte, esperar a que se genere y descargarlo
 

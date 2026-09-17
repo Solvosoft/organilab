@@ -122,6 +122,7 @@
     "ORG-04/suplantar": "nunca ejercitado",
     "PLAT-01/parametros": "ejercitado",
     "PLAT-02/notificaciones": "ejercitado",
+    "PLAT-03/reglas": "ejercitado",
     "REP-01/descargar": "solo superusuario",
     "REP-01/elegir": "solo superusuario",
     "REP-01/encolar": "solo superusuario",
@@ -182,7 +183,7 @@
     "SGA-05/recipientes": "solo superusuario",
     "TASK-01/ver_bandeja": "solo superusuario"
   },
-  "peticiones_observadas": 5002,
+  "peticiones_observadas": 5009,
   "roles_ejercitados": {
     "administrador_ambiental": [
       "AMB-01/gestionar_puntos",
@@ -193,7 +194,8 @@
       "AMB-06/panel",
       "AMB-07/registrar_residuo",
       "AMB-07/reporte_residuos",
-      "PLAT-01/parametros"
+      "PLAT-01/parametros",
+      "PLAT-03/reglas"
     ],
     "administrador_laboratorio": [
       "LAB-03/mis_labs",
@@ -205,7 +207,8 @@
     ],
     "administrativo_superior": [
       "PLAT-01/parametros",
-      "PLAT-02/notificaciones"
+      "PLAT-02/notificaciones",
+      "PLAT-03/reglas"
     ],
     "analista_ambiental": [
       "AMB-01/gestionar_puntos",

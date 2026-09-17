@@ -1328,6 +1328,13 @@ PLATFORM_ADMIN = [
     "presentation.change_systemparameter",
 ]
 
+PLATFORM_ALERTS = [
+    "presentation.view_alertrule",
+    "presentation.add_alertrule",
+    "presentation.change_alertrule",
+    "presentation.delete_alertrule",
+]
+
 PLATFORM_NOTIFICATIONS = [
     "presentation.view_notificationsetting",
     "presentation.change_notificationsetting",
@@ -1342,10 +1349,10 @@ def update_ambiental_roles():
         add_permissions(rol, perms)
     # Los parámetros ambientales los cambia el administrador ambiental; la pantalla
     # solo le muestra los que su permiso habilita (presentation/parameters.py).
-    add_permissions(Rol.objects.get(name="Administrador ambiental"), PLATFORM_ADMIN)
+    add_permissions(Rol.objects.get(name="Administrador ambiental"), PLATFORM_ADMIN + PLATFORM_ALERTS)
     rol = Rol.objects.filter(name="Administrativo superior").first()
     if rol:
-        add_permissions(rol, AMBIENTAL_FULL + PLATFORM_ADMIN + PLATFORM_NOTIFICATIONS)
+        add_permissions(rol, AMBIENTAL_FULL + PLATFORM_ADMIN + PLATFORM_NOTIFICATIONS + PLATFORM_ALERTS)
     else:
         print("WARNING: Rol 'Administrativo superior' not found, skipping.")
 

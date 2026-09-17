@@ -3644,6 +3644,28 @@ URLNAME_PERMISSIONS = {
             "permission": "presentation.change_notificationsetting",
         },
     ],
+    "alertrule_list": [
+        {
+            "name": "View alert rules",
+            "category": "Plataforma",
+            "permission": "presentation.view_alertrule",
+        },
+        {
+            "name": "Add alert rule",
+            "category": "Plataforma",
+            "permission": "presentation.add_alertrule",
+        },
+        {
+            "name": "Change alert rule",
+            "category": "Plataforma",
+            "permission": "presentation.change_alertrule",
+        },
+        {
+            "name": "Delete alert rule",
+            "category": "Plataforma",
+            "permission": "presentation.delete_alertrule",
+        },
+    ],
     # La papelera es de la biblioteca: sus permisos viven en djgentelella,
     # no en laboratory. update_roles.update_papelera() ya se los da a los
     # roles fijos; esto es lo que permite configurarlos por organización.

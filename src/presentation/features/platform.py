@@ -56,4 +56,27 @@ FEATURES = (
             ),
         ),
     ),
+    Feature(
+        id="PLAT-03",
+        name="Configurar reglas de alerta y revisar sus disparos",
+        module="presentation",
+        kind="ui",
+        description=(
+            "Una regla dice qué proceso vigilar, con qué disparador y umbral, y a quién "
+            "avisar: responsable, roles, correo del proceso, tarea pendiente y, si es "
+            "crítica, notificación en la campana. Solo se ven los procesos cuyo permiso "
+            "tiene el usuario; la pestaña de historial lista cada disparo."
+        ),
+        priority="P2",
+        steps=(
+            Step(
+                id="reglas",
+                name="Crear, ajustar o desactivar una regla y consultar su historial",
+                actors=ADMIN_PLATAFORMA,
+                routes=("platform:alertrule_list",),
+                permissions=("presentation.view_alertrule",),
+                source="src/presentation/platform/alerts_api.py, src/presentation/alerts.py",
+            ),
+        ),
+    ),
 )

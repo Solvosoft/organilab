@@ -10,22 +10,22 @@ el resto se cubre con pruebas de cliente o unitarias.
 
 | Categoría | Rutas |
 |---|---:|
-| `pagina` | 189 |
+| `pagina` | 190 |
 | `parcial` | 4 |
-| `api` | 761 |
+| `api` | 777 |
 | `autocomplete` | 6 |
 | `ajax` | 10 |
 | `json` | 45 |
 | `descarga` | 18 |
 | `accion` | 29 |
 | `infra` | 701 |
-| **total** | **1763** |
+| **total** | **1780** |
 
-Páginas: 189, de las cuales **67 sin ninguna prueba**.
+Páginas: 190, de las cuales **67 sin ninguna prueba**.
 
 ## Rutas por app
 
-Se omiten las categorías `api` e `infra` (1462 rutas de routers DRF y de
+Se omiten las categorías `api` e `infra` (1478 rutas de routers DRF y de
 la administración de Django): están en `inventario_urls.csv`.
 
 ### academic — 9 páginas, 0 sin prueba
@@ -243,10 +243,11 @@ la administración de Django): están en `inventario_urls.csv`.
 |---|---|---|---|---|---|:-:|:-:|
 | `view_task` | `/pending_tasks/view-tasks` | pagina | `pending_tasks.views.view_task` | `tasks/tasks-view.html` | — | — | sí |
 
-### platform — 2 páginas, 0 sin prueba
+### platform — 3 páginas, 0 sin prueba
 
 | Nombre | Patrón | Categoría | Vista | Plantilla | kwargs | Selenium | Pruebas |
 |---|---|---|---|---|---|:-:|:-:|
+| `alertrule_list` | `/platform/<int:org_pk>/alerts/` | pagina | `presentation.platform.views.alertrule_list` | `platform/alertrule_list.html` | org_pk | — | sí |
 | `notificationsetting_list` | `/platform/<int:org_pk>/notifications/` | pagina | `presentation.platform.views.notificationsetting_list` | `platform/notificationsetting_list.html` | org_pk | — | sí |
 | `systemparameter_list` | `/platform/<int:org_pk>/parameters/` | pagina | `presentation.platform.views.systemparameter_list` | `platform/systemparameter_list.html` | org_pk | — | sí |
 
