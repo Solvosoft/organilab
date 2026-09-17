@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-16 18:25-0600\n"
+"POT-Creation-Date: 2026-09-16 19:06-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -332,6 +332,26 @@ msgstr "Reserva creada para '%(obj)s' (%(amount)s unidades)"
 msgid "Created box reservation for '%(obj)s' (%(boxes)s boxes)"
 msgstr "Reserva de caja creada para '%(obj)s' (%(boxes)s cajas)"
 
+#, python-format
+msgid "The measurement point %(point)s has no records for %(months)s months."
+msgstr "El punto de medición %(point)s lleva %(months)s meses sin registros."
+
+#, python-format
+msgid ""
+"The measurement point %(point)s registered %(value)s %(unit)s in %(period)s, "
+"above the limit of %(limit)s."
+msgstr ""
+"El punto de medición %(point)s registró %(value)s %(unit)s en %(period)s, "
+"sobre el límite de %(limit)s."
+
+#, python-format
+msgid ""
+"The measurement point %(point)s consumed %(value)s %(unit)s in %(period)s, "
+"%(variation)s%% over its average."
+msgstr ""
+"El punto de medición %(point)s consumió %(value)s %(unit)s en %(period)s, "
+"%(variation)s%% sobre su promedio."
+
 msgid "Vehicle plate"
 msgstr "Placa del vehículo"
 
@@ -346,12 +366,6 @@ msgstr "Código de residuo"
 
 msgid "Manifest number"
 msgstr "Número de manifiesto"
-
-msgid "Created"
-msgstr "Creado"
-
-msgid "Deleted"
-msgstr "Eliminado"
 
 msgid "There is already a measurement point with this code for this resource."
 msgstr "Ya existe un punto de medición con este código para este recurso."
@@ -368,6 +382,10 @@ msgstr "El fin del período debe ser posterior al inicio."
 
 msgid "This field is required."
 msgstr "Este campo es requerido."
+
+msgid "This organization requires the bill, receipt or manifest."
+msgstr ""
+"Esta organización exige adjuntar la factura, el recibo o el manifiesto."
 
 #, python-format
 msgid ""
@@ -399,8 +417,17 @@ msgid "%(created)d bases created, %(updated)d updated, %(skipped)d skipped."
 msgstr ""
 "%(created)d bases creadas, %(updated)d actualizadas, %(skipped)d omitidas."
 
+msgid "Reviewed"
+msgstr "Revisada"
+
+msgid "The alert was marked as reviewed."
+msgstr "La alerta se marcó como revisada."
+
 msgid "Environmental management"
 msgstr "Gestión ambiental"
+
+msgid "Atypical consumption"
+msgstr "Consumo atípico"
 
 msgid "Building"
 msgstr "Edificio"
@@ -565,6 +592,42 @@ msgstr "Bases de normalización"
 msgid "Can preload normalization bases"
 msgstr "Puede precargar bases de normalización"
 
+msgid "Alert rule"
+msgstr "Regla de alerta"
+
+msgid "Reference value"
+msgstr "Valor de referencia"
+
+msgid "Registered value"
+msgstr "Valor registrado"
+
+msgid "Variation (%)"
+msgstr "Variación (%)"
+
+msgid "Level"
+msgstr "Nivel"
+
+msgid "Message"
+msgstr "Mensaje"
+
+msgid "Review note"
+msgstr "Nota de revisión"
+
+msgid "Reviewed by"
+msgstr "Revisada por"
+
+msgid "Reviewed at"
+msgstr "Revisada el"
+
+msgid "Consumption alert"
+msgstr "Alerta de consumo"
+
+msgid "Consumption alerts"
+msgstr "Alertas de consumo"
+
+msgid "Can review consumption alerts"
+msgstr "Puede revisar alertas de consumo"
+
 msgid "Registered by"
 msgstr "Registrado por"
 
@@ -604,9 +667,6 @@ msgstr "Período actual"
 msgid "Absolute variation"
 msgstr "Variación absoluta"
 
-msgid "Variation (%)"
-msgstr "Variación (%)"
-
 msgid "Previous cost"
 msgstr "Costo anterior"
 
@@ -615,6 +675,16 @@ msgstr "Costo actual"
 
 msgid "Delivery date"
 msgstr "Fecha de entrega"
+
+msgid ""
+"Atypical consumption detected by the alert rules. Review each one and leave "
+"a note that explains it; reviewed alerts stay in the history."
+msgstr ""
+"Consumos atípicos detectados por las reglas de alerta. Revise cada uno y "
+"deje una nota que lo explique; las alertas revisadas quedan en el historial."
+
+msgid "Configure alert rules"
+msgstr "Configurar reglas de alerta"
 
 msgid "Waste records"
 msgstr "Registros de residuos"
@@ -2193,6 +2263,9 @@ msgstr "Equipo '%(name)s' actualizado"
 #| msgid "Updated!"
 msgid "Updated"
 msgstr "¡Actualizado!"
+
+msgid "Created"
+msgstr "Creado"
 
 #, python-format
 msgid "%(action)s equipment characteristics for '%(name)s'"
@@ -5223,7 +5296,7 @@ msgid "Finished"
 msgstr "Finalizada"
 
 msgid "Link"
-msgstr ""
+msgstr "Enlace"
 
 #, fuzzy
 #| msgid "Is active"
@@ -5331,6 +5404,27 @@ msgstr "Explicación"
 
 msgid "Related file"
 msgstr "Archivo relacionado"
+
+msgid "Percentage over the average"
+msgstr "Porcentaje sobre el promedio"
+
+msgid "Maximum value"
+msgstr "Valor máximo"
+
+msgid "Months without records"
+msgstr "Meses sin registros"
+
+msgid "Unknown trigger."
+msgstr "Disparador desconocido."
+
+msgid "Enter a number."
+msgstr "Ingrese un número."
+
+msgid "The threshold must be greater than zero."
+msgstr "El umbral debe ser mayor que cero."
+
+msgid "Deleted"
+msgstr "Eliminado"
 
 msgid "*Type the amount in dollars"
 msgstr "*Tipo de cantidad en dolares"
@@ -5527,6 +5621,150 @@ msgstr "Imagen QR en SVG"
 
 msgid "Base64 Image QR"
 msgstr "Imagen QR en Base 64"
+
+msgid "Key"
+msgstr "Clave"
+
+msgid "System parameter"
+msgstr "Parámetro del sistema"
+
+msgid "System parameters"
+msgstr "Parámetros del sistema"
+
+msgid "Unknown parameter."
+msgstr "Parámetro desconocido."
+
+msgid "Invalid value for this parameter."
+msgstr "Valor no válido para este parámetro."
+
+msgid "Is active"
+msgstr "Está activo"
+
+msgid "Subject"
+msgstr "Asunto"
+
+msgid "Notification setting"
+msgstr "Configuración de notificación"
+
+msgid "Notification settings"
+msgstr "Configuración de notificaciones"
+
+msgid "Informative"
+msgstr "Informativa"
+
+msgid "Medium"
+msgstr "Media"
+
+msgid "Critical"
+msgstr "Crítica"
+
+msgid "Process"
+msgstr "Proceso"
+
+msgid "Trigger"
+msgstr "Disparador"
+
+msgid "Notify roles"
+msgstr "Roles a notificar"
+
+msgid "Notify the responsible"
+msgstr "Notificar al responsable"
+
+msgid "Create pending task"
+msgstr "Crear tarea pendiente"
+
+msgid "Alert rules"
+msgstr "Reglas de alerta"
+
+msgid "Recipients"
+msgstr "Destinatarios"
+
+msgid "Alert event"
+msgstr "Disparo de alerta"
+
+msgid "Alert events"
+msgstr "Disparos de alerta"
+
+msgid "Integer"
+msgstr "Entero"
+
+msgid "Float"
+msgstr "Decimal (flotante)"
+
+msgid "Decimal"
+msgstr "Decimal"
+
+msgid "Yes/No"
+msgstr "Sí/No"
+
+msgid "Text"
+msgstr "Texto"
+
+msgid "Date (YYYY-MM-DD)"
+msgstr "Fecha (AAAA-MM-DD)"
+
+msgid "JSON"
+msgstr "JSON"
+
+msgid "Own"
+msgstr "Propio"
+
+msgid "Inherited"
+msgstr "Heredado"
+
+msgid "Default"
+msgstr "Por defecto"
+
+msgid "Require a supporting document for consumption records"
+msgstr "Exigir documento de respaldo en los registros de consumo"
+
+msgid ""
+"If enabled, a consumption or waste record cannot be saved without its bill "
+"or manifest."
+msgstr ""
+"Si se activa, un registro de consumo o de residuo no se puede guardar sin su "
+"factura o manifiesto."
+
+msgid "Months of history to detect atypical consumption"
+msgstr "Meses de historial para detectar consumos atípicos"
+
+msgid ""
+"The last period of a measurement point is compared against the average of "
+"this many previous months."
+msgstr ""
+"El último período de un punto de medición se compara con el promedio de esta "
+"cantidad de meses anteriores."
+
+msgid "Unknown email process."
+msgstr "Proceso de correo desconocido."
+
+msgid "This trigger does not apply to the process."
+msgstr "Este disparador no aplica al proceso."
+
+msgid "Yes/No values: true or false. Dates: YYYY-MM-DD."
+msgstr "Valores Sí/No: true o false. Fechas: AAAA-MM-DD."
+
+msgid "Send this email"
+msgstr "Enviar este correo"
+
+msgid "Leave empty to use the subject of the global template."
+msgstr "Déjelo vacío para usar el asunto de la plantilla global."
+
+msgid ""
+"Leave empty to use the message of the global template. Django template "
+"syntax."
+msgstr ""
+"Déjelo vacío para usar el mensaje de la plantilla global. Sintaxis de "
+"plantillas de Django."
+
+msgid "Default of the process"
+msgstr "El del proceso"
+
+msgid "Restored inherited value"
+msgstr "Valor heredado restaurado"
+
+msgid "The inherited value was restored."
+msgstr "Se restauró el valor heredado."
 
 # error_view.html
 msgid "Access denied"
@@ -5796,6 +6034,9 @@ msgstr "Reportes, Informes y Procedimientos"
 msgid "Report List"
 msgstr "Listado de Reportes"
 
+msgid "Platform administration"
+msgstr "Administración de plataforma"
+
 msgid "Manage Reservations"
 msgstr "Administrar Reservas"
 
@@ -5894,6 +6135,53 @@ msgstr "Verificar FDS"
 
 msgid "Companies Managment"
 msgstr "Gestión de Compañías"
+
+msgid ""
+"What to watch (process and trigger), when to fire (threshold) and whom to "
+"notify (responsible, roles, email and pending task)."
+msgstr ""
+"Qué vigilar (proceso y disparador), cuándo disparar (umbral) y a quién "
+"avisar (responsable, roles, correo y tarea pendiente)."
+
+msgid "Rules"
+msgstr "Reglas"
+
+msgid "Firing history"
+msgstr "Historial de disparos"
+
+msgid "Register alert rule"
+msgstr "Registrar regla de alerta"
+
+msgid "Update alert rule"
+msgstr "Actualizar regla de alerta"
+
+msgid "Delete alert rule"
+msgstr "Eliminar regla de alerta"
+
+msgid ""
+"Emails that the system sends for each process. Turn one off or replace its "
+"subject and message for this organization and its children; the global "
+"templates are edited separately."
+msgstr ""
+"Correos que el sistema envía en cada proceso. Apague uno o reemplace su "
+"asunto y mensaje para esta organización y sus hijas; las plantillas globales "
+"se editan aparte."
+
+msgid "Edit global email templates"
+msgstr "Editar plantillas globales de correo"
+
+msgid "Update notification"
+msgstr "Actualizar notificación"
+
+msgid ""
+"A value set here applies to this organization and its children, unless a "
+"child sets its own. Restore to use the inherited value again."
+msgstr ""
+"Un valor fijado aquí aplica a esta organización y a sus hijas, salvo que una "
+"hija fije el suyo. Restaure para volver a usar el valor heredado."
+
+msgid "Update parameter"
+msgstr "Actualizar parámetro"
 
 msgid "Donate Organilab"
 msgstr "Donar a Organilab"
@@ -7452,9 +7740,6 @@ msgstr "Periodo de actualización (meses)"
 
 msgid "Remind days before due date"
 msgstr "Días de recordatorio antes del vencimiento"
-
-msgid "Is active"
-msgstr "Está activo"
 
 msgid "IPER configuration"
 msgstr "Configuración IPER"

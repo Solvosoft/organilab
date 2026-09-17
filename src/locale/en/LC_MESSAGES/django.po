@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-16 18:25-0600\n"
+"POT-Creation-Date: 2026-09-16 19:06-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -323,6 +323,22 @@ msgstr ""
 msgid "Created box reservation for '%(obj)s' (%(boxes)s boxes)"
 msgstr ""
 
+#, python-format
+msgid "The measurement point %(point)s has no records for %(months)s months."
+msgstr ""
+
+#, python-format
+msgid ""
+"The measurement point %(point)s registered %(value)s %(unit)s in %(period)s, "
+"above the limit of %(limit)s."
+msgstr ""
+
+#, python-format
+msgid ""
+"The measurement point %(point)s consumed %(value)s %(unit)s in %(period)s, "
+"%(variation)s%% over its average."
+msgstr ""
+
 msgid "Vehicle plate"
 msgstr ""
 
@@ -338,12 +354,6 @@ msgstr ""
 msgid "Manifest number"
 msgstr ""
 
-msgid "Created"
-msgstr ""
-
-msgid "Deleted"
-msgstr ""
-
 msgid "There is already a measurement point with this code for this resource."
 msgstr ""
 
@@ -356,6 +366,9 @@ msgid "The period end must be after the period start."
 msgstr ""
 
 msgid "This field is required."
+msgstr ""
+
+msgid "This organization requires the bill, receipt or manifest."
 msgstr ""
 
 #, python-format
@@ -383,7 +396,16 @@ msgstr ""
 msgid "%(created)d bases created, %(updated)d updated, %(skipped)d skipped."
 msgstr ""
 
+msgid "Reviewed"
+msgstr ""
+
+msgid "The alert was marked as reviewed."
+msgstr ""
+
 msgid "Environmental management"
+msgstr ""
+
+msgid "Atypical consumption"
 msgstr ""
 
 msgid "Building"
@@ -549,6 +571,42 @@ msgstr ""
 msgid "Can preload normalization bases"
 msgstr ""
 
+msgid "Alert rule"
+msgstr ""
+
+msgid "Reference value"
+msgstr ""
+
+msgid "Registered value"
+msgstr ""
+
+msgid "Variation (%)"
+msgstr ""
+
+msgid "Level"
+msgstr ""
+
+msgid "Message"
+msgstr ""
+
+msgid "Review note"
+msgstr ""
+
+msgid "Reviewed by"
+msgstr ""
+
+msgid "Reviewed at"
+msgstr ""
+
+msgid "Consumption alert"
+msgstr ""
+
+msgid "Consumption alerts"
+msgstr ""
+
+msgid "Can review consumption alerts"
+msgstr ""
+
 msgid "Registered by"
 msgstr ""
 
@@ -588,9 +646,6 @@ msgstr ""
 msgid "Absolute variation"
 msgstr ""
 
-msgid "Variation (%)"
-msgstr ""
-
 msgid "Previous cost"
 msgstr ""
 
@@ -598,6 +653,14 @@ msgid "Current cost"
 msgstr ""
 
 msgid "Delivery date"
+msgstr ""
+
+msgid ""
+"Atypical consumption detected by the alert rules. Review each one and leave "
+"a note that explains it; reviewed alerts stay in the history."
+msgstr ""
+
+msgid "Configure alert rules"
 msgstr ""
 
 msgid "Waste records"
@@ -2041,6 +2104,9 @@ msgid "Updated equipment '%(name)s'"
 msgstr ""
 
 msgid "Updated"
+msgstr ""
+
+msgid "Created"
 msgstr ""
 
 #, python-format
@@ -4967,6 +5033,27 @@ msgstr ""
 msgid "Related file"
 msgstr ""
 
+msgid "Percentage over the average"
+msgstr ""
+
+msgid "Maximum value"
+msgstr ""
+
+msgid "Months without records"
+msgstr ""
+
+msgid "Unknown trigger."
+msgstr ""
+
+msgid "Enter a number."
+msgstr ""
+
+msgid "The threshold must be greater than zero."
+msgstr ""
+
+msgid "Deleted"
+msgstr ""
+
 msgid "*Type the amount in dollars"
 msgstr ""
 
@@ -5123,6 +5210,144 @@ msgid "Image QR on SVG"
 msgstr ""
 
 msgid "Base64 Image QR"
+msgstr ""
+
+msgid "Key"
+msgstr ""
+
+msgid "System parameter"
+msgstr ""
+
+msgid "System parameters"
+msgstr ""
+
+msgid "Unknown parameter."
+msgstr ""
+
+msgid "Invalid value for this parameter."
+msgstr ""
+
+msgid "Is active"
+msgstr ""
+
+msgid "Subject"
+msgstr ""
+
+msgid "Notification setting"
+msgstr ""
+
+msgid "Notification settings"
+msgstr ""
+
+msgid "Informative"
+msgstr ""
+
+msgid "Medium"
+msgstr ""
+
+msgid "Critical"
+msgstr ""
+
+msgid "Process"
+msgstr ""
+
+msgid "Trigger"
+msgstr ""
+
+msgid "Notify roles"
+msgstr ""
+
+msgid "Notify the responsible"
+msgstr ""
+
+msgid "Create pending task"
+msgstr ""
+
+msgid "Alert rules"
+msgstr ""
+
+msgid "Recipients"
+msgstr ""
+
+msgid "Alert event"
+msgstr ""
+
+msgid "Alert events"
+msgstr ""
+
+msgid "Integer"
+msgstr ""
+
+msgid "Float"
+msgstr ""
+
+msgid "Decimal"
+msgstr ""
+
+msgid "Yes/No"
+msgstr ""
+
+msgid "Text"
+msgstr ""
+
+msgid "Date (YYYY-MM-DD)"
+msgstr ""
+
+msgid "JSON"
+msgstr ""
+
+msgid "Own"
+msgstr ""
+
+msgid "Inherited"
+msgstr ""
+
+msgid "Default"
+msgstr ""
+
+msgid "Require a supporting document for consumption records"
+msgstr ""
+
+msgid ""
+"If enabled, a consumption or waste record cannot be saved without its bill "
+"or manifest."
+msgstr ""
+
+msgid "Months of history to detect atypical consumption"
+msgstr ""
+
+msgid ""
+"The last period of a measurement point is compared against the average of "
+"this many previous months."
+msgstr ""
+
+msgid "Unknown email process."
+msgstr ""
+
+msgid "This trigger does not apply to the process."
+msgstr ""
+
+msgid "Yes/No values: true or false. Dates: YYYY-MM-DD."
+msgstr ""
+
+msgid "Send this email"
+msgstr ""
+
+msgid "Leave empty to use the subject of the global template."
+msgstr ""
+
+msgid ""
+"Leave empty to use the message of the global template. Django template "
+"syntax."
+msgstr ""
+
+msgid "Default of the process"
+msgstr ""
+
+msgid "Restored inherited value"
+msgstr ""
+
+msgid "The inherited value was restored."
 msgstr ""
 
 msgid "Access denied"
@@ -5358,6 +5583,9 @@ msgstr ""
 msgid "Report List"
 msgstr ""
 
+msgid "Platform administration"
+msgstr ""
+
 msgid "Manage Reservations"
 msgstr ""
 
@@ -5455,6 +5683,46 @@ msgid "Verify FDS"
 msgstr ""
 
 msgid "Companies Managment"
+msgstr ""
+
+msgid ""
+"What to watch (process and trigger), when to fire (threshold) and whom to "
+"notify (responsible, roles, email and pending task)."
+msgstr ""
+
+msgid "Rules"
+msgstr ""
+
+msgid "Firing history"
+msgstr ""
+
+msgid "Register alert rule"
+msgstr ""
+
+msgid "Update alert rule"
+msgstr ""
+
+msgid "Delete alert rule"
+msgstr ""
+
+msgid ""
+"Emails that the system sends for each process. Turn one off or replace its "
+"subject and message for this organization and its children; the global "
+"templates are edited separately."
+msgstr ""
+
+msgid "Edit global email templates"
+msgstr ""
+
+msgid "Update notification"
+msgstr ""
+
+msgid ""
+"A value set here applies to this organization and its children, unless a "
+"child sets its own. Restore to use the inherited value again."
+msgstr ""
+
+msgid "Update parameter"
 msgstr ""
 
 msgid "Donate Organilab"
@@ -6927,9 +7195,6 @@ msgid "Update period (months)"
 msgstr ""
 
 msgid "Remind days before due date"
-msgstr ""
-
-msgid "Is active"
 msgstr ""
 
 msgid "IPER configuration"
