@@ -1,4 +1,5 @@
 from django.contrib.admin.models import DELETION, CHANGE, ADDITION
+from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import permission_required, login_required
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q, Sum, F
@@ -331,7 +332,11 @@ def buildings_actions(request, org_pk, pk=None):
     title = _("Create Building")
     if pk:
         title = _("Update Building")
-        building = get_object_or_404(Buildings, pk=pk)
+        if not request.user.has_perm("risk_management.change_buildings"):
+            raise PermissionDenied
+        # Acotado a la organización de la URL: con solo el pk se podía editar (y mover a
+        # esta organización) un edificio de otra.
+        building = get_object_or_404(Buildings, pk=pk, organization__pk=org_pk)
         form = BuildingsForm(instance=building, org_pk=org_pk)
     if request.method == "POST":
         if building:

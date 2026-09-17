@@ -6,6 +6,7 @@ from requests import Response
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication
 
+from auth_and_perms.organization_utils import user_is_allowed_on_organization
 from laboratory.gtselects import GPaginatorMoreElements
 from laboratory.models import Laboratory, OrganizationStructure
 from risk_management.models import RiskZone, Buildings
@@ -42,6 +43,7 @@ class RiskLaboraratory(BaseSelect2View):
         if self.request.GET.get("org_pk", None):
             self.org = self.request.GET.get("org_pk", None)
             self.risk = self.request.GET.get("risk", None)
+            user_is_allowed_on_organization(request.user, self.org)
             return super().list(request, *args, **kwargs)
 
         return Response(
@@ -70,7 +72,7 @@ class RiskBuildings(BaseSelect2View):
         queryset = super().get_queryset()
 
         if self.org and self.risk:
-            risk = get_object_or_404(RiskZone, pk=self.risk)
+            risk = get_object_or_404(RiskZone, pk=self.risk, organization__pk=self.org)
 
             queryset = queryset.filter(
                 pk__in=risk.buildings.values_list("pk", flat=True),
@@ -84,6 +86,7 @@ class RiskBuildings(BaseSelect2View):
         if self.request.GET.get("org_pk", None):
             self.org = self.request.GET.get("org_pk", None)
             self.risk = self.request.GET.get("risk", None)
+            user_is_allowed_on_organization(request.user, self.org)
             return super().list(request, *args, **kwargs)
 
         return Response(

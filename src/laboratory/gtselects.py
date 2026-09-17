@@ -1,3 +1,4 @@
+from auth_and_perms.organization_utils import user_is_allowed_on_organization
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
@@ -859,6 +860,9 @@ class BuildinglLookup(BaseSelect2View):
 
     def list(self, request, *args, **kwargs):
         self.organization = self.request.GET.get("org_pk", None)
+        if self.organization:
+            # Solo los edificios de una organización a la que el usuario pertenece.
+            user_is_allowed_on_organization(request.user, self.organization)
         return super().list(request, *args, **kwargs)
 
 

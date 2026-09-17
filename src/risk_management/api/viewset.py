@@ -8,6 +8,7 @@ from djgentelella.objectmanagement import AuthAllPermBaseObjectManagement
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.pagination import LimitOffsetPagination
 
+from auth_and_perms.organization_utils import user_is_allowed_on_organization
 from laboratory.models import OrganizationStructure
 from laboratory.utils import (
     check_user_access_kwargs_org_lab,
@@ -108,15 +109,13 @@ class BuildingViewSet(AuthAllPermBaseObjectManagement):
         "detail_template": None,
     }
     perms = {
-        "list": ["risk_management.view_building"],
+        "list": ["risk_management.view_buildings"],
         "create": ["risk_management.add_buildings"],
         "update": ["risk_management.change_buildings"],
-        "retrieve": [],
-        "get_values_for_update": [],
-        "detail_template": [],
+        "retrieve": ["risk_management.view_buildings"],
+        "get_values_for_update": ["risk_management.change_buildings"],
+        "detail_template": ["risk_management.view_buildings"],
     }
-
-    permission_classes = ()
 
     queryset = Buildings.objects.all()
     pagination_class = LimitOffsetPagination
@@ -138,6 +137,9 @@ class BuildingViewSet(AuthAllPermBaseObjectManagement):
         queryset = super().get_queryset()
         if "org_pk" in self.kwargs:
             org_pk = self.kwargs["org_pk"]
+            # Sin esto cualquier usuario autenticado listaba los edificios de otra
+            # organización cambiando org_pk en la URL.
+            user_is_allowed_on_organization(self.request.user, org_pk)
             queryset = queryset.filter(organization__pk=org_pk)
 
         return queryset
