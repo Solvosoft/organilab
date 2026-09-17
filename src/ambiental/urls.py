@@ -61,5 +61,11 @@ urlpatterns = [
         name="report_consumption_comparison",
     ),
     path("dashboard/", views.AmbientalDashboard.as_view(), name="ambiental_dashboard"),
+    path("waste/", views.waste_list, name="waste_list"),
+    path(
+        "reports/waste_manifest/",
+        views.AmbientalReportView.as_view(report_name="report_waste_manifest"),
+        name="report_waste_manifest",
+    ),
     path("api/", include(router.urls)),
 ]

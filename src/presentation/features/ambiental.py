@@ -158,4 +158,35 @@ FEATURES = (
             ),
         ),
     ),
+    Feature(
+        id="AMB-07",
+        name="Registrar y reportar los residuos y sus manifiestos",
+        module="ambiental",
+        kind="ui",
+        description=(
+            "Un residuo es un registro de consumo de un punto de acopio: lleva tratamiento, "
+            "gestor autorizado, código de residuo y número de manifiesto, con el manifiesto "
+            "adjunto. Tiene su propia pantalla, que solo ofrece puntos de residuos, y un "
+            "reporte por tipo, tratamiento y gestor para las inspecciones."
+        ),
+        priority="P2",
+        steps=(
+            Step(
+                id="registrar_residuo",
+                name="Registrar la entrega de un residuo con su manifiesto",
+                actors=ADMIN_AMBIENTAL + ("registro_ambiental",),
+                routes=("ambiental:waste_list",),
+                permissions=("ambiental.view_consumptionrecord",),
+                source="src/ambiental/views.py waste_list",
+            ),
+            Step(
+                id="reporte_residuos",
+                name="Pedir el reporte de residuos y manifiestos",
+                actors=CONSULTA_AMBIENTAL,
+                routes=("ambiental:report_waste_manifest",),
+                permissions=("ambiental.view_consumptionrecord", "laboratory.do_report"),
+                source="src/ambiental/reports.py waste_manifest_rows",
+            ),
+        ),
+    ),
 )

@@ -39,17 +39,30 @@ def measurementpoint_list(request, org_pk):
     return render(request, "ambiental/measurementpoint_list.html", context=context)
 
 
-@login_required
-@permission_required("ambiental.view_consumptionrecord", raise_exception=True)
-def consumptionrecord_list(request, org_pk):
+def consumption_context(request, org_pk, waste):
     organization = get_object_or_404(OrganizationStructure, pk=org_pk)
     user_is_allowed_on_organization(request.user, organization)
-    context = {
+    return {
         "org_pk": org_pk,
+        "waste": waste,
         "building_form": BuildingFilterForm(),
         "form_create": ConsumptionRecordForm(prefix="create", organization=organization),
         "form_update": ConsumptionRecordForm(prefix="update", organization=organization),
     }
+
+
+@login_required
+@permission_required("ambiental.view_consumptionrecord", raise_exception=True)
+def consumptionrecord_list(request, org_pk):
+    context = consumption_context(request, org_pk, waste=False)
+    return render(request, "ambiental/consumptionrecord_list.html", context=context)
+
+
+@login_required
+@permission_required("ambiental.view_consumptionrecord", raise_exception=True)
+def waste_list(request, org_pk):
+    """La misma pantalla de consumos, acotada a los puntos y registros de residuos."""
+    context = consumption_context(request, org_pk, waste=True)
     return render(request, "ambiental/consumptionrecord_list.html", context=context)
 
 
@@ -71,6 +84,7 @@ REPORT_TITLES = {
     "report_consumption_cost": _("Consumption cost report"),
     "report_environmental_indicators": _("Environmental indicators report"),
     "report_consumption_comparison": _("Consumption comparison report"),
+    "report_waste_manifest": _("Waste and manifests report"),
 }
 
 

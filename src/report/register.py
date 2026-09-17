@@ -181,4 +181,13 @@ REPORT_FORMS = {
         "xlsx": "ambiental.reports.report_consumption_comparison_doc",
         "ods": "ambiental.reports.report_consumption_comparison_doc",
     },
+    "report_waste_manifest": {
+        "task": "report.tasks.task_report",
+        "form": "ambiental.forms.AmbientalReportForm",
+        "html": "ambiental.reports.report_waste_manifest_html",
+        "pdf": "report.views.base.base_pdf",
+        "xls": "ambiental.reports.report_waste_manifest_doc",
+        "xlsx": "ambiental.reports.report_waste_manifest_doc",
+        "ods": "ambiental.reports.report_waste_manifest_doc",
+    },
 }

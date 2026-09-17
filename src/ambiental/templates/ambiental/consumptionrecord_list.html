@@ -8,16 +8,24 @@
 	{% define_urlname_action 'ambiental_consumptionrecord' %}
 {% endblock %}
 
-{% block title %}{% trans 'Consumption records' %}{% endblock %}
+{% block title %}{% if waste %}{% trans 'Waste records' %}{% else %}{% trans 'Consumption records' %}{% endif %}{% endblock %}
 {% block content %}
 	<input type="hidden" value="{{ org_pk }}" id="org">
+	<input type="hidden" value="{{ waste|yesno:'1,0' }}" id="waste_flag">
 	<div class="card mt-2">
 		<div class="card-body">
 			<div class="card-title titles">
-				<h1 class="text-center">{% trans 'Consumption records' %}</h1>
-				<p class="text-center text-muted">
-					{% trans 'Choose a building to see and record the consumption of its measurement points.' %}
-				</p>
+				{% if waste %}
+					<h1 class="text-center">{% trans 'Waste records' %}</h1>
+					<p class="text-center text-muted">
+						{% trans 'Choose a building to see and record the waste delivered from its collection points, with treatment, authorized manager and manifest.' %}
+					</p>
+				{% else %}
+					<h1 class="text-center">{% trans 'Consumption records' %}</h1>
+					<p class="text-center text-muted">
+						{% trans 'Choose a building to see and record the consumption of its measurement points.' %}
+					</p>
+				{% endif %}
 			</div>
 			<div class="row justify-content-center">
 				<div class="col-md-6">{{ building_form }}</div>

@@ -15,8 +15,8 @@ con ese rol.
 
 | Métrica | Valor |
 |---|---:|
-| Funcionalidades catalogadas | 50 |
-| Sin ninguna prueba | 13 |
+| Funcionalidades catalogadas | 51 |
+| Sin ninguna prueba | 14 |
 | Rutas navegables huérfanas | 0 |
 | Apps pendientes de catalogar | 2 |
 | Roles canónicos | 21 |
@@ -125,6 +125,17 @@ Tarjetas con el último mes de cada recurso contra el anterior, consumo y costo 
 | Paso | Actores | Permiso | Transición | Rutas |
 |---|---|---|---|---|
 | **Abrir el panel y filtrarlo** | Administrador ambiental, Administrativo superior, Encargado de registro ambiental, Analista ambiental | `ambiental.view_ambiental_dashboard` | — | `ambiental:ambiental_dashboard` |
+
+### `AMB-07` — Registrar y reportar los residuos y sus manifiestos
+
+*ambiental · ui · prioridad P2 · cobertura por ruta: **sin prueba** · Selenium: —*
+
+Un residuo es un registro de consumo de un punto de acopio: lleva tratamiento, gestor autorizado, código de residuo y número de manifiesto, con el manifiesto adjunto. Tiene su propia pantalla, que solo ofrece puntos de residuos, y un reporte por tipo, tratamiento y gestor para las inspecciones.
+
+| Paso | Actores | Permiso | Transición | Rutas |
+|---|---|---|---|---|
+| **Registrar la entrega de un residuo con su manifiesto** | Administrador ambiental, Administrativo superior, Encargado de registro ambiental | `ambiental.view_consumptionrecord` | — | `ambiental:waste_list` |
+| **Pedir el reporte de residuos y manifiestos** | Administrador ambiental, Administrativo superior, Encargado de registro ambiental, Analista ambiental | `ambiental.view_consumptionrecord`<br>`laboratory.do_report` | — | `ambiental:report_waste_manifest` |
 
 ### `ORG-01` — Elegir organización y orientarse en el árbol
 

@@ -5,6 +5,7 @@ from djgentelella.views.select2autocomplete import BaseSelect2View
 from rest_framework import serializers
 from rest_framework.authentication import SessionAuthentication
 
+from ambiental.ambiental_defaults import RESOURCE_TYPES
 from ambiental.api.serializers import resource_info_payload
 
 from ambiental.models import MeasurementPoint
@@ -88,6 +89,13 @@ class AmbientalMeasurementPoints(AmbientalOrganizationSelect):
         building = self.get_building()
         if building:
             queryset = queryset.filter(building__pk=building)
+        waste = self.request.GET.get("waste")
+        if waste in ("0", "1"):
+            waste_resources = [
+                name for name, info in RESOURCE_TYPES.items() if info["is_waste"]
+            ]
+            lookup = {"resource_type__description__in": waste_resources}
+            queryset = queryset.filter(**lookup) if waste == "1" else queryset.exclude(**lookup)
         return queryset
 
     def get_serializer_class(self):

@@ -19,6 +19,9 @@ function ambiental_toggle_resource_fields(prefix, info) {
 
 function ambiental_bind_point(prefix) {
     const point = $("#id_" + prefix + "point");
+    // Los autocompletes leen sus filtros de los data-s2filter-*: en la pantalla de
+    // residuos solo se ofrecen puntos de residuos, y en la de consumos los demás.
+    point.data("s2filterWaste", "#waste_flag");
     point.on("select2:select", function (event) {
         const info = event.params.data.resource_info;
         ambiental_toggle_resource_fields(prefix, info);
@@ -66,6 +69,7 @@ const ocrud = ambiental_crud("ambiental_consumptionrecord", "#table-consumptionr
             if (building) {
                 data["point__building"] = building;
             }
+            data["is_waste"] = $("#waste_flag").val() === "1" ? "true" : "false";
             return data;
         }
     },

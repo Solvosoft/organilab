@@ -17,6 +17,8 @@
     "AMB-04/reportes_consumo": "ejercitado",
     "AMB-05/indicadores": "ejercitado",
     "AMB-06/panel": "ejercitado",
+    "AMB-07/registrar_residuo": "ejercitado",
+    "AMB-07/reporte_residuos": "ejercitado",
     "DERB-01/borrar": "solo superusuario",
     "DERB-01/crear": "solo superusuario",
     "DERB-01/editar": "solo superusuario",
@@ -178,7 +180,7 @@
     "SGA-05/recipientes": "solo superusuario",
     "TASK-01/ver_bandeja": "solo superusuario"
   },
-  "peticiones_observadas": 4979,
+  "peticiones_observadas": 4989,
   "roles_ejercitados": {
     "administrador_ambiental": [
       "AMB-01/gestionar_puntos",
@@ -186,7 +188,9 @@
       "AMB-03/gestionar_bases",
       "AMB-04/reportes_consumo",
       "AMB-05/indicadores",
-      "AMB-06/panel"
+      "AMB-06/panel",
+      "AMB-07/registrar_residuo",
+      "AMB-07/reporte_residuos"
     ],
     "administrador_laboratorio": [
       "LAB-03/mis_labs",
@@ -202,7 +206,9 @@
       "AMB-03/gestionar_bases",
       "AMB-04/reportes_consumo",
       "AMB-05/indicadores",
-      "AMB-06/panel"
+      "AMB-06/panel",
+      "AMB-07/registrar_residuo",
+      "AMB-07/reporte_residuos"
     ],
     "estudiante": [
       "LAB-03/mis_labs"
@@ -217,7 +223,9 @@
       "AMB-03/gestionar_bases",
       "AMB-04/reportes_consumo",
       "AMB-05/indicadores",
-      "AMB-06/panel"
+      "AMB-06/panel",
+      "AMB-07/registrar_residuo",
+      "AMB-07/reporte_residuos"
     ]
   },
   "roles_nunca_ejercitados": [

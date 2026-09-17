@@ -24,6 +24,14 @@
 						{% trans 'Consumption records' %}</a>
 				</li>
 			{% endif %}
+			{% if perms.ambiental.view_consumptionrecord %}
+				<li>
+					<a href="{% url 'ambiental:waste_list' org_pk %}"
+						title="{% trans 'Waste records' %}">
+						<i class="fa fa-recycle" aria-hidden="true"></i>
+						{% trans 'Waste records' %}</a>
+				</li>
+			{% endif %}
 			{% if perms.ambiental.view_measurementpoint %}
 				<li>
 					<a href="{% url 'ambiental:measurementpoint_list' org_pk %}"
@@ -70,6 +78,12 @@
 						title="{% trans 'Consumption comparison report' %}">
 						<i class="fa fa-exchange" aria-hidden="true"></i>
 						{% trans 'Consumption comparison report' %}</a>
+				</li>
+				<li>
+					<a href="{% url 'ambiental:report_waste_manifest' org_pk %}"
+						title="{% trans 'Waste and manifests report' %}">
+						<i class="fa fa-truck" aria-hidden="true"></i>
+						{% trans 'Waste and manifests report' %}</a>
 				</li>
 			{% endif %}
 		</ul>

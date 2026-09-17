@@ -305,3 +305,48 @@ report_environmental_indicators_html = html_report(environmental_indicator_rows)
 report_environmental_indicators_doc = doc_report(environmental_indicator_rows)
 report_consumption_comparison_html = html_report(consumption_comparison_rows)
 report_consumption_comparison_doc = doc_report(consumption_comparison_rows)
+
+
+# ---------------------------------------------------------------------------
+# Paso 9: residuos y manifiestos
+# ---------------------------------------------------------------------------
+
+
+def waste_manifest_rows(report):
+    columns = [
+        ("building", _("Building")),
+        ("point", _("Measurement point")),
+        ("resource", _("Resource type")),
+        ("period_end", _("Delivery date")),
+        ("quantity", _("Quantity")),
+        ("unit", _("Unit")),
+        ("treatment", _("Waste treatment")),
+        ("waste_manager", _("Authorized waste manager")),
+        ("waste_code", _("Waste code")),
+        ("manifest_number", _("Manifest number")),
+        ("document", _("Supporting document")),
+    ]
+    rows = []
+    records = report_records(report).filter(is_waste=True).order_by(
+        "point__resource_type__description", "treatment__description", "period_end"
+    )
+    for record in records:
+        extra = record.extra_data or {}
+        rows.append([
+            as_text(record.point.building),
+            str(record.point),
+            record.point.resource_type.description,
+            record.period_end.isoformat(),
+            as_text(record.quantity),
+            record.unit.description,
+            as_text(record.treatment),
+            as_text(record.waste_manager),
+            extra.get("waste_code", ""),
+            extra.get("manifest_number", ""),
+            record.document.name.split("/")[-1] if record.document else _("No"),
+        ])
+    return columns, rows
+
+
+report_waste_manifest_html = html_report(waste_manifest_rows)
+report_waste_manifest_doc = doc_report(waste_manifest_rows)
