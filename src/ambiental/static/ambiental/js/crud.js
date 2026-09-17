@@ -34,7 +34,6 @@ function ambiental_crud(name, table_id, columns, options) {
         datatable_inits: {
             columns: columns,
             addfilter: true,
-            events: options.datatable_events || {}
         },
         add_filter: true,
         relation_render: {},
@@ -54,8 +53,15 @@ function ambiental_crud(name, table_id, columns, options) {
             detail: {},
             destroy: {}
         },
-        events: options.events || {}
     };
+    // djgentelella combina estas opciones con $.extend superficial: un `events` vacío
+    // reemplazaría sus eventos por defecto (p. ej. `filter`) y la tabla no cargaría.
+    if (options.datatable_events) {
+        objconfig.datatable_inits.events = options.datatable_events;
+    }
+    if (options.events) {
+        objconfig.events = options.events;
+    }
     const ocrud = ObjectCRUD(name, objconfig);
     ocrud.init();
     return ocrud;
