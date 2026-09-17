@@ -54,7 +54,12 @@ class WasteTest(ReportTestCase):
         for rol_name in ("Administrador ambiental", "Encargado de registro ambiental", "Analista ambiental"):
             user = self.make_user("w_" + rol_name.split()[0], self.organization, rol_name)
             self.client.force_login(user)
-            for name in ("ambiental:waste_list", "ambiental:report_waste_manifest"):
-                with self.subTest(rol=rol_name, page=name):
-                    response = self.client.get(reverse(name, kwargs={"org_pk": self.organization.pk}))
+            kwargs = {"org_pk": self.organization.pk}
+            urls = (
+                reverse("ambiental:waste_list", kwargs=kwargs),
+                reverse("ambiental:report_waste_manifest", kwargs=kwargs),
+            )
+            for url in urls:
+                with self.subTest(rol=rol_name, page=url):
+                    response = self.client.get(url)
                     self.assertEqual(response.status_code, 200)

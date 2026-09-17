@@ -21,7 +21,7 @@ el resto se cubre con pruebas de cliente o unitarias.
 | `infra` | 701 |
 | **total** | **1791** |
 
-Páginas: 191, de las cuales **67 sin ninguna prueba**.
+Páginas: 191, de las cuales **60 sin ninguna prueba**.
 
 ## Rutas por app
 
@@ -48,7 +48,7 @@ la administración de Django): están en `inventario_urls.csv`.
 | `procedure_update` | `/academic/<int:org_pk>/procedure/procedure_update/<int:pk>/` | pagina | `academic.views.ProcedureUpdateView` | `academic/procedure_create.html` | org_pk, pk | — | sí |
 | `update_step` | `/academic/<int:org_pk>/procedure/step/<int:pk>/update/` | pagina | `academic.views.ProcedureStepUpdateView` | `academic/procedure_steps.html` | org_pk, pk | — | sí |
 
-### ambiental — 12 páginas, 7 sin prueba
+### ambiental — 12 páginas, 0 sin prueba
 
 | Nombre | Patrón | Categoría | Vista | Plantilla | kwargs | Selenium | Pruebas |
 |---|---|---|---|---|---|:-:|:-:|
@@ -57,13 +57,13 @@ la administración de Django): están en `inventario_urls.csv`.
 | `consumptionrecord_list` | `/ambiental/<int:org_pk>/consumption/` | pagina | `ambiental.views.consumptionrecord_list` | `ambiental/consumptionrecord_list.html` | org_pk | — | sí |
 | `measurementpoint_list` | `/ambiental/<int:org_pk>/measurement_points/` | pagina | `ambiental.views.measurementpoint_list` | `ambiental/measurementpoint_list.html` | org_pk | — | sí |
 | `normalizationbase_list` | `/ambiental/<int:org_pk>/normalization_bases/` | pagina | `ambiental.views.normalizationbase_list` | `ambiental/normalizationbase_list.html` | org_pk | — | sí |
-| `report_consumption_comparison` | `/ambiental/<int:org_pk>/reports/consumption_comparison/` | pagina | `ambiental.views.AmbientalReportView` | `report/base_report_form_view.html` | org_pk | — | — |
-| `report_consumption_cost` | `/ambiental/<int:org_pk>/reports/consumption_cost/` | pagina | `ambiental.views.AmbientalReportView` | `report/base_report_form_view.html` | org_pk | — | — |
-| `report_consumption_detail` | `/ambiental/<int:org_pk>/reports/consumption_detail/` | pagina | `ambiental.views.AmbientalReportView` | `report/base_report_form_view.html` | org_pk | — | — |
-| `report_consumption_summary` | `/ambiental/<int:org_pk>/reports/consumption_summary/` | pagina | `ambiental.views.AmbientalReportView` | `report/base_report_form_view.html` | org_pk | — | — |
-| `report_environmental_indicators` | `/ambiental/<int:org_pk>/reports/environmental_indicators/` | pagina | `ambiental.views.AmbientalReportView` | `report/base_report_form_view.html` | org_pk | — | — |
-| `report_waste_manifest` | `/ambiental/<int:org_pk>/reports/waste_manifest/` | pagina | `ambiental.views.AmbientalReportView` | `report/base_report_form_view.html` | org_pk | — | — |
-| `waste_list` | `/ambiental/<int:org_pk>/waste/` | pagina | `ambiental.views.waste_list` | `ambiental/consumptionrecord_list.html` | org_pk | — | — |
+| `report_consumption_comparison` | `/ambiental/<int:org_pk>/reports/consumption_comparison/` | pagina | `ambiental.views.AmbientalReportView` | `report/base_report_form_view.html` | org_pk | — | sí |
+| `report_consumption_cost` | `/ambiental/<int:org_pk>/reports/consumption_cost/` | pagina | `ambiental.views.AmbientalReportView` | `report/base_report_form_view.html` | org_pk | — | sí |
+| `report_consumption_detail` | `/ambiental/<int:org_pk>/reports/consumption_detail/` | pagina | `ambiental.views.AmbientalReportView` | `report/base_report_form_view.html` | org_pk | — | sí |
+| `report_consumption_summary` | `/ambiental/<int:org_pk>/reports/consumption_summary/` | pagina | `ambiental.views.AmbientalReportView` | `report/base_report_form_view.html` | org_pk | — | sí |
+| `report_environmental_indicators` | `/ambiental/<int:org_pk>/reports/environmental_indicators/` | pagina | `ambiental.views.AmbientalReportView` | `report/base_report_form_view.html` | org_pk | — | sí |
+| `report_waste_manifest` | `/ambiental/<int:org_pk>/reports/waste_manifest/` | pagina | `ambiental.views.AmbientalReportView` | `report/base_report_form_view.html` | org_pk | — | sí |
+| `waste_list` | `/ambiental/<int:org_pk>/waste/` | pagina | `ambiental.views.waste_list` | `ambiental/consumptionrecord_list.html` | org_pk | — | sí |
 
 ### auth_and_perms — 9 páginas, 4 sin prueba
 

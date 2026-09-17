@@ -16,7 +16,7 @@ con ese rol.
 | Métrica | Valor |
 |---|---:|
 | Funcionalidades catalogadas | 55 |
-| Sin ninguna prueba | 14 |
+| Sin ninguna prueba | 11 |
 | Rutas navegables huérfanas | 0 |
 | Apps pendientes de catalogar | 2 |
 | Roles canónicos | 21 |
@@ -98,7 +98,7 @@ Los denominadores de los indicadores. Se precargan con el área del edificio y l
 
 ### `AMB-04` — Reportar el consumo: detalle, consolidado y costos
 
-*ambiental · ui · prioridad P2 · cobertura por ruta: **sin prueba** · Selenium: —*
+*ambiental · ui · prioridad P2 · cobertura por ruta: completa · Selenium: —*
 
 Los reportes de consumo por edificio, recurso y período, en pantalla, PDF u hoja de cálculo, sobre la cola de reportes de `report`. El consolidado suma por mes facturado (`period_end`) y separa unidades distintas.
 
@@ -108,7 +108,7 @@ Los reportes de consumo por edificio, recurso y período, en pantalla, PDF u hoj
 
 ### `AMB-05` — Comparar edificios y períodos con indicadores normalizados
 
-*ambiental · ui · prioridad P2 · cobertura por ruta: **sin prueba** · Selenium: —*
+*ambiental · ui · prioridad P2 · cobertura por ruta: completa · Selenium: —*
 
 El consumo dividido por los m² o las personas del edificio, con la base y el total crudo a la vista para que el número sea auditable, y la comparación de un período contra otro con variación absoluta y porcentual. Unidades mezcladas en un mismo recurso no se suman: se marcan.
 
@@ -128,7 +128,7 @@ Tarjetas con el último mes de cada recurso contra el anterior, consumo y costo 
 
 ### `AMB-07` — Registrar y reportar los residuos y sus manifiestos
 
-*ambiental · ui · prioridad P2 · cobertura por ruta: **sin prueba** · Selenium: —*
+*ambiental · ui · prioridad P2 · cobertura por ruta: completa · Selenium: —*
 
 Un residuo es un registro de consumo de un punto de acopio: lleva tratamiento, gestor autorizado, código de residuo y número de manifiesto, con el manifiesto adjunto. Tiene su propia pantalla, que solo ofrece puntos de residuos, y un reporte por tipo, tratamiento y gestor para las inspecciones.
 
