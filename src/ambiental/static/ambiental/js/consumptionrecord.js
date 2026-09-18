@@ -50,8 +50,10 @@ const ocrud = ambiental_crud("ambiental_consumptionrecord", "#table-consumptionr
         data: "resource_type", name: "point__resource_type", title: gettext("Resource type"),
         type: "readonly", render: gt_print_list_object("text"), visible: true
     },
-    {data: "period_start", name: "period_start", title: gettext("Period start"), type: "readonly", visible: true},
-    {data: "period_end", name: "period_end", title: gettext("Period end"), type: "date", visible: true},
+    {data: "period_start", name: "period_start", title: gettext("Period start"), type: "readonly", visible: true,
+    "dateformat":  document.date_format},
+    {data: "period_end", name: "period_end", title: gettext("Period end"), type: "date", visible: true,
+						"dateformat":  document.date_format},
     {data: "quantity", name: "quantity", title: gettext("Quantity"), type: "readonly", visible: true},
     {
         data: "unit", name: "unit", title: gettext("Unit"),
