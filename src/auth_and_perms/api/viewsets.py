@@ -18,7 +18,7 @@ from rest_framework.response import Response
 from django.utils.translation import gettext_lazy as _
 from rest_framework.views import APIView
 
-from api.utils import AllPermissionOrganization
+from api.utils import AllPermissionOrganization, AllPermissionOrganizationByAction
 from auth_and_perms.api import filterset
 from auth_and_perms.api.filterset import OrganizationStructureRelationsFilter
 from auth_and_perms.api.serializers import (
@@ -1284,6 +1284,7 @@ class OrganizationLabRelationDeleteViewSet(AuthAllPermBaseObjectManagement):
         "list": ["laboratory.view_organizationstructurerelations"],
         "destroy": ["laboratory.delete_organizationstructurerelations"],
     }
+    permission_classes = [IsAuthenticated, AllPermissionOrganizationByAction]
     filterset_class = OrganizationStructureRelationsFilter
     filter_backends = [DjangoFilterBackend, SearchFilter]
     search_fields = ["object_id"]

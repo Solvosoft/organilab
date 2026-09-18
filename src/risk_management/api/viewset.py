@@ -7,7 +7,9 @@ from django_filters.rest_framework import DjangoFilterBackend
 from djgentelella.objectmanagement import AuthAllPermBaseObjectManagement
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.permissions import IsAuthenticated
 
+from api.utils import AllPermissionOrganizationByAction
 from auth_and_perms.organization_utils import user_is_allowed_on_organization
 from laboratory.models import OrganizationStructure
 from laboratory.utils import (
@@ -62,7 +64,7 @@ class RegentViewSet(AuthAllPermBaseObjectManagement):
         "detail_template": [],
     }
 
-    permission_classes = ()
+    permission_classes = [IsAuthenticated, AllPermissionOrganizationByAction]
 
     queryset = Regent.objects.all()
     pagination_class = LimitOffsetPagination
@@ -116,6 +118,8 @@ class BuildingViewSet(AuthAllPermBaseObjectManagement):
         "get_values_for_update": ["risk_management.change_buildings"],
         "detail_template": ["risk_management.view_buildings"],
     }
+
+    permission_classes = [IsAuthenticated, AllPermissionOrganizationByAction]
 
     queryset = Buildings.objects.all()
     pagination_class = LimitOffsetPagination
@@ -181,7 +185,7 @@ class StructureViewSet(AuthAllPermBaseObjectManagement):
         "detail_template": [],
     }
 
-    permission_classes = ()
+    permission_classes = [IsAuthenticated, AllPermissionOrganizationByAction]
 
     queryset = Structure.objects.all()
     pagination_class = LimitOffsetPagination
@@ -224,7 +228,7 @@ class IncidentViewSet(AuthAllPermBaseObjectManagement):
         "detail_template": ["risk_management.view_incidentreport"],
     }
 
-    permission_classes = ()
+    permission_classes = [IsAuthenticated, AllPermissionOrganizationByAction]
 
     queryset = IncidentReport.objects.all()
     pagination_class = LimitOffsetPagination
@@ -293,7 +297,7 @@ class WorkdaysViewSet(AuthAllPermBaseObjectManagement):
         "destroy": ["risk_management.delete_workday"],
     }
 
-    permission_classes = ()
+    permission_classes = [IsAuthenticated, AllPermissionOrganizationByAction]
 
     queryset = Workday.objects.all()
     pagination_class = LimitOffsetPagination
@@ -368,6 +372,8 @@ class IPERAssessmentViewSet(AuthAllPermBaseObjectManagement):
         "list": ["risk_management.view_iperassessment"],
         "destroy": ["risk_management.delete_iperassessment"],
     }
+
+    permission_classes = [IsAuthenticated, AllPermissionOrganizationByAction]
 
     queryset = IPERAssessment.objects.all()
     pagination_class = LimitOffsetPagination
