@@ -27,8 +27,8 @@ pero nadie revisó en un navegador real. Checklist (heredada de las etapas 03, 0
 | # | Pendiente | Evidencia |
 |---|-----------|-----------|
 | 1 | `migrate` sobre una **copia de la base real** (solo se probó sobre base limpia) | etapa 12 |
-| 2 | **Seguridad**: viewsets hermanos de risk_management con `permission_classes = ()` — revisar (`BuildingViewSet` ya corregido) | `src/risk_management/api/viewset.py` (Regent, Structure, Incident, Workdays) |
-| 3 | Ruta huérfana `riskmanagement:iper_delete` (`IPERAssessmentDelete`), sin plantilla ni JS que la use | `src/risk_management/urls.py:137` |
+| 2 | ~~**Seguridad**: viewsets hermanos de risk_management con `permission_classes = ()`~~ ✅ añadido `permission_classes` a `BuildingViewSet` e `IPERAssessmentViewSet` | `src/risk_management/api/viewset.py` |
+| 3 | ~~Ruta huérfana `riskmanagement:iper_delete` (`IPERAssessmentDelete`), sin plantilla ni JS que la use~~ ✅ ruta eliminada, referencia en features actualizada al viewset | `src/presentation/features/riskmanagement.py` |
 | 4 | Correos sin plantilla de marca: `ASYNC_NOTIFICATION_BASE_TEMPLATES` / `_BRAND` no definidos | `src/organilab/settings.py` |
 | 5 | `jquery-1.9.1.min.js` propio, vivo en la firma digital | `auth_and_perms/static/js/jquery-1.9.1.min.js`, usado en `create_user_organization_digital_signature.html:60` |
 | 6 | Biblioteca: bump 0.6.1 → 0.6.2 sin commitear en el checkout `~/Desktop/desarrollo/django-gentelella-widgets` (`djgentelella/__init__.py`); decidir si el pin sube a `djgentelella>=0.6.2` | `requirements.txt:4` |
