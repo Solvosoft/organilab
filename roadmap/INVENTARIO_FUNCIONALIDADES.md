@@ -746,7 +746,7 @@ Estados que atraviesa:
 | **Ver el panel consolidado de IPER** | Administrador IPER, Administrativo superior, Auditor IPER | `risk_management.view_iper_dashboard` | — | `riskmanagement:iper_dashboard` |
 | **Alternar el anonimato de la evaluación** | Administrador de Laboratorio, Administrador IPER | `risk_management.change_iperassessment` | — | `riskmanagement:iper_toggle_anonymous` |
 | **Mantener el catálogo IPER de la organización raíz** | Administrador IPER | `risk_management.manage_iper_catalog` | — | `riskmanagement:iper_catalog_add` |
-| **Eliminar una evaluación** | Administrador IPER, Administrativo superior | `risk_management.delete_iperassessment` | — | `riskmanagement:iper_delete` |
+| **Eliminar una evaluación** | Administrador IPER, Administrativo superior | `risk_management.delete_iperassessment` | — | `riskmanagement:api-iperassessment-detail` |
 
 Hallazgos:
 

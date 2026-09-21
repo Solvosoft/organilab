@@ -223,6 +223,7 @@ class IncidentViewSet(AuthAllPermBaseObjectManagement):
         "list": ["risk_management.view_incidentreport"],
         "create": ["risk_management.add_incidentreport"],
         "update": ["risk_management.change_incidentreport"],
+        "destroy": ["risk_management.delete_incidentreport"],
         "retrieve": ["risk_management.view_incidentreport"],
         "get_values_for_update": ["risk_management.view_incidentreport"],
         "detail_template": ["risk_management.view_incidentreport"],

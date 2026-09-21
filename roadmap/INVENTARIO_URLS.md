@@ -10,7 +10,7 @@ el resto se cubre con pruebas de cliente o unitarias.
 
 | Categoría | Rutas |
 |---|---:|
-| `pagina` | 192 |
+| `pagina` | 191 |
 | `parcial` | 4 |
 | `api` | 796 |
 | `autocomplete` | 6 |
@@ -19,9 +19,9 @@ el resto se cubre con pruebas de cliente o unitarias.
 | `descarga` | 18 |
 | `accion` | 29 |
 | `infra` | 701 |
-| **total** | **1801** |
+| **total** | **1800** |
 
-Páginas: 192, de las cuales **61 sin ninguna prueba**.
+Páginas: 191, de las cuales **60 sin ninguna prueba**.
 
 ## Rutas por app
 
@@ -315,7 +315,7 @@ la administración de Django): están en `inventario_urls.csv`.
 | `api-root` | `/tableapi/` | autocomplete | `rest_framework.routers.APIRootView` | — | — | — | — |
 | `api-root` | `/tableapi/<drf_format_suffix:format>` | autocomplete | `rest_framework.routers.APIRootView` | — | format | — | — |
 
-### riskmanagement — 27 páginas, 7 sin prueba
+### riskmanagement — 26 páginas, 6 sin prueba
 
 | Nombre | Patrón | Categoría | Vista | Plantilla | kwargs | Selenium | Pruebas |
 |---|---|---|---|---|---|:-:|:-:|
@@ -340,7 +340,6 @@ la administración de Django): están en `inventario_urls.csv`.
 | `incident_update` | `/risk/<int:org_pk>/incident/<int:building_pk>/<int:pk>/update/` | pagina | `risk_management.incidents.IncidentReportEdit` | `risk_management/incidentreport_form.html` | org_pk, building_pk, pk | sí | — |
 | `iper_create` | `/risk/<int:org_pk>/iper/create/` | pagina | `risk_management.iper_views.IPERAssessmentCreate` | `risk_management/iper_form.html` | org_pk | — | — |
 | `iper_dashboard` | `/risk/<int:org_pk>/iper/dashboard/` | pagina | `risk_management.iper_views.IPERDashboard` | `risk_management/iper_dashboard.html` | org_pk | — | — |
-| `iper_delete` | `/risk/<int:org_pk>/iper/<int:pk>/delete/` | pagina | `risk_management.iper_views.IPERAssessmentDelete` | `risk_management/iperassessment_confirm_delete.html` | org_pk, pk | — | — |
 | `iper_detail` | `/risk/<int:org_pk>/iper/<int:pk>/detail/` | pagina | `risk_management.iper_views.IPERAssessmentDetail` | `risk_management/iper_detail.html` | org_pk, pk | — | — |
 | `iper_history` | `/risk/<int:org_pk>/iper/history/` | pagina | `risk_management.iper_views.IPERHistory` | `risk_management/iper_history.html` | org_pk | — | sí |
 | `iper_list` | `/risk/<int:org_pk>/iper/list/` | pagina | `risk_management.iper_views.IPERAssessmentList` | `risk_management/iper_list.html` | org_pk | — | sí |
