@@ -47,6 +47,14 @@
 						</a>
 					</li>
 				{% endif %}
+				{% if org_pk %}
+					<li>
+						<a class="nav-link" href="{% url 'laboratory:trash_list' org_pk %}"
+									title="{% trans 'Trash' %}">
+							<i class="fa fa-flag fa-fw"></i> {% trans 'Trash' %}
+						</a>
+					</li>
+				{% endif %}
 				{% if perms.auth_and_perms.institution_can_access %}
 					<li>
 						<a class="nav-link" href="
