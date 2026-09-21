@@ -383,9 +383,7 @@ class RelOrgFullS2(generics.RetrieveAPIView, BaseSelect2View):
                 content_type__model="laboratory",
             ).values_list("object_id", flat=True)
         )
-        self.selected = [str(pk) for pk in linked]
-
-        return labs.order_by(*self.order_by)
+        return labs.exclude(pk__in=linked).order_by(*self.order_by)
 
     def paginate_queryset(self, queryset):
         self.paginator.page_size = queryset.count() or 1
