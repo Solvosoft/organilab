@@ -430,12 +430,12 @@ msgstr "Ha ocurrido un error"
 #, fuzzy
 #| msgid "Deleted!"
 msgid "Deleted date"
-msgstr "¡Eliminado!"
+msgstr "Fecha de eliminación"
 
 #, fuzzy
 #| msgid "Deleted!"
 msgid "Deleted by"
-msgstr "¡Eliminado!"
+msgstr "Eliminado por"
 
 msgid "Model"
 msgstr "Modelo"

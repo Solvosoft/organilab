@@ -1249,7 +1249,7 @@ msgid "Click to manage this organization"
 msgstr "Clonar Organización"
 
 msgid "Choose"
-msgstr ""
+msgstr "Elegir"
 
 msgid "Add new rol"
 msgstr "Agregar Nuevo Rol"
@@ -7221,10 +7221,8 @@ msgstr "Sustancias por Código EU"
 msgid "Sustances per Storage Class"
 msgstr "Sustancias por clase de almacenamientos"
 
-#, fuzzy
-#| msgid "Adjustment quantities in logs"
 msgid "Substances quantity in tons"
-msgstr "Ajuste de cantidades en bitacoras"
+msgstr "Cantidad de sustancias en toneladas"
 
 msgid "Unidades"
 msgstr ""
@@ -8115,10 +8113,8 @@ msgstr "Eliminar regente"
 msgid "View search filters"
 msgstr "Ver filtros de búsqueda"
 
-#, fuzzy
-#| msgid "Danger Substance"
 msgid "Tons per Substance"
-msgstr "Sustancia Peligrosa"
+msgstr "Toneladas por Sustancia"
 
 msgid "EU Code"
 msgstr "Código UE"
@@ -8159,8 +8155,6 @@ msgstr "Estructuras"
 msgid "Workers"
 msgstr "Trabajadores"
 
-#, fuzzy
-#| msgid "Download all"
 msgid "Download Excel"
 msgstr "Descargar"
 
@@ -8190,8 +8184,6 @@ msgstr "Eliminar Jornada Laboral"
 msgid "Resumen"
 msgstr "Resumen"
 
-#, fuzzy
-#| msgid "Classification"
 msgid "Clasificación"
 msgstr "Clasificación"
 
@@ -8211,8 +8203,6 @@ msgstr "Categoría"
 msgid "Valor"
 msgstr ""
 
-#, fuzzy
-#| msgid "Delete Substance"
 msgid "Detalle Sustancias"
 msgstr "Eliminar sustancia"
 
@@ -8240,7 +8230,6 @@ msgstr ""
 msgid "Detalle Contribuciones"
 msgstr "Contribuciones de salud"
 
-#, python-format
 msgid "Created risk zone '%(name)s'"
 msgstr "Zona de riesgo '%(name)s' creada"
 
@@ -9425,3 +9414,78 @@ msgstr ""
 
 msgid "Created new substance"
 msgstr "Nueva sustancia creada"
+
+msgid "Update Consumption Record"
+msgstr "Actualizar registro de consumo"
+
+msgid "View Consumption Record"
+msgstr "Visualizar registro de consumo"
+
+msgid "Delete Consumption Record"
+msgstr "Eliminar registro de consumo"
+
+msgid "Add Consumption Record"
+msgstr "Crear registro de consumo"
+
+msgid "Delete Measurement Point"
+msgstr "Eliminar Punto de medición"
+
+msgid "View Measurement Point"
+msgstr "Visualizar Punto de medición"
+
+msgid "Add Measurement Point"
+msgstr "Crear Punto de medición"
+
+msgid "Update Measurement Point"
+msgstr "Actualiza Punto de medición"
+
+msgid "View Normalization Base"
+msgstr "Visualizar Bases de Normalización"
+
+msgid "Delete Normalization Base"
+msgstr "Eliminar Bases de Normalización"
+
+msgid "Add Normalization Base"
+msgstr "Crear Bases de Normalización"
+
+msgid "Update Normalization Base"
+msgstr "Actualizar Bases de Normalización"
+
+msgid "View environmental dashboard"
+msgstr "Visualizar dashboard ambiental"
+
+msgid "Review Consumption Alert"
+msgstr "Revisión de alertas de consumo"
+
+msgid "List Consumption Alert"
+msgstr "Visualizar alertas de consumo"
+
+msgid "Manage building access"
+msgstr "Control de acceso a edificios"
+
+msgid "View system parameters"
+msgstr "Visualizar parámetros del sistema"
+
+msgid "Delete system parameters"
+msgstr "Elimina parámetros del sistema"
+
+msgid "Change system parameters"
+msgstr "Actualizar parámetros del sistema"
+
+msgid "Restore system parameters"
+msgstr "Restaurar parámetros del sistema"
+
+msgid "Add system parameters"
+msgstr "Crear parámetros del sistema"
+
+msgid "System Parameters"
+msgstr "Parametros del sistema"
+
+msgid "View configuration settings"
+msgstr "Visualizar configuración de notificaciones"
+
+msgid "Update configuration settings"
+msgstr "Actualizar configuración de notificaciones"
+
+msgid "Restore configuration setting"
+msgstr "Restauración de configuración de notificaciones"
