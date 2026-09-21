@@ -10,6 +10,7 @@ from django.urls import resolve
 from rest_framework.exceptions import PermissionDenied
 
 from auth_and_perms.models import ProfilePermission
+from auth_and_perms.organization_utils import organization_can_change_laboratory
 from auth_and_perms.organization_utils import profile_permission_scope_query
 from laboratory.models import OrganizationStructure
 from laboratory.utils import get_laboratories_by_user_profile
@@ -93,9 +94,20 @@ class ProfileMiddleware:
         if hasattr(view_func, "can_use_inactive_organization"):
             can_use_inactive_organization = view_func.can_use_inactive_organization
 
-        # El ámbito vive en `organization_utils` para que la sonda de cobertura por rol
-        # mida exactamente lo que aquí se autoriza, en vez de una copia que se desviaría.
-        queryQ = profile_permission_scope_query(profile, user, lab_pk=lab_pk)
+        # Validar que lab_pk pertenece a org_pk para evitar que un usuario
+        # inyecte un lab_pk de otra organización y obtenga permisos cruzados.
+        validated_lab_pk = lab_pk
+        if lab_pk and org_pk:
+            from laboratory.models import Laboratory
+            lab = Laboratory.objects.filter(pk=lab_pk).first()
+            org = OrganizationStructure.objects.filter(pk=org_pk).first()
+            if lab and org:
+                if not organization_can_change_laboratory(lab, org):
+                    validated_lab_pk = None
+            else:
+                validated_lab_pk = None
+
+        queryQ = profile_permission_scope_query(profile, user, lab_pk=validated_lab_pk)
 
         if org_pk:
             if (
