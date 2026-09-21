@@ -3705,6 +3705,136 @@ URLNAME_PERMISSIONS = {
             "permission": "djgentelella.delete_trash",
         },
     ],
+    'ambiental_consumptionrecord':[
+        {
+            "name":"View Consumption Record",
+            "category":"Ambiental",
+            "permission":"ambiental.view_consumptionrecord"
+        },
+        {
+            "name":"Delete Consumption Record",
+            "category":"Ambiental",
+            "permission":"ambiental.delete_consumptionrecord"
+        },
+        {
+            "name":"Add Consumption Record",
+            "category":"Ambiental",
+            "permission":"ambiental.add_consumptionrecord"
+        },
+        {
+            "name":"Update Consumption Record",
+            "category":"Ambiental",
+            "permission":"ambiental.change_consumptionrecord"
+        },
+    ],
+    'ambiental_measurementpoint':[
+        {
+            "name":"View Measurement Point",
+            "category":"Ambiental",
+            "permission":"ambiental.view_measurementpoint"
+        },
+        {
+            "name":"Add Measurement Point",
+            "category":"Ambiental",
+            "permission":"ambiental.add_measurementpoint"
+        },
+        {
+            "name":"View Measurement Point",
+            "category":"Ambiental",
+            "permission":"ambiental.change_measurementpoint"
+        },
+        {
+            "name":"Delete Measurement Point",
+            "category":"Ambiental",
+            "permission":"ambiental.delete_measurementpoint"
+        },
+    ],
+    "ambiental_normalizationbase": [
+        {
+            "name": "View Normalization Base",
+            "category": "Ambiental",
+            "permission": "ambiental.view_normalizationbase"
+        },
+        {
+            "name": "Delete Normalization Base",
+            "category": "Ambiental",
+            "permission": "ambiental.delete_normalizationbase"
+        },
+        {
+            "name": "Add Normalization Base",
+            "category": "Ambiental",
+            "permission": "ambiental.add_normalizationbase"
+        },
+        {
+            "name": "Update Normalization Base",
+            "category": "Ambiental",
+            "permission": "ambiental.change_normalizationbase"
+        },
+    ],
+    "ambiental_consumptionalert":[
+        {
+            "name": "Review Consumption Alert",
+            "category": "Ambiental",
+            "permission": "ambiental.review_consumptionalert"
+        },
+        {
+            "name": "List Consumption Alert",
+            "category": "Ambiental",
+            "permission": "ambiental.view_consumptionalert"
+        },
+    ],
+    "ambiental_building_access": [
+        {
+            "name": "Manage building access",
+            "category": "Ambiental",
+            "permission": "ambiental.manage_building_access"
+        }
+
+    ],
+    "platform_systemparameter": [
+        {
+            "name": "View system parameters",
+            "category": "System Parameters",
+            "permission": "presentation.view_systemparameter"
+        },
+        {
+            "name": "Update system parameters",
+            "category": "System Parameters",
+            "permission": "presentation.change_systemparameter"
+        },
+        {
+            "name": "Add system parameters",
+            "category": "System Parameters",
+            "permission": "presentation.add_systemparameter"
+        },
+        {
+            "name": "Delete system parameters",
+            "category": "System Parameters",
+            "permission": "presentation.delete_systemparameter"
+        },
+        {
+            "name": "Restore system parameters",
+            "category": "System Parameters",
+            "permission": "presentation.change_systemparameter"
+        }
+    ],
+    "platform_notificationsetting": [
+        {
+            "name": "View configuration settings",
+            "category": "Notification setting",
+            "permission": "presentation.view_notificationsetting"
+        },
+        {
+            "name": "Update configuration settings",
+            "category": "Notification setting",
+            "permission": "presentation.change_notificationsetting"
+        },
+        {
+            "name": "Restore configuration setting",
+            "category": "Configuration setting",
+            "permission": "presentation.change_notificationsetting"
+        },
+    ],
 }
 
 # create_sustance, update_substance y step_one son la misma vista, así que

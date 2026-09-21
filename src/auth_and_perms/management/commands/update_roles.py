@@ -1,4 +1,4 @@
-from django.contrib.auth.models import Permission
+from django.contrib.auth.models import Permission, Group
 from django.core.management import BaseCommand
 
 from auth_and_perms.models import Rol
@@ -1460,6 +1460,15 @@ def update_descriptions():
         rol.description = description
         rol.save(update_fields=["description"])
 
+def update_group_permissions():
+    group = Group.objects.filter(name="RegisterOrganization").first()
+    TRASH = [
+                "djgentelella.view_trash",
+                "djgentelella.change_trash",
+                "djgentelella.delete_trash",
+            ]
+    if group:
+        add_permissions(group,AMBIENTAL_FULL + PLATFORM_ADMIN + PLATFORM_NOTIFICATIONS + PLATFORM_ALERTS+ TRASH)
 
 class Command(BaseCommand):
     help = "Update rol permissions by segment — idempotent, safe to re-run"
@@ -1486,3 +1495,4 @@ class Command(BaseCommand):
         update_ambiental_roles()
         update_papelera()
         update_descriptions()
+        update_group_permissions()
