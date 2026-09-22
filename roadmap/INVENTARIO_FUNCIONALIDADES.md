@@ -15,11 +15,11 @@ con ese rol.
 
 | Métrica | Valor |
 |---|---:|
-| Funcionalidades catalogadas | 44 |
-| Sin ninguna prueba | 11 |
+| Funcionalidades catalogadas | 56 |
+| Sin ninguna prueba | 12 |
 | Rutas navegables huérfanas | 0 |
 | Apps pendientes de catalogar | 2 |
-| Roles canónicos | 18 |
+| Roles canónicos | 21 |
 | Roles canónicos sin aparecer en ningún paso | 0 |
 
 ## Funcionalidades
@@ -61,6 +61,102 @@ Hallazgos:
 
 - HALLAZGO-ACAD-1: **no hay rol revisor.** `MyProcedure` declara los tres estados de un flujo de revisión, pero `complete_my_procedure` (`views.py:253`) toma el `status` directamente del POST bajo el mismo `change_myprocedure` que sirve para editarlo. Quien ejecuta el procedimiento se lo aprueba a sí mismo: el estado «In Review» no tiene quien lo revise. Compárese con `laboratory.Inform` (`laboratory/models.py:1643-1674`), que tiene los mismos tres estados **y sí** un permiso de aprobación aparte (`laboratory.can_manage_inform_status`).
 - La reserva masiva nace aquí pero se aprueba y se cierra en RES-01: es el único flujo del sistema que cruza dos módulos con actores distintos.
+
+### `AMB-01` — Configurar los puntos de medición de cada edificio
+
+*ambiental · ui · prioridad P2 · cobertura por ruta: completa · Selenium: —*
+
+Se da de alta cada medidor, tanque o punto de acopio con el número que trae el recibo, el recurso que mide y el edificio al que pertenece. Retirar un punto lo manda a la papelera de la organización y conserva su historial.
+
+| Paso | Actores | Permiso | Transición | Rutas |
+|---|---|---|---|---|
+| **Listar, crear, editar y retirar puntos de medición** | Administrador ambiental, Administrativo superior, Encargado de registro ambiental, Analista ambiental | `ambiental.view_measurementpoint` | — | `ambiental:measurementpoint_list` |
+
+### `AMB-02` — Registrar el consumo de un edificio
+
+*ambiental · ui · prioridad P2 · cobertura por ruta: completa · Selenium: —*
+
+Se elige el edificio, luego el punto de medición y se registra el período facturado con su cantidad, costo y recibo. El recurso del punto decide la unidad y los campos extra; un período que se traslapa con otro registro del mismo punto se rechaza para no duplicar el consumo.
+
+Estados que atraviesa:
+
+- `ConsumptionRecord.is_deleted: False → True (papelera de la organización)`
+
+| Paso | Actores | Permiso | Transición | Rutas |
+|---|---|---|---|---|
+| **Registrar, corregir o retirar el consumo de un período** | Administrador ambiental, Administrativo superior, Encargado de registro ambiental | `ambiental.view_consumptionrecord` | — | `ambiental:consumptionrecord_list` |
+
+### `AMB-03` — Definir los m² y las personas de cada edificio por año
+
+*ambiental · ui · prioridad P3 · cobertura por ruta: completa · Selenium: —*
+
+Los denominadores de los indicadores. Se precargan con el área del edificio y las jornadas de sus zonas de riesgo, y se corrigen a mano; la precarga nunca pisa un valor escrito por una persona. Un año sin base hereda el anterior.
+
+| Paso | Actores | Permiso | Transición | Rutas |
+|---|---|---|---|---|
+| **Consultar, precargar y corregir las bases de normalización** | Administrador ambiental, Administrativo superior, Encargado de registro ambiental, Analista ambiental | `ambiental.view_normalizationbase` | — | `ambiental:normalizationbase_list` |
+
+### `AMB-04` — Reportar el consumo: detalle, consolidado y costos
+
+*ambiental · ui · prioridad P2 · cobertura por ruta: completa · Selenium: —*
+
+Los reportes de consumo por edificio, recurso y período, en pantalla, PDF u hoja de cálculo, sobre la cola de reportes de `report`. El consolidado suma por mes facturado (`period_end`) y separa unidades distintas.
+
+| Paso | Actores | Permiso | Transición | Rutas |
+|---|---|---|---|---|
+| **Pedir el reporte de detalle, consolidado o costos** | Administrador ambiental, Administrativo superior, Encargado de registro ambiental, Analista ambiental | `ambiental.view_consumptionrecord`<br>`laboratory.do_report` | — | `ambiental:report_consumption_detail`<br>`ambiental:report_consumption_summary`<br>`ambiental:report_consumption_cost` |
+
+### `AMB-05` — Comparar edificios y períodos con indicadores normalizados
+
+*ambiental · ui · prioridad P2 · cobertura por ruta: completa · Selenium: —*
+
+El consumo dividido por los m² o las personas del edificio, con la base y el total crudo a la vista para que el número sea auditable, y la comparación de un período contra otro con variación absoluta y porcentual. Unidades mezcladas en un mismo recurso no se suman: se marcan.
+
+| Paso | Actores | Permiso | Transición | Rutas |
+|---|---|---|---|---|
+| **Pedir el reporte de indicadores o el de comparación entre períodos** | Administrador ambiental, Administrativo superior, Encargado de registro ambiental, Analista ambiental | `ambiental.view_consumptionrecord`<br>`laboratory.do_report` | — | `ambiental:report_environmental_indicators`<br>`ambiental:report_consumption_comparison` |
+
+### `AMB-06` — Ver el panel ambiental del año
+
+*ambiental · ui · prioridad P3 · cobertura por ruta: completa · Selenium: —*
+
+Tarjetas con el último mes de cada recurso contra el anterior, consumo y costo mensuales y el ranking de edificios por indicador, filtrables por año, edificio, recurso y normalizador.
+
+| Paso | Actores | Permiso | Transición | Rutas |
+|---|---|---|---|---|
+| **Abrir el panel y filtrarlo** | Administrador ambiental, Administrativo superior, Encargado de registro ambiental, Analista ambiental | `ambiental.view_ambiental_dashboard` | — | `ambiental:ambiental_dashboard` |
+
+### `AMB-07` — Registrar y reportar los residuos y sus manifiestos
+
+*ambiental · ui · prioridad P2 · cobertura por ruta: completa · Selenium: —*
+
+Un residuo es un registro de consumo de un punto de acopio: lleva tratamiento, gestor autorizado, código de residuo y número de manifiesto, con el manifiesto adjunto. Tiene su propia pantalla, que solo ofrece puntos de residuos, y un reporte por tipo, tratamiento y gestor para las inspecciones.
+
+| Paso | Actores | Permiso | Transición | Rutas |
+|---|---|---|---|---|
+| **Registrar la entrega de un residuo con su manifiesto** | Administrador ambiental, Administrativo superior, Encargado de registro ambiental | `ambiental.view_consumptionrecord` | — | `ambiental:waste_list` |
+| **Pedir el reporte de residuos y manifiestos** | Administrador ambiental, Administrativo superior, Encargado de registro ambiental, Analista ambiental | `ambiental.view_consumptionrecord`<br>`laboratory.do_report` | — | `ambiental:report_waste_manifest` |
+
+### `AMB-08` — Detectar consumos atípicos y revisarlos
+
+*ambiental · ui · prioridad P2 · cobertura por ruta: completa · Selenium: —*
+
+Una tarea mensual evalúa las reglas de alerta del proceso `ambiental.consumption`: el último período de cada punto contra su promedio, contra un umbral o por meses sin registro. Cada alerta avisa al encargado del edificio y a los responsables de sus laboratorios; quien la atiende la marca como revisada con una nota.
+
+| Paso | Actores | Permiso | Transición | Rutas |
+|---|---|---|---|---|
+| **Evaluar las reglas de consumo y crear las alertas** | Administrador ambiental | — | — | — |
+| **Consultar las alertas y marcarlas como revisadas** | Administrador ambiental, Administrativo superior, Encargado de registro ambiental, Analista ambiental | `ambiental.view_consumptionalert` | — | `ambiental:consumptionalert_list` |
+
+### `AMB-09` — Dar acceso a las personas por edificio
+
+*ambiental · ui · prioridad P1 · cobertura por ruta: **sin prueba** · Selenium: —*
+
+Asigna a una persona un rol ambiental (administrador, encargado de registro o analista) sobre un edificio concreto. Quien administra solo un edificio puede dar acceso a ese edificio y a ningún otro; sacar a la persona de la organización o borrar el edificio borra sus accesos.
+
+| Paso | Actores | Permiso | Transición | Rutas |
+|---|---|---|---|---|
+| **Asignar, cambiar o quitar roles ambientales en un edificio** | Administrador ambiental, Administrativo superior | `ambiental.manage_building_access` | — | `ambiental:building_access_list` |
 
 ### `ORG-01` — Elegir organización y orientarse en el árbol
 
@@ -445,6 +541,36 @@ El sistema de tutoriales contextuales: se listan, se marca el progreso, se apaga
 | **Marcar progreso, apagar y reactivar un tutorial** | Estudiante, Profesor, Técnico de Laboratorio, Asistente de laboratorio, Administrador de Laboratorio, Administrativo superior, Regente, Solo Lectura | — | — | `tutorial_progress_api`<br>`tutorial_toggle_api`<br>`tutorial_reactivate_api` |
 | **Enviar retroalimentación sobre el producto** | Estudiante, Profesor, Técnico de Laboratorio, Asistente de laboratorio, Administrador de Laboratorio, Administrativo superior, Regente, Solo Lectura | `auth_and_perms.institution_can_access` | — | `feedback` |
 
+### `PLAT-01` — Ajustar los parámetros del sistema de la organización
+
+*presentation · ui · prioridad P3 · cobertura por ruta: completa · Selenium: —*
+
+Cada parámetro muestra su valor efectivo y de dónde sale: propio, heredado de un ancestro o el valor por defecto. Restaurar borra el valor propio y vuelve a heredar. Solo se listan los parámetros cuyo permiso tiene el usuario.
+
+| Paso | Actores | Permiso | Transición | Rutas |
+|---|---|---|---|---|
+| **Consultar, cambiar o restaurar un parámetro** | Administrativo superior, Administrador ambiental | `presentation.view_systemparameter` | — | `platform:systemparameter_list` |
+
+### `PLAT-02` — Decidir qué correos manda la organización y con qué texto
+
+*presentation · ui · prioridad P3 · cobertura por ruta: completa · Selenium: —*
+
+Lista los procesos con correo registrado (`register_context`). La organización puede apagar uno o reemplazar su asunto y mensaje; la configuración se hereda a las hijas. `send_process_email` la aplica al enviar.
+
+| Paso | Actores | Permiso | Transición | Rutas |
+|---|---|---|---|---|
+| **Apagar, personalizar o restaurar el correo de un proceso** | Administrativo superior | `presentation.view_notificationsetting` | — | `platform:notificationsetting_list` |
+
+### `PLAT-03` — Configurar reglas de alerta y revisar sus disparos
+
+*presentation · ui · prioridad P2 · cobertura por ruta: completa · Selenium: —*
+
+Una regla dice qué proceso vigilar, con qué disparador y umbral, y a quién avisar: responsable, roles, correo del proceso, tarea pendiente y, si es crítica, notificación en la campana. Solo se ven los procesos cuyo permiso tiene el usuario; la pestaña de historial lista cada disparo.
+
+| Paso | Actores | Permiso | Transición | Rutas |
+|---|---|---|---|---|
+| **Crear, ajustar o desactivar una regla y consultar su historial** | Administrativo superior, Administrador ambiental | `presentation.view_alertrule` | — | `platform:alertrule_list` |
+
 ### `REP-01` — Pedir un reporte, esperar a que se genere y descargarlo
 
 *report · ui · prioridad P1 · cobertura por ruta: parcial · Selenium: —*
@@ -620,7 +746,7 @@ Estados que atraviesa:
 | **Ver el panel consolidado de IPER** | Administrador IPER, Administrativo superior, Auditor IPER | `risk_management.view_iper_dashboard` | — | `riskmanagement:iper_dashboard` |
 | **Alternar el anonimato de la evaluación** | Administrador de Laboratorio, Administrador IPER | `risk_management.change_iperassessment` | — | `riskmanagement:iper_toggle_anonymous` |
 | **Mantener el catálogo IPER de la organización raíz** | Administrador IPER | `risk_management.manage_iper_catalog` | — | `riskmanagement:iper_catalog_add` |
-| **Eliminar una evaluación** | Administrador IPER, Administrativo superior | `risk_management.delete_iperassessment` | — | `riskmanagement:iper_delete` |
+| **Eliminar una evaluación** | Administrador IPER, Administrativo superior | `risk_management.delete_iperassessment` | — | `riskmanagement:api-iperassessment-detail` |
 
 Hallazgos:
 
@@ -753,6 +879,9 @@ Los datos maestros que la etiqueta imprime: la empresa que figura como responsab
 | Administrativo de centro de trabajo | sí | `auth_and_perms/management/commands/update_roles.py:1030` |
 | Auditor IPER | sí | `auth_and_perms/management/commands/update_roles.py:1231` |
 | Administrador IPER | sí | `auth_and_perms/management/commands/update_roles.py:1254` |
+| Administrador ambiental | sí | `auth_and_perms/management/commands/update_roles.py:1296` |
+| Encargado de registro ambiental | sí | `auth_and_perms/management/commands/update_roles.py:1302` |
+| Analista ambiental | sí | `auth_and_perms/management/commands/update_roles.py:1307` |
 | Manejo de sustancias del laboratorio | sí | `auth_and_perms/management/commands/add_static_rol.py:17` |
 | Organization Management | sí | `auth_and_perms/views/user_org_creation.py:95` |
 

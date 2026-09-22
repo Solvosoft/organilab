@@ -46,6 +46,8 @@ CORE_STEPS = (
          note="unidad Libra"),
     Step("seed_iper_catalog",
          note="catálogos IPER (INTE T55) y matriz de riesgo"),
+    Step("seed_ambiental_catalog",
+         note="catálogos del módulo ambiental (recursos, unidades, puntos)"),
     Step("create_pendingtasks_group",
          note="grupo de tareas pendientes"),
     Step("add_pendingtask_permissions_to_roles",

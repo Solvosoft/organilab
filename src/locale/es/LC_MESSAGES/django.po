@@ -1,8 +1,9 @@
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-06 15:38-0600\n"
+"POT-Creation-Date: 2026-09-16 21:31-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -331,14 +332,491 @@ msgstr "Reserva creada para '%(obj)s' (%(amount)s unidades)"
 msgid "Created box reservation for '%(obj)s' (%(boxes)s boxes)"
 msgstr "Reserva de caja creada para '%(obj)s' (%(boxes)s cajas)"
 
-msgid "Reassigned on user delete"
-msgstr "Reasignado por borrado de usuario"
+#, python-format
+msgid "The measurement point %(point)s has no records for %(months)s months."
+msgstr "El punto de medición %(point)s lleva %(months)s meses sin registros."
+
+#, python-format
+msgid ""
+"The measurement point %(point)s registered %(value)s %(unit)s in %(period)s, "
+"above the limit of %(limit)s."
+msgstr ""
+"El punto de medición %(point)s registró %(value)s %(unit)s en %(period)s, "
+"sobre el límite de %(limit)s."
+
+#, python-format
+msgid ""
+"The measurement point %(point)s consumed %(value)s %(unit)s in %(period)s, "
+"%(variation)s%% over its average."
+msgstr ""
+"El punto de medición %(point)s consumió %(value)s %(unit)s en %(period)s, "
+"%(variation)s%% sobre su promedio."
+
+msgid "Vehicle plate"
+msgstr "Placa del vehículo"
+
+msgid "Fuel type"
+msgstr "Tipo de combustible"
+
+msgid "Paper type"
+msgstr "Tipo de papel"
+
+msgid "Waste code"
+msgstr "Código de residuo"
+
+msgid "Manifest number"
+msgstr "Número de manifiesto"
+
+msgid "To move an access, delete it and create a new one."
+msgstr "Para mover un acceso, elimínelo y cree uno nuevo."
+
+msgid "Building access granted"
+msgstr "Acceso al edificio otorgado"
+
+msgid "Building access changed"
+msgstr "Acceso al edificio modificado"
+
+msgid "There is already a measurement point with this code for this resource."
+msgstr "Ya existe un punto de medición con este código para este recurso."
+
+msgid ""
+"There is already a measurement point with this code for this resource in the "
+"trash; restore it instead of creating a new one."
+msgstr ""
+"Ya existe un punto de medición con este código para este recurso en la "
+"papelera; restáurelo en lugar de crear uno nuevo."
+
+msgid "The period end must be after the period start."
+msgstr "El fin del período debe ser posterior al inicio."
+
+msgid "This field is required."
+msgstr "Este campo es requerido."
+
+msgid "This organization requires the bill, receipt or manifest."
+msgstr ""
+"Esta organización exige adjuntar la factura, el recibo o el manifiesto."
+
+#, python-format
+msgid ""
+"This measurement point already has a record from %(start)s to %(end)s that "
+"overlaps this period; edit that record instead."
+msgstr ""
+"Este punto de medición ya tiene un registro del %(start)s al %(end)s que se "
+"traslapa con este período; edite ese registro."
+
+#, python-format
+msgid ""
+"This measurement point has a record in the trash from %(start)s to %(end)s "
+"that overlaps this period; restore it instead."
+msgstr ""
+"Este punto de medición tiene en la papelera un registro del %(start)s al "
+"%(end)s que se traslapa con este período; restáurelo."
+
+msgid "Manual"
+msgstr "Manual"
+
+msgid "Preloaded"
+msgstr "Precargado"
+
+msgid "This building already has this base for that year; edit it instead."
+msgstr "Este edificio ya tiene esta base para ese año; edítela."
+
+#, python-format
+msgid "%(created)d bases created, %(updated)d updated, %(skipped)d skipped."
+msgstr ""
+"%(created)d bases creadas, %(updated)d actualizadas, %(skipped)d omitidas."
+
+msgid "Reviewed"
+msgstr "Revisada"
+
+msgid "The alert was marked as reviewed."
+msgstr "La alerta se marcó como revisada."
+
+msgid "Environmental management"
+msgstr "Gestión ambiental"
+
+msgid "Atypical consumption"
+msgstr "Consumo atípico"
+
+msgid "Building"
+msgstr "Edificio"
+
+msgid "Buildings"
+msgstr "Edificios"
+
+msgid "Resource type"
+msgstr "Tipo de recurso"
+
+msgid "Period"
+msgstr "PerÍodo"
+
+msgid "Normalizer"
+msgstr "Normalizador"
+
+msgid "Period to compare with"
+msgstr "Período con el que se compara"
+
+msgid "Year"
+msgstr "Año"
+
+msgid "User"
+msgstr "Usuario"
+
+msgid "Roles"
+msgstr "Rol"
+
+msgid "Jan"
+msgstr "Ene"
+
+msgid "Feb"
+msgstr "Feb"
+
+msgid "Mar"
+msgstr "Mar"
+
+msgid "Apr"
+msgstr "Abr"
+
+msgid "May"
+msgstr "Mayo"
+
+msgid "Jun"
+msgstr "Jun"
+
+msgid "Jul"
+msgstr "Jul"
+
+msgid "Aug"
+msgstr "Ago"
+
+msgid "Sep"
+msgstr "Sep"
+
+msgid "Oct"
+msgstr "Oct"
+
+msgid "Nov"
+msgstr "Nov"
+
+msgid "Dec"
+msgstr "Dic"
+
+msgid "Monthly consumption"
+msgstr "Consumo mensual"
+
+msgid "Monthly cost by resource"
+msgstr "Costo mensual por recurso"
+
+msgid "Buildings ranking"
+msgstr "Ranking de edificios"
+
+msgid "Indicator"
+msgstr "Indicador"
+
+msgid "Code"
+msgstr "Código"
+
+msgid "Meter or service number, as it appears on the bill"
+msgstr "Número de medidor o de servicio, como aparece en el recibo"
+
+msgid "Point type"
+msgstr "Tipo de punto"
+
+msgid "Laboratories"
+msgstr "Laboratorios"
+
+msgid "Number of meters"
+msgstr "Cantidad de medidores"
+
+msgid "Measurement point"
+msgstr "Punto de medición"
+
+msgid "Measurement points"
+msgstr "Puntos de medición"
+
+msgid "Can manage access to buildings"
+msgstr "Puede gestionar el acceso a los edificios"
+
+msgid "Import"
+msgstr "Importación"
+
+msgid "Period start"
+msgstr "Inicio del período"
+
+msgid "Period end"
+msgstr "Fin del período"
+
+msgid "Quantity"
+msgstr "Cantidad"
+
+msgid "Unit cost"
+msgstr "Costo unitario"
+
+msgid "Total cost"
+msgstr "Costo total"
+
+msgid "Is waste"
+msgstr "Es residuo"
+
+msgid "Waste treatment"
+msgstr "Tratamiento del residuo"
+
+msgid "Authorized waste manager"
+msgstr "Gestor autorizado de residuos"
+
+msgid "Supporting document"
+msgstr "Documento de respaldo"
+
+msgid "Bill, receipt or waste manifest"
+msgstr "Factura, recibo o manifiesto de residuos"
+
+msgid "Extra data"
+msgstr "Datos adicionales"
+
+msgid "Source"
+msgstr "Origen"
+
+msgid "Note"
+msgstr "Nota"
+
+msgid "Consumption record"
+msgstr "Registro de consumo"
+
+msgid "Consumption records"
+msgstr "Registros de consumo"
+
+msgid "Can view the environmental dashboard"
+msgstr "Puede ver el panel ambiental"
+
+#, python-format
+msgid "Fields not allowed for this resource: %(fields)s"
+msgstr "Campos no permitidos para este recurso: %(fields)s"
+
+msgid "Value"
+msgstr "Valor"
+
+msgid "Entered manually"
+msgstr "Ingresado manualmente"
+
+msgid "Preloading never overwrites a value entered manually"
+msgstr "La precarga nunca sobrescribe un valor ingresado manualmente"
+
+msgid "Normalization base"
+msgstr "Base de normalización"
+
+msgid "Normalization bases"
+msgstr "Bases de normalización"
+
+msgid "Can preload normalization bases"
+msgstr "Puede precargar bases de normalización"
+
+msgid "Alert rule"
+msgstr "Regla de alerta"
+
+msgid "Reference value"
+msgstr "Valor de referencia"
+
+msgid "Registered value"
+msgstr "Valor registrado"
+
+msgid "Variation (%)"
+msgstr "Variación (%)"
+
+msgid "Level"
+msgstr "Nivel"
+
+msgid "Message"
+msgstr "Mensaje"
+
+msgid "Review note"
+msgstr "Nota de revisión"
+
+msgid "Reviewed by"
+msgstr "Revisada por"
+
+msgid "Reviewed at"
+msgstr "Revisada el"
+
+msgid "Consumption alert"
+msgstr "Alerta de consumo"
+
+msgid "Consumption alerts"
+msgstr "Alertas de consumo"
+
+msgid "Can review consumption alerts"
+msgstr "Puede revisar alertas de consumo"
+
+msgid "Registered by"
+msgstr "Registrado por"
 
 msgid "Yes"
 msgstr "Si"
 
-msgid "Roles"
-msgstr "Rol"
+msgid "No"
+msgstr "No"
+
+msgid "Month"
+msgstr "Mes"
+
+msgid "Average unit cost"
+msgstr "Costo unitario promedio"
+
+msgid "Consumption"
+msgstr "Consumo"
+
+msgid "Base"
+msgstr "Base"
+
+msgid "Base year"
+msgstr "Año de la base"
+
+msgid "Mixed units"
+msgstr "Unidades mezcladas"
+
+msgid "No base"
+msgstr "Sin base"
+
+msgid "Previous period"
+msgstr "Período anterior"
+
+msgid "Current period"
+msgstr "Período actual"
+
+msgid "Absolute variation"
+msgstr "Variación absoluta"
+
+msgid "Previous cost"
+msgstr "Costo anterior"
+
+msgid "Current cost"
+msgstr "Costo actual"
+
+msgid "Delivery date"
+msgstr "Fecha de entrega"
+
+msgid "Building access"
+msgstr "Acceso por edificio"
+
+msgid ""
+"Environmental roles assigned on a specific building. A person only sees and "
+"manages the buildings where they have a role; environmental roles assigned "
+"on the whole organization cover all its buildings."
+msgstr ""
+"Roles ambientales asignados sobre un edificio concreto. Una persona solo ve "
+"y gestiona los edificios donde tiene un rol; los roles ambientales asignados "
+"en toda la organización cubren todos sus edificios."
+
+msgid "Give access to a building"
+msgstr "Dar acceso a un edificio"
+
+msgid "Change roles in the building"
+msgstr "Cambiar roles en el edificio"
+
+msgid "Remove access to the building"
+msgstr "Quitar acceso al edificio"
+
+msgid ""
+"Atypical consumption detected by the alert rules. Review each one and leave "
+"a note that explains it; reviewed alerts stay in the history."
+msgstr ""
+"Consumos atípicos detectados por las reglas de alerta. Revise cada uno y "
+"deje una nota que lo explique; las alertas revisadas quedan en el historial."
+
+msgid "Configure alert rules"
+msgstr "Configurar reglas de alerta"
+
+msgid "Waste records"
+msgstr "Registros de residuos"
+
+msgid ""
+"Choose a building to see and record the waste delivered from its collection "
+"points, with treatment, authorized manager and manifest."
+msgstr ""
+"Elija un edificio para ver y registrar los residuos entregados desde sus "
+"puntos de acopio, con tratamiento, gestor autorizado y manifiesto."
+
+msgid ""
+"Choose a building to see and record the consumption of its measurement "
+"points."
+msgstr ""
+"Elija un edificio para ver y registrar el consumo de sus puntos de medición."
+
+msgid "Record consumption"
+msgstr "Registrar consumo"
+
+msgid "Update consumption record"
+msgstr "Actualizar registro de consumo"
+
+msgid "Delete consumption record"
+msgstr "Eliminar registro de consumo"
+
+msgid "Environmental dashboard"
+msgstr "Panel ambiental"
+
+msgid "Filter"
+msgstr "Filtrar"
+
+msgid "vs. previous month"
+msgstr "vs. mes anterior"
+
+msgid "Cost"
+msgstr "Costo"
+
+msgid "There are no consumption records for this year."
+msgstr "No hay registros de consumo para este año."
+
+msgid ""
+"Meters, tanks and collection points of each building. Consumption is "
+"recorded against them."
+msgstr ""
+"Medidores, tanques y puntos de acopio de cada edificio. Los consumos se "
+"registran sobre ellos."
+
+msgid "Register measurement point"
+msgstr "Registrar punto de medición"
+
+msgid "Update measurement point"
+msgstr "Actualizar punto de medición"
+
+msgid "Delete measurement point"
+msgstr "Eliminar punto de medición"
+
+msgid ""
+"Square meters and people per building and year. Indicators divide "
+"consumption by these values; a year without a base uses the previous one."
+msgstr ""
+"Metros cuadrados y personas por edificio y año. Los indicadores dividen el "
+"consumo entre estos valores; un año sin base usa la del anterior."
+
+msgid "Register normalization base"
+msgstr "Registrar base de normalización"
+
+msgid "Update normalization base"
+msgstr "Actualizar base de normalización"
+
+msgid "Delete normalization base"
+msgstr "Eliminar base de normalización"
+
+msgid "Consumption detail report"
+msgstr "Reporte detallado de consumos"
+
+msgid "Consumption summary report"
+msgstr "Reporte consolidado de consumos"
+
+msgid "Consumption cost report"
+msgstr "Reporte de costos de consumo"
+
+msgid "Environmental indicators report"
+msgstr "Reporte de indicadores ambientales"
+
+msgid "Consumption comparison report"
+msgstr "Reporte comparativo de consumos"
+
+msgid "Waste and manifests report"
+msgstr "Reporte de residuos y manifiestos"
+
+msgid "Reassigned on user delete"
+msgstr "Reasignado por borrado de usuario"
 
 msgid "No roles assigned"
 msgstr "No se asignaron roles"
@@ -452,6 +930,10 @@ msgid "Removed laboratory permission from user '%(user)s'"
 msgstr "Permiso de laboratorio removido del usuario '%(user)s'"
 
 #, python-format
+msgid "Removed building permission from user '%(user)s'"
+msgstr "Se quitó el permiso de edificio al usuario '%(user)s'"
+
+#, python-format
 msgid "Removed organization permission from user '%(user)s'"
 msgstr "Permiso de organización removido del usuario '%(user)s'"
 
@@ -503,6 +985,11 @@ msgstr ""
 msgid "Organization parameter is required"
 msgstr "Organización padre:"
 
+#, fuzzy, python-format
+#| msgid "Unlinked the laboratories %(labs)r from the organization %(org)r"
+msgid "Unlinked laboratory '%(lab)s' from organization '%(org)s'"
+msgstr "Se desvincularon los laboratorios %(labs)r de la organización %(org)r"
+
 msgid "Rols"
 msgstr "Roles"
 
@@ -544,12 +1031,6 @@ msgstr "Idioma"
 
 msgid "It will used to login when you want to login with digital signature"
 msgstr "Este campo será usado cuando se autentique con firma digital"
-
-msgid "Laboratories"
-msgstr "Laboratorios"
-
-msgid "User"
-msgstr "Usuario"
 
 msgid "Laboratory"
 msgstr "Laboratorio"
@@ -768,7 +1249,7 @@ msgid "Click to manage this organization"
 msgstr "Clonar Organización"
 
 msgid "Choose"
-msgstr ""
+msgstr "Elegir"
 
 msgid "Add new rol"
 msgstr "Agregar Nuevo Rol"
@@ -787,6 +1268,9 @@ msgstr "Agregar Laboratorio"
 
 msgid "Related Laboratory"
 msgstr "Relacionar Laboratorio"
+
+msgid "Unlink Laboratories"
+msgstr "Desvincular Laboratorios"
 
 #, fuzzy
 #| msgid "Disable child organizations filter?"
@@ -936,6 +1420,22 @@ msgstr "¿Desea habilitar el filtro de organizaciones hijas?"
 
 msgid "Administrators"
 msgstr "Administradores"
+
+msgid "Laboratory Relations"
+msgstr "Laboratorios vinculados"
+
+msgid ""
+"Manage laboratories linked to this organization. Unlinking a laboratory will "
+"also remove user permissions for that laboratory in this organization."
+msgstr ""
+"Gestione los laboratorios vinculados a esta organización. Desvincular un "
+"laboratorio también eliminará los permisos de usuario para dicho laboratorio "
+"en esta organización."
+
+#, fuzzy
+#| msgid "Unlink Laboratories"
+msgid "Unlink Laboratory"
+msgstr "Desvincular Laboratorios"
 
 msgid "My laboratories"
 msgstr "Mis Laboratorios"
@@ -1462,9 +1962,6 @@ msgstr "¿Es bioacumulable?"
 
 msgid "Maximum limit cannot be lower than minimum limit."
 msgstr "El límite máximo no puede ser menor que el límite mínimo."
-
-msgid "This field is required."
-msgstr "Este campo es requerido."
 
 msgid "Ensure this value is greater than or equal to 1e-07."
 msgstr "Asegúrese que el valor es mayor o igual que 1e-07."
@@ -2040,9 +2537,6 @@ msgstr ""
 msgid "This account is inactive."
 msgstr "Su cuenta está activa."
 
-msgid "Code"
-msgstr "Código"
-
 msgid "Code didn't match."
 msgstr "El código no coincide."
 
@@ -2175,9 +2669,6 @@ msgstr "Nombre de la sustancia"
 msgid "Reagents"
 msgstr "Reactivos"
 
-msgid "Year"
-msgstr "Año"
-
 msgid "Name of the product"
 msgstr "Nombre del producto"
 
@@ -2252,9 +2743,6 @@ msgstr "Marzo"
 msgid "April"
 msgstr "Abril"
 
-msgid "May"
-msgstr "Mayo"
-
 msgid "June"
 msgstr "Junio"
 
@@ -2275,9 +2763,6 @@ msgstr "Noviembre"
 
 msgid "December"
 msgstr "Diciembre"
-
-msgid "Quantity"
-msgstr "Cantidad"
 
 #, python-format
 msgid "New %(type)s request: %(name)s"
@@ -2560,9 +3045,6 @@ msgstr "¿Tiene garantía?"
 
 msgid "Contract of maintenance"
 msgstr "Contrato de mantenimiento"
-
-msgid "Note"
-msgstr "Nota"
 
 msgid "Is available to use?"
 msgstr "¿Esta disponible de usar?"
@@ -2853,9 +3335,6 @@ msgstr "Solicitudes de laboratorio u organización"
 msgid "Substance laboratory"
 msgstr "Observación de sustancia"
 
-msgid "Month"
-msgstr "Mes"
-
 #, fuzzy
 #| msgid "Country"
 msgid "Counter"
@@ -2870,9 +3349,6 @@ msgstr "Garantía de objeto en estante"
 #| msgid "Shelf objects"
 msgid "Shelf object code counters"
 msgstr "Estante de los objetos"
-
-msgid "No"
-msgstr "No"
 
 msgid "Product added successful"
 msgstr "Producto Agregado exitosamente"
@@ -3883,9 +4359,6 @@ msgstr "Eliminar características de objetos"
 msgid "Stats"
 msgstr "Estadísticas"
 
-msgid "Filter"
-msgstr "Filtrar"
-
 msgid "Delete object"
 msgstr "Borrar objeto"
 
@@ -3991,46 +4464,63 @@ msgstr "Diferencia"
 msgid "Precursor"
 msgstr "¿Es precursor?"
 
-msgid ""
-"Sistema regencial para la gestión de riesgo en bodegas y laboratorios en los "
-"que se almacena reactivos y productos químicos"
-msgstr ""
+msgid "Report List"
+msgstr "Listado de Reportes"
+
+msgid "Search report"
+msgstr "Buscar reporte"
 
 msgid "Regency Report"
 msgstr "Informe Regencial"
 
+msgid ""
+"Regency system for risk management in warehouses and laboratories that store "
+"chemical reactives and products."
+msgstr ""
+"Sistema regencial para la gestión de riesgo en bodegas y laboratorios en los "
+"que se almacenan reactivos y productos químicos."
+
 msgid "Chemical inventory report"
 msgstr "Informe de inventario de sustancias químicas"
 
-msgid "Occupational Health Report"
-msgstr "Reporte de Salud Laboral"
+msgid "Chemical substances in inventory with their hazard information."
+msgstr "Sustancias químicas del inventario con su información de peligro."
 
-msgid "Furnitures"
-msgstr "Muebles"
-
-msgid "Reactive precursor objects"
-msgstr "Objetos reactivos precursores"
-
-msgid "Object changes"
-msgstr "Movimiento de Objetos"
-
-msgid "Limited shelf objects"
-msgstr "Objetos en el límite"
-
-msgid "Precursor Report"
-msgstr "Reporte sobre precursores"
-
-msgid "Waste Report"
-msgstr "Reporte de desechos"
+msgid "Inventory and objects"
+msgstr "Inventario y objetos"
 
 msgid "Reactive Report"
 msgstr "Reporte de reactivos"
 
-msgid "Risk Zone Report"
-msgstr "Reporte de zona de riesgo"
-
 msgid "Reactive Stock Report"
 msgstr "Reporte de inventario de reactivos"
+
+msgid "Reactive precursor objects"
+msgstr "Objetos reactivos precursores"
+
+msgid "Limited shelf objects"
+msgstr "Objetos en el límite"
+
+msgid "Object changes"
+msgstr "Movimiento de Objetos"
+
+msgid "Furnitures"
+msgstr "Muebles"
+
+msgid "Donations Report"
+msgstr "Informe de donaciones"
+
+msgid "Risk, safety and regulation"
+msgstr "Riesgo, seguridad y regulación"
+
+msgid "Occupational Health Report"
+msgstr "Reporte de Salud Laboral"
+
+msgid "Precursor Report"
+msgstr "Reporte sobre precursores"
+
+msgid "Risk Zone Report"
+msgstr "Reporte de zona de riesgo"
 
 msgid "Compatibility Report"
 msgstr "Reporte de compatibilidad SGA"
@@ -4038,8 +4528,32 @@ msgstr "Reporte de compatibilidad SGA"
 msgid "Compatibility Laboratory Report"
 msgstr "Informe de laboratorio de compatibilidad"
 
-msgid "Donations Report"
-msgstr "Informe de donaciones"
+msgid "Waste Report"
+msgstr "Reporte de desechos"
+
+msgid "Each consumption record with its period, quantity, cost and bill."
+msgstr "Cada registro de consumo con su período, cantidad, costo y recibo."
+
+msgid "Monthly totals by building and resource."
+msgstr "Totales mensuales por edificio y recurso."
+
+msgid "Quantity, average unit cost and total cost per resource and month."
+msgstr "Cantidad, costo unitario promedio y costo total por recurso y mes."
+
+msgid "Consumption per square meter or per person, with the base used."
+msgstr "Consumo por metro cuadrado o por persona, con la base usada."
+
+msgid "One period against another, with absolute and percentage variation."
+msgstr "Un período contra otro, con variación absoluta y porcentual."
+
+msgid ""
+"Delivered waste by type, treatment and authorized manager, with manifests."
+msgstr ""
+"Residuos entregados por tipo, tratamiento y gestor autorizado, con sus "
+"manifiestos."
+
+msgid "No report matches the search."
+msgstr "Ningún reporte coincide con la búsqueda."
 
 # Reservations
 msgid "Reservations"
@@ -4860,7 +5374,7 @@ msgid "Finished"
 msgstr "Finalizada"
 
 msgid "Link"
-msgstr ""
+msgstr "Enlace"
 
 #, fuzzy
 #| msgid "Is active"
@@ -4968,6 +5482,27 @@ msgstr "Explicación"
 
 msgid "Related file"
 msgstr "Archivo relacionado"
+
+msgid "Percentage over the average"
+msgstr "Porcentaje sobre el promedio"
+
+msgid "Maximum value"
+msgstr "Valor máximo"
+
+msgid "Months without records"
+msgstr "Meses sin registros"
+
+msgid "Unknown trigger."
+msgstr "Disparador desconocido."
+
+msgid "Enter a number."
+msgstr "Ingrese un número."
+
+msgid "The threshold must be greater than zero."
+msgstr "El umbral debe ser mayor que cero."
+
+msgid "Deleted"
+msgstr "Eliminado"
 
 msgid "*Type the amount in dollars"
 msgstr "*Tipo de cantidad en dolares"
@@ -5164,6 +5699,150 @@ msgstr "Imagen QR en SVG"
 
 msgid "Base64 Image QR"
 msgstr "Imagen QR en Base 64"
+
+msgid "Key"
+msgstr "Clave"
+
+msgid "System parameter"
+msgstr "Parámetro del sistema"
+
+msgid "System parameters"
+msgstr "Parámetros del sistema"
+
+msgid "Unknown parameter."
+msgstr "Parámetro desconocido."
+
+msgid "Invalid value for this parameter."
+msgstr "Valor no válido para este parámetro."
+
+msgid "Is active"
+msgstr "Está activo"
+
+msgid "Subject"
+msgstr "Asunto"
+
+msgid "Notification setting"
+msgstr "Configuración de notificación"
+
+msgid "Notification settings"
+msgstr "Configuración de notificaciones"
+
+msgid "Informative"
+msgstr "Informativa"
+
+msgid "Medium"
+msgstr "Media"
+
+msgid "Critical"
+msgstr "Crítica"
+
+msgid "Process"
+msgstr "Proceso"
+
+msgid "Trigger"
+msgstr "Disparador"
+
+msgid "Notify roles"
+msgstr "Roles a notificar"
+
+msgid "Notify the responsible"
+msgstr "Notificar al responsable"
+
+msgid "Create pending task"
+msgstr "Crear tarea pendiente"
+
+msgid "Alert rules"
+msgstr "Reglas de alerta"
+
+msgid "Recipients"
+msgstr "Destinatarios"
+
+msgid "Alert event"
+msgstr "Disparo de alerta"
+
+msgid "Alert events"
+msgstr "Disparos de alerta"
+
+msgid "Integer"
+msgstr "Entero"
+
+msgid "Float"
+msgstr "Decimal (flotante)"
+
+msgid "Decimal"
+msgstr "Decimal"
+
+msgid "Yes/No"
+msgstr "Sí/No"
+
+msgid "Text"
+msgstr "Texto"
+
+msgid "Date (YYYY-MM-DD)"
+msgstr "Fecha (AAAA-MM-DD)"
+
+msgid "JSON"
+msgstr "JSON"
+
+msgid "Own"
+msgstr "Propio"
+
+msgid "Inherited"
+msgstr "Heredado"
+
+msgid "Default"
+msgstr "Por defecto"
+
+msgid "Require a supporting document for consumption records"
+msgstr "Exigir documento de respaldo en los registros de consumo"
+
+msgid ""
+"If enabled, a consumption or waste record cannot be saved without its bill "
+"or manifest."
+msgstr ""
+"Si se activa, un registro de consumo o de residuo no se puede guardar sin su "
+"factura o manifiesto."
+
+msgid "Months of history to detect atypical consumption"
+msgstr "Meses de historial para detectar consumos atípicos"
+
+msgid ""
+"The last period of a measurement point is compared against the average of "
+"this many previous months."
+msgstr ""
+"El último período de un punto de medición se compara con el promedio de esta "
+"cantidad de meses anteriores."
+
+msgid "Unknown email process."
+msgstr "Proceso de correo desconocido."
+
+msgid "This trigger does not apply to the process."
+msgstr "Este disparador no aplica al proceso."
+
+msgid "Yes/No values: true or false. Dates: YYYY-MM-DD."
+msgstr "Valores Sí/No: true o false. Fechas: AAAA-MM-DD."
+
+msgid "Send this email"
+msgstr "Enviar este correo"
+
+msgid "Leave empty to use the subject of the global template."
+msgstr "Déjelo vacío para usar el asunto de la plantilla global."
+
+msgid ""
+"Leave empty to use the message of the global template. Django template "
+"syntax."
+msgstr ""
+"Déjelo vacío para usar el mensaje de la plantilla global. Sintaxis de "
+"plantillas de Django."
+
+msgid "Default of the process"
+msgstr "El del proceso"
+
+msgid "Restored inherited value"
+msgstr "Valor heredado restaurado"
+
+msgid "The inherited value was restored."
+msgstr "Se restauró el valor heredado."
 
 # error_view.html
 msgid "Access denied"
@@ -5430,8 +6109,8 @@ msgstr "Revisar Solicitudes"
 msgid "Reports, Informs and Procedures"
 msgstr "Reportes, Informes y Procedimientos"
 
-msgid "Report List"
-msgstr "Listado de Reportes"
+msgid "Platform administration"
+msgstr "Administración de plataforma"
 
 msgid "Manage Reservations"
 msgstr "Administrar Reservas"
@@ -5531,6 +6210,53 @@ msgstr "Verificar FDS"
 
 msgid "Companies Managment"
 msgstr "Gestión de Compañías"
+
+msgid ""
+"What to watch (process and trigger), when to fire (threshold) and whom to "
+"notify (responsible, roles, email and pending task)."
+msgstr ""
+"Qué vigilar (proceso y disparador), cuándo disparar (umbral) y a quién "
+"avisar (responsable, roles, correo y tarea pendiente)."
+
+msgid "Rules"
+msgstr "Reglas"
+
+msgid "Firing history"
+msgstr "Historial de disparos"
+
+msgid "Register alert rule"
+msgstr "Registrar regla de alerta"
+
+msgid "Update alert rule"
+msgstr "Actualizar regla de alerta"
+
+msgid "Delete alert rule"
+msgstr "Eliminar regla de alerta"
+
+msgid ""
+"Emails that the system sends for each process. Turn one off or replace its "
+"subject and message for this organization and its children; the global "
+"templates are edited separately."
+msgstr ""
+"Correos que el sistema envía en cada proceso. Apague uno o reemplace su "
+"asunto y mensaje para esta organización y sus hijas; las plantillas globales "
+"se editan aparte."
+
+msgid "Edit global email templates"
+msgstr "Editar plantillas globales de correo"
+
+msgid "Update notification"
+msgstr "Actualizar notificación"
+
+msgid ""
+"A value set here applies to this organization and its children, unless a "
+"child sets its own. Restore to use the inherited value again."
+msgstr ""
+"Un valor fijado aquí aplica a esta organización y a sus hijas, salvo que una "
+"hija fije el suyo. Restaure para volver a usar el valor heredado."
+
+msgid "Update parameter"
+msgstr "Actualizar parámetro"
 
 msgid "Donate Organilab"
 msgstr "Donar a Organilab"
@@ -5653,9 +6379,6 @@ msgstr "Si deseas delimitar la consulta selecciona muebles (Opcional)"
 msgid "Filter Furniture"
 msgstr "Filtrar mueble"
 
-msgid "Period"
-msgstr "PerÍodo"
-
 msgid "Resume"
 msgstr "Resumen"
 
@@ -5678,9 +6401,6 @@ msgstr "Mueble no permitido"
 
 msgid "Task report doesn't exists"
 msgstr "Tarea de reporte no existe"
-
-msgid "Buildings"
-msgstr "Edificios"
 
 msgid "Delivered"
 msgstr "Entregado"
@@ -6101,9 +6821,6 @@ msgstr "Cuadro 4, 3 o ninguna"
 msgid "Exceeds THRESHOLD OR NA, if the previous (column) is none"
 msgstr "Supera UMBRAL O NA, si el anterior(columna) es ninguno"
 
-msgid "Building"
-msgstr "Edificio"
-
 msgid "Risk Zone"
 msgstr "Zona de riesgo"
 
@@ -6471,6 +7188,9 @@ msgstr "Desde"
 msgid "To"
 msgstr "Hasta"
 
+msgid "Assessment date"
+msgstr "Fecha de evaluación"
+
 msgid "Sustances per Danger Indications"
 msgstr "Sustancias por indicación de peligro"
 
@@ -6501,10 +7221,8 @@ msgstr "Sustancias por Código EU"
 msgid "Sustances per Storage Class"
 msgstr "Sustancias por clase de almacenamientos"
 
-#, fuzzy
-#| msgid "Adjustment quantities in logs"
 msgid "Substances quantity in tons"
-msgstr "Ajuste de cantidades en bitacoras"
+msgstr "Cantidad de sustancias en toneladas"
 
 msgid "Unidades"
 msgstr ""
@@ -6885,6 +7603,16 @@ msgstr ""
 msgid "Cloned IPER assessment to version %(version)s"
 msgstr "Evaluación IPER clonada a versión %(version)s"
 
+msgid "Only completed IPER assessments can be duplicated."
+msgstr "Solo se pueden duplicar las evaluaciones IPER completadas."
+
+#, python-format
+msgid "Duplicated from IPER #%(id)s"
+msgstr "Duplicado de IPER #%(id)s"
+
+msgid "IPER assessment duplicated successfully."
+msgstr "El seguimiento de riesgo se ha duplicado correctamente."
+
 msgid "Update the IPER risk assessment"
 msgstr "Actualizar la evaluación de riesgo IPER"
 
@@ -7086,9 +7814,6 @@ msgstr "Periodo de actualización (meses)"
 msgid "Remind days before due date"
 msgstr "Días de recordatorio antes del vencimiento"
 
-msgid "Is active"
-msgstr "Está activo"
-
 msgid "IPER configuration"
 msgstr "Configuración IPER"
 
@@ -7110,9 +7835,6 @@ msgstr "Bajo demanda"
 msgid "Risk zone request"
 msgstr "Solicitud de zona de riesgo"
 
-msgid "Assessment date"
-msgstr "Fecha de evaluación"
-
 msgid "Version"
 msgstr "Versión"
 
@@ -7121,9 +7843,6 @@ msgstr "Versión anterior"
 
 msgid "Next update due date"
 msgstr "Fecha de vencimiento de la próxima actualización"
-
-msgid "Source"
-msgstr "Origen"
 
 msgid "When enabled, the laboratory name is hidden in public listings."
 msgstr ""
@@ -7281,6 +8000,14 @@ msgstr "Nueva versión sin peligros"
 msgid "Start clean"
 msgstr "Empezar de cero"
 
+#, fuzzy
+#| msgid "Create maintenance"
+msgid "Create an independent copy"
+msgstr "Crear mantenimiento"
+
+msgid "Duplicate"
+msgstr "Duplicar"
+
 msgid "Identified hazards"
 msgstr "Peligros identificados"
 
@@ -7314,11 +8041,27 @@ msgstr "Ayuda del laboratorio"
 msgid "Loading inventory and hazards…"
 msgstr "Cargando inventario y peligros…"
 
+msgid "Duplicate IPER Assessment"
+msgstr "Duplicar seguimiento de riesgo"
+
+msgid ""
+"Creates an independent copy (version 1) with all hazards and observations. "
+"The original assessment will not be modified."
+msgstr ""
+"Crea una copia independiente (versión 1) con todos los peligros y "
+"observaciones. La evaluación original no se modificará."
+
 msgid "Items in"
 msgstr "Artículos en"
 
 msgid "Could not load help."
 msgstr "No se pudo cargar la ayuda."
+
+msgid "Duplicating..."
+msgstr "Duplicando..."
+
+msgid "Error duplicating assessment"
+msgstr "Error al duplicar la evaluación"
 
 msgid "Identification of Hazards and Risk Assessment (INTE T55)"
 msgstr "Identificación de Peligros y Evaluación de Riesgos (INTE T55)"
@@ -7370,10 +8113,8 @@ msgstr "Eliminar regente"
 msgid "View search filters"
 msgstr "Ver filtros de búsqueda"
 
-#, fuzzy
-#| msgid "Danger Substance"
 msgid "Tons per Substance"
-msgstr "Sustancia Peligrosa"
+msgstr "Toneladas por Sustancia"
 
 msgid "EU Code"
 msgstr "Código UE"
@@ -7414,8 +8155,6 @@ msgstr "Estructuras"
 msgid "Workers"
 msgstr "Trabajadores"
 
-#, fuzzy
-#| msgid "Download all"
 msgid "Download Excel"
 msgstr "Descargar"
 
@@ -7445,8 +8184,6 @@ msgstr "Eliminar Jornada Laboral"
 msgid "Resumen"
 msgstr "Resumen"
 
-#, fuzzy
-#| msgid "Classification"
 msgid "Clasificación"
 msgstr "Clasificación"
 
@@ -7466,8 +8203,6 @@ msgstr "Categoría"
 msgid "Valor"
 msgstr ""
 
-#, fuzzy
-#| msgid "Delete Substance"
 msgid "Detalle Sustancias"
 msgstr "Eliminar sustancia"
 
@@ -7495,7 +8230,6 @@ msgstr ""
 msgid "Detalle Contribuciones"
 msgstr "Contribuciones de salud"
 
-#, python-format
 msgid "Created risk zone '%(name)s'"
 msgstr "Zona de riesgo '%(name)s' creada"
 
@@ -8225,6 +8959,47 @@ msgstr "¿Encontró el componente de códigos H?"
 msgid "Create it here!"
 msgstr "¡Créelo aquí!"
 
+msgid "Uploading the safety data sheet…"
+msgstr "Cargando la ficha de datos de seguridad…"
+
+msgid "Reading the safety data sheet. You can keep filling in the form."
+msgstr ""
+"Lea la ficha de datos de seguridad. Puede seguir rellenando el formulario."
+
+msgid "Data found. Loading it into the form…"
+msgstr "Datos encontrados. Cargándolos en el formulario…"
+
+msgid "Data found in the sheet. Loading it will discard what you have typed."
+msgstr ""
+"Datos encontrados en la hoja de cálculo. Al cargarla, se descartará lo que "
+"hayas escrito."
+
+msgid "Load extracted data"
+msgstr "Cargar los datos extraídos"
+
+msgid ""
+"The sheet was saved, but no data could be read from it. Fill in the fields "
+"manually."
+msgstr ""
+"La hoja de cálculo se guardó, pero no se pudo leer ningún dato. Rellene los "
+"campos manualmente."
+
+msgid ""
+"The sheet was saved, but it could not be read. Fill in the fields manually."
+msgstr ""
+"La hoja de cálculo se guardó, pero no se pudo leer. Rellene los campos "
+"manualmente."
+
+msgid "The safety data sheet could not be uploaded."
+msgstr "No se pudo cargar la ficha de datos de seguridad."
+
+msgid ""
+"Reading the sheet is taking too long. Reload the page in a moment to see the "
+"result."
+msgstr ""
+"La lectura de la hoja de cálculo está tardando demasiado. Recargue la página "
+"en un momento para ver el resultado."
+
 msgid "Information about the Substance"
 msgstr "Información sobre la Sustancia"
 
@@ -8421,6 +9196,9 @@ msgstr "Controles de exposición/protección individual"
 msgid "Add Provider"
 msgstr "Agregar Proveedor"
 
+msgid "Update Substances"
+msgstr "Actualizar Sustancia"
+
 msgid "Security Leafs"
 msgstr "Hojas de Seguridad"
 
@@ -8485,12 +9263,41 @@ msgstr "Cliente"
 msgid "Use save before finish"
 msgstr "Usar guardar antes de terminar"
 
+#, python-format
 msgid "New substance request: %(name)s"
 msgstr "Nueva solicitud de sustancia: %(name)s"
 
+#, python-format
+msgid ""
+"Hi,\n"
+"\n"
+"A new substance request has been submitted and requires your review.\n"
+"\n"
+"Name: %(name)s\n"
+"Requested by: %(user)s\n"
+"\n"
+"Please log in to review this request.\n"
+"\n"
+"Thanks,\n"
+"Organilab system"
+msgstr ""
+"Hola,\n"
+"\n"
+"Se ha enviado una nueva solicitud de sustancia y requiere su revisión.\n"
+"\n"
+"Nombre: %(name)s\n"
+"Solicitado por: %(user)s\n"
+"\n"
+"Por favor inicie sesión para revisar esta solicitud.\n"
+"\n"
+"Gracias,\n"
+"Sistema Organilab"
+
+#, python-format
 msgid "Approved substance '%(name)s' added to inventory"
 msgstr "Sustancia aprobada '%(name)s' desde solicitud"
 
+#, python-format
 msgid "Created SGA template '%(name)s' from editor"
 msgstr "Plantilla SGA '%(name)s' creada desde editor"
 
@@ -8592,108 +9399,93 @@ msgstr "Sustancia aprobada '%(name)s' desde solicitud"
 msgid "Created review substance"
 msgstr "Sustancia de revisión creada"
 
+#, python-format
+msgid "Substance '%(name)s' has been sent for review."
+msgstr "La sustancia '%(name)s' ha sido enviada para su análisis."
+
+msgid "Security sheet (SDS) is required to send this substance for review."
+msgstr ""
+
 msgid "Method not allowed"
 msgstr "No permitido"
+
+msgid "No security sheet was received."
+msgstr ""
 
 msgid "Created new substance"
 msgstr "Nueva sustancia creada"
 
-msgid "Updated builder information for substance '%(name)s'"
-msgstr "Información del constructor actualizada para sustancia '%(name)s'"
+msgid "Update Consumption Record"
+msgstr "Actualizar registro de consumo"
 
-msgid "Updated personal SGA template editor for substance '%(name)s'"
-msgstr "Editor de plantilla SGA personal actualizado para sustancia '%(name)s'"
+msgid "View Consumption Record"
+msgstr "Visualizar registro de consumo"
 
-msgid "Updated personal SGA template for substance '%(name)s'"
-msgstr "Plantilla SGA personal actualizada para sustancia '%(name)s'"
+msgid "Delete Consumption Record"
+msgstr "Eliminar registro de consumo"
 
-msgid "Updated SGA complement for substance '%(name)s'"
-msgstr "Complemento SGA actualizado para sustancia '%(name)s'"
+msgid "Add Consumption Record"
+msgstr "Crear registro de consumo"
 
-msgid "Approved substance"
-msgstr "Sustancia aprobada"
+msgid "Delete Measurement Point"
+msgstr "Eliminar Punto de medición"
 
-msgid "Approved substance '%(name)s' from request"
-msgstr "Sustancia aprobada '%(name)s' desde solicitud"
+msgid "View Measurement Point"
+msgstr "Visualizar Punto de medición"
 
-msgid "New substance request"
-msgstr "Nueva solicitud de sustancia"
+msgid "Add Measurement Point"
+msgstr "Crear Punto de medición"
 
-msgid "Hi,\n\n"
-        "A new substance request has been submitted and requires your review.\n\n"
-        "Name: %(name)s\n"
-        "Requested by: %(user)s\n\n"
-        "Please log in to review this request.\n\n"
-        "Thanks,\nOrganilab system"
-msgstr "Hola,\n\n"
-        "Se ha enviado una nueva solicitud de sustancia y requiere su revisión.\n\n"
-        "Nombre: %(name)s\n"
-        "Solicitado por: %(user)s\n\n"
-        "Por favor inicie sesión para revisar esta solicitud.\n\n"
-        "Gracias,\nSistema Organilab"
+msgid "Update Measurement Point"
+msgstr "Actualiza Punto de medición"
 
-msgid "Load extracted data"
-msgstr "Cargar los datos extraídos"
+msgid "View Normalization Base"
+msgstr "Visualizar Bases de Normalización"
 
-msgid "Data found in the sheet. Loading it will discard what you have typed."
-msgstr "Datos encontrados en la hoja de cálculo. Al cargarla, se descartará lo que hayas escrito."
+msgid "Delete Normalization Base"
+msgstr "Eliminar Bases de Normalización"
 
-msgid "Data found. Loading it into the form…"
-msgstr "Datos encontrados. Cargándolos en el formulario…"
+msgid "Add Normalization Base"
+msgstr "Crear Bases de Normalización"
 
-msgid "Reading the safety data sheet. You can keep filling in the form."
-msgstr "Lea la ficha de datos de seguridad. Puede seguir rellenando el formulario."
+msgid "Update Normalization Base"
+msgstr "Actualizar Bases de Normalización"
 
-msgid "Uploading the safety data sheet…"
-msgstr "Cargando la ficha de datos de seguridad…"
+msgid "View environmental dashboard"
+msgstr "Visualizar dashboard ambiental"
 
-msgid "The sheet was saved, but no data could be read from it. Fill in the fields manually."
-msgstr "La hoja de cálculo se guardó, pero no se pudo leer ningún dato. Rellene los campos manualmente."
+msgid "Review Consumption Alert"
+msgstr "Revisión de alertas de consumo"
 
-msgid "The sheet was saved, but it could not be read. Fill in the fields manually."
-msgstr "La hoja de cálculo se guardó, pero no se pudo leer. Rellene los campos manualmente."
+msgid "List Consumption Alert"
+msgstr "Visualizar alertas de consumo"
 
-msgid "The safety data sheet could not be uploaded."
-msgstr "No se pudo cargar la ficha de datos de seguridad."
+msgid "Manage building access"
+msgstr "Control de acceso a edificios"
 
-msgid "Reading the sheet is taking too long. Reload the page in a moment to see the result."
-msgstr "La lectura de la hoja de cálculo está tardando demasiado. Recargue la página en un momento para ver el resultado."
+msgid "View system parameters"
+msgstr "Visualizar parámetros del sistema"
 
-msgid "Substance '%(name)s' has been sent for review."
-msgstr "La sustancia '%(name)s' ha sido enviada para su análisis."
+msgid "Delete system parameters"
+msgstr "Elimina parámetros del sistema"
 
-msgid "Update Substances"
-msgstr "Actualizar Sustancia"
+msgid "Change system parameters"
+msgstr "Actualizar parámetros del sistema"
 
-msgid "Duplicate IPER Assessment"
-msgstr "Duplicar seguimiento de riesgo"
+msgid "Restore system parameters"
+msgstr "Restaurar parámetros del sistema"
 
-msgid "Duplicate"
-msgstr "Duplicar"
+msgid "Add system parameters"
+msgstr "Crear parámetros del sistema"
 
-msgid "Creates an independent copy (version 1) with all hazards and observations. The original assessment will not be modified."
-msgstr "Crea una copia independiente (versión 1) con todos los peligros y observaciones. La evaluación original no se modificará."
+msgid "System Parameters"
+msgstr "Parametros del sistema"
 
-msgid "Duplicated from IPER #%(id)s"
-msgstr "Duplicado de IPER #%(id)s"
+msgid "View configuration settings"
+msgstr "Visualizar configuración de notificaciones"
 
-msgid "IPER assessment duplicated successfully."
-msgstr "El seguimiento de riesgo se ha duplicado correctamente."
+msgid "Update configuration settings"
+msgstr "Actualizar configuración de notificaciones"
 
-msgid "Only completed IPER assessments can be duplicated."
-msgstr "Solo se pueden duplicar las evaluaciones IPER completadas."
-
-msgid "Error duplicating assessment"
-msgstr "Error al duplicar la evaluación"
-
-msgid "Duplicating..."
-msgstr "Duplicando..."
-
-msgid "Laboratory Relations"
-msgstr "Laboratorios vinculados"
-
-msgid "Manage laboratories linked to this organization. Unlinking a laboratory will also remove user permissions for that laboratory in this organization."
-msgstr "Gestione los laboratorios vinculados a esta organización. Desvincular un laboratorio también eliminará los permisos de usuario para dicho laboratorio en esta organización."
-
-msgid "Unlink Laboratories"
-msgstr "Desvincular Laboratorios"
+msgid "Restore configuration setting"
+msgstr "Restauración de configuración de notificaciones"

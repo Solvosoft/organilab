@@ -3461,6 +3461,230 @@ URLNAME_PERMISSIONS = {
             "permission": "sga.view_recipientsize",
         },
     ],
+    # Módulo ambiental: consumos y residuos por edificio.
+    "measurementpoint_list": [
+        {
+            "name": "View measurement points",
+            "category": "Ambiental",
+            "permission": "ambiental.view_measurementpoint",
+        },
+        {
+            "name": "Add measurement point",
+            "category": "Ambiental",
+            "permission": "ambiental.add_measurementpoint",
+        },
+        {
+            "name": "Change measurement point",
+            "category": "Ambiental",
+            "permission": "ambiental.change_measurementpoint",
+        },
+        {
+            "name": "Delete measurement point",
+            "category": "Ambiental",
+            "permission": "ambiental.delete_measurementpoint",
+        },
+    ],
+    "consumptionrecord_list": [
+        {
+            "name": "View consumption records",
+            "category": "Ambiental",
+            "permission": "ambiental.view_consumptionrecord",
+        },
+        {
+            "name": "Add consumption record",
+            "category": "Ambiental",
+            "permission": "ambiental.add_consumptionrecord",
+        },
+        {
+            "name": "Change consumption record",
+            "category": "Ambiental",
+            "permission": "ambiental.change_consumptionrecord",
+        },
+        {
+            "name": "Delete consumption record",
+            "category": "Ambiental",
+            "permission": "ambiental.delete_consumptionrecord",
+        },
+    ],
+    "normalizationbase_list": [
+        {
+            "name": "View normalization bases",
+            "category": "Ambiental",
+            "permission": "ambiental.view_normalizationbase",
+        },
+        {
+            "name": "Add normalization base",
+            "category": "Ambiental",
+            "permission": "ambiental.add_normalizationbase",
+        },
+        {
+            "name": "Change normalization base",
+            "category": "Ambiental",
+            "permission": "ambiental.change_normalizationbase",
+        },
+        {
+            "name": "Delete normalization base",
+            "category": "Ambiental",
+            "permission": "ambiental.delete_normalizationbase",
+        },
+        {
+            "name": "Preload normalization bases",
+            "category": "Ambiental",
+            "permission": "ambiental.preload_normalizationbase",
+        },
+    ],
+    "report_consumption_detail": [
+        {
+            "name": "Consumption detail report",
+            "category": "Ambiental",
+            "permission": "laboratory.do_report",
+        },
+        {
+            "name": "View consumption records",
+            "category": "Ambiental",
+            "permission": "ambiental.view_consumptionrecord",
+        },
+    ],
+    "report_consumption_summary": [
+        {
+            "name": "Consumption summary report",
+            "category": "Ambiental",
+            "permission": "laboratory.do_report",
+        },
+        {
+            "name": "View consumption records",
+            "category": "Ambiental",
+            "permission": "ambiental.view_consumptionrecord",
+        },
+    ],
+    "report_consumption_cost": [
+        {
+            "name": "Consumption cost report",
+            "category": "Ambiental",
+            "permission": "laboratory.do_report",
+        },
+        {
+            "name": "View consumption records",
+            "category": "Ambiental",
+            "permission": "ambiental.view_consumptionrecord",
+        },
+    ],
+    "report_environmental_indicators": [
+        {
+            "name": "Environmental indicators report",
+            "category": "Ambiental",
+            "permission": "laboratory.do_report",
+        },
+        {
+            "name": "View consumption records",
+            "category": "Ambiental",
+            "permission": "ambiental.view_consumptionrecord",
+        },
+    ],
+    "report_consumption_comparison": [
+        {
+            "name": "Consumption comparison report",
+            "category": "Ambiental",
+            "permission": "laboratory.do_report",
+        },
+        {
+            "name": "View consumption records",
+            "category": "Ambiental",
+            "permission": "ambiental.view_consumptionrecord",
+        },
+    ],
+    "ambiental_dashboard": [
+        {
+            "name": "View environmental dashboard",
+            "category": "Ambiental",
+            "permission": "ambiental.view_ambiental_dashboard",
+        },
+    ],
+    "waste_list": [
+        {
+            "name": "View waste records",
+            "category": "Ambiental",
+            "permission": "ambiental.view_consumptionrecord",
+        },
+    ],
+    "report_waste_manifest": [
+        {
+            "name": "Waste and manifests report",
+            "category": "Ambiental",
+            "permission": "laboratory.do_report",
+        },
+        {
+            "name": "View consumption records",
+            "category": "Ambiental",
+            "permission": "ambiental.view_consumptionrecord",
+        },
+    ],
+    "building_access_list": [
+        {
+            "name": "Manage access to buildings",
+            "category": "Ambiental",
+            "permission": "ambiental.manage_building_access",
+        },
+    ],
+    "consumptionalert_list": [
+        {
+            "name": "View consumption alerts",
+            "category": "Ambiental",
+            "permission": "ambiental.view_consumptionalert",
+        },
+        {
+            "name": "Review consumption alerts",
+            "category": "Ambiental",
+            "permission": "ambiental.review_consumptionalert",
+        },
+    ],
+    # Administración de plataforma: parámetros, notificaciones y alertas.
+    "systemparameter_list": [
+        {
+            "name": "View system parameters",
+            "category": "Plataforma",
+            "permission": "presentation.view_systemparameter",
+        },
+        {
+            "name": "Change system parameters",
+            "category": "Plataforma",
+            "permission": "presentation.change_systemparameter",
+        },
+    ],
+    "notificationsetting_list": [
+        {
+            "name": "View notification settings",
+            "category": "Plataforma",
+            "permission": "presentation.view_notificationsetting",
+        },
+        {
+            "name": "Change notification settings",
+            "category": "Plataforma",
+            "permission": "presentation.change_notificationsetting",
+        },
+    ],
+    "alertrule_list": [
+        {
+            "name": "View alert rules",
+            "category": "Plataforma",
+            "permission": "presentation.view_alertrule",
+        },
+        {
+            "name": "Add alert rule",
+            "category": "Plataforma",
+            "permission": "presentation.add_alertrule",
+        },
+        {
+            "name": "Change alert rule",
+            "category": "Plataforma",
+            "permission": "presentation.change_alertrule",
+        },
+        {
+            "name": "Delete alert rule",
+            "category": "Plataforma",
+            "permission": "presentation.delete_alertrule",
+        },
+    ],
     # La papelera es de la biblioteca: sus permisos viven en djgentelella,
     # no en laboratory. update_roles.update_papelera() ya se los da a los
     # roles fijos; esto es lo que permite configurarlos por organización.
@@ -3479,6 +3703,136 @@ URLNAME_PERMISSIONS = {
             "name": "Delete permanently from Trash",
             "category": "Trash",
             "permission": "djgentelella.delete_trash",
+        },
+    ],
+    'ambiental_consumptionrecord':[
+        {
+            "name":"View Consumption Record",
+            "category":"Ambiental",
+            "permission":"ambiental.view_consumptionrecord"
+        },
+        {
+            "name":"Delete Consumption Record",
+            "category":"Ambiental",
+            "permission":"ambiental.delete_consumptionrecord"
+        },
+        {
+            "name":"Add Consumption Record",
+            "category":"Ambiental",
+            "permission":"ambiental.add_consumptionrecord"
+        },
+        {
+            "name":"Update Consumption Record",
+            "category":"Ambiental",
+            "permission":"ambiental.change_consumptionrecord"
+        },
+    ],
+    'ambiental_measurementpoint':[
+        {
+            "name":"View Measurement Point",
+            "category":"Ambiental",
+            "permission":"ambiental.view_measurementpoint"
+        },
+        {
+            "name":"Add Measurement Point",
+            "category":"Ambiental",
+            "permission":"ambiental.add_measurementpoint"
+        },
+        {
+            "name":"View Measurement Point",
+            "category":"Ambiental",
+            "permission":"ambiental.change_measurementpoint"
+        },
+        {
+            "name":"Delete Measurement Point",
+            "category":"Ambiental",
+            "permission":"ambiental.delete_measurementpoint"
+        },
+    ],
+    "ambiental_normalizationbase": [
+        {
+            "name": "View Normalization Base",
+            "category": "Ambiental",
+            "permission": "ambiental.view_normalizationbase"
+        },
+        {
+            "name": "Delete Normalization Base",
+            "category": "Ambiental",
+            "permission": "ambiental.delete_normalizationbase"
+        },
+        {
+            "name": "Add Normalization Base",
+            "category": "Ambiental",
+            "permission": "ambiental.add_normalizationbase"
+        },
+        {
+            "name": "Update Normalization Base",
+            "category": "Ambiental",
+            "permission": "ambiental.change_normalizationbase"
+        },
+    ],
+    "ambiental_consumptionalert":[
+        {
+            "name": "Review Consumption Alert",
+            "category": "Ambiental",
+            "permission": "ambiental.review_consumptionalert"
+        },
+        {
+            "name": "List Consumption Alert",
+            "category": "Ambiental",
+            "permission": "ambiental.view_consumptionalert"
+        },
+    ],
+    "ambiental_building_access": [
+        {
+            "name": "Manage building access",
+            "category": "Ambiental",
+            "permission": "ambiental.manage_building_access"
+        }
+
+    ],
+    "platform_systemparameter": [
+        {
+            "name": "View system parameters",
+            "category": "System Parameters",
+            "permission": "presentation.view_systemparameter"
+        },
+        {
+            "name": "Update system parameters",
+            "category": "System Parameters",
+            "permission": "presentation.change_systemparameter"
+        },
+        {
+            "name": "Add system parameters",
+            "category": "System Parameters",
+            "permission": "presentation.add_systemparameter"
+        },
+        {
+            "name": "Delete system parameters",
+            "category": "System Parameters",
+            "permission": "presentation.delete_systemparameter"
+        },
+        {
+            "name": "Restore system parameters",
+            "category": "System Parameters",
+            "permission": "presentation.change_systemparameter"
+        }
+    ],
+    "platform_notificationsetting": [
+        {
+            "name": "View configuration settings",
+            "category": "Notification setting",
+            "permission": "presentation.view_notificationsetting"
+        },
+        {
+            "name": "Update configuration settings",
+            "category": "Notification setting",
+            "permission": "presentation.change_notificationsetting"
+        },
+        {
+            "name": "Restore configuration setting",
+            "category": "Configuration setting",
+            "permission": "presentation.change_notificationsetting"
         },
     ],
 }

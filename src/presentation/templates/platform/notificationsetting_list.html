@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load urlname_tags organilab_tags i18n static %}
+
+{% block pre_head %}
+	{% define_urlname_action 'platform_notificationsetting' %}
+{% endblock %}
+
+{% block title %}{% trans 'Notification settings' %}{% endblock %}
+{% block content %}
+	<input type="hidden" value="{{ org_pk }}" id="org">
+	<div class="card mt-2">
+		<div class="card-body">
+			<div class="card-title titles">
+				<h1 class="text-center">{% trans 'Notification settings' %}</h1>
+				<p class="text-center text-muted">
+					{% trans 'Emails that the system sends for each process. Turn one off or replace its subject and message for this organization and its children; the global templates are edited separately.' %}
+				</p>
+				{% if perms.async_notification.view_emailtemplate %}
+					<p class="text-center"><a href="{% url 'async_notification:email_template' %}">{% trans 'Edit global email templates' %}</a></p>
+				{% endif %}
+			</div>
+			<div class="row mt-3">
+				<div class="col-12">
+					<table class="table table-hover table-striped w-100 table-responsive" id="table-notificationsetting"></table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	{% url "platform:api-notificationsetting-detail" org_pk "0" as detail_obj_url %}
+	{% trans 'Update notification' as update_obj_title %}
+	{% include 'gentelella/blocks/modal_template.html' with form=form_update form_id="update_obj_form" id="update_obj_modal" title=update_obj_title principal_class='modal-lg' url=detail_obj_url %}
+{% endblock %}
+
+{% block js %}
+	{{ block.super }}
+	<script>
+		const object_urls = {
+			list_url: "{% url 'platform:api-notificationsetting-list' org_pk %}",
+			get_values_for_update_url: "{% url 'platform:api-notificationsetting-get-values-for-update' org_pk '0' %}",
+			update_url: "{% url 'platform:api-notificationsetting-detail' org_pk '0' %}",
+		};
+		const restore_url = "{% url 'platform:api-notificationsetting-restore' org_pk '0' %}";
+	</script>
+	<script src="{% static 'presentation/platform/notificationsetting.js' %}?v={% get_organilab_version %}"></script>
+{% endblock %}

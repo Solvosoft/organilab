@@ -1,4 +1,4 @@
-from django.contrib.auth.models import Permission
+from django.contrib.auth.models import Permission, Group
 from django.core.management import BaseCommand
 
 from auth_and_perms.models import Rol
@@ -1275,6 +1275,92 @@ def create_administrador_iper():
         )
 
 
+# ---------------------------------------------------------------------------
+# Módulo ambiental: consumos y residuos por edificio
+# ---------------------------------------------------------------------------
+
+AMBIENTAL_READONLY = [
+    "ambiental.view_measurementpoint",
+    "ambiental.view_consumptionrecord",
+    "ambiental.view_normalizationbase",
+    "laboratory.view_report",
+    "laboratory.do_report",
+    "ambiental.view_ambiental_dashboard",
+    "ambiental.view_consumptionalert",
+]
+
+AMBIENTAL_REGISTRO = AMBIENTAL_READONLY + [
+    "ambiental.add_consumptionrecord",
+    "ambiental.change_consumptionrecord",
+    "ambiental.delete_consumptionrecord",
+]
+
+AMBIENTAL_FULL = AMBIENTAL_REGISTRO + [
+    "ambiental.add_measurementpoint",
+    "ambiental.change_measurementpoint",
+    "ambiental.delete_measurementpoint",
+    "ambiental.add_normalizationbase",
+    "ambiental.change_normalizationbase",
+    "ambiental.delete_normalizationbase",
+    "ambiental.preload_normalizationbase",
+    "ambiental.review_consumptionalert",
+    "ambiental.manage_building_access",
+]
+
+AMBIENTAL_ROLES = {
+    "Administrador ambiental": (
+        AMBIENTAL_FULL,
+        "Configura el módulo ambiental de la organización: puntos de medición de "
+        "cada edificio, bases de normalización y reglas de alerta. Registra y "
+        "consulta consumos y residuos.",
+    ),
+    "Encargado de registro ambiental": (
+        AMBIENTAL_REGISTRO,
+        "Registra los consumos (agua, electricidad, combustible...) y los residuos "
+        "de los puntos de medición a partir de recibos y manifiestos.",
+    ),
+    "Analista ambiental": (
+        AMBIENTAL_READONLY,
+        "Consulta en solo lectura los consumos, indicadores y reportes ambientales "
+        "de la organización.",
+    ),
+}
+
+
+PLATFORM_ADMIN = [
+    "presentation.view_systemparameter",
+    "presentation.change_systemparameter",
+]
+
+PLATFORM_ALERTS = [
+    "presentation.view_alertrule",
+    "presentation.add_alertrule",
+    "presentation.change_alertrule",
+    "presentation.delete_alertrule",
+]
+
+PLATFORM_NOTIFICATIONS = [
+    "presentation.view_notificationsetting",
+    "presentation.change_notificationsetting",
+]
+
+
+def update_ambiental_roles():
+    for name, (perms, description) in AMBIENTAL_ROLES.items():
+        rol = Rol.objects.filter(name=name).first()
+        if not rol:
+            rol = Rol.objects.create(name=name, description=description)
+        add_permissions(rol, perms)
+    # Los parámetros ambientales los cambia el administrador ambiental; la pantalla
+    # solo le muestra los que su permiso habilita (presentation/parameters.py).
+    add_permissions(Rol.objects.get(name="Administrador ambiental"), PLATFORM_ADMIN + PLATFORM_ALERTS)
+    rol = Rol.objects.filter(name="Administrativo superior").first()
+    if rol:
+        add_permissions(rol, AMBIENTAL_FULL + PLATFORM_ADMIN + PLATFORM_NOTIFICATIONS + PLATFORM_ALERTS)
+    else:
+        print("WARNING: Rol 'Administrativo superior' not found, skipping.")
+
+
 ROL_DESCRIPTIONS = {
     "Administrador de Laboratorio": (
         "Gestiona de forma integral el laboratorio: inventario, académico, "
@@ -1374,6 +1460,15 @@ def update_descriptions():
         rol.description = description
         rol.save(update_fields=["description"])
 
+def update_group_permissions():
+    group = Group.objects.filter(name="RegisterOrganization").first()
+    TRASH = [
+                "djgentelella.view_trash",
+                "djgentelella.change_trash",
+                "djgentelella.delete_trash",
+            ]
+    if group:
+        add_permissions(group,AMBIENTAL_FULL + PLATFORM_ADMIN + PLATFORM_NOTIFICATIONS + PLATFORM_ALERTS+ TRASH)
 
 class Command(BaseCommand):
     help = "Update rol permissions by segment — idempotent, safe to re-run"
@@ -1397,5 +1492,7 @@ class Command(BaseCommand):
         update_iper_roles()
         create_auditor_iper()
         create_administrador_iper()
+        update_ambiental_roles()
         update_papelera()
         update_descriptions()
+        update_group_permissions()

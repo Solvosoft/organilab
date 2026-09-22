@@ -11,6 +11,17 @@
     "ACAD-02/listar_mis": "ejercitado",
     "ACAD-02/reservar_material": "solo superusuario",
     "ACAD-02/retirar": "solo superusuario",
+    "AMB-01/gestionar_puntos": "ejercitado",
+    "AMB-02/registrar_consumo": "ejercitado",
+    "AMB-03/gestionar_bases": "ejercitado",
+    "AMB-04/reportes_consumo": "ejercitado",
+    "AMB-05/indicadores": "ejercitado",
+    "AMB-06/panel": "ejercitado",
+    "AMB-07/registrar_residuo": "ejercitado",
+    "AMB-07/reporte_residuos": "ejercitado",
+    "AMB-08/detectar": "fuera del alcance de la sonda",
+    "AMB-08/revisar": "ejercitado",
+    "AMB-09/acceso_edificios": "ejercitado",
     "DERB-01/borrar": "solo superusuario",
     "DERB-01/crear": "solo superusuario",
     "DERB-01/editar": "solo superusuario",
@@ -112,6 +123,9 @@
     "ORG-03/totp": "nunca ejercitado",
     "ORG-04/salir": "nunca ejercitado",
     "ORG-04/suplantar": "nunca ejercitado",
+    "PLAT-01/parametros": "ejercitado",
+    "PLAT-02/notificaciones": "ejercitado",
+    "PLAT-03/reglas": "ejercitado",
     "REP-01/descargar": "solo superusuario",
     "REP-01/elegir": "solo superusuario",
     "REP-01/encolar": "solo superusuario",
@@ -172,8 +186,23 @@
     "SGA-05/recipientes": "solo superusuario",
     "TASK-01/ver_bandeja": "solo superusuario"
   },
-  "peticiones_observadas": 4905,
+  "peticiones_observadas": 5049,
   "roles_ejercitados": {
+    "administrador_ambiental": [
+      "AMB-01/gestionar_puntos",
+      "AMB-02/registrar_consumo",
+      "AMB-03/gestionar_bases",
+      "AMB-04/reportes_consumo",
+      "AMB-05/indicadores",
+      "AMB-06/panel",
+      "AMB-07/registrar_residuo",
+      "AMB-07/reporte_residuos",
+      "AMB-08/revisar",
+      "AMB-09/acceso_edificios",
+      "PLAT-01/parametros",
+      "PLAT-02/notificaciones",
+      "PLAT-03/reglas"
+    ],
     "administrador_laboratorio": [
       "LAB-03/mis_labs",
       "RES-01/aprobar",
@@ -182,12 +211,39 @@
       "RES-01/revisar_cola",
       "RES-01/validar_disponibilidad"
     ],
+    "administrativo_superior": [
+      "PLAT-01/parametros",
+      "PLAT-02/notificaciones",
+      "PLAT-03/reglas"
+    ],
+    "analista_ambiental": [
+      "AMB-01/gestionar_puntos",
+      "AMB-02/registrar_consumo",
+      "AMB-03/gestionar_bases",
+      "AMB-04/reportes_consumo",
+      "AMB-05/indicadores",
+      "AMB-06/panel",
+      "AMB-07/registrar_residuo",
+      "AMB-07/reporte_residuos",
+      "AMB-08/revisar"
+    ],
     "estudiante": [
       "LAB-03/mis_labs"
     ],
     "profesor": [
       "ACAD-02/listar_mis",
       "RES-01/ver_mis_reservas"
+    ],
+    "registro_ambiental": [
+      "AMB-01/gestionar_puntos",
+      "AMB-02/registrar_consumo",
+      "AMB-03/gestionar_bases",
+      "AMB-04/reportes_consumo",
+      "AMB-05/indicadores",
+      "AMB-06/panel",
+      "AMB-07/registrar_residuo",
+      "AMB-07/reporte_residuos",
+      "AMB-08/revisar"
     ]
   },
   "roles_nunca_ejercitados": [
@@ -200,7 +256,6 @@
     "tecnico_laboratorio",
     "sga",
     "regente",
-    "administrativo_superior",
     "administrativo_centro_trabajo",
     "auditor_iper",
     "administrador_iper",

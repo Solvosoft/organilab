@@ -10,22 +10,22 @@ el resto se cubre con pruebas de cliente o unitarias.
 
 | Categoría | Rutas |
 |---|---:|
-| `pagina` | 176 |
+| `pagina` | 191 |
 | `parcial` | 4 |
-| `api` | 706 |
+| `api` | 796 |
 | `autocomplete` | 6 |
 | `ajax` | 10 |
 | `json` | 45 |
 | `descarga` | 18 |
 | `accion` | 29 |
 | `infra` | 701 |
-| **total** | **1695** |
+| **total** | **1800** |
 
-Páginas: 176, de las cuales **60 sin ninguna prueba**.
+Páginas: 191, de las cuales **60 sin ninguna prueba**.
 
 ## Rutas por app
 
-Se omiten las categorías `api` e `infra` (1407 rutas de routers DRF y de
+Se omiten las categorías `api` e `infra` (1497 rutas de routers DRF y de
 la administración de Django): están en `inventario_urls.csv`.
 
 ### academic — 9 páginas, 0 sin prueba
@@ -47,6 +47,24 @@ la administración de Django): están en `inventario_urls.csv`.
 | `procedure_step` | `/academic/<int:org_pk>/procedure/procedure/<int:pk>/step/` | pagina | `academic.views.ProcedureStepCreateView` | `academic/procedure_steps.html` | org_pk, pk | — | sí |
 | `procedure_update` | `/academic/<int:org_pk>/procedure/procedure_update/<int:pk>/` | pagina | `academic.views.ProcedureUpdateView` | `academic/procedure_create.html` | org_pk, pk | — | sí |
 | `update_step` | `/academic/<int:org_pk>/procedure/step/<int:pk>/update/` | pagina | `academic.views.ProcedureStepUpdateView` | `academic/procedure_steps.html` | org_pk, pk | — | sí |
+
+### ambiental — 13 páginas, 1 sin prueba
+
+| Nombre | Patrón | Categoría | Vista | Plantilla | kwargs | Selenium | Pruebas |
+|---|---|---|---|---|---|:-:|:-:|
+| `ambiental_dashboard` | `/ambiental/<int:org_pk>/dashboard/` | pagina | `ambiental.views.AmbientalDashboard` | `ambiental/dashboard.html` | org_pk | — | sí |
+| `building_access_list` | `/ambiental/<int:org_pk>/building_access/` | pagina | `ambiental.views.building_access_list` | `ambiental/building_access_list.html` | org_pk | — | — |
+| `consumptionalert_list` | `/ambiental/<int:org_pk>/alerts/` | pagina | `ambiental.views.consumptionalert_list` | `ambiental/consumptionalert_list.html` | org_pk | — | sí |
+| `consumptionrecord_list` | `/ambiental/<int:org_pk>/consumption/` | pagina | `ambiental.views.consumptionrecord_list` | `ambiental/consumptionrecord_list.html` | org_pk | — | sí |
+| `measurementpoint_list` | `/ambiental/<int:org_pk>/measurement_points/` | pagina | `ambiental.views.measurementpoint_list` | `ambiental/measurementpoint_list.html` | org_pk | — | sí |
+| `normalizationbase_list` | `/ambiental/<int:org_pk>/normalization_bases/` | pagina | `ambiental.views.normalizationbase_list` | `ambiental/normalizationbase_list.html` | org_pk | — | sí |
+| `report_consumption_comparison` | `/ambiental/<int:org_pk>/reports/consumption_comparison/` | pagina | `ambiental.views.AmbientalReportView` | `report/base_report_form_view.html` | org_pk | — | sí |
+| `report_consumption_cost` | `/ambiental/<int:org_pk>/reports/consumption_cost/` | pagina | `ambiental.views.AmbientalReportView` | `report/base_report_form_view.html` | org_pk | — | sí |
+| `report_consumption_detail` | `/ambiental/<int:org_pk>/reports/consumption_detail/` | pagina | `ambiental.views.AmbientalReportView` | `report/base_report_form_view.html` | org_pk | — | sí |
+| `report_consumption_summary` | `/ambiental/<int:org_pk>/reports/consumption_summary/` | pagina | `ambiental.views.AmbientalReportView` | `report/base_report_form_view.html` | org_pk | — | sí |
+| `report_environmental_indicators` | `/ambiental/<int:org_pk>/reports/environmental_indicators/` | pagina | `ambiental.views.AmbientalReportView` | `report/base_report_form_view.html` | org_pk | — | sí |
+| `report_waste_manifest` | `/ambiental/<int:org_pk>/reports/waste_manifest/` | pagina | `ambiental.views.AmbientalReportView` | `report/base_report_form_view.html` | org_pk | — | sí |
+| `waste_list` | `/ambiental/<int:org_pk>/waste/` | pagina | `ambiental.views.waste_list` | `ambiental/consumptionrecord_list.html` | org_pk | — | sí |
 
 ### auth_and_perms — 9 páginas, 4 sin prueba
 
@@ -227,6 +245,14 @@ la administración de Django): están en `inventario_urls.csv`.
 |---|---|---|---|---|---|:-:|:-:|
 | `view_task` | `/pending_tasks/view-tasks` | pagina | `pending_tasks.views.view_task` | `tasks/tasks-view.html` | — | — | sí |
 
+### platform — 3 páginas, 0 sin prueba
+
+| Nombre | Patrón | Categoría | Vista | Plantilla | kwargs | Selenium | Pruebas |
+|---|---|---|---|---|---|:-:|:-:|
+| `alertrule_list` | `/platform/<int:org_pk>/alerts/` | pagina | `presentation.platform.views.alertrule_list` | `platform/alertrule_list.html` | org_pk | — | sí |
+| `notificationsetting_list` | `/platform/<int:org_pk>/notifications/` | pagina | `presentation.platform.views.notificationsetting_list` | `platform/notificationsetting_list.html` | org_pk | — | sí |
+| `systemparameter_list` | `/platform/<int:org_pk>/parameters/` | pagina | `presentation.platform.views.systemparameter_list` | `platform/systemparameter_list.html` | org_pk | — | sí |
+
 ### presentation — 5 páginas, 0 sin prueba
 
 | Nombre | Patrón | Categoría | Vista | Plantilla | kwargs | Selenium | Pruebas |
@@ -245,7 +271,7 @@ la administración de Django): están en `inventario_urls.csv`.
 | Nombre | Patrón | Categoría | Vista | Plantilla | kwargs | Selenium | Pruebas |
 |---|---|---|---|---|---|:-:|:-:|
 | `create_organization_report_request` | `/report/<int:org_pk>/create/organization/` | json | `report.views.base.create_organization_request_by_report` | — | org_pk | — | — |
-| `create_report_request` | `/report/<int:org_pk>/create/` | json | `report.views.base.create_request_by_report` | — | org_pk | — | — |
+| `create_report_request` | `/report/<int:org_pk>/create/` | json | `report.views.base.create_request_by_report` | — | org_pk | — | sí |
 | `generate_organization_report` | `/report/<int:org_pk>/download/organization/` | json | `report.views.base.download__organization_report` | — | org_pk | — | — |
 | `generate_report` | `/report/<int:org_pk>/download/` | json | `report.views.base.download_report` | — | org_pk | — | — |
 | `report_organization_status` | `/report/<int:org_pk>/status/` | json | `report.views.base.report_status` | — | org_pk | — | — |
@@ -289,7 +315,7 @@ la administración de Django): están en `inventario_urls.csv`.
 | `api-root` | `/tableapi/` | autocomplete | `rest_framework.routers.APIRootView` | — | — | — | — |
 | `api-root` | `/tableapi/<drf_format_suffix:format>` | autocomplete | `rest_framework.routers.APIRootView` | — | format | — | — |
 
-### riskmanagement — 27 páginas, 7 sin prueba
+### riskmanagement — 26 páginas, 6 sin prueba
 
 | Nombre | Patrón | Categoría | Vista | Plantilla | kwargs | Selenium | Pruebas |
 |---|---|---|---|---|---|:-:|:-:|
@@ -314,7 +340,6 @@ la administración de Django): están en `inventario_urls.csv`.
 | `incident_update` | `/risk/<int:org_pk>/incident/<int:building_pk>/<int:pk>/update/` | pagina | `risk_management.incidents.IncidentReportEdit` | `risk_management/incidentreport_form.html` | org_pk, building_pk, pk | sí | — |
 | `iper_create` | `/risk/<int:org_pk>/iper/create/` | pagina | `risk_management.iper_views.IPERAssessmentCreate` | `risk_management/iper_form.html` | org_pk | — | — |
 | `iper_dashboard` | `/risk/<int:org_pk>/iper/dashboard/` | pagina | `risk_management.iper_views.IPERDashboard` | `risk_management/iper_dashboard.html` | org_pk | — | — |
-| `iper_delete` | `/risk/<int:org_pk>/iper/<int:pk>/delete/` | pagina | `risk_management.iper_views.IPERAssessmentDelete` | `risk_management/iperassessment_confirm_delete.html` | org_pk, pk | — | — |
 | `iper_detail` | `/risk/<int:org_pk>/iper/<int:pk>/detail/` | pagina | `risk_management.iper_views.IPERAssessmentDetail` | `risk_management/iper_detail.html` | org_pk, pk | — | — |
 | `iper_history` | `/risk/<int:org_pk>/iper/history/` | pagina | `risk_management.iper_views.IPERHistory` | `risk_management/iper_history.html` | org_pk | — | sí |
 | `iper_list` | `/risk/<int:org_pk>/iper/list/` | pagina | `risk_management.iper_views.IPERAssessmentList` | `risk_management/iper_list.html` | org_pk | — | sí |

@@ -214,35 +214,6 @@ class IPERAssessmentUpdate(UpdateView):
         )
 
 
-@method_decorator(login_required, name="dispatch")
-@method_decorator(
-    permission_required("risk_management.delete_iperassessment", raise_exception=True),
-    name="dispatch",
-)
-class IPERAssessmentDelete(DeleteView):
-    model = IPERAssessment
-
-    def get_queryset(self):
-        return super().get_queryset().filter(organization__pk=self.kwargs["org_pk"])
-
-    def form_valid(self, form):
-        organilab_logentry(
-            self.request.user,
-            self.object,
-            DELETION,
-            "iperassessment",
-            changed_data=["laboratory", "assessment_date"],
-            change_message=_("Deleted IPER assessment for laboratory '%(lab)s'")
-            % {"lab": self.object.laboratory.name},
-            relobj=[self.object.laboratory],
-        )
-        self.object.delete()
-        return redirect(self.get_success_url())
-
-    def get_success_url(self):
-        return reverse("riskmanagement:iper_list", kwargs={"org_pk": self.org})
-
-
 # --- detalle (peligros + observaciones) -----------------------------------
 @method_decorator(login_required, name="dispatch")
 @method_decorator(

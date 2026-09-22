@@ -133,11 +133,6 @@ urlpatterns = [
         name="iper_update",
     ),
     path(
-        "iper/<int:pk>/delete/",
-        iper_views.IPERAssessmentDelete.as_view(),
-        name="iper_delete",
-    ),
-    path(
         "iper/<int:pk>/clone/",
         iper_views.iper_clone_for_update,
         name="iper_clone",

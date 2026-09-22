@@ -50,9 +50,12 @@ class CreateView(djCreateView):
             if not check_user_access_kwargs_org_lab(self.org, self.lab, request.user):
                 raise Http404()
         else:
+            # El edificio tiene que ser de la organización de la URL: sin esto un
+            # building_pk ajeno se colaba saltándose check_user_access_kwargs_org_lab.
             self.building = get_object_or_404(
                 Buildings.objects.using(settings.READONLY_DATABASE),
                 pk=kwargs["building_pk"],
+                organization__pk=self.org,
             )
 
         return djCreateView.get(self, request, *args, **kwargs)
@@ -81,9 +84,12 @@ class CreateView(djCreateView):
             if not check_user_access_kwargs_org_lab(self.org, self.lab, request.user):
                 raise Http404()
         else:
+            # El edificio tiene que ser de la organización de la URL: sin esto un
+            # building_pk ajeno se colaba saltándose check_user_access_kwargs_org_lab.
             self.building = get_object_or_404(
                 Buildings.objects.using(settings.READONLY_DATABASE),
                 pk=kwargs["building_pk"],
+                organization__pk=self.org,
             )
         return djCreateView.post(self, request, *args, **kwargs)
 
@@ -121,9 +127,12 @@ class UpdateView(djUpdateView):
             if not check_user_access_kwargs_org_lab(self.org, self.lab, request.user):
                 raise Http404()
         else:
+            # El edificio tiene que ser de la organización de la URL: sin esto un
+            # building_pk ajeno se colaba saltándose check_user_access_kwargs_org_lab.
             self.building = get_object_or_404(
                 Buildings.objects.using(settings.READONLY_DATABASE),
                 pk=kwargs["building_pk"],
+                organization__pk=self.org,
             )
 
         return djUpdateView.get(self, request, *args, **kwargs)
@@ -151,9 +160,12 @@ class UpdateView(djUpdateView):
             if not check_user_access_kwargs_org_lab(self.org, self.lab, request.user):
                 raise Http404()
         else:
+            # El edificio tiene que ser de la organización de la URL: sin esto un
+            # building_pk ajeno se colaba saltándose check_user_access_kwargs_org_lab.
             self.building = get_object_or_404(
                 Buildings.objects.using(settings.READONLY_DATABASE),
                 pk=kwargs["building_pk"],
+                organization__pk=self.org,
             )
         return djUpdateView.post(self, request, *args, **kwargs)
 
@@ -187,9 +199,12 @@ class DeleteView(djDeleteView):
             if not check_user_access_kwargs_org_lab(self.org, self.lab, request.user):
                 raise Http404()
         else:
+            # El edificio tiene que ser de la organización de la URL: sin esto un
+            # building_pk ajeno se colaba saltándose check_user_access_kwargs_org_lab.
             self.building = get_object_or_404(
                 Buildings.objects.using(settings.READONLY_DATABASE),
                 pk=kwargs["building_pk"],
+                organization__pk=self.org,
             )
 
         return djDeleteView.get(self, request, *args, **kwargs)
@@ -214,9 +229,12 @@ class DeleteView(djDeleteView):
             if not check_user_access_kwargs_org_lab(self.org, self.lab, request.user):
                 raise Http404()
         else:
+            # El edificio tiene que ser de la organización de la URL: sin esto un
+            # building_pk ajeno se colaba saltándose check_user_access_kwargs_org_lab.
             self.building = get_object_or_404(
                 Buildings.objects.using(settings.READONLY_DATABASE),
                 pk=kwargs["building_pk"],
+                organization__pk=self.org,
             )
         return djDeleteView.post(self, request, *args, **kwargs)
 
@@ -241,9 +259,12 @@ class ListView(djListView):
             if not check_user_access_kwargs_org_lab(self.org, self.lab, request.user):
                 raise Http404()
         else:
+            # El edificio tiene que ser de la organización de la URL: sin esto un
+            # building_pk ajeno se colaba saltándose check_user_access_kwargs_org_lab.
             self.building = get_object_or_404(
                 Buildings.objects.using(settings.READONLY_DATABASE),
                 pk=kwargs["building_pk"],
+                organization__pk=self.org,
             )
         return djListView.get(self, request, *args, **kwargs)
 
@@ -285,9 +306,12 @@ class DetailView(djDetailView):
             if not check_user_access_kwargs_org_lab(self.org, self.lab, request.user):
                 raise Http404()
         else:
+            # El edificio tiene que ser de la organización de la URL: sin esto un
+            # building_pk ajeno se colaba saltándose check_user_access_kwargs_org_lab.
             self.building = get_object_or_404(
                 Buildings.objects.using(settings.READONLY_DATABASE),
                 pk=kwargs["building_pk"],
+                organization__pk=self.org,
             )
         return djDetailView.get(self, request, *args, **kwargs)
 

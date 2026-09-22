@@ -18,7 +18,7 @@ from rest_framework.response import Response
 from django.utils.translation import gettext_lazy as _
 from rest_framework.views import APIView
 
-from api.utils import AllPermissionOrganization
+from api.utils import AllPermissionOrganization, AllPermissionOrganizationByAction
 from auth_and_perms.api import filterset
 from auth_and_perms.api.filterset import OrganizationStructureRelationsFilter
 from auth_and_perms.api.serializers import (
@@ -668,6 +668,27 @@ class DeleteUserFromContenttypeViewSet(mixins.ListModelMixin, viewsets.GenericVi
                 )
             pps.delete()
 
+        # Roles por edificio (módulo ambiental): sin esto quedarían filas que ya no
+        # alcanzan a nadie pero seguirían dando acceso si la persona vuelve a la organización.
+        pps_buildings = ProfilePermission.objects.filter(
+            profile=user.profile,
+            content_type__app_label="risk_management",
+            content_type__model="buildings",
+            organization__pk__in=org_ids,
+        )
+        for pp in pps_buildings:
+            organilab_logentry(
+                user,
+                pp,
+                DELETION,
+                "profilepermission",
+                changed_data=["profile", "content_type", "object_id"],
+                change_message=_("Removed building permission from user '%(user)s'")
+                % {"user": user.username},
+                relobj=organization,
+            )
+        pps_buildings.delete()
+
         pps_orgs = ProfilePermission.objects.filter(
             profile=user.profile,
             content_type__app_label="laboratory",
@@ -1263,6 +1284,7 @@ class OrganizationLabRelationDeleteViewSet(AuthAllPermBaseObjectManagement):
         "list": ["laboratory.view_organizationstructurerelations"],
         "destroy": ["laboratory.delete_organizationstructurerelations"],
     }
+    permission_classes = [IsAuthenticated, AllPermissionOrganizationByAction]
     filterset_class = OrganizationStructureRelationsFilter
     filter_backends = [DjangoFilterBackend, SearchFilter]
     search_fields = ["object_id"]

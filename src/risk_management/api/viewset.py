@@ -7,7 +7,10 @@ from django_filters.rest_framework import DjangoFilterBackend
 from djgentelella.objectmanagement import AuthAllPermBaseObjectManagement
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.permissions import IsAuthenticated
 
+from api.utils import AllPermissionOrganizationByAction
+from auth_and_perms.organization_utils import user_is_allowed_on_organization
 from laboratory.models import OrganizationStructure
 from laboratory.utils import (
     check_user_access_kwargs_org_lab,
@@ -61,7 +64,7 @@ class RegentViewSet(AuthAllPermBaseObjectManagement):
         "detail_template": [],
     }
 
-    permission_classes = ()
+    permission_classes = [IsAuthenticated, AllPermissionOrganizationByAction]
 
     queryset = Regent.objects.all()
     pagination_class = LimitOffsetPagination
@@ -108,15 +111,15 @@ class BuildingViewSet(AuthAllPermBaseObjectManagement):
         "detail_template": None,
     }
     perms = {
-        "list": ["risk_management.view_building"],
+        "list": ["risk_management.view_buildings"],
         "create": ["risk_management.add_buildings"],
         "update": ["risk_management.change_buildings"],
-        "retrieve": [],
-        "get_values_for_update": [],
-        "detail_template": [],
+        "retrieve": ["risk_management.view_buildings"],
+        "get_values_for_update": ["risk_management.change_buildings"],
+        "detail_template": ["risk_management.view_buildings"],
     }
 
-    permission_classes = ()
+    permission_classes = [IsAuthenticated, AllPermissionOrganizationByAction]
 
     queryset = Buildings.objects.all()
     pagination_class = LimitOffsetPagination
@@ -138,6 +141,9 @@ class BuildingViewSet(AuthAllPermBaseObjectManagement):
         queryset = super().get_queryset()
         if "org_pk" in self.kwargs:
             org_pk = self.kwargs["org_pk"]
+            # Sin esto cualquier usuario autenticado listaba los edificios de otra
+            # organización cambiando org_pk en la URL.
+            user_is_allowed_on_organization(self.request.user, org_pk)
             queryset = queryset.filter(organization__pk=org_pk)
 
         return queryset
@@ -179,7 +185,7 @@ class StructureViewSet(AuthAllPermBaseObjectManagement):
         "detail_template": [],
     }
 
-    permission_classes = ()
+    permission_classes = [IsAuthenticated, AllPermissionOrganizationByAction]
 
     queryset = Structure.objects.all()
     pagination_class = LimitOffsetPagination
@@ -217,12 +223,13 @@ class IncidentViewSet(AuthAllPermBaseObjectManagement):
         "list": ["risk_management.view_incidentreport"],
         "create": ["risk_management.add_incidentreport"],
         "update": ["risk_management.change_incidentreport"],
+        "destroy": ["risk_management.delete_incidentreport"],
         "retrieve": ["risk_management.view_incidentreport"],
         "get_values_for_update": ["risk_management.view_incidentreport"],
         "detail_template": ["risk_management.view_incidentreport"],
     }
 
-    permission_classes = ()
+    permission_classes = [IsAuthenticated, AllPermissionOrganizationByAction]
 
     queryset = IncidentReport.objects.all()
     pagination_class = LimitOffsetPagination
@@ -291,7 +298,7 @@ class WorkdaysViewSet(AuthAllPermBaseObjectManagement):
         "destroy": ["risk_management.delete_workday"],
     }
 
-    permission_classes = ()
+    permission_classes = [IsAuthenticated, AllPermissionOrganizationByAction]
 
     queryset = Workday.objects.all()
     pagination_class = LimitOffsetPagination
@@ -366,6 +373,8 @@ class IPERAssessmentViewSet(AuthAllPermBaseObjectManagement):
         "list": ["risk_management.view_iperassessment"],
         "destroy": ["risk_management.delete_iperassessment"],
     }
+
+    permission_classes = [IsAuthenticated, AllPermissionOrganizationByAction]
 
     queryset = IPERAssessment.objects.all()
     pagination_class = LimitOffsetPagination

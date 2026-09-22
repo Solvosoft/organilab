@@ -7,6 +7,10 @@
 > overview); this briefing goes deeper on *where things are* and *how the pieces connect*.
 >
 > All paths are relative to the repo root. **All application code lives under `src/`.**
+>
+> **Pending work** lives next to this file: `IPER_PENDIENTES.md`, `PENDIENTES_MENORES.md`,
+> `PLATFORM_ADMIN_PLAN.md`, `MANAGEMENT_PLANS_PLAN.md`, `ENVIRONMENT_PLAN.md` (index and
+> order in `SIGMA_GAP_ANALYSIS.md`). Completed plans are deleted; see git history.
 
 ---
 
@@ -139,7 +143,8 @@ When adding a new model, ask: *should it be org-scoped?* If yes, inherit
 
 A fourth mixin, `DeletedWithTrash` (from `djgentelella.models`), turns a model's
 delete into a recoverable one. Pilots: `Protocol` (`src/laboratory/models.py`)
-and `Procedure` (`src/academic/models.py`).
+and `Procedure` (`src/academic/models.py`) — still the only adopters; everything else
+uses a manual `is_active`. `BaseViewSetWithLogs` is not used anywhere yet.
 
 **The rule that matters:** delete with
 `obj.delete(user=request.user, related_objects=[organization, laboratory])`.
@@ -259,7 +264,7 @@ router in the app's `urls.py`.
 ## 11. Frontend
 
 - Admin UI uses **djgentelella 0.6.0** (Gentelella template; checkout editable de
-  `~/Desktop/desarrollo/django-gentelella-widgets`, rama `development` — ver
+  `~/Desktop/desarrollo/django-gentelella-widgets`, rama `master`, versión 0.6.2 — ver
   `roadmap/README.md`). Base template: `src/presentation/templates/base.html`
   (extends `gentelella/base.html`).
 - Stack UI post-migración: **Bootstrap 5** (inputs nativos, sin iCheck/switchery),
@@ -278,7 +283,7 @@ router in the app's `urls.py`.
   (`FormioController.js`, plus custom components `CustomSelect.js`,
   `CustomTextInput.js`, `CustomSection.js`, and `formio.full.min.js`).
 - **JS translations** via Django's `javascript-catalog` view; strings live in
-  `src/locale/{es,en}/LC_MESSAGES/djangojs.po` (compiled `.mo`).
+  `src/locale/es/LC_MESSAGES/djangojs.po` (compiled `.mo`; `en` only has `django.po`).
 - Custom template tags live in app-level `templatetags/` dirs.
 
 ---
@@ -334,10 +339,14 @@ router in the app's `urls.py`.
 | `make messages` / `make trans` | Extract / compile translations. Run both after editing translatable strings. |
 | `make run_celery` | Start a Celery worker. |
 | `make build_docker` | Build the Docker image. |
-| `make docs` | Build Sphinx docs. |
+| `make docs` | Build the Sphinx docs in the sibling `organilab_docs` repo. |
+| `make test-parallel` / `make test-urls` | Parallel test run / URL-inventory tests. |
+| `make test-selenium-xvfb` (and `-fast`, `-single`, `-parallel` variants) | Selenium suites; always headless via xvfb. |
+| `make url-inventory-check` / `make feature-catalog-check` | Guardians for `roadmap/INVENTARIO_URLS.md` and the feature catalog. |
 
 **Management commands** (per-app `management/commands/`): `init_checks` (cache table +
-fixtures), `load_urlname_permissions` (sync URL-based perms), and sga loaders
+fixtures), `load_urlname_permissions` (sync URL-based perms), `update_roles` /
+`update_roles_permissions` (sync the canonical role catalog), and sga loaders
 (`load_danger_substances`, `load_danger_indications`, `upload_pictograms`).
 
 **Docker:** `docker/docker-compose.yml` runs PostgreSQL (port 5431), RabbitMQ, Mailhog

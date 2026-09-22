@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-06 15:38-0600\n"
+"POT-Creation-Date: 2026-09-16 21:31-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -323,13 +323,466 @@ msgstr ""
 msgid "Created box reservation for '%(obj)s' (%(boxes)s boxes)"
 msgstr ""
 
-msgid "Reassigned on user delete"
+#, python-format
+msgid "The measurement point %(point)s has no records for %(months)s months."
+msgstr ""
+
+#, python-format
+msgid ""
+"The measurement point %(point)s registered %(value)s %(unit)s in %(period)s, "
+"above the limit of %(limit)s."
+msgstr ""
+
+#, python-format
+msgid ""
+"The measurement point %(point)s consumed %(value)s %(unit)s in %(period)s, "
+"%(variation)s%% over its average."
+msgstr ""
+
+msgid "Vehicle plate"
+msgstr ""
+
+msgid "Fuel type"
+msgstr ""
+
+msgid "Paper type"
+msgstr ""
+
+msgid "Waste code"
+msgstr ""
+
+msgid "Manifest number"
+msgstr ""
+
+msgid "To move an access, delete it and create a new one."
+msgstr ""
+
+msgid "Building access granted"
+msgstr ""
+
+msgid "Building access changed"
+msgstr ""
+
+msgid "There is already a measurement point with this code for this resource."
+msgstr ""
+
+msgid ""
+"There is already a measurement point with this code for this resource in the "
+"trash; restore it instead of creating a new one."
+msgstr ""
+
+msgid "The period end must be after the period start."
+msgstr ""
+
+msgid "This field is required."
+msgstr ""
+
+msgid "This organization requires the bill, receipt or manifest."
+msgstr ""
+
+#, python-format
+msgid ""
+"This measurement point already has a record from %(start)s to %(end)s that "
+"overlaps this period; edit that record instead."
+msgstr ""
+
+#, python-format
+msgid ""
+"This measurement point has a record in the trash from %(start)s to %(end)s "
+"that overlaps this period; restore it instead."
+msgstr ""
+
+msgid "Manual"
+msgstr ""
+
+msgid "Preloaded"
+msgstr ""
+
+msgid "This building already has this base for that year; edit it instead."
+msgstr ""
+
+#, python-format
+msgid "%(created)d bases created, %(updated)d updated, %(skipped)d skipped."
+msgstr ""
+
+msgid "Reviewed"
+msgstr ""
+
+msgid "The alert was marked as reviewed."
+msgstr ""
+
+msgid "Environmental management"
+msgstr ""
+
+msgid "Atypical consumption"
+msgstr ""
+
+msgid "Building"
+msgstr ""
+
+msgid "Buildings"
+msgstr ""
+
+msgid "Resource type"
+msgstr ""
+
+msgid "Period"
+msgstr ""
+
+msgid "Normalizer"
+msgstr ""
+
+msgid "Period to compare with"
+msgstr ""
+
+msgid "Year"
+msgstr ""
+
+msgid "User"
+msgstr ""
+
+msgid "Roles"
+msgstr ""
+
+msgid "Jan"
+msgstr ""
+
+msgid "Feb"
+msgstr ""
+
+msgid "Mar"
+msgstr ""
+
+msgid "Apr"
+msgstr ""
+
+msgid "May"
+msgstr ""
+
+msgid "Jun"
+msgstr ""
+
+msgid "Jul"
+msgstr ""
+
+msgid "Aug"
+msgstr ""
+
+msgid "Sep"
+msgstr ""
+
+msgid "Oct"
+msgstr ""
+
+msgid "Nov"
+msgstr ""
+
+msgid "Dec"
+msgstr ""
+
+msgid "Monthly consumption"
+msgstr ""
+
+msgid "Monthly cost by resource"
+msgstr ""
+
+msgid "Buildings ranking"
+msgstr ""
+
+msgid "Indicator"
+msgstr ""
+
+msgid "Code"
+msgstr ""
+
+msgid "Meter or service number, as it appears on the bill"
+msgstr ""
+
+msgid "Point type"
+msgstr ""
+
+msgid "Laboratories"
+msgstr ""
+
+msgid "Number of meters"
+msgstr ""
+
+msgid "Measurement point"
+msgstr ""
+
+msgid "Measurement points"
+msgstr ""
+
+msgid "Can manage access to buildings"
+msgstr ""
+
+msgid "Import"
+msgstr ""
+
+msgid "Period start"
+msgstr ""
+
+msgid "Period end"
+msgstr ""
+
+msgid "Quantity"
+msgstr ""
+
+msgid "Unit cost"
+msgstr ""
+
+msgid "Total cost"
+msgstr ""
+
+msgid "Is waste"
+msgstr ""
+
+msgid "Waste treatment"
+msgstr ""
+
+msgid "Authorized waste manager"
+msgstr ""
+
+msgid "Supporting document"
+msgstr ""
+
+msgid "Bill, receipt or waste manifest"
+msgstr ""
+
+msgid "Extra data"
+msgstr ""
+
+msgid "Source"
+msgstr ""
+
+msgid "Note"
+msgstr ""
+
+msgid "Consumption record"
+msgstr ""
+
+msgid "Consumption records"
+msgstr ""
+
+msgid "Can view the environmental dashboard"
+msgstr ""
+
+#, python-format
+msgid "Fields not allowed for this resource: %(fields)s"
+msgstr ""
+
+msgid "Value"
+msgstr ""
+
+msgid "Entered manually"
+msgstr ""
+
+msgid "Preloading never overwrites a value entered manually"
+msgstr ""
+
+msgid "Normalization base"
+msgstr ""
+
+msgid "Normalization bases"
+msgstr ""
+
+msgid "Can preload normalization bases"
+msgstr ""
+
+msgid "Alert rule"
+msgstr ""
+
+msgid "Reference value"
+msgstr ""
+
+msgid "Registered value"
+msgstr ""
+
+msgid "Variation (%)"
+msgstr ""
+
+msgid "Level"
+msgstr ""
+
+msgid "Message"
+msgstr ""
+
+msgid "Review note"
+msgstr ""
+
+msgid "Reviewed by"
+msgstr ""
+
+msgid "Reviewed at"
+msgstr ""
+
+msgid "Consumption alert"
+msgstr ""
+
+msgid "Consumption alerts"
+msgstr ""
+
+msgid "Can review consumption alerts"
+msgstr ""
+
+msgid "Registered by"
 msgstr ""
 
 msgid "Yes"
 msgstr ""
 
-msgid "Roles"
+msgid "No"
+msgstr ""
+
+msgid "Month"
+msgstr ""
+
+msgid "Average unit cost"
+msgstr ""
+
+msgid "Consumption"
+msgstr ""
+
+msgid "Base"
+msgstr ""
+
+msgid "Base year"
+msgstr ""
+
+msgid "Mixed units"
+msgstr ""
+
+msgid "No base"
+msgstr ""
+
+msgid "Previous period"
+msgstr ""
+
+msgid "Current period"
+msgstr ""
+
+msgid "Absolute variation"
+msgstr ""
+
+msgid "Previous cost"
+msgstr ""
+
+msgid "Current cost"
+msgstr ""
+
+msgid "Delivery date"
+msgstr ""
+
+msgid "Building access"
+msgstr ""
+
+msgid ""
+"Environmental roles assigned on a specific building. A person only sees and "
+"manages the buildings where they have a role; environmental roles assigned "
+"on the whole organization cover all its buildings."
+msgstr ""
+
+msgid "Give access to a building"
+msgstr ""
+
+msgid "Change roles in the building"
+msgstr ""
+
+msgid "Remove access to the building"
+msgstr ""
+
+msgid ""
+"Atypical consumption detected by the alert rules. Review each one and leave "
+"a note that explains it; reviewed alerts stay in the history."
+msgstr ""
+
+msgid "Configure alert rules"
+msgstr ""
+
+msgid "Waste records"
+msgstr ""
+
+msgid ""
+"Choose a building to see and record the waste delivered from its collection "
+"points, with treatment, authorized manager and manifest."
+msgstr ""
+
+msgid ""
+"Choose a building to see and record the consumption of its measurement "
+"points."
+msgstr ""
+
+msgid "Record consumption"
+msgstr ""
+
+msgid "Update consumption record"
+msgstr ""
+
+msgid "Delete consumption record"
+msgstr ""
+
+msgid "Environmental dashboard"
+msgstr ""
+
+msgid "Filter"
+msgstr ""
+
+msgid "vs. previous month"
+msgstr ""
+
+msgid "Cost"
+msgstr ""
+
+msgid "There are no consumption records for this year."
+msgstr ""
+
+msgid ""
+"Meters, tanks and collection points of each building. Consumption is "
+"recorded against them."
+msgstr ""
+
+msgid "Register measurement point"
+msgstr ""
+
+msgid "Update measurement point"
+msgstr ""
+
+msgid "Delete measurement point"
+msgstr ""
+
+msgid ""
+"Square meters and people per building and year. Indicators divide "
+"consumption by these values; a year without a base uses the previous one."
+msgstr ""
+
+msgid "Register normalization base"
+msgstr ""
+
+msgid "Update normalization base"
+msgstr ""
+
+msgid "Delete normalization base"
+msgstr ""
+
+msgid "Consumption detail report"
+msgstr ""
+
+msgid "Consumption summary report"
+msgstr ""
+
+msgid "Consumption cost report"
+msgstr ""
+
+msgid "Environmental indicators report"
+msgstr ""
+
+msgid "Consumption comparison report"
+msgstr ""
+
+msgid "Waste and manifests report"
+msgstr ""
+
+msgid "Reassigned on user delete"
 msgstr ""
 
 msgid "No roles assigned"
@@ -433,6 +886,10 @@ msgid "Removed laboratory permission from user '%(user)s'"
 msgstr ""
 
 #, python-format
+msgid "Removed building permission from user '%(user)s'"
+msgstr ""
+
+#, python-format
 msgid "Removed organization permission from user '%(user)s'"
 msgstr ""
 
@@ -477,6 +934,10 @@ msgstr ""
 msgid "Organization parameter is required"
 msgstr ""
 
+#, python-format
+msgid "Unlinked laboratory '%(lab)s' from organization '%(org)s'"
+msgstr ""
+
 msgid "Rols"
 msgstr ""
 
@@ -517,12 +978,6 @@ msgid "Language"
 msgstr ""
 
 msgid "It will used to login when you want to login with digital signature"
-msgstr ""
-
-msgid "Laboratories"
-msgstr ""
-
-msgid "User"
 msgstr ""
 
 msgid "Laboratory"
@@ -744,6 +1199,9 @@ msgstr ""
 msgid "Related Laboratory"
 msgstr ""
 
+msgid "Unlink Laboratories"
+msgstr ""
+
 msgid "Disable child organizations filter"
 msgstr ""
 
@@ -879,6 +1337,17 @@ msgid "Do you want to enable the child organizations filter?"
 msgstr ""
 
 msgid "Administrators"
+msgstr ""
+
+msgid "Laboratory Relations"
+msgstr ""
+
+msgid ""
+"Manage laboratories linked to this organization. Unlinking a laboratory will "
+"also remove user permissions for that laboratory in this organization."
+msgstr ""
+
+msgid "Unlink Laboratory"
 msgstr ""
 
 msgid "My laboratories"
@@ -1356,9 +1825,6 @@ msgid "Is bioaccumulable"
 msgstr ""
 
 msgid "Maximum limit cannot be lower than minimum limit."
-msgstr ""
-
-msgid "This field is required."
 msgstr ""
 
 msgid "Ensure this value is greater than or equal to 1e-07."
@@ -1902,9 +2368,6 @@ msgstr ""
 msgid "This account is inactive."
 msgstr ""
 
-msgid "Code"
-msgstr ""
-
 msgid "Code didn't match."
 msgstr ""
 
@@ -2033,9 +2496,6 @@ msgstr ""
 msgid "Reagents"
 msgstr ""
 
-msgid "Year"
-msgstr ""
-
 msgid "Name of the product"
 msgstr ""
 
@@ -2107,9 +2567,6 @@ msgstr ""
 msgid "April"
 msgstr ""
 
-msgid "May"
-msgstr ""
-
 msgid "June"
 msgstr ""
 
@@ -2129,9 +2586,6 @@ msgid "November"
 msgstr ""
 
 msgid "December"
-msgstr ""
-
-msgid "Quantity"
 msgstr ""
 
 #, python-format
@@ -2399,9 +2853,6 @@ msgid "Has guarantee?"
 msgstr ""
 
 msgid "Contract of maintenance"
-msgstr ""
-
-msgid "Note"
 msgstr ""
 
 msgid "Is available to use?"
@@ -2683,9 +3134,6 @@ msgstr ""
 msgid "Substance laboratory"
 msgstr ""
 
-msgid "Month"
-msgstr ""
-
 msgid "Counter"
 msgstr ""
 
@@ -2693,9 +3141,6 @@ msgid "Shelf object code counter"
 msgstr ""
 
 msgid "Shelf object code counters"
-msgstr ""
-
-msgid "No"
 msgstr ""
 
 msgid "Product added successful"
@@ -3611,9 +4056,6 @@ msgstr ""
 msgid "Stats"
 msgstr ""
 
-msgid "Filter"
-msgstr ""
-
 msgid "Delete object"
 msgstr ""
 
@@ -3716,45 +4158,60 @@ msgstr ""
 msgid "Precursor"
 msgstr ""
 
-msgid ""
-"Sistema regencial para la gestión de riesgo en bodegas y laboratorios en los "
-"que se almacena reactivos y productos químicos"
+msgid "Report List"
+msgstr ""
+
+msgid "Search report"
 msgstr ""
 
 msgid "Regency Report"
 msgstr ""
 
+msgid ""
+"Regency system for risk management in warehouses and laboratories that store "
+"chemical reactives and products."
+msgstr ""
+
 msgid "Chemical inventory report"
 msgstr ""
 
-msgid "Occupational Health Report"
+msgid "Chemical substances in inventory with their hazard information."
 msgstr ""
 
-msgid "Furnitures"
-msgstr ""
-
-msgid "Reactive precursor objects"
-msgstr ""
-
-msgid "Object changes"
-msgstr ""
-
-msgid "Limited shelf objects"
-msgstr ""
-
-msgid "Precursor Report"
-msgstr ""
-
-msgid "Waste Report"
+msgid "Inventory and objects"
 msgstr ""
 
 msgid "Reactive Report"
 msgstr ""
 
-msgid "Risk Zone Report"
+msgid "Reactive Stock Report"
 msgstr ""
 
-msgid "Reactive Stock Report"
+msgid "Reactive precursor objects"
+msgstr ""
+
+msgid "Limited shelf objects"
+msgstr ""
+
+msgid "Object changes"
+msgstr ""
+
+msgid "Furnitures"
+msgstr ""
+
+msgid "Donations Report"
+msgstr ""
+
+msgid "Risk, safety and regulation"
+msgstr ""
+
+msgid "Occupational Health Report"
+msgstr ""
+
+msgid "Precursor Report"
+msgstr ""
+
+msgid "Risk Zone Report"
 msgstr ""
 
 msgid "Compatibility Report"
@@ -3763,7 +4220,29 @@ msgstr ""
 msgid "Compatibility Laboratory Report"
 msgstr ""
 
-msgid "Donations Report"
+msgid "Waste Report"
+msgstr ""
+
+msgid "Each consumption record with its period, quantity, cost and bill."
+msgstr ""
+
+msgid "Monthly totals by building and resource."
+msgstr ""
+
+msgid "Quantity, average unit cost and total cost per resource and month."
+msgstr ""
+
+msgid "Consumption per square meter or per person, with the base used."
+msgstr ""
+
+msgid "One period against another, with absolute and percentage variation."
+msgstr ""
+
+msgid ""
+"Delivered waste by type, treatment and authorized manager, with manifests."
+msgstr ""
+
+msgid "No report matches the search."
 msgstr ""
 
 msgid "Reservations"
@@ -4625,6 +5104,27 @@ msgstr ""
 msgid "Related file"
 msgstr ""
 
+msgid "Percentage over the average"
+msgstr ""
+
+msgid "Maximum value"
+msgstr ""
+
+msgid "Months without records"
+msgstr ""
+
+msgid "Unknown trigger."
+msgstr ""
+
+msgid "Enter a number."
+msgstr ""
+
+msgid "The threshold must be greater than zero."
+msgstr ""
+
+msgid "Deleted"
+msgstr ""
+
 msgid "*Type the amount in dollars"
 msgstr ""
 
@@ -4781,6 +5281,144 @@ msgid "Image QR on SVG"
 msgstr ""
 
 msgid "Base64 Image QR"
+msgstr ""
+
+msgid "Key"
+msgstr ""
+
+msgid "System parameter"
+msgstr ""
+
+msgid "System parameters"
+msgstr ""
+
+msgid "Unknown parameter."
+msgstr ""
+
+msgid "Invalid value for this parameter."
+msgstr ""
+
+msgid "Is active"
+msgstr ""
+
+msgid "Subject"
+msgstr ""
+
+msgid "Notification setting"
+msgstr ""
+
+msgid "Notification settings"
+msgstr ""
+
+msgid "Informative"
+msgstr ""
+
+msgid "Medium"
+msgstr ""
+
+msgid "Critical"
+msgstr ""
+
+msgid "Process"
+msgstr ""
+
+msgid "Trigger"
+msgstr ""
+
+msgid "Notify roles"
+msgstr ""
+
+msgid "Notify the responsible"
+msgstr ""
+
+msgid "Create pending task"
+msgstr ""
+
+msgid "Alert rules"
+msgstr ""
+
+msgid "Recipients"
+msgstr ""
+
+msgid "Alert event"
+msgstr ""
+
+msgid "Alert events"
+msgstr ""
+
+msgid "Integer"
+msgstr ""
+
+msgid "Float"
+msgstr ""
+
+msgid "Decimal"
+msgstr ""
+
+msgid "Yes/No"
+msgstr ""
+
+msgid "Text"
+msgstr ""
+
+msgid "Date (YYYY-MM-DD)"
+msgstr ""
+
+msgid "JSON"
+msgstr ""
+
+msgid "Own"
+msgstr ""
+
+msgid "Inherited"
+msgstr ""
+
+msgid "Default"
+msgstr ""
+
+msgid "Require a supporting document for consumption records"
+msgstr ""
+
+msgid ""
+"If enabled, a consumption or waste record cannot be saved without its bill "
+"or manifest."
+msgstr ""
+
+msgid "Months of history to detect atypical consumption"
+msgstr ""
+
+msgid ""
+"The last period of a measurement point is compared against the average of "
+"this many previous months."
+msgstr ""
+
+msgid "Unknown email process."
+msgstr ""
+
+msgid "This trigger does not apply to the process."
+msgstr ""
+
+msgid "Yes/No values: true or false. Dates: YYYY-MM-DD."
+msgstr ""
+
+msgid "Send this email"
+msgstr ""
+
+msgid "Leave empty to use the subject of the global template."
+msgstr ""
+
+msgid ""
+"Leave empty to use the message of the global template. Django template "
+"syntax."
+msgstr ""
+
+msgid "Default of the process"
+msgstr ""
+
+msgid "Restored inherited value"
+msgstr ""
+
+msgid "The inherited value was restored."
 msgstr ""
 
 msgid "Access denied"
@@ -5013,7 +5651,7 @@ msgstr ""
 msgid "Reports, Informs and Procedures"
 msgstr ""
 
-msgid "Report List"
+msgid "Platform administration"
 msgstr ""
 
 msgid "Manage Reservations"
@@ -5113,6 +5751,46 @@ msgid "Verify FDS"
 msgstr ""
 
 msgid "Companies Managment"
+msgstr ""
+
+msgid ""
+"What to watch (process and trigger), when to fire (threshold) and whom to "
+"notify (responsible, roles, email and pending task)."
+msgstr ""
+
+msgid "Rules"
+msgstr ""
+
+msgid "Firing history"
+msgstr ""
+
+msgid "Register alert rule"
+msgstr ""
+
+msgid "Update alert rule"
+msgstr ""
+
+msgid "Delete alert rule"
+msgstr ""
+
+msgid ""
+"Emails that the system sends for each process. Turn one off or replace its "
+"subject and message for this organization and its children; the global "
+"templates are edited separately."
+msgstr ""
+
+msgid "Edit global email templates"
+msgstr ""
+
+msgid "Update notification"
+msgstr ""
+
+msgid ""
+"A value set here applies to this organization and its children, unless a "
+"child sets its own. Restore to use the inherited value again."
+msgstr ""
+
+msgid "Update parameter"
 msgstr ""
 
 msgid "Donate Organilab"
@@ -5220,9 +5898,6 @@ msgstr ""
 msgid "Filter Furniture"
 msgstr ""
 
-msgid "Period"
-msgstr ""
-
 msgid "Resume"
 msgstr ""
 
@@ -5242,9 +5917,6 @@ msgid "Furniture is not allowed"
 msgstr ""
 
 msgid "Task report doesn't exists"
-msgstr ""
-
-msgid "Buildings"
 msgstr ""
 
 msgid "Delivered"
@@ -5642,9 +6314,6 @@ msgstr ""
 msgid "Exceeds THRESHOLD OR NA, if the previous (column) is none"
 msgstr ""
 
-msgid "Building"
-msgstr ""
-
 msgid "Risk Zone"
 msgstr ""
 
@@ -5967,6 +6636,9 @@ msgid "From"
 msgstr ""
 
 msgid "To"
+msgstr ""
+
+msgid "Assessment date"
 msgstr ""
 
 msgid "Sustances per Danger Indications"
@@ -6392,6 +7064,16 @@ msgstr ""
 msgid "Cloned IPER assessment to version %(version)s"
 msgstr ""
 
+msgid "Only completed IPER assessments can be duplicated."
+msgstr ""
+
+#, python-format
+msgid "Duplicated from IPER #%(id)s"
+msgstr ""
+
+msgid "IPER assessment duplicated successfully."
+msgstr ""
+
 msgid "Update the IPER risk assessment"
 msgstr ""
 
@@ -6583,9 +7265,6 @@ msgstr ""
 msgid "Remind days before due date"
 msgstr ""
 
-msgid "Is active"
-msgstr ""
-
 msgid "IPER configuration"
 msgstr ""
 
@@ -6607,9 +7286,6 @@ msgstr ""
 msgid "Risk zone request"
 msgstr ""
 
-msgid "Assessment date"
-msgstr ""
-
 msgid "Version"
 msgstr ""
 
@@ -6617,9 +7293,6 @@ msgid "Previous version"
 msgstr ""
 
 msgid "Next update due date"
-msgstr ""
-
-msgid "Source"
 msgstr ""
 
 msgid "When enabled, the laboratory name is hidden in public listings."
@@ -6771,6 +7444,12 @@ msgstr ""
 msgid "Start clean"
 msgstr ""
 
+msgid "Create an independent copy"
+msgstr ""
+
+msgid "Duplicate"
+msgstr ""
+
 msgid "Identified hazards"
 msgstr ""
 
@@ -6804,10 +7483,24 @@ msgstr ""
 msgid "Loading inventory and hazards…"
 msgstr ""
 
+msgid "Duplicate IPER Assessment"
+msgstr ""
+
+msgid ""
+"Creates an independent copy (version 1) with all hazards and observations. "
+"The original assessment will not be modified."
+msgstr ""
+
 msgid "Items in"
 msgstr ""
 
 msgid "Could not load help."
+msgstr ""
+
+msgid "Duplicating..."
+msgstr ""
+
+msgid "Error duplicating assessment"
 msgstr ""
 
 msgid "Identification of Hazards and Risk Assessment (INTE T55)"
@@ -7906,6 +8599,9 @@ msgid "Exposure controls/personal protection"
 msgstr ""
 
 msgid "Add Provider"
+msgstr ""
+
+msgid "Update Substances"
 msgstr ""
 
 msgid "Security Leafs"

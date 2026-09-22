@@ -88,6 +88,7 @@ INSTALLED_APPS = [
     "djgentelella.async_notification",
     "django_celery_results",
     "risk_management",
+    "ambiental",
     "djgentelella",
     "djgentelella.chunked_upload",
     "api.apps.ApiConfig",
@@ -404,6 +405,10 @@ CELERYBEAT_SCHEDULE = {
     "send_iper_update_reminders": {
         "task": "risk_management.tasks.send_iper_update_reminders",
         "schedule": crontab(minute=0, hour=8),
+    },
+    "check_consumption_anomalies": {
+        "task": "ambiental.tasks.check_consumption_anomalies",
+        "schedule": crontab(minute=0, hour=6, day_of_month=2),
     },
 }
 

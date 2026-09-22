@@ -118,7 +118,7 @@ deliberadas:
   el layout.
 - No hay "guardar": no existe un estado intermedio que se pueda perder al cerrar la pestaña.
 
-**El árbol.** `GET .../api/labview/tree/?risk=1` devuelve el mapa completo del laboratorio en
+**El árbol.** `GET labview/api/<org_pk>/<lab_pk>/…/tree/?risk=1` devuelve el mapa completo del laboratorio en
 una sola respuesta: salas, muebles con su cuadrícula real, estantes con nombre, tipo,
 posición, capacidad, porcentaje de ocupación y descarte, más conteos agregados y —cuando se
 pide— el color de riesgo. La cuadrícula viaja como `{"cells": [[…], […]]}` **sin** un ancho

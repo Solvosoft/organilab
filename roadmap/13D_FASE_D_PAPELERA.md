@@ -1,8 +1,10 @@
 # Fase D — extender la papelera más allá de los pilotos (diseño, 2026-08-30)
 
-Continuación de [`13_HISTORY_TRASH.md`](13_HISTORY_TRASH.md), cuya fase C dejó
+Continuación del proyecto 13 history/Trash (cerrado; su documento se borró el 2026-09-16 y
+queda en git), cuya fase C dejó
 `Protocol` y `Procedure` como únicos modelos con `DeletedWithTrash`. Este
-documento es **diseño**: nada de lo que sigue está implementado.
+documento es **diseño**: nada de lo que sigue está implementado (reverificado 2026-09-16:
+solo esos dos modelos heredan el mixin y ningún sitio de §0 cambió).
 
 ## 0. El riesgo que condiciona todo el diseño
 
@@ -23,9 +25,9 @@ Sitios que caerían en la trampa según el modelo que se migre:
 | `Shelf` | `laboratory/tasks.py:147`, `laboratory/views/furniture.py:137` |
 | `ShelfObject` | `laboratory/utils.py`, `management/commands/update_vitek.py:28` |
 | `Object` | `laboratory/api/views.py` (cascada de `EquipmentType`) |
-| `Label` (sga) | `sga/views/substance/views.py:254` |
+| `Label` (sga) | `sga/views/substance/views.py:260` |
 | `RiskZone` / `Buildings` | los tres comandos `merge_duplicate_*.py` |
-| `OrganizationStructure` | `laboratory/management/commands/merge_organizations.py:176` |
+| `OrganizationStructure` | `laboratory/management/commands/merge_organizations.py:176` (borrado de un solo objeto, `self.child_org.delete()`, no de queryset) |
 
 **Regla de la fase D:** antes de añadir el mixin a un modelo, auditar cada
 `.delete()` de queryset sobre él y decidir explícitamente `hard_delete()`

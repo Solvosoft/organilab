@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load urlname_tags organilab_tags i18n static %}
+
+{% block pre_head %}
+	{% define_urlname_action 'platform_alertrule' %}
+{% endblock %}
+
+{% block title %}{% trans 'Alert rules' %}{% endblock %}
+{% block content %}
+	<input type="hidden" value="{{ org_pk }}" id="org">
+	<div class="card mt-2">
+		<div class="card-body">
+			<div class="card-title titles">
+				<h1 class="text-center">{% trans 'Alert rules' %}</h1>
+				<p class="text-center text-muted">
+					{% trans 'What to watch (process and trigger), when to fire (threshold) and whom to notify (responsible, roles, email and pending task).' %}
+				</p>
+			</div>
+			<ul class="nav nav-tabs" role="tablist">
+				<li class="nav-item" role="presentation">
+					<button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-rules" type="button" role="tab">{% trans 'Rules' %}</button>
+				</li>
+				<li class="nav-item" role="presentation">
+					<button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-events" type="button" role="tab">{% trans 'Firing history' %}</button>
+				</li>
+			</ul>
+			<div class="tab-content mt-3">
+				<div class="tab-pane fade show active" id="tab-rules" role="tabpanel">
+					<table class="table table-hover table-striped w-100 table-responsive" id="table-alertrule"></table>
+				</div>
+				<div class="tab-pane fade" id="tab-events" role="tabpanel">
+					<table class="table table-hover table-striped w-100 table-responsive" id="table-alertevent"></table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	{% url "platform:api-alertrule-list" org_pk as list_obj_url %}
+	{% trans 'Register alert rule' as create_obj_title %}
+	{% include 'gentelella/blocks/modal_template.html' with form=form_create form_id="create_obj_form" id="create_obj_modal" title=create_obj_title principal_class='modal-lg' url=list_obj_url %}
+
+	{% url "platform:api-alertrule-detail" org_pk 0 as detail_obj_url %}
+	{% trans 'Update alert rule' as update_obj_title %}
+	{% include 'gentelella/blocks/modal_template.html' with form=form_update form_id="update_obj_form" id="update_obj_modal" title=update_obj_title principal_class='modal-lg' url=detail_obj_url %}
+
+	{% trans 'Delete alert rule' as delete_obj_title %}
+	{% include 'gentelella/blocks/modal_template_delete.html' with form_id="delete_obj_form" id="delete_obj_modal" title=delete_obj_title url=detail_obj_url %}
+{% endblock %}
+
+{% block js %}
+	{{ block.super }}
+	<script>
+		const has_perm = {create: {{ perms.presentation.add_alertrule|yesno:"true,false" }}};
+		const object_urls = {
+			list_url: "{% url 'platform:api-alertrule-list' org_pk %}",
+			create_url: "{% url 'platform:api-alertrule-list' org_pk %}",
+			get_values_for_update_url: "{% url 'platform:api-alertrule-get-values-for-update' org_pk 0 %}",
+			update_url: "{% url 'platform:api-alertrule-detail' org_pk 0 %}",
+			destroy_url: "{% url 'platform:api-alertrule-detail' org_pk 0 %}",
+		};
+		const event_urls = {list_url: "{% url 'platform:api-alertevent-list' org_pk %}"};
+		const threshold_fields = {"Variación porcentual": "percent", "Umbral absoluto": "value", "Sin registro": "months"};
+	</script>
+	<script src="{% static 'presentation/platform/alertrule.js' %}?v={% get_organilab_version %}"></script>
+{% endblock %}

@@ -1,0 +1,69 @@
+{% load i18n %}
+
+{% if perms.ambiental.view_measurementpoint or perms.ambiental.view_consumptionrecord or perms.ambiental.view_normalizationbase %}
+	<li>
+		<a>
+			<i class="fa fa-leaf" aria-hidden="true"></i>
+			{% trans 'Environmental management' %}
+			<span class="fa fa-chevron-down"></span>
+		</a>
+		<ul class="nav child_menu">
+			{% if perms.ambiental.view_ambiental_dashboard %}
+				<li>
+					<a href="{% url 'ambiental:ambiental_dashboard' org_pk %}"
+						title="{% trans 'Environmental dashboard' %}">
+						<i class="fa fa-line-chart" aria-hidden="true"></i>
+						{% trans 'Environmental dashboard' %}</a>
+				</li>
+			{% endif %}
+			{% if perms.ambiental.view_consumptionrecord %}
+				<li>
+					<a href="{% url 'ambiental:consumptionrecord_list' org_pk %}"
+						title="{% trans 'Consumption records' %}">
+						<i class="fa fa-tint" aria-hidden="true"></i>
+						{% trans 'Consumption records' %}</a>
+				</li>
+			{% endif %}
+			{% if perms.ambiental.view_consumptionrecord %}
+				<li>
+					<a href="{% url 'ambiental:waste_list' org_pk %}"
+						title="{% trans 'Waste records' %}">
+						<i class="fa fa-recycle" aria-hidden="true"></i>
+						{% trans 'Waste records' %}</a>
+				</li>
+			{% endif %}
+			{% if perms.ambiental.view_measurementpoint %}
+				<li>
+					<a href="{% url 'ambiental:measurementpoint_list' org_pk %}"
+						title="{% trans 'Measurement points' %}">
+						<i class="fa fa-tachometer" aria-hidden="true"></i>
+						{% trans 'Measurement points' %}</a>
+				</li>
+			{% endif %}
+			{% if perms.ambiental.view_normalizationbase %}
+				<li>
+					<a href="{% url 'ambiental:normalizationbase_list' org_pk %}"
+						title="{% trans 'Normalization bases' %}">
+						<i class="fa fa-balance-scale" aria-hidden="true"></i>
+						{% trans 'Normalization bases' %}</a>
+				</li>
+			{% endif %}
+			{% if perms.ambiental.view_consumptionalert %}
+				<li>
+					<a href="{% url 'ambiental:consumptionalert_list' org_pk %}"
+						title="{% trans 'Consumption alerts' %}">
+						<i class="fa fa-bell" aria-hidden="true"></i>
+						{% trans 'Consumption alerts' %}</a>
+				</li>
+			{% endif %}
+			{% if perms.ambiental.manage_building_access %}
+				<li>
+					<a href="{% url 'ambiental:building_access_list' org_pk %}"
+						title="{% trans 'Building access' %}">
+						<i class="fa fa-key" aria-hidden="true"></i>
+						{% trans 'Building access' %}</a>
+				</li>
+			{% endif %}
+		</ul>
+	</li>
+{% endif %}

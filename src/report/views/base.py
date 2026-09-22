@@ -249,7 +249,10 @@ def download_report(request, org_pk):
         response["state"] = "FAILURE"
         return JsonResponse(response, status=401, reason=_("Invalid form"))
 
-    task = TaskReport.objects.filter(pk=form.cleaned_data["taskreport"]).first()
+    task = TaskReport.objects.filter(
+        pk=form.cleaned_data["taskreport"],
+        data__org_pk=org_pk,
+    ).first()
     result = TaskResult.objects.filter(task_id=form.cleaned_data["task"]).first()
 
     if not result or not task:
@@ -298,7 +301,9 @@ def report_table(request, org_pk, pk):
         raise Http404()
 
     task = get_object_or_404(
-        TaskReport.objects.using(settings.READONLY_DATABASE), pk=pk
+        TaskReport.objects.using(settings.READONLY_DATABASE),
+        pk=pk,
+        data__org_pk=org_pk,
     )
     template_name = "report/general_reports.html"
     content = {
@@ -500,7 +505,9 @@ def download__organization_report(request, org_pk):
 @permission_required("laboratory.do_report", raise_exception=True)
 def report_organization_table(request, org_pk, pk):
     task = get_object_or_404(
-        TaskReport.objects.using(settings.READONLY_DATABASE), pk=pk
+        TaskReport.objects.using(settings.READONLY_DATABASE),
+        pk=pk,
+        data__org_pk=org_pk,
     )
     template_name = "report/general_organization_report.html"
     content = {

@@ -33,6 +33,8 @@
 					{% include 'partials/sga_menu.html' %}
 					{% include 'partials/reservations_menu.html' %}
 					{% include 'partials/riskmanagement_menu.html' %}
+					{% include 'partials/ambiental_menu.html' %}
+					{% include 'partials/platform_menu.html' %}
 					{% include 'partials/derb_menu.html' %}
 				{% endif %}
 				{% include 'partials/auth_and_perms.html' %}
@@ -42,6 +44,14 @@
 						<a class="nav-link" href="{% url 'regulation_docs' %}{% if org_pk %}?org_pk={{ org_pk }}{% endif %}"
 									title="{% trans 'Regulation documents' %}">
 							<i class="fa fa-flag fa-fw"></i> {% trans 'Regulation documents' %}
+						</a>
+					</li>
+				{% endif %}
+				{% if org_pk %}
+					<li>
+						<a class="nav-link" href="{% url 'laboratory:trash_list' org_pk %}"
+									title="{% trans 'Trash' %}">
+							<i class="fa fa-flag fa-fw"></i> {% trans 'Trash' %}
 						</a>
 					</li>
 				{% endif %}

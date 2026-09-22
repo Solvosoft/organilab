@@ -1,0 +1,16 @@
+{% load i18n %}
+<div class="col report-card" data-search="{{ title|lower }} {{ description|lower }}">
+	<div class="card h-100 shadow-sm border-0 report-card-body">
+		<div class="card-body d-flex">
+			<div class="report-card-icon me-3 text-{{ color|default:'primary' }}">
+				<i class="fa {{ icon|default:'fa-file-text-o' }} fa-2x" aria-hidden="true"></i>
+			</div>
+			<div class="flex-grow-1">
+				<h6 class="card-title mb-1">
+					<a class="stretched-link text-decoration-none text-reset" href="{{ url }}" target="_blank">{{ title }}</a>
+				</h6>
+				{% if description %}<p class="card-text small text-muted mb-0">{{ description }}</p>{% endif %}
+			</div>
+		</div>
+	</div>
+</div>
