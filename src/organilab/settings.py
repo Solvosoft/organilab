@@ -58,9 +58,7 @@ else:
     CORS_ALLOW_ALL_ORIGINS = True
 
 SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
-ADMINS = [
-    ("Solvo", "sitio@solvosoft.com"),
-]
+ADMINS = ["sitio@solvosoft.com"]
 # Application definition
 
 SITE_ID = 1
@@ -226,8 +224,6 @@ LANGUAGES = [
 TIME_ZONE = "America/Costa_Rica"
 
 USE_I18N = True
-
-USE_L10N = False
 
 USE_TZ = True
 

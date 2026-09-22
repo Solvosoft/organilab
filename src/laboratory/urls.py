@@ -2,7 +2,7 @@
 Created on 1/8/2016
 """
 
-from django.conf.urls import include
+from django.urls import include
 from django.urls import path
 from rest_framework.routers import DefaultRouter
 from academic.api.views import ProcedureStepCommentAPI, ProcedureStepCommentTableView
