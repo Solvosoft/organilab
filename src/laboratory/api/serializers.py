@@ -3,6 +3,7 @@ import logging
 from django.conf import settings
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
@@ -38,7 +39,7 @@ from laboratory.models import (
     MaterialCapacity,
     LaboratoryRoom,
     Furniture,
-    LabOrOrgRequest,
+    LabOrOrgRequest, OrganizationStructureRelations,
 )
 
 from laboratory.models import Protocol
@@ -489,7 +490,11 @@ class ValidateEquipmentSerializer(serializers.ModelSerializer):
                 {"type": _("Type equipment object is not valid.")}
             )
 
-        if organization.pk != org_pk_view:
+        cc = ContentType.objects.get_for_model(OrganizationStructure)
+
+        if OrganizationStructureRelations.objects.filter(organization=organization,
+                                                         content_type=cc,
+                                                         object_id=org_pk_view).exists():
             logger.debug(
                 f"ValidateEquipmentSerializer --> organization.pk ({organization.pk}) != org_pk_view ({org_pk_view})"
             )
@@ -912,6 +917,17 @@ class ValidateReactiveSerializer(serializers.ModelSerializer):
             )
             raise serializers.ValidationError(
                 {"type": _("Type equipment object is not valid.")}
+            )
+        cc = ContentType.objects.get_for_model(OrganizationStructure)
+
+        if OrganizationStructureRelations.objects.filter(organization=organization,
+                                                         content_type=cc,
+                                                         object_id=org_pk_view).exists():
+            logger.debug(
+                f"ValidateReactiveSerializer --> organization.pk ({organization.pk}) != org_pk_view ({org_pk_view})"
+            )
+            raise serializers.ValidationError(
+                {"organization": _("Organization is not valid.")}
             )
         return data
 
