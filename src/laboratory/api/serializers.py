@@ -913,14 +913,6 @@ class ValidateReactiveSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 {"type": _("Type equipment object is not valid.")}
             )
-
-        if organization.pk != org_pk_view:
-            logger.debug(
-                f"ValidateReactiveSerializer --> organization.pk ({organization.pk}) != org_pk_view ({org_pk_view})"
-            )
-            raise serializers.ValidationError(
-                {"organization": _("Organization is not valid.")}
-            )
         return data
 
     class Meta:
