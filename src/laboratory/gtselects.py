@@ -126,7 +126,7 @@ class ObjectGModelLookup(BaseSelect2View):
         queryset = super().get_queryset()
 
         if self.org_pk and self.shelfobjet_type:
-            organizations = get_pk_org_ancestors(self.org_pk.pk)
+            organizations = self.org_pk.root
             queryset = queryset.filter(
                 organization__in=organizations, type=self.shelfobjet_type
             )
