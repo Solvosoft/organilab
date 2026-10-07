@@ -6,7 +6,7 @@ djgentelella[firmador]>=0.6.0
 # directamente (vistas @ajax/AJAXMixin de laboratory) hasta modernizar esas pantallas.
 # Los JS del plugin están vendorizados en src/presentation/static/django_ajax/js/.
 djangoajax==3.3
-django==5.2.11
+django==5.2.17
 django-excel==0.0.13
 django-reservation==0.2.10
 # El campo geolocation ya no usa location_field (se migró a GTPointField de
