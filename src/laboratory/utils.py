@@ -322,9 +322,9 @@ def get_changed_fields(old_values, instance):
     changed = []
     for field, old_value in old_values.items():
         new_value = getattr(instance, field, None)
-        if hasattr(old_value, 'pk'):
+        if hasattr(old_value, "pk"):
             old_value = old_value.pk
-        if hasattr(new_value, 'pk'):
+        if hasattr(new_value, "pk"):
             new_value = new_value.pk
         if old_value != new_value:
             changed.append(field)
@@ -340,7 +340,7 @@ def get_pk_org_ancestors(org_pk, descendants=True):
         if descendants:
             pks = pks + list(organization.descendants().values_list("pk", flat=True))
         else:
-            pks = pks + list(organization.acestors().values_list("pk", flat=True))
+            pks = pks + list(organization.ancestors().values_list("pk", flat=True))
         pks = UserOrganization.objects.filter(
             organization__in=pks, user__isnull=False
         ).values_list("organization", flat=True)
