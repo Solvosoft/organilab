@@ -125,9 +125,9 @@ class ObjectGModelLookup(BaseSelect2View):
         queryset = super().get_queryset()
 
         if self.org_pk and self.shelfobjet_type:
-            organizations = get_pk_org_ancestors(self.org_pk.pk)
             queryset = queryset.filter(
-                organization__in=organizations, type=self.shelfobjet_type
+                organization__in=self.org_pk.ancestors(include_self=True),
+                type=self.shelfobjet_type,
             )
         else:
             queryset = queryset.none()
@@ -431,8 +431,9 @@ class ObjectAvailableLookup(BaseSelect2View):
     def get_queryset(self):
         queryset = super().get_queryset()
         if self.org_pk:
-            organizations = get_pk_org_ancestors(self.org_pk.pk)
-            queryset = queryset.filter(organization__in=organizations)
+            queryset = queryset.filter(
+                organization__in=self.org_pk.ancestors(include_self=True)
+            )
         else:
             queryset = queryset.none()
         return queryset
