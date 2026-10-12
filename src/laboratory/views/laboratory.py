@@ -658,8 +658,24 @@ def get_logentry_from_registeruserqr(request, org_pk, lab_pk, pk):
     )
 
 
+def get_register_user_qr(org_pk, lab_pk, pk):
+    """El QR solo vale para el laboratorio y la organización para los que se emitió.
+
+    Sin este filtro bastaba cambiar `org_pk`/`lab_pk` en la URL para recibir el rol
+    del QR en cualquier laboratorio u organización.
+    """
+    return get_object_or_404(
+        RegisterUserQR,
+        pk=pk,
+        organization_register_id=org_pk,
+        object_id=lab_pk,
+        content_type__app_label="laboratory",
+        content_type__model="laboratory",
+    )
+
+
 def login_register_user_qr(request, org_pk, lab_pk, pk):
-    user_qr = get_object_or_404(RegisterUserQR, pk=pk)
+    user_qr = get_register_user_qr(org_pk, lab_pk, pk)
     return render(
         request,
         "laboratory/register_user_qr/login_register_user.html",
@@ -800,8 +816,9 @@ def add_user_to_rel_obj(request, user, org_pk, lab_pk, qr_obj, id_card=None):
     )
 
 
+@login_required
 def redirect_user_to_labindex(request, org_pk, lab_pk, pk):
-    user_qr = get_object_or_404(RegisterUserQR, pk=pk)
+    user_qr = get_register_user_qr(org_pk, lab_pk, pk)
     add_user_to_rel_obj(request, request.user, org_pk, lab_pk, user_qr, id_card=None)
     return redirect(
         reverse("laboratory:labindex", kwargs={"org_pk": org_pk, "lab_pk": lab_pk})
@@ -809,19 +826,28 @@ def redirect_user_to_labindex(request, org_pk, lab_pk, pk):
 
 
 def create_user_qr(request, org_pk, lab_pk, pk, user=None):
-    user_qr = get_object_or_404(RegisterUserQR, pk=pk)
+    user_qr = get_register_user_qr(org_pk, lab_pk, pk)
     password_form = PasswordCodeForm(user=None, code=user_qr.code)
     register_form = RegisterForm(obj=None)
     instance, obj, context = None, None, {}
 
     if request.method == "POST":
         if user:
+            # Solo el propio usuario autenticado puede completar sus datos: antes
+            # cualquiera con el código del QR reescribía el correo y la clave de
+            # cualquier `user` de la URL.
+            if not request.user.is_authenticated or request.user.pk != user:
+                raise Http404()
             instance = get_object_or_404(User, pk=user)
             obj = instance.pk
             context.update({"instance": instance.pk})
         register_form = RegisterForm(request.POST, instance=instance, obj=obj)
+        password_form = PasswordCodeForm(
+            request.POST, user=instance, code=user_qr.code
+        )
 
-        if register_form.is_valid():
+        # El código del QR se valida antes de crear la cuenta o de dar el rol.
+        if register_form.is_valid() and password_form.is_valid():
             instance = register_form.save(commit=False)
             instance.username = register_form.cleaned_data["email"]
             if not user_qr.activate_user:
@@ -851,19 +877,15 @@ def create_user_qr(request, org_pk, lab_pk, pk, user=None):
                 id_card = register_form.cleaned_data["id_card"]
                 add_user_to_rel_obj(request, instance, org_pk, lab_pk, user_qr, id_card)
 
-            password_form = PasswordCodeForm(
-                request.POST, user=instance, code=user_qr.code
-            )
-            if password_form.is_valid():
-                instance.set_password(password_form.cleaned_data["password"])
-                instance.save()
-                login(request, instance)
-                return redirect(
-                    reverse(
-                        "laboratory:labindex",
-                        kwargs={"org_pk": org_pk, "lab_pk": lab_pk},
-                    )
+            instance.set_password(password_form.cleaned_data["password"])
+            instance.save()
+            login(request, instance)
+            return redirect(
+                reverse(
+                    "laboratory:labindex",
+                    kwargs={"org_pk": org_pk, "lab_pk": lab_pk},
                 )
+            )
 
     context.update(
         {

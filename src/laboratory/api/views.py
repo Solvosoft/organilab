@@ -124,7 +124,9 @@ class ApiReservedProductsCRUD(APIView):
         try:
             return ReservedProducts.objects.get(pk=pk)
         except ReservedProducts.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            # Devolver un Response aquí lo pasaba al serializer/delete como si
+            # fuera la reserva y terminaba en 500.
+            raise Http404
 
     def post(self, request):
         if not request.user.has_perm("reservations_management.add_reservedproducts"):
@@ -196,7 +198,7 @@ class CommentAPI(viewsets.ModelViewSet):
         try:
             return self.get_queryset().get(pk=pk)
         except CommentInform.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            raise Http404
 
     def create(self, request, *args, **kwargs):
         serializer = CommentsSerializer(data=request.data)
@@ -205,7 +207,7 @@ class CommentAPI(viewsets.ModelViewSet):
 
             CommentInform.objects.create(
                 created_by=request.user,
-                comment=serializer.data["comment"],
+                comment=serializer.validated_data.get("comment", ""),
                 inform=inform,
             )
             comments = self.get_queryset().filter(inform=inform).order_by("pk")
@@ -485,21 +487,30 @@ class InformViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
 
 
 class ShelfObjectAPI(APIView):
-    def get_object(self, pk):
-        try:
-            return ShelfObject.objects.filter(shelf__pk=pk)
-        except ShelfObject.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+    # Sin clases propias heredaba AllowAny de la configuración de DRF: cualquiera,
+    # incluso sin sesión, listaba el inventario de cualquier estante.
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, org_pk):
-        solicitud = self.get_object(request.GET["shelf"])
+        organization = get_object_or_404(OrganizationStructure, pk=org_pk)
+        user_is_allowed_on_organization(request.user, organization)
+        shelf = get_object_or_404(Shelf, pk=request.GET.get("shelf") or 0)
+        organization_can_change_laboratory(
+            shelf.furniture.labroom.laboratory, organization, raise_exec=True
+        )
         serializer = ShelfObjectSerialize(
-            solicitud, context={"org_pk": org_pk}, many=True
+            ShelfObject.objects.filter(shelf=shelf),
+            context={"org_pk": org_pk},
+            many=True,
         )
         return Response(serializer.data)
 
 
 class ShelfObjectGraphicAPI(APIView):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         queryset = ShelfObject.objects.filter(shelf__pk=request.GET["shelf"])
         labels = []
@@ -1377,7 +1388,9 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
             serializer = serializers.ReactiveLimitSerializer(data=request.data)
 
         if serializer.is_valid():
-            serializer.save()
+            # El laboratorio es el de la URL: el del cuerpo permitía fijar
+            # límites en un laboratorio de otra organización.
+            serializer.save(laboratory=get_object_or_404(Laboratory, pk=self.lab))
             return Response(status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -2010,9 +2023,12 @@ class LabOrOrgRequestViewSet(AuthAllPermBaseObjectManagement):
     def perform_create(self, serializer):
         org_pk = self.kwargs.get("org_pk")
         org = get_object_or_404(OrganizationStructure, pk=org_pk)
+        # La organización es la de la URL, como en el formulario: la del cuerpo
+        # permitía dejar solicitudes en la cola de revisión de otra organización.
         instance = serializer.save(
             requested_by=self.request.user,
             status=LabOrOrgRequest.STATUS_PENDING,
+            organization=org,
         )
         organilab_logentry(
             self.request.user,
@@ -2027,7 +2043,7 @@ class LabOrOrgRequestViewSet(AuthAllPermBaseObjectManagement):
         notify_request_created(instance)
 
     def perform_update(self, serializer):
-        instance = serializer.save()
+        instance = serializer.save(organization=serializer.instance.organization)
         org = instance.organization or instance.parent_org
         organilab_logentry(
             self.request.user,

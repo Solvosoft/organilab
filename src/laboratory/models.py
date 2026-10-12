@@ -1022,9 +1022,7 @@ class OrganizationStructureManager(models.Manager):
         return organizations
 
     def get_children(self, org_id):
-        return OrganizationStructure.objects.filter(pk=org_id).descendants(
-            include_self=True
-        )
+        return OrganizationStructure.objects.descendants(org_id, include_self=True)
 
     def filter_organization_by_user(self, user, descendants=True, ancestors=False):
 
@@ -1627,7 +1625,7 @@ class PrecursorReport(models.Model):
         last_day = calendar.monthrange(self.year, self.month_belong)[1]
         month = dict(MONTHS)[self.month_belong]
         year = self.year
-        if self.month_belong == 1 and self.month == 12:
+        if self.month_belong == 12 and self.month == 1:
             year = self.year - 1
             last_day = calendar.monthrange(year, self.month_belong)[1]
 

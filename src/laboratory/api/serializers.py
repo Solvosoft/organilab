@@ -1991,8 +1991,13 @@ class ObjectValidateSerializer(serializers.ModelSerializer):
 
             defaults = {"capacity": capacity}
 
-            # solo permite cambiar unit si NO tiene relaciones
-            if not has_rel:
+            # solo permite cambiar unit si NO tiene relaciones; si aún no hay
+            # capacidad registrada no hay unidad que cambiar y hace falta una
+            # (la columna no admite nulos y el alta reventaba con un 500).
+            if (
+                not has_rel
+                or not MaterialCapacity.objects.filter(object=instance).exists()
+            ):
                 defaults["capacity_measurement_unit"] = unit
 
             MaterialCapacity.objects.update_or_create(

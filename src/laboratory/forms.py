@@ -760,6 +760,11 @@ class RegisterForm(forms.ModelForm, GTForm):
         if email:
             user_email = User.objects.filter(email=email)
             user_username = User.objects.filter(username=email)
+            if self.instance.pk:
+                # Al completar los datos de un usuario existente su propio correo
+                # no cuenta como repetido.
+                user_email = user_email.exclude(pk=self.instance.pk)
+                user_username = user_username.exclude(pk=self.instance.pk)
 
             if user_email.exists():
                 raise ValidationError(_("Email address is already exists."))
@@ -1957,6 +1962,8 @@ class LabOrOrgRequestForm(GTForm, forms.ModelForm):
         )
         if commit:
             instance.save()
+            # Con commit=False ModelForm deja pendiente el M2M (workplace).
+            self.save_m2m()
         return instance
 
     class Meta:

@@ -11,7 +11,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import permission_required, login_required
 from django.http import Http404
 from django.http.response import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from django.template.loader import get_template
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -20,8 +20,13 @@ from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from weasyprint import HTML
 
+from auth_and_perms.organization_utils import (
+    organization_can_change_laboratory,
+    user_is_allowed_on_organization,
+)
 from laboratory.forms import H_CodeForm
 from laboratory.models import (
+    Laboratory,
     ShelfObject,
     OrganizationStructure,
     UserOrganization,
@@ -38,16 +43,18 @@ from report.forms import (
 @login_required
 @permission_required("laboratory.do_report", raise_exception=True)
 def report_shelf_objects(request, org_pk, lab_pk, pk):
+    # Sin estas comprobaciones bastaba `do_report` en cualquier organización
+    # para descargar objetos de otro laboratorio (por pk, o todos con lab_pk=0).
+    organization = get_object_or_404(OrganizationStructure, pk=org_pk)
+    laboratory = get_object_or_404(Laboratory, pk=lab_pk)
+    user_is_allowed_on_organization(request.user, organization)
+    organization_can_change_laboratory(laboratory, organization, raise_exec=True)
 
-    if not pk:
-        if lab_pk:
-            shelf_objects = ShelfObject.objects.filter(
-                shelf__furniture__labroom__laboratory__pk=lab_pk
-            )
-        else:
-            shelf_objects = ShelfObject.objects.all()
-    else:
-        shelf_objects = ShelfObject.objects.filter(pk=pk)
+    shelf_objects = ShelfObject.objects.filter(
+        shelf__furniture__labroom__laboratory=laboratory
+    )
+    if pk:
+        shelf_objects = shelf_objects.filter(pk=pk)
 
     context = {
         "user": request.user,

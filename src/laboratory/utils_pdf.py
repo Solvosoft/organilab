@@ -476,7 +476,7 @@ def _extract_nfpa(text, entries, lang='es'):
     """Extract NFPA flammable liquid classification (M2M). Returns list of PKs."""
     class_to_pk = {}
     for pk, desc in entries:
-        m = re.search(r'clase\s+(I{1,3}[AB]?)', desc, re.IGNORECASE)
+        m = re.search(r'clase\s+(I{1,3}[A-C]?)', desc, re.IGNORECASE)
         if m:
             class_to_pk[m.group(1).upper()] = pk
 

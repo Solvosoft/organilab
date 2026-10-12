@@ -62,11 +62,6 @@ class GTManyToManyField(models.ManyToManyField):
             "queryset": queryset,
             **kwargs,
         }
-        # If initial is passed in, it's a list of related objects, but the
-        # MultipleChoiceField takes a list of IDs.
-        if defaults.get("initial") is not None:
-            initial = defaults["initial"]
-            if callable(initial):
-                initial = initial()
-            defaults["initial"] = [i.pk for i in initial]
+        # ManyToManyField.formfield ya convierte `initial` (objetos o invocable)
+        # en la lista de pks; hacerlo también aquí lo convertía dos veces.
         return super().formfield(**defaults)

@@ -1329,6 +1329,11 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             amount_to_transfer = serializer.validated_data["amount_to_transfer"]
             source_laboratory = get_object_or_404(Laboratory, pk=lab_pk)
             target_laboratory = serializer.validated_data["laboratory"]
+            # El formulario solo ofrece laboratorios de la organización; el API
+            # aceptaba cualquiera y dejaba la solicitud en un laboratorio ajeno.
+            organization_can_change_laboratory(
+                target_laboratory, self.organization, raise_exec=True
+            )
             transfer_obj = None
             data_transfer = {
                 "object": shelf_object,

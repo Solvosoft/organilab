@@ -40,6 +40,16 @@ class BaseSetUpTest(TestCase):
         )
 
 
+    def assertNegado(self, response, status_code=403):
+        """403/404 directo (JSON/XHR) o la redirección de `HandleErrorMiddleware`
+        a `error_view?status=N`, que es lo que recibe una navegación normal."""
+        if response.status_code == 302:
+            self.assertIn(reverse("error_view"), response.url)
+            self.assertIn("status=%d" % status_code, response.url)
+        else:
+            self.assertEqual(response.status_code, status_code)
+
+
 class BaseLaboratorySetUpTest(BaseSetUpTest):
     fixtures = ["laboratory_data.json"]
 

@@ -103,7 +103,7 @@ def save_object_report_precursor(report):
             obj.save()
         else:
             year = report.year
-            if report.month_belong == 1 and report.month == 12:
+            if report.month_belong == 12 and report.month == 1:
                 year = report.year - 1
 
             object_list = ObjectLogChange.objects.filter(

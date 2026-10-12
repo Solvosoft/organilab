@@ -45,7 +45,11 @@ from laboratory.shelfobject.utils import (
     get_available_containers_for_selection,
     get_containers_for_cloning,
 )
-from laboratory.utils import get_pk_org_ancestors, get_users_from_organization
+from laboratory.utils import (
+    check_user_access_kwargs_org_lab,
+    get_pk_org_ancestors,
+    get_users_from_organization,
+)
 from laboratory.utils_base_unit import get_related_units
 from risk_management.models import Regent, Buildings
 from sga.models import Pictogram
@@ -53,6 +57,24 @@ from sga.models import Pictogram
 
 class GPaginatorMoreElements(GPaginator):
     page_size = 100
+
+
+def check_user_on_organization(user, organization):
+    """Los lookups que reciben la organización por query string solo responden a
+    quien tiene acceso a ella: sin esto cualquier usuario autenticado (o anónimo,
+    en risk_users) enumeraba usuarios, perfiles, roles o laboratorios de una
+    organización ajena con solo cambiar el pk.
+
+    Se acepta la pertenencia a la organización (o a un ancestro) y también el
+    acceso por roles sobre la organización o alguno de sus laboratorios, que es
+    lo que admiten las páginas desde donde se consultan estos lookups."""
+    if user.is_superuser:
+        return
+    if not isinstance(organization, OrganizationStructure):
+        organization = get_object_or_404(OrganizationStructure, pk=organization)
+    if check_user_access_kwargs_org_lab(organization.pk, None, user):
+        return
+    user_is_allowed_on_organization(user, organization)
 
 
 @register_lookups(prefix="rol", basename="rolsearch")
@@ -86,6 +108,7 @@ class OrganizationRolslLookup(BaseSelect2View):
 
         if self.serializer.is_valid():
             self.org = self.serializer.validated_data["organization"]
+            check_user_on_organization(request.user, self.org)
             return super().list(request, *args, **kwargs)
 
         return Response(
@@ -292,7 +315,8 @@ class AvailableContainerLookup(BaseSelect2View):
         )
         if self.serializer.is_valid():
             self.laboratory = self.serializer.validated_data["laboratory"]
-            self.shelf = self.serializer.validated_data["shelf"]
+            # shelf es opcional en el serializer: sin él, lista vacía y no un 500.
+            self.shelf = self.serializer.validated_data.get("shelf")
             return super().list(request, *args, **kwargs)
         return Response(
             {
@@ -343,7 +367,7 @@ class ContainersForCloningLookup(BaseSelect2View):
 
         if self.serializer.is_valid():
             self.org = self.serializer.validated_data["organization"]
-            self.shelf = self.serializer.validated_data["shelf"]
+            self.shelf = self.serializer.validated_data.get("shelf")
             return super().list(request, *args, **kwargs)
         return Response(
             {
@@ -537,6 +561,7 @@ class OrganizationRolslLookup(BaseSelect2View):
 
         if self.serializer.is_valid():
             self.org = self.serializer.validated_data["organization"]
+            check_user_on_organization(request.user, self.org)
             return super().list(request, *args, **kwargs)
 
         return Response(
@@ -611,6 +636,7 @@ class OrganizationProfileslLookup(BaseSelect2View):
 
         if self.serializer.is_valid():
             self.org = self.serializer.validated_data["organization"]
+            check_user_on_organization(request.user, self.org)
             return super().list(request, *args, **kwargs)
 
         return Response(
@@ -683,6 +709,7 @@ class OrganizationProviderslLookup(BaseSelect2View):
 
         if self.serializer.is_valid():
             self.org = self.serializer.validated_data["organization"]
+            check_user_on_organization(request.user, self.org)
             return super().list(request, *args, **kwargs)
 
         return Response(
@@ -726,6 +753,7 @@ class UsersOrganizationsLookup(BaseSelect2View):
 
         if self.serializer.is_valid():
             self.org = self.serializer.validated_data["organization"]
+            check_user_on_organization(request.user, self.org)
             return super().list(request, *args, **kwargs)
 
         return Response(
@@ -780,7 +808,7 @@ class UserseslLookup(BaseSelect2View):
     perms = {
         "list": [],
     }
-    permission_classes = ()
+    permission_classes = (IsAuthenticated,)
     organization = None
 
     def get_queryset(self):
@@ -801,6 +829,8 @@ class UserseslLookup(BaseSelect2View):
         self.organization = OrganizationStructure.objects.filter(
             pk=self.organization
         ).first()
+        if self.organization:
+            check_user_on_organization(request.user, self.organization)
         return super().list(request, *args, **kwargs)
 
 
@@ -833,6 +863,8 @@ class RegentslLookup(BaseSelect2View):
         self.organization = OrganizationStructure.objects.filter(
             pk=self.organization
         ).first()
+        if self.organization:
+            check_user_on_organization(request.user, self.organization)
         return super().list(request, *args, **kwargs)
 
 
@@ -895,7 +927,8 @@ class RiskLaboratorylLookup(BaseSelect2View):
 
     def list(self, request, *args, **kwargs):
         self.organization = self.request.GET.get("org_pk", None)
-
+        if self.organization:
+            check_user_on_organization(request.user, self.organization)
         return super().list(request, *args, **kwargs)
 
 
@@ -963,6 +996,7 @@ class RiskUsersOrganizations(BaseSelect2View):
     def list(self, request, *args, **kwargs):
         if self.request.GET.get("org_pk", None):
             self.org = self.request.GET.get("org_pk", None)
+            check_user_on_organization(request.user, self.org)
             return super().list(request, *args, **kwargs)
 
         return Response(
@@ -1019,6 +1053,7 @@ class LaboratoryBtOrganizations(BaseSelect2View):
     def list(self, request, *args, **kwargs):
         if self.request.GET.get("organization", None):
             self.org = self.request.GET.get("organization", None)
+            check_user_on_organization(request.user, self.org)
             return super().list(request, *args, **kwargs)
 
         return Response(

@@ -79,7 +79,7 @@ def filter_by_user_and_hcode(user, q, function="convert_hcodereport_table"):
         reactive_id=F("laboratoryroom__furniture__shelf__shelfobject__object__pk"),
     ).values(
         "name",
-        "laboratoryroom",
+        "room",
         "furniture",
         "reactive",
         "quantity",

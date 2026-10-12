@@ -14,6 +14,9 @@ def upload_files(instance, filename):
 
 
 def get_shelfobject_conversion_from_two_units(shelfobject_unit, shelf_unit, amount):
+    # Import local: laboratory.models importa este módulo (upload_files).
+    from laboratory.models import BaseUnitValues
+
     query = BaseUnitValues.objects.filter(measurement_unit=shelfobject_unit)
     query2 = BaseUnitValues.objects.filter(measurement_unit=shelf_unit)
     if shelf_unit is None:

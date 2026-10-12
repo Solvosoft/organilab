@@ -4,6 +4,7 @@ import openpyxl
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.cache import cache
+from django.core.exceptions import PermissionDenied
 from django.forms import formset_factory
 from django.shortcuts import get_object_or_404, render, redirect
 from rest_framework import status
@@ -108,7 +109,7 @@ def load_archive(request, org_pk, lab_pk):
     org = get_object_or_404(OrganizationStructure, pk=org_pk)
     lab = get_object_or_404(Laboratory, pk=lab_pk)
     user_is_allowed_on_organization(request.user, org)
-    organization_can_change_laboratory(lab, org)
+    organization_can_change_laboratory(lab, org, raise_exec=True)
     data = {}
     if request.method == "POST":
 
@@ -169,14 +170,17 @@ def load_archive(request, org_pk, lab_pk):
                     "errors": serializer.errors,
                 },
             )
-        uploaded_file = serializer.validated_data["file"]
-        data = read_xlsm_data(uploaded_file, serializer.validated_data["shelf"].pk)
         shelf = serializer.validated_data["shelf"]
+        # El serializer acepta cualquier estante: tiene que ser de este laboratorio.
+        if shelf.furniture.labroom.laboratory_id != lab.pk:
+            raise PermissionDenied
+        uploaded_file = serializer.validated_data["file"]
+        data = read_xlsm_data(uploaded_file, shelf.pk)
         if shelf.measurement_unit is not None:
             for row in data:
                 if (
                     shelf.measurement_unit.description
-                    != row["unidades_cantidad"].capitalize()
+                    != (row["unidades_cantidad"] or "").capitalize()
                 ):
                     messages.error(
                         request,
@@ -221,15 +225,20 @@ def load_archive(request, org_pk, lab_pk):
 @login_required
 @permission_required("laboratory.add_shelfobject", raise_exception=True)
 def upload_reactives(request, org_pk, lab_pk, key):
-    temp = get_object_or_404(TemporalUploadReactive, key=key)
+    organization = get_object_or_404(OrganizationStructure, pk=org_pk)
+    laboratory = get_object_or_404(Laboratory, pk=lab_pk)
+    user_is_allowed_on_organization(request.user, organization)
+    organization_can_change_laboratory(laboratory, organization, raise_exec=True)
+    temp = get_object_or_404(
+        TemporalUploadReactive,
+        key=key,
+        shelf__furniture__labroom__laboratory=laboratory,
+    )
     if request.method == "POST":
 
         ReactiveFormSet = formset_factory(ReactiveUploadForm, extra=0)
         formset = ReactiveFormSet(request.POST)
         if formset.is_valid():
-
-            laboratory = get_object_or_404(Laboratory, pk=lab_pk)
-            organization = get_object_or_404(OrganizationStructure, pk=org_pk)
 
             for form in formset:
 

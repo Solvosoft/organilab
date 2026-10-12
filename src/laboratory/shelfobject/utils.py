@@ -916,10 +916,16 @@ def validate_measurement_unit_and_quantity(
         and measurement_unit != shelf.measurement_unit
     ):
 
+        # Una unidad sin BaseUnitValues no se puede convertir: es incompatible, no un
+        # AttributeError (500).
         if (
-            baseunit.measurement_unit_base
-            and shelfbaseunit.measurement_unit_base
-            and baseunit.measurement_unit_base != shelfbaseunit.measurement_unit_base
+            baseunit is None
+            or shelfbaseunit is None
+            or (
+                baseunit.measurement_unit_base
+                and shelfbaseunit.measurement_unit_base
+                and baseunit.measurement_unit_base != shelfbaseunit.measurement_unit_base
+            )
         ):
 
             # if measurement unit is not provided (None) then this validation is not applied, for material and equipment it is not required

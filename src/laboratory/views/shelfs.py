@@ -47,10 +47,14 @@ def delete_shelf(request, org_pk, lab_pk, pk, row, col):
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
     )
     user_is_allowed_on_organization(request.user, organization)
-    organization_can_change_laboratory(laboratory, organization)
+    organization_can_change_laboratory(laboratory, organization, raise_exec=True)
 
     if request.method == "POST":
-        shelf = get_object_or_404(Shelf, pk=pk)
+        # El estante tiene que ser del laboratorio de la URL: sin el filtro se
+        # podía borrar un estante de cualquier laboratorio conociendo su pk.
+        shelf = get_object_or_404(
+            Shelf, pk=pk, furniture__labroom__laboratory=laboratory
+        )
         furniture = shelf.furniture
         furniture.remove_shelf_dataconfig(pk)
         remove_shelfobject_from_shelf(lab_pk, shelf, request.user, org_pk)
@@ -133,6 +137,11 @@ class ShelfForm(forms.ModelForm, GTForm):
         }
 
     def clean(self):
+        if not {"quantity", "measurement_unit"} <= self.cleaned_data.keys():
+            # La cantidad o la unidad no pasaron la validación del campo (p. ej.
+            # cantidad no numérica): su error ya está en el formulario y no hay
+            # con qué comparar.
+            return self.cleaned_data
         discard = self.cleaned_data["discard"]
         quantity = self.cleaned_data["quantity"]
         unit = self.cleaned_data["measurement_unit"]
@@ -226,7 +235,7 @@ class ShelfUpdateForm(forms.ModelForm, GTForm):
         discard = self.cleaned_data["discard"]
         infinity = self.cleaned_data["infinity_quantity"]
         unit = self.cleaned_data["measurement_unit"]
-        quantity = self.cleaned_data["quantity"]
+        quantity = self.cleaned_data.get("quantity")
         shelfobjects = self.instance.get_objects().count()
         change_unit = unit != self.instance.measurement_unit
 
@@ -237,7 +246,9 @@ class ShelfUpdateForm(forms.ModelForm, GTForm):
                     "The shelf have objects need to removed them, before changes the measurement unit"
                 ),
             )
-        elif unit is None and infinity is False and quantity <= 0:
+        elif (
+            unit is None and infinity is False and quantity is not None and quantity <= 0
+        ):
             self.add_error(
                 "quantity",
                 _(
@@ -303,7 +314,10 @@ class ShelfUpdateForm(forms.ModelForm, GTForm):
                     ),
                 )
 
-                for obj in other_objects.distinct("object"):
+                # DISTINCT ON exige que el ORDER BY empiece por la misma columna.
+                # Por la columna (`object_id`): `order_by("object")` se expande al
+                # orden del modelo Object y deja de coincidir.
+                for obj in other_objects.order_by("object_id").distinct("object_id"):
                     self.add_error(
                         "available_objects_when_limit", "- " + obj.object.name
                     )
