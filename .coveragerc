@@ -12,11 +12,53 @@ omit =
     organilab_test/*
     organilab/test_settings.py
     manage.py
+    # Alcance: el código que alcanza una petición web. Fuera, con motivo:
+    # comandos de gestión (operación puntual por consola, no web)
+    */management/*
+    # fuentes SDS externas: scraping de sitios de terceros, requieren red
+    laboratory/sds_sources/*
+    # puntos de entrada y configuración del proceso
+    organilab/settings.py
+    organilab/asettings.py
+    organilab/aurls.py
+    organilab/wsgi.py
+    organilab/asgi.py
+    organilab/celery.py
+    # la propia instrumentación de pruebas (sonda de roles y rendimiento)
+    presentation/probe.py
+    presentation/perf.py
+    presentation/perf_volume.py
 concurrency = thread,multiprocessing
 parallel = true
 sigterm = true
 
 [report]
+# Mismo alcance al reportar: los datos ya medidos no pasan por el omit de [run].
+omit =
+    */migrations/*
+    */templates/*
+    */static/*
+    */tests/*
+    */tests.py
+    organilab_test/*
+    organilab/test_settings.py
+    manage.py
+    # Alcance: el código que alcanza una petición web. Fuera, con motivo:
+    # comandos de gestión (operación puntual por consola, no web)
+    */management/*
+    # fuentes SDS externas: scraping de sitios de terceros, requieren red
+    laboratory/sds_sources/*
+    # puntos de entrada y configuración del proceso
+    organilab/settings.py
+    organilab/asettings.py
+    organilab/aurls.py
+    organilab/wsgi.py
+    organilab/asgi.py
+    organilab/celery.py
+    # la propia instrumentación de pruebas (sonda de roles y rendimiento)
+    presentation/probe.py
+    presentation/perf.py
+    presentation/perf_volume.py
 #fail_under = 100
 show_missing = True
 skip_covered = True
