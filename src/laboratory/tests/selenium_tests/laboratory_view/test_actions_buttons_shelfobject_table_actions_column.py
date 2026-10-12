@@ -1,6 +1,11 @@
+import time
+from datetime import timedelta
+
 from django.test import tag
+from django.utils.timezone import localdate, localtime
 from organilab_test.tests.selenium_xpaths import select2_result
-from django.utils.timezone import now
+
+from reservations_management.models import ReservedProducts
 
 from laboratory.tests.selenium_tests.laboratory_view.base import (
     LaboratoryViewSeleniumTest,
@@ -79,35 +84,103 @@ class ButtonsActionsTableColumn(ButtonsActionsTableColumnBase):
         ]
         self.create_gif_process(path_list, "view_shelfobject_detail")
 
-    def test_reserve_shelfobject(self):
-        initial_date, initial_date_strftime = self.get_format_increase_decrease_date(
-            now(), 2
-        )
-        # +1 y no +5: el datepicker abre en el mes de la fecha inicial y una
-        # final a 5 días puede caer fuera de la cuadrícula visible (bomba de
-        # tiempo en los cierres de mes).
-        final_date, final_date_strftime = self.get_format_increase_decrease_date(
-            initial_date, 1
+    def open_datepicker_on(self, input_id, target_date):
+        """Pasos para abrir el datepicker de `input_id` mostrando el mes de `target_date`.
+
+        El bootstrap-datetimepicker de gentelella sólo se abre con el evento
+        `focus` del input, y las celdas `data-day` sólo existen mientras está
+        abierto. Si el click real cae en el fallback por JS (click
+        interceptado bajo carga) o la ventana no tiene el foco del sistema,
+        `focus` no se dispara y el día nunca aparece. Además el picker abre
+        en el mes de "hoy" según el reloj del navegador, no en el del
+        servidor. Por eso, tras el click que se ve en el GIF, se asegura por
+        la API del widget que esté abierto y se navega con sus propias
+        flechas de mes hasta el del día objetivo (viewDate() sólo cambia el
+        estado interno, no vuelve a pintar la cuadrícula). El día se sigue
+        eligiendo con un click real.
+        """
+        return [
+            {"path": "//*[@id='%s']" % input_id, "sleep": 15},
+            {
+                "path": "//*[@id='%s']" % input_id,
+                "extra_action": "script",
+                "value": (
+                    "var input = $('#%(id)s'), dp = input.data('DateTimePicker');"
+                    "dp.show();"
+                    "var widget = input.parent().find('.bootstrap-datetimepicker-widget');"
+                    "var target = moment('%(day)s', 'YYYY-MM-DD');"
+                    "for (var i = 0; i < 24 && !widget.find(\"td[data-day='%(cell)s']\").length; i++) {"
+                    "  var arrow = dp.viewDate().isAfter(target, 'month') ? 'previous' : 'next';"
+                    "  widget.find('.datepicker-days [data-action=' + arrow + ']').click();"
+                    "}"
+                )
+                % {
+                    "id": input_id,
+                    "day": target_date.strftime("%Y-%m-%d"),
+                    "cell": target_date.strftime("%m/%d/%Y"),
+                },
+            },
+        ]
+
+    def day_cell(self, form_id, target_date):
+        # data-day sale de moment().format('L'); la página carga moment en
+        # inglés, así que el formato es MM/DD/YYYY. Se acota al formulario
+        # para no casar con otro datepicker de la página.
+        return "//*[@id='%s']//td[@data-day='%s']" % (
+            form_id,
+            target_date.strftime("%m/%d/%Y"),
         )
 
-        path_list = self.buttons_actions_path + [
-            {
-                "path": self.shelfobject_row_action("fa-shopping-basket")},
-            {"path": "//*[@id='reservesoform']/div/div/input"},
-            {
-                "path": "//*[@id='reservesoform']/div/div/input",
-                "extra_action": "setvalue",
-                "value": "2",
-            },
-            {"path": "//*[@id='reservesoform']/div[2]/div/div/input", "sleep": 15},
-            {"path": "//*[@data-day='%s']" % initial_date_strftime, "sleep": 1},
-            {"path": "//*[@id='reservesomodal']//h4 | //*[@id='reservesomodal']//h5", "sleep": 1},
-            {"path": "//*[@id='reservesoform']/div[3]/div/div/input", "sleep": 15},
-            {"path": "//*[@data-day='%s']" % final_date_strftime, "sleep": 1},
-            {"path": "//*[@id='reservesomodal']//h4 | //*[@id='reservesomodal']//h5", "sleep": 1},
-            {"path": self.get_save_button_modal("reservesomodal"), "sleep": 5},
-        ]
+    def test_reserve_shelfobject(self):
+        # Fechas de calendario en la zona del proyecto (America/Costa_Rica)
+        # y no en UTC: entre las 18:00 y las 24:00 de Costa Rica now() ya es
+        # el día siguiente. Con viewDate el mes visible deja de importar, así
+        # que el margen de días ya no depende de la fecha de la corrida.
+        initial_date = localdate() + timedelta(days=2)
+        final_date = initial_date + timedelta(days=1)
+
+        path_list = (
+            self.buttons_actions_path
+            + [
+                {"path": self.shelfobject_row_action("fa-shopping-basket")},
+                {"path": "//*[@id='reservesoform']/div/div/input"},
+                {
+                    "path": "//*[@id='reservesoform']/div/div/input",
+                    "extra_action": "setvalue",
+                    "value": "2",
+                },
+            ]
+            + self.open_datepicker_on("id_reserve-initial_date", initial_date)
+            + [
+                {"path": self.day_cell("reservesoform", initial_date), "sleep": 1},
+                {"path": "//*[@id='reservesomodal']//h4 | //*[@id='reservesomodal']//h5", "sleep": 1},
+            ]
+            + self.open_datepicker_on("id_reserve-final_date", final_date)
+            + [
+                {"path": self.day_cell("reservesoform", final_date), "sleep": 1},
+                {"path": "//*[@id='reservesomodal']//h4 | //*[@id='reservesomodal']//h5", "sleep": 1},
+                {"path": self.get_save_button_modal("reservesomodal"), "sleep": 5},
+            ]
+        )
         self.create_gif_process(path_list, "reserve_shelfobject")
+
+        # La reserva tiene que haberse guardado con los días elegidos en el
+        # calendario; si el picker eligió otro día o el POST falló, aquí se ve.
+        reserved = self.wait_for_reservation()
+        self.assertEqual(reserved.amount_required, 2)
+        self.assertEqual(localtime(reserved.initial_date).date(), initial_date)
+        self.assertEqual(localtime(reserved.final_date).date(), final_date)
+
+    def wait_for_reservation(self, timeout=10):
+        # El guardado es un POST por AJAX: el último paso no espera su respuesta.
+        deadline = time.monotonic() + timeout
+        while True:
+            reserved = ReservedProducts.objects.order_by("-pk").first()
+            if reserved is not None or time.monotonic() > deadline:
+                break
+            time.sleep(0.2)
+        self.assertIsNotNone(reserved, "no se guardó la reserva del objeto")
+        return reserved
 
     def test_increase_shelfobject(self):
         path_list = self.buttons_actions_path + [
