@@ -525,6 +525,7 @@ def get_roles_by_organization(request, pk):
 @require_http_methods(["GET"])
 def get_org_administrators(request, pk):
     org = get_object_or_404(OrganizationStructure, pk=pk)
+    user_is_allowed_on_organization(request.user, org)
     ct = ContentType.objects.get_for_model(OrganizationStructure)
     active_user_pks = UserOrganization.objects.filter(
         organization=org,
@@ -569,7 +570,9 @@ def get_rol(request, pk):
 @permission_required("auth_and_perms.change_rol", raise_exception=True)
 @require_http_methods(["POST"])
 def update_rol(request, org_pk, pk):
-    rol = get_object_or_404(Rol, pk=pk)
+    user_is_allowed_on_organization(request.user, org_pk)
+    # Solo roles de la organización de la URL: antes se editaba cualquier rol por pk.
+    rol = get_object_or_404(Rol, pk=pk, organizationstructure__pk=org_pk)
     form = RolForm(request.POST, instance=rol)
     if form.is_valid():
         rol = form.save()
@@ -607,6 +610,7 @@ def enable_child_organizations(request):
         OrganizationStructure.objects.using(settings.READONLY_DATABASE),
         pk=request.POST.get("organization", 0),
     )
+    user_is_allowed_on_organization(request.user, organization)
     enable = request.POST.get("enable", "false")
     if enable == "true":
         organization.enable_child_organizations = True

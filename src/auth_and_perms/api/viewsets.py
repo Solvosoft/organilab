@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib.admin.models import CHANGE, DELETION, ADDITION
 from django.contrib.auth.models import Permission, User, Group
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from django.http import HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404
@@ -150,9 +151,9 @@ class ProfileToContenttypeObjectAPI(mixins.CreateModelMixin, viewsets.GenericVie
                 pk=serializer.data["laboratory"],
             )
             if not organization_can_change_laboratory(contenttypeobj, organization):
-                return HttpResponseForbidden(
-                    _("Laboratory modification not authorized")
-                )
+                # perform_create no puede devolver una respuesta: CreateModelMixin la
+                # ignoraría y contestaría 201.
+                raise PermissionDenied(_("Laboratory modification not authorized"))
         elif serializer.data["typeofcontenttype"] == "organization":
             contenttypeobj = organization
             type_user = UserOrganization.LABORATORY_MANAGER
@@ -788,11 +789,13 @@ class UpdateGroupsByProfile(APIView):
         if serializer.is_valid():
             profile = serializer.validated_data["profile"]
             groups = serializer.validated_data.get("groups")
+            # Los grupos que se quitan se calculan antes de vaciar: después siempre
+            # quedaba vacío y la bitácora de lo removido nunca se escribía.
+            groups_pk = [x.pk for x in groups] if groups else []
+            groups_exclude = Group.objects.filter(
+                pk__in=list(profile.groups.exclude(pk__in=groups_pk).values_list("pk", flat=True))
+            )
             profile.groups.remove(*profile.groups.all())
-            if groups:
-                groups_pk = [x.pk for x in groups]
-                groups_exclude = profile.groups.all().exclude(pk__in=groups_pk)
-                profile.groups.remove(*profile.groups.all())
 
             if groups_exclude:
                 organilab_logentry(
@@ -1312,6 +1315,9 @@ class OrganizationLabRelationDeleteViewSet(AuthAllPermBaseObjectManagement):
 
         if not org_pk:
             return OrganizationStructureRelations.objects.none()
+
+        # Valida que quien pide pertenezca a la organización de la URL.
+        self.get_organization()
 
         lab_content_type = ContentType.objects.filter(
             app_label="laboratory", model="laboratory"

@@ -19,7 +19,9 @@
 @license: GPLv3
 """
 import requests
-from django.http.response import JsonResponse, Http404, HttpResponse
+import re
+
+from django.http.response import JsonResponse, Http404, HttpResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
 from pyfva.clientes.autenticador import ClienteAutenticador
 from django.conf import settings
@@ -31,6 +33,8 @@ from django.contrib.auth import authenticate, login
 
 # from corebase import logger
 from ..models import AuthenticateDataRequest, AuthorizedApplication
+
+JSONP_CALLBACK_RE = re.compile(r"^[A-Za-z_$][\w$]*(\.[A-Za-z_$][\w$]*)*$")
 
 
 @csrf_exempt
@@ -135,7 +139,11 @@ def check_signature_window_status_register(request):
             - FueExitosa: La transacción fue exitosa (no quiere decir que se haya firmado, solo que el proceso de consulta fue exitoso)
             - SeRealizo: True si ya se realizó el proceso de firma por el usuario o si existe un error a mostrar al usaurio
     """
-    callback = request.GET.get("callback")
+    callback = request.GET.get("callback", "")
+    # JSONP: el callback se refleja tal cual en la respuesta, así que solo se acepta un
+    # identificador de JavaScript (evita XSS reflejado).
+    if not JSONP_CALLBACK_RE.match(callback):
+        return HttpResponseBadRequest("Invalid callback")
     pk = request.GET.get("IdDeLaSolicitud", "")
     authdata = AuthenticateDataRequest.objects.filter(id_transaction=pk).first()
 

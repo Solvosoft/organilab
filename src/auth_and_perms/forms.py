@@ -233,7 +233,8 @@ class OrganizationActions(GTForm):
 
         if organization and not organization.active:
 
-            if actions in [1, 3]:
+            # `actions` llega como texto ("1".."4") desde el ChoiceField.
+            if actions in ("1", "3"):
                 self.add_error(
                     "action_organization", _("Organization cannot be inactive")
                 )
@@ -286,9 +287,14 @@ class ProfileGroupForm(GTForm):
     def clean(self):
         cleaned_data = super().clean()
         organization = cleaned_data.get("organization")
+        if organization is None:
+            return cleaned_data
 
-        if not organization.active:
+        # `organization` es un IntegerField: hay que buscar la instancia.
+        organization = OrganizationStructure.objects.filter(pk=organization).first()
+        if organization is None or not organization.active:
             self.add_error("organization", _("Organization cannot be inactive"))
+        return cleaned_data
 
 
 class OrgTreeForm(GTForm):

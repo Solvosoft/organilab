@@ -166,9 +166,10 @@ class LabUserS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
-            if self.organization:
-                user_is_allowed_on_organization(self.request.user, self.organization)
-            return super().list(request, *args, **kwargs)
+        # Fuera del `if`: por `retrieve` la organización ya viene y `list` devolvía None.
+        if self.organization:
+            user_is_allowed_on_organization(self.request.user, self.organization)
+        return super().list(request, *args, **kwargs)
 
     def get_queryset(self):
         if self.organization:
