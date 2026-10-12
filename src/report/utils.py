@@ -282,10 +282,14 @@ def get_conversion_units_to_kilograms(unit, amount, density=None):
         else:
             result = amount / value
 
+        # La condición estaba invertida: sin densidad multiplicaba por None
+        # (TypeError) y con densidad la ignoraba. Para volúmenes se usa la
+        # densidad de la sustancia y, si no la hay, 0.8 como aproximación.
         if unit.measurement_unit_base.description == "Litros":
-            result = result * 0.8 if density else result * density
+            result = result * density if density else result * 0.8
         elif unit.measurement_unit.description == "Libra":
-            result = result * 0.4536 if density else result * density
+            # Libra -> kilogramo es una masa: la densidad no interviene.
+            result = result * 0.4536
     return result
 
 

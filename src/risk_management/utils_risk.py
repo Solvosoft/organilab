@@ -18,6 +18,28 @@ from sga.models import DangerSubstance, DangerSubstanceCategory, DangerIndicatio
 from django.utils.translation import gettext as _
 
 
+# Columnas del inventario que consumen el reporte de regencia y la bitácora del
+# establecimiento. Un inventario vacío debe traerlas igual: `drop_duplicates` y
+# `clasificar_establecimiento` las piden por nombre.
+COLUMNAS_INVENTARIO = ("nombre", "cas", "condicion_proceso", "h_codes", "cantidad_t")
+
+
+def _cantidad_en_toneladas(limit, tons_unit, density):
+    """Cantidad de un `ObjectMaximumLimit` expresada en toneladas."""
+    quantity = limit.quantity or 0
+    if tons_unit is not None and limit.measurement_unit_id == tons_unit.pk:
+        return quantity
+    try:
+        return (
+            get_conversion_units_to_kilograms(
+                limit.measurement_unit, quantity, density
+            )
+            / 1000
+        )
+    except ZeroDivisionError:
+        return 0
+
+
 def get_inventory(filters=None):
     if filters is None:
         filters = {}
@@ -31,48 +53,37 @@ def get_inventory(filters=None):
         key="process_condition",
     )
 
-    tons_unit = Catalog.objects.get(description="Toneladas")
+    # La unidad la crea una migración de datos (laboratory 0177), así que puede
+    # faltar: una base vaciada (flush), una instalación cargada desde fixtures o
+    # un catálogo depurado a mano. Sin ella simplemente no hay registros en
+    # toneladas; no es motivo para tumbar el reporte.
+    tons_unit = Catalog.objects.filter(key="units", description="Toneladas").first()
 
     for obj in objs:
         data = {}
         total_shelfobjects = 0
         sga_char = obj.substancharacteristics_object.first()
         density = getattr(sga_char, "density", None) if sga_char else None
-        units = Catalog.objects.filter(
-            pk__in=objs_max.filter(object=obj).values_list(
-                "measurement_unit", flat=True
-            )
-        ).distinct()
         h_codes = [
             h_code
             for h_code in (sga_char.h_code.values_list("code", flat=True) if sga_char else [])
         ]
+        # Los límites del objeto se toman siempre de `objs_max`, es decir,
+        # respetando los filtros pedidos (laboratorios de la organización,
+        # periodo...). Partir de `ObjectMaximumLimit.objects` mezclaba registros
+        # de cualquier laboratorio de cualquier organización.
+        obj_limits = objs_max.filter(object=obj)
         # Extraer los objectos con procesos de condición
-        max_objs = ObjectMaximumLimit.objects.filter(
-            object=obj,
-            measurement_unit__in=units,
-            process_condition__in=process_conditions,
-        )
+        max_objs = obj_limits.filter(process_condition__in=process_conditions)
         # Se sacan el ultimo registro del objeto deacuerdo a su proceso de condición
         if max_objs.exists():
             for process in process_conditions.filter(
                 pk__in=max_objs.values_list("process_condition", flat=True)
             ):
                 max_obj = max_objs.filter(process_condition=process).last()
-                # Si es un ton, se suma la cantidad
-                if max_obj.measurement_unit == tons_unit:
-                    total_shelfobjects += objs_max.quantity
-                else:
-                    # Si no es un ton, se calcula la cantidad de sustancia en kilogramos
-                    try:
-                        total_shelfobjects += (
-                            get_conversion_units_to_kilograms(
-                                max_obj.measurement_unit, max_obj.quantity, density
-                            )
-                            / 1000
-                        )
-                    except ZeroDivisionError:
-                        total_shelfobjects += 0
+                total_shelfobjects += _cantidad_en_toneladas(
+                    max_obj, tons_unit, density
+                )
                 data = {
                     "nombre": obj.name,
                     "cas": obj.cas_code,
@@ -82,22 +93,14 @@ def get_inventory(filters=None):
                 }
         else:
             # Si no se encuentra ningun registro con proceso de condición, se saca el ultimo registro del objeto
-            max_obj = ObjectMaximumLimit.objects.filter(
-                object=obj, measurement_unit__in=units, process_condition__isnull=True
-            ).last()
-            if max_obj.measurement_unit == tons_unit:
-                total_shelfobjects += max_obj.quantity
-            else:
-                try:
-                    total_shelfobjects += round(
-                        get_conversion_units_to_kilograms(
-                            max_obj.measurement_unit, max_obj.quantity, density
-                        )
-                        / 1000,
-                        3,
-                    )
-                except ZeroDivisionError:
-                    total_shelfobjects += 0
+            max_obj = obj_limits.filter(process_condition__isnull=True).last()
+            if max_obj is None:
+                # Solo tiene registros con una condición fuera del catálogo
+                # `process_condition`: no hay cantidad que sumar.
+                continue
+            total_shelfobjects += round(
+                _cantidad_en_toneladas(max_obj, tons_unit, density), 3
+            )
 
             data = {
                 "nombre": obj.name,
@@ -108,7 +111,7 @@ def get_inventory(filters=None):
             }
         dict_objs.append(data)
 
-    dataframe = pd.DataFrame(dict_objs)
+    dataframe = pd.DataFrame(dict_objs, columns=list(COLUMNAS_INVENTARIO))
     if not dataframe.empty:
         dataframe = dataframe.groupby(
             ["nombre", "cas", "condicion_proceso", "h_codes"], as_index=False

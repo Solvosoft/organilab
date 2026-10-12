@@ -57,15 +57,18 @@ def report_regency_xlsx(report):
         builder.style_header()
         builder.autosize_columns()
 
+        # Las clasificaciones de «riesgo mayor» por Cuadro 3/4 no calculan
+        # sumatorias y devuelven el diccionario vacío: indexarlo tiraba KeyError
+        # y el `except` de abajo publicaba «riesgo menor», justo lo contrario.
         sumatoria = res["sumatorias_por_categoria"]
 
         builder.ws = builder.wb["Sumatoria_categoría"]
         builder.ws.append([_("Physical"), _("Health"), _("Environmental")])
         builder.ws.append(
             [
-                sumatoria["Físico"],
-                sumatoria["Salud"],
-                sumatoria["Ambiental"],
+                sumatoria.get("Físico", 0.0),
+                sumatoria.get("Salud", 0.0),
+                sumatoria.get("Ambiental", 0.0),
             ]
         )
         builder.style_header()
@@ -181,6 +184,9 @@ def report_regency_doc(report):
     mapH_tipo = cargar_sga_referencia()
     try:
         res = clasificar_establecimiento(inv, c3, c4, mapH_tipo)
+        # Las clasificaciones de «riesgo mayor» por Cuadro 3/4 no calculan
+        # sumatorias y devuelven el diccionario vacío: indexarlo tiraba KeyError
+        # y el `except` de abajo publicaba «riesgo menor», justo lo contrario.
         sumatoria = res["sumatorias_por_categoria"]
         content = [
             [_("Classification"), _("Criterion")],
@@ -189,9 +195,9 @@ def report_regency_doc(report):
             [_("Totals by category")],
             [_("Physical"), _("Health"), _("Environmental")],
             [
-                sumatoria["Físico"],
-                sumatoria["Salud"],
-                sumatoria["Ambiente"],
+                sumatoria.get("Físico", 0.0),
+                sumatoria.get("Salud", 0.0),
+                sumatoria.get("Ambiental", 0.0),
             ],
         ]
         content.append([])
