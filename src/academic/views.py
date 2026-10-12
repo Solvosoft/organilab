@@ -103,7 +103,9 @@ def get_my_procedures(request, org_pk, lab_pk):
 @login_required
 @permission_required("academic.add_myprocedure", raise_exception=True)
 def create_my_procedures(request, org_pk, lab_pk, content_type, model):
-    form = MyProcedureForm(request.POST)
+    # Solo un POST crea: todos los campos son opcionales, así que un formulario
+    # ligado al GET vacío validaba y creaba un procedimiento sin datos.
+    form = MyProcedureForm(request.POST if request.method == "POST" else None)
     laboratory = get_object_or_404(Laboratory, pk=lab_pk)
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -429,7 +431,8 @@ class ProcedureStepCreateView(FormView):
                     )
                     % {"name": custom_form.name},
                 )
-            except (json.JSONDecodeError, KeyError):
+            except (json.JSONDecodeError, KeyError, TypeError):
+                # TypeError: JSON válido que no es un objeto (lista, texto, número).
                 pass
 
         organilab_logentry(
@@ -518,7 +521,8 @@ class ProcedureStepUpdateView(DJUpdateView):
                         )
                         % {"name": custom_form.name},
                     )
-            except (json.JSONDecodeError, KeyError):
+            except (json.JSONDecodeError, KeyError, TypeError):
+                # TypeError: JSON válido que no es un objeto (lista, texto, número).
                 pass
 
         organilab_logentry(
