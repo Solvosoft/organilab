@@ -303,7 +303,9 @@ class DangerIndicationAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
                 status=status.HTTP_201_CREATED,
             )
 
-        return JsonResponse(status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse(
+            {"errors": form.errors}, status=status.HTTP_400_BAD_REQUEST
+        )
 
     def list(self, request, org_pk, *args, **kwargs):
         self._check_permission_on_organization(request, org_pk, "list")
@@ -465,7 +467,9 @@ class PrudenceAdviceAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
                 status=status.HTTP_201_CREATED,
             )
 
-        return JsonResponse(status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse(
+            {"errors": form.errors}, status=status.HTTP_400_BAD_REQUEST
+        )
 
     def list(self, request, org_pk, *args, **kwargs):
         self._check_permission_on_organization(request, org_pk, "list")

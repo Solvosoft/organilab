@@ -309,9 +309,8 @@ class DisplayLabelSerializer(serializers.ModelSerializer):
         return name or ""
 
     def get_actions(self, obj):
-        obj_kwargs = {"org_pk": obj.substance.organization.pk}
-        action = "actions"
-        return action
+        # DisplayLabel no tiene `substance` (cuelga de `label`): leerlo tumbaba el listado.
+        return "actions"
 
     class Meta:
         model = DisplayLabel

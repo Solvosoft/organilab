@@ -904,7 +904,7 @@ class ReviewSubstance(AbstractOrganizationRef):
         verbose_name_plural = _("Review Substance")
 
     def __str__(self):
-        return f"{self.substance.created_by}- ${self.note}"
+        return f"{self.substance.created_by} - {self.note}"
 
 
 class SubstanceObservation(models.Model):
@@ -999,7 +999,8 @@ class DangerSubstance(models.Model):
     )
 
     def __str__(self):
-        return self.name
+        # `name` admite nulos y __str__ no puede devolver None (rompía el admin).
+        return self.name or ""
 
 
 class DangerSubstanceCategory(models.Model):
@@ -1046,7 +1047,7 @@ class DangerSubstanceCategory(models.Model):
     )
 
     def __str__(self):
-        return self.note
+        return self.note or ""
 
 
 class SDSTraceability(models.Model):

@@ -1040,16 +1040,21 @@ def generate_label(request, org_pk, pk):
     return render_label(blueprint, formato, filename=f"etiqueta_{substance.pk}")
 
 
+@login_required
 def step_zero(request, org_pk, pk=None):
+    organization = get_object_or_404(
+        OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
+    )
+    user_is_allowed_on_organization(request.user, organization)
     context = {
         "form_zero": StepOneForm(),
         "step": 0,
         "org_pk": org_pk,
     }
     if request.method == "POST" and pk:
-        substance = get_object_or_404(Substance, pk=pk)
+        # Sin acotar a la organización cualquiera renombraba sustancias ajenas.
+        substance = get_object_or_404(Substance, pk=pk, organization=organization)
         substance.comercial_name = request.POST.get("name", "")
         substance.save()
-        print(454756)
         return redirect(reverse("sga:step_one", kwargs={"pk": pk, "org_pk": org_pk}))
     return render(request, "sga/substance/step_one.html", context)

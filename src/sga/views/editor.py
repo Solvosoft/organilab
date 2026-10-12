@@ -227,7 +227,8 @@ def edit_personal_template(request, org_pk, pk):
             and label_form.is_valid()
         ):
             instance = form.save(commit=False)
-            upload_id = form.cleaned_data["logo_upload_id"]
+            # PersonalSGAForm no declara logo_upload_id: con [] el POST daba 500.
+            upload_id = form.cleaned_data.get("logo_upload_id")
 
             if upload_id:
                 tmpupload = get_object_or_404(ChunkedUpload, upload_id=upload_id)
@@ -292,7 +293,8 @@ def delete_sgalabel(request, org_pk, pk):
     )
     user_is_allowed_on_organization(request.user, organization)
     template = get_object_or_404(DisplayLabel, pk=pk)
-    if template.user == request.user:
+    # DisplayLabel no tiene campo `user`: el autor es `created_by`.
+    if template.created_by == request.user:
         template.delete()
         messages.success(request, _("SGA label was deleted successfully"))
     else:
@@ -368,9 +370,7 @@ def create_recipient(request, org_pk):
         if form.is_valid():
             form.save()
             messages.success(request, _("The Recipient size saved successfully"))
-            return redirect("sga:add_recipient_size")
-        else:
-            return redirect("sga:add_recipient_size")
+        return redirect(reverse("sga:add_recipient_size", kwargs={"org_pk": org_pk}))
     return render(
         request, "add_recipient_size.html", context={"form": form, "org_pk": org_pk}
     )
@@ -388,7 +388,8 @@ def create_sgalabel(request, org_pk):
 
         if form.is_valid():
             instance = form.save(commit=False)
-            instance.user = request.user
+            instance.created_by = request.user
+            instance.organization = organization
             instance.json_representation = form.cleaned_data[
                 "template"
             ].json_representation
@@ -403,6 +404,7 @@ def create_sgalabel(request, org_pk):
             )
         else:
             messages.error(request, _("Form is invalid"))
+    return redirect(reverse("sga:add_personal", kwargs={"org_pk": org_pk}))
 
 
 @login_required
@@ -511,7 +513,12 @@ def sgalabel_step_two(request, org_pk, pk):
     return render(request, "sgalabel/step_two.html", context=context)
 
 
+@login_required
 def get_sgacomplement_by_substance(request, org_pk, pk):
+    organization = get_object_or_404(
+        OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
+    )
+    user_is_allowed_on_organization(request.user, organization)
     substance = get_object_or_404(Substance, pk=pk)
     complement = SGAComplement.objects.filter(substance=substance)
     if complement.exists():
@@ -521,7 +528,12 @@ def get_sgacomplement_by_substance(request, org_pk, pk):
     return JsonResponse(data)
 
 
+@login_required
 def get_company(request, org_pk, pk):
+    organization = get_object_or_404(
+        OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
+    )
+    user_is_allowed_on_organization(request.user, organization)
     builder_info = get_object_or_404(BuilderInformation, pk=pk)
     data = BuilderInformationSerializer(builder_info).data
     return JsonResponse(data)

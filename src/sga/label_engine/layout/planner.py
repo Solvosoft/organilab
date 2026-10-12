@@ -53,8 +53,8 @@ def _combine_codes(text: str) -> str:
         inicio = num
         while j < len(codigos) and codigos[j][0] == tipo:
             m = re.match(r"[HP](\d+)", codigos[j])
-            if m and int(m.group(1)) == num + (j - i):
-                num = int(m.group(1))
+            # Consecutivo respecto del inicio del rango (no del último visto).
+            if m and int(m.group(1)) == inicio + (j - i):
                 j += 1
             else:
                 break
