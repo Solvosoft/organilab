@@ -465,7 +465,7 @@ class EquipmentViewTest(BaseLaboratorySetUpTest):
     def test_create_equipment_with_different_org_user_with_perms(self):
         # User 1 with perms - Check response status code equal to 400. --> Invalid data
         data = self.create_data.copy()
-        data["organization"] = 2
+        data["organization"] = 3
         response = self.client.post(
             self.url_equipment_list, data=data, content_type="application/json"
         )
@@ -510,7 +510,7 @@ class EquipmentViewTest(BaseLaboratorySetUpTest):
     def test_update_equipment_with_different_org_user_with_perms(self):
         # User 1 with perms - Check response status code equal to 400. --> Invalid data
         data = self.update_data1.copy()
-        data["organization"] = 2
+        data["organization"] = 3
         response = self.client.put(
             self.url_equipment_update, data=data, content_type="application/json"
         )

@@ -2493,5 +2493,17 @@
       ],
       "object_id": 2
     }
+  },
+    {
+    "model": "laboratory.organizationstructurerelations",
+    "pk": 3,
+    "fields": {
+      "organization": 3,
+      "content_type": [
+        "laboratory",
+        "organizationstructure"
+      ],
+      "object_id": 1
+    }
   }
 ]
