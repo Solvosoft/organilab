@@ -99,6 +99,8 @@ def create_reserved_product(requested_product, amount_required, new_shelf_object
         user=requested_product.user,
         shelf_object=new_shelf_object,
         reservation=requested_product.reservation,
+        organization=requested_product.organization,
+        laboratory=requested_product.laboratory,
         is_returnable=requested_product.is_returnable,
         amount_required=amount_required,
         initial_date=requested_product.initial_date,
@@ -237,7 +239,7 @@ def verify_available_shelf_objects_stock(
 
             if remaining_available_product_quantity > 0:
 
-                available_product_quantity_to_take = abs(product_missing_amount)
+                available_product_quantity_to_take = abs(missing_amount)
                 missing_amount += available_product_quantity_to_take
                 new_product_to_reserve = create_reserved_product(
                     requested_product,
@@ -559,7 +561,7 @@ def _increase_box_stock(user, product, organization, boxes_to_return):
                     "units": units,
                     "quantity": shelf_object.quantity * units,
                 }
-                for code, units, quantity in quantity_units
+                for code, units in quantity_units.items()
             ]
         shelf_object.save(update_fields=["quantity_units"])
 
