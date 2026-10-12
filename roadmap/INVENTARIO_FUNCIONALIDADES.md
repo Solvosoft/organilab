@@ -16,7 +16,7 @@ con ese rol.
 | Métrica | Valor |
 |---|---:|
 | Funcionalidades catalogadas | 56 |
-| Sin ninguna prueba | 12 |
+| Sin ninguna prueba | 8 |
 | Rutas navegables huérfanas | 0 |
 | Apps pendientes de catalogar | 2 |
 | Roles canónicos | 21 |
@@ -198,7 +198,7 @@ Hallazgos:
 
 ### `ORG-03` — Entrar con firma digital o segundo factor
 
-*auth_and_perms · ui · prioridad P3 · cobertura por ruta: **sin prueba** · Selenium: —*
+*auth_and_perms · ui · prioridad P3 · cobertura por ruta: completa · Selenium: —*
 
 El acceso por firma digital del BCCR —el usuario se crea si no existe— y el código QR del segundo factor TOTP.
 
@@ -213,7 +213,7 @@ Hallazgos:
 
 ### `ORG-04` — Suplantar a otro usuario para dar soporte
 
-*auth_and_perms · ui · prioridad P1 · cobertura por ruta: **sin prueba** · Selenium: —*
+*auth_and_perms · ui · prioridad P1 · cobertura por ruta: completa · Selenium: —*
 
 Quien tiene el permiso entra en la sesión de otro usuario de su misma organización para reproducir lo que ese usuario ve, y luego sale. Queda registrado en `ImpostorLog` con IP y token.
 
@@ -263,7 +263,7 @@ Hallazgos:
 
 ### `INV-03` — Cargar inventario en masa desde un fichero
 
-*laboratory · ui · prioridad P2 · cobertura por ruta: **sin prueba** · Selenium: —*
+*laboratory · ui · prioridad P2 · cobertura por ruta: completa · Selenium: —*
 
 La alternativa a dar de alta reactivo por reactivo: se sube un fichero, se revisa lo que se va a crear y se confirma. Es la vía de entrada de un laboratorio que empieza.
 
@@ -274,7 +274,7 @@ La alternativa a dar de alta reactivo por reactivo: se sube un fichero, se revis
 
 ### `INV-04` — Vigilar existencias, vencimientos y límites
 
-*laboratory · ui · prioridad P2 · cobertura por ruta: **sin prueba** · Selenium: sí*
+*laboratory · ui · prioridad P2 · cobertura por ruta: parcial · Selenium: sí*
 
 El panel de existencias de reactivos, los avisos cuando algo baja del límite o está por vencer, y la posibilidad de silenciarlos. Buena parte del trabajo lo hace el planificador, no una persona.
 
@@ -346,7 +346,7 @@ Los protocolos que el laboratorio documenta y adjunta. Usan borrado lógico: al 
 
 ### `LAB-01` — Crear y administrar una organización
 
-*laboratory · ui · prioridad P1 · cobertura por ruta: parcial · Selenium: —*
+*laboratory · ui · prioridad P1 · cobertura por ruta: completa · Selenium: —*
 
 El inquilino: se crea la organización, se edita, se le asocian acciones y eventualmente se borra. Todo lo demás cuelga de aquí, y el `org_pk` de cada URL del sistema es esta fila.
 
@@ -617,7 +617,7 @@ El informe propio del Regente Químico, con formulario y plantilla distintos del
 
 ### `REP-04` — Ver el mapa de peligros sobre el plano
 
-*report · ui · prioridad P2 · cobertura por ruta: **sin prueba** · Selenium: —*
+*report · ui · prioridad P2 · cobertura por ruta: completa · Selenium: —*
 
 La representación visual del riesgo por zona: un plano con la capa de peligros encima. Es estado en el cliente, y lo único del módulo que se consulta con `view_report` en vez de `do_report`.
 
@@ -627,7 +627,7 @@ La representación visual del riesgo por zona: un plano con la capa de peligros 
 
 ### `RES-01` — Reservar material y llevar la reserva hasta su devolución
 
-*reservations_management · ui · prioridad P1 · cobertura por ruta: parcial · Selenium: sí*
+*reservations_management · ui · prioridad P1 · cobertura por ruta: completa · Selenium: sí*
 
 Un usuario del laboratorio pide una cantidad de un `ShelfObject` para un rango de fechas. Un gestor acepta o rechaza la reserva completa, o producto por producto. Al aceptar se descuenta el stock. Al terminar, alguien registra la devolución y el stock vuelve. La reserva se cierra cuando ya no queda nada vivo en ella.
 
@@ -805,7 +805,7 @@ Hallazgos:
 
 ### `SGA-02` — Obtener la etiqueta GHS y la ficha de seguridad de una sustancia
 
-*sga · ui · prioridad P1 · cobertura por ruta: **sin prueba** · Selenium: sí*
+*sga · ui · prioridad P1 · cobertura por ruta: parcial · Selenium: sí*
 
 Desde el detalle de la sustancia se genera la etiqueta con sus pictogramas y frases H/P, y se descarga la hoja de seguridad en PDF. Es el producto final del módulo: lo que acaba pegado en el envase.
 

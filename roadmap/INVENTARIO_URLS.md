@@ -12,20 +12,20 @@ el resto se cubre con pruebas de cliente o unitarias.
 |---|---:|
 | `pagina` | 192 |
 | `parcial` | 4 |
-| `api` | 796 |
+| `api` | 795 |
 | `autocomplete` | 6 |
 | `ajax` | 10 |
 | `json` | 45 |
 | `descarga` | 18 |
 | `accion` | 29 |
 | `infra` | 701 |
-| **total** | **1801** |
+| **total** | **1800** |
 
-Páginas: 192, de las cuales **61 sin ninguna prueba**.
+Páginas: 192, de las cuales **53 sin ninguna prueba**.
 
 ## Rutas por app
 
-Se omiten las categorías `api` e `infra` (1497 rutas de routers DRF y de
+Se omiten las categorías `api` e `infra` (1496 rutas de routers DRF y de
 la administración de Django): están en `inventario_urls.csv`.
 
 ### academic — 9 páginas, 0 sin prueba
@@ -71,19 +71,19 @@ la administración de Django): están en `inventario_urls.csv`.
 | Nombre | Patrón | Categoría | Vista | Plantilla | kwargs | Selenium | Pruebas |
 |---|---|---|---|---|---|:-:|:-:|
 | `add_contenttype_to_org` | `/perms/organization/manage/relorgcont/add/` | accion | `auth_and_perms.views.organizationstructure.add_contenttype_to_org` | — | — | — | sí |
-| `change_to_impostor` | `/perms/switch_user/<int:org_pk>/<int:pk>` | accion | `auth_and_perms.views.impostor.add_user_impostor` | — | org_pk, pk | — | — |
+| `change_to_impostor` | `/perms/switch_user/<int:org_pk>/<int:pk>` | accion | `auth_and_perms.views.impostor.add_user_impostor` | — | org_pk, pk | — | sí |
 | `copy_rols` | `/perms/organization/manage/rols/copy/<int:pk>/` | accion | `auth_and_perms.views.organizationstructure.copy_rols` | — | pk | — | sí |
-| `enable_child_organizations` | `/perms/enable_child_organizations/` | accion | `auth_and_perms.views.organizationstructure.enable_child_organizations` | — | — | — | — |
-| `remove_impostor` | `/perms/end_switch_user` | accion | `auth_and_perms.views.impostor.remove_impostor` | — | — | — | — |
-| `update_rol` | `/perms/update_rol/<int:org_pk>/<int:pk>/` | accion | `auth_and_perms.views.organizationstructure.update_rol` | — | org_pk, pk | — | — |
-| `add_rol_by_laboratory` | `/perms/organization/manage/rols/add/` | descarga | `auth_and_perms.views.organizationstructure.add_rol_by_laboratory` | — | — | — | — |
+| `enable_child_organizations` | `/perms/enable_child_organizations/` | accion | `auth_and_perms.views.organizationstructure.enable_child_organizations` | — | — | — | sí |
+| `remove_impostor` | `/perms/end_switch_user` | accion | `auth_and_perms.views.impostor.remove_impostor` | — | — | — | sí |
+| `update_rol` | `/perms/update_rol/<int:org_pk>/<int:pk>/` | accion | `auth_and_perms.views.organizationstructure.update_rol` | — | org_pk, pk | — | sí |
+| `add_rol_by_laboratory` | `/perms/organization/manage/rols/add/` | descarga | `auth_and_perms.views.organizationstructure.add_rol_by_laboratory` | — | — | — | sí |
 | `addusersorganization` | `/perms/organization/manage/addusersorganization/<int:pk>/` | descarga | `auth_and_perms.views.organizationstructure.add_users_organization` | — | pk | — | sí |
-| `get_org_administrators` | `/perms/get_org_administrators/<int:pk>/` | descarga | `auth_and_perms.views.organizationstructure.get_org_administrators` | — | pk | — | — |
-| `show_qr_img` | `/perms/totp/img/<int:pk>/` | descarga | `auth_and_perms.views.user_org_creation.show_QR_img` | — | pk | — | — |
-| `check_signature_window_status_register` | `/perms/registration/digitalsignature/checkstatus` | json | `auth_and_perms.views.fva_rest_authentication.check_signature_window_status_register` | — | — | — | — |
-| `get_rol` | `/perms/get_rol/<int:pk>/` | json | `auth_and_perms.views.organizationstructure.get_rol` | — | pk | — | — |
+| `get_org_administrators` | `/perms/get_org_administrators/<int:pk>/` | descarga | `auth_and_perms.views.organizationstructure.get_org_administrators` | — | pk | — | sí |
+| `show_qr_img` | `/perms/totp/img/<int:pk>/` | descarga | `auth_and_perms.views.user_org_creation.show_QR_img` | — | pk | — | sí |
+| `check_signature_window_status_register` | `/perms/registration/digitalsignature/checkstatus` | json | `auth_and_perms.views.fva_rest_authentication.check_signature_window_status_register` | — | — | — | sí |
+| `get_rol` | `/perms/get_rol/<int:pk>/` | json | `auth_and_perms.views.organizationstructure.get_rol` | — | pk | — | sí |
 | `get_roles_by_organization` | `/perms/get_roles_by_organization/<int:pk>/` | json | `auth_and_perms.views.organizationstructure.get_roles_by_organization` | — | pk | — | — |
-| `login_with_bccr` | `/perms/login_bccr` | json | `auth_and_perms.views.fva_rest_authentication.login_with_bccr` | — | — | — | — |
+| `login_with_bccr` | `/perms/login_bccr` | json | `auth_and_perms.views.fva_rest_authentication.login_with_bccr` | — | — | — | sí |
 | `add_user` | `/perms/organization/manage/users/add/<int:pk>/` | pagina | `auth_and_perms.views.organizationstructure.AddUser` | `auth/user_form.html` | pk | — | sí |
 | `del_rol_by_org` | `/perms/organization/manage/rols/del/<int:org_pk>/<int:pk>` | pagina | `auth_and_perms.views.organizationstructure.DeleteRolByOrganization` | `auth_and_perms/rol_confirm_delete.html` | org_pk, pk | — | sí |
 | `get_users` | `/perms/get_users/` | pagina | `auth_and_perms.views.user_org_creation.get_users` | `auth_and_perms/user_list.html` | — | — | — |
@@ -127,11 +127,11 @@ la administración de Django): están en `inventario_urls.csv`.
 | `api-notificationtable-list` | `/tableapi/^notificationtableview/$` | autocomplete | `djgentelella.notification.base.NotificationViewSet` | — | — | — | — |
 | `api-notificationtable-list` | `/tableapi/^notificationtableview\.(?P<format>[a-z0-9]+)/?$` | autocomplete | `djgentelella.notification.base.NotificationViewSet` | — | format | — | — |
 
-### laboratory — 66 páginas, 18 sin prueba
+### laboratory — 66 páginas, 13 sin prueba
 
 | Nombre | Patrón | Categoría | Vista | Plantilla | kwargs | Selenium | Pruebas |
 |---|---|---|---|---|---|:-:|:-:|
-| `rebuild_laboratory_qr` | `/lab/<int:org_pk>/<int:lab_pk>/rooms/rebuild_laboratory_qr` | accion | `laboratory.views.labroom.rebuild_laboratory_qr` | — | org_pk, lab_pk | — | — |
+| `rebuild_laboratory_qr` | `/lab/<int:org_pk>/<int:lab_pk>/rooms/rebuild_laboratory_qr` | accion | `laboratory.views.labroom.rebuild_laboratory_qr` | — | org_pk, lab_pk | — | sí |
 | `redirect_user_to_labindex` | `/register_user_qr/<int:org_pk>/<int:lab_pk>/redirect_user_to_labindex/<int:pk>/` | accion | `laboratory.views.laboratory.redirect_user_to_labindex` | — | org_pk, lab_pk, pk | — | — |
 | `remove_inform` | `/lab/<int:org_pk>/<int:lab_pk>/informs/remove_inform/<int:pk>/` | accion | `laboratory.views.informs.remove_inform` | — | org_pk, lab_pk, pk | — | sí |
 | `furniture_list` | `/lab/<int:org_pk>/<int:lab_pk>/furniture/` | ajax | `laboratory.views.furniture.list_furniture` | — | org_pk, lab_pk | sí | sí |
@@ -147,14 +147,14 @@ la administración de Django): están en `inventario_urls.csv`.
 | `download_h_code_reports` | `/<int:org_pk>/reports/download/hcode` | descarga | `laboratory.views.reports.report_h_code` | `pdf/hcode_pdf.html` | org_pk | — | sí |
 | `download_register_user_qr` | `/register_user_qr/<int:org_pk>/<int:lab_pk>/download/<int:pk>/` | descarga | `laboratory.views.laboratory.get_pdf_register_user_qr` | `pdf/qr_pdf.html` | org_pk, lab_pk, pk | — | — |
 | `download_shelfobject_qr` | `/lab/<int:org_pk>/<int:lab_pk>/shelfobject/download_shelfobject_qr/<int:pk>/` | descarga | `laboratory.views.shelfobject.download_shelfobject_qr` | — | org_pk, lab_pk, pk | — | — |
-| `generate_shelfobject_label` | `/<int:org_pk>/<int:lab_pk>/<int:pk>/generate_shelfobject_label/<int:recipient>/` | descarga | `laboratory.views.shelfobject.generate_shelfobject_label` | — | org_pk, lab_pk, pk, recipient | — | — |
-| `organization_actions` | `/organization/manage/actions` | descarga | `laboratory.views.organizations.OrganizationActionsFormview` | — | — | — | — |
-| `reports_shelf_objects` | `/lab/<int:org_pk>/<int:lab_pk>/reports/shelf_objects/<int:pk>` | descarga | `laboratory.views.reports.report_shelf_objects` | `pdf/shelf_object_pdf.html` | org_pk, lab_pk, pk | — | — |
-| `sds_coverage_svg` | `/<int:org_pk>/reports/sds-coverage.svg` | descarga | `laboratory.views.reports.sds_coverage_svg` | — | org_pk | — | — |
+| `generate_shelfobject_label` | `/<int:org_pk>/<int:lab_pk>/<int:pk>/generate_shelfobject_label/<int:recipient>/` | descarga | `laboratory.views.shelfobject.generate_shelfobject_label` | — | org_pk, lab_pk, pk, recipient | — | sí |
+| `organization_actions` | `/organization/manage/actions` | descarga | `laboratory.views.organizations.OrganizationActionsFormview` | — | — | — | sí |
+| `reports_shelf_objects` | `/lab/<int:org_pk>/<int:lab_pk>/reports/shelf_objects/<int:pk>` | descarga | `laboratory.views.reports.report_shelf_objects` | `pdf/shelf_object_pdf.html` | org_pk, lab_pk, pk | — | sí |
+| `sds_coverage_svg` | `/<int:org_pk>/reports/sds-coverage.svg` | descarga | `laboratory.views.reports.sds_coverage_svg` | — | org_pk | — | sí |
 | `shelfobject_label` | `/lab/<int:org_pk>/<int:lab_pk>/shelfobject/label/<int:pk>/` | descarga | `laboratory.views.shelfobject.generate_shelfobject_label` | — | org_pk, lab_pk, pk | — | — |
 | `add_furniture_type_catalog` | `/catalogs/furniture/furniture_type` | json | `laboratory.views.furniture.add_catalog` | — | — | — | sí |
 | `add_shelf_type_catalog` | `/catalogs/shelf/container_type` | json | `laboratory.views.furniture.add_catalog` | — | — | — | sí |
-| `add_shelfobject_status` | `/catalogs/shelf/shelfobject_status` | json | `laboratory.views.furniture.add_catalog` | — | — | — | — |
+| `add_shelfobject_status` | `/catalogs/shelf/shelfobject_status` | json | `laboratory.views.furniture.add_catalog` | — | — | — | sí |
 | `add_structure_type_catalog` | `/catalogs/add/structure/type/` | json | `laboratory.views.furniture.add_catalog` | — | — | — | — |
 | `add_workplace_type_catalog` | `/catalogs/workplace/type/<str:key>` | json | `laboratory.views.furniture.add_catalog` | — | key | — | — |
 | `get_lab_id` | `/returnLabId` | json | `laboratory.functions.return_laboratory_of_shelf_id` | — | — | — | — |
@@ -191,15 +191,15 @@ la administración de Django): están en `inventario_urls.csv`.
 | `laboratory_update` | `/<int:org_pk>/laboratory/<int:pk>/edit/` | pagina | `laboratory.views.laboratory.LaboratoryEdit` | `laboratory/edit.html` | org_pk, pk | — | sí |
 | `labview` | `/lab/<int:org_pk>/<int:lab_pk>/rooms/labview/` | pagina | `laboratory.views.labview.LabView` | `laboratory/labview/labview.html` | org_pk, lab_pk | sí | sí |
 | `list_register_user_qr` | `/register_user_qr/<int:org_pk>/<int:lab_pk>/list/` | pagina | `laboratory.views.laboratory.RegisterUserQRList` | `laboratory/register_user_qr/register_user_qr_list.html` | org_pk, lab_pk | sí | sí |
-| `load_archive` | `/<int:org_pk>/<int:lab_pk>/load_archive/` | pagina | `laboratory.views.loadArchive.load_archive` | `laboratory/load_archive/load_archive.html` | org_pk, lab_pk | — | — |
-| `load_archive_create_shelfobjects` | `/<int:org_pk>/<int:lab_pk>/load_archive/create_shelfobjects/<uuid:key>/` | pagina | `laboratory.views.loadArchive.upload_reactives` | `laboratory/load_archive/create_shelfobjects.html` | org_pk, lab_pk, key | — | — |
+| `load_archive` | `/<int:org_pk>/<int:lab_pk>/load_archive/` | pagina | `laboratory.views.loadArchive.load_archive` | `laboratory/load_archive/load_archive.html` | org_pk, lab_pk | — | sí |
+| `load_archive_create_shelfobjects` | `/<int:org_pk>/<int:lab_pk>/load_archive/create_shelfobjects/<uuid:key>/` | pagina | `laboratory.views.loadArchive.upload_reactives` | `laboratory/load_archive/create_shelfobjects.html` | org_pk, lab_pk, key | — | sí |
 | `logentry_list` | `/logentry/<int:org_pk>` | pagina | `laboratory.views.logentry.get_logentry_from_organization` | `laboratory/logentry_list.html` | org_pk | — | sí |
 | `logentry_register_user_qr` | `/register_user_qr/<int:org_pk>/<int:lab_pk>/logentry/<int:pk>/` | pagina | `laboratory.views.laboratory.get_logentry_from_registeruserqr` | `laboratory/register_user_qr/logentry_list.html` | org_pk, lab_pk, pk | — | — |
 | `login_register_user_qr` | `/register_user_qr/<int:org_pk>/<int:lab_pk>/login/<int:pk>/` | pagina | `laboratory.views.laboratory.login_register_user_qr` | `laboratory/register_user_qr/login_register_user.html` | org_pk, lab_pk, pk | — | — |
-| `manage_register_user_qr` | `/register_user_qr/<int:org_pk>/<int:lab_pk>/manage/<int:pk>/` | pagina | `laboratory.views.laboratory.manage_register_qr` | `laboratory/register_user_qr/manage_register_qr.html` | org_pk, lab_pk, pk | sí | — |
+| `manage_register_user_qr` | `/register_user_qr/<int:org_pk>/<int:lab_pk>/manage/<int:pk>/` | pagina | `laboratory.views.laboratory.manage_register_qr` | `laboratory/register_user_qr/manage_register_qr.html` | org_pk, lab_pk, pk | sí | sí |
 | `my_reservations` | `/<int:org_pk>/my_reservations/<int:lab_pk>` | pagina | `laboratory.views.my_reservations.MyReservationView` | `laboratory/my_reservations_list.html` | org_pk, lab_pk | sí | sí |
 | `mylabs` | `/<int:org_pk>/my_labs/` | pagina | `laboratory.views.laboratory.LaboratoryListView` | `laboratory/laboratory_list.html` | org_pk | sí | sí |
-| `object_reservation` | `/reserve_object/<int:modelpk>` | pagina | `laboratory.reservation.ShelfObjectReservation` | `djreservation/product_form.html` | modelpk | — | — |
+| `object_reservation` | `/reserve_object/<int:modelpk>` | pagina | `laboratory.reservation.ShelfObjectReservation` | `djreservation/product_form.html` | modelpk | — | sí |
 | `object_view` | `/lab/<int:org_pk>/<int:lab_pk>/object/list/` | pagina | `laboratory.views.objects.object_view` | `laboratory/object_list.html` | org_pk, lab_pk | sí | sí |
 | `objectfeatures_view` | `/lab/<int:org_pk>/<int:lab_pk>/features/list/` | pagina | `laboratory.views.objectfeature.objectfeatures_view` | `laboratory/objectfeatures_list.html` | org_pk, lab_pk | sí | — |
 | `objectview_create` | `/lab/<int:org_pk>/<int:lab_pk>/objects/create` | pagina | `laboratory.views.objects.ObjectView.__init__.<locals>.ObjectCreateView` | `laboratory/objectview_form.html` | org_pk, lab_pk | — | sí |
@@ -213,7 +213,7 @@ la administración de Django): están en `inventario_urls.csv`.
 | `protocol_list` | `/lab/<int:org_pk>/<int:lab_pk>/protocols/list` | pagina | `laboratory.protocol.views.protocol_list` | `laboratory/protocol/protocol_list.html` | org_pk, lab_pk | sí | sí |
 | `protocol_update` | `/lab/<int:org_pk>/<int:lab_pk>/protocols/update/<int:pk>/` | pagina | `laboratory.protocol.views.ProtocolUpdateView` | `laboratory/protocol/update.html` | org_pk, lab_pk, pk | — | sí |
 | `provider_view` | `/lab/<int:org_pk>/<int:lab_pk>/provider/list/` | pagina | `laboratory.views.provider.provider_view` | `laboratory/provider_list.html` | org_pk, lab_pk | sí | sí |
-| `reactive_stock_list` | `/lab/<int:org_pk>/<int:lab_pk>/sustance/reactive_stock/` | pagina | `laboratory.views.objectlimits.ReactiveStockDashboard` | `laboratory/objectlimit/dashboard.html` | org_pk, lab_pk | — | — |
+| `reactive_stock_list` | `/lab/<int:org_pk>/<int:lab_pk>/sustance/reactive_stock/` | pagina | `laboratory.views.objectlimits.ReactiveStockDashboard` | `laboratory/objectlimit/dashboard.html` | org_pk, lab_pk | — | sí |
 | `reports` | `/reports/<int:org_pk>/` | pagina | `laboratory.views.reports.report_index` | `laboratory/reports/report_index.html` | org_pk | sí | sí |
 | `reports_laboratory` | `/lab/<int:org_pk>/<int:lab_pk>/reports/list/laboratory/` | pagina | `laboratory.views.labroom.LaboratoryRoomReportView` | `report/base_report_form_view.html` | org_pk, lab_pk | — | sí |
 | `rooms_create` | `/lab/<int:org_pk>/<int:lab_pk>/rooms/create` | pagina | `laboratory.views.labroom.LabroomCreate` | `laboratory/laboratoryroom_form.html` | org_pk, lab_pk | sí | sí |
@@ -221,7 +221,7 @@ la administración de Django): están en `inventario_urls.csv`.
 | `rooms_list` | `/lab/<int:org_pk>/<int:lab_pk>/rooms/` | pagina | `laboratory.views.labroom.LaboratoryRoomsList` | `laboratory/laboratoryroom_list.html` | org_pk, lab_pk | sí | sí |
 | `rooms_update` | `/lab/<int:org_pk>/<int:lab_pk>/rooms/<int:pk>/edit` | pagina | `laboratory.views.labroom.LabroomUpdate` | `laboratory/laboratoryroom_form.html` | org_pk, lab_pk, pk | — | sí |
 | `shel_objects_reactives` | `/lab/<int:org_pk>/<int:lab_pk>/reports/reactives/` | pagina | `laboratory.views.shelfobject.shelf_object_reagents` | `laboratory/shelfobject/reactive.html` | org_pk, lab_pk | sí | — |
-| `shelf_containers` | `/lab/<int:org_pk>/<int:lab_pk>/shelf/containers/` | pagina | `laboratory.shelfobject_container.views.show_shelf_container` | `laboratory/containers/container_list.html` | org_pk, lab_pk | — | — |
+| `shelf_containers` | `/lab/<int:org_pk>/<int:lab_pk>/shelf/containers/` | pagina | `laboratory.shelfobject_container.views.show_shelf_container` | `laboratory/containers/container_list.html` | org_pk, lab_pk | — | sí |
 | `shelf_object_hcode` | `/<int:org_pk>/<int:lab_pk>/shelfobject/hcode/list/` | pagina | `laboratory.views.shelfobject.shelf_object_hcode` | `laboratory/shelfobject/shelfobject_code.html` | org_pk, lab_pk | sí | — |
 | `sustance_list` | `/lab/<int:org_pk>/<int:lab_pk>/sustance/` | pagina | `laboratory.views.objects.view_reactive_list` | `laboratory/sustance/list.html` | org_pk, lab_pk | sí | sí |
 | `trash_list` | `/trash/<int:org_pk>` | pagina | `laboratory.views.trash.get_trash_from_organization` | `laboratory/trash_list.html` | org_pk | — | — |
@@ -233,7 +233,7 @@ la administración de Django): están en `inventario_urls.csv`.
 | Nombre | Patrón | Categoría | Vista | Plantilla | kwargs | Selenium | Pruebas |
 |---|---|---|---|---|---|:-:|:-:|
 | `sds_create` | `/msds/<int:org_pk>/sds/create/` | accion | `msds.views.sds_create` | — | org_pk | — | sí |
-| `download_all_regulations` | `/regulations/download/all` | descarga | `msds.views.download_all_regulations` | — | — | — | — |
+| `download_all_regulations` | `/regulations/download/all` | descarga | `msds.views.download_all_regulations` | — | — | — | sí |
 | `list_msds` | `/msds/<int:org_pk>/list/` | json | `msds.views.get_list_msds` | — | org_pk | — | sí |
 | `index_msds` | `/msds/<int:org_pk>/index_msds/` | pagina | `msds.views.index_msds` | `index_msds.html` | org_pk | sí | sí |
 | `regulation_docs` | `/regulations/` | pagina | `msds.views.regulation_view` | `regulation/regulations_document.html` | — | sí | sí |
@@ -259,27 +259,27 @@ la administración de Django): están en `inventario_urls.csv`.
 |---|---|---|---|---|---|:-:|:-:|
 | `tutorial_progress_api` | `/index/tutorial/api/progress/` | json | `presentation.views.tutorial_progress_api` | — | — | — | — |
 | `tutorial_reactivate_api` | `/index/tutorial/api/reactivate/` | json | `presentation.views.tutorial_reactivate_api` | — | — | — | — |
-| `tutorial_toggle_api` | `/index/tutorial/api/toggle/` | json | `presentation.views.tutorial_toggle_api` | — | — | — | — |
-| `error_view` | `/index/error` | pagina | `presentation.views.error_view` | `error_view.html` | — | sí | — |
+| `tutorial_toggle_api` | `/index/tutorial/api/toggle/` | json | `presentation.views.tutorial_toggle_api` | — | — | — | sí |
+| `error_view` | `/index/error` | pagina | `presentation.views.error_view` | `error_view.html` | — | sí | sí |
 | `feedback` | `/index/feedback` | pagina | `presentation.views.FeedbackView` | `feedback/feedbackentry_form.html` | — | — | sí |
 | `general_info` | `/general_info` | pagina | `presentation.views.general_information` | `general_information.html` | — | sí | — |
 | `index` | `/index/` | pagina | `presentation.views.index_organilab` | `index.html` | — | sí | sí |
-| `tutorials` | `/index/tutorial/<int:org_pk>` | pagina | `presentation.views.index_tutorial` | `tutorial.html` | org_pk | sí | — |
+| `tutorials` | `/index/tutorial/<int:org_pk>` | pagina | `presentation.views.index_tutorial` | `tutorial.html` | org_pk | sí | sí |
 
-### report — 18 páginas, 15 sin prueba
+### report — 18 páginas, 12 sin prueba
 
 | Nombre | Patrón | Categoría | Vista | Plantilla | kwargs | Selenium | Pruebas |
 |---|---|---|---|---|---|:-:|:-:|
-| `create_organization_report_request` | `/report/<int:org_pk>/create/organization/` | json | `report.views.base.create_organization_request_by_report` | — | org_pk | — | — |
+| `create_organization_report_request` | `/report/<int:org_pk>/create/organization/` | json | `report.views.base.create_organization_request_by_report` | — | org_pk | — | sí |
 | `create_report_request` | `/report/<int:org_pk>/create/` | json | `report.views.base.create_request_by_report` | — | org_pk | — | sí |
-| `generate_organization_report` | `/report/<int:org_pk>/download/organization/` | json | `report.views.base.download__organization_report` | — | org_pk | — | — |
-| `generate_report` | `/report/<int:org_pk>/download/` | json | `report.views.base.download_report` | — | org_pk | — | — |
+| `generate_organization_report` | `/report/<int:org_pk>/download/organization/` | json | `report.views.base.download__organization_report` | — | org_pk | — | sí |
+| `generate_report` | `/report/<int:org_pk>/download/` | json | `report.views.base.download_report` | — | org_pk | — | sí |
 | `report_organization_status` | `/report/<int:org_pk>/status/` | json | `report.views.base.report_status` | — | org_pk | — | — |
-| `report_status` | `/report/<int:org_pk>/status/` | json | `report.views.base.report_status` | — | org_pk | — | — |
+| `report_status` | `/report/<int:org_pk>/status/` | json | `report.views.base.report_status` | — | org_pk | — | sí |
 | `compatibility_report` | `/report/reports/<int:org_pk>/compatibility/` | pagina | `report.views.reports_org.CompatibilityReport` | `report/base_report_form_view.html` | org_pk | — | — |
 | `donations_report` | `/report/reports/<int:org_pk>/donations-report/` | pagina | `report.views.reports_org.DonationReportView` | `report/base_report_form_view.html` | org_pk | — | — |
 | `hazard_map_report` | `/report/reports/<int:org_pk>/hazard_map/` | pagina | `report.views.reports_org.HazardMapReport` | `report/base_report_form_view.html` | org_pk | — | — |
-| `hazard_map_visual` | `/report/reports/<int:org_pk>/hazard_map/visual/` | pagina | `report.views.riskzones.hazard_map_visual_view` | `report/hazard_map_visual.html` | org_pk | — | — |
+| `hazard_map_visual` | `/report/reports/<int:org_pk>/hazard_map/visual/` | pagina | `report.views.riskzones.hazard_map_visual_view` | `report/hazard_map_visual.html` | org_pk | — | sí |
 | `object_change_logs` | `/report/reports/<int:org_pk>/objectchanges/` | pagina | `report.views.reports_org.LogObjectView` | `report/base_report_form_view.html` | org_pk | — | — |
 | `precursor_report` | `/report/reports/<int:org_pk>/precursors/` | pagina | `report.views.reports_org.PrecursorsView` | `report/precursor_report.html` | org_pk | sí | sí |
 | `precursor_report_values_view` | `/report/reports/<int:org_pk>/precursor-values-list/<int:precusor_pk>/` | pagina | `report.views.reports_org.PrecursorReportValuesView` | `report/precursor_report_values_view.html` | org_pk, precusor_pk | — | — |
@@ -287,8 +287,8 @@ la administración de Django): están en `inventario_urls.csv`.
 | `reactive_report` | `/report/reports/<int:org_pk>/list/reactive/report` | pagina | `report.views.reports_org.ReactiveReport` | `report/base_report_form_view.html` | org_pk | — | — |
 | `reactive_stock_report` | `/report/reports/<int:org_pk>/reactive/stock/` | pagina | `report.views.reports_org.ReactiveStockReport` | `report/base_report_form_view.html` | org_pk | — | — |
 | `regency_report` | `/report/reports/<int:org_pk>/regency/` | pagina | `report.views.base.regency_report` | `report/regency_report.html` | org_pk | — | — |
-| `report_organization_table` | `/report/<int:org_pk>/table/organization/<int:pk>/` | pagina | `report.views.base.report_organization_table` | `report/general_organization_report.html` | org_pk, pk | — | — |
-| `report_table` | `/report/<int:org_pk>/table/<int:pk>/` | pagina | `report.views.base.report_table` | `report/general_reports.html` | org_pk, pk | — | — |
+| `report_organization_table` | `/report/<int:org_pk>/table/organization/<int:pk>/` | pagina | `report.views.base.report_organization_table` | `report/general_organization_report.html` | org_pk, pk | — | sí |
+| `report_table` | `/report/<int:org_pk>/table/<int:pk>/` | pagina | `report.views.base.report_table` | `report/general_reports.html` | org_pk, pk | — | sí |
 | `reports_furniture_detail` | `/report/reports/<int:org_pk>/list/furniture/` | pagina | `report.views.reports_org.FurnitureReportView` | `report/base_report_form_view.html` | org_pk | — | sí |
 | `reports_limited_shelf_objects_list` | `/report/reports/<int:org_pk>/list/limited_shelf_objects/` | pagina | `report.views.reports_org.LimitedShelfObjectList` | `report/base_report_form_view.html` | org_pk | — | — |
 | `reports_objects_list` | `/report/reports/<int:org_pk>/list/objects/` | pagina | `report.views.reports_org.ObjectList` | `report/base_report_form_view.html` | org_pk | — | sí |
@@ -299,11 +299,11 @@ la administración de Django): están en `inventario_urls.csv`.
 
 | Nombre | Patrón | Categoría | Vista | Plantilla | kwargs | Selenium | Pruebas |
 |---|---|---|---|---|---|:-:|:-:|
-| `close_reservation` | `/reservations_management/<int:org_pk>/reservations/<int:pk>/close/` | accion | `reservations_management.views.CloseReservationView` | — | org_pk, pk | — | — |
-| `product_action` | `/reservations_management/<int:org_pk>/reservations/<int:pk>/product/<int:product_pk>/action/` | accion | `reservations_management.views.ProductActionView` | — | org_pk, pk, product_pk | — | — |
+| `close_reservation` | `/reservations_management/<int:org_pk>/reservations/<int:pk>/close/` | accion | `reservations_management.views.CloseReservationView` | — | org_pk, pk | — | sí |
+| `product_action` | `/reservations_management/<int:org_pk>/reservations/<int:pk>/product/<int:product_pk>/action/` | accion | `reservations_management.views.ProductActionView` | — | org_pk, pk, product_pk | — | sí |
 | `get_product_name_and_quantity` | `/reservations_management/<int:org_pk>/reservedproduct/get_product_name_and_quantity/` | json | `reservations_management.functions.get_product_name_and_quantity` | — | org_pk | — | sí |
 | `increase_stock` | `/reservations_management/<int:org_pk>/reservedproduct/increase_stock/` | json | `reservations_management.functions.increase_stock` | — | org_pk | — | sí |
-| `return_product` | `/reservations_management/<int:org_pk>/reservations/<int:pk>/product/<int:product_pk>/return/` | json | `reservations_management.views.ReturnProductView` | — | org_pk, pk, product_pk | — | — |
+| `return_product` | `/reservations_management/<int:org_pk>/reservations/<int:pk>/product/<int:product_pk>/return/` | json | `reservations_management.views.ReturnProductView` | — | org_pk, pk, product_pk | — | sí |
 | `validate_reservation` | `/reservations_management/<int:org_pk>/reservedproduct/validate_reservation/` | json | `reservations_management.functions.validate_reservation` | — | org_pk | — | sí |
 | `manage_reservation` | `/reservations_management/<int:org_pk>/reservations/<int:pk>/manage/` | pagina | `reservations_management.views.ManageReservationView` | `reservations_management/manage_reservation.html` | org_pk, pk | sí | sí |
 | `reservations_list` | `/reservations_management/<int:org_pk>/reservations/list/<int:status>/` | pagina | `reservations_management.views.ReservationsListView` | `reservations_management/reservations_list.html` | org_pk, status | sí | sí |
@@ -372,7 +372,7 @@ la administración de Django): están en `inventario_urls.csv`.
 | `barcode_from_number` | `/sga/<int:org_pk>/barcode/<str:code>/` | descarga | `sga.views.editor.get_barcode_from_number` | — | org_pk, code | — | — |
 | `engine_label_preview` | `/sga/<int:org_pk>/engine_label_preview/<int:pk>` | descarga | `sga.views.editor.engine_label_preview` | — | org_pk, pk | — | — |
 | `generate_label` | `/sga/<int:org_pk>/generate_label/<int:pk>/` | descarga | `sga.views.substance.views.generate_label` | — | org_pk, pk | sí | — |
-| `security_leaf_pdf` | `/sga/<int:org_pk>/substance/get_security_leaf/<int:substance>/` | descarga | `sga.views.substance.views.security_leaf_pdf` | — | org_pk, substance | — | — |
+| `security_leaf_pdf` | `/sga/<int:org_pk>/substance/get_security_leaf/<int:substance>/` | descarga | `sga.views.substance.views.security_leaf_pdf` | — | org_pk, substance | — | sí |
 | `add_sga_provider` | `/sga/<int:org_pk>/substance/provider/` | json | `sga.views.substance.views.add_sga_provider` | — | org_pk | — | sí |
 | `delete_observation` | `/sga/<int:org_pk>/substance/deleta_observation/` | json | `sga.views.substance.views.delete_observation` | — | org_pk | — | sí |
 | `get_company` | `/sga/<int:org_pk>/sgalabel/get_company/<int:pk>` | json | `sga.views.editor.get_company` | — | org_pk, pk | — | — |
