@@ -326,7 +326,7 @@ def get_pk_org_ancestors(org_pk, descendants=True):
         if descendants:
             pks = pks + list(organization.descendants().values_list("pk", flat=True))
         else:
-            pks = pks + list(organization.acestors().values_list("pk", flat=True))
+            pks = pks + list(organization.ancestors().values_list("pk", flat=True))
         pks = UserOrganization.objects.filter(
             organization__in=pks, user__isnull=False
         ).values_list("organization", flat=True)
