@@ -27,7 +27,8 @@ class SDSTraceabilitySerializer(serializers.ModelSerializer):
         }
 
     def get_sustance_characteristics_name(self, obj):
-        if obj.sga_substance_characteristics:
+        # `object_related` es SET_NULL: si se borró el objeto la sustancia queda huérfana.
+        if obj.sga_substance_characteristics.object_related:
             return obj.sga_substance_characteristics.object_related.name
         return ""
 
