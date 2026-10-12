@@ -79,6 +79,11 @@ SELENIUM_SCREENSHOTS_DIR = os.getenv(
 # real de cada petición: los 403 forman parte de la medición.
 MIDDLEWARE = MIDDLEWARE + ["presentation.probe.FeatureProbeMiddleware"]
 
+# Instrumentación de rendimiento, apagada salvo `ORGANILAB_PERF=1` (`make perf`).
+# Va PRIMERO (la capa más externa) para medir la petición entera, middlewares incluidos.
+MIDDLEWARE = ["presentation.perf.PerfMiddleware"] + MIDDLEWARE
+
 # Le pone nombre a cada petición: la prueba que la provocó. Sin la sonda encendida es
 # el runner de Django sin cambios.
-TEST_RUNNER = "presentation.probe.ProbeRunner"
+# `PerfRunner` hereda de `ProbeRunner` y, sin `ORGANILAB_PERF=1`, no añade nada.
+TEST_RUNNER = "presentation.perf.PerfRunner"

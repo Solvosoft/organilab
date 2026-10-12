@@ -1,4 +1,4 @@
-.PHONY: registry-login registry-push prod-build-push feature-coverage feature-coverage-fast feature-catalog feature-catalog-check feature-roles feature-gaps help clean clean-pyc clean-build list setup check-env venv-info url-inventory url-inventory-check test-urls test test-parallel test-selenium test-selenium-4 test-selenium-single test-selenium-xvfb test-selenium-bitacora docs docs-screenshots release sdist
+.PHONY: perf perf-unit perf-selenium perf-mem perf-profile perf-matrix perf-reports perf-report coverage-unit coverage-selenium coverage-combine coverage-all coverage-summary registry-login registry-push prod-build-push feature-coverage feature-coverage-fast feature-catalog feature-catalog-check feature-roles feature-gaps help clean clean-pyc clean-build list setup check-env venv-info url-inventory url-inventory-check test-urls test test-parallel test-selenium test-selenium-4 test-selenium-single test-selenium-xvfb test-selenium-bitacora docs docs-screenshots release sdist
 
 # Variables
 ROOT_DIR := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
@@ -302,6 +302,79 @@ feature-coverage-fast: ## - igual pero solo con la suite sin navegador (medició
 feature-gaps: ## - funcionalidades sin ninguna prueba y rutas sin funcionalidad
 	cd src && DEBUG=False $(PYTHON) manage.py feature_catalog --settings=organilab.test_settings --sin-pruebas
 	cd src && DEBUG=False $(PYTHON) manage.py feature_catalog --settings=organilab.test_settings --huerfanas
+
+##--------------------------------------------------------
+## Cobertura (unitarias + Selenium combinadas)
+##--------------------------------------------------------
+
+# Selenium SIEMPRE en su propio X (xvfb-run) y con prioridad baja de CPU/IO para no
+# estorbar el uso de la máquina. Deja núcleos libres: WORKERS por defecto 6.
+LOW_PRIORITY := nice -n 10 ionice -c3
+SELENIUM_WORKERS ?= 6
+export COVERAGE_FILE := $(ROOT_DIR)/.coverage
+COVERAGE_RC := $(ROOT_DIR)/.coveragerc
+
+coverage-unit: ## - cobertura de la suite sin navegador (no borra datos previos)
+	-cd src && $(LOW_PRIORITY) $(PYTHON) -m coverage run --rcfile=$(COVERAGE_RC) manage.py test --no-input --exclude-tag=selenium --parallel $(or $(WORKERS),)
+
+coverage-selenium: ## - cobertura de la suite Selenium, headless con xvfb (no borra datos previos)
+	-xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" \
+		sh -c "cd src && GENERATE_SCREENSHOTS=False $(LOW_PRIORITY) $(PYTHON) -m coverage run --rcfile=$(COVERAGE_RC) manage.py test --tag=selenium --no-input --parallel $(SELENIUM_WORKERS)"
+
+coverage-combine: ## - une los .coverage.* y genera htmlcov/, JSON y roadmap/COBERTURA.md
+	cd src && $(PYTHON) -m coverage combine --rcfile=$(COVERAGE_RC)
+	cd src && $(PYTHON) -m coverage html --rcfile=$(COVERAGE_RC)
+	cd src && $(PYTHON) -m coverage json --rcfile=$(COVERAGE_RC)
+	cd src && $(PYTHON) -m coverage report --rcfile=$(COVERAGE_RC) --skip-covered | tail -n 1
+	$(MAKE) coverage-summary
+
+coverage-summary: ## - roadmap/COBERTURA.md desde el JSON de cobertura
+	cd src && DEBUG=False $(PYTHON) manage.py coverage_summary --settings=organilab.test_settings -o $(ROOT_DIR)/roadmap/COBERTURA.md
+
+coverage-all: ## - erase + unitarias + Selenium + combine (larga: lanzar en segundo plano)
+	cd src && $(PYTHON) -m coverage erase --rcfile=$(COVERAGE_RC)
+	$(MAKE) coverage-unit
+	$(MAKE) coverage-selenium
+	$(MAKE) coverage-combine
+
+##--------------------------------------------------------
+## Rendimiento (presentation/perf.py → roadmap/.perf/ → roadmap/RENDIMIENTO.md)
+##--------------------------------------------------------
+
+# Las pasadas no se mezclan: tracemalloc y cProfile inflan los tiempos, por eso van aparte.
+# Cada una borra solo sus propios JSONL antes de empezar. Lanzar en segundo plano: son largas.
+PERF_ENV := ORGANILAB_PERF=1 GENERATE_SCREENSHOTS=False
+
+perf-unit: ## - mide tiempo/CPU/SQL por petición y por prueba en la suite sin navegador
+	cd src && $(PERF_ENV) $(LOW_PRIORITY) $(PYTHON) manage.py test $(or $(TEST),) --no-input --exclude-tag=selenium --parallel $(or $(WORKERS),)
+
+perf-selenium: ## - igual con Selenium, headless (xvfb) y prioridad baja
+	-xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" \
+		sh -c "cd src && $(PERF_ENV) $(LOW_PRIORITY) $(PYTHON) manage.py test $(or $(TEST),) --tag=selenium --no-input --parallel $(SELENIUM_WORKERS)"
+
+perf: ## - pasada de tiempos completa (unitarias + Selenium) y el informe
+	rm -f $(ROOT_DIR)/roadmap/.perf/request-*.jsonl $(ROOT_DIR)/roadmap/.perf/test-*.jsonl $(ROOT_DIR)/roadmap/.perf/class-*.jsonl
+	-$(MAKE) perf-unit
+	$(MAKE) perf-selenium
+	$(MAKE) perf-report
+
+perf-mem: ## - pasada de memoria (pico tracemalloc por petición); deja sus datos en roadmap/.perf/mem/
+	-cd src && $(PERF_ENV) ORGANILAB_PERF_MEM=1 ORGANILAB_PERF_DIR=$(ROOT_DIR)/roadmap/.perf/mem $(LOW_PRIORITY) $(PYTHON) manage.py test $(or $(TEST),) --no-input --exclude-tag=selenium --parallel $(or $(WORKERS),)
+
+perf-profile: ## - pasada con cProfile agregado por ruta (roadmap/.perf/profiles/)
+	rm -rf $(ROOT_DIR)/roadmap/.perf/profiles
+	-cd src && $(PERF_ENV) ORGANILAB_PERF_PROFILE=1 ORGANILAB_PERF_DIR=$(ROOT_DIR)/roadmap/.perf/profile-run $(LOW_PRIORITY) $(PYTHON) manage.py test $(or $(TEST),) --no-input --exclude-tag=selenium --parallel $(or $(WORKERS),)
+	mv $(ROOT_DIR)/roadmap/.perf/profile-run/profiles $(ROOT_DIR)/roadmap/.perf/profiles
+
+perf-matrix: ## - compara configuraciones de ejecución (workers, GIF, keepdb); horas. ONLY=unit|selenium
+	$(PYTHON) $(ROOT_DIR)/scripts/perf_matrix.py $(if $(ONLY),--only $(ONLY),)
+
+perf-reports: ## - reportes contra volumen de datos (SCALES=1,10,100)
+	cd src && $(LOW_PRIORITY) $(PYTHON) manage.py perf_reports --settings=organilab.test_settings --scales $(or $(SCALES),1,10,100)
+
+perf-report: ## - roadmap/RENDIMIENTO.md y roadmap/rendimiento.json desde roadmap/.perf/
+	cd src && DEBUG=False $(PYTHON) manage.py perf_report --settings=organilab.test_settings \
+		-o $(ROOT_DIR)/roadmap/RENDIMIENTO.md --json $(ROOT_DIR)/roadmap/rendimiento.json
 
 test-urls: ## - smoke de las vistas navegables, sin navegador
 	cd src && $(PYTHON) manage.py test organilab_test.tests.test_url_smoke --no-input -v 2
