@@ -32,12 +32,11 @@ class ChangeUser(UpdateView):
     template_name = "auth/change_user.html"
 
     def dispatch(self, request, *args, **kwargs):
-        response = super().dispatch(request, *args, **kwargs)
-
-        if str(self.kwargs["pk"]) != str(request.user.pk):
+        # Se comprueba antes de despachar: con un POST, `super().dispatch` ya guardaría
+        # el formulario sobre el usuario ajeno aunque luego se respondiera 404.
+        if str(kwargs["pk"]) != str(request.user.pk):
             return HttpResponseNotFound("<h1>Page not found</h1>")
-        else:
-            return response
+        return super().dispatch(request, *args, **kwargs)
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()

@@ -93,6 +93,12 @@ class ProfileMiddleware:
         if hasattr(view_func, "can_use_inactive_organization"):
             can_use_inactive_organization = view_func.can_use_inactive_organization
 
+        # Los identificadores pueden venir del querystring: uno no numérico es un 404,
+        # no un ValueError (500) en la consulta.
+        for identifier in (org_pk, lab_pk):
+            if identifier is not None and not str(identifier).isdigit():
+                raise Http404("Invalid identifier")
+
         # El ámbito vive en `organization_utils` para que la sonda de cobertura por rol
         # mida exactamente lo que aquí se autoriza, en vez de una copia que se desviaría.
         queryQ = profile_permission_scope_query(profile, user, lab_pk=lab_pk)
