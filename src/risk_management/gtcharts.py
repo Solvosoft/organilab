@@ -15,6 +15,7 @@ from djgentelella.chartjs import (
 from djgentelella.groute import register_lookups
 from rest_framework.response import Response
 
+from auth_and_perms.organization_utils import user_is_allowed_on_organization
 from laboratory.models import (
     Object,
     ShelfObject,
@@ -80,6 +81,13 @@ class BaseChart:
     authentication_classes = [SessionAuthentication, BasicAuthentication]
     colors = default_colors
 
+    def get_organization(self, request, pk):
+        # El permiso de modelo no basta: sin esto cualquier usuario con
+        # view_riskzone veía los gráficos de otra organización cambiando el pk.
+        organization = get_object_or_404(OrganizationStructure, pk=pk)
+        user_is_allowed_on_organization(request.user, organization)
+        return organization
+
     def get_color(self):
         self.index = (self.index + 1) % len(self.colors)
         color_list = self.colors[self.index]
@@ -96,7 +104,9 @@ class BaseChart:
         laboratories = []
         if serializer.is_valid():
             has_filter = False
-            if "risk_zone" in serializer.validated_data:
+            # Con un QueryDict DRF entrega [] para los campos ausentes: un filtro vacío
+            # no es un filtro (antes vaciaba el gráfico de toda la organización).
+            if serializer.validated_data.get("risk_zone"):
                 risk_zones = [
                     risk.pk for risk in serializer.validated_data["risk_zone"]
                 ]
@@ -105,7 +115,7 @@ class BaseChart:
                 ).values_list("buildings__laboratories__pk", flat=True)
                 laboratories += risk_zone
                 has_filter = True
-            if "buildings" in serializer.validated_data:
+            if serializer.validated_data.get("buildings"):
                 buildings = [
                     building.pk for building in serializer.validated_data["buildings"]
                 ]
@@ -143,7 +153,7 @@ class LaboratoryDangerIndicationChart(BaseChart, HorizontalBarChart):
 
     def retrieve(self, request, pk):
         self.request = request
-        self.organization = get_object_or_404(OrganizationStructure, pk=pk)
+        self.organization = self.get_organization(request, pk)
         data = self.get_graph_data()
         serializer = self.serializer_class(data)
         return Response(serializer.data)
@@ -204,7 +214,7 @@ class LaboratoryDangerIndicationChart(BaseChart, HorizontalBarChart):
                     base_unit and base_unit.measurement_unit_base.description == "Libra"
                 ):
                     libra_amount += get_conversion_units(
-                        obj.measurement_unit,
+                        obj.measurement_unit, obj.quantity
                     )
                 else:
                     logger.error(
@@ -267,7 +277,7 @@ class LaboratoryWhiteOrganChart(BaseChart, HorizontalBarChart):
 
     def retrieve(self, request, pk):
         self.request = request
-        self.organization = get_object_or_404(OrganizationStructure, pk=pk)
+        self.organization = self.get_organization(request, pk)
         data = self.get_graph_data()
         serializer = self.serializer_class(data)
         return Response(serializer.data)
@@ -393,7 +403,7 @@ class LaboratoryPrecursorTypeChart(BaseChart, HorizontalBarChart):
 
     def retrieve(self, request, pk):
         self.request = request
-        self.organization = get_object_or_404(OrganizationStructure, pk=pk)
+        self.organization = self.get_organization(request, pk)
         data = self.get_graph_data()
         serializer = self.serializer_class(data)
         return Response(serializer.data)
@@ -518,7 +528,7 @@ class LaboratoryNFPAChart(BaseChart, HorizontalBarChart):
 
     def retrieve(self, request, pk):
         self.request = request
-        self.organization = get_object_or_404(OrganizationStructure, pk=pk)
+        self.organization = self.get_organization(request, pk)
         data = self.get_graph_data()
         serializer = self.serializer_class(data)
         return Response(serializer.data)
@@ -641,7 +651,7 @@ class LaboratoryUECodeChart(BaseChart, HorizontalBarChart):
 
     def retrieve(self, request, pk):
         self.request = request
-        self.organization = get_object_or_404(OrganizationStructure, pk=pk)
+        self.organization = self.get_organization(request, pk)
         data = self.get_graph_data()
         serializer = self.serializer_class(data)
         return Response(serializer.data)
@@ -767,7 +777,7 @@ class LaboratoryStorageClassChart(BaseChart, HorizontalBarChart):
 
     def retrieve(self, request, pk):
         self.request = request
-        self.organization = get_object_or_404(OrganizationStructure, pk=pk)
+        self.organization = self.get_organization(request, pk)
         data = self.get_graph_data()
         serializer = self.serializer_class(data)
         return Response(serializer.data)
@@ -892,7 +902,7 @@ class SubstanceQuantityTonsChart(BaseChart, HorizontalBarChart):
 
     def retrieve(self, request, pk):
         self.request = request
-        self.organization = get_object_or_404(OrganizationStructure, pk=pk)
+        self.organization = self.get_organization(request, pk)
         data = self.get_graph_data()
         serializer = self.serializer_class(data)
         return Response(serializer.data)
@@ -1039,7 +1049,7 @@ class EstablishmentLogsClassChart(BaseChart, HorizontalBarChart):
 
     def retrieve(self, request, pk):
         self.request = request
-        self.organization = get_object_or_404(OrganizationStructure, pk=pk)
+        self.organization = self.get_organization(request, pk)
         zone_param = request.GET.get("zone")
         if zone_param is None:
             raise Http404("Zone parameter is required")
@@ -1047,6 +1057,8 @@ class EstablishmentLogsClassChart(BaseChart, HorizontalBarChart):
             self.pk = int(zone_param)
         except (ValueError, TypeError):
             raise Http404("Invalid zone parameter")
+        # La zona tiene que ser de la organización de la URL.
+        get_object_or_404(RiskZone, pk=self.pk, organization=self.organization)
         data = self.get_graph_data()
         serializer = self.serializer_class(data)
         return Response(serializer.data)
@@ -1144,7 +1156,7 @@ class IPERBaseChart(BaseChart):
 
     def retrieve(self, request, pk):
         self.request = request
-        self.organization = get_object_or_404(OrganizationStructure, pk=pk)
+        self.organization = self.get_organization(request, pk)
         data = self.get_graph_data()
         serializer = self.serializer_class(data)
         return Response(serializer.data)

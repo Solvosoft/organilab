@@ -2,9 +2,9 @@ from django.shortcuts import get_object_or_404
 from djgentelella.groute import register_lookups
 from djgentelella.permission_management import AnyPermissionByAction
 from djgentelella.views.select2autocomplete import BaseSelect2View
-from requests import Response
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication
+from rest_framework.response import Response
 
 from auth_and_perms.organization_utils import user_is_allowed_on_organization
 from laboratory.gtselects import GPaginatorMoreElements
@@ -128,6 +128,9 @@ class RegentLaboraratory(BaseSelect2View):
     def list(self, request, *args, **kwargs):
         if self.request.GET.get("org_pk", None):
             self.org = self.request.GET.get("org_pk", None)
+            # Como en los otros dos selects: sin esto cualquier usuario listaba los
+            # laboratorios de otra organización cambiando org_pk.
+            user_is_allowed_on_organization(request.user, self.org)
             return super().list(request, *args, **kwargs)
 
         return Response(

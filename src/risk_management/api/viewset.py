@@ -44,7 +44,22 @@ from risk_management.models import (
 )
 
 
-class RegentViewSet(AuthAllPermBaseObjectManagement):
+class OrganizationAccessMixin:
+    """Exige que el usuario pertenezca a la organización de la URL.
+
+    Estos viewsets declaran `permission_classes = ()`, así que nada más impedía que
+    cualquiera (incluso sin sesión) leyera o escribiera los registros de otra
+    organización cambiando `org_pk`. Se comprueba en `initial()` para cubrir
+    también `create`, que no pasa por `get_queryset()`.
+    """
+
+    def initial(self, request, *args, **kwargs):
+        super().initial(request, *args, **kwargs)
+        if "org_pk" in kwargs:
+            user_is_allowed_on_organization(request.user, kwargs["org_pk"])
+
+
+class RegentViewSet(OrganizationAccessMixin, AuthAllPermBaseObjectManagement):
     serializer_class = {
         "list": RegentDataTableSerializer,
         "create": AddRegentSerializer,
@@ -162,7 +177,7 @@ class BuildingViewSet(AuthAllPermBaseObjectManagement):
         )
 
 
-class StructureViewSet(AuthAllPermBaseObjectManagement):
+class StructureViewSet(OrganizationAccessMixin, AuthAllPermBaseObjectManagement):
     serializer_class = {
         "list": StructureDataTableSerializer,
         "create": None,
@@ -206,7 +221,7 @@ class StructureViewSet(AuthAllPermBaseObjectManagement):
         return queryset
 
 
-class IncidentViewSet(AuthAllPermBaseObjectManagement):
+class IncidentViewSet(OrganizationAccessMixin, AuthAllPermBaseObjectManagement):
     serializer_class = {
         "list": IncidentReportDataTableSerializer,
         "create": ActionIncidentReportSerializer,
@@ -240,7 +255,10 @@ class IncidentViewSet(AuthAllPermBaseObjectManagement):
         queryset = super().get_queryset()
         if "risk" in self.kwargs:
             risk = self.kwargs["risk"]
-            queryset = queryset.filter(risk_zone__pk=risk)
+            # La zona tiene que ser de la organización de la URL.
+            queryset = queryset.filter(
+                risk_zone__pk=risk, risk_zone__organization__pk=self.kwargs.get("org_pk")
+            )
 
         return queryset
 
@@ -254,7 +272,9 @@ class IncidentViewSet(AuthAllPermBaseObjectManagement):
     def get_risk_zone(self):
         if not hasattr(self, "_risk_zone"):
             self.risk_zone = get_object_or_404(
-                RiskZone, pk=self.kwargs.get("risk", None)
+                RiskZone,
+                pk=self.kwargs.get("risk", None),
+                organization__pk=self.kwargs.get("org_pk", None),
             )
         return self.risk_zone
 
@@ -279,7 +299,7 @@ class EstablishmentLogsViewSet(AuthAllPermBaseObjectManagement):
     }
 
 
-class WorkdaysViewSet(AuthAllPermBaseObjectManagement):
+class WorkdaysViewSet(OrganizationAccessMixin, AuthAllPermBaseObjectManagement):
     serializer_class = {
         "list": WorkdayDataTableSerializer,
         "create": WorkdaysSerializer,
@@ -311,7 +331,10 @@ class WorkdaysViewSet(AuthAllPermBaseObjectManagement):
         queryset = super().get_queryset()
         if "risk" in self.kwargs:
             risk = self.kwargs["risk"]
-            queryset = queryset.filter(risk_zone__pk=risk)
+            # La zona tiene que ser de la organización de la URL.
+            queryset = queryset.filter(
+                risk_zone__pk=risk, risk_zone__organization__pk=self.kwargs.get("org_pk")
+            )
 
         return queryset
 
@@ -325,7 +348,9 @@ class WorkdaysViewSet(AuthAllPermBaseObjectManagement):
     def get_risk_zone(self):
         if not hasattr(self, "_risk_zone"):
             self.risk_zone = get_object_or_404(
-                RiskZone, pk=self.kwargs.get("risk", None)
+                RiskZone,
+                pk=self.kwargs.get("risk", None),
+                organization__pk=self.kwargs.get("org_pk", None),
             )
         return self.risk_zone
 

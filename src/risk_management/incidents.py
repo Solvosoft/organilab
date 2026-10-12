@@ -199,6 +199,8 @@ def make_book_incidentreport(incidents):
                 re.sub(r"<.*?>", "", obj.causes),
                 re.sub(r"<.*?>", "", obj.infraestructure_impact),
                 re.sub(r"<.*?>", "", obj.people_impact),
+                # Faltaba: las columnas desde «Environment impact» quedaban corridas.
+                re.sub(r"<.*?>", "", obj.environment_impact),
                 re.sub(r"<.*?>", "", obj.result_of_plans),
                 re.sub(r"<.*?>", "", obj.mitigation_actions),
                 re.sub(r"<.*?>", "", obj.recomendations),
@@ -215,11 +217,13 @@ def make_book_incidentreport(incidents):
 def report_incidentreport(request, org_pk, risk_pk, pk):
     user_is_allowed_on_organization(request.user, org_pk)
 
-    risks = get_object_or_404(RiskZone, pk=risk_pk)
-    filters = {"risk_zone__in": [risks]}
+    # La zona tiene que ser de la organización de la URL y el incidente, de esa
+    # zona: antes cualquier pk de incidente se exportaba.
+    risks = get_object_or_404(RiskZone, pk=risk_pk, organization__pk=org_pk)
+    filters = {"risk_zone": risks}
 
     if pk:
-        filters = {"pk": pk}
+        filters["pk"] = pk
 
     incidentreport = IncidentReport.objects.filter(**filters)
 

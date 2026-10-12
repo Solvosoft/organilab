@@ -178,6 +178,10 @@ class ZoneEdit(UpdateView):
     model = RiskZone
     form_class = RiskZoneCreateForm
 
+    def get_queryset(self):
+        # La zona tiene que ser de la organización de la URL.
+        return super().get_queryset().filter(organization__pk=self.org)
+
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs["user"] = self.request.user
@@ -214,6 +218,10 @@ class ZoneEdit(UpdateView):
 class ZoneDelete(DeleteView):
     model = RiskZone
 
+    def get_queryset(self):
+        # La zona tiene que ser de la organización de la URL.
+        return super().get_queryset().filter(organization__pk=self.org)
+
     def form_valid(self, form):
         success_url = self.get_success_url()
         organilab_logentry(
@@ -244,6 +252,10 @@ class ZoneDelete(DeleteView):
 )
 class ZoneDetail(DetailView):
     model = RiskZone
+
+    def get_queryset(self):
+        # La zona tiene que ser de la organización de la URL.
+        return super().get_queryset().filter(organization__pk=self.org)
 
     def get_context_data(self, **kwargs):
         context = super(ZoneDetail, self).get_context_data()
@@ -392,7 +404,9 @@ def structure_actions(request, org_pk, pk=None):
     title = _("Create Structure")
     if pk:
         title = _("Update Structure")
-        structure = get_object_or_404(Structure, pk=pk)
+        # Acotado a la organización de la URL, como los edificios: con solo el pk se
+        # podía editar (y mover a esta organización) una estructura de otra.
+        structure = get_object_or_404(Structure, pk=pk, organization__pk=org_pk)
         form = StructureForm(instance=structure, org_pk=org_pk)
     if request.method == "POST":
         if structure:
@@ -499,7 +513,7 @@ class RiskZoneReport(ListView):
 @permission_required("risk_management.view_workday", raise_exception=True)
 def workday_view(request, org_pk, risk_zone):
     user_is_allowed_on_organization(request.user, org_pk)
-    risk = get_object_or_404(RiskZone, pk=risk_zone)
+    risk = get_object_or_404(RiskZone, pk=risk_zone, organization__pk=org_pk)
     context = {
         "org_pk": org_pk,
         "risk": risk,

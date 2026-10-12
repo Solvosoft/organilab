@@ -218,50 +218,51 @@ COLUMNAS_CUADRO3 = (
 )
 
 
+# Los cargadores de sga (`load_danger_substances`, `load_danger_substances_category`)
+# traducen el vocabulario de los CSV del Decreto 44741 al de los modelos: el tipo de
+# coincidencia «h_categoria» se guarda como «type_match», «nombre_patron» como
+# «patron_name», las categorías «Físico/Salud/Ambiental» como «physical/health/
+# environmental» y la condición de proceso pasa a ser una entrada del Catalog. El
+# algoritmo de clasificación sigue hablando el idioma de los CSV, así que hay que
+# deshacer la traducción al leer de la base. Sin esto ninguna regla por categoría H ni
+# por patrón de nombre se aplicaba, las sumatorias de Físico y Ambiental quedaban
+# siempre en cero y ninguna condición de proceso coincidía.
+TIPO_MATCH_DESDE_MODELO = {
+    "type_match": "h_categoria",
+    "patron_name": "nombre_patron",
+}
+CATEGORIA_DESDE_MODELO = {
+    "physical": "Físico",
+    "health": "Salud",
+    "environmental": "Ambiental",
+}
+
+
 def cargar_cuadro3() -> pd.DataFrame:
-    # df = pd.read_csv(path_csv, dtype=str).fillna("")
-    danger_substances = list(
-        DangerSubstance.objects.all()
-        .annotate(
-            cas=F("cas_code"),
-            umbral_t=F("threshold"),
-            tipo_match=F("type_match"),
-            nombre_patron=F("patron_name"),
-            condiciones_especiales=F("especial_condition"),
-            nombre=F("name"),
+    # Una fila por sustancia, con sus códigos H unidos por «;» como en el CSV
+    # original. Con `.values("h_codes_match")` salía una fila por código H y el
+    # merge por CAS duplicaba la sustancia del inventario (y su contribución).
+    filas = []
+    for sustancia in DangerSubstance.objects.prefetch_related("h_codes_match"):
+        tipo = (sustancia.type_match or "").strip()
+        filas.append(
+            {
+                "cas": (sustancia.cas_code or "").strip(),
+                "nombre": sustancia.name or "",
+                "umbral_t": sustancia.threshold,
+                "tipo_match": TIPO_MATCH_DESDE_MODELO.get(tipo, tipo) or "cas",
+                "h_codes_match": ";".join(
+                    sorted(h.code for h in sustancia.h_codes_match.all())
+                ),
+                "nombre_patron": (sustancia.patron_name or "").strip(),
+                "condiciones_especiales": (sustancia.especial_condition or "").strip(),
+            }
         )
-        .values(
-            "nombre",
-            "cas",
-            "umbral_t",
-            "tipo_match",
-            "h_codes_match",
-            "nombre_patron",
-            "condiciones_especiales",
-        )
-    )
-    # Sin filas, pd.DataFrame([]) no tiene NINGUNA columna, y la comprobación
-    # de abajo reventaba con un mensaje que culpa a un cuadro3.csv que esta
-    # función ya no lee: los datos salen de DangerSubstance desde que se
-    # migraron a la base. Una organización sin sustancias peligrosas cargadas es
-    # un caso normal, no un error, así que se devuelve el marco vacío con sus
-    # columnas y el reporte sale sin filas en vez de con un 500.
-    df = pd.DataFrame(danger_substances, columns=COLUMNAS_CUADRO3)
-    df.rename(
-        columns={"h_codes_match": "h_codes"},
-    )
+    # Sin filas, pd.DataFrame([]) no tendría NINGUNA columna; una organización sin
+    # sustancias peligrosas cargadas es un caso normal, no un error, así que se
+    # devuelve el marco vacío con sus columnas y el reporte sale sin filas.
+    df = pd.DataFrame(filas, columns=COLUMNAS_CUADRO3)
     df["umbral_t"] = pd.to_numeric(df["umbral_t"], errors="coerce").fillna(math.inf)
-    df["cas"] = df["cas"].str.strip()
-    if "tipo_match" not in df.columns:
-        df["tipo_match"] = "cas"
-    else:
-        df["tipo_match"] = df["tipo_match"].str.strip()
-        df.loc[df["tipo_match"] == "", "tipo_match"] = "cas"
-    for col in ["h_codes_match", "nombre_patron", "condiciones_especiales"]:
-        if col not in df.columns:
-            df[col] = ""
-        else:
-            df[col] = df[col].astype(str).str.strip()
     return df[list(COLUMNAS_CUADRO3)]
 
 
@@ -271,39 +272,31 @@ COLUMNAS_UMBRAL_H = (
     "seccion",
     "condicion_proceso",
     "umbral_t",
+    "notas",
 )
 
 
 def cargar_umbral_por_H() -> pd.DataFrame:
-    # df = pd.read_csv(path_csv, dtype=str).fillna("")
-    danger_categories = list(
-        DangerSubstanceCategory.objects.all()
-        .annotate(
-            h_codes=F("h_code__code"),
-            categoria=F("category"),
-            seccion=F("section"),
-            condicion_proceso=F("process_condition"),
-            umbral_t=F("threshold"),
+    filas = []
+    for fila in DangerSubstanceCategory.objects.select_related("process_condition"):
+        categoria = (fila.category or "").strip()
+        filas.append(
+            {
+                "h_code": (fila.h_code_id or "").strip().upper(),
+                "categoria": CATEGORIA_DESDE_MODELO.get(categoria, categoria),
+                "seccion": (fila.section or "").strip().upper(),
+                "condicion_proceso": (
+                    fila.process_condition.description.strip()
+                    if fila.process_condition_id
+                    else ""
+                ),
+                "umbral_t": fila.threshold,
+                "notas": (fila.note or "").strip(),
+            }
         )
-        .values("h_code", "categoria", "seccion", "condicion_proceso", "umbral_t")
-    )
-    # Mismo caso que en cargar_cuadro3(): sin filas el marco no tiene columnas
-    # y reventaba culpando a un cuadro4_h_umbral.csv que ya no se lee.
-    df = pd.DataFrame(danger_categories, columns=COLUMNAS_UMBRAL_H)
-    df.rename(
-        columns={"h_codes": "h_code"},
-    )
+    # Mismo caso que en cargar_cuadro3(): sin filas el marco no tendría columnas.
+    df = pd.DataFrame(filas, columns=COLUMNAS_UMBRAL_H)
     df["umbral_t"] = pd.to_numeric(df["umbral_t"], errors="coerce")
-    df["h_code"] = df["h_code"].str.strip().str.upper()
-    df["categoria"] = df["categoria"].str.strip()  # ya viene normalizada
-    if "seccion" in df.columns:
-        df["seccion"] = df["seccion"].str.strip().str.upper()
-    else:
-        df["seccion"] = ""
-    if "condicion_proceso" in df.columns:
-        df["condicion_proceso"] = df["condicion_proceso"].astype(str).str.strip()
-    else:
-        df["condicion_proceso"] = ""
     return df
 
 
@@ -629,8 +622,12 @@ def contribuciones_por_sustancia(
             contrib = cantidad / umbral_min
             contribuciones_directas[cat] = contrib
             h_usados = ", ".join(grupo["h_code"].tolist())
+            # Las filas sin nota llegan como "": sin filtrarlas el detalle
+            # terminaba en " [, ]".
             notas_usadas = (
-                ", ".join(grupo["notas"].tolist()) if "notas" in grupo.columns else ""
+                ", ".join(n for n in grupo["notas"].tolist() if n)
+                if "notas" in grupo.columns
+                else ""
             )
             detalle_str = f"{_(cat)}: {cantidad}/{umbral_min} = {contrib:.4f} (H-codes: {h_usados})"
             if notas_usadas:
