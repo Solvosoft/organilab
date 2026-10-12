@@ -6,6 +6,7 @@ Created on 26/12/2016
 """
 from django.contrib.auth.decorators import permission_required, login_required
 from django.http import Http404
+from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.utils.text import slugify
 from django.utils.timezone import now
@@ -222,7 +223,13 @@ class PrecursorsView(ReportListView):
         book = []
         if serializer.is_valid():
 
-            report = PrecursorReport.objects.get(pk=serializer.validated_data["pk"])
+            # Solo los reportes de laboratorios de la organización de la URL: con
+            # un `get` pelado se exportaba el de cualquier organización (o 500).
+            report = get_object_or_404(
+                PrecursorReport,
+                pk=serializer.validated_data["pk"],
+                laboratory__in=list(self.organization.get_my_laboratories),
+            )
             month = report.get_month_display()
             laboratory = report.laboratory
 
@@ -290,7 +297,9 @@ class PrecursorsView(ReportListView):
                     [
                         obj.object.name,
                         obj.measurement_unit.description,
-                        round(obj.new_income, 3),
+                        # La cabecera pide primero el saldo final del reporte
+                        # anterior; se escribía dos veces el ingreso del mes.
+                        round(obj.previous_balance, 3),
                         round(obj.new_income, 3),
                         obj.bills,
                         obj.providers,

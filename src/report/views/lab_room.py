@@ -33,7 +33,14 @@ def get_dataset(report, column_list=None):
                 "code": shelfobject.object.code,
                 "object": shelfobject.object.name,
                 "quantity": f"{round(shelfobject.total_quantity, 3)} {shelf_unit}",
-                "laboratory": shelfobject.in_where_laboratory.name,
+                # `in_where_laboratory` es opcional en el modelo: una celda vacía
+                # informa, una excepción deja al usuario sin informe (igual que
+                # el reporte por mueble).
+                "laboratory": (
+                    shelfobject.in_where_laboratory.name
+                    if shelfobject.in_where_laboratory
+                    else ""
+                ),
                 "laboratory_room": furniture.labroom.name,
                 "furniture": furniture.name,
                 "shelf": shelfobject.shelf.name,

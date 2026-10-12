@@ -43,12 +43,18 @@ from sga.models import HCodeCategory
 
 
 def get_hcode_threshold(hcodes_quantity, quantity):
-    result = False
-    if isinstance(hcodes_quantity, list):
-        for hcode in hcodes_quantity:
-            if (hcode.threshold * 1000) < quantity:
-                return True
-    return result
+    """¿Supera `quantity` alguno de los umbrales (en toneladas) de los códigos H?
+
+    Recibe los umbrales tal como los da `values_list` (números) o las categorías
+    con su atributo `threshold`. Antes solo aceptaba listas, y como se le pasaba
+    un `values_list` nunca evaluaba nada: el reporte decía «no supera» siempre.
+    Un umbral sin definir (0 o None) no cuenta como superado.
+    """
+    for threshold in hcodes_quantity or []:
+        threshold = getattr(threshold, "threshold", threshold)
+        if threshold and (threshold * 1000) < quantity:
+            return True
+    return False
 
 
 def get_dataset_report(report, column_list=None):
@@ -105,7 +111,9 @@ def get_dataset_report(report, column_list=None):
         third_square = False
         third_column = ""
 
-        shelfobjects = ShelfObject.objects.filter(object=reactive).distinct()
+        # Solo el inventario de los laboratorios del reporte: sumar el de toda la
+        # base hacía superar umbrales con unidades de otras organizaciones.
+        shelfobjects = ShelfObject.objects.filter(**filters, object=reactive).distinct()
         total_shelfobjects = sum(
             [
                 get_conversion_units(obj.measurement_unit, obj.total_quantity)
@@ -519,13 +527,14 @@ def hazard_map_visual_view(request, org_pk):
 
     if not check_user_access_kwargs_org(org_pk, request.user):
         raise Http404()
-    lab_pks = request.GET.getlist("laboratory")
+    lab_pks = [pk for pk in request.GET.getlist("laboratory") if pk.isdigit()]
     title = request.GET.get("title", _("Compatibility Laboratory Report"))
     org_pk = OrganizationStructure.objects.filter(pk=org_pk).first()
-    labs = list(set(org_pk.get_my_laboratories))
+    # Los pks de la query string se cruzan con los laboratorios de la
+    # organización: sin esto se podía ver el mapa de un laboratorio ajeno.
+    labs = Laboratory.objects.filter(pk__in=list(set(org_pk.get_my_laboratories)))
     if lab_pks:
-        labs = lab_pks
-    labs = Laboratory.objects.filter(pk__in=labs)
+        labs = labs.filter(pk__in=lab_pks)
 
     if not labs.exists():
         raise Http404()

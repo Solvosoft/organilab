@@ -351,10 +351,14 @@ class ValidateFurnitureForm(GTForm):
         return int(org)
 
     def clean_laboratory(self):
-        organization = self.cleaned_data["organization"]
+        # Si la organización no validó, `clean_organization` ya dejó su error:
+        # leerla con [] tiraba KeyError en vez de devolver el formulario inválido.
+        organization = self.cleaned_data.get("organization")
         laboratory = self.cleaned_data["laboratory"]
 
         if not laboratory:
+            if organization is None:
+                return []
             return list(get_laboratories_from_organization(organization, self.user))
 
         return list(laboratory.values_list("pk", flat=True))

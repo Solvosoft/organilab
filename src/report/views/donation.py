@@ -1,4 +1,4 @@
-from laboratory.models import ShelfObject, Object
+from laboratory.models import ShelfObject, Object, OrganizationStructure
 from laboratory.report_utils import ExcelGraphBuilder
 from report.utils import (
     load_dataset_by_column,
@@ -14,7 +14,10 @@ def get_dataset(report, column_list=None):
     filters = {
         "was_donated": True,
     }
-    organization = report.data["organization"]
+    # El payload guarda el pk; los laboratorios se piden a la organización.
+    organization = OrganizationStructure.objects.filter(
+        pk=report.data["organization"]
+    ).first()
     if "laboratory" in report.data:
         filters["in_where_laboratory__pk__in"] = (
             report.data["laboratory"]

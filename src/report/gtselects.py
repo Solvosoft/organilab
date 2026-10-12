@@ -55,12 +55,11 @@ class LabRoomLookup(BaseSelect2View):
 
         if self.all_labs_org:
 
+            # `get_lab_ids` ya acota a los laboratorios del perfil y devuelve una
+            # lista o un values_list de pks: llamarle `.filter(profile__user=...)`
+            # tiraba AttributeError/FieldError y la búsqueda respondía 500.
             labs_by_org = get_lab_ids(self.organization, self.request.user.profile)
-            queryset = LaboratoryRoom.objects.filter(
-                laboratory__in=labs_by_org.filter(
-                    profile__user=self.request.user
-                ).using(settings.READONLY_DATABASE)
-            )
+            queryset = queryset.filter(laboratory__pk__in=list(labs_by_org))
         else:
             if self.laboratory:
                 queryset = queryset.filter(laboratory=self.laboratory)
