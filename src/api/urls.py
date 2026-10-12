@@ -1,10 +1,3 @@
-from django.urls import path
-from .access_management import OrganizationStructureView
-
-urlpatterns = [
-    path(
-        "access_management/",
-        OrganizationStructureView.as_view(),
-        name="api_organization_structure",
-    )
-]
+# La vista `access_management/` (árbol de organizaciones) se eliminó: filtraba por un
+# campo inexistente y respondía 500 siempre; nada la usaba.
+urlpatterns = []
