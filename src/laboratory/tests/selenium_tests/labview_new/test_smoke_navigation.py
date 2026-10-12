@@ -132,11 +132,28 @@ class LabviewSmokeNavigationTest(LabviewSeleniumBase):
         self.click("%s .labview-room-toggle" % self.room_css(self.labroom.pk))
         self.click('.labview-edit[data-furniture="%d"]' % self.furniture.pk)
 
-        rows = "%s .pg-row:not(.pg-head)" % self.furniture_css(self.furniture.pk)
+        furniture_css = self.furniture_css(self.furniture.pk)
+        rows = "%s .pg-row:not(.pg-head)" % furniture_css
+        # Se espera a que el modo edición esté pintado (el «añadir fila» ya
+        # está) para que la ausencia de abajo no sea un falso positivo.
+        self.wait_for("%s [data-pg-action='add-row']" % furniture_css)
         before = len(self.find_all(rows))
-        self.click(
-            "%s [data-pg-action='remove-row'][data-pg-row='0']"
-            % self.furniture_css(self.furniture.pk)
+
+        # Desde djgentelella f93aa01 PositionsGrid no ofrece el botón de quitar
+        # en una fila con estantes: sería un callejón sin salida.
+        self.assertEqual(
+            self.find_all(
+                "%s [data-pg-action='remove-row'][data-pg-row='0']" % furniture_css
+            ),
+            [],
+            "la fila ocupada no debería ofrecer el botón de quitar",
+        )
+
+        # Pero el servidor sigue siendo quien decide: un cliente con la
+        # cuadrícula desfasada (otra pestaña llenó la fila) aún puede pedirlo.
+        # Se invoca la misma acción que despachaba el botón.
+        self.selenium.execute_script(
+            "LabviewMap.grids[arguments[0]].removeRow(0);", self.furniture.pk
         )
         # El rechazo se ve: `pg:error` abre un Swal con el motivo del servidor.
         popup = self.wait_for(".swal2-popup")
