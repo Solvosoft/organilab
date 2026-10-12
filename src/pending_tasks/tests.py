@@ -368,3 +368,125 @@ class PendingTaskPermissionTest(PendingTaskSetUpMixin, TestCase):
         )
         response = self.client.delete(url)
         self.assertIn(response.status_code, [401, 403])
+
+
+class PendingTaskAPIActionsTest(PendingTaskSetUpMixin, TestCase):
+    """Crear, consultar valores para edición y archivar las terminadas."""
+
+    def test_crear_tarea_registra_creador_y_notifica(self):
+        from djgentelella.models import Notification
+
+        other = create_user_with_profile("asignada")
+        response = self.client.post(
+            reverse("pending_tasks:api-pending_tasks-list"),
+            data=json.dumps({"name": "Revisar", "description": "Revisar inventario",
+                             "profile": other.profile.pk, "rols": [self.role.pk]}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 201, response.content)
+        task = PendingTask.objects.get(pk=response.json()["id"])
+        self.assertEqual(task.created_by, self.user)
+        self.assertTrue(Notification.objects.filter(user=other).exists())
+        self.assertFalse(Notification.objects.filter(user=self.user).exists())
+
+    def test_valores_para_editar(self):
+        task = create_pending_task(
+            created_by=self.user, name="Editar", rols=[self.role], description="d",
+            profile=self.user.profile,
+        )
+        url = reverse("pending_tasks:api-pending_tasks-get-values-for-update", kwargs={"pk": task.pk})
+        data = self.client.get(url).json()
+        self.assertEqual(data["name"], "Editar")
+        self.assertEqual(data["status"]["id"], PendingTask.PENDING)
+        self.assertEqual([r["id"] for r in data["rols"]], [self.role.pk])
+
+    def test_archivar_terminadas_solo_las_propias(self):
+        mine = create_pending_task(
+            created_by=self.user, name="Hecha", rols=[], description="d",
+            profile=self.user.profile, status=PendingTask.FINISHED,
+        )
+        pending = create_pending_task(
+            created_by=self.user, name="Pendiente", rols=[], description="d", profile=self.user.profile,
+        )
+        stranger = create_user_with_profile("ajeno")
+        foreign = PendingTask.objects.create(
+            created_by=stranger, name="Ajena", description="d", status=PendingTask.FINISHED,
+            profile=stranger.profile,
+        )
+        response = self.client.post(reverse("pending_tasks:api-pending_tasks-archive-finished"))
+        self.assertEqual(response.json(), {"archived": 1})
+        mine.refresh_from_db()
+        pending.refresh_from_db()
+        foreign.refresh_from_db()
+        self.assertTrue(mine.is_archived)
+        self.assertFalse(pending.is_archived)
+        self.assertFalse(foreign.is_archived)
+
+
+class PendingTaskManagerRecipientsTest(TestCase):
+    """Resolución de destinatarios de `PendingTaskManager` según el objeto relacionado."""
+
+    @classmethod
+    def setUpTestData(cls):
+        from django.contrib.auth.models import User as DjangoUser
+
+        from laboratory.models import Laboratory, UserOrganization
+        from risk_management.models import Buildings, Regent, RiskZone, ZoneType
+
+        cls.org = OrganizationStructure.objects.create(name="Org tareas")
+        cls.responsible = create_user_with_profile("responsable")
+        cls.lab = Laboratory.objects.create(name="Lab", organization=cls.org, responsible=cls.responsible)
+        cls.lab_without = Laboratory.objects.create(name="Lab sin", organization=cls.org)
+        from laboratory.models import OrganizationStructureRelations
+
+        OrganizationStructureRelations.objects.create(organization=cls.org, content_object=cls.lab)
+        cls.building = Buildings.objects.create(name="Edificio", phone="", organization=cls.org)
+        cls.building.laboratories.add(cls.lab)
+        cls.zone = RiskZone.objects.create(
+            name="Zona", organization=cls.org, zone_type=ZoneType.objects.create(name="Z"), priority=1,
+            num_workers=0,
+        )
+        cls.zone.laboratories.add(cls.lab_without)
+        cls.zone.buildings.add(cls.building)
+        cls.regent = Regent.objects.create(user=cls.responsible, organization=cls.org)
+        cls.regent.laboratories.add(cls.lab)
+        cls.member = create_user_with_profile("miembro")
+        UserOrganization.objects.create(user=cls.member, organization=cls.org, status=True)
+        UserOrganization.objects.create(user=cls.responsible, organization=cls.org, status=False)
+        cls.rol = Rol.objects.create(name="Rol tareas")
+        permission = ProfilePermission.objects.create(
+            profile=cls.member.profile, organization=cls.org,
+            content_type=ContentType.objects.get_for_model(Laboratory), object_id=cls.lab.pk,
+        )
+        permission.rol.add(cls.rol)
+        cls.task = PendingTask.objects.create(name="T", description="d")
+        cls.User = DjangoUser
+
+    def manager(self, obj_id):
+        from pending_tasks.models import PendingTaskManager
+
+        return PendingTaskManager(task=self.task, object_id=obj_id)
+
+    def test_regentes_y_responsables_de_laboratorio(self):
+        self.assertEqual(list(self.manager(self.lab.pk).get_regents_by_laboratory()), [self.regent])
+        self.assertEqual(self.manager(self.lab.pk).get_responsible_laboratory(), self.responsible)
+        self.assertIsNone(self.manager(0).get_responsible_laboratory())
+
+    def test_responsables_por_zona_de_riesgo(self):
+        users = self.manager(self.zone.pk).get_laboratory_reponsible_by_risk_zones()
+        self.assertEqual(list(users), [self.responsible])
+
+    def test_responsables_por_organizacion_y_edificio(self):
+        self.assertEqual(list(self.manager(self.org.pk).get_laboratory_responsibles_by_organization()), [self.responsible])
+        self.assertIsNone(self.manager(0).get_laboratory_responsibles_by_organization())
+        self.assertEqual(list(self.manager(self.building.pk).get_reponsible_by_building()), [self.responsible])
+        self.assertIsNone(self.manager(0).get_reponsible_by_building())
+
+    def test_usuarios_por_rol_laboratorio_y_organizacion(self):
+        self.assertEqual(list(self.manager(self.rol.pk).get_users_by_role()), [self.member])
+        self.assertEqual(list(self.manager(self.lab.pk).get_users_by_laboratory()), [self.member])
+        # Solo miembros activos de la organización.
+        self.assertEqual(list(self.manager(self.org.pk).get_users_by_organization()), [self.member])
+        self.assertEqual(
+            list(self.manager(self.org.pk).get_users_by_organization({"type_in_organization__in": [1]})), []
+        )
