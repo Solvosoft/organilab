@@ -1,16 +1,33 @@
+# Se usa desde src/ (Makefile y tox hacen `cd src`), por eso `source = .`.
+# Con `--parallel` cada trabajador escribe su propio .coverage.*; el hilo del live
+# server de Selenium se mide gracias a `thread`. Unir con `coverage combine`.
 [run]
-source = src
-omit = src/*/migrations/*,src/*/templates/*,src/*/static/*
+source = .
+omit =
+    */migrations/*
+    */templates/*
+    */static/*
+    */tests/*
+    */tests.py
+    organilab_test/*
+    organilab/test_settings.py
+    manage.py
+concurrency = thread,multiprocessing
+parallel = true
+sigterm = true
 
 [report]
 #fail_under = 100
 show_missing = True
 skip_covered = True
+exclude_also =
+    if __name__ == .__main__.:
+    raise NotImplementedError
 
 [html]
-directory = htmlcov
+directory = ../htmlcov
 skip_empty = True
 skip_covered = True
 
 [json]
-output = ./coverage/coverage-summary.json
+output = ../roadmap/.coverage/coverage.json
