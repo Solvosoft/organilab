@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.http import require_POST
 
 from laboratory.models import OrganizationStructure
 from laboratory.views.djgeneric import ListView, DeleteView
@@ -68,33 +69,31 @@ class DeleteForm(DeleteView):
 
 @login_required
 @permission_required("derb.add_customform", raise_exception=True)
+@require_POST
 def CreateForm(request, org_pk):
     organization = get_object_or_404(OrganizationStructure, pk=org_pk)
 
-    if request.method == "POST":
+    empty_schema = {
+        "name": request.POST.get("name"),
+        "status": "admin",
+        "components": [],
+    }
 
-        empty_schema = {
-            "name": request.POST.get("name"),
-            "status": "admin",
-            "components": [],
-        }
+    custom_form = CustomForm.objects.create(
+        name=empty_schema["name"],
+        status=empty_schema["status"],
+        schema=empty_schema,
+        organization=organization,
+    )
+    url = reverse("derb:edit_view", args=[org_pk, custom_form.id])
+    organilab_logentry(
+        request.user,
+        custom_form,
+        ADDITION,
+        "custom form",
+        changed_data=["name", "status", "schema", "organization"],
+        change_message=_("Created custom form '%(name)s'")
+        % {"name": custom_form.name},
+    )
 
-        custom_form = CustomForm.objects.create(
-            name=empty_schema["name"],
-            status=empty_schema["status"],
-            schema=empty_schema,
-            organization=organization,
-        )
-        url = reverse("derb:edit_view", args=[org_pk, custom_form.id])
-        organilab_logentry(
-            request.user,
-            custom_form,
-            ADDITION,
-            "custom form",
-            changed_data=["name", "status", "schema", "organization"],
-            change_message=_("Created custom form '%(name)s'")
-            % {"name": custom_form.name},
-        )
-
-        return JsonResponse({"url": url})
-    return None
+    return JsonResponse({"url": url})

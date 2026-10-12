@@ -19,6 +19,8 @@ class CustomFormModelLookup(generics.RetrieveAPIView, BaseSelect2View):
     fields = ["name"]
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
+    # Solo `retrieve` fija la organización; la ruta de listado no la trae.
+    org_pk = None
 
     def get_queryset(self):
         queryset = super().get_queryset()
