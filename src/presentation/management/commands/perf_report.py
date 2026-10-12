@@ -225,7 +225,9 @@ class Command(BaseCommand):
             "",
             "Generado con `make perf-report` a partir de `roadmap/.perf/`. No editar a mano.",
             "Los tiempos son de la suite de pruebas (base pequeña, live server de Django): sirven "
-            "para **comparar** vistas entre sí, no como latencia de producción.",
+            "para **comparar** vistas entre sí, no como latencia de producción. Si la corrida fue "
+            "`make coverage-perf`, los tiempos incluyen la sobrecarga del trazado de coverage "
+            "(2–3×); el número de consultas SQL no se ve afectado.",
             "",
             "- Fecha: %s · commit `%s` · %s" % (s["fecha"], s["commit"], s["maquina"]),
             "- %d peticiones medidas sobre %d rutas; %d pruebas." % (s["peticiones"], s["rutas"], s["pruebas"]),

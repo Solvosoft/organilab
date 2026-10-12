@@ -1,4 +1,4 @@
-.PHONY: perf perf-unit perf-selenium perf-mem perf-profile perf-matrix perf-reports perf-report coverage-unit coverage-selenium coverage-combine coverage-all coverage-summary registry-login registry-push prod-build-push feature-coverage feature-coverage-fast feature-catalog feature-catalog-check feature-roles feature-gaps help clean clean-pyc clean-build list setup check-env venv-info url-inventory url-inventory-check test-urls test test-parallel test-selenium test-selenium-4 test-selenium-single test-selenium-xvfb test-selenium-bitacora docs docs-screenshots release sdist
+.PHONY: coverage-perf perf perf-unit perf-selenium perf-mem perf-profile perf-matrix perf-reports perf-report coverage-unit coverage-selenium coverage-combine coverage-all coverage-summary registry-login registry-push prod-build-push feature-coverage feature-coverage-fast feature-catalog feature-catalog-check feature-roles feature-gaps help clean clean-pyc clean-build list setup check-env venv-info url-inventory url-inventory-check test-urls test test-parallel test-selenium test-selenium-4 test-selenium-single test-selenium-xvfb test-selenium-bitacora docs docs-screenshots release sdist
 
 # Variables
 ROOT_DIR := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
@@ -356,6 +356,11 @@ perf: ## - pasada de tiempos completa (unitarias + Selenium) y el informe
 	rm -f $(ROOT_DIR)/roadmap/.perf/request-*.jsonl $(ROOT_DIR)/roadmap/.perf/test-*.jsonl $(ROOT_DIR)/roadmap/.perf/class-*.jsonl
 	-$(MAKE) perf-unit
 	$(MAKE) perf-selenium
+	$(MAKE) perf-report
+
+coverage-perf: ## - corrida final: cobertura + instrumentación de rendimiento en la misma pasada (tiempos con sobrecarga de coverage; consultas exactas)
+	rm -f $(ROOT_DIR)/roadmap/.perf/request-*.jsonl $(ROOT_DIR)/roadmap/.perf/test-*.jsonl $(ROOT_DIR)/roadmap/.perf/class-*.jsonl $(ROOT_DIR)/roadmap/.perf/task-*.jsonl
+	ORGANILAB_PERF=1 $(MAKE) coverage-all
 	$(MAKE) perf-report
 
 perf-mem: ## - pasada de memoria (pico tracemalloc por petición); deja sus datos en roadmap/.perf/mem/
