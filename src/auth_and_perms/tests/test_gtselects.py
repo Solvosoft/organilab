@@ -100,10 +100,12 @@ class LaboratoriosRelacionadosTest(Select2Base):
         OrganizationStructureRelations.objects.create(
             organization=self.org_a, content_type=self.ct_lab, object_id=self.lab_a.pk
         )
+        # La hija hereda los laboratorios relacionados con la raíz...
+        response = self.client.get(reverse("relorgfullbase-detail", args=[self.org_a_hija.pk]))
+        self.assertEqual(self.textos(response), ["Laboratorio A"])
+        # ...pero la propia raíz ya lo tiene vinculado y no se le vuelve a ofrecer.
         response = self.client.get(reverse("relorgfullbase-detail", args=[self.org_a.pk]))
-        resultados = self.resultados(response)
-        self.assertEqual([r["text"] for r in resultados], ["Laboratorio A"])
-        self.assertTrue(resultados[0]["selected"])
+        self.assertEqual(self.resultados(response), [])
 
     def test_relorgfull_por_parametro(self):
         response = self.client.get(reverse("relorgfullbase-list"), {"organization": self.org_a.pk})

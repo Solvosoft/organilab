@@ -107,15 +107,9 @@ class EvaluacionTest(MiembroSinRolMixin, IPERBase):
         evaluacion.refresh_from_db()
         self.assertEqual(evaluacion.assessment_date, datetime.date(2026, 2, 1))
 
-    def test_borrar(self):
-        evaluacion = self.evaluacion()
-        response = self.client.post(url("iper_delete", org_pk=self.org_pk, pk=evaluacion.pk))
-        self.assertRedirects(response, url("iper_list", org_pk=self.org_pk), fetch_redirect_response=False)
-        self.assertFalse(IPERAssessment.objects.exists())
-
     def test_evaluacion_de_otra_organizacion_es_404(self):
         ajena = self.evaluacion(organization=self.other, laboratory=self.other_lab)
-        for name in ("iper_update", "iper_delete", "iper_detail", "iper_toggle_anonymous",
+        for name in ("iper_update", "iper_detail", "iper_toggle_anonymous",
                      "iper_toggle_status", "iper_clone", "iper_observation_add"):
             with self.subTest(name=name):
                 response = self.client.get(url(name, org_pk=self.org_pk, pk=ajena.pk), **AJAX)

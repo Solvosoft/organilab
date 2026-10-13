@@ -351,10 +351,11 @@ def _decorator_permissions(source):
 def _permissions_of(callback):
     """Los permisos que la vista exige, leídos sin ejecutarla.
 
-    Tres fuentes, por orden de fiabilidad: el atributo `permission_required` de la
+    Cuatro fuentes, por orden de fiabilidad: el atributo `permission_required` de la
     clase (lo que usan las CBV con `PermissionRequiredMixin`), el mismo atributo pasado
-    por `as_view()`, y —para las vistas función— el decorador `@permission_required`
-    del código fuente.
+    por `as_view()`, el diccionario `perms` de ViewSets DRF que usan
+    `AllPermissionByAction`, y —para las vistas función— el decorador
+    `@permission_required` del código fuente.
 
     Lo que se calcula en tiempo de ejecución queda fuera, y está bien: lo que no es
     literal tampoco es documentable.
@@ -372,6 +373,16 @@ def _permissions_of(callback):
         _add(getattr(view_class, "permission_required", None))
         initkwargs = getattr(callback, "view_initkwargs", None) or {}
         _add(initkwargs.get("permission_required"))
+
+    # ViewSets DRF con AllPermissionByAction: el diccionario `perms` mapea acciones
+    # a listas de permisos. Se recolectan todos porque el endpoint puede atender
+    # varias acciones según el método HTTP.
+    drf_cls = getattr(callback, "cls", None)
+    if drf_cls is not None:
+        perms_map = getattr(drf_cls, "perms", None)
+        if isinstance(perms_map, dict):
+            for action_perms in perms_map.values():
+                _add(action_perms)
 
     if not found:
         # Vista función: el decorador ya envolvió el callable, así que el atributo no

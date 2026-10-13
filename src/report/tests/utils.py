@@ -41,6 +41,7 @@ class ReportTestBase(TestCase):
             "name": "reporte-prueba",
             "title": "Reporte de prueba",
             "organization": self.org.pk,
+            "org_pk": self.org.pk,
             "laboratory": [self.lab.pk],
         }
         payload.update(data)

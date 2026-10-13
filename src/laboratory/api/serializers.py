@@ -3,6 +3,7 @@ import logging
 from django.conf import settings
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
@@ -34,7 +35,7 @@ from laboratory.models import (
     LaboratoryRoom,
     Furniture,
     LabOrOrgRequest,
-    RegisterUserQR,
+    RegisterUserQR, OrganizationStructureRelations,
 )
 
 from laboratory.models import Protocol
@@ -45,6 +46,17 @@ from sga.api.serializers import ChoicesGTS2Serializer
 from sga.models import DangerIndication, SubstanceCharacteristics
 
 logger = logging.getLogger("organilab")
+
+
+def organization_is_valid_for_view(organization, org_pk_view):
+    """La organización del objeto es la de la URL o una relacionada con ella."""
+    if organization.pk == org_pk_view:
+        return True
+    return OrganizationStructureRelations.objects.filter(
+        organization=organization,
+        content_type=ContentType.objects.get_for_model(OrganizationStructure),
+        object_id=org_pk_view,
+    ).exists()
 
 
 class ReservedProductsSerializer(serializers.ModelSerializer):
@@ -457,7 +469,7 @@ class ValidateEquipmentSerializer(serializers.ModelSerializer):
                 {"type": _("Type equipment object is not valid.")}
             )
 
-        if organization.pk != org_pk_view:
+        if not organization_is_valid_for_view(organization, org_pk_view):
             logger.debug(
                 f"ValidateEquipmentSerializer --> organization.pk ({organization.pk}) != org_pk_view ({org_pk_view})"
             )
@@ -882,7 +894,7 @@ class ValidateReactiveSerializer(serializers.ModelSerializer):
                 {"type": _("Type equipment object is not valid.")}
             )
 
-        if organization.pk != org_pk_view:
+        if not organization_is_valid_for_view(organization, org_pk_view):
             logger.debug(
                 f"ValidateReactiveSerializer --> organization.pk ({organization.pk}) != org_pk_view ({org_pk_view})"
             )

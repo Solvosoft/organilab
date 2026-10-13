@@ -61,6 +61,8 @@ const trash_config = {
         detail: 'fa fa-eye fa-lg',
         update: 'fa fa-edit fa-lg',
         destroy: 'fa fa-trash fa-lg',
+        clear: '<i class="fa fa-eraser" aria-hidden="true"></i>'
+
     },
     urls: trash_urls,
 }

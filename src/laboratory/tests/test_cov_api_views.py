@@ -563,6 +563,17 @@ class ReactivosApiTest(CovApiBase):
         self.assertEqual(response.status_code, 400)
         self.assertIn("type", response.json())
 
+    def test_actualizacion_con_organizacion_relacionada(self):
+        # La organización 3 está relacionada con la 1 (fixture): el reactivo puede pasar a ella.
+        response = self.client.put(
+            self.ruta("api-reactive-detail", pk=self.reactivo.pk),
+            data=self.datos_reactivo(organization=3),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.reactivo.refresh_from_db()
+        self.assertEqual(self.reactivo.organization_id, 3)
+
     def test_actualizacion_con_organizacion_ajena(self):
         response = self.client.put(
             self.ruta("api-reactive-detail", pk=self.reactivo.pk),

@@ -31,7 +31,10 @@ const ocrud = ObjectCRUD("platform_systemparameter", {
     add_filter: false,
     relation_render: {},
     delete_display: data => data["label"],
-    icons: {update: "fa fa-edit me-1 fa-lg"},
+    icons: {
+        update: "fa fa-edit me-1 fa-lg",
+        clear: '<i class="fa fa-eraser" aria-hidden="true"></i>',
+    },
     urls: object_urls,
     gt_form_modals: {update: {}, create: {}, detail: {}, destroy: {}},
 });

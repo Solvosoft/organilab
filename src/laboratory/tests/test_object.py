@@ -396,7 +396,7 @@ class EquipmentViewTest(BaseLaboratorySetUpTest):
                 "model": "PDLSF",
                 "serie": "FS553",
                 "plaque": "34FERDSA",
-                "organization": 3,
+                "organization": 2,
             }
         )
 
@@ -471,6 +471,15 @@ class EquipmentViewTest(BaseLaboratorySetUpTest):
         )
         self.assertEqual(response.status_code, 400)
 
+    def test_create_equipment_with_related_org_user_with_perms(self):
+        # User 1 with perms - Check response status code equal to 201. --> Org 3 is related to org 1
+        data = self.create_data.copy()
+        data["organization"] = 3
+        response = self.client.post(
+            self.url_equipment_list, data=data, content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 201)
+
     def test_create_equipment_user_without_perms(self):
         # User 3 without perms - Check response status code equal to 403. --> Permissions required(view_object, add_object)
         response = self.client2.post(
@@ -515,6 +524,15 @@ class EquipmentViewTest(BaseLaboratorySetUpTest):
             self.url_equipment_update, data=data, content_type="application/json"
         )
         self.assertEqual(response.status_code, 400)
+
+    def test_update_equipment_with_related_org_user_with_perms(self):
+        # User 1 with perms - Check response status code equal to 200. --> Org 3 is related to org 1
+        data = self.update_data1.copy()
+        data["organization"] = 3
+        response = self.client.put(
+            self.url_equipment_update, data=data, content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 200)
 
     def test_update_equipment_with_different_object_org_user_with_perms(self):
         # User 1 with perms - Check response status code equal to 400. --> Different organization equipment object

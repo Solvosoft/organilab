@@ -105,8 +105,9 @@ class UtilidadesTest(EscenarioOrganizaciones):
     @override_settings(DELETED_USER_SENTINEL_USERNAME=None)
     def test_sin_centinela_no_se_reasigna_la_bitacora(self):
         user = User.objects.create_user("se-va")
-        entrada = LogEntry.objects.log_action(
-            user.pk, ContentType.objects.get_for_model(User).pk, user.pk, "se-va", ADDITION
+        entrada = LogEntry.objects.create(
+            user_id=user.pk, content_type=ContentType.objects.get_for_model(User), object_id=str(user.pk),
+            object_repr="se-va", action_flag=ADDITION,
         )
         preserve_audit_trail_before_delete(user)
         entrada.refresh_from_db()

@@ -326,9 +326,9 @@ FEATURES = (
                 id="borrar",
                 name="Eliminar una evaluación",
                 actors=("administrador_iper", "administrativo_superior"),
-                routes=("riskmanagement:iper_delete",),
+                routes=("riskmanagement:api-iperassessment-detail",),
                 permissions=("risk_management.delete_iperassessment",),
-                source="src/risk_management/iper_views.py IPERAssessmentDelete",
+                source="src/risk_management/api/viewset.py IPERAssessmentViewSet.perform_destroy",
             ),
         ),
         notes=(

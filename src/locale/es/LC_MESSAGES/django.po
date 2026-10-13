@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-13 08:44-0600\n"
+"POT-Creation-Date: 2026-10-13 15:23-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -1152,7 +1152,7 @@ msgid "Click to manage this organization"
 msgstr "Clonar Organización"
 
 msgid "Choose"
-msgstr ""
+msgstr "Elegir"
 
 msgid "Add new rol"
 msgstr "Agregar Nuevo Rol"
@@ -1272,12 +1272,6 @@ msgstr "Como manejar las mezclas de permisos"
 msgid "Append"
 msgstr "Agregar"
 
-msgid "Sustract"
-msgstr "Eliminar"
-
-msgid "Only labs selected"
-msgstr "Solo usar laboratorios seleccionados"
-
 msgid "Organization parent:"
 msgstr "Organización padre:"
 
@@ -1363,6 +1357,9 @@ msgstr "Desecho"
 
 msgid "Manage Rol"
 msgstr "Administrar perfil"
+
+msgid "Sustract"
+msgstr "Eliminar"
 
 msgid "Only rols selected"
 msgstr "Solo usar roles seleccionados"
@@ -4784,12 +4781,6 @@ msgstr "Este campo no debe ser nulo."
 msgid "Authentication credentials were not provided."
 msgstr "No se proporcionaron las credenciales de autenticación."
 
-#, fuzzy
-#| msgid "User %(user)s not allowed on organization %(organization)r "
-msgid "User renatafg not allowed on organization Org MK "
-msgstr ""
-"Usuario %(user)s no está autorizado en la organización %(organization)r"
-
 msgid "This field may not be blank."
 msgstr "Este campo no debe estar vacío."
 
@@ -7009,10 +7000,8 @@ msgstr "Sustancias por Código EU"
 msgid "Sustances per Storage Class"
 msgstr "Sustancias por clase de almacenamientos"
 
-#, fuzzy
-#| msgid "Adjustment quantities in logs"
 msgid "Substances quantity in tons"
-msgstr "Ajuste de cantidades en bitacoras"
+msgstr "Cantidad de sustancias en toneladas"
 
 msgid "Unidades"
 msgstr ""
@@ -7903,10 +7892,8 @@ msgstr "Eliminar regente"
 msgid "View search filters"
 msgstr "Ver filtros de búsqueda"
 
-#, fuzzy
-#| msgid "Danger Substance"
 msgid "Tons per Substance"
-msgstr "Sustancia Peligrosa"
+msgstr "Toneladas por Sustancia"
 
 msgid "EU Code"
 msgstr "Código UE"
@@ -7947,8 +7934,6 @@ msgstr "Estructuras"
 msgid "Workers"
 msgstr "Trabajadores"
 
-#, fuzzy
-#| msgid "Download all"
 msgid "Download Excel"
 msgstr "Descargar"
 
@@ -7978,8 +7963,6 @@ msgstr "Eliminar Jornada Laboral"
 msgid "Resumen"
 msgstr "Resumen"
 
-#, fuzzy
-#| msgid "Classification"
 msgid "Clasificación"
 msgstr "Clasificación"
 
@@ -7999,8 +7982,6 @@ msgstr "Categoría"
 msgid "Valor"
 msgstr ""
 
-#, fuzzy
-#| msgid "Delete Substance"
 msgid "Detalle Sustancias"
 msgstr "Eliminar sustancia"
 

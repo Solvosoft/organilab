@@ -347,7 +347,7 @@ class RelOrgBaseS2(generics.RetrieveAPIView, BaseSelect2View):
 
 @register_lookups(prefix="relorgfullbase", basename="relorgfullbase")
 class RelOrgFullS2(generics.RetrieveAPIView, BaseSelect2View):
-    """Like RelOrgBaseS2 but includes already-linked labs and marks them selected."""
+    """Like RelOrgBaseS2 but offers the root's labs (or the user's) not yet linked to the organization."""
 
     model = Laboratory
     fields = ["name"]
@@ -382,9 +382,7 @@ class RelOrgFullS2(generics.RetrieveAPIView, BaseSelect2View):
                 content_type__model="laboratory",
             ).values_list("object_id", flat=True)
         )
-        self.selected = [str(pk) for pk in linked]
-
-        return labs.order_by(*self.order_by)
+        return labs.exclude(pk__in=linked).order_by(*self.order_by)
 
     def paginate_queryset(self, queryset):
         self.paginator.page_size = queryset.count() or 1

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-13 08:44-0600\n"
+"POT-Creation-Date: 2026-10-13 15:23-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -1206,12 +1206,6 @@ msgstr ""
 msgid "Append"
 msgstr ""
 
-msgid "Sustract"
-msgstr ""
-
-msgid "Only labs selected"
-msgstr ""
-
 msgid "Organization parent:"
 msgstr ""
 
@@ -1286,6 +1280,9 @@ msgid "Disposal"
 msgstr ""
 
 msgid "Manage Rol"
+msgstr ""
+
+msgid "Sustract"
 msgstr ""
 
 msgid "Only rols selected"
@@ -4477,9 +4474,6 @@ msgid "This field may not be null."
 msgstr ""
 
 msgid "Authentication credentials were not provided."
-msgstr ""
-
-msgid "User renatafg not allowed on organization Org MK "
 msgstr ""
 
 msgid "This field may not be blank."

@@ -19,7 +19,7 @@ class MeasurementPointFilter(FilterSet):
 
 class ConsumptionRecordFilter(FilterSet):
     period_end = DateFromToRangeFilter(
-        widget=DateRangeTextWidget(attrs={"placeholder": "DD/MM/YYYY/"})
+        widget=DateRangeTextWidget(attrs={"placeholder": "YYYY/MM/DD"})
     )
 
     class Meta:

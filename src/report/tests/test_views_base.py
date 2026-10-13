@@ -264,6 +264,12 @@ class ReportTableTest(ReportTestBase):
         response = self.client.get(self.url(report, self.foreign_org.pk), **XHR)
         self.assertEqual(response.status_code, 404)
 
+    def test_reporte_de_otra_organizacion_es_404(self):
+        # El usuario sí entra a su organización, pero la tarea se pidió desde otra.
+        report = self.make_report("reactive_report", "html", org_pk=self.foreign_org.pk)
+        response = self.client.get(self.url(report), **XHR)
+        self.assertEqual(response.status_code, 404)
+
     def test_cambios_de_objetos_usa_su_plantilla(self):
         report = self.make_report("report_objectschanges", "html")
         log = ObjectChangeLogReport.objects.create(

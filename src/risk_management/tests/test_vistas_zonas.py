@@ -379,15 +379,15 @@ class ApiTest(MiembroSinRolMixin, RiskTestCase):
             with self.subTest(name=name):
                 self.assertEqual(self.listar(name, org=self.other, **kwargs).status_code, 403)
 
-    def test_sin_sesion_es_403(self):
+    def test_sin_sesion_es_401(self):
         self.client.logout()
         response = self.client.post(
             url("api-regent-list", org_pk=self.organization.pk),
             {"user": self.user.pk, "laboratories": [self.lab.pk], "type_regent": "chemical"},
         )
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 401)
         self.assertFalse(Regent.objects.exists())
-        self.assertEqual(self.listar("api-structure-list").status_code, 403)
+        self.assertEqual(self.listar("api-structure-list").status_code, 401)
 
     def test_zona_ajena_bajo_la_organizacion_propia(self):
         IncidentReport.objects.create(

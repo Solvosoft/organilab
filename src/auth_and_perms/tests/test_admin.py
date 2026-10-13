@@ -24,8 +24,9 @@ class AdminAuthAndPermsTest(EscenarioOrganizaciones):
         self.client.force_login(self.admin)
 
     def registrar(self, user, repr_):
-        return LogEntry.objects.log_action(
-            user.pk, ContentType.objects.get_for_model(User).pk, user.pk, repr_, ADDITION
+        return LogEntry.objects.create(
+            user_id=user.pk, content_type=ContentType.objects.get_for_model(User), object_id=str(user.pk),
+            object_repr=repr_, action_flag=ADDITION,
         )
 
     def test_filtro_de_bitacora_reasignada_al_borrar_usuarios(self):

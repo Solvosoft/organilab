@@ -6,7 +6,7 @@ djgentelella[firmador]>=0.6.0
 # directamente (vistas @ajax/AJAXMixin de laboratory) hasta modernizar esas pantallas.
 # Los JS del plugin están vendorizados en src/presentation/static/django_ajax/js/.
 djangoajax==3.3
-django==5.2.11
+django===6.0
 django-excel==0.0.13
 django-reservation==0.2.10
 # El campo geolocation ya no usa location_field (se migró a GTPointField de
@@ -26,7 +26,7 @@ pyexcel-webio==0.1.4
 pyexcel-xls==0.7.1
 pyexcel-xlsx==0.6.1
 xlwt==1.3.0
-django-celery-beat==2.8.1
+django-celery-beat @ git+https://github.com/celery/django-celery-beat.git
 django-celery-results==2.6.0
 celery==5.6.2
 # Backend de cache sobre Redis. Solo se usa si CACHE_URL esta puesta; sin ella
