@@ -2,15 +2,15 @@
 
 Generado con `make coverage-all` (suite sin navegador + Selenium headless, unidas con `coverage combine`). No editar a mano: `make coverage-summary` lo regenera.
 
-- Fecha: 2026-10-12 16:11
-- Commit: `e18a8f03a`
-- **Total: 96.7%** — 33406 sentencias, 1096 sin cubrir, 372 archivos
+- Fecha: 2026-10-12 16:45
+- Commit: `362ac77bd`
+- **Total: 96.7%** — 33406 sentencias, 1099 sin cubrir, 372 archivos
 
 ## Por app
 
 | App | Archivos | Sentencias | Sin cubrir | Cobertura |
 |-----|---------:|-----------:|-----------:|----------:|
-| `laboratory` | 90 | 13322 | 399 | 97.0% |
+| `laboratory` | 90 | 13322 | 402 | 97.0% |
 | `report` | 28 | 3267 | 336 | 89.7% |
 | `auth_and_perms` | 27 | 2572 | 153 | 94.1% |
 | `sga` | 56 | 4488 | 86 | 98.1% |
@@ -41,7 +41,7 @@ Generado con `make coverage-all` (suite sin navegador + Selenium headless, unida
 | `laboratory/views/organizations.py` | 208 | 39 | 81.2% |
 | `sga/views/editor.py` | 337 | 34 | 89.9% |
 | `laboratory/forms.py` | 710 | 33 | 95.4% |
-| `laboratory/api/views.py` | 942 | 25 | 97.3% |
+| `laboratory/api/views.py` | 942 | 28 | 97.0% |
 | `auth_and_perms/authBackend.py` | 21 | 21 | 0.0% |
 | `laboratory/utils.py` | 327 | 21 | 93.6% |
 | `auth_and_perms/views/organizationstructure.py` | 282 | 18 | 93.6% |
