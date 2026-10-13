@@ -92,13 +92,11 @@ class WarningWordAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
 
     def retrieve(self, request, org_pk, pk=None, *args, **kwargs):
         self._check_permission_on_organization(request, org_pk, "list")
-        if pk:
-            warning_word = get_object_or_404(WarningWord, pk=pk)
-            serializer = self.get_serializer(warning_word)
+        # Ruta de detalle: el router siempre entrega ``pk``.
+        warning_word = get_object_or_404(WarningWord, pk=pk)
+        serializer = self.get_serializer(warning_word)
 
-            return Response(serializer.data, status=status.HTTP_200_OK)
-
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request, org_pk, *args, **kwargs):
         self._check_permission_on_organization(request, org_pk, "create")
@@ -130,86 +128,77 @@ class WarningWordAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
         self._check_permission_on_organization(request, org_pk, "list")
         queryset = self.get_queryset().order_by("weigth")
 
+        # Con ``LimitOffsetPagination`` y ``PAGE_SIZE`` siempre hay página.
         page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-
-            return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(queryset, many=True)
-
-        return JsonResponse({"data": serializer.data})
+        serializer = self.get_serializer(page, many=True)
+        return self.get_paginated_response(serializer.data)
 
     def update(self, request, org_pk, pk=None, *args, **kwargs):
         self._check_permission_on_organization(request, org_pk, "update")
 
-        if pk:
-            warning_word = get_object_or_404(WarningWord, pk=pk)
-            form = WarningWordForm(request.data, instance=warning_word)
+        # Ruta de detalle: el router siempre entrega ``pk``.
+        warning_word = get_object_or_404(WarningWord, pk=pk)
+        form = WarningWordForm(request.data, instance=warning_word)
 
-            if form.is_valid():
-                warning_word = form.save()
-                organilab_logentry(
-                    request.user,
-                    warning_word,
-                    CHANGE,
-                    "warning word",
-                    relobj=[self.organization],
-                    changed_data=form.changed_data,
-                    change_message=_("Updated warning word '%(name)s'")
-                    % {"name": warning_word.name},
-                )
-
-                return JsonResponse(
-                    {"detail": _("Item updated successfully.")},
-                    status=status.HTTP_200_OK,
-                )
-
-            return JsonResponse(
-                {"errors": form.errors}, status=status.HTTP_400_BAD_REQUEST
+        if form.is_valid():
+            warning_word = form.save()
+            organilab_logentry(
+                request.user,
+                warning_word,
+                CHANGE,
+                "warning word",
+                relobj=[self.organization],
+                changed_data=form.changed_data,
+                change_message=_("Updated warning word '%(name)s'")
+                % {"name": warning_word.name},
             )
 
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+            return JsonResponse(
+                {"detail": _("Item updated successfully.")},
+                status=status.HTTP_200_OK,
+            )
+
+        return JsonResponse(
+            {"errors": form.errors}, status=status.HTTP_400_BAD_REQUEST
+        )
 
     def destroy(self, request, org_pk, pk=None, *args, **kwargs):
         self._check_permission_on_organization(request, org_pk, "destroy")
 
-        if pk:
-            warning_word = get_object_or_404(WarningWord, pk=pk)
+        # Ruta de detalle: el router siempre entrega ``pk``.
+        warning_word = get_object_or_404(WarningWord, pk=pk)
 
-            in_use = DangerIndication.objects.filter(
-                warning_words=warning_word
-            ).exists() or SGAComplement.objects.filter(
-                warningword=warning_word
-            ).exists()
+        in_use = DangerIndication.objects.filter(
+            warning_words=warning_word
+        ).exists() or SGAComplement.objects.filter(
+            warningword=warning_word
+        ).exists()
 
-            if in_use:
-                return JsonResponse(
-                    {
-                        "detail": _(
-                            "This item can't be deleted because it is being used by a danger indication."
-                        )
-                    },
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-
-            organilab_logentry(
-                request.user,
-                warning_word,
-                DELETION,
-                "warning word",
-                relobj=[self.organization],
-                changed_data=["name", "weigth"],
-                change_message=_("Deleted warning word '%(name)s'")
-                % {"name": warning_word.name},
-            )
-            warning_word.delete()
-
+        if in_use:
             return JsonResponse(
-                {"detail": _("Item deleted successfully.")}, status=status.HTTP_200_OK
+                {
+                    "detail": _(
+                        "This item can't be deleted because it is being used by a danger indication."
+                    )
+                },
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        organilab_logentry(
+            request.user,
+            warning_word,
+            DELETION,
+            "warning word",
+            relobj=[self.organization],
+            changed_data=["name", "weigth"],
+            change_message=_("Deleted warning word '%(name)s'")
+            % {"name": warning_word.name},
+        )
+        warning_word.delete()
+
+        return JsonResponse(
+            {"detail": _("Item deleted successfully.")}, status=status.HTTP_200_OK
+        )
 
 
 class DangerIndicationTableView(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -273,13 +262,11 @@ class DangerIndicationAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
 
     def retrieve(self, request, org_pk, pk=None, *args, **kwargs):
         self._check_permission_on_organization(request, org_pk, "list")
-        if pk:
-            danger_indication = get_object_or_404(DangerIndication, pk=pk)
-            serializer = self.get_serializer(danger_indication)
+        # Ruta de detalle: el router siempre entrega ``pk``.
+        danger_indication = get_object_or_404(DangerIndication, pk=pk)
+        serializer = self.get_serializer(danger_indication)
 
-            return Response(serializer.data, status=status.HTTP_200_OK)
-
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request, org_pk, *args, **kwargs):
         self._check_permission_on_organization(request, org_pk, "create")
@@ -311,64 +298,58 @@ class DangerIndicationAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
         self._check_permission_on_organization(request, org_pk, "list")
         queryset = self.get_queryset().order_by("code")
 
+        # Con ``LimitOffsetPagination`` y ``PAGE_SIZE`` siempre hay página.
         page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-
-            return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(queryset, many=True)
-        return JsonResponse({"data": serializer.data})
+        serializer = self.get_serializer(page, many=True)
+        return self.get_paginated_response(serializer.data)
 
     def update(self, request, org_pk, pk=None, *args, **kwargs):
         self._check_permission_on_organization(request, org_pk, "update")
 
-        if pk:
-            danger_indication = get_object_or_404(DangerIndication, pk=pk)
-            form = DangerIndicationForm(request.data, instance=danger_indication)
+        # Ruta de detalle: el router siempre entrega ``pk``.
+        danger_indication = get_object_or_404(DangerIndication, pk=pk)
+        form = DangerIndicationForm(request.data, instance=danger_indication)
 
-            if form.is_valid():
-                danger_indication = form.save()
-                organilab_logentry(
-                    request.user,
-                    danger_indication,
-                    CHANGE,
-                    "danger indication",
-                    relobj=[self.organization],
-                    changed_data=form.changed_data,
-                    change_message=_("Updated danger indication '%(code)s'")
-                    % {"code": danger_indication.code},
-                )
+        if form.is_valid():
+            danger_indication = form.save()
+            organilab_logentry(
+                request.user,
+                danger_indication,
+                CHANGE,
+                "danger indication",
+                relobj=[self.organization],
+                changed_data=form.changed_data,
+                change_message=_("Updated danger indication '%(code)s'")
+                % {"code": danger_indication.code},
+            )
 
-                return JsonResponse(
-                    {"detail": _("Item updated successfully.")},
-                    status=status.HTTP_200_OK,
-                )
+            return JsonResponse(
+                {"detail": _("Item updated successfully.")},
+                status=status.HTTP_200_OK,
+            )
 
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, org_pk, pk=None, *args, **kwargs):
         self._check_permission_on_organization(request, org_pk, "destroy")
 
-        if pk:
-            danger_indication = get_object_or_404(DangerIndication, pk=pk)
-            organilab_logentry(
-                request.user,
-                danger_indication,
-                DELETION,
-                "danger indication",
-                relobj=[self.organization],
-                changed_data=["code", "description", "warning_words"],
-                change_message=_("Deleted danger indication '%(code)s'")
-                % {"code": danger_indication.code},
-            )
-            danger_indication.delete()
+        # Ruta de detalle: el router siempre entrega ``pk``.
+        danger_indication = get_object_or_404(DangerIndication, pk=pk)
+        organilab_logentry(
+            request.user,
+            danger_indication,
+            DELETION,
+            "danger indication",
+            relobj=[self.organization],
+            changed_data=["code", "description", "warning_words"],
+            change_message=_("Deleted danger indication '%(code)s'")
+            % {"code": danger_indication.code},
+        )
+        danger_indication.delete()
 
-            return JsonResponse(
-                {"detail": _("Item deleted successfully.")}, status=status.HTTP_200_OK
-            )
-
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse(
+            {"detail": _("Item deleted successfully.")}, status=status.HTTP_200_OK
+        )
 
 
 class PrudenceAdviceTableView(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -437,13 +418,11 @@ class PrudenceAdviceAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
 
     def retrieve(self, request, org_pk, pk=None, *args, **kwargs):
         self._check_permission_on_organization(request, org_pk, "list")
-        if pk:
-            prudence_advice = get_object_or_404(PrudenceAdvice, pk=pk)
-            serializer = self.get_serializer(prudence_advice)
+        # Ruta de detalle: el router siempre entrega ``pk``.
+        prudence_advice = get_object_or_404(PrudenceAdvice, pk=pk)
+        serializer = self.get_serializer(prudence_advice)
 
-            return Response(serializer.data, status=status.HTTP_200_OK)
-
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request, org_pk, *args, **kwargs):
         self._check_permission_on_organization(request, org_pk, "create")
@@ -475,62 +454,55 @@ class PrudenceAdviceAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
         self._check_permission_on_organization(request, org_pk, "list")
         queryset = self.get_queryset().order_by("code")
 
+        # Con ``LimitOffsetPagination`` y ``PAGE_SIZE`` siempre hay página.
         page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-
-            return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(queryset, many=True)
-
-        return JsonResponse({"data": serializer.data})
+        serializer = self.get_serializer(page, many=True)
+        return self.get_paginated_response(serializer.data)
 
     def update(self, request, org_pk, pk=None, *args, **kwargs):
         self._check_permission_on_organization(request, org_pk, "update")
 
-        if pk:
-            prudence_advice = get_object_or_404(PrudenceAdvice, pk=pk)
-            form = PrudenceAdviceForm(request.data, instance=prudence_advice)
+        # Ruta de detalle: el router siempre entrega ``pk``.
+        prudence_advice = get_object_or_404(PrudenceAdvice, pk=pk)
+        form = PrudenceAdviceForm(request.data, instance=prudence_advice)
 
-            if form.is_valid():
-                prudence_advice = form.save()
-                organilab_logentry(
-                    request.user,
-                    prudence_advice,
-                    CHANGE,
-                    "prudence advice",
-                    relobj=[self.organization],
-                    changed_data=form.changed_data,
-                    change_message=_("Updated prudence advice '%(code)s'")
-                    % {"code": prudence_advice.code},
-                )
+        if form.is_valid():
+            prudence_advice = form.save()
+            organilab_logentry(
+                request.user,
+                prudence_advice,
+                CHANGE,
+                "prudence advice",
+                relobj=[self.organization],
+                changed_data=form.changed_data,
+                change_message=_("Updated prudence advice '%(code)s'")
+                % {"code": prudence_advice.code},
+            )
 
-                return JsonResponse(
-                    {"detail": _("Item updated successfully.")},
-                    status=status.HTTP_200_OK,
-                )
+            return JsonResponse(
+                {"detail": _("Item updated successfully.")},
+                status=status.HTTP_200_OK,
+            )
 
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, org_pk, pk=None, *args, **kwargs):
         self._check_permission_on_organization(request, org_pk, "destroy")
 
-        if pk:
-            prudence_advice = get_object_or_404(PrudenceAdvice, pk=pk)
-            organilab_logentry(
-                request.user,
-                prudence_advice,
-                DELETION,
-                "prudence advice",
-                relobj=[self.organization],
-                changed_data=["code", "name", "prudence_advice_help"],
-                change_message=_("Deleted prudence advice '%(code)s'")
-                % {"code": prudence_advice.code},
-            )
-            prudence_advice.delete()
+        # Ruta de detalle: el router siempre entrega ``pk``.
+        prudence_advice = get_object_or_404(PrudenceAdvice, pk=pk)
+        organilab_logentry(
+            request.user,
+            prudence_advice,
+            DELETION,
+            "prudence advice",
+            relobj=[self.organization],
+            changed_data=["code", "name", "prudence_advice_help"],
+            change_message=_("Deleted prudence advice '%(code)s'")
+            % {"code": prudence_advice.code},
+        )
+        prudence_advice.delete()
 
-            return JsonResponse(
-                {"detail": _("Item deleted successfully.")}, status=status.HTTP_200_OK
-            )
-
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse(
+            {"detail": _("Item deleted successfully.")}, status=status.HTTP_200_OK
+        )

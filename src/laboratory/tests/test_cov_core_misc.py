@@ -294,11 +294,9 @@ class VistasDeAlcanceWebTest(BaseInventarioTest):
         self.assertEqual(sin_filtros.status_code, 200)
         self.assertEqual(self.client.get(reverse("objectlimitschart-list")).status_code, 404)
 
-    def test_filtros_base_del_grafico_con_datos_invalidos(self):
+    def test_color_del_grafico_da_la_vuelta(self):
+        # BaseChart.get_extra_filters se borró: su única subclase la redefine y
+        # la versión base pedía un campo created_at que el serializer no tiene.
         grafico = BaseChart()
-        grafico.request = SimpleNamespace(query_params={})
-        grafico.get_extra_filters()
-        self.assertEqual(grafico.filters, {})
-        self.assertFalse(grafico.no_labs)
         grafico.index = len(grafico.colors) - 1
         self.assertEqual(grafico.get_color(), "rgb(%s)" % grafico.colors[0])

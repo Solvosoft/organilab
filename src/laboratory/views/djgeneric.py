@@ -15,7 +15,7 @@ from django.views.generic.edit import CreateView as djCreateView
 from django.views.generic.edit import DeleteView as djDeleteView
 from django.views.generic.edit import UpdateView as djUpdateView
 from django.views.generic.list import ListView as djListView
-from weasyprint import HTML
+from presentation.pdf import html_to_pdf
 from auth_and_perms.organization_utils import (
     user_is_allowed_on_organization,
     organization_can_change_laboratory,
@@ -371,7 +371,7 @@ class ReportListView(djListView):
         # added explicit context
         html = template.render(context=context)
 
-        page = HTML(string=html, encoding="utf-8").write_pdf()
+        page = html_to_pdf(html)
 
         response = HttpResponse(page, content_type="application/pdf")
         response["Content-Disposition"] = (

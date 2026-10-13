@@ -16,7 +16,7 @@ from django.utils import timezone
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from djgentelella.decorators.perms import any_permission_required
-from weasyprint import HTML
+from presentation.pdf import html_to_pdf
 
 from auth_and_perms.organization_utils import user_is_allowed_on_organization
 from laboratory.models import OrganizationStructure
@@ -371,9 +371,7 @@ def security_leaf_pdf(request, org_pk, substance):
             "org_pk": org_pk,
         }
         html_template = template.render(context)
-        pdf = HTML(
-            string=html_template, base_url=request.build_absolute_uri()
-        ).write_pdf()
+        pdf = html_to_pdf(html_template, base_url=request.build_absolute_uri())
         return HttpResponse(pdf, content_type="application/pdf")
 
 
@@ -413,25 +411,22 @@ def add_sga_complements(request, org_pk, element):
         "prudence": _("Create Prudence Advice"),
     }
 
-    forms = {
-        "warning": WarningWordForm(),
-        "danger": DangerIndicationForm(),
-        "prudence": PrudenceAdviceForm(),
+    # Solo se construye el formulario pedido: armar los tres cargaba los
+    # catálogos de los otros dos para nada.
+    form_classes = {
+        "warning": WarningWordForm,
+        "danger": DangerIndicationForm,
+        "prudence": PrudenceAdviceForm,
     }
     if request.method == "POST":
-        forms = {
-            "warning": WarningWordForm(request.POST),
-            "danger": DangerIndicationForm(request.POST),
-            "prudence": PrudenceAdviceForm(request.POST),
-        }
-        form = forms[element]
+        form = form_classes[element](request.POST)
 
         if form.is_valid():
             form.save()
             return redirect(reverse(view_urls[element], kwargs={"org_pk": org_pk}))
 
     else:
-        form = forms[element]
+        form = form_classes[element]()
 
     context = {
         "form": form,

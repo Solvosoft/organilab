@@ -151,17 +151,14 @@ class LabsByOrgLookup(BaseSelect2View):
     organization, serializer = (None, None)
 
     def get_queryset(self):
+        # Solo `list()` llega aquí, y siempre con una organización ya validada
+        # por el serializer (campo obligatorio): no hay rama sin organización.
+        # Se calculaba además `get_laboratories_from_organization` y se
+        # descartaba el resultado (una consulta de más por petición).
         queryset = super().get_queryset()
-
-        if self.organization:
-            lab_ids = get_laboratories_from_organization(
-                self.organization.pk, self.request.user
-            )
-            return queryset.filter(
-                pk__in=get_lab_ids(self.organization, self.request.user.profile)
-            )
-
-        return queryset.none()
+        return queryset.filter(
+            pk__in=get_lab_ids(self.organization, self.request.user.profile)
+        )
 
     def list(self, request, *args, **kwargs):
         self.serializer = ValidateOrganizationSerializer(

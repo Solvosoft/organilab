@@ -118,9 +118,10 @@ const LabviewMap = {
                   ${gettext('Shelves without a position:')} ${names}</p>`;
     },
 
+    // `qr` es la URL del QR: el servidor lo genera la primera vez que se pide.
     renderQr(qr, name) {
         if (!qr) { return ''; }
-        return `<a class="imgqr ms-1" href="data:image/svg+xml;base64,${qr}"
+        return `<a class="imgqr ms-1" href="${escapeHtml(qr)}?download=1"
                    target="_blank" download="${escapeHtml(name)}.svg"
                    title="${gettext('QR code')}"><i class="fa fa-qrcode"></i></a>`;
     },

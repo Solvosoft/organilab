@@ -5,7 +5,6 @@ from django.conf import settings
 from django.contrib.auth.forms import UsernameField
 from django.contrib.auth.models import Group, User
 from django.core.exceptions import ValidationError
-from django.db.models import Q
 from django.forms import ModelForm
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
@@ -16,7 +15,7 @@ from djgentelella.widgets.files import FileChunkedUpload
 from djgentelella.widgets.selects import AutocompleteSelect, AutocompleteSelectMultiple
 from djgentelella.widgets.tinymce import EditorTinymce
 
-from auth_and_perms.models import Profile, Rol
+from auth_and_perms.models import Rol
 from authentication.forms import PasswordChangeForm
 from derb.models import CustomForm as DerbCustomForm
 from laboratory import utils
@@ -33,7 +32,6 @@ from laboratory.models import (
     ReactiveLimit,
     ObjectMaximumLimit,
     LaboratoryProcess,
-    MaterialCapacity,
     UserOrganization,
     LabOrOrgRequest,
 )
@@ -51,7 +49,6 @@ from .models import (
     Furniture,
 )
 from .utils import get_users_from_organization
-from .utils_base_unit import get_conversion_from_two_units
 from .utils_upload_reatives import get_units
 
 
@@ -312,59 +309,6 @@ class ReservedModalForm(GTForm, ModelForm):
         }
 
 
-class TransferObjectForm(GTForm):
-    amount_send = forms.CharField(
-        widget=genwidgets.TextInput,
-        max_length=10,
-        label=_("Amount"),
-        help_text=_("Use dot like 0.344 on decimal"),
-        required=True,
-    )
-    laboratory = forms.ModelChoiceField(
-        widget=genwidgets.Select,
-        queryset=Laboratory.objects.all(),
-        label=_("Laboratory"),
-        required=True,
-    )
-    mark_as_discard = forms.BooleanField(
-        widget=genwidgets.YesNoInput, label=_("Mark as discard"), required=False
-    )
-
-    def __init__(self, *args, **kwargs):
-        users = kwargs.pop("users")
-        lab = kwargs.pop("lab_send")
-        org = kwargs.pop("org")
-        super(TransferObjectForm, self).__init__(*args, **kwargs)
-        profile = Profile.objects.filter(pk=users.profile.pk).first()
-        orgs = utils.get_pk_org_ancestors_decendants(users, org)
-
-        self.fields["laboratory"].queryset = profile.laboratories.filter(
-            organization__in=orgs
-        ).exclude(pk=lab)
-
-
-class AddObjectForm(GTForm, forms.Form):
-    amount = forms.FloatField(
-        widget=genwidgets.TextInput,
-        help_text=_("Use dot like 0.344 on decimal"),
-        label=_("Amount"),
-        required=True,
-    )
-    bill = forms.CharField(widget=genwidgets.TextInput, label=_("Bill"), required=False)
-    provider = forms.ModelChoiceField(
-        widget=genwidgets.Select,
-        queryset=Provider.objects.all(),
-        label=_("Provider"),
-        required=False,
-    )
-
-    def __init__(self, *args, **kwargs):
-        lab = kwargs.pop("lab")
-        super(AddObjectForm, self).__init__(*args, **kwargs)
-        providers = Provider.objects.filter(laboratory__id=int(lab))
-        self.fields["provider"].queryset = providers
-
-
 class SubtractObjectForm(GTForm):
     discount = forms.DecimalField(
         widget=genwidgets.TextInput,
@@ -388,21 +332,6 @@ class ProfileForm(GTForm, forms.Form):
     job_position = forms.CharField(widget=genwidgets.TextInput, label=_("Job Position"))
     profile_id = forms.CharField(widget=forms.HiddenInput())
     location = forms.CharField(widget=genwidgets.TextInput, label=_("Location"))
-
-
-class AddTransferObjectForm(GTForm):
-    shelf = forms.ModelChoiceField(
-        widget=genwidgets.Select,
-        queryset=Shelf.objects.all(),
-        label=_("Shelf"),
-        required=True,
-    )
-
-    def __init__(self, *args, **kwargs):
-        lab = kwargs.pop("lab")
-        super(AddTransferObjectForm, self).__init__(*args, **kwargs)
-        shelf = Shelf.objects.filter(furniture__labroom__laboratory__id=int(lab))
-        self.fields["shelf"].queryset = shelf
 
 
 class ProviderForm(GTForm, forms.ModelForm):
@@ -819,11 +748,6 @@ class ShelfObjectOptions(GTForm, forms.Form):
     shelf_object = forms.IntegerField(required=True)
 
 
-class ShelfObjectListForm(GTForm, forms.Form):
-    lab = forms.ModelChoiceField(queryset=Laboratory.objects.all(), required=True)
-    id = forms.IntegerField(required=True)
-
-
 # VALIDATE DATA FORMS
 class FurnitureLabRoomForm(forms.Form):
     labroom = forms.IntegerField(required=True)
@@ -848,28 +772,6 @@ class ValidateShelfUnitForm(GTForm):
     shelf = forms.ModelChoiceField(queryset=Shelf.objects.all(), required=True)
 
 
-class ShelfObjectStatusForm(GTForm, forms.ModelForm):
-    description = forms.CharField(widget=genwidgets.Textarea)
-
-    def __init__(self, *args, **kwargs):
-        org_pk = kwargs.pop("org_pk")
-        super().__init__(*args, **kwargs)
-        self.fields["status"] = forms.ModelChoiceField(
-            queryset=Catalog.objects.all(),
-            widget=AutocompleteSelect(
-                "shelfobject_status_search",
-                url_suffix="-detail",
-                url_kwargs={"pk": org_pk},
-            ),
-            help_text='<a class="add_status float-end fw-bold m-2"><i class="fa fa-plus"></i> %s</a>'
-            % (_("New status")),
-        )
-
-    class Meta:
-        model = ShelfObject
-        fields = ["status"]
-
-
 class ObservationShelfObjectForm(GTForm, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ObservationShelfObjectForm, self).__init__(*args, **kwargs)
@@ -881,113 +783,6 @@ class ObservationShelfObjectForm(GTForm, forms.ModelForm):
         widgets = {
             "action_taken": genwidgets.TextInput,
             "description": genwidgets.Textarea,
-        }
-
-
-class EquipmentForm(GTForm, forms.ModelForm):
-    laboratory = forms.IntegerField(widget=genwidgets.HiddenInput)
-    use_manual = forms.FileField(
-        widget=FileChunkedUpload, required=False, label=_("Use manual")
-    )
-    calibration_required = forms.BooleanField(
-        widget=genwidgets.YesNoInput,
-        required=False,
-        label=_("Is calibration required?"),
-    )
-    operation_voltage = forms.CharField(
-        widget=genwidgets.TextInput, required=False, label=_("Operation voltage")
-    )
-    operation_amperage = forms.CharField(
-        widget=genwidgets.TextInput, required=False, label=_("Operation amperage")
-    )
-    providers = forms.ModelMultipleChoiceField(
-        widget=genwidgets.SelectMultiple,
-        queryset=Provider.objects.none(),
-        required=False,
-        label=_("Providers"),
-    )
-    use_specials_conditions = forms.CharField(
-        widget=genwidgets.Textarea, required=False, label=_("Use specials conditions")
-    )
-    generate_pathological_waste = forms.BooleanField(
-        widget=genwidgets.YesNoInput,
-        required=False,
-        label=_("Generate pathological waste?"),
-    )
-    clean_period_according_to_provider = forms.IntegerField(
-        widget=genwidgets.NumberInput,
-        required=False,
-        initial=0,
-        label=_("Clean period according to provider"),
-    )
-    instrumental_family = forms.ModelChoiceField(
-        widget=genwidgets.Select,
-        queryset=Catalog.objects.none(),
-        blank=True,
-        required=False,
-        label=_("Instrumental family"),
-    )
-    equipment_type = forms.ModelChoiceField(
-        widget=genwidgets.Select,
-        queryset=EquipmentType.objects.all(),
-        blank=True,
-        required=False,
-        label=_("Equipment type"),
-    )
-
-    def __init__(self, *args, **kwargs):
-        modal_id = kwargs.pop("modal_id")
-        laboratory_pk = kwargs.pop("laboratory_pk")
-        super(EquipmentForm, self).__init__(*args, **kwargs)
-        self.fields["model"].required = True
-        laboratory_id = "#id_%s-laboratory" % self.prefix
-        organization_id = "#id_%s-organization" % self.prefix
-
-        provider_not_available = Provider.objects.filter(laboratory__isnull=True)
-        providers_by_lab = Provider.objects.filter(
-            laboratory__pk=laboratory_pk
-        ).distinct()
-        provider_list = provider_not_available.union(providers_by_lab).order_by("name")
-        self.fields["providers"].queryset = provider_list
-        self.fields["instrumental_family"] = forms.ModelChoiceField(
-            widget=AutocompleteSelect(
-                "instrumentalfamily",
-                attrs={
-                    "data-dropdownparent": modal_id,
-                    "data-s2filter-laboratory": laboratory_id,
-                    "data-s2filter-lab_pk": laboratory_id,
-                    "data-s2filter-organization": organization_id,
-                    "data-s2filter-org_pk": organization_id,
-                },
-            ),
-            queryset=Catalog.objects.none(),
-            blank=True,
-            required=False,
-            label=_("Instrumental family"),
-        )
-
-    class Meta:
-        model = Object
-        exclude = [
-            "is_container",
-            "is_dangerous",
-            "has_threshold",
-            "threshold",
-            "is_pure",
-        ]
-        widgets = {
-            "features": genwidgets.SelectMultiple(),
-            "code": genwidgets.TextInput,
-            "name": genwidgets.TextInput,
-            "synonym": genwidgets.TextInput,
-            "is_public": genwidgets.YesNoInput,
-            "description": genwidgets.Textarea,
-            "type": genwidgets.HiddenInput,
-            "organization": genwidgets.HiddenInput,
-            "created_by": genwidgets.HiddenInput,
-            "model": genwidgets.TextInput,
-            "serie": genwidgets.TextInput,
-            "plaque": genwidgets.TextInput,
         }
 
 
@@ -1179,13 +974,10 @@ class ObjectForm(MaterialCapacityObjectForm, forms.ModelForm):
 
         if object_type == Object.MATERIAL:
             if is_container:
+                # Una capacidad negativa ya la rechaza min_value del campo y no
+                # llega a cleaned_data: aquí solo queda el caso «vacía».
                 if capacity is None:
                     self.add_error("capacity", _("This field is required."))
-                elif capacity < 0:
-                    self.add_error(
-                        "capacity",
-                        _("Ensure this value is greater than or equal to 1e-07."),
-                    )
                 if capacity_unit is None:
                     self.add_error(
                         "capacity_measurement_unit", _("This field is required.")
@@ -1287,12 +1079,8 @@ class ObjectUpdateForm(MaterialCapacityObjectForm, forms.ModelForm):
                 )
             if is_container:
                 if capacity is None:
+                    # capacity < 0 ya lo rechaza min_value del campo.
                     self.add_error("capacity", _("This field is required."))
-                elif capacity < 0:
-                    self.add_error(
-                        "capacity",
-                        _("Ensure this value is greater than or equal to 1e-07."),
-                    )
                 if capacity_unit is None:
                     self.add_error(
                         "capacity_measurement_unit", _("This field is required.")
@@ -1364,13 +1152,9 @@ class ObjectMaterialForm(GTForm, forms.ModelForm):
         capacity_unit = cleaned_data.get("capacity_measurement_unit")
 
         if is_container:
+            # min_value del campo ya rechaza capacidades negativas.
             if capacity is None:
                 self.add_error("capacity", _("This field is required."))
-            elif capacity < 0:
-                self.add_error(
-                    "capacity",
-                    _("Ensure this value is greater than or equal to 1e-07."),
-                )
             if capacity_unit is None:
                 self.add_error(
                     "capacity_measurement_unit", _("This field is required.")

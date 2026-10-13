@@ -2,6 +2,7 @@ from django.core.files.base import ContentFile
 from django.utils.translation import gettext as _
 from laboratory.models import ShelfObject, OrganizationStructure
 from laboratory.report_utils import ExcelGraphBuilder
+from report.datasets import hcode_category_map, reactive_columns
 from report.utils import (
     set_format_table_columns,
     get_report_name,
@@ -26,58 +27,14 @@ def get_dataset_report_reactive(report, column_list=None):
     else:
         filters["in_where_laboratory__pk"] = laboratories[0]
 
-    objs = ShelfObject.objects.filter(**filters).distinct("pk").order_by("pk")
+    objs = ShelfObject.objects.for_report().filter(**filters).order_by("pk")
+    category_map = hcode_category_map()
     for reactive in objs:
-        physical = ""
-        health = ""
-        enviroment = ""
-        cas_id = ""
         lab_name = (
             reactive.in_where_laboratory.name if reactive.in_where_laboratory else ""
         )
-        sga_char = reactive.object.substancharacteristics_object.first()
-        if sga_char:
-            physical = " ".join(
-                sga_char.h_code.filter(
-                    category_h_code__danger_category="physical"
-                ).values_list("description", flat=True)
-            )
-            health = " ".join(
-                sga_char.h_code.filter(
-                    category_h_code__danger_category="health"
-                ).values_list("description", flat=True)
-            )
-            enviroment = " ".join(
-                sga_char.h_code.filter(
-                    category_h_code__danger_category="environment"
-                ).values_list("description", flat=True)
-            )
-            cas_id = reactive.object.cas_code
-
-        location = (
-            reactive.in_where_laboratory.location
-            if hasattr(reactive.in_where_laboratory, "location")
-            else ""
-        )
-        physical_status = (
-            reactive.get_physical_status_display() if reactive.physical_status else ""
-        )
-        data_column = {
-            "in_where_laboratory__name": lab_name,
-            "shelfobject_code": (
-                reactive.shelfobject_code if reactive.shelfobject_code else ""
-            ),
-            "name": reactive.object.name,
-            "cas_id": cas_id,
-            "location": location,
-            "physical_status": physical_status,
-            "physical": physical,
-            "health": health,
-            "environment": enviroment,
-            "concentration": reactive.concentration,
-            "quantity": round(reactive.total_quantity, 3),
-            "measurement_unit": reactive.get_measurement_unit_display(),
-        }
+        data_column = {"in_where_laboratory__name": lab_name}
+        data_column.update(reactive_columns(reactive, category_map))
         obj_item = list(data_column.values())
 
         if column_list:

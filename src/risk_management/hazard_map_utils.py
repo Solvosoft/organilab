@@ -154,18 +154,15 @@ def compute_tonnage_aggregates(laboratory):
         object__type=Object.REACTIVE,
     ).select_related("measurement_unit", "shelf__furniture")
 
+    # ``measurement_unit``, ``quantity``, ``shelf`` y ``shelf.furniture`` son NOT
+    # NULL, y toda unidad de ``kg_units`` tiene ``BaseUnitValues``, así que la
+    # conversión nunca devuelve ``None``: no hacen falta guardas para esos casos.
     for so in shelf_objects:
-        if so.measurement_unit_id is None or so.quantity is None:
-            continue
         if so.measurement_unit_id not in kg_units:
             continue
         converted = get_conversion_units(so.measurement_unit, float(so.quantity))
-        if converted is None:
-            continue
         totals["laboratory"] += converted
-        furniture = so.shelf.furniture if so.shelf_id else None
-        if furniture is None:
-            continue
+        furniture = so.shelf.furniture
         totals["furniture"][furniture.pk] = (
             totals["furniture"].get(furniture.pk, 0.0) + converted
         )
@@ -337,9 +334,9 @@ def _collect_alerts(all_shelves_data, alerts):
             hcodes_b = all_shelves_data[pk_b]["h_codes"]
             if not hcodes_b:
                 continue
+            # Cada par (pk_a, pk_b) se visita una sola vez (``shelf_pks[i + 1:]``),
+            # así que ``seen_pairs`` solo sirve para cortar los bucles internos.
             pair_key = (min(pk_a, pk_b), max(pk_a, pk_b))
-            if pair_key in seen_pairs:
-                continue
 
             for code_a in hcodes_a:
                 for code_b in hcodes_b:

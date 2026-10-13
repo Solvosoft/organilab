@@ -65,15 +65,13 @@ def index_tutorial(request, org_pk):
         progress_map[tp.tutorial_id] = tp
 
     # Get first lab of the org to resolve lab-dependent URLs
-    lab_pk = None
-    try:
-        from laboratory.models import Laboratory
+    from laboratory.models import Laboratory
 
-        lab = Laboratory.objects.filter(organization=org_pk).first()
-        if lab:
-            lab_pk = lab.pk
-    except Exception:
-        pass
+    lab_pk = (
+        Laboratory.objects.filter(organization=org_pk)
+        .values_list("pk", flat=True)
+        .first()
+    )
 
     effective_org_pk = org_pk
     if not effective_org_pk:
@@ -92,22 +90,9 @@ def index_tutorial(request, org_pk):
         except Exception:
             pass
 
-    # Get first procedure of the lab to resolve procedure-dependent URLs
-    procedure_pk = None
-    if lab_pk:
-        try:
-            from academic.models import Procedure
-
-            proc = Procedure.objects.filter(laboratory__pk=lab_pk).first()
-            if proc:
-                procedure_pk = proc.pk
-        except Exception:
-            pass
-
     def resolve_tutorial_url(url_name):
         kwargs_candidates = [
             {"org_pk": effective_org_pk, "lab_pk": lab_pk} if lab_pk else None,
-            {"pk": procedure_pk} if procedure_pk else None,
             {"org_pk": effective_org_pk, "pk": effective_org_pk},
             {"org_pk": effective_org_pk, "status": 0},
             {"org_pk": effective_org_pk},

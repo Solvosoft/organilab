@@ -43,12 +43,8 @@ def _combine_codes(text: str) -> str:
     while i < len(codigos):
         codigo = codigos[i]
         tipo = codigo[0]
-        match = re.match(r"[HP](\d+)", codigo)
-        if not match:
-            resultado.append(codigo)
-            i += 1
-            continue
-        num = int(match.group(1))
+        # ``findall`` ya garantiza la forma [HP]<dígitos>: el match no falla.
+        num = int(re.match(r"[HP](\d+)", codigo).group(1))
         j = i + 1
         inicio = num
         while j < len(codigos) and codigos[j][0] == tipo:
@@ -682,14 +678,14 @@ class LabelPlanner:
             spacing = int(ctx.margen_int * 0.35)
             epp_top = y_qr + tam_qr + spacing
             epp_limit = ctx.alto - int(ctx.alto * 0.12)
-            avail = max(0, epp_limit - epp_top)
-            if avail > 0:
-                tam_epp = min(
-                    tam_picto,
-                    max(int((avail - spacing * (len(epp) - 1)) / len(epp)), 16),
-                )
-            else:
-                tam_epp = 16
+            # El QR mide como mucho el 40 % del alto y su centro está al 60 %, y el
+            # espaciado es <= 0.35 % del alto: ``epp_top`` queda bajo el 81 % y el
+            # límite está en el 88 %, así que siempre hay hueco (``avail > 0``).
+            avail = epp_limit - epp_top
+            tam_epp = min(
+                tam_picto,
+                max(int((avail - spacing * (len(epp) - 1)) / len(epp)), 16),
+            )
             x_center = x_qr + (tam_qr - tam_epp) // 2
             y_epp = epp_top
             for simb in epp:

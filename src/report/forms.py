@@ -11,7 +11,6 @@ from laboratory.models import (
     Furniture,
     LaboratoryRoom,
     Object,
-    ObjectLogChange,
     PrecursorReportValues,
     OrganizationStructure,
 )
@@ -23,17 +22,6 @@ from laboratory.utils import (
 from pending_tasks.tests import User
 from report.models import TaskReport, DocumentReportStatus
 from risk_management.models import RiskZone, Buildings
-
-
-def get_years():
-    years = [
-        (i, i)
-        for i in ObjectLogChange.objects.all()
-        .values_list("update_time__year", flat=True)
-        .distinct()
-        .order_by("update_time__year")
-    ]
-    return years
 
 
 class ReportBase(GTForm, forms.Form):
@@ -287,15 +275,6 @@ class OrganizationReactiveForm(ReportBase):
                 user__in=get_users_from_organization(org_pk)
             )
 
-    def clean_user(self):
-        organization = self.cleaned_data["organization"]
-        users = self.cleaned_data["users"]
-
-        if not users:
-            users = get_users_from_organization(organization)
-
-        return list(users.values_list("pk", flat=True))
-
     def clean_users(self):
         organization = self.cleaned_data["organization"]
         users = self.cleaned_data["users"]
@@ -311,13 +290,12 @@ class ValidateObjectTypeForm(GTForm):
     type_id = forms.CharField(max_length=1)
 
     def clean_type_id(self):
+        # El campo es obligatorio: si llega vacío Django corta antes y este
+        # método no se llama, así que no hace falta una rama para el vacío.
         type_id = self.cleaned_data.get("type_id")
-        if type_id:
-            if type_id not in dict(Object.TYPE_CHOICES).keys():
-                self.add_error("type_id", _("Object type is not allowed"))
-            return type_id
-        else:
-            return None
+        if type_id not in dict(Object.TYPE_CHOICES).keys():
+            self.add_error("type_id", _("Object type is not allowed"))
+        return type_id
 
 
 class ValidateFurnitureForm(GTForm):

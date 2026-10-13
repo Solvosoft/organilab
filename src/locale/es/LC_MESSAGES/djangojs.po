@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-16 21:31-0600\n"
+"POT-Creation-Date: 2026-10-13 08:44-0600\n"
 "PO-Revision-Date: 2024-04-12 23:50-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -1258,18 +1258,6 @@ msgid ""
 msgstr ""
 "¿Está seguro de que desea eliminar esta sustancia peligrosa? <br> Esta "
 "acción eliminará todos los datos relacionados."
-
-msgid "Physical"
-msgstr "Físico"
-
-msgid "Health"
-msgstr "Salud"
-
-msgid "Environment"
-msgstr "Ambiente"
-
-msgid "Danger Category"
-msgstr "Categoría de peligro"
 
 msgid "Delete danger indication"
 msgstr "Eliminar indicacion de peligro"

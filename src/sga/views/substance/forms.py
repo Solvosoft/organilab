@@ -99,6 +99,10 @@ class DangerIndicationForm(GTForm, forms.ModelForm):
     def __init__(self, *arg, **kwargs):
         super(DangerIndicationForm, self).__init__(*arg, **kwargs)
         self.fields["warning_words"].required = False
+        # Cada opción se pinta con WarningClass.__str__: sin la anotación eran
+        # una o dos consultas por opción y por campo.
+        for name in ("warning_class", "warning_category"):
+            self.fields[name].queryset = self.fields[name].queryset.labelled()
 
     class Meta:
         model = DangerIndication

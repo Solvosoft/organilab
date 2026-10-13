@@ -32,15 +32,10 @@ class ProfileLanguageMiddleware:
                 if reguser.registration_method == 1:
                     return redirect(
                         reverse("index")
-                        # reverse("auth_and_perms:user_org_creation_totp", args=[user.pk])
                     )
                 if reguser.registration_method == 2:
                     return redirect(
                         reverse("index")
-                        # reverse(
-                        #     "auth_and_perms:create_profile_by_digital_signature",
-                        #     args=[user.pk],
-                        # )
                     )
             raise Http404("User has not profile")
 

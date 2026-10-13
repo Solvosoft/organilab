@@ -18,7 +18,7 @@ from django.utils.decorators import method_decorator
 from django.utils.text import slugify
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
-from weasyprint import HTML
+from presentation.pdf import html_to_pdf
 
 from auth_and_perms.organization_utils import (
     organization_can_change_laboratory,
@@ -71,9 +71,7 @@ def report_shelf_objects(request, org_pk, lab_pk, pk):
     template = get_template("pdf/shelf_object_pdf.html")
 
     html = template.render(context=context)
-    page = HTML(
-        string=html, encoding="utf-8", base_url=request.build_absolute_uri()
-    ).write_pdf()
+    page = html_to_pdf(html, base_url=request.build_absolute_uri())
 
     response = HttpResponse(page, content_type="application/pdf")
 
@@ -111,7 +109,7 @@ def report_h_code(request, *args, **kwargs):
     }
 
     html = template.render(context=context)
-    page = HTML(string=html, encoding="utf-8").write_pdf()
+    page = html_to_pdf(html)
 
     response = HttpResponse(page, content_type="application/pdf")
 
@@ -153,23 +151,6 @@ class OrganizationReactivePresenceList(ReportListView):
         return context
 
 
-def getLevelClass(level):
-    color = {
-        0: "default",
-        1: "danger",
-        2: "info",
-        3: "warning",
-        4: "default",
-        5: "danger",
-        6: "info",
-    }
-    level = level % 6
-    cl = "col-md-12"
-    if level:
-        cl = "col-md-%d offset-md-%d" % (12 - level, level)
-    return cl, color[level]
-
-
 @login_required
 @permission_required("laboratory.view_report", raise_exception=True)
 def report_index(request, org_pk):
@@ -181,9 +162,8 @@ def report_index(request, org_pk):
     if not user_perms:
         raise Http404
 
-    org = OrganizationStructure.objects.filter(pk=org_pk).first()
-    if not org:
-        raise Http404
+    # La membresía apunta por FK a la organización: si existe, la org también.
+    org = user_perms.organization
 
     context = {"organization": org, "org_pk": org_pk}
     return render(request, "laboratory/reports/report_index.html", context=context)
@@ -348,9 +328,8 @@ def sds_coverage_svg(request, org_pk):
     else:
         angle = 0
         for _label, count, color in segments:
+            # Cada segmento tiene al menos una sustancia: sweep siempre es > 0.
             sweep = count / total * 360
-            if sweep <= 0:
-                continue
             end_angle = angle + min(sweep, 359.99)
             d = _donut_arc_path(cx, donut_cy, r_outer, r_inner, angle, end_angle)
             parts.append(

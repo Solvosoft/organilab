@@ -232,29 +232,49 @@ def get_h_code_compatibility(code_a, code_b):
     return get_compatibility(class_a, class_b)
 
 
-def get_zone_substances(zone):
+def zone_reactives(zone):
+    """``[(lab, [(shelfobject, [códigos H])])]`` de los laboratorios de la zona.
+
+    Una consulta para todos los laboratorios, con los códigos H leídos de la
+    precarga. Antes era una consulta por laboratorio y otras dos por
+    shelfobject (``.first()`` y ``values_list`` ignoraban el prefetch).
+    """
+    labs = list(zone.laboratories.all())
+    if not labs:
+        return []
+    shelf_objects = ShelfObject.objects.filter(
+        in_where_laboratory__in=labs,
+        object__type=Object.REACTIVE
+    ).select_related(
+        'object', 'shelf'
+    ).prefetch_related(
+        'object__substancharacteristics_object__h_code'
+    ).order_by('pk')
+    by_lab = {}
+    for so in shelf_objects:
+        sga_char = so.object.get_sga_characteristic()
+        if sga_char is None:
+            continue
+        h_codes = [h_code.code for h_code in sga_char.h_code.all()]
+        by_lab.setdefault(so.in_where_laboratory_id, []).append((so, h_codes))
+    return [(lab, by_lab.get(lab.pk, [])) for lab in labs]
+
+
+def get_zone_substances(zone, reactives=None):
     """Get substances with their H-codes for all laboratories in a risk zone.
 
     Returns a dict: {lab: [(object_name, [h_codes])]}
+    ``reactives`` reutiliza lo ya leído con ``zone_reactives(zone)``.
     """
+    if reactives is None:
+        reactives = zone_reactives(zone)
     lab_substances = {}
-    for lab in zone.laboratories.all():
-        substances = []
-        shelf_objects = ShelfObject.objects.filter(
-            in_where_laboratory=lab,
-            object__type=Object.REACTIVE
-        ).select_related(
-            'object'
-        ).prefetch_related(
-            'object__substancharacteristics_object__h_code'
-        )
-        for so in shelf_objects:
-            obj = so.object
-            sga_char = obj.substancharacteristics_object.first()
-            if sga_char:
-                h_codes = list(sga_char.h_code.values_list('code', flat=True))
-                if h_codes:
-                    substances.append((obj.name, sorted(h_codes)))
+    for lab, lab_reactives in reactives:
+        substances = [
+            (so.object.name, sorted(h_codes))
+            for so, h_codes in lab_reactives
+            if h_codes
+        ]
         if substances:
             lab_substances[lab] = substances
     return lab_substances
@@ -269,32 +289,20 @@ def collect_h_codes(lab_substances):
     return sorted(all_codes)
 
 
-def build_hcode_substance_map(zone):
+def build_hcode_substance_map(zone, reactives=None):
     """Build a mapping from H-code to substance/lab/shelf details.
 
     Returns: {h_code: [{"substance": str, "lab": str, "shelf": str}, ...]}
     """
+    if reactives is None:
+        reactives = zone_reactives(zone)
     hcode_map = {}
-    for lab in zone.laboratories.all():
-        shelf_objects = ShelfObject.objects.filter(
-            in_where_laboratory=lab,
-            object__type=Object.REACTIVE
-        ).select_related(
-            'object', 'shelf'
-        ).prefetch_related(
-            'object__substancharacteristics_object__h_code'
-        )
-        for so in shelf_objects:
-            obj = so.object
-            sga_char = obj.substancharacteristics_object.first()
-            if sga_char:
-                h_codes = list(sga_char.h_code.values_list('code', flat=True))
-                shelf_name = so.shelf.name if so.shelf else ''
-                entry = {"substance": obj.name, "lab": lab.name, "shelf": shelf_name}
-                for code in h_codes:
-                    if code not in hcode_map:
-                        hcode_map[code] = []
-                    hcode_map[code].append(entry)
+    for lab, lab_reactives in reactives:
+        for so, h_codes in lab_reactives:
+            shelf_name = so.shelf.name if so.shelf else ''
+            entry = {"substance": so.object.name, "lab": lab.name, "shelf": shelf_name}
+            for code in h_codes:
+                hcode_map.setdefault(code, []).append(entry)
     return hcode_map
 
 
@@ -537,9 +545,6 @@ def generate_compatibility_ods(buildings_qs, filename=None, risk_zone_pks=None):
 
     doc = ezodf.newdoc(doctype='ods', filename=filename or 'compatibility.ods')
     add_ods_styles(doc)
-
-    if len(doc.sheets) > 0:
-        del doc.sheets[0]
 
     sheets_added = 0
     for building in buildings_qs:

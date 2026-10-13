@@ -111,9 +111,12 @@ class BuildReportTest(ReportTestBase):
 
     def test_tipo_desconocido_no_hace_nada(self):
         report = self.make_report("no_existe", "xlsx")
+        report.refresh_from_db()
+        estado_inicial = report.status
         build_report(report.pk, "http://testserver/")
         report.refresh_from_db()
-        self.assertEqual(report.status, en_espanol("On hold"))
+        # Sin reporte registrado nada cambia: el estado queda como se creó.
+        self.assertEqual(report.status, estado_inicial)
         self.assertFalse(DocumentReportStatus.objects.filter(report=report).exists())
 
 
@@ -414,7 +417,8 @@ class ReportOrganizationTableTest(ReportTestBase):
     def test_regencia(self):
         report = self.make_report("regency_report", "html")
         response = self.get(report)
-        self.assertTemplateUsed(response, "report/regency_report_table.html")
+        # El HTML de regencia guarda columnas y filas como los demás reportes.
+        self.assertTemplateUsed(response, "report/general_organization_report.html")
 
     def test_mapa_de_peligros(self):
         report = self.make_report("hazard_map_report", "html")

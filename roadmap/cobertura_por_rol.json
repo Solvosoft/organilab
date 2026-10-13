@@ -91,6 +91,7 @@
     "LAB-04/contenedores": "solo superusuario",
     "LAB-04/estantes": "solo superusuario",
     "LAB-04/muebles": "solo superusuario",
+    "LAB-04/qr_nodo": "ejercitado",
     "LAB-04/qr_sala": "solo superusuario",
     "LAB-04/reporte_sala": "solo superusuario",
     "LAB-04/salas": "solo superusuario",
@@ -205,6 +206,7 @@
     ],
     "administrador_laboratorio": [
       "LAB-03/mis_labs",
+      "LAB-04/qr_nodo",
       "RES-01/aprobar",
       "RES-01/cerrar",
       "RES-01/recibir_devolucion",

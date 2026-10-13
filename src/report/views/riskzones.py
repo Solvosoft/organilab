@@ -1,4 +1,5 @@
 import json
+from collections import defaultdict
 from io import BytesIO
 
 from django.contrib.auth.decorators import login_required, permission_required
@@ -8,7 +9,6 @@ from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.utils import timezone
 from django.utils.translation import gettext as _
-from weasyprint import HTML
 
 from laboratory.models import (
     Laboratory,
@@ -19,17 +19,18 @@ from laboratory.models import (
 )
 from laboratory.report_utils import ExcelGraphBuilder
 from laboratory.utils import check_user_access_kwargs_org
-from laboratory.utils_base_unit import get_conversion_units
+from laboratory.utils_base_unit import cached_units, get_conversion_units
+from presentation.pdf import html_to_pdf
+from report.datasets import hcode_threshold_map
 from report.utils import (
     filter_period,
     set_format_table_columns,
     get_report_name,
     load_dataset_by_column,
-    get_danger_categories,
-    get_conversion_units_to_kilograms,
 )
 from risk_management.compatibility_utils import (
     get_zone_substances,
+    zone_reactives,
     collect_h_codes,
     build_compatibility_matrix,
     build_hcode_substance_map,
@@ -101,98 +102,97 @@ def get_dataset_report(report, column_list=None):
         laboratories = risk_zones.values_list("buildings__laboratories", flat=True)
     filters.update({"in_where_laboratory__in": list(set(laboratories))})
 
-    objs = ShelfObject.objects.filter(**filters).values_list("object__pk", flat=True)
-    objs = Object.objects.filter(pk__in=objs).distinct()
+    # Todo el inventario del reporte en una consulta; antes eran dos consultas
+    # y una conversión de unidades (5 consultas más) por cada fila.
+    inventory = defaultdict(list)
+    lab_names = defaultdict(dict)
+    rows = ShelfObject.objects.filter(**filters).values_list(
+        "object_id",
+        "measurement_unit_id",
+        "quantity",
+        "is_box",
+        "quantity_units",
+        "in_where_laboratory_id",
+        "in_where_laboratory__name",
+    )
+    for object_id, unit_id, quantity, is_box, units, lab_id, lab_name in rows:
+        if is_box and units:
+            quantity = sum(box.get("units", 0) for box in units) * quantity
+        inventory[object_id].append((unit_id, quantity))
+        if lab_id is not None:
+            lab_names[object_id][lab_id] = lab_name
 
-    for reactive in objs:
-        cas_id = ""
-        threshold = "NA"
-        dangerous = reactive.is_dangerous
-        third_square = False
-        third_column = ""
+    objs = Object.objects.filter(pk__in=list(inventory)).prefetch_related(
+        "substancharacteristics_object__h_code"
+    )
+    threshold_map = hcode_threshold_map()
 
-        # Solo el inventario de los laboratorios del reporte: sumar el de toda la
-        # base hacía superar umbrales con unidades de otras organizaciones.
-        shelfobjects = ShelfObject.objects.filter(**filters, object=reactive).distinct()
-        total_shelfobjects = sum(
-            [
-                get_conversion_units(obj.measurement_unit, obj.total_quantity)
-                for obj in shelfobjects
-            ]
-        )
+    with cached_units():
+        for reactive in objs:
+            dangerous = reactive.is_dangerous
+            third_square = False
+            third_column = ""
+            cas_id = ""
 
-        total_health = False
-        total_physical = False
-        total_enviroment = False
+            # Solo el inventario de los laboratorios del reporte: sumar el de
+            # toda la base hacía superar umbrales con unidades de otras
+            # organizaciones.
+            total_shelfobjects = 0
+            for unit_id, quantity in inventory[reactive.pk]:
+                converted = get_conversion_units(unit_id, quantity)
+                if converted is not None:
+                    total_shelfobjects += converted
 
-        lab_names_txt = ", ".join(
-            ShelfObject.objects.filter(**filters, object=reactive)
-            .exclude(in_where_laboratory__isnull=True)
-            .order_by("in_where_laboratory_id")
-            .distinct("in_where_laboratory_id")
-            .values_list("in_where_laboratory__name", flat=True)
-        )
+            lab_names_txt = ", ".join(
+                name for _lab_id, name in sorted(lab_names[reactive.pk].items())
+            )
 
-        if dangerous:
-            third_column = _("Square 3") + " "
+            if dangerous:
+                third_column = _("Square 3") + " "
 
-        sga_char = reactive.substancharacteristics_object.first()
-        if sga_char:
-            physical = sga_char.h_code.filter(
-                category_h_code__danger_category="physical"
-            ).values_list("description", flat=True)
-            health = sga_char.h_code.filter(
-                category_h_code__danger_category="health"
-            ).values_list("description", flat=True)
-            enviroment = sga_char.h_code.filter(
-                category_h_code__danger_category="environment"
-            ).values_list("description", flat=True)
-            total_physical = sga_char.h_code.filter(
-                category_h_code__danger_category="physical"
-            ).values_list("category_h_code__threshold", flat=True)
-            total_health = sga_char.h_code.filter(
-                category_h_code__danger_category="health"
-            ).values_list("category_h_code__threshold", flat=True)
-            total_enviroment = sga_char.h_code.filter(
-                category_h_code__danger_category="environment"
-            ).values_list("category_h_code__threshold", flat=True)
-            cas_id = reactive.cas_code
+            thresholds = {"physical": [], "health": [], "environment": []}
+            sga_char = reactive.get_sga_characteristic()
+            if sga_char:
+                for h_code in sga_char.h_code.all():
+                    for category, value in threshold_map.get(h_code.code, ()):
+                        if category in thresholds:
+                            thresholds[category].append(value)
+                cas_id = reactive.cas_code
 
-            if physical.exists() or health.exists() or enviroment.exists():
-                third_square = True
-                third_column += _("Square 4")
+                if any(thresholds.values()):
+                    third_square = True
+                    third_column += _("Square 4")
 
-        if (
-            total_shelfobjects > (reactive.threshold * 1000)
-            and reactive.is_dangerous
-            and reactive.has_threshold
-        ):
-            threshold = _("Yes Exceeds Threshold")
-        elif not dangerous and not third_square:
-            third_column = _("None")
-            threshold = "NA"
-        else:
-            threshold = _("No Exceeds Threshold")
-        if third_square and threshold == _("No Exceeds Threshold"):
             if (
-                get_hcode_threshold(total_physical, total_shelfobjects)
-                or get_hcode_threshold(total_health, total_shelfobjects)
-                or get_hcode_threshold(total_enviroment, total_shelfobjects)
+                total_shelfobjects > (reactive.threshold * 1000)
+                and reactive.is_dangerous
+                and reactive.has_threshold
             ):
                 threshold = _("Yes Exceeds Threshold")
+            elif not dangerous and not third_square:
+                third_column = _("None")
+                threshold = "NA"
+            else:
+                threshold = _("No Exceeds Threshold")
+            if third_square and threshold == _("No Exceeds Threshold"):
+                if any(
+                    get_hcode_threshold(values, total_shelfobjects)
+                    for values in thresholds.values()
+                ):
+                    threshold = _("Yes Exceeds Threshold")
 
-        data_column = {
-            "in_where_laboratory__name": lab_names_txt,
-            "name": reactive.name,
-            "cas_id": cas_id,
-            "square": third_column,
-            "threshold": threshold,
-        }
-        obj_item = list(data_column.values())
+            data_column = {
+                "in_where_laboratory__name": lab_names_txt,
+                "name": reactive.name,
+                "cas_id": cas_id,
+                "square": third_column,
+                "threshold": threshold,
+            }
+            obj_item = list(data_column.values())
 
-        if column_list:
-            obj_item = load_dataset_by_column(column_list, data_column)
-        dataset.append(obj_item)
+            if column_list:
+                obj_item = load_dataset_by_column(column_list, data_column)
+            dataset.append(obj_item)
     return dataset
 
 
@@ -294,7 +294,10 @@ def report_compatibility_html(report):
             if risk_zone_pks and zone.pk not in risk_zone_pks:
                 continue
 
-            lab_substances = get_zone_substances(zone)
+            # Una sola lectura del inventario de la zona para las dos vistas
+            # que necesita la tabla.
+            reactives = zone_reactives(zone)
+            lab_substances = get_zone_substances(zone, reactives)
             if not lab_substances:
                 continue
 
@@ -302,7 +305,7 @@ def report_compatibility_html(report):
             if len(all_h_codes) < 2:
                 continue
 
-            hcode_map = build_hcode_substance_map(zone)
+            hcode_map = build_hcode_substance_map(zone, reactives)
 
             for i, code_a in enumerate(all_h_codes):
                 for code_b in all_h_codes[i + 1:]:
@@ -342,11 +345,9 @@ def report_compatibility_html(report):
                         ),
                     }
 
-                    if column_list:
-                        obj_item = load_dataset_by_column(column_list, data_column)
-                    else:
-                        obj_item = list(data_column.values())
-                    dataset.append(obj_item)
+                    # `column_list` sale de las columnas fijas de arriba: nunca
+                    # está vacía, así que no hace falta la rama sin columnas.
+                    dataset.append(load_dataset_by_column(column_list, data_column))
 
     if not dataset:
         diag = _build_compatibility_diagnostic(buildings_qs, risk_zones)
@@ -397,12 +398,9 @@ def _build_compatibility_diagnostic(buildings_qs, risk_zone_pks):
                 )
                 total_reactives += shelf_objects.count()
                 for so in shelf_objects:
-                    obj = so.object
-                    sga_char = obj.substancharacteristics_object.first()
+                    sga_char = so.object.get_sga_characteristic()
                     if sga_char:
-                        h_codes = list(
-                            sga_char.h_code.values_list("code", flat=True)
-                        )
+                        h_codes = [h_code.code for h_code in sga_char.h_code.all()]
                         if h_codes:
                             total_with_h_codes += 1
                             unique_h_codes.update(h_codes)
@@ -509,7 +507,7 @@ def report_hazard_map_pdf(report, uri):
 
     html = render_to_string("report/hazard_map_pdf.html", context=context)
     file = BytesIO()
-    HTML(string=html, base_url=uri, encoding="utf-8").write_pdf(file)
+    html_to_pdf(html, base_url=uri, output=file)
     file_name = "%s.pdf" % report_name
     file.seek(0)
     content = ContentFile(file.getvalue(), name=file_name)

@@ -27,32 +27,37 @@ def user_is_allowed_on_organization(user, organization):
 
     if isinstance(organization, (str, int)):
         organization = get_object_or_404(OrganizationStructure, pk=organization)
-    if organization.users.filter(pk=user.pk).exists():
+
+    # Una vista suele preguntar lo mismo varias veces en la misma petición
+    # (decorador, vista, serializer): solo se recuerda el sí, que es lo que no
+    # cambia a mitad de una petición.
+    allowed_cache = getattr(user, "_org_allowed_cache", None)
+    if allowed_cache is None:
+        allowed_cache = set()
+        try:
+            user._org_allowed_cache = allowed_cache
+        except AttributeError:
+            pass
+    if organization.pk in allowed_cache:
         return True
 
-    user_org_content_type = ContentType.objects.get_for_model(UserOrganization)
-    user_org_ids = UserOrganization.objects.filter(user=user).values_list(
-        "pk", flat=True
+    # La organización y sus ancestros en una consulta, en vez de dos por nivel.
+    org_ids = list(
+        organization.ancestors(include_self=True).values_list("pk", flat=True)
     )
-    has_relation = OrganizationStructureRelations.objects.filter(
-        organization=organization,
-        content_type=user_org_content_type,
-        object_id__in=user_org_ids,
+    allowed = OrganizationStructure.objects.filter(
+        pk__in=org_ids, users=user
     ).exists()
-
-    if has_relation:
-        return True
-
-    for ancestor in organization.ancestors():
-        if ancestor.users.filter(pk=user.pk).exists():
-            return True
-        has_ancestor_relation = OrganizationStructureRelations.objects.filter(
-            organization=ancestor,
+    if not allowed:
+        user_org_content_type = ContentType.objects.get_for_model(UserOrganization)
+        allowed = OrganizationStructureRelations.objects.filter(
+            organization__in=org_ids,
             content_type=user_org_content_type,
-            object_id__in=user_org_ids,
+            object_id__in=UserOrganization.objects.filter(user=user).values("pk"),
         ).exists()
-        if has_ancestor_relation:
-            return True
+    if allowed:
+        allowed_cache.add(organization.pk)
+        return True
 
     raise PermissionDenied(
         _("User %(user)s not allowed on organization %(organization)r ")

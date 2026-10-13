@@ -59,10 +59,7 @@ Medición de rendimiento: [`RENDIMIENTO.md`](RENDIMIENTO.md). Cobertura: [`COBER
   - `ValidateShelfObjectTrainingSerializer` confunde user con profile.
   - El cambio de cajas de `UpdateBoxShelfObjectSerializer` no está implementado.
 - **laboratory núcleo**:
-  - `api/reactive/name` está roto y no se usa.
-  - `send_email_limit_objs` lanza NameError (no tiene llamadores).
   - La columna de códigos H del reporte repite códigos.
-  - El orden de los códigos H en el reporte de objetos no es determinista.
 - **risk_management**:
   - Las vistas de incidentes no se acotan al edificio.
   - `incidentreport_detail` revienta si no hay `risk_zone`.
@@ -99,16 +96,25 @@ Medición de rendimiento: [`RENDIMIENTO.md`](RENDIMIENTO.md). Cobertura: [`COBER
   - Gráficos de riesgo vacíos a nivel de organización.
   - Org/lab no numérico en la URL ahora da 404 en vez de 500.
   - Unos treinta 500/KeyError/NameError más, documentados en los commits.
+- **Segunda pasada (cobertura combinada al 100%)**:
+  - Reservas: el serializer rechazaba las fechas si el formulario se había cargado con el inglés activo (se añadió `%Y-%m-%d %H:%M:%S` a `DATETIME_INPUT_FORMATS`).
+  - `ReturnProductView` aceptaba `nan`/`inf` como cantidad devuelta.
+  - `fva_rest_authentication` devolvía `Http404()` en vez de lanzarlo (500).
+  - `pending_tasks` devolvía el diccionario de serializers como clase (500 con `Accept: text/html`).
+  - `LabroomUpdate` tenía dos `get_context_data` y el modal «Crear mueble» salía vacío.
+  - `ShelfObjectTableViewSet` ordenaba solo por `-last_update`: filas en orden indefinido y paginación inestable.
+  - `PrecursorReportValuesViewSet` con pk=0 daba 500 (ahora 404).
+  - El HTML de regencia no guardaba su tabla; el orden de los códigos H del reporte de objetos ya es determinista.
+  - Se quitaron rutas rotas sin uso: `api/reactive/name`, `add_rol_by_laboratory` y la rama POST de `create_personal_template`.
 
 ## 4. Código muerto
 
-Ya borrado: `api/access_management.py` y sus rutas.
+Borrado en la campaña (sin referencias en código, plantillas, JS ni catálogo):
+- `api/access_management.py` y sus rutas; `api/views.py`.
+- `laboratory/sustance/`, `laboratory/reactive.py`, `laboratory/limit_shelfobject.py` y la copia duplicada de `move_shelfobject_to`.
+- En `laboratory/views/shelfobject.py`: `get_shelfobject_template`, `get_shelf_list` y `objects_transfer`; formularios `ShelfObjectListForm`, `TransferObjectForm`, `AddObjectForm`, `AddTransferObjectForm` y los duplicados de `EquipmentForm` y `ShelfObjectStatusForm`.
+- `authBackend.py`, `register_user_to_platform`, `create_profile_otp`, `create_profile_by_digital_signature`, `OrganizationAPI` y sus formularios y plantillas.
+- `sga/views/h_danger_category.py` (y su entrada en `urlname_permissions`), `templatetags/label_tags.py`, `PersonalFormAcademic`, `SubstanceForm`.
+- `academic/convertions.py`, `utils_risk.examples()`, los restos de MPTT en `laboratory/utils.py` y la plantilla `report/regency_report_table.html`.
 
-Detectado, pendiente de borrar:
-- `laboratory/sustance/views.py` y `laboratory/sustance/forms.py`.
-- La copia duplicada de `move_shelfobject_to` en `shelfobject/utils.py` (líneas 676-741).
-- `authBackend.py`.
-- `register_user_to_platform`, `create_profile_otp` y `create_profile_by_digital_signature`.
-- `sga/views/h_danger_category.py`, `templatetags/label_tags.py`, `PersonalFormAcademic` y `SubstanceForm`.
-- En laboratory: `TransferObjectForm`, `AddObjectForm` y `AddTransferObjectForm`, y el `EquipmentForm` duplicado.
-- `convertions.py`, `PendingTaskManager`, `utils_risk.examples()` y los restos de MPTT en `laboratory/utils.py`.
+Pendiente: `check_lab_group_has_perm` ya no lo usa ninguna plantilla (solo sus pruebas).

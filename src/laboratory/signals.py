@@ -2,7 +2,7 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_save
 
 from auth_and_perms.models import Profile
-from laboratory.models import ShelfObject, OrganizationStructure, BaseUnitValues
+from laboratory.models import ShelfObject, OrganizationStructure
 from django.conf import settings
 from djgentelella.async_notification.sending import send_email_from_template
 from laboratory.models import BlockedListNotification
@@ -43,16 +43,14 @@ def assign_shelfobject_code(sender, **kwargs):
 def shelf_object_base_quantity(sender, **kwargs):
     instance = kwargs.get("instance")
     if hasattr(instance, "measurement_unit") and hasattr(instance, "quantity"):
-        try:
-            if instance.quantity_base_unit is None:
-                instance.quantity_base_unit = get_conversion_units(
-                    instance.measurement_unit, instance.quantity
-                )
-            else:
-                instance.quantity_base_unit = instance.quantity
-
-        except BaseUnitValues.DoesNotExist as e:
-            None
+        # get_conversion_units ya no lanza BaseUnitValues.DoesNotExist: con una
+        # unidad sin conversión devuelve None, así que el try/except sobraba.
+        if instance.quantity_base_unit is None:
+            instance.quantity_base_unit = get_conversion_units(
+                instance.measurement_unit, instance.quantity
+            )
+        else:
+            instance.quantity_base_unit = instance.quantity
 
 
 @receiver(pre_save, sender=OrganizationStructure)

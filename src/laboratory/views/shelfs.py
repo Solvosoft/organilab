@@ -361,15 +361,10 @@ class ShelfCreate(AJAXMixin, CreateView):
     def form_valid(self, form):
         self.object = form.save(commit=False)
         furniture = form.cleaned_data["furniture"]
+        # furniture, col y row son campos obligatorios (FK no nula e IntegerField):
+        # si el formulario es válido ya vienen presentes y como enteros.
         col = form.cleaned_data["col"]
         row = form.cleaned_data["row"]
-        if furniture is None or col is None or row is None:
-            return self.form_invalid(form)
-        try:
-            col, row = int(col), int(row)
-        except Exception as e:
-            logger.error("Error shelf create", exc_info=e)
-            return self.form_invalid(form)
 
         self.object.furniture = furniture
         self.object.created_by = self.request.user
@@ -458,15 +453,10 @@ class ShelfEdit(AJAXMixin, UpdateView):
     def form_valid(self, form):
         self.object = form.save(commit=False)
         furniture = form.cleaned_data["furniture"]
+        # self.col/self.row llegan como <int:> de la URL y los del formulario son
+        # IntegerField obligatorios: siempre hay enteros.
         col = self.col or form.cleaned_data["col"]
         row = self.row or form.cleaned_data["row"]
-        if furniture is None or col is None or row is None:
-            return self.form_invalid(form)
-        try:
-            col, row = int(col), int(row)
-        except Exception as e:
-            logger.error("Invalid shelf edit", exc_info=e)
-            return self.form_invalid(form)
 
         self.object.furniture = furniture
         self.object.save()

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-16 21:31-0600\n"
+"POT-Creation-Date: 2026-10-13 08:44-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -993,47 +993,11 @@ msgstr "Se desvincularon los laboratorios %(labs)r de la organización %(org)r"
 msgid "Rols"
 msgstr "Roles"
 
-msgid "Organization name"
-msgstr "Nombre de la Organización"
-
-msgid "Digital signature"
-msgstr "Firma digital"
-
-msgid "Validation method"
-msgstr "Método de validación"
-
-msgid "new-password"
-msgstr "nueva-contraseña"
+msgid "Laboratory"
+msgstr "Laboratorio"
 
 msgid "Email"
 msgstr "Correo Electrónico"
-
-msgid "First name"
-msgstr "Nombre"
-
-msgid "Last name"
-msgstr "Apellido"
-
-msgid "Email address"
-msgstr "Dirección de correo electrónico"
-
-msgid "Phone"
-msgstr "Teléfono"
-
-msgid "Identification"
-msgstr "Identificación"
-
-msgid "Job Position"
-msgstr "Puesto de Trabajo"
-
-msgid "Language"
-msgstr "Idioma"
-
-msgid "It will used to login when you want to login with digital signature"
-msgstr "Este campo será usado cuando se autentique con firma digital"
-
-msgid "Laboratory"
-msgstr "Laboratorio"
 
 msgid "Inactive organization"
 msgstr "Desactivar Organización"
@@ -1070,6 +1034,18 @@ msgstr "Filtrar por organización"
 
 msgid "Organization not found"
 msgstr "Organización no existe"
+
+msgid "Phone"
+msgstr "Teléfono"
+
+msgid "Identification"
+msgstr "Identificación"
+
+msgid "Job Position"
+msgstr "Puesto de Trabajo"
+
+msgid "Language"
+msgstr "Idioma"
 
 msgid "Address"
 msgstr "Dirección"
@@ -1148,79 +1124,6 @@ msgstr ""
 
 msgid "You can modify this laboratory"
 msgstr "Puede editar este laboratorio"
-
-msgid "Register with new organization"
-msgstr "Registrar con nueva organización"
-
-msgid "Register you as organization administrator"
-msgstr "Registrarse como administrador de organización"
-
-msgid "Create user"
-msgstr "Crear usuario"
-
-msgid ""
-"We need to validate that you are not a robot or spamer, so you need to "
-"configure a Two-Factor Authentication"
-msgstr ""
-"Necesitamos validar que no sos un robot spammer, por eso necesitamos "
-"configurar un método de autenticación de dos pasos"
-
-msgid ""
-"You need an OTP generator to login on the platform, you can use a free app "
-"called FreeOTP:"
-msgstr ""
-"Usted necesita un generador de OTP para registrarse en la plataforma, por "
-"favor use una aplicación llamada FreeOTP"
-
-msgid ""
-"For Costa Rica citicen, use your digital signature to login on organilab"
-msgstr ""
-"Solo para ciudadanos de Costa Rica, use su firma digital para ingresar a "
-"Organilab"
-
-msgid "Configure your profile"
-msgstr "Configure su perfil"
-
-msgid "Validate user"
-msgstr "Validar usuario"
-
-msgid "How use Digital Signature"
-msgstr "Cómo usar Firma digital"
-
-msgid ""
-"If you don't have Digital signature, please request on your favorite bank"
-msgstr ""
-"Si usted no tiene firma digital, por favor solicítela en su banco favorito"
-
-msgid "Configure your machine using this link"
-msgstr "Configure su máquina usando este enlace"
-
-msgid "Download and install Gaudi"
-msgstr "Descargar e instalar Gaudi"
-
-msgid "Connect you card on computer and wait for connect success popup "
-msgstr ""
-"Conecte su tarjeta a la computadora y espere hasta el emergente de conexión "
-"satisfactoria"
-
-msgid "Your OTP Seed"
-msgstr "Su semilla OTP"
-
-msgid "This image will not available in the future, please save it"
-msgstr "Esta imágen no estará disponible en el futuro, por favor guardela"
-
-msgid "Profile create successfully"
-msgstr "Elemento guardado exitosamente"
-
-msgid ""
-"Your organization was created successfully, please login with your "
-"credentials"
-msgstr ""
-"Su organización fue creada con éxito, por favor autentifiques con sus "
-"credenciales"
-
-msgid "Login"
-msgstr "Inicio de sesión"
 
 msgid "Laboratory and Organization List"
 msgstr "Lista de Laboratorios y Organizaciones"
@@ -1535,10 +1438,6 @@ msgid "Deleted the role %(rol)r"
 msgstr "Rol %(rol)r eliminado"
 
 #, python-format
-msgid "Assigned the roles %(rols)r to %(user)r on laboratory %(lab)r"
-msgstr "Se asignaron los roles %(rols)r a %(user)r en el laboratorio %(lab)r"
-
-#, python-format
 msgid "Linked the laboratory %(lab)r to the organization %(org)r"
 msgstr "Se vinculó el laboratorio %(lab)r a la organización %(org)r"
 
@@ -1562,13 +1461,6 @@ msgstr "Se deshabilitaron las organizaciones hijas de %(org)r"
 
 msgid "Organization Management"
 msgstr "Administración de Organización"
-
-msgid ""
-"You have no creation process, maybe it was expired, please try to register "
-"again"
-msgstr ""
-"No tiene un proceso de creación activo, o está expirado, por favor vuelva a "
-"inscribirse"
 
 msgid "ID Card"
 msgstr "Tarjeta de identificación"
@@ -1823,6 +1715,9 @@ msgstr "Formulario personalizado '%(name)s' creado"
 msgid "Organization ID"
 msgstr "Organización"
 
+msgid "Organization name"
+msgstr "Nombre de la Organización"
+
 #, fuzzy
 #| msgid "Creator"
 msgid "Creator Org ID"
@@ -2016,11 +1911,6 @@ msgstr "Material de desecho '%(name)s' creado"
 #| msgid "Measurement units"
 msgid "Measurement unit is not valid"
 msgstr "Unidades de medida"
-
-#, fuzzy
-#| msgid "Data is not valid"
-msgid "Quantity is not valid"
-msgstr "Dato no es válido"
 
 #, python-format
 msgid "Created box shelfobject '%(name)s' with %(boxes)s boxes"
@@ -2478,15 +2368,6 @@ msgstr "Fecha ingresada debe ser mayor a la fecha actual"
 msgid "Use dot like 0.344 on decimal"
 msgstr "Use punto ej. 0.34 en decimales"
 
-msgid "Mark as discard"
-msgstr "Marcar como desecho"
-
-msgid "Bill"
-msgstr "Factura"
-
-msgid "Provider"
-msgstr "Proveedor"
-
 msgid "Describe the action"
 msgstr "Describe la acción realizada"
 
@@ -2498,9 +2379,6 @@ msgstr "Tarjeta de identificación"
 
 msgid "Location"
 msgstr "Ubicación"
-
-msgid "Shelf"
-msgstr "Estante"
 
 msgid "Select Furniture"
 msgstr "Seleccionar Mueble"
@@ -2548,9 +2426,6 @@ msgstr "Materiales"
 
 msgid "Equipment"
 msgstr "Equipo"
-
-msgid "New status"
-msgstr "Nuevo Estado"
 
 msgid "Use manual"
 msgstr "Manual de uso"
@@ -2701,6 +2576,9 @@ msgstr "Unidad de medida de la cantidad anual máxima"
 msgid "Expiration date"
 msgstr "Fecha de expiración"
 
+msgid "Shelf"
+msgstr "Estante"
+
 msgid "The unit not exist in the database"
 msgstr "La unidad no existe en la base de datos"
 
@@ -2813,9 +2691,6 @@ msgstr ""
 "\n"
 "Gracias,\n"
 "Sistema Organilab"
-
-msgid "ShelfObject expiration"
-msgstr "Vencimiento de objetos de estante"
 
 msgid "Adjustment quantities in logs"
 msgstr "Ajuste de cantidades en bitacoras"
@@ -3027,6 +2902,9 @@ msgstr "Estante del objeto"
 
 msgid "Shelf objects"
 msgstr "Estante de los objetos"
+
+msgid "Provider"
+msgstr "Proveedor"
 
 msgid "Authorized roles to use equipment"
 msgstr "Roles autorizados para el uso del equipo"
@@ -3353,11 +3231,17 @@ msgstr "Estante de los objetos"
 msgid "Product added successful"
 msgstr "Producto Agregado exitosamente"
 
+msgid "Bill"
+msgstr "Factura"
+
 msgid "Measurement Unit"
 msgstr "Unidad de Medida"
 
 msgid "Use"
 msgstr "Uso"
+
+msgid "Mark as discard"
+msgstr "Marcar como desecho"
 
 msgid ""
 "This select only shows shelves with same measurement unit than current object"
@@ -3380,6 +3264,9 @@ msgstr ""
 
 msgid "Unlimited"
 msgstr "Ilimitado"
+
+msgid "New status"
+msgstr "Nuevo Estado"
 
 msgid "Number of boxes"
 msgstr "Número de cajas"
@@ -3427,9 +3314,6 @@ msgstr "La fecha final no puede ser igual o menor a la fecha actual."
 msgid "Initial date cannot be equal or lower than current date."
 msgstr "La fecha inicial no puede ser igual or menor a la fecha actual."
 
-msgid "Final date cannot be equal or lower than current date."
-msgstr "La fecha final no puede ser igual o menor a la fecha actual."
-
 msgid "Provider does not exist in the laboratory."
 msgstr "Proveedor no existe en el laboratorio."
 
@@ -3476,13 +3360,6 @@ msgstr "La cantidad no puede mayor que el límite maximo."
 #| msgid "Quantity cannot be greater than maximum limit."
 msgid "Quantity cannot be lower than minimum limit."
 msgstr "La cantidad no puede mayor que el límite maximo."
-
-msgid ""
-"Cannot change the number of boxes or units per box because one or more boxes "
-"have already been modified. Use the decrease or increase actions instead."
-msgstr ""
-"No se puede cambiar el número de cajas ni las unidades por caja porque una o "
-"más cajas ya fueron modificadas. Use las acciones de disminuir o aumentar."
 
 msgid ""
 "The transfer out cannot be performed since the boxes available for the "
@@ -3624,11 +3501,6 @@ msgstr ""
 msgid "This object is not a reactive."
 msgstr "Su cuenta está activa."
 
-#, fuzzy
-#| msgid "Shelf object is not an equipment"
-msgid "Shelf object is required."
-msgstr "El objeto de estantería no es un equipo"
-
 #, python-format
 msgid ""
 "Quantity cannot be less than the container object minimun limit: %(limit)s."
@@ -3725,16 +3597,6 @@ msgstr "Objeto de estante '%(name)s' clonado al estante '%(shelf)s'"
 msgid "Created partial shelfobject '%(name)s'"
 msgstr "Objeto de estante parcial '%(name)s' creado"
 
-msgid "Move out"
-msgstr "Mover hacia"
-
-msgid "Move in"
-msgstr "Mover desde"
-
-#, python-format
-msgid "Moved shelfobject '%(name)s' to shelf '%(shelf)s'"
-msgstr "Objeto de estante '%(name)s' movido al estante '%(shelf)s'"
-
 msgid "Change quantity"
 msgstr "Cantidad de material"
 
@@ -3784,15 +3646,19 @@ msgstr ""
 msgid "Created equipment characteristics"
 msgstr "Características de equipo creadas"
 
+msgid "Move out"
+msgstr "Mover hacia"
+
+msgid "Move in"
+msgstr "Mover desde"
+
 #, python-format
 msgid "Move in the boxes %(boxes)s from the laboratory %(lab)s."
 msgstr "Movió las cajas %(boxes)s desde el laboratorio %(lab)s."
 
-msgid "Sustance saved successfully"
-msgstr "Sustancia guardada satisfactoriamente"
-
-msgid "Pending information in form"
-msgstr "Información pendiente en el formulario"
+#, python-format
+msgid "Moved shelfobject '%(name)s' to shelf '%(shelf)s'"
+msgstr "Objeto de estante '%(name)s' movido al estante '%(shelf)s'"
 
 #, fuzzy, python-format
 #| msgid "New period inform was created in the laboratory %s with the name %s"
@@ -3810,6 +3676,9 @@ msgstr ""
 
 msgid "List of ShelfObject in limits"
 msgstr "Lista de objetos de estante con límites"
+
+msgid "ShelfObject expiration"
+msgstr "Vencimiento de objetos de estante"
 
 msgid "Hi,"
 msgstr "Hola,"
@@ -4125,6 +3994,9 @@ msgstr "Cargar inventario de reactivos"
 
 msgid "Welcome to the Simple laboratory organizer"
 msgstr "Bienvenido al organizador de laboratorio"
+
+msgid "Login"
+msgstr "Inicio de sesión"
 
 msgid "Informs"
 msgstr "Informes"
@@ -5016,13 +4888,6 @@ msgstr "Laboratorio '%(name)s' creado"
 msgid "Laboratory was created successfully"
 msgstr "Laboratorio creado exitosamente"
 
-msgid ""
-"Sorry, there is not available laboratory, please contact the administrator "
-"and request a laboratory enrollment"
-msgstr ""
-"Lo lamentamos, no hay un laboratorio disponible, por favor contacte a su "
-"administrador y solicite que lo asigne a algún laboratorio"
-
 msgid "maintains a relationship with"
 msgstr "mantiene una relación con"
 
@@ -5143,9 +5008,6 @@ msgstr "Objeto '%(name)s' actualizado"
 msgid "Deleted object '%(name)s'"
 msgstr "Objeto '%(name)s' eliminado"
 
-msgid "Filter Organization"
-msgstr "Filtrar Organización"
-
 #, python-format
 msgid "Deleted organization '%(name)s'"
 msgstr "Organización '%(name)s' eliminada"
@@ -5245,16 +5107,6 @@ msgid "Deleted shelfobject '%(name)s' from shelf '%(shelf)s'"
 msgstr "Objeto de estante '%(name)s' eliminado del estante '%(shelf)s'"
 
 #, python-format
-msgid "Created shelfobject '%(name)s' from transfer"
-msgstr "Objeto de estante '%(name)s' creado desde transferencia"
-
-msgid "Transfer done successfully"
-msgstr "Transferencia realizada con éxito"
-
-msgid "The amount sends is more than the laboratory have"
-msgstr "La cantidad enviada es más de lo que el laboratorio tiene"
-
-#, python-format
 msgid "Deleted shelf '%(name)s'"
 msgstr "Estante '%(name)s' eliminado"
 
@@ -5324,11 +5176,6 @@ msgstr "La desverificación se ha realizado con éxito."
 #| msgid "Object doesn't exists"
 msgid "The SDS doesn't exist."
 msgstr "Objeto no existe"
-
-#, fuzzy
-#| msgid "Substance characteristics SGA"
-msgid "No substance characteristics found."
-msgstr "Características de sustancia SGA"
 
 msgid "Regulation File"
 msgstr "Archivo de regulación"
@@ -6334,11 +6181,6 @@ msgid "Thank you for your help. We will check your problem as soon as we can"
 msgstr ""
 "Gracias por tu ayuda. Comprobaremos su problema tan pronto como podamos"
 
-#, fuzzy
-#| msgid "This endpoint requires lab_pk in the URL."
-msgid "This endpoint requires precusor_pk in the URL."
-msgstr "Este endpoint requiere lab_pk en la URL."
-
 msgid "Created precursor report value"
 msgstr "Valor de reporte de precursor creado"
 
@@ -6511,27 +6353,6 @@ msgstr "Actualizar valores del informe de precursores"
 msgid "Delete Precursor Report Values"
 msgstr "Eliminar valores del informe de precursores"
 
-msgid "High-risk establishment"
-msgstr "Establecimiento de alto riesgo"
-
-msgid "Danger Substance of the list 3"
-msgstr "Sustancia de peligro de la lista 3"
-
-msgid "Danger Categories of the list 4"
-msgstr "Categorías de peligro de la lista 4"
-
-msgid "Sum of dangers categories"
-msgstr "Suma de categorías de peligro"
-
-msgid "Health totals:"
-msgstr "Totales de salud:"
-
-msgid "Physical totals:"
-msgstr "Totales físicos:"
-
-msgid "Environmental totals:"
-msgstr "Totales ambientales:"
-
 msgid "seconds"
 msgstr "segundos"
 
@@ -6672,39 +6493,6 @@ msgstr ""
 #| msgid "Impacto ambiental"
 msgid "Ambiental"
 msgstr "Impacto ambiental"
-
-msgid "Nombre"
-msgstr ""
-
-#, fuzzy
-#| msgid "Nominated"
-msgid "Nominada"
-msgstr "Nominada"
-
-msgid "Umbral"
-msgstr ""
-
-msgid "Regla Cruzada"
-msgstr ""
-
-#, fuzzy
-#| msgid "Detail"
-msgid "Detalle"
-msgstr "Detalle"
-
-msgid "Advertencias"
-msgstr ""
-
-msgid "Contribuciones en salud"
-msgstr ""
-
-msgid "Contribuciones en físico"
-msgstr ""
-
-#, fuzzy
-#| msgid "Container Open Date"
-msgid "Contribuciones en ambiente"
-msgstr "Fecha de apertura del contenedor"
 
 msgid "Objects Report"
 msgstr "Reporte de Objetos"
@@ -7191,11 +6979,11 @@ msgstr "Hasta"
 msgid "Assessment date"
 msgstr "Fecha de evaluación"
 
-msgid "Sustances per Danger Indications"
-msgstr "Sustancias por indicación de peligro"
-
 msgid "No data registered"
 msgstr "Sin datos registrados"
+
+msgid "Sustances per Danger Indications"
+msgstr "Sustancias por indicación de peligro"
 
 msgid "Litro (L)"
 msgstr ""
@@ -8216,6 +8004,9 @@ msgstr ""
 msgid "Detalle Sustancias"
 msgstr "Eliminar sustancia"
 
+msgid "Nombre"
+msgstr ""
+
 msgid "Cantidad (t)"
 msgstr ""
 
@@ -8239,6 +8030,9 @@ msgstr ""
 #| msgid "Health contributions"
 msgid "Detalle Contribuciones"
 msgstr "Contribuciones de salud"
+
+msgid "Advertencias"
+msgstr ""
 
 #, python-format
 msgid "Created risk zone '%(name)s'"
@@ -8362,9 +8156,6 @@ msgstr "Sustancia SGA '%(name)s' eliminada"
 msgid "Recipient size"
 msgstr "Tamaño del recipiente"
 
-msgid "UIPA name"
-msgstr "Nombre UIPA"
-
 msgid "Select Provider"
 msgstr "Seleccione Proveedor"
 
@@ -8424,6 +8215,9 @@ msgstr "En revisión"
 
 msgid "Comercial name"
 msgstr "Nombre Comercial"
+
+msgid "UIPA name"
+msgstr "Nombre UIPA"
 
 msgid "Brand"
 msgstr "Marca"
@@ -8922,21 +8716,6 @@ msgstr "Información Comercial"
 msgid "Graphics"
 msgstr "Gráficos"
 
-msgid "H Code Categories"
-msgstr "Categorías de codigo H"
-
-msgid "Register H Code Category"
-msgstr "Registrar categoría de codigo H"
-
-msgid "Update H Code Category"
-msgstr "Actualizar categoría de codigo H"
-
-msgid "Delete H Code Category"
-msgstr "Eliminar categoría de codigo H"
-
-msgid "List of Code H Categories"
-msgstr "Listado de categorías de codigo H"
-
 msgid "GHS"
 msgstr "SGA"
 
@@ -9060,9 +8839,6 @@ msgstr "Versión 1.0 Fecha de revisión"
 msgid "Printing date"
 msgstr "Fecha de impresión"
 
-msgid "Security Leaf"
-msgstr "Hoja de Seguridad"
-
 msgid "SECTION 8: Exposure controls/personal protection"
 msgstr "SECCIÓN 8: Controles de exposición/protección individual"
 
@@ -9177,6 +8953,9 @@ msgstr "Etiquetado de acuerdo con el Reglamento (CE) 1272/2008"
 
 msgid "Other dangers"
 msgstr "Otros Peligros"
+
+msgid "Security Leaf"
+msgstr "Hoja de Seguridad"
 
 msgid "Send to Review"
 msgstr "Enviar a revisión"

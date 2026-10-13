@@ -1,91 +1,92 @@
 {% load i18n %}
 {% load static %}
-
+{% comment %}
+Base de los PDF de reportes, para xhtml2pdf (presentation.pdf.html_to_pdf).
+Encabezado y pie van en frames estáticos; la numeración usa <pdf:pagenumber>.
+{% endcomment %}
 <html>
     <head>
         <meta charset="UTF-8">
         <style>
             @page {
-                margin: 2cm 1cm;
-                size: {% if size_sheet %}{{size_sheet}}{% else %}a4 portrait{% endif %};
+                size: {% if size_sheet == 'landscape' %}a4 landscape{% elif size_sheet %}{{ size_sheet }}{% else %}a4 portrait{% endif %};
+                margin: 2.2cm 1cm 1.8cm 1cm;
 
-                @bottom-right{
-                    content: "{% trans 'Page' %} " counter(page) " {% trans "of" %} " counter(pages);
-                    font-size: 1em;
-                    font-family: "Arial", "sans-serif";
+                @frame header_frame {
+                    -pdf-frame-content: header_content;
+                    top: 0.6cm;
+                    left: 1cm;
+                    right: 1cm;
+                    height: 1.4cm;
                 }
 
-                @bottom-left{
-                    content: "{% trans "User:" %} {% if user.get_full_name %}{{ user.get_full_name }}{% else %}{{ user.username }}{% endif %}";
-                    font-size: 1em;
-                    font-family: "Arial", "sans-serif";
-                }
-
-                @top-right{
-                    content: "{{ datetime }}";
-                    width: {% if size_sheet == 'landscape' %}7cm{% else %}5.3cm{% endif %};
-                    font-family: "Arial", "sans-serif";
-                    font-size: 1em;
-                }
-
-                @top-center {
-                    content:  string(title);
-                    width: {% if size_sheet == 'landscape' %}10cm{% else %}8cm{% endif %};
-                    font-family: "Arial", "sans-serif";
-                    font-size: 1em;
-                }
-
-                @top-left {
-                    content: "";
-                    background: url({% static 'img/logo_organilab.jpg' %}) no-repeat 0 0;
-                    background-size: contain;
-                    background-repeat: no-repeat;
-                    width: 4cm;
+                @frame footer_frame {
+                    -pdf-frame-content: footer_content;
+                    bottom: 0.5cm;
+                    left: 1cm;
+                    right: 1cm;
                     height: 1cm;
-                    margin-bottom: 0.5cm;
                 }
             }
 
             body {
-                font-family: "Arial", "sans-serif";
-                font-size: 1.5em;
+                font-family: Helvetica, Arial, sans-serif;
+                font-size: 10pt;
+            }
+
+            #header_content td, #footer_content td {
+                font-size: 9pt;
+                vertical-align: middle;
             }
 
             .qr_obj {
-              width: 60%;
-              display: block;
-              margin-left: auto;
-              margin-right: auto;
+                width: 60%;
             }
 
-             #topcenter {
-               width: 0;
-               height: 0;
-               visibility: hidden;
-               string-set: title content();
+            #pdf_table_report {
+                width: 100%;
             }
 
-            #topleft {
-               string-set: logo content();
-            }
-
-            #pdf_table_report, #pdf_table_report th, #pdf_table_report td {
-                word-wrap: break-word;
-                border: 1px solid black;
+            #pdf_table_report th, #pdf_table_report td {
+                border: 0.5pt solid #000000;
                 text-align: center;
-                border-collapse: collapse;
-                font-family: "Arial", "sans-serif";
-                font-size: 0.8em;
+                padding: 2pt;
+                font-size: 8pt;
             }
-            .regency_table {
-              justify-content: center;
-              }
+
+            #pdf_table_report th {
+                background-color: #EEEEEE;
+            }
 
             {% block extra_css %}{% endblock %}
         </style>
     </head>
     <body>
-        <div id="topcenter" style="border: black solid">{{title}}</div>
-            {% block pdf_content %}{% endblock %}
+        <div id="header_content">
+            <table width="100%">
+                <tr>
+                    <td width="25%" style="text-align:left;">
+                        <img src="{% static 'img/logo_organilab.jpg' %}" height="28">
+                    </td>
+                    <td width="50%" style="text-align:center;">{{ title }}</td>
+                    <td width="25%" style="text-align:right;">{{ datetime }}</td>
+                </tr>
+            </table>
+        </div>
+
+        <div id="footer_content">
+            <table width="100%">
+                <tr>
+                    <td style="text-align:left;">
+                        {% trans "User:" %} {% if user.get_full_name %}{{ user.get_full_name }}{% else %}{{ user.username }}{% endif %}
+                    </td>
+                    <td style="text-align:right;">
+                        {% trans "Page" %} <pdf:pagenumber> {% trans "of" %} <pdf:pagecount>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        {% block pdf_content %}{% endblock %}
     </body>
 </html>

@@ -21,6 +21,7 @@ class Cap3BoxesTest(CapacitacionSeleniumBase):
         options.add_argument("--window-size=1920,1080")
         cls.selenium = webdriver.Chrome(options=options)
         cls.selenium.set_window_size(1920, 1080)
+        cls.emulate_window_focus()
         cls.action = ActionChains(cls.selenium)
         cls.screenshot_size = "1920x1080"
         cls.folder = "%s/%s" % (cls.tmp, cls.screenshot_size)

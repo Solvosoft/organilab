@@ -50,8 +50,8 @@ FEATURES = (
             "por `type_in_organization` (:161).",
             "Que la app tenga una sola ruta esconde su alcance: los emisores están en "
             "`sga/utils.py:63`, `risk_management/tasks.py:67`, "
-            "`risk_management/iper_views.py:575`, `laboratory/tasks.py:69,197`, "
-            "`laboratory/task_utils.py:65` y `laboratory/limit_shelfobject.py:25`.",
+            "`risk_management/iper_views.py:575`, `laboratory/tasks.py:68,196` "
+            "y `laboratory/task_utils.py:65`.",
         ),
     ),
     Feature(

@@ -112,18 +112,11 @@ class RegentLaboraratory(BaseSelect2View):
     permission_classes = (AnyPermissionByAction,)
 
     def get_queryset(self):
+        # Solo se llega desde ``list``, que exige ``org_pk``: ``self.org`` siempre
+        # viene fijado aquí.
         queryset = super().get_queryset()
-
-        if self.org:
-            organization = get_object_or_404(OrganizationStructure, pk=self.org)
-
-            queryset = queryset.filter(
-                pk__in=organization.get_my_laboratories
-            ).distinct()
-        else:
-            queryset = queryset.none()
-
-        return queryset
+        organization = get_object_or_404(OrganizationStructure, pk=self.org)
+        return queryset.filter(pk__in=organization.get_my_laboratories).distinct()
 
     def list(self, request, *args, **kwargs):
         if self.request.GET.get("org_pk", None):

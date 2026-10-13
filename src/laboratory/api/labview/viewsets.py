@@ -13,7 +13,7 @@ from django.db.models import Count
 from django.utils.translation import gettext_lazy as _
 from django_filters.rest_framework import DjangoFilterBackend
 from djgentelella.objectmanagement import BaseInlineObjectManagement
-from rest_framework import status, viewsets
+from rest_framework import serializers, status, viewsets
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter, SearchFilter
@@ -35,6 +35,24 @@ from laboratory.models import (
 )
 from laboratory.shelfobject.serializers import ShelfObjectPk
 from laboratory.utils import organilab_logentry
+
+
+def datatable_serializer(child_class):
+    """El ``list`` de djgentelella serializa ``{data, draw, records*}``.
+
+    Con el serializer del modelo en ``"list"`` buscaba ``name`` en ese dict y
+    los listados de salas, muebles y estantes daban 500.
+    """
+    return type(
+        "%sDataTable" % child_class.__name__,
+        (serializers.Serializer,),
+        {
+            "data": serializers.ListField(child=child_class(), required=True),
+            "draw": serializers.IntegerField(required=True),
+            "recordsFiltered": serializers.IntegerField(required=True),
+            "recordsTotal": serializers.IntegerField(required=True),
+        },
+    )
 
 
 class LabviewBaseManagement(LabviewScopedMixin, BaseInlineObjectManagement):
@@ -78,7 +96,7 @@ class LabRoomManagement(LabviewBaseManagement):
     parent_url_kwarg = "lab_pk"
 
     serializer_class = {
-        "list": labview_serializers.LabRoomSerializer,
+        "list": datatable_serializer(labview_serializers.LabRoomSerializer),
         "retrieve": labview_serializers.LabRoomSerializer,
         "create": labview_serializers.ValidateLabRoomSerializer,
         "update": labview_serializers.ValidateLabRoomSerializer,
@@ -124,7 +142,7 @@ class FurnitureManagement(LabviewBaseManagement):
     )
 
     serializer_class = {
-        "list": labview_serializers.FurnitureSerializer,
+        "list": datatable_serializer(labview_serializers.FurnitureSerializer),
         "retrieve": labview_serializers.FurnitureSerializer,
         "create": labview_serializers.ValidateFurnitureSerializer,
         "update": labview_serializers.ValidateFurnitureSerializer,
@@ -266,7 +284,7 @@ class ShelfManagement(LabviewBaseManagement):
     )
 
     serializer_class = {
-        "list": labview_serializers.ShelfSerializer,
+        "list": datatable_serializer(labview_serializers.ShelfSerializer),
         "retrieve": labview_serializers.ShelfSerializer,
         "create": labview_serializers.ValidateShelfSerializer,
         "update": labview_serializers.ValidateShelfSerializer,

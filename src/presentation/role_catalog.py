@@ -6,7 +6,7 @@ confundirlas es la causa de que "está probado" signifique cosas distintas segú
 lo diga:
 
 1. ``User.is_superuser`` — no es un rol, es un cortocircuito. Se salta el middleware
-   entero (``authentication/middleware.py:49-50``) y otros cinco puntos.
+   entero (``authentication/middleware.py:49-50``) y otros cuatro puntos.
 2. ``UserOrganization.type_in_organization`` (``laboratory/models.py:1272-1301``) — no
    concede permisos, filtra elegibilidad (solo ADMINISTRATOR y LABORATORY_MANAGER pueden
    ser responsables de un laboratorio, ``laboratory/forms.py:99-104``).
@@ -130,7 +130,7 @@ CANONICAL_ROLES = (
          "Rol construido con PKs de permiso escritas a mano (`:19-51`): depende del "
          "orden de las migraciones y no sobrevive a una base distinta."),
     _rol("organization_management", "Organization Management",
-         "auth_and_perms/views/user_org_creation.py:95",
+         "auth_and_perms/views/user_org_creation.py:40",
          "Se crea una por organización raíz al registrarla, con todos los permisos del "
          "grupo `RegisterOrganization`. Es el superadministrador de la organización."),
 )
@@ -140,10 +140,9 @@ CANONICAL_ROLES = (
 PSEUDO_ROLES = (
     Role("superusuario", "Superusuario", "superusuario", False,
          "authentication/middleware.py:49-50", (), False,
-         "No es un rol: es un cortocircuito. Se salta el middleware y otros cinco "
+         "No es un rol: es un cortocircuito. Se salta el middleware y otros cuatro "
          "puntos (`laboratory/utils.py:92`, `templatetags/user_rol_tags.py:19`, "
-         "`templatetags/laboratory.py:30`, `views/organizations.py:56`, "
-         "`gtselects.py:646`). **Nunca cuenta como cobertura de ningún rol**: una "
+         "`templatetags/laboratory.py:25`, `gtselects.py:646`). **Nunca cuenta como cobertura de ningún rol**: una "
          "prueba que corre con superusuario no prueba el permiso."),
     Role("org_administrator", "Administrador de la organización", "tipo_en_organizacion",
          False, "laboratory/models.py:1273", (), False,

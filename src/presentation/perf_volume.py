@@ -164,10 +164,14 @@ def seed(units, start=0, seed_value=1234):
             for so in shelfobjects for n in range(LOGS_PER_SHELFOBJECT)])
         _set_dates(ObjectLogChange, [log.pk for log in logs[::4]], "update_time", 365)
 
-        ObjectMaximumLimit.objects.bulk_create([
+        limits = ObjectMaximumLimit.objects.bulk_create([
             ObjectMaximumLimit(laboratory=lab, object=o, quantity=round(rnd.uniform(10, 1000), 1),
                                measurement_unit_id=rnd.choice(cat.units))
             for o in reactives])
+        # El reporte de regencia mira el año anterior: con `auto_now_add` los
+        # límites quedaban en el año en curso y el reporte salía vacío.
+        ObjectMaximumLimit.objects.filter(pk__in=[limit.pk for limit in limits]).update(
+            created_at=datetime.date(timezone.now().year - 1, 6, 30))
 
         building = Buildings.objects.create(name="Edificio vol %d" % unit, phone="2222-2222", organization=org, created_by=user)
         building.laboratories.add(lab)

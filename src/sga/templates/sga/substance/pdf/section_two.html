@@ -15,33 +15,17 @@
 <label class="fw-bold">2.2 {% trans 'Label elements'%}</label>
 <div class="container">
     <label class="fw-bold">{% trans 'Labeling in accordance with Regulation (EC) 1272/2008' %}</label>
-    <div class="row">
-        <div class="col-3"><label>{% trans 'Pictograms'%}:</label></div>
-        <div class="col-9">{% for pictogram in component.pictograms.all %}<img style="max-width:30px" src="{% if pictogram.image %}{{pictogram.image.url}}{%endif%}" alt="">{% endfor %}</div>
-    </div>
-    <div class="row">
-        <div class="col-3"><label>{% trans 'Warning Word' %}:</label></div>
-        <div class="col-9">{% if component.warningword.name %}{{component.warningword.name}} {% else %} {% trans 'Data not available' %} {% endif %}</div>
-    </div>
+    <table class="row"><tr><td class="col-3"><label>{% trans 'Pictograms'%}:</label></td><td class="col-9">{% for pictogram in component.pictograms.all %}<img style="max-width:30px" src="{% if pictogram.image %}{{pictogram.image.url}}{%endif%}" alt="">{% endfor %}</td></tr></table>
+    <table class="row"><tr><td class="col-3"><label>{% trans 'Warning Word' %}:</label></td><td class="col-9">{% if component.warningword.name %}{{component.warningword.name}} {% else %} {% trans 'Data not available' %} {% endif %}</td></tr></table>
 
-    <div class="row">
-        <div class="col-12"><label>{% trans 'Danger indication' %}</label></div>
-    </div>
+    <table class="row"><tr><td class="col-12"><label>{% trans 'Danger indication' %}</label></td></tr></table>
     {% for danger_indication in component.danger_indication.all %}
-        <div class="row">
-            <div class="col-3"><label>{% if danger_indication.code %}{{danger_indication.code}}:{% else %} {% trans 'Data not available' %}:{% endif %}</label></div>
-            <div class="col-9">{% if danger_indication.description %}{{danger_indication.description}} {% else %} {% trans 'Data not available' %} {% endif %}</div>
-        </div>
+        <table class="row"><tr><td class="col-3"><label>{% if danger_indication.code %}{{danger_indication.code}}:{% else %} {% trans 'Data not available' %}:{% endif %}</label></td><td class="col-9">{% if danger_indication.description %}{{danger_indication.description}} {% else %} {% trans 'Data not available' %} {% endif %}</td></tr></table>
     {% endfor %}
 
-    <div class="row">
-        <div class="col-12"><label>{% trans 'Prudence advice' %}</label></div>
-    </div>
+    <table class="row"><tr><td class="col-12"><label>{% trans 'Prudence advice' %}</label></td></tr></table>
     {% for prudence_advice in component.prudence_advice.all %}
-        <div class="row">
-            <div class="col-3"><label>{% if prudence_advice.code %}{{prudence_advice.code}}:{% else %}{% trans 'Data not available' %}: {% endif %}</label></div>
-            <div class="col-9">{% if prudence_advice.name %}{{prudence_advice.name}} {% else %}{% trans 'Data not available' %} {% endif %}</div>
-        </div>
+        <table class="row"><tr><td class="col-3"><label>{% if prudence_advice.code %}{{prudence_advice.code}}:{% else %}{% trans 'Data not available' %}: {% endif %}</label></td><td class="col-9">{% if prudence_advice.name %}{{prudence_advice.name}} {% else %}{% trans 'Data not available' %} {% endif %}</td></tr></table>
     {% endfor %}
 
 </div>

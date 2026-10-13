@@ -8,8 +8,8 @@ estantes no puede duplicar las consultas.
 
 Dos cuidados que hacen falta para que la medida signifique algo:
 
-* ``TreeBuilder`` **materializa los QR que faltan**, así que la primera llamada
-  escribe y la segunda no.  Se calienta antes de medir.
+* La primera llamada calienta cachés de la petición (sesión, permisos).  Se
+  calienta antes de medir.
 * Django limpia la caché de ``ContentType`` entre pruebas, y esos lookups se
   cuentan.  También se calientan.
 
@@ -58,7 +58,7 @@ class TreeQueryShapeTest(BaseLaboratorySetUpTest):
         self.warm()
 
     def warm(self):
-        """Crea los QR que falten para que la medición no los pague."""
+        """Primera llamada fuera de la medición."""
         self.assertEqual(self.client.get(self.url).status_code, 200)
         self.assertEqual(self.client.get(self.url + "?risk=1").status_code, 200)
 
@@ -112,22 +112,15 @@ class TreeQueryShapeTest(BaseLaboratorySetUpTest):
     def test_asking_without_risk_does_not_pay_for_it(self):
         self.assertLess(self.count(), self.count("?risk=1"))
 
-    def test_a_missing_qr_is_created_once_and_never_again(self):
+    def test_the_tree_never_writes_qr_codes(self):
+        """El árbol solo da la URL del QR: generarlo es cosa de quien lo pide."""
         QRModel.objects.all().delete()
 
-        with CaptureQueriesContext(connection) as first:
-            self.client.get(self.url)
-        created = [
-            query for query in first.captured_queries
-            if "INSERT" in query["sql"].upper() and "qrmodel" in query["sql"].lower()
-        ]
-        self.assertTrue(created, "el árbol debería materializar los QR que faltan")
-
-        with CaptureQueriesContext(connection) as second:
+        with CaptureQueriesContext(connection) as captured:
             self.client.get(self.url)
         self.assertEqual(
             [
-                query for query in second.captured_queries
+                query for query in captured.captured_queries
                 if "INSERT" in query["sql"].upper()
                 and "qrmodel" in query["sql"].lower()
             ],

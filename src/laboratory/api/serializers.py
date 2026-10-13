@@ -13,10 +13,6 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from django.db import transaction
 
-from auth_and_perms.organization_utils import (
-    user_is_allowed_on_organization,
-    organization_can_change_laboratory,
-)
 from laboratory.models import (
     CommentInform,
     Inform,
@@ -243,9 +239,6 @@ class InformDataTableSerializer(serializers.Serializer):
 
 class BaseShelfObjectSerializer:
 
-    def get_object_type(self, obj):
-        return obj.object.get_type_display()
-
     def get_object_name(self, obj):
         return obj.object.name
 
@@ -393,31 +386,6 @@ class ShelfObjectTableSerializer(serializers.Serializer):
     draw = serializers.IntegerField(required=True)
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)
-
-
-class BaseOrganizationLaboratory(serializers.Serializer):
-    organization = serializers.PrimaryKeyRelatedField(
-        queryset=OrganizationStructure.objects.using(settings.READONLY_DATABASE)
-    )
-    laboratory = serializers.PrimaryKeyRelatedField(
-        queryset=Laboratory.objects.using(settings.READONLY_DATABASE)
-    )
-
-    def validate_organization(self, value):
-        user_is_allowed_on_organization(self.user, value)
-        return value
-
-    def validate(self, value):
-        if not organization_can_change_laboratory(
-            value["laboratory"], value["organization"]
-        ):
-            raise ValidationError(detail="Wrong Laboratory")
-        return value
-
-    user = None
-
-    def set_user(self, user):
-        self.user = user
 
 
 class ShelfLabViewSerializer(serializers.Serializer):

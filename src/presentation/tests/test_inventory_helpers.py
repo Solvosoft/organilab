@@ -28,6 +28,10 @@ def vista_render_dinamico(request):
     return render(request, request.GET["plantilla"])
 
 
+def vista_plantilla_inexistente(request):
+    return render(request, "laboratory/no_existe_esta_plantilla.html")
+
+
 def vista_muda(request):
     return HttpResponse("hola")
 
@@ -113,6 +117,9 @@ class ClasificacionTest(SimpleTestCase):
                           "laboratory/dataconfig.html"))
         self.assertEqual(ui.classify(vista_render_dinamico, "x:dinamica", False)[0], "parcial")
         self.assertEqual(ui.classify(vista_muda, "x:muda", False)[0], "desconocida")
+        # Una plantilla citada que no existe no aporta cadena de extends: se salta
+        # y la vista cae en la regla genérica de render().
+        self.assertEqual(ui.classify(vista_plantilla_inexistente, "x:inexistente", False)[0], "parcial")
 
 
 class PaginasYCoberturaTest(SimpleTestCase):

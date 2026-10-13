@@ -27,12 +27,11 @@ def create_establishment_reports():
         )
         create_estableshment_logs_data(risk, day, labs)
 
+    # ``OrganizationStructure.root`` ya absorbe el ``DoesNotExist`` de sus
+    # ancestros, así que ``get_my_laboratories`` no lo deja escapar.
     for org in OrganizationStructure.objects.all():
-        try:
-            labs = list(set(org.get_my_laboratories))
-            create_estableshment_logs_data(org, day, labs)
-        except OrganizationStructure.DoesNotExist:
-            continue
+        labs = list(set(org.get_my_laboratories))
+        create_estableshment_logs_data(org, day, labs)
 
 
 @app.task

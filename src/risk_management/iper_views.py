@@ -927,16 +927,13 @@ def iper_lab_help(request, org_pk, lab_pk):
         "object"
     )[:500]
     for shelfobject in queryset:
+        # ``ShelfObject.object`` es NOT NULL; un objeto sin características
+        # simplemente no aporta códigos H.
         obj = shelfobject.object
-        if obj is None:
-            continue
         hcodes = []
-        try:
-            chars = obj.substancharacteristics_object.first()
-            if chars is not None:
-                hcodes = list(chars.h_code.values_list("code", flat=True))
-        except Exception:
-            hcodes = []
+        chars = obj.substancharacteristics_object.first()
+        if chars is not None:
+            hcodes = list(chars.h_code.values_list("code", flat=True))
         items.append(
             {
                 "name": obj.name,

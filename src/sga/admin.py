@@ -38,10 +38,10 @@ class AdminDangerIndication(admin.ModelAdmin):
                 super(MyForm, self).__init__(*args_myform, **kwargs_myform)
                 self.fields["warning_class"].queryset = WarningClass.objects.filter(
                     danger_type="class"
-                )
+                ).labelled()
                 self.fields["warning_category"].queryset = WarningClass.objects.filter(
                     danger_type="category"
-                )
+                ).labelled()
 
         return MyForm
 

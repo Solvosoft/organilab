@@ -196,7 +196,7 @@ class LabUserS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
                 profiles = profiles.filter(**filters).distinct()
                 queryset = queryset.exclude(profile__in=profiles)
                 return queryset.distinct().order_by("first_name")
-            return queryset.none()
+        # Sin objeto de destino (o sin organización) no hay a quién proponer.
         return self.model.objects.none()
 
     def get_text_display(self, obj):
@@ -276,10 +276,8 @@ class GroupS2(BaseSelect2View, AllPermission):
                 org_str += " -- "
             org_str += org.name
 
-        if self.fields:
-            fields = [self.get_field_value(obj, x, str) for x in self.fields]
-            return self.text_separator.join(fields) + " (" + org_str + ")"
-        return str(obj)
+        fields = [self.get_field_value(obj, x, str) for x in self.fields]
+        return self.text_separator.join(fields) + " (" + org_str + ")"
 
 
 @register_lookups(prefix="userbase", basename="userbase")
@@ -482,7 +480,9 @@ class LabOrgBaseS2(generics.RetrieveAPIView, BaseSelect2View):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
-        if self.organization is None:
+        # Defensa: aquí la organización ya existe (`retrieve` y el formulario válido la
+        # buscan con 404, el formulario inválido ya respondió 400).
+        if self.organization is None:  # pragma: no cover
             raise Http404(_("Organization not found"))
         return super().list(request, *args, **kwargs)
 
@@ -551,11 +551,8 @@ class GroupsByProfile(BaseSelect2View):
     profile = None
 
     def get_queryset(self):
-        queryset = super().get_queryset()
-
-        if self.profile:
-            return self.profile.groups.all()
-        return queryset.none()
+        # `list` solo llega aquí con el serializer válido, y `profile` es obligatorio.
+        return self.profile.groups.all()
 
     def list(self, request, *args, **kwargs):
         self.serializer = ValidateProfileSerializer(data=request.GET)
@@ -601,7 +598,7 @@ class UsersByOrganization(BaseSelect2View):
                 .filter(pk__in=user_ids)
                 .distinct()
             )
-        else:
+        else:  # pragma: no cover - `list` exige la organización en el serializer
             queryset = queryset.none()
 
         return queryset
@@ -666,7 +663,7 @@ class OrgTree(BaseSelect2View):
             return queryset.filter(pk__in=org_ids, active=True).order_by(
                 "level", "name"
             )
-        return queryset.none()
+        return queryset.none()  # pragma: no cover - `list` siempre fija `self.user`
 
     def list(self, request, *args, **kwargs):
         self.user = request.user
@@ -693,7 +690,7 @@ class ObjectByOrganization(BaseSelect2View):
         queryset = super().get_queryset()
         if self.organization:
             queryset = queryset.filter(organization=self.organization).order_by("name")
-        else:
+        else:  # pragma: no cover - `list` exige la organización en el serializer
             queryset = queryset.none()
         return queryset
 

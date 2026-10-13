@@ -56,7 +56,6 @@ from laboratory.views.djgeneric import (
 )
 from organilab import settings
 from reservations_management.models import ReservedProducts
-from . import convertions
 
 
 @login_required
@@ -154,24 +153,17 @@ def remove_my_procedure(request, org_pk, lab_pk, pk):
     user_is_allowed_on_organization(request.user, organization)
     organization_can_change_laboratory(laboratory, organization)
     my_procedure = get_object_or_404(MyProcedure, pk=pk)
-    if my_procedure:
-        organilab_logentry(
-            request.user,
-            my_procedure,
-            DELETION,
-            "myprocedures",
-            changed_data=["name", "procedure", "organization"],
-            change_message=_("Deleted my procedure '%(name)s'")
-            % {"name": my_procedure.name},
-            relobj=lab_pk,
-        )
-        my_procedure.delete()
-        return redirect(
-            reverse(
-                "academic:get_my_procedures",
-                kwargs={"lab_pk": lab_pk, "org_pk": org_pk},
-            )
-        )
+    organilab_logentry(
+        request.user,
+        my_procedure,
+        DELETION,
+        "myprocedures",
+        changed_data=["name", "procedure", "organization"],
+        change_message=_("Deleted my procedure '%(name)s'")
+        % {"name": my_procedure.name},
+        relobj=lab_pk,
+    )
+    my_procedure.delete()
     return redirect(
         reverse(
             "academic:get_my_procedures", kwargs={"lab_pk": lab_pk, "org_pk": org_pk}
@@ -577,16 +569,6 @@ def get_procedure(request, org_pk, pk):
     return JsonResponse(
         {"title": procedure.title, "pk": procedure.pk, "msg": msg}, status=result_status
     )
-
-
-@login_required
-@permission_required("academic.view_myprocedure", raise_exception=True)
-def download_myprocedure(request, org_pk, pk):
-    organization = get_object_or_404(
-        OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
-    )
-    user_is_allowed_on_organization(request.user, organization)
-    procedure = get_object_or_404(Procedure, pk=pk)
 
 
 @login_required

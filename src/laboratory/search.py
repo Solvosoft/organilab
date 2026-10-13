@@ -13,8 +13,6 @@ from .views.djgeneric import ListView
 from laboratory.models import ShelfObject, Laboratory, OrganizationStructure
 from laboratory.forms import (
     ReservedModalForm,
-    TransferObjectForm,
-    AddObjectForm,
     SubtractObjectForm,
 )
 from laboratory.forms import ReservationModalForm

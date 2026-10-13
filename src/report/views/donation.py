@@ -25,7 +25,13 @@ def get_dataset(report, column_list=None):
             else organization.get_my_laboratories
         )
 
-    shelf_objects = ShelfObject.objects.filter(**filters)
+    shelf_objects = ShelfObject.objects.filter(**filters).select_related(
+        "object",
+        "status",
+        "measurement_unit",
+        "in_where_laboratory",
+        "shelf__furniture__labroom",
+    )
 
     object_type = dict(Object.TYPE_CHOICES)
     for shelfobject in shelf_objects:

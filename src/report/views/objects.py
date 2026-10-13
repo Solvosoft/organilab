@@ -1,13 +1,5 @@
 from django.core.files.base import ContentFile
-from django.db.models import (
-    Sum,
-    Min,
-    Count,
-    Case,
-    When,
-    F,
-    FloatField,
-)
+from django.db.models import Count, Prefetch
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext as _
 
@@ -22,17 +14,14 @@ from laboratory.models import (
 from sga.models import SubstanceCharacteristics
 from laboratory.report_utils import ExcelGraphBuilder
 from laboratory.utils import (
-    get_user_laboratories,
     get_cas,
     get_molecular_formula,
     get_pk_org_ancestors,
     get_imdg,
     get_users_from_organization,
 )
-from laboratory.views.djgeneric import ResultQueryElement
 from report.models import ObjectChangeLogReportBuilder
 from report.utils import (
-    filter_period,
     set_format_table_columns,
     get_report_name,
     load_dataset_by_column,
@@ -41,106 +30,7 @@ from report.utils import (
 from report.views.object_changes import get_dataset_objectlogchanges
 
 
-# report_objectlogchange
-def resume_queryset(queryset):
-    laboratories = set(queryset.values_list("laboratory__pk", flat=True))
-    objectchange_list = []
-    result = []
-    for laboratory in laboratories:
-        lab = Laboratory.objects.get(pk=laboratory)
-        query = queryset.filter(laboratory=lab)
-        objects = set(query.values_list("object", "measurement_unit"))
-        for obj in objects:
-            query_values = query.filter(object__pk=obj[0], measurement_unit__pk=obj[1])
-            objectchange_list.append(
-                {
-                    "lab": lab.name,
-                    "values": query_values,
-                    "diff": round(
-                        query_values.aggregate(total=Sum("diff_value"))["total"], 3
-                    ),
-                }
-            )
-
-    list_obj = []
-    i = 0
-    for obj in objectchange_list:
-        for ob in obj["values"]:
-            if ob.deleted_user_info:
-                user = ob.deleted_user_info
-            else:
-                try:
-                    user = ob.user.get_full_name()
-                    if not user:
-                        user = ob.user.username
-                except Exception as e:
-                    user = ""
-
-            object_list = ResultQueryElement(
-                {
-                    "user": user,
-                    # 'laboratory': ob.laboratory,
-                    "pk": ob.pk,
-                    "object": ob.object,
-                    "update_time": ob.update_time,
-                    "old_value": round(ob.old_value, 3),
-                    "new_value": round(ob.new_value, 3),
-                    "diff_value": round(ob.diff_value, 3),
-                    "measurement_unit": ob.measurement_unit,
-                }
-            )
-            list_obj.append(object_list)
-
-    return list_obj
-
-
-def get_queryset(report):
-    query = ObjectLogChange.objects.all().order_by("update_time")
-    if "period" in report.data:
-        query = filter_period(report.data["period"], query)
-    if "precursor" in report.data:
-        query = query.filter(precursor=True)
-    if "all_labs_org" in report.data:
-        query = query.filter(laboratory__in=get_user_laboratories(report.created_by))
-    else:
-        query = query.filter(laboratory__pk=report.data["lab_pk"])
-    if "resume" in report.data:
-        query = query
-    return query
-
-
-def get_dataset_objectlogchange(report, column_list=None):
-    dataset = []
-    queryset = get_queryset(report)
-    object_list = resume_queryset(queryset)
-    for obj in object_list:
-        data_column = {
-            "user": obj.user,
-            "laboratory": str(obj.laboratory),
-            "object": str(obj.object),
-            "update_time": obj.update_time.strftime("%m/%d/%Y, %H:%M:%S"),
-            "old_value": obj.old_value,
-            "new_value": obj.new_value,
-            "diff_value": obj.diff_value,
-            "measurement_unit": str(obj.measurement_unit),
-        }
-        obj_item = list(data_column.values())
-
-        if column_list:
-            obj_item = load_dataset_by_column(column_list, data_column)
-        dataset.append(obj_item)
-    return dataset
-
-
 def report_objectlogchange_html(report):
-    get_dataset_objectlogchanges(report)
-    record = ObjectChangeLogReportBuilder.objects.filter(
-        report__task_report=report
-    ).count()
-    return record
-
-
-def report_objectlogchange_pdf(report):
     get_dataset_objectlogchanges(report)
     record = ObjectChangeLogReportBuilder.objects.filter(
         report__task_report=report
@@ -183,13 +73,9 @@ def get_dataset_reactive_precursor(report, column_list=None):
         lab = organization.get_my_laboratories
 
     for lab_pk in lab:
-        if lab:
-            rpo = Object.objects.filter(
-                shelfobject__shelf__furniture__labroom__laboratory__pk=lab_pk
-            )
-        else:
-            rpo = Object.objects.all()
-
+        rpo = Object.objects.filter(
+            shelfobject__shelf__furniture__labroom__laboratory__pk=lab_pk
+        )
         rpo = rpo.filter(
             type=Object.REACTIVE, substancharacteristics_object__is_precursor=True
         )
@@ -214,7 +100,12 @@ def get_dataset_reactive_precursor(report, column_list=None):
             if obj_id not in obj_measurement_units:
                 obj_measurement_units[obj_id] = so["measurement_unit"]
 
-        objects = rpo.distinct()
+        objects = rpo.distinct().prefetch_related(
+            Prefetch(
+                "substancharacteristics_object",
+                queryset=SubstanceCharacteristics.objects.select_related("imdg"),
+            )
+        )
         laboratory = Laboratory.objects.filter(pk=lab_pk).first()
 
         for object in objects:
@@ -322,22 +213,13 @@ def report_reactive_precursor_doc(report):
 
 
 def get_object_elements(obj):
-    features = ""
+    features = ", ".join(feature.name for feature in obj.features.all())
     danger = ""
-    all_features = obj.features.all()
-
-    for x, feature in enumerate(all_features):
-        features += f"{feature.name}"
-        if not (x + 1 == len(all_features)):
-            features += ", "
-
-    sga_char = obj.substancharacteristics_object.first()
+    sga_char = obj.get_sga_characteristic()
     if sga_char:
-        all_hcode = sga_char.h_code.all()
-        for x, h_code in enumerate(all_hcode):
-            danger += f"{h_code}"
-            if not (x + 1 == len(all_hcode)):
-                danger += ", "
+        # Ordenado por código: la base no garantiza un orden en el M2M.
+        all_hcode = sorted(sga_char.h_code.all(), key=lambda item: item.code)
+        danger = ", ".join(str(h_code) for h_code in all_hcode)
 
     return [features, danger]
 
@@ -356,7 +238,7 @@ def get_objects(report):
         if report.data["object_type"] in dict(Object.TYPE_CHOICES).keys():
             filters["object__type"] = report.data["object_type"]
 
-    objects = ShelfObject.objects.filter(**filters).distinct("pk")
+    objects = ShelfObject.objects.for_report().filter(**filters).distinct("pk")
     return objects
 
 
@@ -370,10 +252,10 @@ def get_dataset_objects(report, column_list=None):
     for obj in objects:
         formula = "-"
         features, danger = get_object_elements(obj.object)
-        sga_char = obj.object.substancharacteristics_object.first()
+        sga_char = obj.object.get_sga_characteristic()
         if sga_char and sga_char.molecular_formula:
             formula = sga_char.molecular_formula
-        cas = get_cas(obj.object, "") if get_cas(obj.object, "") else ""
+        cas = get_cas(obj.object, "") or ""
         data_column = {
             "laboratory": obj.in_where_laboratory.name,
             "shelfobject_code": obj.shelfobject_code if obj.shelfobject_code else "",
@@ -489,9 +371,13 @@ def get_dataset_limit_objects(report, column_list=None):
         )
         labs = Laboratory.objects.filter(pk__in=labs)
         for lab in labs:
-            shelf_objects = ShelfObject.objects.filter(
-                in_where_laboratory=lab,
-                limits__isnull=False,
+            shelf_objects = (
+                ShelfObject.objects.filter(
+                    in_where_laboratory=lab,
+                    limits__isnull=False,
+                )
+                .select_related("object", "shelf", "measurement_unit", "limits")
+                .order_by("pk")
             )
 
             shelf_objects = get_limited_shelf_objects(shelf_objects)

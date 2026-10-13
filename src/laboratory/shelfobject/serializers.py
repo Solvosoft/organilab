@@ -245,14 +245,7 @@ class ReserveShelfObjectSerializer(serializers.ModelSerializer):
                     )
                 }
             )
-        if final_date <= current_datetime:
-            raise serializers.ValidationError(
-                {
-                    "final_date": _(
-                        "Final date cannot be equal or lower than current date."
-                    )
-                }
-            )
+        # final_date > initial_date > ahora: no hace falta otra comprobación.
 
         shelf_object = data["shelf_object"]
         if shelf_object.is_box:
@@ -1039,37 +1032,6 @@ class UpdateBoxShelfObjectSerializer(serializers.ModelSerializer):
             "reactive_expiration_date",
         ]
 
-    def validate(self, data):
-        instance = self.instance
-        current_box_count = (
-            len(instance.quantity_units) if instance.quantity_units else 0
-        )
-
-        quantity_box_changed = (
-            "quantity_box" in data and data["quantity_box"] != current_box_count
-        )
-        units_per_box_changed = (
-            "units_per_box" in data and data["units_per_box"] != instance.units_per_box
-        )
-
-        if not (quantity_box_changed or units_per_box_changed):
-            return data
-
-        original_units = instance.units_per_box
-        boxes = instance.quantity_units or []
-        boxes_modified = any(box["units"] != original_units for box in boxes)
-
-        if boxes_modified:
-            raise serializers.ValidationError(
-                {
-                    "quantity_box": _(
-                        "Cannot change the number of boxes or units per box because one or more "
-                        "boxes have already been modified. Use the decrease or increase actions instead."
-                    )
-                }
-            )
-        return data
-
 
 class EquipmentShelfObjectSerializer(
     ValidateShelfSerializer, serializers.ModelSerializer
@@ -1815,10 +1777,13 @@ class TransferInShelfObjectSerializer(ValidateShelfSerializer):
                     errors, save_to_key="transfer_object"
                 )
                 if is_box:
-                    if len(transfer_object.quantity_units) < int(
-                        transfer_object.amount_to_transfer
+                    # TranferObject no tiene ``amount_to_transfer`` (su
+                    # ``quantity`` es el número de cajas) y "quantity" ya se
+                    # agrupó en "transfer_object": ambas cosas daban 500.
+                    if len(transfer_object.object.quantity_units or []) < int(
+                        transfer_object.quantity
                     ):
-                        updated_errors["quantity"].append(
+                        updated_errors.setdefault("transfer_object", []).append(
                             _(
                                 "The transfer out cannot be performed since the boxes available for the source object is less than the amount to transfer."
                             )
@@ -3327,11 +3292,7 @@ class IncreaseReactiveShelfObjectSerializer(serializers.Serializer):
         """Validaciones cruzadas: cantidad, unidad de medida y shelf"""
         data = super().validate(data)
 
-        shelf_object = data.get("shelf_object")
-        if not shelf_object:
-            raise serializers.ValidationError(
-                {"shelf_object": _("Shelf object is required.")}
-            )
+        shelf_object = data["shelf_object"]  # campo obligatorio
 
         # For box objects, skip measurement unit and quantity validation
         if shelf_object.is_box:

@@ -5,18 +5,15 @@ Created on 26/12/2016
 @author: luisza
 """
 
-import json
 
 from django import forms
 from django.conf import settings
-from django.contrib import messages
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import Http404, JsonResponse, HttpResponse, HttpResponseNotFound
 from django.shortcuts import get_object_or_404, render
 from django.template.loader import render_to_string
 from django.urls import reverse
-from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views.generic.edit import FormView
@@ -31,11 +28,10 @@ from auth_and_perms.organization_utils import (
     user_is_allowed_on_organization,
     organization_can_change_laboratory,
 )
-from laboratory import dataconfig, utils
+from laboratory import utils
 from laboratory.shelfobject.utils import has_active_reservations
 from laboratory.forms import (
     ReservationModalForm,
-    ShelfObjectListForm,
     ValidateShelfForm,
 )
 from laboratory.models import (
@@ -43,9 +39,7 @@ from laboratory.models import (
     Shelf,
     Object,
     Laboratory,
-    TranferObject,
     OrganizationStructure,
-    Furniture,
 )
 from laboratory.views.djgeneric import CreateView, UpdateView, DeleteView, DetailView
 from presentation.models import QRModel
@@ -334,11 +328,6 @@ class ShelfObjectCreate(AJAXMixin, CreateView):
     form_class = ShelfObjectForm
     success_url = "/"
 
-    def get_success_url(self):
-        return reverse_lazy(
-            "laboratory:list_shelf", args=(self.org, self.lab, self.shelf.furniture.pk)
-        )
-
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.created_by = self.request.user
@@ -433,12 +422,6 @@ class ShelfObjectEdit(LabShelfObjectQuerysetMixin, AJAXMixin, UpdateView):
     model = ShelfObject
     form_class = ShelfObjectFormUpdate
     success_url = "/"
-
-    def get_success_url(self):
-        return reverse_lazy(
-            "laboratory:list_shelf",
-            args=(self.org, self.lab, self.object.shelf.furniture.pk),
-        )
 
     def form_valid(self, form):
         old = self.model.objects.filter(pk=self.object.id).values("quantity")[0][
@@ -616,185 +599,6 @@ class ShelfObjectDelete(LabShelfObjectQuerysetMixin, AJAXMixin, DeleteView):
 )
 class ShelfObjectDetail(LabShelfObjectQuerysetMixin, AJAXMixin, DetailView):
     model = ShelfObject
-
-
-def get_shelfobject_template(request, lab, org, shelfobject):
-    return render_to_string(
-        template_name="laboratory/components/shelfobject.html",
-        context={"shelfobject": shelfobject, "laboratory": lab, "org_pk": org},
-        request=request,
-    )
-
-
-@login_required()
-def get_shelf_list(request):
-    form = ShelfObjectListForm(request.POST)
-    data = None
-    aux = []
-    unit = None
-    msg = None
-
-    if form.is_valid():
-        lab = form.cleaned_data["lab"].pk
-        furnitures = Furniture.objects.filter(labroom__laboratory__id=lab)
-
-        transfer_detail = TranferObject.objects.filter(
-            pk=form.cleaned_data["id"]
-        ).first()
-
-        if furnitures and transfer_detail:
-            msg = transfer_detail.get_object_detail()
-            unit = transfer_detail.object.measurement_unit
-
-            for furniture in furnitures:
-                data = dataconfig.iter_shelf_pks(furniture.get_grid())
-                if len(data) > 0:
-                    for shelf in Shelf.objects.filter(pk__in=data):
-                        if (
-                            unit == shelf.measurement_unit
-                            or shelf.measurement_unit is None
-                        ):
-                            aux.append({"id": shelf.pk, "shelf": shelf.get_shelf()})
-        else:
-            msg = form.errors
-    data = json.dumps(aux)
-    return JsonResponse({"data": data, "msg": msg})
-
-
-@login_required
-@permission_required("laboratory.add_tranferobject", raise_exception=True)
-def objects_transfer(request, org_pk, lab_pk, transfer_pk, shelf_pk):
-    transfer = get_object_or_404(TranferObject, pk=transfer_pk)
-    shelf = get_object_or_404(Shelf, pk=shelf_pk)
-    obj = transfer.object.object
-    lab_send_obj = ShelfObject.objects.get(pk=transfer.object.pk)
-    organization = get_object_or_404(
-        OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
-    )
-    user_is_allowed_on_organization(request.user, organization)
-
-    if lab_send_obj.quantity >= transfer.quantity:
-        lab_received_obj = ShelfObject.objects.filter(
-            object_id=obj.id, shelf_id=shelf_pk
-        ).first()
-
-        if lab_received_obj is not None:
-            old = lab_received_obj.quantity
-            lab_received_obj.quantity += transfer.quantity
-            if transfer.mark_as_discard:
-                lab_received_obj.marked_as_discard = True
-            lab_received_obj.in_where_laboratory_id = lab_pk
-            lab_received_obj.save()
-
-            log_object_change(
-                request.user,
-                transfer.laboratory_received.pk,
-                lab_received_obj,
-                old,
-                lab_received_obj.quantity,
-                "Transferencia de %s por parte del laboratorio %s"
-                % (transfer.get_object_detail(), transfer.laboratory_send.name),
-                1,
-                "Transfer",
-                create=False,
-                organization=organization,
-                is_box=transfer.object.is_box,
-            )
-
-        else:
-            new_object = ShelfObject.objects.create(
-                shelf=shelf,
-                object=obj,
-                quantity=transfer.quantity,
-                limit_quantity=0,
-                in_where_laboratory_id=lab_pk,
-                measurement_unit=lab_send_obj.measurement_unit,
-            )
-
-            schema = request.scheme + "://"
-            domain = schema + request.get_host()
-            url = domain + reverse(
-                "laboratory:rooms_list", kwargs={"org_pk": org_pk, "lab_pk": lab_pk}
-            )
-            url = url + "#labroom=%d&furniture=%d&shelf=%d&shelfobject=%d" % (
-                shelf.furniture.labroom.pk,
-                shelf.furniture.pk,
-                shelf.pk,
-                new_object.pk,
-            )
-            new_object.shelf_object_url = url
-            img, file = utils.generate_QR_img_file(
-                url, request.user, extension_file=".svg", file_name="qrcode"
-            )
-            new_object.shelf_object_qr = img
-
-            if transfer.mark_as_discard:
-                new_object.marked_as_discard = True
-            new_object.save()
-            log_object_change(
-                request.user,
-                transfer.laboratory_received.pk,
-                lab_send_obj,
-                0,
-                transfer.quantity,
-                "Transferencia de %s por parte del laboratorio %s"
-                % (transfer.get_object_detail(), transfer.laboratory_send.name),
-                1,
-                "Transfer",
-                create=False,
-                organization=organization,
-                is_box=transfer.object.is_box,
-            )
-
-            changed_data = [
-                "shelf",
-                "object",
-                "quantity",
-                "limit_quantity",
-                "measurement_unit",
-            ]
-            utils.organilab_logentry(
-                request.user,
-                new_object,
-                ADDITION,
-                "shelfobject",
-                changed_data=changed_data,
-                change_message=_("Created shelfobject '%(name)s' from transfer")
-                % {"name": str(new_object.object)},
-                relobj=[transfer.laboratory_received, transfer.laboratory_send],
-            )
-
-        old = lab_send_obj.quantity
-        lab_send_obj.quantity -= transfer.quantity
-        lab_send_obj.save()
-        transfer.status = 1
-        transfer.save()
-        log_object_change(
-            request.user,
-            transfer.laboratory_send.pk,
-            lab_send_obj,
-            old,
-            lab_send_obj.quantity,
-            "Transferencia de %s al laboratorio %s"
-            % (transfer.get_object_detail(), transfer.laboratory_received.name),
-            2,
-            "Transfer",
-            create=False,
-            organization=organization,
-            is_box=transfer.object.is_box,
-        )
-        messages.success(request, _("Transfer done successfully"))
-    else:
-        return JsonResponse(
-            {
-                "status": False,
-                "msg": _("The amount sends is more than the laboratory have"),
-            }
-        )
-    return JsonResponse({"status": True, "msg": _("Transfer done successfully")})
-
-
-objects_transfer.lab_pk_field = "lab_pk"
 
 
 @login_required

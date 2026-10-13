@@ -73,7 +73,8 @@ class LaboratoryRoomsList(
     def get_queryset(self):
         lab = get_object_or_404(Laboratory, pk=self.lab)
         self.request.session["search_lab"] = self.lab
-        return lab.laboratoryroom_set.all()
+        # La plantilla recorre los muebles de cada sala.
+        return lab.laboratoryroom_set.prefetch_related("furniture_set")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -153,11 +154,6 @@ class LabroomUpdate(UpdateView):
     model = LaboratoryRoom
     form_class = RoomCreateForm
 
-    def get_context_data(self, **kwargs):
-        context = UpdateView.get_context_data(self, **kwargs)
-        context["furniture_form"] = FurnitureCreateForm
-        return context
-
     def get_success_url(self):
         return reverse_lazy("laboratory:rooms_create", args=(self.org, self.lab))
 
@@ -170,6 +166,9 @@ class LabroomUpdate(UpdateView):
         context = super().get_context_data(**kwargs)
         if context["object"].laboratory != self.laboratory:
             raise Http404()
+        # Antes había dos get_context_data y el segundo tapaba al que añadía el
+        # formulario de mueble: el modal «Crear mueble» de la edición salía vacío.
+        context["furniture_form"] = FurnitureCreateForm
         return context
 
     def form_valid(self, form):

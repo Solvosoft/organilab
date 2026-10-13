@@ -203,6 +203,14 @@ FEATURES = (
                 source="src/laboratory/views/labroom.py rebuild_laboratory_qr",
             ),
             Step(
+                id="qr_nodo",
+                name="Ver o descargar el QR de una sala, mueble o estante",
+                actors=USUARIOS_LAB,
+                routes=("laboratory:node_qr_svg",),
+                permissions=("laboratory.view_laboratoryroom",),
+                source="src/laboratory/qr_nodes.py node_qr_svg",
+            ),
+            Step(
                 id="muebles",
                 name="Listar, crear, editar y borrar muebles",
                 actors=MONTADORES,

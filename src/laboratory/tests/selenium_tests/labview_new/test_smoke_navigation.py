@@ -156,8 +156,14 @@ class LabviewSmokeNavigationTest(LabviewSeleniumBase):
             "LabviewMap.grids[arguments[0]].removeRow(0);", self.furniture.pk
         )
         # El rechazo se ve: `pg:error` abre un Swal con el motivo del servidor.
-        popup = self.wait_for(".swal2-popup")
-        self.assertIn("refused", popup.text.lower() + popup.text)
+        # El título va traducido ("The operation was refused" / "La operación
+        # fue rechazada") según el idioma con que cargó la página, así que se
+        # comprueba lo que no depende del idioma: es un Swal de error y trae
+        # el motivo del servidor.
+        # SweetAlert2 11 marca el tipo en el propio popup (swal2-icon-error).
+        self.wait_for(".swal2-popup.swal2-icon-error")
+        reason = self.wait_for(".swal2-popup .swal2-html-container")
+        self.assertTrue(reason.text.strip(), "el rechazo no trae el motivo del servidor")
 
         self.assertEqual(len(self.find_all(rows)), before)
         furniture = Furniture.objects.get(pk=self.furniture.pk)

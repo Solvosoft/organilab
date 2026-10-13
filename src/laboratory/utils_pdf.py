@@ -168,11 +168,9 @@ def _extract_density(text, lang='es'):
     for pattern in patterns:
         match = re.search(pattern, text)
         if match:
-            value = match.group(1).replace(',', '.')
-            try:
-                return float(value)
-            except ValueError:
-                continue
+            # Los patrones solo capturan «dígitos[.,]dígitos»: con la coma ya
+            # cambiada por punto, float() no puede fallar.
+            return float(match.group(1).replace(',', '.'))
     return None
 
 

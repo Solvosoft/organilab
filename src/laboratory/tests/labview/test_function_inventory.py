@@ -13,7 +13,6 @@ usuario puede hacer.  Por eso todas las aserciones son sobre el payload —el
 JavaScript— y ninguna sobre HTML.
 """
 
-import base64
 from collections import namedtuple
 
 from django.urls import reverse
@@ -72,8 +71,11 @@ class FunctionInventoryTest(RolPermissionMixin, BaseLaboratorySetUpTest):
     # -- utilidades --------------------------------------------------------
 
     def assert_is_a_qr(self, value, what):
+        # El nodo trae la URL del QR; el SVG se genera al pedirla.
         self.assertTrue(value, "sin QR: %s" % what)
-        self.assertIn(b"<svg", base64.b64decode(value))
+        response = self.client.get(value)
+        self.assertEqual(response.status_code, 200, "QR de %s" % what)
+        self.assertIn(b"<svg", response.content)
 
     def actions_for(self, shelfobject):
         return actions.get_shelfobject_actions(self.request_user, shelfobject)

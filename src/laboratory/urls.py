@@ -37,6 +37,7 @@ from sga.api.sga_components_viewsets import (
 )
 from authentication.users import ChangeUser, password_change, get_profile
 from laboratory import views
+from laboratory import qr_nodes
 from laboratory.api import shelfobject as ShelfObjectApi
 from laboratory.api.views import (
     ApiReservedProductsCRUD,
@@ -176,6 +177,7 @@ lab_shelf_urls = [
 lab_rooms_urls = [
     path("", labroom.LaboratoryRoomsList.as_view(), name="rooms_list"),
     path("labview/", labview.LabView.as_view(), name="labview"),
+    path("qr/<str:kind>/<int:pk>.svg", qr_nodes.node_qr_svg, name="node_qr_svg"),
     path("create", labroom.LabroomCreate.as_view(), name="rooms_create"),
     path(
         "rebuild_laboratory_qr",

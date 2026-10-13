@@ -5,19 +5,14 @@ Created on 4 may. 2017
 """
 
 from django import template
-from django.conf import settings
 from django.urls import reverse
+from django.utils.html import format_html, format_html_join
 from django.utils.safestring import mark_safe
 
 from academic.models import ProcedureStep, ProcedureRequiredObject
-from django.shortcuts import get_object_or_404
-from laboratory.utils import (
-    check_lab_group_has_perm,
-    filter_laboratorist_profile,
-    get_user_laboratories,
-)
+from laboratory.utils import get_user_laboratories
 from laboratory import models as laboratorymodels
-from presentation.utils import get_qr_by_instance, build_qr_instance
+from laboratory.qr_nodes import node_laboratory_pk, node_qr_url
 
 register = template.Library()
 
@@ -29,20 +24,9 @@ def has_perms(context, codename, lab_pk=None):
 
         if user.has_perm(codename) or user.is_superuser:
             return True
-        else:
-            lab_pk = context["request"].resolver_match.kwargs.get("lab_pk", None)
-
-            # Permit to redirect User to select form
-            if not lab_pk:
-                return False
-            lab = get_object_or_404(
-                laboratorymodels.Laboratory.objects.using(settings.READONLY_DATABASE),
-                pk=lab_pk,
-            )
-            if check_lab_group_has_perm(
-                user, lab, codename, filter_laboratorist_profile
-            ):
-                return True
+        # Antes se probaba además check_lab_group_has_perm, pero esa función
+        # exige el mismo user.has_perm(codename) que acaba de fallar: nunca
+        # concedía nada.
 
     return False
 
@@ -141,35 +125,42 @@ def show_reserve_button(procedure):
     return show_reserve_btn
 
 
-@register.simple_tag()
-def get_qr_svg_img(object, **kwargs):
+@register.simple_tag(takes_context=True)
+def get_qr_svg_img(context, object, **kwargs):
+    """Enlace (e imagen) al QR de una sala, mueble o estante.
+
+    Ya no incrusta el SVG en base64 ni lo genera al pintar la página: apunta a
+    ``laboratory:node_qr_svg``, que lo crea la primera vez que se pide. En una
+    lista de salas con decenas de estantes eso eran segundos de CPU y páginas
+    de casi 2 MB.
+    """
     # En las vistas de creación la instancia todavía no existe y la plantilla
-    # llama al tag igual (furniture_form.html): sin este guarda, get_qr_by_instance
-    # recibe la cadena vacía y revienta en get_for_model con AttributeError.
+    # llama al tag igual (furniture_form.html).
     if not getattr(object, "pk", None):
         return ""
     use_icon = kwargs.pop("icon", False)
-    url = kwargs.pop("url", None)
-    organization = kwargs["organization"]
-    qr = get_qr_by_instance(object, organization)
-    if not qr and url:
-        qr = build_qr_instance(url, object, organization)
-    if qr:
-        icon = '<i class="fa fa-qrcode" aria-hidden="true"></i>'
-        if not use_icon:
-            icon = """<img alt="" src="data:image/svg+xml;base64,%s" %s />""" % (
-                qr.b64_image,
-                " ".join(['%s="%s"' % (key, value) for key, value in kwargs.items()]),
-            )
+    kwargs.pop("url", None)
+    organization = kwargs.pop("organization")
+    laboratory = context.get("laboratory")
+    lab_pk = getattr(laboratory, "pk", laboratory) or node_laboratory_pk(object)
+    qr_url = node_qr_url(organization, lab_pk, object)
+    if qr_url is None:
+        return ""
 
-        return mark_safe(
-            """
-        <a class="imgqr" href="data:image/svg+xml;base64,%s" target="_blank" download="%s.svg">%s</a>
-        """
-            % (qr.b64_image, str(object), icon)
+    if use_icon:
+        icon = mark_safe('<i class="fa fa-qrcode" aria-hidden="true"></i>')
+    else:
+        icon = format_html(
+            '<img alt="" src="{}" loading="lazy" {} />',
+            qr_url,
+            format_html_join(" ", '{}="{}"', kwargs.items()),
         )
-
-    return ""
+    return format_html(
+        '<a class="imgqr" href="{}?download=1" target="_blank" download="{}.svg">{}</a>',
+        qr_url,
+        str(object),
+        icon,
+    )
 
 
 @register.simple_tag(takes_context=True)

@@ -1,7 +1,6 @@
 from datetime import datetime
 
 from django.conf import settings
-from django.core.exceptions import ValidationError
 from django.db.models import Q, Value
 from django.db.models.functions import Concat
 from django.shortcuts import get_object_or_404
@@ -48,7 +47,6 @@ class ReportDataViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
     queryset = TaskReport.objects.all()
     serializer_class = ReportDataTableSerializer
-    pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     ordering_fields = ["pk"]
     ordering = ("pk",)
@@ -142,10 +140,6 @@ class ReportDataViewSet(viewsets.ViewSet):
 
     def get_serializer(self, data):
         return self.serializer_class(data)
-
-    def paginate_queryset(self, queryset):
-        self.paginator = self.pagination_class()
-        return self.paginator.paginate_queryset(queryset, self.request, view=self)
 
     def retrieve(self, request, pk, **kwargs):
         self.request = request
@@ -293,60 +287,6 @@ class ReportDataLogViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
         return Response(self.get_serializer(response).data)
 
 
-class RegencyViewSetX(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
-    authentication_classes = [SessionAuthentication]
-    permission_classes = [IsAuthenticated]
-    queryset = RegencyReportBuilder.objects.all().using(settings.READONLY_DATABASE)
-    serializer_class = RegencyDataTableSerializer
-    pagination_class = LimitOffsetPagination
-    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-    search_fields = [
-        "substance",
-        "danger_category",
-        "total",
-    ]
-    filterset_class = None
-    ordering_fields = [
-        "substance",
-        "danger_category",
-        "total",
-    ]
-    ordering = ("substance", "danger_category", "total")
-    report = None
-    step = None
-
-    def get_queryset(self):
-        queryset = self.queryset
-        if self.report and self.step:
-            return queryset.filter(report=self.report, danger_list=self.step)
-        else:
-            return queryset.none()
-
-    def retrieve(self, request, pk, **kwargs):
-        task_report = get_object_or_404(TaskReport, pk=pk)
-
-        self.step = request.GET.get("step", None)
-        self.report = RegencyReport.objects.filter(
-            task_report=task_report,
-        ).first()
-
-        queryset = self.filter_queryset(self.get_queryset())
-
-        if "ordering" in self.request.GET:
-            queryset = queryset.order_by(self.request.GET["ordering"])
-
-        data = self.paginate_queryset(queryset)
-
-        total = RegencyReportBuilder.objects.filter(report=self.report).count()
-        response = {
-            "data": data,
-            "recordsTotal": total,
-            "recordsFiltered": queryset.count(),
-            "draw": self.request.GET.get("draw", 1),
-        }
-        return Response(self.get_serializer(response).data)
-
-
 class RegencyViewSet(AuthAllPermBaseObjectManagement):
     serializer_class = {
         "list": RegencyDataTableSerializer,
@@ -415,11 +355,11 @@ class PrecursorReportValuesViewSet(AuthAllPermBaseObjectManagement):
         """
         if not hasattr(self, "_precursor_report"):
             organization = get_object_or_404(
-                OrganizationStructure, pk=self.get_org_pk_or_error()
+                OrganizationStructure, pk=self.kwargs["org_pk"]
             )
             self._precursor_report = get_object_or_404(
                 PrecursorReport,
-                pk=self.get_precursor_pk_or_error(),
+                pk=self.kwargs["precusor_pk"],
                 laboratory__in=list(organization.get_my_laboratories),
             )
             self._related_objects = [self._precursor_report.laboratory, organization]
@@ -434,22 +374,6 @@ class PrecursorReportValuesViewSet(AuthAllPermBaseObjectManagement):
         """
         self.get_precursor_report()
         return self._related_objects
-
-    def get_precursor_pk_or_error(self):
-        precusor_pk = self.kwargs.get("precusor_pk")
-        if not precusor_pk:
-            raise ValidationError(
-                {"precusor_pk": _("This endpoint requires precusor_pk in the URL.")}
-            )
-        return precusor_pk
-
-    def get_org_pk_or_error(self):
-        org_pk = self.kwargs.get("org_pk")
-        if not org_pk:
-            raise ValidationError(
-                {"org_pk": _("This endpoint requires org_pk in the URL.")}
-            )
-        return org_pk
 
     def perform_create(self, serializer):
         precusor_value = serializer.save(precursor_report=self.get_precursor_report())

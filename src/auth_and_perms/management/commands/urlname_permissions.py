@@ -3140,28 +3140,6 @@ URLNAME_PERMISSIONS = {
             "permission": "risk_management.change_buildings",
         },
     ],
-    "h_code_categories_crud": [
-        {
-            "name": "Add H Code Category",
-            "category": "H Code Category",
-            "permission": "sga.add_hcodecategory",
-        },
-        {
-            "name": "Change H Code Category",
-            "category": "H Code Category",
-            "permission": "sga.change_hcodecategory",
-        },
-        {
-            "name": "Delete H Code Category",
-            "category": "H Code Category",
-            "permission": "sga.delete_hcodecategory",
-        },
-        {
-            "name": "View H Code Category",
-            "category": "H Code Category",
-            "permission": "sga.view_hcodecategory",
-        },
-    ],
     "risk_zone_report": [
         {
             "name": "View Report",

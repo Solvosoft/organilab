@@ -32,7 +32,7 @@ celery==5.6.2
 # Backend de cache sobre Redis. Solo se usa si CACHE_URL esta puesta; sin ella
 # el proyecto sigue con DatabaseCache y esta dependencia queda sin cargar.
 django-redis==7.0.0
-weasyprint==67.0
+xhtml2pdf==0.2.23
 CairoSVG==2.8.2
 pyfva==0.0.43
 django-otp==1.7.0

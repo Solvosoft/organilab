@@ -32,7 +32,6 @@ from laboratory.models import (
 from sga.models import SDSTraceability, SubstanceCharacteristics
 from pending_tasks.models import PendingTask
 from pending_tasks.utils import create_pending_task
-from .limit_shelfobject import send_email_limit_objs
 from .task_utils import (
     create_informsperiods,
     save_object_report_precursor,

@@ -28,7 +28,6 @@ from api.urls import urlpatterns as api_urls
 from auth_and_perms.views import media_access
 from authentication.urls import urlpatterns as auth_urls
 from laboratory import urls as laboratory_urls
-from laboratory.reactive import ReactiveMolecularFormulaAPIView
 from msds.urls import urlpatterns as msds_urls
 from msds.urls import regulation_urlpath
 from presentation.templatetags.organilab_tags import get_organilab_version
@@ -90,11 +89,6 @@ urlpatterns = (
                 (reservation_management_urls, "reservations_management"),
                 namespace="reservations_management",
             ),
-        ),
-        re_path(
-            r"^api/reactive/name/",
-            ReactiveMolecularFormulaAPIView.as_view(),
-            name="api_molecularname",
         ),
         path("admin/", admin.site.urls),
         path(

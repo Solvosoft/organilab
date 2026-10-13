@@ -7,6 +7,11 @@ from report.utils import (
     get_report_name,
     load_dataset_by_column,
 )
+from report.datasets import (
+    hcode_category_map,
+    reactive_columns,
+    shelfobjects_by_furniture,
+)
 from report.utils import get_furniture_queryset_by_filters
 
 
@@ -26,127 +31,70 @@ def get_object_type(report):
 
 def get_dataset(report, column_list=None):
     dataset = []
-    objects = []
     object_type = get_object_type(report)
-    furniture_list = get_furniture_queryset_by_filters(report)
-    for furniture in furniture_list:
-        if object_type != "":
-            objects = (
-                furniture.get_objects()
-                .filter(object__type=object_type)
-                .distinct("pk")
-                .order_by("pk")
-            )
-        else:
-            objects = furniture.get_objects().distinct("pk").order_by("pk")
-        for shelfobject in objects:
-            shelf_unit = shelfobject.get_measurement_unit_display()
-            obj_type = shelfobject.object.get_type_display()
-            furniture = shelfobject.shelf.furniture
-            data_column = {
-                "shelfobject_code": (
-                    shelfobject.shelfobject_code if shelfobject.shelfobject_code else ""
-                ),
-                "code": shelfobject.object.code,
-                "object": shelfobject.object.name,
-                "type": obj_type,
-                "quantity": f"{round(shelfobject.total_quantity, 3)} {shelf_unit}",
-                # `in_where_laboratory` es opcional en el modelo, así que un
-                # informe no puede darlo por hecho: una celda vacía informa,
-                # una excepción deja al usuario sin informe.
-                "laboratory": (
-                    shelfobject.in_where_laboratory.name
-                    if shelfobject.in_where_laboratory
-                    else ""
-                ),
-                "laboratory_room": furniture.labroom.name,
-                "furniture": furniture.name,
-                "shelf": shelfobject.shelf.name,
-            }
-            obj_item = list(data_column.values())
+    furniture_list = get_furniture_queryset_by_filters(report).select_related(
+        "labroom"
+    )
+    filters = {"object__type": object_type} if object_type != "" else {}
+    for furniture, shelfobject in shelfobjects_by_furniture(furniture_list, filters):
+        shelf_unit = shelfobject.get_measurement_unit_display()
+        obj_type = shelfobject.object.get_type_display()
+        data_column = {
+            "shelfobject_code": (
+                shelfobject.shelfobject_code if shelfobject.shelfobject_code else ""
+            ),
+            "code": shelfobject.object.code,
+            "object": shelfobject.object.name,
+            "type": obj_type,
+            "quantity": f"{round(shelfobject.total_quantity, 3)} {shelf_unit}",
+            # `in_where_laboratory` es opcional en el modelo, así que un
+            # informe no puede darlo por hecho: una celda vacía informa,
+            # una excepción deja al usuario sin informe.
+            "laboratory": (
+                shelfobject.in_where_laboratory.name
+                if shelfobject.in_where_laboratory
+                else ""
+            ),
+            "laboratory_room": furniture.labroom.name,
+            "furniture": furniture.name,
+            "shelf": shelfobject.shelf.name,
+        }
+        obj_item = list(data_column.values())
 
-            if column_list:
-                obj_item = load_dataset_by_column(column_list, data_column)
-            dataset.append(obj_item)
+        if column_list:
+            obj_item = load_dataset_by_column(column_list, data_column)
+        dataset.append(obj_item)
     return dataset
 
 
 def get_dataset_report_reactive(report, column_list=None):
     dataset = []
-    furniture_list = get_furniture_queryset_by_filters(report)
-    i = 0
-    objects = []
+    furniture_list = get_furniture_queryset_by_filters(report).select_related(
+        "labroom"
+    )
     object_type = get_object_type(report)
-    extra_filter = {
-        "object__substancharacteristics_object__is_precursor": report.data.get(
-            "is_precursor", False
-        )
-    }
-    for furniture in furniture_list:
-        if object_type != "":
-            objects = furniture.get_objects().filter(object__type=object_type)
-            if extra_filter["object__substancharacteristics_object__is_precursor"]:
-                objects = objects.filter(**extra_filter)
-        else:
-            objects = furniture.get_objects()
-        for reactive in objects.distinct("pk").order_by("pk"):
-            physical = ""
-            health = ""
-            enviroment = ""
-            cas_id = ""
-            i += 1
-            sga_char = reactive.object.substancharacteristics_object.first()
-            if sga_char:
-                physical = " ".join(
-                    sga_char.h_code.filter(
-                        category_h_code__danger_category="physical"
-                    ).values_list("description", flat=True)
-                )
-                health = " ".join(
-                    sga_char.h_code.filter(
-                        category_h_code__danger_category="health"
-                    ).values_list("description", flat=True)
-                )
-                enviroment = " ".join(
-                    sga_char.h_code.filter(
-                        category_h_code__danger_category="environment"
-                    ).values_list("description", flat=True)
-                )
-                cas_id = reactive.object.cas_code
-
-            location = (
-                reactive.in_where_laboratory.location
-                if hasattr(reactive.in_where_laboratory, "location")
-                else ""
-            )
-            physical_status = (
-                reactive.get_physical_status_display()
-                if reactive.physical_status
-                else ""
-            )
-            data_column = {
-                "shelfobject_code": (
-                    reactive.shelfobject_code if reactive.shelfobject_code else ""
-                ),
-                "name": reactive.object.name,
-                "cas_id": cas_id,
-                "location": location,
-                "physical_status": physical_status,
-                "physical": physical,
-                "health": health,
-                "environment": enviroment,
-                "concentration": reactive.concentration,
-                "quantity": round(reactive.total_quantity, 3),
-                "measurement_unit": reactive.get_measurement_unit_display(),
+    filters = {}
+    if object_type != "":
+        filters["object__type"] = object_type
+        if report.data.get("is_precursor", False):
+            filters["object__substancharacteristics_object__is_precursor"] = report.data[
+                "is_precursor"
+            ]
+    category_map = hcode_category_map()
+    for furniture, reactive in shelfobjects_by_furniture(furniture_list, filters):
+        data_column = reactive_columns(reactive, category_map)
+        data_column.update(
+            {
                 "laboratory_room": furniture.labroom.name,
                 "furniture": furniture.name,
                 "shelf": reactive.shelf.name,
             }
-            obj_item = list(data_column.values())
+        )
+        obj_item = list(data_column.values())
 
-            if column_list:
-                obj_item = load_dataset_by_column(column_list, data_column)
-            dataset.append(obj_item)
+        if column_list:
+            obj_item = load_dataset_by_column(column_list, data_column)
+        dataset.append(obj_item)
 
     return dataset
 

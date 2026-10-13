@@ -12,20 +12,20 @@ el resto se cubre con pruebas de cliente o unitarias.
 |---|---:|
 | `pagina` | 192 |
 | `parcial` | 4 |
-| `api` | 795 |
+| `api` | 794 |
 | `autocomplete` | 6 |
 | `ajax` | 10 |
 | `json` | 45 |
 | `descarga` | 18 |
 | `accion` | 29 |
 | `infra` | 701 |
-| **total** | **1800** |
+| **total** | **1799** |
 
 Páginas: 192, de las cuales **53 sin ninguna prueba**.
 
 ## Rutas por app
 
-Se omiten las categorías `api` e `infra` (1496 rutas de routers DRF y de
+Se omiten las categorías `api` e `infra` (1495 rutas de routers DRF y de
 la administración de Django): están en `inventario_urls.csv`.
 
 ### academic — 9 páginas, 0 sin prueba
@@ -76,7 +76,6 @@ la administración de Django): están en `inventario_urls.csv`.
 | `enable_child_organizations` | `/perms/enable_child_organizations/` | accion | `auth_and_perms.views.organizationstructure.enable_child_organizations` | — | — | — | sí |
 | `remove_impostor` | `/perms/end_switch_user` | accion | `auth_and_perms.views.impostor.remove_impostor` | — | — | — | sí |
 | `update_rol` | `/perms/update_rol/<int:org_pk>/<int:pk>/` | accion | `auth_and_perms.views.organizationstructure.update_rol` | — | org_pk, pk | — | sí |
-| `add_rol_by_laboratory` | `/perms/organization/manage/rols/add/` | descarga | `auth_and_perms.views.organizationstructure.add_rol_by_laboratory` | — | — | — | sí |
 | `addusersorganization` | `/perms/organization/manage/addusersorganization/<int:pk>/` | descarga | `auth_and_perms.views.organizationstructure.add_users_organization` | — | pk | — | sí |
 | `get_org_administrators` | `/perms/get_org_administrators/<int:pk>/` | descarga | `auth_and_perms.views.organizationstructure.get_org_administrators` | — | pk | — | sí |
 | `show_qr_img` | `/perms/totp/img/<int:pk>/` | descarga | `auth_and_perms.views.user_org_creation.show_QR_img` | — | pk | — | sí |
@@ -148,6 +147,7 @@ la administración de Django): están en `inventario_urls.csv`.
 | `download_register_user_qr` | `/register_user_qr/<int:org_pk>/<int:lab_pk>/download/<int:pk>/` | descarga | `laboratory.views.laboratory.get_pdf_register_user_qr` | `pdf/qr_pdf.html` | org_pk, lab_pk, pk | — | — |
 | `download_shelfobject_qr` | `/lab/<int:org_pk>/<int:lab_pk>/shelfobject/download_shelfobject_qr/<int:pk>/` | descarga | `laboratory.views.shelfobject.download_shelfobject_qr` | — | org_pk, lab_pk, pk | — | — |
 | `generate_shelfobject_label` | `/<int:org_pk>/<int:lab_pk>/<int:pk>/generate_shelfobject_label/<int:recipient>/` | descarga | `laboratory.views.shelfobject.generate_shelfobject_label` | — | org_pk, lab_pk, pk, recipient | — | sí |
+| `node_qr_svg` | `/lab/<int:org_pk>/<int:lab_pk>/rooms/qr/<str:kind>/<int:pk>.svg` | descarga | `laboratory.qr_nodes.node_qr_svg` | — | org_pk, lab_pk, kind, pk | — | sí |
 | `organization_actions` | `/organization/manage/actions` | descarga | `laboratory.views.organizations.OrganizationActionsFormview` | — | — | — | sí |
 | `reports_shelf_objects` | `/lab/<int:org_pk>/<int:lab_pk>/reports/shelf_objects/<int:pk>` | descarga | `laboratory.views.reports.report_shelf_objects` | `pdf/shelf_object_pdf.html` | org_pk, lab_pk, pk | — | sí |
 | `sds_coverage_svg` | `/<int:org_pk>/reports/sds-coverage.svg` | descarga | `laboratory.views.reports.sds_coverage_svg` | — | org_pk | — | sí |
@@ -155,7 +155,7 @@ la administración de Django): están en `inventario_urls.csv`.
 | `add_furniture_type_catalog` | `/catalogs/furniture/furniture_type` | json | `laboratory.views.furniture.add_catalog` | — | — | — | sí |
 | `add_shelf_type_catalog` | `/catalogs/shelf/container_type` | json | `laboratory.views.furniture.add_catalog` | — | — | — | sí |
 | `add_shelfobject_status` | `/catalogs/shelf/shelfobject_status` | json | `laboratory.views.furniture.add_catalog` | — | — | — | sí |
-| `add_structure_type_catalog` | `/catalogs/add/structure/type/` | json | `laboratory.views.furniture.add_catalog` | — | — | — | — |
+| `add_structure_type_catalog` | `/catalogs/add/structure/type/` | json | `laboratory.views.furniture.add_catalog` | — | — | — | sí |
 | `add_workplace_type_catalog` | `/catalogs/workplace/type/<str:key>` | json | `laboratory.views.furniture.add_catalog` | — | key | — | — |
 | `get_lab_id` | `/returnLabId` | json | `laboratory.functions.return_laboratory_of_shelf_id` | — | — | — | — |
 | `get_shelfobject_limit` | `/lab/<int:org_pk>/<int:lab_pk>/shelfobject/get_shelfobject_limit/<int:pk>/` | json | `laboratory.views.shelfobject.edit_limit_object` | — | org_pk, lab_pk, pk | — | — |
@@ -328,7 +328,7 @@ la administración de Django): están en `inventario_urls.csv`.
 | `iper_toggle_anonymous` | `/risk/<int:org_pk>/iper/<int:pk>/toggle-anonymous/` | accion | `risk_management.iper_views.iper_toggle_anonymous` | — | org_pk, pk | — | — |
 | `iper_toggle_status` | `/risk/<int:org_pk>/iper/<int:pk>/toggle-status/` | accion | `risk_management.iper_views.iper_toggle_status` | — | org_pk, pk | — | — |
 | `incident_report` | `/risk/<int:org_pk>/incident/report/<int:risk_pk>/<int:pk>/` | descarga | `risk_management.incidents.report_incidentreport` | `risk_management/incidentreport_pdf.html` | org_pk, risk_pk, pk | — | sí |
-| `iper_duplicate` | `/risk/<int:org_pk>/iper/<int:pk>/duplicate/` | json | `risk_management.iper_views.iper_duplicate` | — | org_pk, pk | — | — |
+| `iper_duplicate` | `/risk/<int:org_pk>/iper/<int:pk>/duplicate/` | json | `risk_management.iper_views.iper_duplicate` | — | org_pk, pk | — | sí |
 | `iper_lab_help` | `/risk/<int:org_pk>/iper/labdata/<int:lab_pk>/` | json | `risk_management.iper_views.iper_lab_help` | — | org_pk, lab_pk | — | sí |
 | `buildings_create` | `/risk/<int:org_pk>/buildings/create/` | pagina | `risk_management.views.buildings_actions` | `risk_management/buildings.html` | org_pk | sí | — |
 | `buildings_list` | `/risk/<int:org_pk>/buildings/` | pagina | `risk_management.views.buildings_view` | `risk_management/building_list.html` | org_pk | sí | — |

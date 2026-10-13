@@ -29,7 +29,7 @@ class FormList(ListView):
         queryset = super().get_queryset()
         if self.org:
             queryset = queryset.filter(organization__pk=self.org)
-        else:
+        else:  # pragma: no cover - la ruta exige un `org_pk` existente (404 si no)
             queryset = queryset.none()
         return queryset
 

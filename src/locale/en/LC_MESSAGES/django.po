@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-16 21:31-0600\n"
+"POT-Creation-Date: 2026-10-13 08:44-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -941,46 +941,10 @@ msgstr ""
 msgid "Rols"
 msgstr ""
 
-msgid "Organization name"
-msgstr ""
-
-msgid "Digital signature"
-msgstr ""
-
-msgid "Validation method"
-msgstr ""
-
-msgid "new-password"
+msgid "Laboratory"
 msgstr ""
 
 msgid "Email"
-msgstr ""
-
-msgid "First name"
-msgstr ""
-
-msgid "Last name"
-msgstr ""
-
-msgid "Email address"
-msgstr ""
-
-msgid "Phone"
-msgstr ""
-
-msgid "Identification"
-msgstr ""
-
-msgid "Job Position"
-msgstr ""
-
-msgid "Language"
-msgstr ""
-
-msgid "It will used to login when you want to login with digital signature"
-msgstr ""
-
-msgid "Laboratory"
 msgstr ""
 
 msgid "Inactive organization"
@@ -1017,6 +981,18 @@ msgid "Filter by organization"
 msgstr ""
 
 msgid "Organization not found"
+msgstr ""
+
+msgid "Phone"
+msgstr ""
+
+msgid "Identification"
+msgstr ""
+
+msgid "Job Position"
+msgstr ""
+
+msgid "Language"
 msgstr ""
 
 msgid "Address"
@@ -1090,68 +1066,6 @@ msgid "User %(user)s not allowed on organization %(organization)r "
 msgstr ""
 
 msgid "You can modify this laboratory"
-msgstr ""
-
-msgid "Register with new organization"
-msgstr ""
-
-msgid "Register you as organization administrator"
-msgstr ""
-
-msgid "Create user"
-msgstr ""
-
-msgid ""
-"We need to validate that you are not a robot or spamer, so you need to "
-"configure a Two-Factor Authentication"
-msgstr ""
-
-msgid ""
-"You need an OTP generator to login on the platform, you can use a free app "
-"called FreeOTP:"
-msgstr ""
-
-msgid ""
-"For Costa Rica citicen, use your digital signature to login on organilab"
-msgstr ""
-
-msgid "Configure your profile"
-msgstr ""
-
-msgid "Validate user"
-msgstr ""
-
-msgid "How use Digital Signature"
-msgstr ""
-
-msgid ""
-"If you don't have Digital signature, please request on your favorite bank"
-msgstr ""
-
-msgid "Configure your machine using this link"
-msgstr ""
-
-msgid "Download and install Gaudi"
-msgstr ""
-
-msgid "Connect you card on computer and wait for connect success popup "
-msgstr ""
-
-msgid "Your OTP Seed"
-msgstr ""
-
-msgid "This image will not available in the future, please save it"
-msgstr ""
-
-msgid "Profile create successfully"
-msgstr ""
-
-msgid ""
-"Your organization was created successfully, please login with your "
-"credentials"
-msgstr ""
-
-msgid "Login"
 msgstr ""
 
 msgid "Laboratory and Organization List"
@@ -1448,10 +1362,6 @@ msgid "Deleted the role %(rol)r"
 msgstr ""
 
 #, python-format
-msgid "Assigned the roles %(rols)r to %(user)r on laboratory %(lab)r"
-msgstr ""
-
-#, python-format
 msgid "Linked the laboratory %(lab)r to the organization %(org)r"
 msgstr ""
 
@@ -1474,11 +1384,6 @@ msgid "Disabled child organizations for %(org)r"
 msgstr ""
 
 msgid "Organization Management"
-msgstr ""
-
-msgid ""
-"You have no creation process, maybe it was expired, please try to register "
-"again"
 msgstr ""
 
 msgid "ID Card"
@@ -1699,6 +1604,9 @@ msgstr ""
 msgid "Organization ID"
 msgstr ""
 
+msgid "Organization name"
+msgstr ""
+
 msgid "Creator Org ID"
 msgstr ""
 
@@ -1869,9 +1777,6 @@ msgid "Created refuse material shelfobject '%(name)s'"
 msgstr ""
 
 msgid "Measurement unit is not valid"
-msgstr ""
-
-msgid "Quantity is not valid"
 msgstr ""
 
 #, python-format
@@ -2311,15 +2216,6 @@ msgstr ""
 msgid "Use dot like 0.344 on decimal"
 msgstr ""
 
-msgid "Mark as discard"
-msgstr ""
-
-msgid "Bill"
-msgstr ""
-
-msgid "Provider"
-msgstr ""
-
 msgid "Describe the action"
 msgstr ""
 
@@ -2330,9 +2226,6 @@ msgid "Id Card"
 msgstr ""
 
 msgid "Location"
-msgstr ""
-
-msgid "Shelf"
 msgstr ""
 
 msgid "Select Furniture"
@@ -2378,9 +2271,6 @@ msgid "Material"
 msgstr ""
 
 msgid "Equipment"
-msgstr ""
-
-msgid "New status"
 msgstr ""
 
 msgid "Use manual"
@@ -2526,6 +2416,9 @@ msgstr ""
 msgid "Expiration date"
 msgstr ""
 
+msgid "Shelf"
+msgstr ""
+
 msgid "The unit not exist in the database"
 msgstr ""
 
@@ -2619,9 +2512,6 @@ msgid ""
 "\n"
 "Thanks,\n"
 "Organilab system"
-msgstr ""
-
-msgid "ShelfObject expiration"
 msgstr ""
 
 msgid "Adjustment quantities in logs"
@@ -2835,6 +2725,9 @@ msgid "Shelf object"
 msgstr ""
 
 msgid "Shelf objects"
+msgstr ""
+
+msgid "Provider"
 msgstr ""
 
 msgid "Authorized roles to use equipment"
@@ -3146,10 +3039,16 @@ msgstr ""
 msgid "Product added successful"
 msgstr ""
 
+msgid "Bill"
+msgstr ""
+
 msgid "Measurement Unit"
 msgstr ""
 
 msgid "Use"
+msgstr ""
+
+msgid "Mark as discard"
 msgstr ""
 
 msgid ""
@@ -3165,6 +3064,9 @@ msgid ""
 msgstr ""
 
 msgid "Unlimited"
+msgstr ""
+
+msgid "New status"
 msgstr ""
 
 msgid "Number of boxes"
@@ -3209,9 +3111,6 @@ msgstr ""
 msgid "Initial date cannot be equal or lower than current date."
 msgstr ""
 
-msgid "Final date cannot be equal or lower than current date."
-msgstr ""
-
 msgid "Provider does not exist in the laboratory."
 msgstr ""
 
@@ -3246,11 +3145,6 @@ msgid "Quantity cannot be greater than maximum limit."
 msgstr ""
 
 msgid "Quantity cannot be lower than minimum limit."
-msgstr ""
-
-msgid ""
-"Cannot change the number of boxes or units per box because one or more boxes "
-"have already been modified. Use the decrease or increase actions instead."
 msgstr ""
 
 msgid ""
@@ -3371,9 +3265,6 @@ msgstr ""
 msgid "This object is not a reactive."
 msgstr ""
 
-msgid "Shelf object is required."
-msgstr ""
-
 #, python-format
 msgid ""
 "Quantity cannot be less than the container object minimun limit: %(limit)s."
@@ -3452,16 +3343,6 @@ msgstr ""
 msgid "Created partial shelfobject '%(name)s'"
 msgstr ""
 
-msgid "Move out"
-msgstr ""
-
-msgid "Move in"
-msgstr ""
-
-#, python-format
-msgid "Moved shelfobject '%(name)s' to shelf '%(shelf)s'"
-msgstr ""
-
 msgid "Change quantity"
 msgstr ""
 
@@ -3505,14 +3386,18 @@ msgstr ""
 msgid "Created equipment characteristics"
 msgstr ""
 
+msgid "Move out"
+msgstr ""
+
+msgid "Move in"
+msgstr ""
+
 #, python-format
 msgid "Move in the boxes %(boxes)s from the laboratory %(lab)s."
 msgstr ""
 
-msgid "Sustance saved successfully"
-msgstr ""
-
-msgid "Pending information in form"
+#, python-format
+msgid "Moved shelfobject '%(name)s' to shelf '%(shelf)s'"
 msgstr ""
 
 #, python-format
@@ -3527,6 +3412,9 @@ msgid "New period inform was created in the laboratory %s with the name %s"
 msgstr ""
 
 msgid "List of ShelfObject in limits"
+msgstr ""
+
+msgid "ShelfObject expiration"
 msgstr ""
 
 msgid "Hi,"
@@ -3827,6 +3715,9 @@ msgid "Load reagent inventory"
 msgstr ""
 
 msgid "Welcome to the Simple laboratory organizer"
+msgstr ""
+
+msgid "Login"
 msgstr ""
 
 msgid "Informs"
@@ -4681,11 +4572,6 @@ msgstr ""
 msgid "Laboratory was created successfully"
 msgstr ""
 
-msgid ""
-"Sorry, there is not available laboratory, please contact the administrator "
-"and request a laboratory enrollment"
-msgstr ""
-
 msgid "maintains a relationship with"
 msgstr ""
 
@@ -4801,9 +4687,6 @@ msgstr ""
 msgid "Deleted object '%(name)s'"
 msgstr ""
 
-msgid "Filter Organization"
-msgstr ""
-
 #, python-format
 msgid "Deleted organization '%(name)s'"
 msgstr ""
@@ -4897,16 +4780,6 @@ msgid "Deleted shelfobject '%(name)s' from shelf '%(shelf)s'"
 msgstr ""
 
 #, python-format
-msgid "Created shelfobject '%(name)s' from transfer"
-msgstr ""
-
-msgid "Transfer done successfully"
-msgstr ""
-
-msgid "The amount sends is more than the laboratory have"
-msgstr ""
-
-#, python-format
 msgid "Deleted shelf '%(name)s'"
 msgstr ""
 
@@ -4964,9 +4837,6 @@ msgid "The unverification was performed successfully."
 msgstr ""
 
 msgid "The SDS doesn't exist."
-msgstr ""
-
-msgid "No substance characteristics found."
 msgstr ""
 
 msgid "Regulation File"
@@ -5856,9 +5726,6 @@ msgstr ""
 msgid "Thank you for your help. We will check your problem as soon as we can"
 msgstr ""
 
-msgid "This endpoint requires precusor_pk in the URL."
-msgstr ""
-
 msgid "Created precursor report value"
 msgstr ""
 
@@ -6024,27 +5891,6 @@ msgstr ""
 msgid "Delete Precursor Report Values"
 msgstr ""
 
-msgid "High-risk establishment"
-msgstr ""
-
-msgid "Danger Substance of the list 3"
-msgstr ""
-
-msgid "Danger Categories of the list 4"
-msgstr ""
-
-msgid "Sum of dangers categories"
-msgstr ""
-
-msgid "Health totals:"
-msgstr ""
-
-msgid "Physical totals:"
-msgstr ""
-
-msgid "Environmental totals:"
-msgstr ""
-
 msgid "seconds"
 msgstr ""
 
@@ -6176,33 +6022,6 @@ msgid "Salud"
 msgstr ""
 
 msgid "Ambiental"
-msgstr ""
-
-msgid "Nombre"
-msgstr ""
-
-msgid "Nominada"
-msgstr ""
-
-msgid "Umbral"
-msgstr ""
-
-msgid "Regla Cruzada"
-msgstr ""
-
-msgid "Detalle"
-msgstr ""
-
-msgid "Advertencias"
-msgstr ""
-
-msgid "Contribuciones en salud"
-msgstr ""
-
-msgid "Contribuciones en físico"
-msgstr ""
-
-msgid "Contribuciones en ambiente"
 msgstr ""
 
 msgid "Objects Report"
@@ -6641,10 +6460,10 @@ msgstr ""
 msgid "Assessment date"
 msgstr ""
 
-msgid "Sustances per Danger Indications"
+msgid "No data registered"
 msgstr ""
 
-msgid "No data registered"
+msgid "Sustances per Danger Indications"
 msgstr ""
 
 msgid "Litro (L)"
@@ -7638,6 +7457,9 @@ msgstr ""
 msgid "Detalle Sustancias"
 msgstr ""
 
+msgid "Nombre"
+msgstr ""
+
 msgid "Cantidad (t)"
 msgstr ""
 
@@ -7654,6 +7476,9 @@ msgid "Regla cruzada Salud"
 msgstr ""
 
 msgid "Detalle Contribuciones"
+msgstr ""
+
+msgid "Advertencias"
 msgstr ""
 
 #, python-format
@@ -7778,9 +7603,6 @@ msgstr ""
 msgid "Recipient size"
 msgstr ""
 
-msgid "UIPA name"
-msgstr ""
-
 msgid "Select Provider"
 msgstr ""
 
@@ -7839,6 +7661,9 @@ msgid "Under Review"
 msgstr ""
 
 msgid "Comercial name"
+msgstr ""
+
+msgid "UIPA name"
 msgstr ""
 
 msgid "Brand"
@@ -8331,21 +8156,6 @@ msgstr ""
 msgid "Graphics"
 msgstr ""
 
-msgid "H Code Categories"
-msgstr ""
-
-msgid "Register H Code Category"
-msgstr ""
-
-msgid "Update H Code Category"
-msgstr ""
-
-msgid "Delete H Code Category"
-msgstr ""
-
-msgid "List of Code H Categories"
-msgstr ""
-
 msgid "GHS"
 msgstr ""
 
@@ -8458,9 +8268,6 @@ msgstr ""
 msgid "Printing date"
 msgstr ""
 
-msgid "Security Leaf"
-msgstr ""
-
 msgid "SECTION 8: Exposure controls/personal protection"
 msgstr ""
 
@@ -8570,6 +8377,9 @@ msgid "Labeling in accordance with Regulation (EC) 1272/2008"
 msgstr ""
 
 msgid "Other dangers"
+msgstr ""
+
+msgid "Security Leaf"
 msgstr ""
 
 msgid "Send to Review"

@@ -117,7 +117,9 @@ def login_with_bccr(request):
             }
         )
 
-    return Http404()
+    # Antes `return Http404()`: devolvía la excepción como si fuera una respuesta y
+    # Django respondía 500.
+    raise Http404()
 
 
 def check_signature_window_status_register(request):

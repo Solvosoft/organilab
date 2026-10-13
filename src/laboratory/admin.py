@@ -1,9 +1,7 @@
 from django.contrib import admin
-from django.db.models import Q
 from django.http import HttpResponse
 from django.utils.translation import gettext_lazy as _
 
-from auth_and_perms.admin import DELETED_USER_TAG_MARKERS
 from laboratory import models
 from laboratory.task_utils import create_informsperiods
 from presentation.utils import update_qr_instance
@@ -137,12 +135,6 @@ class ShelfObject_Admin(admin.ModelAdmin):
 class Object_Admin(admin.ModelAdmin):
     search_fields = ["name"]
     list_display = ("code", "name", "type", "is_precursor")
-
-
-@admin.action(description="Run new informs utilities")
-def create_informs(admin, request, queryset):
-    for instance in queryset:
-        create_informsperiods(instance)
 
 
 @admin.action(description="Export Laboratory")
@@ -821,22 +813,6 @@ class LabOrOrgRequestAdmin(admin.ModelAdmin):
     )
     readonly_fields = ("requested_at", "requested_by")
     list_select_related = ("requested_by", "organization")
-
-
-class LabOrgReassignedOnUserDeleteFilter(admin.SimpleListFilter):
-    title = _("Reassigned on user delete")
-    parameter_name = "reassigned_on_user_delete"
-
-    def lookups(self, request, model_admin):
-        return (("yes", _("Yes")),)
-
-    def queryset(self, request, queryset):
-        if self.value() == "yes":
-            marker_query = Q()
-            for marker in DELETED_USER_TAG_MARKERS:
-                marker_query |= Q(log_entry__object_repr__icontains=marker)
-            return queryset.filter(marker_query)
-        return queryset
 
 
 admin.site.register(models.PrecursorReport, PrecursorReportAdmin)

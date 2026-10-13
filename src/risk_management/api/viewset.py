@@ -159,22 +159,14 @@ class BuildingViewSet(AuthAllPermBaseObjectManagement):
 
         return queryset
 
-    def get_organization(self):
-        if not hasattr(self, "_organization"):
-            self.organization = get_object_or_404(
-                OrganizationStructure, pk=self.kwargs.get("org_pk", None)
-            )
-        return self.organization
-
     def get_serializer_context(self):
         context = super().get_serializer_context()
         context["org_pk"] = self.kwargs.get("org_pk")
         return context
 
-    def perform_create(self, serializer):
-        serializer.save(
-            created_by=self.request.user, organization=self.get_organization()
-        )
+    # Sin ``get_organization``/``perform_create``: solo ``list`` tiene serializer
+    # (el resto es ``None``) y los edificios se crean con el formulario de
+    # ``buildings_create``, así que la API nunca llegaba a guardar.
 
 
 class StructureViewSet(OrganizationAccessMixin, AuthAllPermBaseObjectManagement):

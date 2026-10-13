@@ -157,7 +157,11 @@ class ShelfObjectTableViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         "measurement_unit__description",
         "container__object__name",
     ]
-    ordering = ("-last_update",)  # default order
+    # "pk" desempata: objetos con el mismo last_update (p.ej. cargados juntos)
+    # salían en orden indefinido en PostgreSQL, así que la primera fila
+    # cambiaba entre consultas y la paginación por offset podía repetir u
+    # omitir filas entre páginas.
+    ordering = ("-last_update", "pk")  # default order
 
     def get_queryset(self):
         if not self.data["shelf"]:
@@ -599,12 +603,6 @@ class ShelfObjectCreateMethods:
         if shelfobject.measurement_unit and shelfobject.shelf.measurement_unit:
             quantity = shelfobject.get_obj_conversion_from_two_units()
 
-        if quantity is None:
-            # Sin cantidad utilizable no se puede repartir entre las cajas. Se
-            # informa en vez de multiplicar por None, que devolvía un 500.
-            shelfobject.delete()
-            return {"quantity": [_("Quantity is not valid")]}, None
-
         for _i in range(box_count):
             existing_codes = [b["code"] for b in quantity_units]
             code = generate_box_code(shelfobject.pk, existing_codes)
@@ -984,15 +982,9 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                     serializer, limit_serializer
                 )
                 if shelfobject:
-                    if (
-                        not shelfobject.measurement_unit.description == "Unidades"
-                        and shelfobject.object.type != "0"
-                    ):
-                        shelfobject.measurement_unit = (
-                            shelfobject.shelf.measurement_unit
-                        )
-                        shelfobject.save()
-
+                    # Los métodos de alta de material y equipo fijan siempre
+                    # «Unidades» y los reactivos ya convierten a la unidad del
+                    # estante: aquí no queda unidad que ajustar.
                     create_shelfobject_observation(
                         shelfobject,
                         shelfobject.description,
@@ -1011,9 +1003,8 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         else:
             errors.update(serializer.errors)
 
-        if errors:
-            return JsonResponse({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
-        return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+        # Los métodos de creación siempre devuelven errores cuando no crean.
+        return JsonResponse({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=False, methods=["post"])
     def create_box_shelfobject(self, request, org_pk, lab_pk, **kwargs):
@@ -1062,9 +1053,8 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         else:
             errors.update(serializer.errors)
 
-        if errors:
-            return JsonResponse({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
-        return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+        # Los métodos de creación siempre devuelven errores cuando no crean.
+        return JsonResponse({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=False, methods=["post"])
     def fill_increase_shelfobject(self, request, org_pk, lab_pk, **kwargs):
@@ -1537,7 +1527,6 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                         ),
                     )
             if transfer_obj.is_box:
-                shelf = transfer_object.object.shelf
                 if transfer_object.quantity == len(
                     transfer_object.object.quantity_units
                 ):
@@ -1545,7 +1534,6 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                         not transfer_object.object.measurement_unit.description
                         == "Unidades"
                     ):
-                        shelf = transfer_object.object.shelf
                         if serializer.validated_data["shelf"].measurement_unit:
                             transfer_object.object.measurement_unit = (
                                 serializer.validated_data["shelf"].measurement_unit
@@ -1558,7 +1546,6 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                         lab_pk,
                         serializer.validated_data["shelf"],
                         request,
-                        shelf=shelf,
                     )
                 else:
                     if (
@@ -2161,25 +2148,16 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
 
         if shelf_object_serializer.is_valid():
             obj = shelf_object_serializer.save()
-            if hasattr(shelf_object, "limits"):
-                serializer = self.serializer_class(
-                    data=request.data,
-                    instance=shelf_object.limits,
-                    context={
-                        "source_laboratory_id": lab_pk,
-                        "shelfobject": shelf_object.pk,
-                        "type_id": shelf_object.object.type,
-                    },
-                )
-            else:
-                serializer = self.serializer_class(
-                    data=request.data,
-                    context={
-                        "source_laboratory_id": lab_pk,
-                        "shelfobject": shelf_object.pk,
-                        "type_id": shelf_object.object.type,
-                    },
-                )
+            # ``limits`` es un FK: con None el serializer crea los límites.
+            serializer = self.serializer_class(
+                data=request.data,
+                instance=shelf_object.limits,
+                context={
+                    "source_laboratory_id": lab_pk,
+                    "shelfobject": shelf_object.pk,
+                    "type_id": shelf_object.object.type,
+                },
+            )
             if serializer.is_valid():
                 limit = serializer.save()
                 obj.limits = limit
@@ -2201,13 +2179,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         else:
             errors.update(shelf_object_serializer.errors)
 
-        if errors:
-            return JsonResponse({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
-
-        return JsonResponse(
-            {"detail": _("Shelfobject was updated successfully.")},
-            status=status.HTTP_200_OK,
-        )
+        return JsonResponse({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=True, methods=["get"])
     def get_reactive_edit_data(self, request, org_pk, lab_pk, pk, **kwargs):
@@ -2221,14 +2193,12 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         )
 
         serializers = shelfobject_serializer.data
-        if hasattr(shelfobject, "limits"):
-            serializer = self.serializer_class(
-                shelfobject.limits, context={"source_laboratory_id": lab_pk}
-            )
-            serializers.update(serializer.data)
-            return JsonResponse(serializers, status=status.HTTP_200_OK)
-        else:
-            return JsonResponse(serializers, status=status.HTTP_200_OK)
+        # ``limits`` es un FK (puede ser None): siempre se mezclan sus campos.
+        serializer = self.serializer_class(
+            shelfobject.limits, context={"source_laboratory_id": lab_pk}
+        )
+        serializers.update(serializer.data)
+        return JsonResponse(serializers, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=["get"])
     def get_box_edit_data(self, request, org_pk, lab_pk, pk, **kwargs):
@@ -2334,14 +2304,12 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             shelfobject, context={"request": request}
         )
         serializers = shelfobject_serializer.data
-        if hasattr(shelfobject, "limits"):
-            serializer = self.serializer_class(
-                shelfobject.limits, context={"source_laboratory_id": lab_pk}
-            )
-            serializers.update(serializer.data)
-            return JsonResponse(serializers, status=status.HTTP_200_OK)
-        else:
-            return JsonResponse(serializers, status=status.HTTP_200_OK)
+        # ``limits`` es un FK (puede ser None): siempre se mezclan sus campos.
+        serializer = self.serializer_class(
+            shelfobject.limits, context={"source_laboratory_id": lab_pk}
+        )
+        serializers.update(serializer.data)
+        return JsonResponse(serializers, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=["put"])
     def edit_material_shelfobject(self, request, org_pk, lab_pk, pk, **kwargs):
@@ -2356,25 +2324,16 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         errors = {}
         if shelfobject_serializer.is_valid():
             obj = shelfobject_serializer.save()
-            if hasattr(shelfobject, "limits"):
-                serializer = self.serializer_class(
-                    data=request.data,
-                    instance=shelfobject.limits,
-                    context={
-                        "source_laboratory_id": lab_pk,
-                        "shelfobject": shelfobject.pk,
-                        "type_id": shelfobject.object.type,
-                    },
-                )
-            else:
-                serializer = self.serializer_class(
-                    data=request.data,
-                    context={
-                        "source_laboratory_id": lab_pk,
-                        "shelfobject": shelfobject.pk,
-                        "type_id": shelfobject.object.type,
-                    },
-                )
+            # ``limits`` es un FK: con None el serializer crea los límites.
+            serializer = self.serializer_class(
+                data=request.data,
+                instance=shelfobject.limits,
+                context={
+                    "source_laboratory_id": lab_pk,
+                    "shelfobject": shelfobject.pk,
+                    "type_id": shelfobject.object.type,
+                },
+            )
             if serializer.is_valid():
                 limit = serializer.save()
                 obj.limits = limit
@@ -2827,29 +2786,26 @@ class ShelfObjectMaintanenceViewset(AuthAllPermBaseObjectManagementShelfObjectBa
             },
         )
 
-        if validate_shelfobject.is_valid(raise_exception=True):
-            ShelfObjectObservation.objects.create(
-                description=instance.maintenance_observation,
-                action_taken=_("Maintenance deleted"),
-                shelf_object=instance.shelfobject,
-                created_by=self.request.user,
-            )
-            utils.organilab_logentry(
-                request.user,
-                instance,
-                DELETION,
-                "shelfobjectmaintenance",
-                changed_data=["maintenance_date", "maintenance_observation", "provider"],
-                change_message=_("Deleted maintenance record for shelfobject '%(name)s'")
-                % {"name": str(instance.shelfobject.object)},
-                relobj=self.lab_pk,
-            )
-            instance.delete()
-            return JsonResponse({}, status=status.HTTP_200_OK)
-
-        return JsonResponse(
-            {"detail": "Maintenance do not exists"}, status=status.HTTP_400_BAD_REQUEST
+        # is_valid(raise_exception=True) nunca devuelve False: lanza 400.
+        validate_shelfobject.is_valid(raise_exception=True)
+        ShelfObjectObservation.objects.create(
+            description=instance.maintenance_observation,
+            action_taken=_("Maintenance deleted"),
+            shelf_object=instance.shelfobject,
+            created_by=self.request.user,
         )
+        utils.organilab_logentry(
+            request.user,
+            instance,
+            DELETION,
+            "shelfobjectmaintenance",
+            changed_data=["maintenance_date", "maintenance_observation", "provider"],
+            change_message=_("Deleted maintenance record for shelfobject '%(name)s'")
+            % {"name": str(instance.shelfobject.object)},
+            relobj=self.lab_pk,
+        )
+        instance.delete()
+        return JsonResponse({}, status=status.HTTP_200_OK)
 
     def update(self, request, *args, **kwargs):
         self.org_pk = kwargs["org_pk"]
@@ -2963,23 +2919,20 @@ class ShelfObjectLogViewset(AuthAllPermBaseObjectManagementShelfObjectBase):
             },
         )
 
-        if validate_log.is_valid(raise_exception=True):
-            utils.organilab_logentry(
-                request.user,
-                instance,
-                DELETION,
-                "shelfobjectlog",
-                changed_data=["description", "shelfobject"],
-                change_message=_("Deleted log entry for shelfobject '%(name)s'")
-                % {"name": str(instance.shelfobject.object)},
-                relobj=self.lab_pk,
-            )
-            instance.delete()
-            return JsonResponse({}, status=status.HTTP_200_OK)
-
-        return JsonResponse(
-            {"detail": "Log do not exists"}, status=status.HTTP_400_BAD_REQUEST
+        # is_valid(raise_exception=True) nunca devuelve False: lanza 400.
+        validate_log.is_valid(raise_exception=True)
+        utils.organilab_logentry(
+            request.user,
+            instance,
+            DELETION,
+            "shelfobjectlog",
+            changed_data=["description", "shelfobject"],
+            change_message=_("Deleted log entry for shelfobject '%(name)s'")
+            % {"name": str(instance.shelfobject.object)},
+            relobj=self.lab_pk,
         )
+        instance.delete()
+        return JsonResponse({}, status=status.HTTP_200_OK)
 
     def update(self, request, *args, **kwargs):
         self.org_pk = kwargs["org_pk"]
@@ -3100,29 +3053,26 @@ class ShelfObjectCalibrateViewset(AuthAllPermBaseObjectManagementShelfObjectBase
             },
         )
 
-        if validate_calibrate.is_valid(raise_exception=True):
-            ShelfObjectObservation.objects.create(
-                description=instance.observation,
-                action_taken=_("Calibration deleted"),
-                shelf_object=instance.shelfobject,
-                created_by=self.request.user,
-            )
-            utils.organilab_logentry(
-                request.user,
-                instance,
-                DELETION,
-                "shelfobjectcalibrate",
-                changed_data=["calibrate_name", "calibration_date", "observation"],
-                change_message=_("Deleted calibration record for shelfobject '%(name)s'")
-                % {"name": str(instance.shelfobject.object)},
-                relobj=self.lab_pk,
-            )
-            instance.delete()
-            return JsonResponse({}, status=status.HTTP_200_OK)
-
-        return JsonResponse(
-            {"detail": "Calibration do not exists"}, status=status.HTTP_400_BAD_REQUEST
+        # is_valid(raise_exception=True) nunca devuelve False: lanza 400.
+        validate_calibrate.is_valid(raise_exception=True)
+        ShelfObjectObservation.objects.create(
+            description=instance.observation,
+            action_taken=_("Calibration deleted"),
+            shelf_object=instance.shelfobject,
+            created_by=self.request.user,
         )
+        utils.organilab_logentry(
+            request.user,
+            instance,
+            DELETION,
+            "shelfobjectcalibrate",
+            changed_data=["calibrate_name", "calibration_date", "observation"],
+            change_message=_("Deleted calibration record for shelfobject '%(name)s'")
+            % {"name": str(instance.shelfobject.object)},
+            relobj=self.lab_pk,
+        )
+        instance.delete()
+        return JsonResponse({}, status=status.HTTP_200_OK)
 
     def list(self, request, *args, **kwargs):
         self.org_pk = kwargs["org_pk"]
@@ -3254,29 +3204,26 @@ class ShelfObjectGuaranteeViewset(AuthAllPermBaseObjectManagementShelfObjectBase
             },
         )
 
-        if validate_shelfobject.is_valid(raise_exception=True):
-            ShelfObjectObservation.objects.create(
-                description="",
-                action_taken=_("Guarentee deleted"),
-                shelf_object=validate_shelfobject.validated_data["shelfobject"],
-                created_by=self.request.user,
-            )
-            utils.organilab_logentry(
-                request.user,
-                guarantee,
-                DELETION,
-                "shelfobjectguarantee",
-                changed_data=["guarantee_initial_date", "guarantee_final_date"],
-                change_message=_("Deleted guarantee record for shelfobject '%(name)s'")
-                % {"name": str(guarantee.shelfobject.object)},
-                relobj=self.lab_pk,
-            )
-            guarantee.delete()
-            return JsonResponse({}, status=status.HTTP_200_OK)
-
-        return JsonResponse(
-            {"detail": "Guarantee do not exists"}, status=status.HTTP_400_BAD_REQUEST
+        # is_valid(raise_exception=True) nunca devuelve False: lanza 400.
+        validate_shelfobject.is_valid(raise_exception=True)
+        ShelfObjectObservation.objects.create(
+            description="",
+            action_taken=_("Guarentee deleted"),
+            shelf_object=validate_shelfobject.validated_data["shelfobject"],
+            created_by=self.request.user,
         )
+        utils.organilab_logentry(
+            request.user,
+            guarantee,
+            DELETION,
+            "shelfobjectguarantee",
+            changed_data=["guarantee_initial_date", "guarantee_final_date"],
+            change_message=_("Deleted guarantee record for shelfobject '%(name)s'")
+            % {"name": str(guarantee.shelfobject.object)},
+            relobj=self.lab_pk,
+        )
+        guarantee.delete()
+        return JsonResponse({}, status=status.HTTP_200_OK)
 
     def update(self, request, *args, **kwargs):
         self.org_pk = kwargs["org_pk"]
@@ -3399,29 +3346,26 @@ class ShelfObjectTrainingViewset(AuthAllPermBaseObjectManagementShelfObjectBase)
             },
         )
 
-        if validate_shelfobject.is_valid(raise_exception=True):
-            ShelfObjectObservation.objects.create(
-                description=instance.observation,
-                action_taken=_("Training deleted"),
-                shelf_object=validate_shelfobject.validated_data["shelfobject"],
-                created_by=self.request.user,
-            )
-            utils.organilab_logentry(
-                request.user,
-                instance,
-                DELETION,
-                "shelfobjecttraining",
-                changed_data=["place", "observation", "number_of_hours", "training_initial_date"],
-                change_message=_("Deleted training record for shelfobject '%(name)s'")
-                % {"name": str(instance.shelfobject.object)},
-                relobj=self.lab_pk,
-            )
-            instance.delete()
-            return JsonResponse({}, status=status.HTTP_200_OK)
-
-        return JsonResponse(
-            {"detail": "Training do not exists"}, status=status.HTTP_400_BAD_REQUEST
+        # is_valid(raise_exception=True) nunca devuelve False: lanza 400.
+        validate_shelfobject.is_valid(raise_exception=True)
+        ShelfObjectObservation.objects.create(
+            description=instance.observation,
+            action_taken=_("Training deleted"),
+            shelf_object=validate_shelfobject.validated_data["shelfobject"],
+            created_by=self.request.user,
         )
+        utils.organilab_logentry(
+            request.user,
+            instance,
+            DELETION,
+            "shelfobjecttraining",
+            changed_data=["place", "observation", "number_of_hours", "training_initial_date"],
+            change_message=_("Deleted training record for shelfobject '%(name)s'")
+            % {"name": str(instance.shelfobject.object)},
+            relobj=self.lab_pk,
+        )
+        instance.delete()
+        return JsonResponse({}, status=status.HTTP_200_OK)
 
     def update(self, request, *args, **kwargs):
         self.org_pk = kwargs["org_pk"]

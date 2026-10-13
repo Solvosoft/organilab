@@ -21,7 +21,6 @@ from sga.models import (
     ReviewSubstance,
     DisplayLabel,
     WarningWord,
-    HCodeCategory,
     DangerSubstance,
     DangerSubstanceCategory,
 )
@@ -532,30 +531,6 @@ class RecipientSizeDeleteSerializer(serializers.Serializer):
     )
 
 
-class DangerCategoryActionsSerializer(serializers.ModelSerializer):
-    name = serializers.CharField(max_length=50, required=True)
-    threshold = serializers.FloatField(required=False, default=0.0)
-    h_code = serializers.PrimaryKeyRelatedField(
-        many=True,
-        required=True,
-        queryset=DangerIndication.objects.using(settings.READONLY_DATABASE),
-        allow_null=False,
-        allow_empty=False,
-    )
-    danger_category = serializers.CharField(max_length=50, required=True)
-    measurement_unit = serializers.PrimaryKeyRelatedField(
-        many=False,
-        required=True,
-        queryset=Catalog.objects.using(settings.READONLY_DATABASE).filter(
-            key="units", description__in=["Litros", "Kilogramos", "Libra"]
-        ),
-    )
-
-    class Meta:
-        model = HCodeCategory
-        fields = "__all__"
-
-
 class ChoicesGTS2Serializer(GTS2SerializerBase):
     def __init__(self, *args, choices=None, **kwargs):
         self.choices = dict(choices)
@@ -568,38 +543,6 @@ class ChoicesGTS2Serializer(GTS2SerializerBase):
         if obj in self.choices:
             return self.choices[obj]
         return obj
-
-
-class DangerCategorySerializer(serializers.ModelSerializer):
-    actions = serializers.SerializerMethodField()
-    h_code = GTS2SerializerBase(many=True)
-    danger_category = ChoicesGTS2Serializer(choices=HCodeCategory.HCATEGORY, many=False)
-    measurement_unit = GTS2SerializerBase(many=False)
-
-    def get_actions(self, obj):
-        user = self.context["request"].user
-        add_perm = True if user.has_perm("sga.add_hcodecategory") else False
-        delele_perm = True if user.has_perm("sga.delete_hcodecategory") else False
-        view_perm = True if user.has_perm("sga.view_hcodecategory") else False
-        update_perm = True if user.has_perm("sga.change_hcodecategory") else False
-
-        return {
-            "list": view_perm,
-            "create": add_perm,
-            "update": update_perm,
-            "destroy": delele_perm,
-        }
-
-    class Meta:
-        model = HCodeCategory
-        fields = "__all__"
-
-
-class DangerCategoryDataTableSerializer(serializers.Serializer):
-    data = serializers.ListField(child=DangerCategorySerializer(), required=True)
-    draw = serializers.IntegerField(required=True)
-    recordsFiltered = serializers.IntegerField(required=True)
-    recordsTotal = serializers.IntegerField(required=True)
 
 
 class DangerSubstanceSerializer(serializers.ModelSerializer):

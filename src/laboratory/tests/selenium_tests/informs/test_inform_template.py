@@ -39,6 +39,9 @@ FORMIO_DIALOG_FOR = (
 
 # Edit view page elements
 SAVE_FORM_BTN = "//*[@id='save_btn']"
+# SweetAlert2 11 marca el tipo de aviso en el propio popup (swal2-icon-success).
+SAVE_SUCCESS_ICON = "//div[contains(@class, 'swal2-popup') and contains(@class, 'swal2-icon-success')]"
+SWAL_POPUP = "//div[contains(@class, 'swal2-popup')]"
 RETURN_TO_LIST_BTN = "//button[@title='Form List']"
 
 # Form table action selectors
@@ -71,15 +74,7 @@ class InformsSeleniumTest(OptimizedSeleniumBase):
 
         Used at the end of Formio builder tests.
         """
-        return [
-            {
-                "path": SAVE_FORM_BTN,
-            },
-            {
-                "path": RETURN_TO_LIST_BTN,
-                "scroll": "window.scrollTo(0, 600)",
-                "sleep": 2,
-            },
+        return self._save_and_return() + [
             {
                 "path": "//button[contains(@class, 'swal2-confirm')]",
                 "sleep": 1,
@@ -91,6 +86,29 @@ class InformsSeleniumTest(OptimizedSeleniumBase):
             {
                 "path": "//button[contains(@class, 'btn-primary') and contains(@onclick, 'window.location')]",
                 "wait_ready": True,
+            },
+        ]
+
+    def _save_and_return(self):
+        """Guarda el formulario y pulsa "Volver a la lista" (abre la confirmación)."""
+        return [
+            {
+                "path": SAVE_FORM_BTN,
+            },
+            # El guardado es AJAX y su aviso de éxito (un Swal sin botones que
+            # se cierra solo) llega cuando responde el servidor. Si llega
+            # después de pulsar "Volver a la lista", Swal sustituye el diálogo
+            # de confirmación por ese aviso y el botón de confirmar no aparece
+            # nunca. Se espera a que el guardado termine y su aviso se cierre.
+            {
+                "path": SAVE_SUCCESS_ICON,
+                "presence_only": True,
+            },
+            {
+                "path": RETURN_TO_LIST_BTN,
+                "scroll": "window.scrollTo(0, 600)",
+                "wait_gone": SWAL_POPUP,
+                "sleep": 2,
             },
         ]
 
@@ -233,14 +251,7 @@ class InformsSeleniumTest(OptimizedSeleniumBase):
             {
                 "path": "//div[contains(@class, 'component-settings-button-remove')] | //div[contains(@class, 'component-btn-group')]/div[1]",
             },
-            {
-                "path": SAVE_FORM_BTN,
-            },
-            {
-                "path": RETURN_TO_LIST_BTN,
-                "scroll": "window.scrollTo(0, 600)",
-                "sleep": 2,
-            },
+        ] + self._save_and_return() + [
             {
                 "path": "//button[contains(@class, 'swal2-confirm')]",
                 "sleep": 1,

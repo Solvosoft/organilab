@@ -1,19 +1,21 @@
 from django.core.files.base import ContentFile
 from django.utils.translation import gettext as _
 
-from laboratory.models import Object
 from laboratory.report_utils import ExcelGraphBuilder
 from report.utils import (
     set_format_table_columns,
     get_report_name,
     load_dataset_by_column,
 )
+from report.datasets import shelfobjects_by_furniture
 from report.utils import get_furniture_queryset_by_filters
 
 
 def get_dataset(report, column_list=None):
     dataset = []
-    furniture_list = get_furniture_queryset_by_filters(report)
+    furniture_list = get_furniture_queryset_by_filters(report).select_related(
+        "labroom"
+    )
     attrs = {}
 
     if "object_type" in report.data:
@@ -24,31 +26,31 @@ def get_dataset(report, column_list=None):
                     "is_precursor"
                 ]
 
-    for furniture in furniture_list:
-        objects = furniture.get_objects().filter(**attrs)
-        for shelfobject in objects:
-            shelf_unit = shelfobject.get_measurement_unit_display()
-            furniture = shelfobject.shelf.furniture
-            data_column = {
-                "code": shelfobject.object.code,
-                "object": shelfobject.object.name,
-                "quantity": f"{round(shelfobject.total_quantity, 3)} {shelf_unit}",
-                # `in_where_laboratory` es opcional en el modelo: una celda vacía
-                # informa, una excepción deja al usuario sin informe (igual que
-                # el reporte por mueble).
-                "laboratory": (
-                    shelfobject.in_where_laboratory.name
-                    if shelfobject.in_where_laboratory
-                    else ""
-                ),
-                "laboratory_room": furniture.labroom.name,
-                "furniture": furniture.name,
-                "shelf": shelfobject.shelf.name,
-            }
-            obj_item = list(data_column.values())
-            if column_list:
-                obj_item = load_dataset_by_column(column_list, data_column)
-            dataset.append(obj_item)
+    rows = shelfobjects_by_furniture(
+        furniture_list, filters=attrs, order_by=("shelf", "pk")
+    )
+    for furniture, shelfobject in rows:
+        shelf_unit = shelfobject.get_measurement_unit_display()
+        data_column = {
+            "code": shelfobject.object.code,
+            "object": shelfobject.object.name,
+            "quantity": f"{round(shelfobject.total_quantity, 3)} {shelf_unit}",
+            # `in_where_laboratory` es opcional en el modelo: una celda vacía
+            # informa, una excepción deja al usuario sin informe (igual que
+            # el reporte por mueble).
+            "laboratory": (
+                shelfobject.in_where_laboratory.name
+                if shelfobject.in_where_laboratory
+                else ""
+            ),
+            "laboratory_room": furniture.labroom.name,
+            "furniture": furniture.name,
+            "shelf": shelfobject.shelf.name,
+        }
+        obj_item = list(data_column.values())
+        if column_list:
+            obj_item = load_dataset_by_column(column_list, data_column)
+        dataset.append(obj_item)
     return dataset
 
 

@@ -33,25 +33,6 @@ from laboratory.models import (
 from django.utils.translation import gettext_lazy as _
 
 
-def check_group_has_perm(group, codename):
-    if codename:
-        _, perm = codename.split(".")
-        return group.permissions.filter(codename=perm).exists()
-    return False
-
-
-def sum_ancestors_group(user_org, lab_org, perm):
-    lab_parant = lab_org.get_ancestors(ascending=True, include_self=True)
-    user_org = user_org.first()  # first have the first org
-    for org in lab_parant:
-        if org.level >= user_org.level:
-            group = org.group if hasattr(org, "group") else None
-            if group:
-                if check_group_has_perm(group, perm):
-                    return True
-    return False
-
-
 def check_user_has_perm(user, perm):
     return bool(user.has_perm(perm))
 
@@ -96,17 +77,14 @@ def check_lab_group_has_perm(
     if not user.is_authenticated:
         return False
 
-    # Check org of labs
-    lab_org = lab.organization if hasattr(lab, "organization") else None
+    # Los permisos por grupo de organización eran de la época MPTT
+    # (``get_ancestors`` y ``org.group`` ya no existen): esa rama lanzaba
+    # AttributeError en cuanto el laboratorio era de una organización del
+    # usuario. Queda el permiso efectivo más el acceso al laboratorio.
     user_org = OrganizationStructure.os_manager.filter_user(user)
 
     if not user_org:
         user_org = []
-
-    # if lab have an organizations, compare that perms with perm param
-    if lab_org and lab_org in user_org:  # user have some organization
-        if sum_ancestors_group(user_org, lab_org, perm):  # check ancestor perms
-            return True
 
     user_perm = check_user_has_perm(user, perm)  # check if user has perms to do action
     labs = callback_filter(user, user_org)
@@ -202,7 +180,7 @@ def get_laboratories_from_organization(rootpk, user):
 
 def get_cas(object, default=None):
     result = default
-    sga_char = object.substancharacteristics_object.first()
+    sga_char = object.get_sga_characteristic()
     if sga_char and sga_char.cas_id_number:
         result = sga_char.cas_id_number
     return result
@@ -210,7 +188,7 @@ def get_cas(object, default=None):
 
 def get_imdg(object, default=None):
     result = default
-    sga_char = object.substancharacteristics_object.first()
+    sga_char = object.get_sga_characteristic()
     if sga_char:
         imdg = sga_char.imdg
         result = imdg.description if imdg else ""
@@ -219,7 +197,7 @@ def get_imdg(object, default=None):
 
 def get_molecular_formula(object, default=None):
     result = default
-    sga_char = object.substancharacteristics_object.first()
+    sga_char = object.get_sga_characteristic()
     if sga_char and sga_char.molecular_formula:
         result = sga_char.molecular_formula
     return result

@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta, timezone as dt_timezone
 
 from django.contrib.auth.models import User
+from django.template.loader import render_to_string
 from django.test import SimpleTestCase, TestCase
 from django.utils import timezone
 from django.utils import translation
@@ -32,6 +33,7 @@ from report.utils import (
     sanitize_ods_table,
     set_format_table_columns,
 )
+from presentation.pdf import html_to_pdf
 from report.tests.utils import ReportTestBase
 
 
@@ -82,6 +84,35 @@ class PresentacionDeTablasTest(SimpleTestCase):
         self.assertIn('<td class="c0">1</td><td class="c1">Cal</td>', html)
         self.assertIn('<td class="c0">2</td><td class="c1">Sal</td>', html)
         self.assertTrue(html.endswith("</tbody></table>"))
+
+    def test_tabla_pdf_con_indicaciones_de_peligro_largas(self):
+        # Con ancho automático la columna quedaba estrecha y la fila del
+        # formaldehído (nueve códigos H) era más alta que la página: xhtml2pdf
+        # no parte filas y el PDF entero fallaba con LayoutError.
+        peligro = ", ".join([
+            "(H301) Tóxico en caso de ingestión",
+            "(H311) Tóxico en contacto con la piel",
+            "(H314) Provoca graves quemaduras en la piel y lesiones oculares",
+            "(H317) Puede provocar una reacción cutánea alérgica",
+            "(H331) Tóxico si se inhala",
+            "(H335) Puede irritar las vías respiratorias o provocar somnoliencia",
+            "(H341) Suscepctible a provocar cancer (Indíquese la vías de exósición si se ha demostrado concluyendtemente que ninguna otra vía es peligrosa)",
+            "(H350) Puede provocar cáncer (indíquese la vía de exposición si se ha demostrado concluyentemente que ninguna otra vía es peligrosa)",
+            "(H370) Provoca daños en los órganos (o indíquese todos los órganos afectados, si se conocen) "
+            "(Indíquese la vía de exposición si se ha demostrado concluyentemente que ninguna otra vía es peligrosa)",
+        ])
+        columnas = ["shelfobject_code", "code", "name", "type", "features",
+                    "danger_indication", "molecular_formula", "cas_id_number"]
+        contenido = {
+            "columns": [{"name": nombre, "title": nombre} for nombre in columnas],
+            "dataset": [["UC-1", "REA-1", "Formaldehído", "Reactivo", "Sólido", peligro, "CH2O", "50-00-0"]],
+        }
+        datalist = get_pdf_table_content(contenido)
+        self.assertIn("<th width='35%'>danger_indication</th>", datalist)
+        html = render_to_string("report/base_report_pdf.html", {
+            "datalist": datalist, "title": "Objetos", "size_sheet": "landscape",
+        })
+        self.assertTrue(html_to_pdf(html).startswith(b"%PDF"))
 
     def test_tabla_pdf_sin_dataset_queda_vacia(self):
         self.assertEqual(get_pdf_table_content({"columns": []}), "")

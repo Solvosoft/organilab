@@ -25,7 +25,6 @@ from auth_and_perms.api.filterset import OrganizationStructureRelationsFilter
 from auth_and_perms.api.serializers import (
     RolSerializer,
     ProfilePermissionRolOrganizationSerializer,
-    OrganizationSerializer,
     ProfileFilterSet,
     ProfileRolDataTableSerializer,
     DeleteUserFromContenttypeSerializer,
@@ -65,7 +64,6 @@ from laboratory.models import (
 )
 from laboratory.utils import (
     get_profile_by_organization,
-    get_organizations_by_user,
     get_laboratories_from_organization,
     get_user_laboratories,
     organilab_logentry,
@@ -369,18 +367,6 @@ class UpdateRolOrganizationProfilePermission(
 
             return Response(serializer.data)
         return Response(serializer.errors)
-
-
-class OrganizationAPI(
-    mixins.ListModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet
-):
-    queryset = OrganizationStructure.objects.all()
-    serializer_class = OrganizationSerializer
-    authentication_classes = [SessionAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        return get_organizations_by_user(self.request.user)
 
 
 class UserLaboratoryOrganization(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -770,9 +756,6 @@ class DeleteUserFromContenttypeViewSet(mixins.ListModelMixin, viewsets.GenericVi
                 )
             pps.delete()
         return Response({"result": "ok"})
-
-    def list(self, request, *args, **kwargs):
-        return self.delete(request, *args, **kwargs)
 
 
 class UpdateGroupsByProfile(APIView):
@@ -1311,23 +1294,14 @@ class OrganizationLabRelationDeleteViewSet(AuthAllPermBaseObjectManagement):
         1. organization_id from URL parameter
         2. content_type for Laboratory model
         """
-        org_pk = self.kwargs.get("org_pk")
-
-        if not org_pk:
-            return OrganizationStructureRelations.objects.none()
-
-        # Valida que quien pide pertenezca a la organización de la URL.
-        self.get_organization()
-
-        lab_content_type = ContentType.objects.filter(
-            app_label="laboratory", model="laboratory"
-        ).first()
-
-        if not lab_content_type:
-            return OrganizationStructureRelations.objects.none()
+        # La ruta (`organization/<int:org_pk>/lab_relations/`) siempre trae `org_pk`, y
+        # `get_organization()` responde 404 si no existe y 403 si quien pide no
+        # pertenece a ella.
+        organization = self.get_organization()
+        lab_content_type = ContentType.objects.get_for_model(Laboratory)
 
         return OrganizationStructureRelations.objects.filter(
-            organization_id=org_pk, content_type=lab_content_type
+            organization_id=organization.pk, content_type=lab_content_type
         )
 
     def perform_destroy(self, instance):

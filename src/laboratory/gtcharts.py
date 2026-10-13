@@ -17,7 +17,7 @@ from djgentelella.chartjs import (
 from djgentelella.groute import register_lookups
 from rest_framework.response import Response
 
-from laboratory.api.serializers import ReactiveLimitSerializer, ReactiveLimitsSerializer
+from laboratory.api.serializers import ReactiveLimitsSerializer
 from laboratory.models import (
     Laboratory,
     ShelfObject,
@@ -73,16 +73,6 @@ class BaseChart:
         color_list = self.colors[self.index]
         color = "rgb(" + color_list + ")"
         return color
-
-    def get_extra_filters(self):
-        serializer = ReactiveLimitSerializer(data=self.request.query_params)
-        self.filters = {}
-        self.no_labs = False
-        laboratories = []
-        if serializer.is_valid():
-            self.filters["created_at"] = serializer.validated_data["created_at"]
-            self.filters["object__pk__in"] = serializer.validated_data["object"]
-            self.filters["laboratory__pk"] = serializer.validated_data["laboratory"]
 
 
 class LaboratoryPermission(permissions.BasePermission):

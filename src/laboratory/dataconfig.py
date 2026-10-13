@@ -242,7 +242,11 @@ def resolve_shelves(matrix):
         return [[[] for _ in row] for row in matrix]
 
     Shelf = apps.get_model("laboratory", "Shelf")
-    shelves = {shelf.pk: shelf for shelf in Shelf.objects.filter(pk__in=pks)}
+    # La tarjeta de cada estante muestra su unidad.
+    shelves = {
+        shelf.pk: shelf
+        for shelf in Shelf.objects.filter(pk__in=pks).select_related("measurement_unit")
+    }
     return [
         [[shelves[pk] for pk in cell if pk in shelves] for cell in row]
         for row in matrix

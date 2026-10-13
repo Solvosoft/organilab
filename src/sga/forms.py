@@ -5,9 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets.selects import AutocompleteSelect, AutocompleteSelectMultiple
-from djgentelella.widgets.tagging import TaggingInput
 
-from laboratory.models import Catalog
 from sga.models import (
     Substance,
     RecipientSize,
@@ -19,7 +17,7 @@ from sga.models import (
     Label,
     SGAComplement,
     Provider,
-    HCodeCategory, DangerSubstance, DangerSubstanceCategory,
+    DangerSubstance, DangerSubstanceCategory,
 )
 
 
@@ -130,39 +128,6 @@ class PersonalForm(GTForm):
         self.fields["commercial_information"].widget.attrs["rows"] = 4
 
 
-class PersonalFormAcademic(GTForm):
-    name = forms.CharField(max_length=100, required=True, widget=genwidgets.TextInput)
-    company_name = forms.CharField(
-        max_length=150, required=True, widget=genwidgets.TextInput
-    )
-    address = forms.CharField(widget=genwidgets.Textarea)
-    phone = forms.CharField(max_length=50, required=True, widget=genwidgets.TextInput)
-    json_representation = forms.CharField(widget=forms.HiddenInput())
-    preview = forms.CharField(widget=forms.HiddenInput())
-    template = forms.ModelChoiceField(
-        queryset=TemplateSGA.objects.none(),
-        required=False,
-        widget=genwidgets.HiddenInput,
-    )
-    substance = forms.CharField(widget=forms.HiddenInput())
-    commercial_information = forms.CharField(widget=genwidgets.Textarea)
-    barcode = forms.CharField(
-        widget=genwidgets.TextInput, max_length=150, required=False
-    )
-    logo = forms.FileField(widget=genwidgets.FileInput, required=False)
-    logo_upload_id = forms.CharField(widget=forms.HiddenInput(), required=False)
-
-    def __init__(self, *args, **kwargs):
-        user = kwargs.pop("user")
-        substance = kwargs.pop("substance")
-        super(PersonalFormAcademic, self).__init__(*args, **kwargs)
-        filter = Q(community_share=True) | Q(created_by=user)
-        self.fields["substance"].initial = substance
-        self.fields["template"].queryset = TemplateSGA.objects.filter(filter)
-        self.fields["address"].widget.attrs["rows"] = 4
-        self.fields["commercial_information"].widget.attrs["rows"] = 4
-
-
 class PersonalSGAForm(forms.ModelForm, GTForm):
     recipient_size = forms.ModelChoiceField(
         widget=genwidgets.Select, queryset=RecipientSize.objects.all(), required=True
@@ -216,25 +181,6 @@ class LabelForm(forms.ModelForm, GTForm):
 class PersonalTemplatesForm(GTForm):
     name = forms.CharField(max_length=100, required=True)
     json_data = forms.CharField(widget=forms.TextInput)
-
-
-class SubstanceForm(forms.ModelForm, GTForm):
-
-    def __init__(self, *args, **kwargs):
-        super(SubstanceForm, self).__init__(*args, **kwargs)
-        self.fields["uipa_name"].label = _("UIPA name")
-
-    class Meta:
-        model = Substance
-        fields = "__all__"
-        widgets = {
-            "comercial_name": genwidgets.TextInput,
-            "uipa_name": genwidgets.TextInput,
-            "components": genwidgets.SelectMultiple(),
-            "danger_indications": genwidgets.SelectMultiple(),
-            "synonymous": TaggingInput,
-            "agrochemical": genwidgets.YesNoInput,
-        }
 
 
 class RecipientSizeForm(forms.ModelForm, GTForm):
@@ -414,28 +360,6 @@ class CompanyForm(forms.ModelForm, GTForm):
 
 class ValidateReviewSubstanceForm(forms.Form):
     showapprove = forms.BooleanField(required=False)
-
-
-class HCategoryForm(GTForm, forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-
-        super().__init__(*args, **kwargs)
-        self.fields["measurement_unit"].queryset = (Catalog.objects.
-                                                    filter(key="units",
-                                                           description__in=["Litros",
-                                                                            "Kilogramos",
-                                                                            "Libra"]))
-
-    class Meta:
-        model = HCodeCategory
-        fields = ["name", "threshold", "measurement_unit", "danger_category", "h_code"]
-        widgets = {
-            "name": genwidgets.TextInput,
-            "threshold": genwidgets.TextInput,
-            "danger_category": genwidgets.Select,
-            "h_code": AutocompleteSelectMultiple("dangersearch", attrs={}),
-            "measurement_unit": genwidgets.Select,
-        }
 
 
 class DangerSubstanceForm(forms.ModelForm, GTForm):

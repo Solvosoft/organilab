@@ -184,7 +184,7 @@ La pantalla desde la que un administrador arma su inquilino: da de alta usuarios
 |---|---|---|---|---|
 | **Abrir el gestor de la organización** | Administrativo superior, Organization Management, Administrador de Laboratorio, Administrativo de centro de trabajo | `laboratory.can_manage_org_permissions` | — | `auth_and_perms:organizationManager` |
 | **Añadir usuarios a la organización** | Administrativo superior, Organization Management, Administrador de Laboratorio, Administrativo de centro de trabajo | `auth.add_user`<br>`laboratory.change_organizationstructure`<br>`auth_and_perms.view_profile` | — | `auth_and_perms:add_user`<br>`auth_and_perms:addusersorganization`<br>`auth_and_perms:get_users` |
-| **Consultar, crear y editar los roles de la organización** | Administrativo superior, Organization Management, Administrador de Laboratorio, Administrativo de centro de trabajo | `auth_and_perms.change_rol`<br>`auth_and_perms.view_rol` | — | `auth_and_perms:list_rol_by_org`<br>`auth_and_perms:update_rol`<br>`auth_and_perms:get_rol`<br>`auth_and_perms:get_roles_by_organization`<br>`auth_and_perms:add_rol_by_laboratory` |
+| **Consultar, crear y editar los roles de la organización** | Administrativo superior, Organization Management, Administrador de Laboratorio, Administrativo de centro de trabajo | `auth_and_perms.change_rol`<br>`auth_and_perms.view_rol` | — | `auth_and_perms:list_rol_by_org`<br>`auth_and_perms:update_rol`<br>`auth_and_perms:get_rol`<br>`auth_and_perms:get_roles_by_organization` |
 | **Quitar un rol de la organización** | Administrativo superior, Organization Management, Administrador de Laboratorio, Administrativo de centro de trabajo | `auth_and_perms.delete_rol` | — | `auth_and_perms:del_rol_by_org` |
 | **Copiar el juego de roles a otra organización** | Administrativo superior, Organization Management, Administrador de Laboratorio, Administrativo de centro de trabajo | `laboratory.change_organizationstructure` | — | `auth_and_perms:copy_rols` |
 | **Habilitar organizaciones hijas y relacionar modelos** | Administrativo superior, Organization Management, Administrador de Laboratorio, Administrativo de centro de trabajo | `laboratory.change_organizationstructure` | — | `auth_and_perms:enable_child_organizations`<br>`auth_and_perms:add_contenttype_to_org` |
@@ -404,6 +404,7 @@ La estructura física dentro del laboratorio: salas, los muebles que contienen y
 |---|---|---|---|---|
 | **Listar, crear, editar y borrar salas** | Administrativo superior, Administrador de Laboratorio, Creador de laboratorio, Asistente de laboratorio | `laboratory.view_laboratoryroom`<br>`laboratory.change_laboratoryroom`<br>`laboratory.delete_laboratoryroom` | — | `laboratory:rooms_list`<br>`laboratory:rooms_create`<br>`laboratory:rooms_update`<br>`laboratory:rooms_delete` |
 | **Regenerar el QR de la sala** | Administrativo superior, Administrador de Laboratorio, Creador de laboratorio, Asistente de laboratorio | `laboratory.change_laboratoryroom` | — | `laboratory:rebuild_laboratory_qr` |
+| **Ver o descargar el QR de una sala, mueble o estante** | Administrativo superior, Administrador de Laboratorio, Creador de laboratorio, Asistente de laboratorio, Técnico de Laboratorio, Estudiante, Profesor, Regente, Solo Lectura | `laboratory.view_laboratoryroom` | — | `laboratory:node_qr_svg` |
 | **Listar, crear, editar y borrar muebles** | Administrativo superior, Administrador de Laboratorio, Creador de laboratorio, Asistente de laboratorio | `laboratory.add_furniture`<br>`laboratory.delete_furniture` | — | `laboratory:furniture_list`<br>`laboratory:furniture_create`<br>`laboratory:furniture_update`<br>`laboratory:furniture_delete` |
 | **Crear, editar y borrar estantes** | Administrativo superior, Administrador de Laboratorio, Creador de laboratorio, Asistente de laboratorio | `laboratory.add_shelf`<br>`laboratory.change_shelf`<br>`laboratory.delete_shelf` | — | `laboratory:shelf_create`<br>`laboratory:shelf_edit`<br>`laboratory:shelf_delete`<br>`laboratory:get_lab_id` |
 | **Ver los contenedores de un estante** | Administrativo superior, Administrador de Laboratorio, Creador de laboratorio, Asistente de laboratorio, Técnico de Laboratorio, Estudiante, Profesor, Regente, Solo Lectura | — | — | `laboratory:shelf_containers` |
@@ -485,7 +486,7 @@ Estados que atraviesa:
 Hallazgos:
 
 - **Es el único sitio del sistema donde el rol es dato de negocio, no solo autorización.** `PendingTask` se asigna a un `profile` *o* a un M2M de `Rol` (`models.py:32,39`), y `PendingTaskManager` resuelve destinatarios implícitos: los regentes del laboratorio (:67), su responsable (:99), los responsables de la organización (:109), los del edificio (:125), **todos los perfiles con un rol dado** (:138) y los de una organización filtrando por `type_in_organization` (:161).
-- Que la app tenga una sola ruta esconde su alcance: los emisores están en `sga/utils.py:63`, `risk_management/tasks.py:67`, `risk_management/iper_views.py:575`, `laboratory/tasks.py:69,197`, `laboratory/task_utils.py:65` y `laboratory/limit_shelfobject.py:25`.
+- Que la app tenga una sola ruta esconde su alcance: los emisores están en `sga/utils.py:63`, `risk_management/tasks.py:67`, `risk_management/iper_views.py:575`, `laboratory/tasks.py:68,196` y `laboratory/task_utils.py:65`.
 
 ### `MSDS-01` — Consultar y verificar las fichas de seguridad del laboratorio
 
@@ -883,7 +884,7 @@ Los datos maestros que la etiqueta imprime: la empresa que figura como responsab
 | Encargado de registro ambiental | sí | `auth_and_perms/management/commands/update_roles.py:1302` |
 | Analista ambiental | sí | `auth_and_perms/management/commands/update_roles.py:1307` |
 | Manejo de sustancias del laboratorio | sí | `auth_and_perms/management/commands/add_static_rol.py:17` |
-| Organization Management | sí | `auth_and_perms/views/user_org_creation.py:95` |
+| Organization Management | sí | `auth_and_perms/views/user_org_creation.py:40` |
 
 Los pseudo-roles no conceden permisos y se listan aparte:
 

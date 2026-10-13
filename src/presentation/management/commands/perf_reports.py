@@ -170,7 +170,7 @@ class Command(BaseCommand):
         from django.contrib.auth.models import User
 
         from presentation.perf import _QueryCounter
-        from report.models import TaskReport
+        from report.models import ObjectChangeLogReport, TaskReport
         from report.views.base import build_report
 
         start_mem = rss_kb()
@@ -199,7 +199,10 @@ class Command(BaseCommand):
             elif report.table_content:
                 size = len(json.dumps(report.table_content))
             else:
-                size = None
+                # El HTML de cambios de objetos no usa `table_content`: deja
+                # sus filas en ObjectChangeLogReport y la página las lee de ahí.
+                rows = ObjectChangeLogReport.objects.filter(task_report=report).count()
+                size = rows or None
             result = {
                 "wall_s": round(time.perf_counter() - wall, 2),
                 "cpu_s": round(time.process_time() - cpu, 2),

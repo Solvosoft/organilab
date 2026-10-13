@@ -1,5 +1,7 @@
 from django.conf import settings
-from django.db.models import Sum
+from collections import defaultdict
+
+from django.db.models import Max
 from django.utils.translation import gettext as _
 from laboratory.models import (
     Object,
@@ -17,174 +19,193 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
-def resume_queryset(report, queryset, objs=None, log_filters=None):
+def _group_logs(queryset):
+    """Bitácoras agrupadas por ``(laboratorio, objeto, unidad)``.
 
-    laboratories = set(queryset.values_list("laboratory__pk", flat=True))
-    builder = []
-    total = 0
-    doc_list = []
-    user_ids = set(queryset.values_list("user_id", flat=True))
+    Una consulta en vez de una por laboratorio y otras cuatro por par
+    objeto-unidad. Dentro de cada grupo se respeta el orden del queryset.
+    """
+    groups = defaultdict(list)
+    for log in queryset:
+        groups[(log.laboratory_id, log.object_id, log.measurement_unit_id)].append(log)
+    return groups
+
+
+def _lookups(groups, extra_pairs=()):
+    """Laboratorios, objetos y unidades que aparecen en el reporte, por pk."""
+    lab_ids, object_ids, unit_ids = set(), set(), set()
+    for lab_id, object_id, unit_id in list(groups) + list(extra_pairs):
+        lab_ids.add(lab_id)
+        object_ids.add(object_id)
+        unit_ids.add(unit_id)
+    labs = Laboratory.objects.in_bulk(lab_ids)
+    objects = {
+        obj.pk: obj
+        for obj in Object.objects.filter(pk__in=object_ids).prefetch_related(
+            "substancharacteristics_object"
+        )
+    }
+    units = Catalog.objects.in_bulk(unit_ids)
+    return labs, objects, units
+
+
+def _unlogged_with_history(groups, objs):
+    """Inventario sin movimientos en el periodo pero con historia anterior.
+
+    Devuelve ``{(lab, objeto, unidad): pk de la última bitácora}`` para los
+    pares que el reporte lista en cero. Solo cuenta para los laboratorios que
+    tienen movimientos en el periodo, como siempre lo hizo el reporte.
+    """
+    lab_ids = {key[0] for key in groups}
+    if not lab_ids:
+        return {}, set()
+    inventory = set(
+        objs.filter(in_where_laboratory__in=lab_ids).values_list(
+            "in_where_laboratory", "object", "measurement_unit"
+        )
+    )
+    candidates = inventory - set(groups)
+    if not candidates:
+        return {}, candidates
+    history = (
+        ObjectLogChange.objects.filter(
+            laboratory_id__in=lab_ids,
+            object_id__in={key[1] for key in candidates},
+        )
+        .order_by()
+        .values_list("laboratory_id", "object_id", "measurement_unit_id")
+        .annotate(last_pk=Max("pk"))
+    )
+    with_history = {
+        (lab, obj, unit): last_pk
+        for lab, obj, unit, last_pk in history
+        if (lab, obj, unit) in candidates
+    }
+    return with_history, candidates
+
+
+def resume_queryset(report, queryset, objs=None, log_filters=None):
+    groups = _group_logs(queryset)
+    with_history, _candidates = _unlogged_with_history(groups, objs)
+    labs, objects, units = _lookups(groups, with_history)
+    user_ids = {log.user_id for logs in groups.values() for log in logs}
     user_map = User.objects.using(settings.READONLY_DATABASE).in_bulk(user_ids)
 
-    for laboratory in laboratories:
-        lab = Laboratory.objects.get(pk=laboratory)
-        query = queryset.filter(laboratory=lab)
-        objects = set(query.values_list("object", "measurement_unit"))
-
-        for obj in objects:
-            object_log = None
-            obj_using = Object.objects.filter(pk=obj[0]).first()
-            catalog = Catalog.objects.get(pk=obj[1])
-            query_values = query.filter(object=obj_using, measurement_unit__pk=obj[1])
-            object_diff = queryset.filter(
-                laboratory=lab, object=obj_using, measurement_unit__pk=obj[1]
-            ).aggregate(total=Sum("diff_value"))["total"]
-            if query_values:
-
-                object_log = ObjectChangeLogReport.objects.create(
-                    task_report=report,
-                    laboratory=lab,
-                    object=obj_using,
-                    unit=catalog,
-                    diff_value=round(object_diff, 3),
-                )
-
-            for values in query_values:
-
-                user_obj = user_map.get(values.user_id)
-                object_builder = ObjectChangeLogReportBuilder(
+    total = 0
+    keys = sorted(groups)
+    reports = ObjectChangeLogReport.objects.bulk_create(
+        [
+            ObjectChangeLogReport(
+                task_report=report,
+                laboratory=labs[lab_id],
+                object=objects.get(object_id),
+                unit=units[unit_id],
+                diff_value=round(sum(log.diff_value for log in groups[key]), 3),
+            )
+            for key in keys
+            for lab_id, object_id, unit_id in [key]
+        ]
+    )
+    builder = []
+    for key, object_log in zip(keys, reports):
+        for values in groups[key]:
+            builder.append(
+                ObjectChangeLogReportBuilder(
                     report=object_log,
-                    user=user_obj,
+                    user=user_map.get(values.user_id),
                     old_value=round(values.old_value, 3),
                     new_value=round(values.new_value, 3),
                     diff_value=round(values.diff_value, 3),
                     update_time=values.update_time,
                 )
-
-                builder.append(object_builder)
-
-                total += 1
-            if object_log:
-                ObjectChangeLogReportBuilder.objects.bulk_create(builder)
-            builder.clear()
-        shelf_obj = set(
-            objs.filter(in_where_laboratory=lab).values_list(
-                "object", "measurement_unit"
             )
-        )
+            total += 1
+    ObjectChangeLogReportBuilder.objects.bulk_create(builder, batch_size=1000)
 
-        for obj in shelf_obj:
-            log_now = queryset.filter(
-                laboratory=lab, object__pk=obj[0], measurement_unit__pk=obj[1]
+    ObjectChangeLogReport.objects.bulk_create(
+        [
+            ObjectChangeLogReport(
+                task_report=report,
+                laboratory=labs[lab_id],
+                object=objects.get(object_id),
+                unit=units.get(unit_id),
+                diff_value=0,
             )
-            if not log_now.exists():
-                old_log = ObjectLogChange.objects.filter(
-                    laboratory=lab, object__pk=obj[0], measurement_unit__pk=obj[1]
-                ).distinct()
-                if old_log.exists():
-
-                    ObjectChangeLogReport.objects.create(
-                        task_report=report,
-                        laboratory=lab,
-                        object=Object.objects.filter(pk=obj[0]).first(),
-                        unit=Catalog.objects.filter(pk=obj[1]).first(),
-                        diff_value=0,
-                    )
-
-                    total += 1
+            for lab_id, object_id, unit_id in sorted(with_history)
+        ]
+    )
+    total += len(with_history)
 
     return total
 
 
-def resume_queryset_doc(report, queryset, objs, log_filters):
+def _user_display(log, user_map):
+    if log.deleted_user_info:
+        return log.deleted_user_info
+    user = user_map.get(log.user_id)
+    if user is None:
+        return ""
+    return user.get_full_name() or user.username
 
-    laboratories = set(queryset.values_list("laboratory__pk", flat=True))
-    builder = []
+
+def resume_queryset_doc(report, queryset, objs, log_filters):
+    groups = _group_logs(queryset)
+    with_history, candidates = _unlogged_with_history(groups, objs)
+    last_logs = ObjectLogChange.objects.in_bulk(with_history.values())
+    labs, objects, units = _lookups(groups, with_history)
+    user_ids = {log.user_id for logs in groups.values() for log in logs}
+    user_map = User.objects.using(settings.READONLY_DATABASE).in_bulk(user_ids)
+
     total = 0
     doc_list = []
-
-    for laboratory in laboratories:
-        object_log = None
-        lab = Laboratory.objects.get(pk=laboratory)
-        query = queryset.filter(laboratory=lab)
-        objects = set(query.values_list("object", "measurement_unit"))
-
-        for obj in objects:
-
-            object_log = None
-            obj_using = Object.objects.filter(pk=obj[0]).first()
-            catalog = Catalog.objects.get(pk=obj[1])
-            query_values = query.filter(object=obj_using, measurement_unit__pk=obj[1])
-            object_diff = queryset.filter(
-                laboratory=lab, object=obj_using, measurement_unit__pk=obj[1]
-            ).aggregate(total=Sum("diff_value"))["total"]
-            if query_values:
-                object_log = True
-            for values in query_values:
-
-                if values.deleted_user_info:
-                    user = values.deleted_user_info
-                else:
-                    try:
-                        user = values.user.get_full_name()
-                        if not user:
-                            user = values.user.username
-                    except Exception as e:
-                        user = ""
-                builder.append(
-                    [
-                        user,
-                        values.update_time.strftime("%m/%d/%Y, %H:%M:%S"),
-                        round(values.old_value, 3),
-                        round(values.new_value, 3),
-                        round(values.diff_value, 3),
-                    ]
-                )
-                total += 1
-
-            if object_log:
-                cas = ""
-                sga_char = obj_using.substancharacteristics_object.first()
-                if sga_char:
-                    cas = obj_using.cas_code if obj_using.cas_code else ""
-                doc_list.append([f"{lab.name} | {obj_using.name} {cas}"])
-                doc_list.append([f": {object_diff} {catalog.description}"])
-                doc_list.append(
-                    [
-                        _("User"),
-                        _("Day"),
-                        _("Initial amount"),
-                        _("Final amount"),
-                        _("Difference"),
-                    ]
-                )
-                doc_list.extend(builder)
-                doc_list.append([])
-                doc_list.append([])
-            builder = []
-        shelf_obj = set(
-            objs.filter(in_where_laboratory=lab).values_list(
-                "object", "measurement_unit"
-            )
+    for key in sorted(groups):
+        lab_id, object_id, unit_id = key
+        logs = groups[key]
+        lab, obj_using, catalog = labs[lab_id], objects.get(object_id), units[unit_id]
+        object_diff = sum(log.diff_value for log in logs)
+        cas = obj_using.cas_code if obj_using else ""
+        name = obj_using.name if obj_using else ""
+        doc_list.append([f"{lab.name} | {name} {cas}"])
+        doc_list.append([f": {object_diff} {catalog.description}"])
+        doc_list.append(
+            [
+                _("User"),
+                _("Day"),
+                _("Initial amount"),
+                _("Final amount"),
+                _("Difference"),
+            ]
         )
-
-        for obj in shelf_obj:
-            log_now = queryset.filter(
-                laboratory=lab, object__pk=obj[0], measurement_unit__pk=obj[1]
+        for values in logs:
+            doc_list.append(
+                [
+                    _user_display(values, user_map),
+                    values.update_time.strftime("%m/%d/%Y, %H:%M:%S"),
+                    round(values.old_value, 3),
+                    round(values.new_value, 3),
+                    round(values.diff_value, 3),
+                ]
             )
-            if not log_now.exists():
-                old_log = ObjectLogChange.objects.filter(
-                    laboratory=lab, object__pk=obj[0], measurement_unit__pk=obj[1]
-                ).distinct()
+            total += 1
+        doc_list.append([])
+        doc_list.append([])
 
-                if old_log.exists():
-                    old_log = old_log.last()
-                    cas = old_log.object.cas_code if old_log.object.cas_code else ""
-                    doc_list.append([f"{lab.name} | {old_log.object.name} {cas}"])
-                    doc_list.append([f": {0} {old_log.measurement_unit.description}"])
-                    doc_list.append([])
-                    doc_list.append([])
-                total += 1
+    for key in sorted(candidates):
+        if key in with_history:
+            lab_id, object_id, unit_id = key
+            old_log = last_logs.get(with_history[key])
+            obj = objects.get(object_id)
+            unit = units.get(unit_id)
+            cas = obj.cas_code if obj else ""
+            name = obj.name if obj else ""
+            description = unit.description if unit else ""
+            if old_log is not None:
+                doc_list.append([f"{labs[lab_id].name} | {name} {cas}"])
+                doc_list.append([f": {0} {description}"])
+                doc_list.append([])
+                doc_list.append([])
+        # El conteo siempre incluyó todo el inventario sin movimientos.
+        total += 1
 
     return {"record": total, "content": doc_list}
 
@@ -218,14 +239,10 @@ def get_queryset(report):
         query = query.filter(laboratory__pk__in=labs)
         filters["in_where_laboratory__pk__in"] = labs
     else:
-        lab_pk = labs[0] if labs else None
-        if lab_pk is not None:
-            query = query.filter(laboratory__pk=lab_pk)
-            filters["in_where_laboratory__pk"] = lab_pk
-        else:
-            labs = organization.get_my_laboratories
-            query = query.filter(laboratory__pk__in=labs)
-            filters["in_where_laboratory__pk__in"] = labs
+        # `general` es falso solo cuando hay exactamente un laboratorio.
+        lab_pk = labs[0]
+        query = query.filter(laboratory__pk=lab_pk)
+        filters["in_where_laboratory__pk"] = lab_pk
 
     obj = ShelfObject.objects.filter(**filters).using(settings.READONLY_DATABASE)
 

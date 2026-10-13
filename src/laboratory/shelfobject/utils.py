@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 
 from django.conf import settings
 from django.contrib.admin.models import CHANGE, ADDITION, DELETION
-from django.db.models import Q
+from django.db.models import Q, Sum
 from django.shortcuts import get_object_or_404
 from django.utils.timezone import now
 
@@ -28,6 +28,7 @@ from laboratory.utils import (
 from django.utils.translation import gettext_lazy as _
 from laboratory.qr_utils import get_or_create_qr_shelf_object
 from laboratory.utils_base_unit import (
+    cached_units,
     get_conversion_units,
     get_conversion_from_two_units,
     get_base_unit,
@@ -338,7 +339,10 @@ def build_shelfobject_qr(request, shelfobject, organization, laboratory):
         request, shelfobject, organization, laboratory
     )
     shelfobject.shelf_object_url = url
-    shelfobject.save()
+    # Solo cambia la URL: un `save()` completo volvía a disparar la conversión
+    # de unidades y la revisión de límites (con su correo) que el guardado
+    # anterior ya hizo.
+    ShelfObject.objects.filter(pk=shelfobject.pk).update(shelf_object_url=url)
     return qr
 
 
@@ -673,73 +677,6 @@ def create_new_shelfobject_from_object_in(
     return shelfobject
 
 
-def move_shelfobject_to(
-    shelfobject,
-    destination_organization_id,
-    destination_laboratory_id,
-    destination_shelf,
-    request,
-    observation_text="Moved Object",
-):
-    log_object_change(
-        request.user,
-        shelfobject.in_where_laboratory.pk,
-        shelfobject,
-        shelfobject.quantity,
-        0,
-        "",
-        CHANGE,
-        _("Move out"),
-        organization=destination_organization_id,
-    )
-    shelfobject.shelf = destination_shelf
-    shelfobject.in_where_laboratory_id = destination_laboratory_id
-    shelfobject.created_by = request.user
-    shelfobject.shelf_object_qr = None
-    shelfobject.shelf_object_url = None
-    shelfobject.save()
-    build_shelfobject_qr(
-        request, shelfobject, destination_organization_id, destination_laboratory_id
-    )
-
-    log_object_change(
-        request.user,
-        destination_laboratory_id,
-        shelfobject,
-        0,
-        shelfobject.quantity,
-        "",
-        CHANGE,
-        _("Move in"),
-        organization=destination_organization_id,
-    )
-    organilab_logentry(
-        request.user,
-        shelfobject,
-        CHANGE,
-        "shelfobject",
-        changed_data=[
-            "shelf",
-            "in_where_laboratory",
-            "created_by",
-            "shelf_object_qr",
-            "shelf_object_url",
-        ],
-        change_message=_("Moved shelfobject '%(name)s' to shelf '%(shelf)s'")
-        % {"name": str(shelfobject.object), "shelf": destination_shelf.name},
-        relobj=destination_laboratory_id,
-    )
-    create_shelfobject_observation(
-        shelfobject,
-        shelfobject.description,
-        _(observation_text),
-        request.user,
-        destination_laboratory_id,
-    )
-
-    return shelfobject
-
-
 def update_shelfobject_quantity(
     shelfobject, new_quantity, user, organization, box_totals=0
 ):
@@ -802,21 +739,46 @@ def update_shelfobject_quantity(
 
 
 def get_available_objs_by_shelfobject(queryset, shelfobject, key, filters):
-    obj_pk = []
-    lab_info = queryset.filter(**filters).values(key, "pk").distinct()
+    """Pks de ``queryset`` cuyo estante todavía admite ``shelfobject``.
 
-    for lab in lab_info:
-        if lab[key] != shelfobject.shelf.pk:
-            shelf = Shelf.objects.get(pk=lab[key])
-            items_object_shelf = shelf.get_total_refuse(
-                include_containers=False, measurement_unit=shelf.measurement_unit
-            )
+    Los estantes, su ocupación y las conversiones salen de tres consultas en
+    total; antes eran varias por cada estante candidato.
+    """
+    lab_info = list(queryset.filter(**filters).values(key, "pk").distinct())
+    shelf_pks = {row[key] for row in lab_info if row[key] != shelfobject.shelf_id}
+    if not shelf_pks:
+        return []
+    shelves = Shelf.objects.in_bulk(shelf_pks)
+
+    occupancy = {}
+    rows = (
+        ShelfObject.objects.filter(shelf__in=shelf_pks, containershelfobject=None)
+        .values("shelf", "measurement_unit")
+        .annotate(amount=Sum("quantity", default=0))
+        .order_by()
+    )
+    for row in rows:
+        occupancy.setdefault(row["shelf"], {})[row["measurement_unit"]] = row["amount"]
+
+    obj_pk = []
+    with cached_units():
+        for lab in lab_info:
+            shelf = shelves.get(lab[key])
+            if shelf is None:
+                continue
+            by_unit = occupancy.get(shelf.pk, {})
+            if shelf.measurement_unit_id:
+                items_object_shelf = by_unit.get(shelf.measurement_unit_id, 0)
+            else:
+                items_object_shelf = sum(by_unit.values())
 
             converted_quantity = get_conversion_from_two_units(
-                shelfobject.measurement_unit,
-                shelf.measurement_unit,
+                shelfobject.measurement_unit_id,
+                shelf.measurement_unit_id,
                 shelfobject.quantity,
             )
+            if converted_quantity is None:
+                continue
 
             items_with_shelfobject = items_object_shelf + converted_quantity
 
@@ -1100,7 +1062,6 @@ def move_shelfobject_to(
     destination_shelf,
     request,
     observation_text="Moved Object",
-    shelf=None,
 ):
     log_object_change(
         request.user,
@@ -1126,18 +1087,11 @@ def move_shelfobject_to(
 
     msg = _("Move in")
     if shelfobject.is_box:
-        if shelf.measurement_unit:
-            if shelf.measurement_unit.pk != shelfobject.object.measurement_unit.pk:
-                total_in_boxes = shelfobject.get_shelfobject_conversion_from_two_units(
-                    destination_shelf.measurement_unit,
-                    shelf.quantity,
-                )
-                i = 0
-
-                for box in shelfobject.quantity_units:
-                    shelfobject.quantity_units[i] = total_in_boxes * box["units"]
-                    i += 1
-
+        # Aquí había una «conversión» de las cajas que leía
+        # ``shelfobject.object.measurement_unit`` (Object no tiene unidad) y
+        # cambiaba cada caja por un número: toda caja que viniera de un
+        # estante con unidad terminaba en 500. Las cajas se mueven tal cual,
+        # igual que cuando el estante de origen no tiene unidad.
         msg = _("Move in the boxes %(boxes)s from the laboratory %(lab)s.") % {
             "boxes": ", ".join([x.get("code") for x in shelfobject.quantity_units]),
             "lab": shelfobject.in_where_laboratory.name,

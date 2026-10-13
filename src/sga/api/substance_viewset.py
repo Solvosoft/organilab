@@ -34,9 +34,6 @@ class SubstanceViewSet(viewsets.ModelViewSet):
     ordering_fields = ["-creation_date", "comercial_name"]
     ordering = ("-creation_date", "comercial_name")
 
-    def has_permission(self, request, view):
-        return request.user.is_authenticated
-
     def get_queryset(self):
         queryset = (
             super()

@@ -39,7 +39,6 @@ class BaseSetUpTest(TestCase):
             user=User.objects.first(),
         )
 
-
     def assertNegado(self, response, status_code=403):
         """403/404 directo (JSON/XHR) o la redirección de `HandleErrorMiddleware`
         a `error_view?status=N`, que es lo que recibe una navegación normal."""

@@ -714,7 +714,6 @@ class FormularioYLabviewTest(CovApiBase):
         self.assertIsInstance(porcentaje, float)
         shelf.quantity = 0
         self.assertIsNone(TreeBuilder.occupancy_percent(None, shelf, {}))
-        self.assertEqual(TreeBuilder.absolute(type("B", (), {"request": None})(), "/x/"), "/x/")
 
     def test_quitar_fila_vacia_y_columna_ocupada(self):
         from laboratory import dataconfig

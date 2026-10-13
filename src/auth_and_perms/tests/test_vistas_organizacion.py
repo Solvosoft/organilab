@@ -71,17 +71,6 @@ class UsuariosDeOrganizacionTest(GestionDeOrganizacionBase):
         self.assertFalse(self.org_a.users.filter(pk=varios.pk).exists())
 
 
-class RolesPorLaboratorioTest(GestionDeOrganizacionBase):
-    def test_formulario_invalido_avisa_y_vuelve(self):
-        response = self.client.post(reverse("auth_and_perms:add_rol_by_laboratory"), data={})
-        self.assertRedirects(response, reverse("auth_and_perms:organizationManager"), fetch_redirect_response=False)
-        self.assertEqual(self.mensajes(response), ["Error, form is invalid"])
-
-    def test_get_solo_vuelve_al_gestor(self):
-        response = self.client.get(reverse("auth_and_perms:add_rol_by_laboratory"))
-        self.assertRedirects(response, reverse("auth_and_perms:organizationManager"), fetch_redirect_response=False)
-
-
 class AdministradoresYRolesTest(GestionDeOrganizacionBase):
     def test_administradores_activos_de_la_organizacion(self):
         jefe = self.crear_usuario("jefe", self.org_a, first_name="Jefa", last_name="Mora")

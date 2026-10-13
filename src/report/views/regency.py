@@ -3,7 +3,12 @@ from django.utils.translation import gettext as _
 
 from laboratory.models import OrganizationStructure
 from laboratory.report_utils import ExcelGraphBuilder
-from report.utils import get_report_name, format_date, sanitize_ods_table
+from report.utils import (
+    format_date,
+    get_report_name,
+    sanitize_ods_table,
+    set_format_table_columns,
+)
 from risk_management.utils_risk import (
     cargar_cuadro3,
     cargar_sga_referencia,
@@ -13,9 +18,98 @@ from risk_management.utils_risk import (
 )
 
 
+REGENCY_DETAIL_COLUMNS = [
+    ("nombre", "Nombre"),
+    ("cas", "CAS"),
+    ("cantidad_t", "Cantidad"),
+    ("nominada", "Nominada"),
+    ("umbral", "Umbral"),
+    ("ratio", "Ratio"),
+    ("h_codes", "H-codes"),
+    ("regla_cruzada", "Regla Cruzada"),
+    ("detalle", "Detalle"),
+    ("advertencias", "Advertencias"),
+    ("salud", "Contribuciones en salud"),
+    ("fisico", "Contribuciones en físico"),
+    ("ambiental", "Contribuciones en ambiente"),
+]
+
+
+def get_regency_result(report):
+    filters = {
+        "object__type": 0,
+        "created_at__year": report.data["years"],
+        "object__isnull": False,
+        "measurement_unit__isnull": False,
+        "laboratory__organization__pk": report.data["organization"],
+    }
+    if report.data["laboratory"]:
+        filters.update({"laboratory__pk__in": report.data["laboratory"]})
+    inv = get_inventory(filters)
+    inv = inv.drop_duplicates(subset=["nombre", "h_codes", "cas", "cantidad_t"])
+    c3 = cargar_cuadro3()
+    c4 = cargar_umbral_por_H()
+    mapH_tipo = cargar_sga_referencia()
+    return clasificar_establecimiento(inv, c3, c4, mapH_tipo)
+
+
+def get_regency_detail_rows(res):
+    rows = []
+    for data in res["detalles"]:
+        rows.append(
+            {
+                "nombre": data["nombre"],
+                "cas": data["cas"],
+                "cantidad_t": data["cantidad_t"],
+                "nominada": _("Yes") if data["nominada_c3"] else _("No"),
+                "umbral": data["umbral_c3"] if data["umbral_c3"] else "",
+                "ratio": data["ratio_c3"] if data["ratio_c3"] else "",
+                "h_codes": data["h_codes"],
+                "regla_cruzada": (
+                    _("Yes") if data["regla_cruzada_salud"] else _("No")
+                ),
+                "detalle": (
+                    data["detalle_contribuciones"]
+                    if data["detalle_contribuciones"]
+                    else "No hay detalle"
+                ),
+                "advertencias": (
+                    data["advertencias"]
+                    if data["advertencias"]
+                    else "No hay advertencias"
+                ),
+                "salud": round(data["contribuciones"].get("Salud", 0.0), 3),
+                "fisico": round(data["contribuciones"].get("Físico", 0.0), 3),
+                "ambiental": round(data["contribuciones"].get("Ambiental", 0.0), 3),
+            }
+        )
+    return rows
+
+
 def report_regency_html(report):
-    get_pdf_regency_table_content(report)
-    return 0
+    """Guarda el detalle como tabla, igual que el resto de reportes HTML.
+
+    Antes armaba el HTML del PDF, lo descartaba y devolvía 0: el reporte en
+    pantalla siempre salía vacío.
+    """
+    res = get_regency_result(report)
+    sumatoria = res["sumatorias_por_categoria"]
+    columns = [{"name": name, "title": _(title)} for name, title in REGENCY_DETAIL_COLUMNS]
+    column_names = [name for name, _title in REGENCY_DETAIL_COLUMNS]
+    rows = get_regency_detail_rows(res)
+    report.table_content = {
+        "columns": set_format_table_columns(columns),
+        "dataset": [[row[name] for name in column_names] for row in rows],
+        "summary": {
+            "classification": str(res["clasificacion"]),
+            "criterion": str(res["criterio"]),
+            "physical": sumatoria.get("Físico", 0.0),
+            "health": sumatoria.get("Salud", 0.0),
+            "environmental": sumatoria.get("Ambiental", 0.0),
+        },
+    }
+    report.save()
+    return len(rows)
 
 
 def report_regency_xlsx(report):
@@ -269,104 +363,42 @@ def report_regency_doc(report):
 
 
 def get_pdf_regency_table_content(report):
-    filters = {
-        "object__type": 0,
-        "created_at__year": report.data["years"],
-        "object__isnull": False,
-        "measurement_unit__isnull": False,
-        "laboratory__organization__pk": report.data["organization"],
-    }
-    if report.data["laboratory"]:
-        filters.update({"laboratory__pk__in": report.data["laboratory"]})
-    inv = get_inventory(filters)
-    inv = inv.drop_duplicates(subset=["nombre", "h_codes", "cas", "cantidad_t"])
-    c3 = cargar_cuadro3()
-    c4 = cargar_umbral_por_H()
-    mapH_tipo = cargar_sga_referencia()
-    res = clasificar_establecimiento(inv, c3, c4, mapH_tipo)
-    sumatoria = res["sumatorias_por_categoria"]
-    pdf_table = ""
-    pdf_table += "<h3>Resumen</h3><table id='pdf_table_report'><thead><tr>"
+    """Tablas del PDF de regencia.
+
+    El PDF corre después de ``report_regency_html``, que ya dejó el cálculo en
+    ``table_content``: se reutiliza en vez de clasificar el inventario dos
+    veces.
+    """
+    content = report.table_content or {}
+    if "summary" not in content:
+        report_regency_html(report)
+        content = report.table_content
+    summary = content["summary"]
+    parts = ["<h3>Resumen</h3><table id='pdf_table_report'><thead><tr>"]
     for col in [_("Classification"), _("Criterion")]:
-        pdf_table += "<th>%s</th>" % (col)
-    pdf_table += "</tr></thead><tbody>"
-    pdf_table += "<tr><td>%s</td><td>%s</td></tr></tbody></table>" % (
-        res["clasificacion"],
-        res["criterio"],
+        parts.append("<th>%s</th>" % (col))
+    parts.append("</tr></thead><tbody>")
+    parts.append(
+        "<tr><td>%s</td><td>%s</td></tr></tbody></table>"
+        % (summary["classification"], summary["criterion"])
     )
-    pdf_table += (
+    parts.append(
         "<br><table id='pdf_table_report'><thead><tr><th>%s</th><th>%s</th><th>%s</th></tr></thead><tbody>"
         % (_("Físico"), _("Salud"), _("Ambiental"))
     )
-    pdf_table += "<tr><td>%s</td><td>%s</td><td>%s</td></tr></tbody></table>" % (
-        sumatoria["Físico"],
-        sumatoria["Salud"],
-        sumatoria["Ambiental"],
+    parts.append(
+        "<tr><td>%s</td><td>%s</td><td>%s</td></tr></tbody></table><br>"
+        % (summary["physical"], summary["health"], summary["environmental"])
     )
-    pdf_table += "</tr></thead></table><br>"
-    pdf_table += (
+    parts.append(
         "<h3>Detalle de las sustancias</h3><table id='pdf_table_report'><thead><tr>"
     )
-    pdf_table += (
-        "<th>%s</th>"
-        "<th>%s</th>"
-        "<th>%s</th>"
-        "<th>%s</th>"
-        "<th>%s</th>"
-        "<th>%s</th>"
-        "<th>%s</th>"
-        "<th>%s</th>"
-        "<th>%s</th>"
-        "<th>%s</th>"
-        "<th>%s</th>"
-        "<th>%s</th>"
-        "<th>%s</th>"
-    ) % (
-        _("Nombre"),
-        _("CAS"),
-        _("Cantidad"),
-        _("Nominada"),
-        _("Umbral"),
-        _("Ratio"),
-        _("H-codes"),
-        _("Regla Cruzada"),
-        _("Detalle"),
-        _("Advertencias"),
-        _("Contribuciones en salud"),
-        _("Contribuciones en físico"),
-        _("Contribuciones en ambiente"),
-    )
-    pdf_table += "</tr></thead><tbody>"
-    for data in res["detalles"]:
-        pdf_table += "<tr>"
-        pdf_table += "<td>%s</td>" % (data["nombre"])
-        pdf_table += "<td>%s</td>" % (data["cas"])
-        pdf_table += "<td>%s</td>" % (data["cantidad_t"])
-        pdf_table += "<td>%s</td>" % (_("Yes") if data["nominada_c3"] else _("No"))
-        pdf_table += "<td>%s</td>" % (data["umbral_c3"] if data["umbral_c3"] else "")
-        pdf_table += "<td>%s</td>" % (data["ratio_c3"] if data["ratio_c3"] else "")
-        pdf_table += "<td>%s</td>" % (data["h_codes"])
-        pdf_table += "<td>%s</td>" % (
-            _("Yes") if data["regla_cruzada_salud"] else _("No")
-        )
-        pdf_table += "<td>%s</td>" % (
-            data["detalle_contribuciones"]
-            if data["detalle_contribuciones"]
-            else "No hay detalle"
-        )
-        pdf_table += "<td>%s</td>" % (
-            data["advertencias"] if data["advertencias"] else "No hay advertencias"
-        )
-        pdf_table += "<td>%s</td>" % (
-            round(data["contribuciones"].get("Salud", 0.0), 3)
-        )
-        pdf_table += "<td>%s</td>" % (
-            round(data["contribuciones"].get("Físico", 0.0), 3)
-        )
-        pdf_table += "<td>%s</td>" % (
-            round(data["contribuciones"].get("Ambiental", 0.0), 3)
-        )
-        pdf_table += "</tr>"
-    pdf_table += "</tbody></table>"
-
-    return pdf_table
+    for _name, title in REGENCY_DETAIL_COLUMNS:
+        parts.append("<th>%s</th>" % _(title))
+    parts.append("</tr></thead><tbody>")
+    for row in content["dataset"]:
+        parts.append("<tr>")
+        parts.extend("<td>%s</td>" % value for value in row)
+        parts.append("</tr>")
+    parts.append("</tbody></table>")
+    return "".join(parts)

@@ -4,7 +4,7 @@ from django.conf import settings
 from django.contrib.admin.models import DELETION, CHANGE, ADDITION
 from django.contrib.auth.decorators import permission_required, login_required
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import Value, DateField, Q, Subquery
+from django.db.models import Value, DateField, Exists, OuterRef, Q, Subquery
 from django.http import JsonResponse, Http404
 from django.shortcuts import get_object_or_404, render
 from django.template.loader import render_to_string
@@ -70,6 +70,7 @@ from laboratory.api.serializers import (
     RegisterUserQRDataTableSerializer,
 )
 from laboratory.forms import ObservationShelfObjectForm
+from sga.models import SubstanceCharacteristics
 from laboratory.models import (
     CommentInform,
     Inform,
@@ -127,20 +128,6 @@ class ApiReservedProductsCRUD(APIView):
             # Devolver un Response aquí lo pasaba al serializer/delete como si
             # fuera la reserva y terminaba en 500.
             raise Http404
-
-    def post(self, request):
-        if not request.user.has_perm("reservations_management.add_reservedproducts"):
-            return Response(status=status.HTTP_403_FORBIDDEN)
-        serializer = ReservedProductsSerializer(data=request.data)
-
-        if serializer.is_valid():
-            laboratory = get_object_or_404(Laboratory, pk=int(request.data["lab"]))
-            instance = serializer.save()
-            instance.laboratory = laboratory
-            instance.save()
-
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request, pk):
         if not request.user.has_perm("reservations_management.view_reservedproducts"):
@@ -239,57 +226,51 @@ class CommentAPI(viewsets.ModelViewSet):
         return Response({"data": template})
 
     def update(self, request, pk=None, *args, **kwargs):
-        comment = None
-        serializer = None
-        if pk:
-            serializer = CommentsSerializer(data=request.data)
-            if serializer.is_valid():
-                comment = CommentInform.objects.filter(pk=pk).first()
-            else:
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-            if comment.created_by == self.request.user:
-                comment.comment = request.data["comment"]
-                comment.save()
-                template = render_to_string(
-                    "laboratory/comment.html",
-                    {
-                        "comments": self.get_queryset()
-                        .filter(inform=comment.inform)
-                        .order_by("pk"),
-                        "user": request.user,
-                    },
-                    request,
-                )
+        serializer = CommentsSerializer(data=request.data)
+        if serializer.is_valid():
+            comment = CommentInform.objects.filter(pk=pk).first()
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        if comment.created_by == self.request.user:
+            comment.comment = request.data["comment"]
+            comment.save()
+            template = render_to_string(
+                "laboratory/comment.html",
+                {
+                    "comments": self.get_queryset()
+                    .filter(inform=comment.inform)
+                    .order_by("pk"),
+                    "user": request.user,
+                },
+                request,
+            )
 
-                return Response({"data": template}, status=status.HTTP_200_OK)
-            else:
-                return Response(
-                    {"error": "Only the user that create this observation can update"},
-                    status=status.HTTP_404_NOT_FOUND,
-                )
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"data": template}, status=status.HTTP_200_OK)
+        else:
+            return Response(
+                {"error": "Only the user that create this observation can update"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
     def destroy(self, request, pk=None, *args, **kwargs):
-        if pk:
-            comment = self.get_comment(pk)
-            inform = comment.inform
-            if comment.created_by == self.request.user:
-                comment.delete()
-                template = render_to_string(
-                    "laboratory/comment.html",
-                    {
-                        "comments": self.get_queryset()
-                        .filter(inform=inform)
-                        .order_by("pk"),
-                        "user": request.user,
-                    },
-                    request,
-                )
+        comment = self.get_comment(pk)
+        inform = comment.inform
+        if comment.created_by == self.request.user:
+            comment.delete()
+            template = render_to_string(
+                "laboratory/comment.html",
+                {
+                    "comments": self.get_queryset()
+                    .filter(inform=inform)
+                    .order_by("pk"),
+                    "user": request.user,
+                },
+                request,
+            )
 
-                return Response({"data": template}, status=status.HTTP_200_OK)
-            else:
-                return Response(status=status.HTTP_400_BAD_REQUEST)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response({"data": template}, status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class ProtocolViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -776,11 +757,6 @@ class EquipmentManagementViewset(AuthAllPermBaseObjectManagement):
             if equipment_ch_serializer.is_valid():
                 instance = equipment_serializer.save()
                 equipment_ch = equipment_ch_serializer.save()
-
-                if getattr(instance, "_prefetched_objects_cache", None):
-                    # If 'prefetch_related' has been applied to a queryset, we need to
-                    # forcibly invalidate the prefetch cache on the instance.
-                    instance._prefetched_objects_cache = {}
 
                 response_data, equipment_changed_data, equipment_ch_changed_data = (
                     self.get_response_validate_data(
@@ -1294,13 +1270,13 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
 
         if reactive_serializer.is_valid():
             if reactive_ch_serializer.is_valid():
+                # Se decide antes de guardar: después del save las
+                # características siempre existen y la bitácora decía
+                # «Updated» también cuando se acababan de crear.
+                if not instance.substancharacteristics_object.exists():
+                    reactive_ch_action = ADDITION
                 instance = reactive_serializer.save()
                 reactive_ch = reactive_ch_serializer.save()
-
-                if getattr(instance, "_prefetched_objects_cache", None):
-                    # If 'prefetch_related' has been applied to a queryset, we need to
-                    # forcibly invalidate the prefetch cache on the instance.
-                    instance._prefetched_objects_cache = {}
 
                 response_data, reactive_changed_data, reactive_ch_changed_data = (
                     self.get_response_validate_data(
@@ -1319,9 +1295,6 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
                     % {"name": instance.name},
                     relobj=organization,
                 )
-
-                if not instance.substancharacteristics_object.exists():
-                    reactive_ch_action = ADDITION
 
                 action_msg = (
                     _("Updated") if reactive_ch_action == CHANGE else _("Created")
@@ -1362,14 +1335,13 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
         reactive = kwargs.get("pk")
         lab = kwargs.get("lab_pk")
 
-        if reactive:
-            obj = ReactiveLimit.objects.filter(
-                object__id=reactive, laboratory__pk=lab
-            ).first()
+        # Acción de detalle: el router siempre trae ``pk``.
+        obj = ReactiveLimit.objects.filter(
+            object__id=reactive, laboratory__pk=lab
+        ).first()
 
-            serializer = GetReactiveLimitSerializer(instance=obj, many=False)
-            return Response(serializer.data)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        serializer = GetReactiveLimitSerializer(instance=obj, many=False)
+        return Response(serializer.data)
 
     @action(detail=False, methods=["post"])
     def add_limits(self, request, *args, **kwargs):
@@ -1467,17 +1439,24 @@ class ShelfObjectHcodeViewset(AuthAllPermBaseObjectManagement):
 
     permission_classes = (PermissionByLaboratoryInOrganization,)
 
+    # Exists en vez de JOIN + DISTINCT: el DISTINCT comparaba todas las
+    # columnas de ShelfObject (texto y JSON incluidos) en cada consulta.
     queryset = ShelfObject.objects.filter(
+        Exists(
+            SubstanceCharacteristics.objects.filter(
+                object_related=OuterRef("object"),
+                h_code__code__in=[
+                    "H220",
+                    "H222",
+                    "H223",
+                    "H224",
+                    "H225",
+                    "H226",
+                ],
+            )
+        ),
         object__type=Object.REACTIVE,
-        object__substancharacteristics_object__h_code__code__in=[
-            "H220",
-            "H222",
-            "H223",
-            "H224",
-            "H225",
-            "H226",
-        ],
-    ).distinct()
+    )
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     search_fields = ["object__name", "object__substancharacteristics_object__h_code__code"]
@@ -1494,9 +1473,9 @@ class ShelfObjectHcodeViewset(AuthAllPermBaseObjectManagement):
 
     def perform_update(self, serializer):
         lab_pk = self.kwargs.get("lab_pk", 0)
-        flaspoint_before = self.get_object()
+        # `update()` ya cargó la instancia y el serializer aún no la tocó.
         before = {
-            "process_condition": flaspoint_before.process_condition,
+            "process_condition": serializer.instance.process_condition,
         }
 
         flash = serializer.save()
@@ -1966,9 +1945,6 @@ class ShelObjectReactiveViewset(AuthAllPermBaseObjectManagement):
 
         if serializer.is_valid():
             validated_data = serializer.validated_data.copy()
-
-            if "reason" in validated_data:
-                validated_data["description"] = validated_data.pop("reason")
 
             save_increase_decrease_shelf_object(
                 request.user,

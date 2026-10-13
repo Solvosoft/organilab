@@ -1,9 +1,9 @@
-import time
 from datetime import timedelta
 
 from django.test import tag
 from django.utils.timezone import localdate, localtime
 from organilab_test.tests.selenium_xpaths import select2_result
+from selenium.webdriver.support.ui import WebDriverWait
 
 from reservations_management.models import ReservedProducts
 
@@ -171,15 +171,34 @@ class ButtonsActionsTableColumn(ButtonsActionsTableColumnBase):
         self.assertEqual(localtime(reserved.initial_date).date(), initial_date)
         self.assertEqual(localtime(reserved.final_date).date(), final_date)
 
-    def wait_for_reservation(self, timeout=10):
-        # El guardado es un POST por AJAX: el último paso no espera su respuesta.
-        deadline = time.monotonic() + timeout
-        while True:
-            reserved = ReservedProducts.objects.order_by("-pk").first()
-            if reserved is not None or time.monotonic() > deadline:
-                break
-            time.sleep(0.2)
-        self.assertIsNotNone(reserved, "no se guardó la reserva del objeto")
+    # Desenlace del guardado de un modal de acción (base_modal_management.js):
+    # si el POST va bien el modal se oculta; si no, deja errores de campo
+    # (ul.form_errors) o un Swal de error. Devuelve null mientras no hay
+    # desenlace, para que WebDriverWait siga esperando.
+    MODAL_OUTCOME_JS = (
+        "var m = document.getElementById(arguments[0]);"
+        "var errs = m.querySelectorAll('ul.form_errors');"
+        "if (errs.length) {"
+        "  return 'errores del formulario: ' + Array.from(errs).map(function(e){return e.innerText;}).join(' | ');"
+        "}"
+        "if (document.querySelector('.swal2-icon-error')) {"
+        "  return 'error: ' + document.querySelector('.swal2-popup').innerText;"
+        "}"
+        "return m.classList.contains('show') ? null : 'ok';"
+    )
+
+    def wait_for_reservation(self, timeout=30):
+        # El guardado es un POST por AJAX y el último paso no espera su
+        # respuesta. Se espera a lo que ve el usuario (el modal se cierra o
+        # muestra el error) y no a un plazo fijo: bajo carga (coverage, varios
+        # workers) la respuesta puede tardar más que cualquier plazo a ojo.
+        outcome = WebDriverWait(self.selenium, timeout).until(
+            lambda driver: driver.execute_script(self.MODAL_OUTCOME_JS, "reservesomodal"),
+            "el modal de reserva no se cerró ni mostró error en %s s" % timeout,
+        )
+        self.assertEqual(outcome, "ok", "no se guardó la reserva del objeto: %s" % outcome)
+        reserved = ReservedProducts.objects.order_by("-pk").first()
+        self.assertIsNotNone(reserved, "el modal se cerró pero no hay reserva guardada")
         return reserved
 
     def test_increase_shelfobject(self):

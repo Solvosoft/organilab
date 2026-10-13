@@ -1,16 +1,20 @@
+from collections import defaultdict
+
 from django.core.files.base import ContentFile
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from laboratory.models import (
     ShelfObject,
     Laboratory,
-    BaseUnitValues,
     Object,
-    Catalog,
     OrganizationStructure,
 )
 from laboratory.report_utils import ExcelGraphBuilder
-from laboratory.utils_base_unit import get_conversion_units
+from laboratory.utils_base_unit import (
+    cached_units,
+    get_conversion_units,
+    get_unit_info,
+)
 from report.utils import (
     get_report_name,
     load_dataset_by_column,
@@ -18,180 +22,139 @@ from report.utils import (
 )
 
 
+def _stock_row(data_column, column_list):
+    if column_list:
+        obj_item = load_dataset_by_column(column_list, data_column)
+    else:
+        obj_item = list(data_column.values())
+    return [("" if v is None else v) for v in obj_item]
+
+
+def _converted_total(shelfobjects, quantity_of):
+    """Suma de cantidades en unidad base; lo que no convierte no suma."""
+    total = 0
+    for shelfobj in shelfobjects:
+        converted = get_conversion_units(
+            shelfobj.measurement_unit_id, quantity_of(shelfobj)
+        )
+        if converted is not None:
+            total += converted
+    return total
+
+
+def _base_unit_description(shelfobj):
+    info = get_unit_info(shelfobj.measurement_unit_id)
+    return info.base_description if info and info.base_description else ""
+
+
+def _expiration(shelfobj):
+    date = shelfobj.reactive_expiration_date
+    return date.strftime("%d/%m/%Y") if date else ""
+
+
+def _molecular_formula(obj):
+    sc = obj.get_sga_characteristic()
+    return sc.molecular_formula if sc and sc.molecular_formula else ""
+
+
 def get_stock_dataset(lab_pk, column_list=None):
+    """Una fila por (envase, reactivo) y otra por reactivo sin envase.
+
+    Todo el inventario del laboratorio sale de una consulta y se agrupa en
+    Python. Antes se consultaba por envase y por reactivo, y además se repetían
+    filas: la lista de envases y la de reactivos traían un elemento por cada
+    ShelfObject en vez de uno por envase o por reactivo.
+    """
     dataset = []
     filters = {"object__type": Object.REACTIVE}
-    reactive_filters = dict()
 
     if lab_pk:
         filters["in_where_laboratory__pk"] = lab_pk
-        reactive_filters["in_where_laboratory__pk"] = lab_pk
 
-    objs = (
+    shelfobjects = (
         ShelfObject.objects.filter(**filters)
-        .distinct("pk")
-        .values_list("object__pk", flat=True)
-    )
-
-    object_no_containers = (
-        ShelfObject.objects.filter(**filters, container__isnull=True)
-        .distinct("pk")
-        .values_list("object__pk", flat=True)
-    )
-    containers = (
-        ShelfObject.objects.filter(**filters, container__isnull=False)
-        .distinct("pk")
-        .values_list("container__pk", flat=True)
-    )
-    containers = ShelfObject.objects.filter(container__pk__in=containers).values_list(
-        "container__pk", flat=True
-    )
-    reactives = []
-    for container in containers:
-        objs = (
-            ShelfObject.objects.filter(**filters, container__pk=container)
-            .distinct("pk")
-            .values_list("object__pk", flat=True)
+        .select_related(
+            "object",
+            "container__object__materialcapacity__capacity_measurement_unit",
         )
-        container_object = ShelfObject.objects.filter(pk=container).first()
-        for obj in set(objs):
+        .prefetch_related("object__substancharacteristics_object")
+        .order_by("pk")
+    )
 
-            data_column = {}
-            shelfobjects = ShelfObject.objects.filter(
-                container__pk=container, object__pk=obj, **reactive_filters
-            ).distinct("pk")
-            if shelfobjects.count() > 0:
-                reactive = shelfobjects.first()
+    in_containers = defaultdict(lambda: defaultdict(list))
+    without_container = defaultdict(list)
+    for shelfobj in shelfobjects:
+        if shelfobj.container_id:
+            in_containers[shelfobj.container_id][shelfobj.object_id].append(shelfobj)
+        else:
+            without_container[shelfobj.object_id].append(shelfobj)
 
-                amount = sum(
-                    [
-                        get_conversion_units(
-                            shelfobj.measurement_unit, shelfobj.total_quantity
-                        )
-                        for shelfobj in shelfobjects
-                    ]
-                )
-                # if reactive.object.is_pure:
-                cas_id = reactive.object.cas_code
-                sc = reactive.object.substancharacteristics_object.first()
-                molecular_formula = (
-                    sc.molecular_formula if sc and sc.molecular_formula else ""
-                )
-                expiration_date = reactive.reactive_expiration_date
-                if expiration_date:
-                    expiration_date = expiration_date.strftime("%d/%m/%Y")
-                else:
-                    expiration_date = ""
+    with cached_units():
+        for by_object in in_containers.values():
+            for group in by_object.values():
+                reactive = group[0]
+                container_object = reactive.container
                 status = ""
                 if reactive.physical_status:
                     status = reactive.get_physical_status_display()
-                base_unit = ""
-                if reactive.measurement_unit:
-                    base_unit = BaseUnitValues.objects.get(
-                        measurement_unit=reactive.measurement_unit
-                    ).measurement_unit_base.description
                 capacity = ""
                 capacity_measurement_unit = ""
                 if hasattr(container_object.object, "materialcapacity"):
-                    capacity = container_object.object.materialcapacity.capacity
-                    capacity_measurement_unit = (
-                        container_object.object.materialcapacity.capacity_measurement_unit.description
-                    )
+                    material = container_object.object.materialcapacity
+                    capacity = material.capacity
+                    if material.capacity_measurement_unit:
+                        capacity_measurement_unit = (
+                            material.capacity_measurement_unit.description
+                        )
                 data_column = {
                     "name": reactive.object.name,
-                    "cas_id": cas_id,
-                    "molecular_formula": molecular_formula,
+                    "cas_id": reactive.object.cas_code,
+                    "molecular_formula": _molecular_formula(reactive.object),
                     "physical_status": status,
-                    "quantity": round(amount, 3),
-                    "reactive_unit": base_unit,
+                    "quantity": round(
+                        _converted_total(group, lambda so: so.total_quantity), 3
+                    ),
+                    "reactive_unit": _base_unit_description(reactive),
                     "container_capacity": capacity,
                     "container_unit": capacity_measurement_unit,
-                    "container_quantity": shelfobjects.count(),
+                    "container_quantity": len(group),
                     "container": container_object.object.name,
                     "threshold": reactive.object.threshold,
                     "max_measurement_unit": "",
-                    "expiration_date": expiration_date,
+                    "expiration_date": _expiration(reactive),
                 }
+                dataset.append(_stock_row(data_column, column_list))
 
-            if column_list:
-                obj_item = load_dataset_by_column(column_list, data_column)
-            else:
-                obj_item = list(data_column.values())
-
-            obj_item = [("" if v is None else v) for v in obj_item]
-
-            if obj_item:
-                dataset.append(obj_item)
-
-    for obj in object_no_containers:
-        data_column = {}
-        reactive = ShelfObject.objects.filter(
-            object__pk=obj, container__isnull=True, **filters
-        ).first()
-
-        amount = sum(
-            [
-                get_conversion_units(
-                    shelfobj.measurement_unit,
-                    (
-                        shelfobj.total_quantity
-                        if not shelfobj.is_box
-                        else shelfobj.get_box_totals()
-                    ),
-                )
-                for shelfobj in ShelfObject.objects.filter(
-                    object__pk=obj, container__isnull=True, **filters
-                ).distinct("pk")
-            ]
-        )
-
-        cas_id = ""
-        molecular_formula = ""
-
-        if reactive.object.is_pure:
-            cas_id = reactive.object.cas_code
-            sc = reactive.object.substancharacteristics_object.first()
-            molecular_formula = (
-                sc.molecular_formula if sc and sc.molecular_formula else ""
+        for group in without_container.values():
+            reactive = group[0]
+            cas_id = ""
+            molecular_formula = ""
+            if reactive.object.is_pure:
+                cas_id = reactive.object.cas_code
+                molecular_formula = _molecular_formula(reactive.object)
+            status = ""
+            if reactive.physical_status:
+                status = reactive.get_physical_status_display()
+            amount = _converted_total(
+                group,
+                lambda so: so.total_quantity if not so.is_box else so.get_box_totals(),
             )
-        expiration_date = reactive.reactive_expiration_date
-        if expiration_date:
-            expiration_date = expiration_date.strftime("%d/%m/%Y")
-        else:
-            expiration_date = ""
-        status = ""
-        if reactive.physical_status:
-            status = reactive.get_physical_status_display()
-        base_unit = ""
-        if reactive.measurement_unit:
-            base_unit = BaseUnitValues.objects.get(
-                measurement_unit=reactive.measurement_unit
-            ).measurement_unit_base.description
-        data_column = {
-            "name": reactive.object.name,
-            "cas_id": cas_id,
-            "molecular_formula": molecular_formula,
-            "physical_status": status,
-            "quantity": round(amount, 3),
-            "reactive_unit": base_unit,
-            "container_capacity": "",
-            "container_unit": "",
-            "container_quantity": 0,
-            "container": "",
-            "threshold": reactive.object.threshold,
-            "max_measurement_unit": "",
-            "expiration_date": expiration_date,
-        }
-
-        if column_list:
-            obj_item = load_dataset_by_column(column_list, data_column)
-        else:
-            obj_item = list(data_column.values())
-
-        obj_item = [("" if v is None else v) for v in obj_item]
-
-        if obj_item:
-            dataset.append(obj_item)
+            data_column = {
+                "name": reactive.object.name,
+                "cas_id": cas_id,
+                "molecular_formula": molecular_formula,
+                "physical_status": status,
+                "quantity": round(amount, 3),
+                "reactive_unit": _base_unit_description(reactive),
+                "container_capacity": "",
+                "container_unit": "",
+                "container_quantity": 0,
+                "container": "",
+                "threshold": reactive.object.threshold,
+                "max_measurement_unit": "",
+                "expiration_date": _expiration(reactive),
+            }
+            dataset.append(_stock_row(data_column, column_list))
 
     return dataset
 
@@ -272,6 +235,12 @@ def report_stock(report):
 
 
 def get_stock_cartel_dataset(report, column_list=None):
+    """Cartel de inventario: una fila por unidad base, sustancia y estado físico.
+
+    Antes era un triple bucle (unidad base × sustancia × cada estado físico
+    posible) con una consulta por vuelta aunque no hubiera nada que sumar; a
+    escala real no terminaba. Ahora es una consulta y una agrupación.
+    """
     dataset = []
     filters = {
         "object__type": Object.REACTIVE,
@@ -290,84 +259,60 @@ def get_stock_cartel_dataset(report, column_list=None):
     else:
         filters["in_where_laboratory__pk"] = laboratories[0]
 
-    objs = ShelfObject.objects.filter(**filters).distinct("pk")
-    units = Catalog.objects.filter(
-        pk__in=objs.values_list("measurement_unit", flat=True)
-    )
-    base_units = BaseUnitValues.objects.filter(measurement_unit__in=units).values_list(
-        "measurement_unit_base", flat=True
-    )
-    physical_status_list = list(dict(ShelfObject.PHYSICAL_STATUS).keys())
-    physical_status_list.insert(0, "")
+    # El orden de los estados es el del modelo; «sin estado» va primero. Un
+    # estado vacío o fuera de la lista nunca se reportó y sigue sin reportarse.
+    status_order = {None: 0}
+    for position, key in enumerate(dict(ShelfObject.PHYSICAL_STATUS), start=1):
+        status_order[key] = position
 
-    for unit in set(base_units):
-        filters["measurement_unit__pk__in"] = BaseUnitValues.objects.filter(
-            measurement_unit_base__pk=unit
-        ).values_list("measurement_unit", flat=True)
-        filters["object__isnull"] = False
-        shelfobjs = (
-            ShelfObject.objects.filter(**filters)
-            .distinct("pk")
-            .values_list("object__pk", flat=True)
+    shelfobjects = (
+        ShelfObject.objects.filter(**filters)
+        .select_related("object", "in_where_laboratory")
+        .prefetch_related(
+            "object__substancharacteristics_object__storage_class"
         )
-        del filters["object__isnull"]
+        .order_by("pk")
+    )
 
-        for obj in set(shelfobjs):
-            for physical_status in physical_status_list:
-                status = ""
-                physical = (
-                    "physical_status"
-                    if physical_status != ""
-                    else "physical_status__isnull"
-                )
-                filters[physical] = (
-                    physical_status if physical == "physical_status" else True
-                )
+    with cached_units() as unit_map:
+        groups = defaultdict(list)
+        for shelfobj in shelfobjects:
+            info = unit_map.get(shelfobj.measurement_unit_id)
+            if info is None or info.base_id is None:
+                continue
+            if shelfobj.physical_status not in status_order:
+                continue
+            key = (
+                info.base_id,
+                shelfobj.object_id,
+                status_order[shelfobj.physical_status],
+            )
+            groups[key].append(shelfobj)
 
-                amount = sum(
-                    [
-                        get_conversion_units(
-                            shelfobj.measurement_unit, shelfobj.total_quantity
-                        )
-                        for shelfobj in ShelfObject.objects.filter(
-                            object__pk=obj, **filters
-                        )
-                    ]
-                )
-
-                shelfobj = ShelfObject.objects.filter(object__pk=obj, **filters).first()
-                del filters[physical]
-
-                if shelfobj:
-                    cas_id = shelfobj.object.cas_code
-                    if shelfobj.physical_status:
-                        status = shelfobj.get_physical_status_display()
-
-                    lab_name = (
-                        shelfobj.in_where_laboratory.name
-                        if shelfobj.in_where_laboratory
-                        else ""
-                    )
-
-                    data_column = {
-                        "in_where_laboratory__name": lab_name,
-                        "substance_name": shelfobj.object.name,
-                        "cas_id": cas_id,
-                        "quantity": round(amount, 3),
-                        "measurement_unit": Catalog.objects.get(pk=unit).description,
-                        "physical_status": status,
-                        "storage_class": shelfobj.object.get_storage_class,
-                    }
-
-                    if column_list:
-                        obj_item = load_dataset_by_column(column_list, data_column)
-                    else:
-                        obj_item = list(data_column.values())
-
-                    obj_item = [("" if v is None else v) for v in obj_item]
-
-                    if obj_item:
-                        dataset.append(obj_item)
+        base_names = {info.base_id: info.base_description for info in unit_map.values()}
+        for key in sorted(groups):
+            group = groups[key]
+            shelfobj = group[0]
+            status = ""
+            if shelfobj.physical_status:
+                status = shelfobj.get_physical_status_display()
+            lab_name = (
+                shelfobj.in_where_laboratory.name
+                if shelfobj.in_where_laboratory
+                else ""
+            )
+            data_column = {
+                "in_where_laboratory__name": lab_name,
+                "substance_name": shelfobj.object.name,
+                "cas_id": shelfobj.object.cas_code,
+                "quantity": round(
+                    _converted_total(group, lambda so: so.total_quantity), 3
+                ),
+                "measurement_unit": base_names.get(key[0], ""),
+                "physical_status": status,
+                "storage_class": shelfobj.object.get_storage_class,
+            }
+            dataset.append(_stock_row(data_column, column_list))
 
     return dataset
 

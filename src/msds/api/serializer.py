@@ -33,9 +33,8 @@ class SDSTraceabilitySerializer(serializers.ModelSerializer):
         return ""
 
     def get_sustance_characteristics_cas_id_number(self, obj):
-        if obj.sga_substance_characteristics:
-            return obj.sga_substance_characteristics.cas_id_number
-        return ""
+        # `sga_substance_characteristics` es obligatoria (FK no nula, CASCADE).
+        return obj.sga_substance_characteristics.cas_id_number
 
     def get_verified_by_name(self, obj):
         if obj.verified_by:

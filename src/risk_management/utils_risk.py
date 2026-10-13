@@ -2,6 +2,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db.models import F
 
 from laboratory.models import ObjectMaximumLimit, Object, Catalog
+from laboratory.utils_base_unit import cached_units
 from report.utils import get_conversion_units_to_kilograms
 from typing import List, Dict, Optional, Tuple
 import math
@@ -32,7 +33,7 @@ def _cantidad_en_toneladas(limit, tons_unit, density):
     try:
         return (
             get_conversion_units_to_kilograms(
-                limit.measurement_unit, quantity, density
+                limit.measurement_unit_id, quantity, density
             )
             / 1000
         )
@@ -59,57 +60,65 @@ def get_inventory(filters=None):
     # toneladas; no es motivo para tumbar el reporte.
     tons_unit = Catalog.objects.filter(key="units", description="Toneladas").first()
 
-    for obj in objs:
-        data = {}
-        total_shelfobjects = 0
-        sga_char = obj.substancharacteristics_object.first()
-        density = getattr(sga_char, "density", None) if sga_char else None
-        h_codes = [
-            h_code
-            for h_code in (sga_char.h_code.values_list("code", flat=True) if sga_char else [])
-        ]
-        # Los límites del objeto se toman siempre de `objs_max`, es decir,
-        # respetando los filtros pedidos (laboratorios de la organización,
-        # periodo...). Partir de `ObjectMaximumLimit.objects` mezclaba registros
-        # de cualquier laboratorio de cualquier organización.
-        obj_limits = objs_max.filter(object=obj)
-        # Extraer los objectos con procesos de condición
-        max_objs = obj_limits.filter(process_condition__in=process_conditions)
-        # Se sacan el ultimo registro del objeto deacuerdo a su proceso de condición
-        if max_objs.exists():
-            for process in process_conditions.filter(
-                pk__in=max_objs.values_list("process_condition", flat=True)
-            ):
-                max_obj = max_objs.filter(process_condition=process).last()
-                total_shelfobjects += _cantidad_en_toneladas(
-                    max_obj, tons_unit, density
+    # Todo en memoria de una vez: los límites agrupados por objeto, las fichas
+    # SGA precargadas y las unidades en un mapa. Antes cada sustancia costaba
+    # media docena de consultas y la conversión de unidades otras tantas.
+    process_names = dict(process_conditions.values_list("pk", "description"))
+    limits_by_object = {}
+    for limit in objs_max.order_by("pk"):
+        limits_by_object.setdefault(limit.object_id, []).append(limit)
+    objs = objs.prefetch_related("substancharacteristics_object__h_code")
+
+    with cached_units():
+        for obj in objs:
+            data = {}
+            total_shelfobjects = 0
+            sga_char = obj.get_sga_characteristic()
+            density = getattr(sga_char, "density", None) if sga_char else None
+            h_codes = [h_code.code for h_code in sga_char.h_code.all()] if sga_char else []
+            # Los límites del objeto se toman siempre de `objs_max`, es decir,
+            # respetando los filtros pedidos (laboratorios de la organización,
+            # periodo...). Partir de `ObjectMaximumLimit.objects` mezclaba
+            # registros de cualquier laboratorio de cualquier organización.
+            obj_limits = limits_by_object.get(obj.pk, [])
+            # El último registro (mayor pk) por cada proceso de condición.
+            last_by_process = {}
+            for limit in obj_limits:
+                if limit.process_condition_id in process_names:
+                    last_by_process[limit.process_condition_id] = limit
+            if last_by_process:
+                for process_pk in sorted(last_by_process):
+                    total_shelfobjects += _cantidad_en_toneladas(
+                        last_by_process[process_pk], tons_unit, density
+                    )
+                    data = {
+                        "nombre": obj.name,
+                        "cas": obj.cas_code,
+                        "cantidad_t": total_shelfobjects,
+                        "h_codes": ";".join(h_codes),
+                        "condicion_proceso": process_names[process_pk],
+                    }
+            else:
+                # Sin proceso de condición, el último registro del objeto.
+                without_process = [
+                    limit for limit in obj_limits if limit.process_condition_id is None
+                ]
+                if not without_process:
+                    # Solo tiene registros con una condición fuera del catálogo
+                    # `process_condition`: no hay cantidad que sumar.
+                    continue
+                total_shelfobjects += round(
+                    _cantidad_en_toneladas(without_process[-1], tons_unit, density), 3
                 )
+
                 data = {
                     "nombre": obj.name,
                     "cas": obj.cas_code,
                     "cantidad_t": total_shelfobjects,
                     "h_codes": ";".join(h_codes),
-                    "condicion_proceso": process.description,
+                    "condicion_proceso": "",
                 }
-        else:
-            # Si no se encuentra ningun registro con proceso de condición, se saca el ultimo registro del objeto
-            max_obj = obj_limits.filter(process_condition__isnull=True).last()
-            if max_obj is None:
-                # Solo tiene registros con una condición fuera del catálogo
-                # `process_condition`: no hay cantidad que sumar.
-                continue
-            total_shelfobjects += round(
-                _cantidad_en_toneladas(max_obj, tons_unit, density), 3
-            )
-
-            data = {
-                "nombre": obj.name,
-                "cas": obj.cas_code,
-                "cantidad_t": total_shelfobjects,
-                "h_codes": ";".join(h_codes),
-                "condicion_proceso": "",
-            }
-        dict_objs.append(data)
+            dict_objs.append(data)
 
     dataframe = pd.DataFrame(dict_objs, columns=list(COLUMNAS_INVENTARIO))
     if not dataframe.empty:
@@ -117,59 +126,6 @@ def get_inventory(filters=None):
             ["nombre", "cas", "condicion_proceso", "h_codes"], as_index=False
         ).agg(cantidad_t=("cantidad_t", "sum"))
     return dataframe
-
-
-def examples():
-    filters = {
-        "object__type": 0,
-        "laboratory__pk": 54,
-        "created_at__year": 2025,
-        "object__isnull": False,
-        "measurement_unit__isnull": False,
-    }
-    inv = get_inventory(filters)
-    inv = inv.drop_duplicates(subset=["nombre", "h_codes", "cas", "cantidad_t"])
-    danger_substances = list(
-        DangerSubstance.objects.all()
-        .annotate(
-            cas=F("cas_code"),
-            umbral_t=F("threshold"),
-            tipo_match=F("type_match"),
-            nombre_patron=F("patron_name"),
-            condiciones_especiales=F("especial_condition"),
-            nombre=F("name"),
-        )
-        .values(
-            "nombre",
-            "cas",
-            "umbral_t",
-            "tipo_match",
-            "h_codes_match",
-            "nombre_patron",
-            "condiciones_especiales",
-        )
-    )
-    c3 = cargar_cuadro3(pd.DataFrame(danger_substances))
-    danger_categories = list(
-        DangerSubstanceCategory.objects.all()
-        .annotate(
-            h_codes=F("h_code__code"),
-            categoria=F("category"),
-            seccion=F("section"),
-            condicion_proceso=F("process_condition"),
-            umbral_t=F("threshold"),
-        )
-        .values("h_code", "categoria", "seccion", "condicion_proceso", "umbral_t")
-    )
-    danger_categories_frame = pd.DataFrame(danger_categories)
-    danger_categories_frame.rename(
-        columns={"h_codes": "h_code"},
-    )
-    c4 = cargar_umbral_por_H(danger_categories_frame)
-    mapH_tipo = cargar_sga_referencia()
-    res = clasificar_establecimiento(inv, c3, c4, mapH_tipo)
-    with open("zzz-json", "w", encoding="utf-8") as f:
-        json.dump(res, f, ensure_ascii=False, indent=2)
 
 
 _MAPA_TIPO_SGA = {

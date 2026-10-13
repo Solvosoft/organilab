@@ -16,6 +16,7 @@ asevera nada sobre permisos; de eso se ocupa la matriz de la suite unit.
 
 from django.contrib.auth.models import User
 from django.urls import reverse
+from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -61,9 +62,15 @@ class LabviewSeleniumBase(SeleniumBase):
         )
 
     def wait_until(self, predicate, message):
-        return WebDriverWait(self.selenium, self.element_timeout).until(
-            lambda driver: predicate(), message=message
-        )
+        # Los predicados vuelven a buscar sus elementos en cada sondeo, así que
+        # un StaleElementReference solo significa que el DOM se repintó a mitad
+        # de la evaluación (p.ej. el overlay de riesgo redibuja los estantes):
+        # se trata como "todavía no" y se evalúa de nuevo en el siguiente sondeo.
+        return WebDriverWait(
+            self.selenium,
+            self.element_timeout,
+            ignored_exceptions=(StaleElementReferenceException,),
+        ).until(lambda driver: predicate(), message=message)
 
     def find_all(self, css):
         return self.selenium.find_elements(By.CSS_SELECTOR, css)

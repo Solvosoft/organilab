@@ -12,7 +12,7 @@ from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext as _
 from rest_framework import status
-from weasyprint import HTML
+from presentation.pdf import html_to_pdf
 from django.conf import settings
 
 from auth_and_perms.organization_utils import user_is_allowed_on_organization
@@ -244,9 +244,7 @@ def report_incidentreport(request, org_pk, risk_pk, pk):
         "title": _("Incident report in the risk zone %s") % risks.name,
     }
     html = template.render(context=context)
-    page = HTML(
-        string=html, base_url=request.build_absolute_uri(), encoding="utf-8"
-    ).write_pdf()
+    page = html_to_pdf(html, base_url=request.build_absolute_uri())
     response = HttpResponse(page, content_type="application/pdf")
     response["Content-Disposition"] = 'attachment; filename="incident_report.pdf"'
     return response

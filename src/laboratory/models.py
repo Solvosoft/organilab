@@ -138,26 +138,39 @@ class Object(AbstractOrganizationRef):
     def is_reactive(self):
         return self.type == self.REACTIVE
 
+    def get_sga_characteristic(self):
+        """La ficha SGA del objeto (la de menor pk), o ``None``.
+
+        Respeta ``prefetch_related("substancharacteristics_object")``: en un
+        reporte con miles de filas, ``.first()`` ignoraba la precarga y lanzaba
+        una consulta por fila.
+        """
+        cache = getattr(self, "_prefetched_objects_cache", {})
+        if "substancharacteristics_object" in cache:
+            items = cache["substancharacteristics_object"]
+            return min(items, key=lambda char: char.pk) if items else None
+        return self.substancharacteristics_object.first()
+
     @property
     def is_precursor(self):
-        sga_char = self.substancharacteristics_object.first()
+        sga_char = self.get_sga_characteristic()
         if sga_char:
             return sga_char.is_precursor
         return False
 
     @property
     def cas_code(self):
-        sga_char = self.substancharacteristics_object.first()
+        sga_char = self.get_sga_characteristic()
         if sga_char and sga_char.cas_id_number:
             return sga_char.cas_id_number
         return ""
 
     @property
     def get_storage_class(self):
-        sga_char = self.substancharacteristics_object.first()
-        if sga_char and sga_char.storage_class:
+        sga_char = self.get_sga_characteristic()
+        if sga_char:
             return ", ".join(
-                sga_char.storage_class.values_list("description", flat=True)
+                item.description for item in sga_char.storage_class.all()
             )
         return ""
 
@@ -344,7 +357,45 @@ class EquipmentCharacteristics(models.Model):
     )
 
 
+class ShelfObjectQuerySet(models.QuerySet):
+    def for_report(self):
+        """Todo lo que un reporte lee de cada fila, precargado.
+
+        Sin esto cada fila de un reporte costaba media docena de consultas
+        (objeto, unidad, estante, mueble, sala, ficha SGA, códigos H...) y los
+        reportes crecían en consultas al ritmo de los datos.
+        """
+        from sga.models import SubstanceCharacteristics
+
+        characteristics = SubstanceCharacteristics.objects.select_related(
+            "imdg", "iarc", "precursor_type"
+        )
+        return self.select_related(
+            "object",
+            "measurement_unit",
+            "status",
+            "in_where_laboratory",
+            "shelf__type",
+            "shelf__measurement_unit",
+            "shelf__furniture__labroom__laboratory",
+            "limits",
+            "container__object",
+        ).prefetch_related(
+            models.Prefetch(
+                "object__substancharacteristics_object", queryset=characteristics
+            ),
+            "object__substancharacteristics_object__h_code",
+            "object__substancharacteristics_object__white_organ",
+            "object__substancharacteristics_object__storage_class",
+            "object__substancharacteristics_object__nfpa",
+            "object__substancharacteristics_object__ue_code",
+            "object__features",
+        )
+
+
 class ShelfObject(models.Model):
+    objects = ShelfObjectQuerySet.as_manager()
+
     PHYSICAL_STATUS = (
         ("no_reactive", _("")),
         ("liquid", _("Liquid")),
@@ -557,27 +608,9 @@ class ShelfObject(models.Model):
         )
 
     def get_shelfobject_conversion_from_two_units(self, shelf_unit, amount):
-        query = BaseUnitValues.objects.filter(measurement_unit=self.measurement_unit)
-        query2 = BaseUnitValues.objects.filter(measurement_unit=shelf_unit)
-        if shelf_unit is None:
-            return amount
-        if query.exists() and query2.exists():
-            unit1 = query.first()
-            value1 = unit1.si_value
+        from laboratory.utils_base_unit import get_conversion_from_two_units
 
-            unit2 = query2.first()
-            value2 = unit2.si_value
-
-            if unit1.measurement_unit.description == "Unidades":
-                return amount
-
-            if value1 > value2:
-                result = amount / (value1 / value2)
-            else:
-                result = amount * (value2 / value1)
-            return result
-        else:
-            return None
+        return get_conversion_from_two_units(self.measurement_unit_id, shelf_unit, amount)
 
     def get_obj_conversion_from_two_units(self):
         # Retorna la conversion de unidades de medida
@@ -1246,11 +1279,8 @@ class OrganizationStructure(TreeNode):
     @property
     def get_my_laboratories(self):
         lab_content_type = ContentType.objects.get_for_model(Laboratory)
-
-        if not self.root:
-            return OrganizationStructureRelations.objects.filter(
-                organization=self, content_type=lab_content_type
-            ).values_list("object_id", flat=True)
+        # ``root`` siempre devuelve una instancia (la propia org si no tiene
+        # ancestros), así que no hay rama para «sin raíz».
         org_ids = []
         if not self.enable_child_organizations:
             org_ids = list(self.descendants().values_list("pk", flat=True))

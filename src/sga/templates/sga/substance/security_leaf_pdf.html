@@ -1,10 +1,28 @@
-{% load i18n %}
-{% block head %}
-
- <title>{% trans 'Security sheet'%} {% trans 'of'%} {{substance.comercial_name}}</title>
-{% endblock %}
+{% load i18n static %}
+<html>
+<head>
+<meta charset="UTF-8">
+<title>{% trans 'Security sheet'%} {% trans 'of'%} {{substance.comercial_name}}</title>
 {% include 'sga/substance/pdf/pdf_css.html' %}
-{% block pdf_content %}
+</head>
+<body>
+<div id="header_content">
+    <table width="100%">
+        <tr>
+            <td width="25%" style="text-align:left;"><img src="{% static 'img/logo_organilab.jpg' %}" height="28"></td>
+            <td width="50%" style="text-align:center;">{% trans 'Security Leaf' %}</td>
+            <td width="25%" style="text-align:right;">{{ date_print }}</td>
+        </tr>
+    </table>
+</div>
+<div id="footer_content">
+    <table width="100%">
+        <tr>
+            <td style="text-align:left;">{% trans "User" %}: {% if user.get_full_name %}{{ user.get_full_name }}{% else %}{{ user.username }}{% endif %}</td>
+            <td style="text-align:right;">{% trans 'Page' %} <pdf:pagenumber> {% trans 'of' %} <pdf:pagecount></td>
+        </tr>
+    </table>
+</div>
 <section id="header">
     {% include 'sga/substance/pdf/header.html' %}
 </section>
@@ -57,4 +75,5 @@
 <section id="sixteen">
     {% include 'sga/substance/pdf/section_sixteen.html' %}
 </section>
-{% endblock %}
+</body>
+</html>
