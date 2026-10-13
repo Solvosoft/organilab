@@ -2,6 +2,7 @@ import datetime
 
 from django.contrib.auth.models import User
 from django.test import SimpleTestCase, TestCase
+from django.utils import translation
 
 from laboratory import models_utils
 from laboratory.models import (
@@ -35,6 +36,10 @@ def asegurar_unidad(unidad_pk, base_pk, valor):
 
 
 class RepresentacionesSinBaseDeDatosTest(SimpleTestCase):
+    """Los textos esperados están en inglés: no depender del idioma que deje otra prueba."""
+
+    def setUp(self):
+        self.enterContext(translation.override("en"))
 
     def test_str_de_modelos_simples(self):
         self.assertEqual(str(CLInventory(name="Acetona")), "Acetona")

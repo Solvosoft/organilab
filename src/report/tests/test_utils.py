@@ -3,6 +3,7 @@ from datetime import datetime, timedelta, timezone as dt_timezone
 from django.contrib.auth.models import User
 from django.test import SimpleTestCase, TestCase
 from django.utils import timezone
+from django.utils import translation
 
 from laboratory.models import (
     BaseUnitValues,
@@ -93,6 +94,11 @@ class PresentacionDeTablasTest(SimpleTestCase):
 
 
 class NombreYDuracionTest(SimpleTestCase):
+    """Los textos esperados están en inglés: no depender del idioma que deje otra prueba."""
+
+    def setUp(self):
+        self.enterContext(translation.override("en"))
+
     def report(self, **data):
         return TaskReport(data=data)
 

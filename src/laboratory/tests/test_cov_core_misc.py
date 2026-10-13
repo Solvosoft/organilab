@@ -6,7 +6,8 @@ from django.contrib.auth.models import Group, User
 from django.core.exceptions import ValidationError
 from django.db import models as dj_models
 from django.test import RequestFactory, SimpleTestCase, TestCase, override_settings
-from django.urls import reverse
+from django.urls import get_resolver, reverse
+from django.utils import translation
 from djreservation.models import Product, Reservation
 from openpyxl import load_workbook
 
@@ -73,6 +74,10 @@ class ValidadoresYCatalogoTest(SimpleTestCase):
 
 
 class ExcelGraphBuilderTest(SimpleTestCase):
+    """Los textos esperados están en inglés: no depender del idioma que deje otra prueba."""
+
+    def setUp(self):
+        self.enterContext(translation.override("en"))
 
     def test_tabla_estilos_y_guardado(self):
         builder = ExcelGraphBuilder()
@@ -221,11 +226,14 @@ class BitacoraYSerializadoresTest(BaseInventarioTest):
 
 class SenalesDeInventarioTest(BaseInventarioTest):
 
-    @override_settings(DEBUG=True)
     def test_aviso_de_limite_usa_http_en_debug(self):
+        # Cargar el URLconf antes de activar DEBUG: si el primer `reverse()` del proceso
+        # ocurre dentro del override, queda en caché con las rutas de desarrollo y
+        # el inventario de URLs deja de coincidir para el resto de la corrida.
+        get_resolver().url_patterns
         so = ShelfObject.objects.get(pk=1)
         so.limit_quantity = so.quantity + 10
-        with mock.patch("laboratory.signals.send_email_from_template") as enviar:
+        with override_settings(DEBUG=True), mock.patch("laboratory.signals.send_email_from_template") as enviar:
             so.save()
         self.assertTrue(enviar.called)
         self.assertTrue(enviar.call_args.kwargs["context"]["blockurl"].startswith("http://"))

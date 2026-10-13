@@ -374,8 +374,10 @@ perf-profile: ## - pasada con cProfile agregado por ruta (roadmap/.perf/profiles
 perf-matrix: ## - compara configuraciones de ejecución (workers, GIF, keepdb); horas. ONLY=unit|selenium
 	$(PYTHON) $(ROOT_DIR)/scripts/perf_matrix.py $(if $(ONLY),--only $(ONLY),)
 
+# Variable aparte: dentro de $(or ...) las comas separarían argumentos.
+SCALES ?= 1,10,100
 perf-reports: ## - reportes contra volumen de datos (SCALES=1,10,100)
-	cd src && $(LOW_PRIORITY) $(PYTHON) manage.py perf_reports --settings=organilab.test_settings --scales $(or $(SCALES),1,10,100)
+	cd src && $(LOW_PRIORITY) $(PYTHON) manage.py perf_reports --settings=organilab.test_settings --scales $(SCALES)
 
 perf-report: ## - roadmap/RENDIMIENTO.md y roadmap/rendimiento.json desde roadmap/.perf/
 	cd src && DEBUG=False $(PYTHON) manage.py perf_report --settings=organilab.test_settings \

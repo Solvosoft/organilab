@@ -101,7 +101,8 @@ class ObjectsReportTest(ReportTestBase):
         cal = [f for f in filas if f["name"] == self.cal.name][0]
         self.assertEqual(cal["molecular_formula"], "CaO")
         self.assertEqual(cal["cas_id_number"], "1305-78-8")
-        self.assertEqual(cal["danger_indication"], ", ".join(str(h) for h in self.h_codes))
+        # La consulta de códigos H no ordena: comparar sin importar el orden.
+        self.assertCountEqual(cal["danger_indication"].split(", "), [str(h) for h in self.h_codes])
         self.assertIn("Corrosivo", cal["features"])
         self.assertIn(", ", cal["features"])
 
