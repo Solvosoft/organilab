@@ -43,14 +43,17 @@ def assign_shelfobject_code(sender, **kwargs):
 def shelf_object_base_quantity(sender, **kwargs):
     instance = kwargs.get("instance")
     if hasattr(instance, "measurement_unit") and hasattr(instance, "quantity"):
-        # get_conversion_units ya no lanza BaseUnitValues.DoesNotExist: con una
-        # unidad sin conversión devuelve None, así que el try/except sobraba.
-        if instance.quantity_base_unit is None:
-            instance.quantity_base_unit = get_conversion_units(
-                instance.measurement_unit, instance.quantity
-            )
-        else:
-            instance.quantity_base_unit = instance.quantity
+        # Se recalcula en cada guardado: el usuario registra la cantidad en
+        # cualquier unidad compatible y aquí queda expresada en la unidad base
+        # de esa unidad (500 mL -> 0.5 L). Antes sólo se convertía si el campo
+        # venía en None, pero su default es 0, así que casi siempre se copiaba
+        # la cantidad cruda y los reportes y gráficos sumaban unidades mezcladas.
+        converted = get_conversion_units(instance.measurement_unit, instance.quantity)
+        # Una unidad sin BaseUnitValues no tiene unidad base conocida: se guarda
+        # la cantidad tal cual porque el campo no admite nulos.
+        instance.quantity_base_unit = (
+            converted if converted is not None else instance.quantity
+        )
 
 
 @receiver(pre_save, sender=OrganizationStructure)

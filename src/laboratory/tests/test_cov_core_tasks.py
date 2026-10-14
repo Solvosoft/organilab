@@ -137,6 +137,25 @@ class ReportePrecursoresTest(BaseTareasTest):
         self.assertEqual(valores.previous_balance, 7)
         self.assertEqual(valores.final_balance, valores.stock - valores.month_expense)
 
+    def test_existencias_en_unidades_distintas_se_suman_en_la_unidad_base(self):
+        existencias = ShelfObject.objects.filter(in_where_laboratory=self.lab, object_id=1)
+        self.assertGreaterEqual(existencias.count(), 2)
+        primera, segunda = existencias[:2]
+        existencias.exclude(pk__in=[primera.pk, segunda.pk]).delete()
+        # 500 mL y 1 L del mismo reactivo: la fila en Litros debe decir 1.5.
+        primera.measurement_unit_id, primera.quantity = 63, 500
+        primera.save()
+        segunda.measurement_unit_id, segunda.quantity = 62, 1
+        segunda.save()
+
+        with mock.patch.object(tasks, "date", fecha_fija(2026, 3, 2)):
+            tasks.create_precursor_reports()
+
+        reporte = PrecursorReport.objects.filter(laboratory=self.lab).last()
+        valores = PrecursorReportValues.objects.get(precursor_report=reporte, object_id=1)
+        self.assertEqual(valores.measurement_unit_id, 62)
+        self.assertAlmostEqual(valores.quantity, 1.5)
+
     def test_consecutivo_inicial_sin_reportes(self):
         PrecursorReport.objects.all().delete()
         self.assertEqual(tasks.add_consecutive(self.lab), 1)

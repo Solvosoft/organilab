@@ -3,7 +3,8 @@ from django.utils import timezone
 from random import randint
 
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import Case, F, FloatField, Sum, Value, When
+from django.db.models import Case, F, FloatField, OuterRef, Subquery, Sum, Value, When
+from django.db.models.functions import Coalesce, NullIf
 from rest_framework import permissions
 from django.utils.translation import gettext_lazy as _
 from django.http import Http404
@@ -40,7 +41,7 @@ from risk_management.iper_defaults import (
     KEY_RISK_LEVEL,
     RISK_LEVELS,
 )
-from sga.models import DangerIndication
+from sga.models import DangerIndication, SubstanceCharacteristics
 
 default_colors = [
     "229, 158, 64",
@@ -672,6 +673,7 @@ class SubstanceQuantityTonsChart(BaseChart, HorizontalBarChart):
         self.other_datasets = {}
         self.other_units = [
             ("unidades", _("Unidades")),
+            ("metros", _("Metros (m)")),
             ("pascales", _("Pascales (Pa)")),
             ("psi", _("PSI")),
         ]
@@ -685,6 +687,24 @@ class SubstanceQuantityTonsChart(BaseChart, HorizontalBarChart):
         pascal_pks = self._get_unit_pks_by_base("Pascales")
         psi_pks = self._get_unit_pks_by_base("PSI")
 
+        # Densidad (kg/L) de la ficha SGA del objeto, la de menor pk como
+        # Object.get_sga_characteristic(); sin dato se asume la del agua.
+        density = Coalesce(
+            NullIf(
+                Subquery(
+                    SubstanceCharacteristics.objects.filter(
+                        object_related=OuterRef("object")
+                    ).order_by("pk").values("density")[:1]
+                ),
+                Value(0.0),
+            ),
+            Value(1.0),
+            output_field=FloatField(),
+        )
+
+        # quantity_base_unit ya está en la unidad base de su familia (kg, L, m³...).
+        # Los volúmenes pasan a masa con la densidad; la longitud no es masa, así
+        # que los metros van en su propia serie y no suman toneladas.
         results = ShelfObject.objects.filter(
             object__organization=self.organization,
             object__type=Object.REACTIVE,
@@ -700,14 +720,18 @@ class SubstanceQuantityTonsChart(BaseChart, HorizontalBarChart):
                 ),
                 When(
                     measurement_unit__pk__in=litro_pks,
-                    then=F("quantity_base_unit") / Value(1000.0),
-                ),
-                When(
-                    measurement_unit__pk__in=metro_pks,
-                    then=F("quantity_base_unit") / Value(1000.0),
+                    then=F("quantity_base_unit") * density / Value(1000.0),
                 ),
                 When(
                     measurement_unit__pk__in=m3_pks,
+                    then=F("quantity_base_unit") * density,
+                ),
+                default=Value(0.0),
+                output_field=FloatField(),
+            )),
+            metros=Sum(Case(
+                When(
+                    measurement_unit__pk__in=metro_pks,
                     then=F("quantity_base_unit"),
                 ),
                 default=Value(0.0),

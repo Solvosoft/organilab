@@ -99,6 +99,31 @@ def get_conversion_units(unit, amount):
     return amount / info.si_value
 
 
+def get_conversion_from_base_unit(unit, amount):
+    """Inverso de :func:`get_conversion_units`: de la unidad base a ``unit``."""
+    info = get_unit_info(unit)
+    if info is None:
+        return None
+    if info.description == info.base_description:
+        return amount
+    return amount * info.si_value
+
+
+def get_unit_family(unit):
+    """``measurement_unit_id`` de las unidades con la misma unidad base que ``unit``.
+
+    ``None`` si la unidad no tiene base conocida: no es comparable con ninguna otra.
+    """
+    info = get_unit_info(unit)
+    if info is None or info.base_id is None:
+        return None
+    return list(
+        BaseUnitValues.objects.filter(measurement_unit_base_id=info.base_id).values_list(
+            "measurement_unit_id", flat=True
+        )
+    )
+
+
 def get_conversion_from_two_units(shelfobject_unit, shelf_unit, amount):
     if shelf_unit is None:
         return amount
