@@ -117,4 +117,109 @@ class BaseUnitTest(TestCase):
         obj = Object.objects.get(pk=1)
         inst = ShelfObject(object=obj, quantity=-0.10, measurement_unit=new_catalog, quantity_base_unit=None)
         pre_save.send(sender=ShelfObject, instance=inst)
-        self.assertEqual(inst.quantity_base_unit, None)
+        # Sin unidad base conocida se guarda la cantidad tal cual: el campo no admite nulos.
+        self.assertEqual(inst.quantity_base_unit, -0.10)
+
+    def test_converts_with_field_default(self):
+        """Regresión: el default del campo es 0, no None, y aun así debe convertir."""
+        ml = Catalog.objects.get(description='Mililitros', key='units')
+        obj = Object.objects.get(pk=1)
+        inst = ShelfObject(object=obj, quantity=500, measurement_unit=ml)
+        self.assertEqual(inst.quantity_base_unit, 0)
+        pre_save.send(sender=ShelfObject, instance=inst)
+        self.assertEqual(inst.quantity_base_unit, 0.5)
+
+    def test_recalculates_on_every_save(self):
+        """Un segundo guardado no debe reemplazar el valor convertido por la cantidad cruda."""
+        gram = Catalog.objects.get(description='Gramos', key='units')
+        obj = Object.objects.get(pk=1)
+        inst = ShelfObject(object=obj, quantity=500, measurement_unit=gram)
+        pre_save.send(sender=ShelfObject, instance=inst)
+        self.assertEqual(inst.quantity_base_unit, 0.5)
+        pre_save.send(sender=ShelfObject, instance=inst)
+        self.assertEqual(inst.quantity_base_unit, 0.5)
+        inst.quantity = 250
+        pre_save.send(sender=ShelfObject, instance=inst)
+        self.assertEqual(inst.quantity_base_unit, 0.25)
+
+    def test_unit_change_recalculates(self):
+        gram = Catalog.objects.get(description='Gramos', key='units')
+        kg = Catalog.objects.get(description='Kilogramos', key='units')
+        obj = Object.objects.get(pk=1)
+        inst = ShelfObject(object=obj, quantity=2, measurement_unit=kg)
+        pre_save.send(sender=ShelfObject, instance=inst)
+        self.assertEqual(inst.quantity_base_unit, 2)
+        inst.quantity, inst.measurement_unit = 2000, gram
+        pre_save.send(sender=ShelfObject, instance=inst)
+        self.assertEqual(inst.quantity_base_unit, 2)
+
+
+class RecalculateQuantityBaseUnitMigrationTest(TestCase):
+    """La migración 0224 corrige las existencias guardadas con la cantidad cruda."""
+
+    fixtures = ["laboratory_data.json"]
+
+    def test_recalculates_raw_values(self):
+        from importlib import import_module
+
+        from django.apps import apps
+
+        from laboratory.utils_base_unit import get_conversion_units
+
+        migration = import_module("laboratory.migrations.0224_recalculate_quantity_base_unit")
+        rows = list(ShelfObject.objects.all())
+        self.assertTrue(rows)
+        # Así quedaron en producción: quantity_base_unit = quantity sin convertir.
+        for row in rows:
+            ShelfObject.objects.filter(pk=row.pk).update(quantity_base_unit=row.quantity)
+
+        migration.recalculate(apps, None)
+        migration.recalculate(apps, None)  # idempotente
+
+        for row in ShelfObject.objects.all():
+            expected = get_conversion_units(row.measurement_unit, row.quantity)
+            if expected is None:
+                expected = row.quantity
+            self.assertAlmostEqual(row.quantity_base_unit, expected)
+
+
+class QuantityBaseUnitImpactCommandTest(TestCase):
+    """El comando mide el cambio sin escribir en la base."""
+
+    fixtures = ["laboratory_data.json"]
+
+    def test_reporta_y_no_modifica(self):
+        from io import StringIO
+
+        from django.core.management import call_command
+
+        from laboratory.tests.test_cov_core_tasks import asegurar_unidades_base
+
+        asegurar_unidades_base()
+        shelf_object = ShelfObject.objects.filter(object__type=Object.REACTIVE).first()
+        ShelfObject.objects.filter(pk=shelf_object.pk).update(
+            measurement_unit_id=63, quantity=500, quantity_base_unit=500
+        )
+        antes = list(ShelfObject.objects.order_by("pk").values_list("pk", "quantity_base_unit"))
+
+        out = StringIO()
+        call_command("report_quantity_base_unit_impact", stdout=out)
+        salida = out.getvalue()
+
+        self.assertIn("Existencias cuyo quantity_base_unit cambia", salida)
+        self.assertNotIn("  ninguna", salida.split("\n\n")[0])
+        self.assertIn("Toneladas por organización", salida)
+        self.assertEqual(
+            antes, list(ShelfObject.objects.order_by("pk").values_list("pk", "quantity_base_unit"))
+        )
+
+    def test_sin_diferencias(self):
+        from io import StringIO
+
+        from django.core.management import call_command
+
+        for row in ShelfObject.objects.all():
+            row.save()
+        out = StringIO()
+        call_command("report_quantity_base_unit_impact", stdout=out)
+        self.assertIn("  ninguna", out.getvalue())

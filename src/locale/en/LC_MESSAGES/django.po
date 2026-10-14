@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-13 15:23-0600\n"
+"POT-Creation-Date: 2026-10-13 23:28-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -6489,6 +6489,9 @@ msgstr ""
 
 msgid "Unidades"
 msgstr ""
+
+msgid "Metros (m)"
+msgstr "Meters (m)"
 
 msgid "Pascales (Pa)"
 msgstr ""

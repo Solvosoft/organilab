@@ -49,6 +49,11 @@ from laboratory.models import (
 )
 from derb.models import CustomForm
 from laboratory.utils import organilab_logentry
+from laboratory.utils_base_unit import (
+    get_conversion_from_base_unit,
+    get_conversion_units,
+    get_unit_family,
+)
 from laboratory.views.djgeneric import (
     ListView as DJListView,
     CreateView as DJCreateView,
@@ -634,14 +639,8 @@ def generate_reservation(request, org_pk, lab_pk):
                     )
                     if total_material_units < obj.quantity:
                         obj_unknown.append(obj.object.__str__())
-                else:
-                    shelfobjects = ShelfObject.objects.filter(
-                        in_where_laboratory=lab,
-                        object=obj.object,
-                        measurement_unit=obj.measurement_unit,
-                    ).aggregate(total=Coalesce(Sum("quantity"), 0.0))
-                    if shelfobjects["total"] < obj.quantity:
-                        obj_unknown.append(obj.object.__str__())
+                elif not _has_enough_stock(lab, obj):
+                    obj_unknown.append(obj.object.__str__())
 
             if obj_unknown:
                 result = status.HTTP_400_BAD_REQUEST
@@ -691,54 +690,74 @@ def add_procedure_reservation(request, objects, form, lab, org):
             _add_non_box_reservation(request, obj, form, lab, org)
 
 
+# Margen para comparar cantidades convertidas en coma flotante (0.1 L + 0.2 L).
+STOCK_EPSILON = 1e-9
+
+
+def _non_box_stock(lab, obj):
+    """Existencias sin caja que pueden cubrir ``obj`` y la cantidad pedida.
+
+    Devuelve ``(queryset, cantidad_pedida, campo)``. Si la unidad tiene unidad
+    base, se compara dentro de su familia (500 mL contra 1 L) en unidad base con
+    ``quantity_base_unit``; si no, sólo contra la misma unidad, como antes.
+    """
+    family = get_unit_family(obj.measurement_unit)
+    required = get_conversion_units(obj.measurement_unit, obj.quantity)
+    base = ShelfObject.objects.filter(in_where_laboratory=lab, object=obj.object)
+    if family is None or required is None:
+        queryset = base.filter(measurement_unit=obj.measurement_unit)
+        return queryset, obj.quantity, "quantity"
+    queryset = base.filter(measurement_unit__in=family, is_box=False)
+    return queryset, required, "quantity_base_unit"
+
+
+def _has_enough_stock(lab, obj):
+    queryset, required, field = _non_box_stock(lab, obj)
+    total = queryset.aggregate(total=Coalesce(Sum(field), 0.0))["total"]
+    return total + STOCK_EPSILON >= required
+
+
 def _add_non_box_reservation(request, obj, form, lab, org):
-    shelf_objects = (
-        ShelfObject.objects.filter(
-            in_where_laboratory=lab,
-            object=obj.object,
-            measurement_unit=obj.measurement_unit,
-        )
-        .distinct()
-        .order_by("quantity")
-    )
-    obj_quantity = obj.quantity
-    total = 0
+    queryset, required, field = _non_box_stock(lab, obj)
+    shelf_objects = queryset.distinct().order_by(field, "pk")
+    remaining = required
     for shelf_object in shelf_objects:
-        shelf_object_total = shelf_object.quantity
-        result = 0
-        if total < obj_quantity:
-            if obj_quantity <= shelf_object_total:
-                result = obj_quantity - total
-            elif total + shelf_object_total > obj_quantity:
-                result = obj_quantity - total
-            else:
-                result += shelf_object_total
-            total += result
-            reserved = ReservedProducts.objects.create(
-                shelf_object=shelf_object,
-                user=request.user,
-                initial_date=form.cleaned_data["initial_date"],
-                final_date=form.cleaned_data["final_date"],
-                amount_required=result,
-                laboratory=lab,
-                organization=org,
-            )
-            organilab_logentry(
-                request.user,
-                reserved,
-                ADDITION,
-                changed_data=[
-                    "shelf_object",
-                    "user",
-                    "initial_date",
-                    "final_date",
-                    "amount_required",
-                    "laboratory",
-                    "organization",
-                ],
-                change_message=_("Created reservation for '%(obj)s' (%(amount)s units)")
-                % {"obj": str(shelf_object.object), "amount": result},
-            )
+        if remaining <= STOCK_EPSILON:
+            break
+        available = getattr(shelf_object, field)
+        if available <= 0:
+            continue
+        taken = min(remaining, available)
+        remaining -= taken
+        # La reserva se descuenta de la existencia, así que va en su unidad.
+        result = taken
+        if field == "quantity_base_unit":
+            result = get_conversion_from_base_unit(shelf_object.measurement_unit, taken)
+        reserved = ReservedProducts.objects.create(
+            shelf_object=shelf_object,
+            user=request.user,
+            initial_date=form.cleaned_data["initial_date"],
+            final_date=form.cleaned_data["final_date"],
+            amount_required=result,
+            laboratory=lab,
+            organization=org,
+        )
+        organilab_logentry(
+            request.user,
+            reserved,
+            ADDITION,
+            changed_data=[
+                "shelf_object",
+                "user",
+                "initial_date",
+                "final_date",
+                "amount_required",
+                "laboratory",
+                "organization",
+            ],
+            change_message=_("Created reservation for '%(obj)s' (%(amount)s units)")
+            % {"obj": str(shelf_object.object), "amount": result},
+        )
 
 
 def _select_boxes_for_shelf(shelf_object, amount_required):

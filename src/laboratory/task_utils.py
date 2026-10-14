@@ -1,7 +1,7 @@
 from django.db.models import Sum
 from django.urls import reverse_lazy, reverse
 from django.utils import timezone
-from laboratory.utils_base_unit import get_base_unit
+from laboratory.utils_base_unit import get_base_unit, get_conversion_units
 
 from laboratory.models import (
     Laboratory,
@@ -90,12 +90,20 @@ def save_object_report_precursor(report):
         in_where_laboratory=lab, object__substancharacteristics_object__is_precursor=True
     ):
         unit = get_base_unit(precursor.measurement_unit)
+        # La fila se agrupa por unidad base, así que lo que se suma debe estar en
+        # esa unidad: antes la primera existencia entraba convertida y las
+        # siguientes en su unidad original (500 mL sumados a 0.5 L).
+        base_quantity = get_conversion_units(
+            precursor.measurement_unit, precursor.total_quantity
+        )
+        if base_quantity is None:
+            base_quantity = precursor.total_quantity
         obj = PrecursorReportValues.objects.filter(
             precursor_report=report, object=precursor.object, measurement_unit=unit
         ).first()
 
         if obj:
-            add_quantity = precursor.total_quantity
+            add_quantity = base_quantity
             obj.quantity += add_quantity
             if reports.count() > 1:
                 if reports[1].report_values.count() == 0:
@@ -136,7 +144,7 @@ def save_object_report_precursor(report):
                 precursor_report=report,
                 object=precursor.object,
                 measurement_unit=unit,
-                quantity=precursor.quantity_base_unit,
+                quantity=base_quantity,
                 new_income=income,
                 bills=", ".join(bills),
                 providers=", ".join(providers),

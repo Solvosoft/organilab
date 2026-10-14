@@ -143,6 +143,52 @@ class GraficosDeInventarioTest(RiskTestCase):
         self.assertIn("Unidades", contenido)
         self.assertIn("7.0", contenido)
 
+    def _reactivo(self, nombre, cantidad, unidad, base, si_value, densidad=None):
+        """Un reactivo con una existencia en ``unidad`` (de la familia ``base``)."""
+        obj = Object.objects.create(
+            code=nombre[:3].upper(), name=nombre, type=Object.REACTIVE, organization=self.organization
+        )
+        if densidad is not None:
+            SubstanceCharacteristics.objects.create(object_related=obj, density=densidad)
+        base_catalog = Catalog.objects.filter(key="units", description=base).first() or \
+            Catalog.objects.create(key="units", description=base)
+        unit = Catalog.objects.create(key="units", description=unidad)
+        BaseUnitValues.objects.create(
+            measurement_unit=unit, measurement_unit_base=base_catalog, si_value=si_value
+        )
+        ShelfObject.objects.create(
+            object=obj, shelf=self.shelf, quantity=cantidad, measurement_unit=unit,
+            in_where_laboratory=self.lab, created_by=self.user,
+        )
+
+    def _serie(self, data, serie, nombre):
+        """Valor de ``nombre`` en la serie ``serie`` (en español o en inglés)."""
+        nombres = {"Toneladas (t)": ("Toneladas (t)",), "Metros (m)": ("Metros (m)", "Meters (m)")}[serie]
+        datos = data["data"]
+        etiquetas = datos["labels"]
+        for dataset in datos["datasets"]:
+            if dataset["label"] in nombres:
+                return dataset["data"][etiquetas.index(nombre)]
+        return None
+
+    def test_toneladas_en_unidad_base_con_densidad(self):
+        # 500 mL con densidad 1.84 kg/L -> 0.92 kg -> 0.00092 t
+        self._reactivo("Sulfúrico", 500, "Mililitros", "Litros", 1000, densidad=1.84)
+        # 500 mL sin densidad -> se asume 1 kg/L -> 0.0005 t
+        self._reactivo("Acetona", 500, "Mililitros", "Litros", 1000, densidad=0)
+        # 2000 g -> 2 kg -> 0.002 t
+        self._reactivo("Cloruro", 2000, "Gramos", "Kilogramos", 1000)
+        data = self.grafico("substancetonschart").json()
+        self.assertAlmostEqual(self._serie(data, "Toneladas (t)", "Sulfúrico"), 0.0009, places=4)
+        self.assertAlmostEqual(self._serie(data, "Toneladas (t)", "Acetona"), 0.0005, places=4)
+        self.assertAlmostEqual(self._serie(data, "Toneladas (t)", "Cloruro"), 0.002, places=4)
+
+    def test_metros_no_suman_toneladas(self):
+        self._reactivo("Cinta", 150, "Centímetros", "Metros", 100)
+        data = self.grafico("substancetonschart").json()
+        self.assertEqual(self._serie(data, "Toneladas (t)", "Cinta"), 0)
+        self.assertEqual(self._serie(data, "Metros (m)", "Cinta"), 1.5)
+
 
 class GraficoDeBitacoraTest(RiskTestCase):
 

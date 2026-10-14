@@ -18,7 +18,7 @@ from academic.models import (
     ProcedureRequiredObject,
     ProcedureStep,
 )
-from laboratory.models import Laboratory, ShelfObject
+from laboratory.models import BaseUnitValues, Catalog, Laboratory, ShelfObject
 from reservations_management.models import ReservedProducts
 
 FECHA_INICIAL = "17/01/2023 11:02:05"
@@ -171,6 +171,70 @@ class ReservaDesdeProcedimientoTest(TestCase):
         self.assertFalse(
             ReservedProducts.objects.filter(shelf_object__in=[vacia, parciales]).exists()
         )
+
+
+class ReservaPorFamiliaDeUnidadTest(ReservaDesdeProcedimientoTest):
+    """Sin cajas, lo pedido se compara y reparte en unidad base dentro de la familia."""
+
+    def setUp(self):
+        super().setUp()
+        litros = Catalog.objects.create(key="units", description="Litros prueba")
+        self.litros = litros
+        self.mililitros = Catalog.objects.create(key="units", description="Mililitros prueba")
+        BaseUnitValues.objects.create(measurement_unit=litros, measurement_unit_base=litros, si_value=1)
+        BaseUnitValues.objects.create(
+            measurement_unit=self.mililitros, measurement_unit_base=litros, si_value=1000
+        )
+
+    def requerir_en(self, cantidad, unidad):
+        requerido = self.requerir(cantidad)
+        requerido.measurement_unit = unidad
+        requerido.save()
+        return requerido
+
+    def test_pide_mililitros_y_hay_litros(self):
+        self.requerir_en(500, self.mililitros)
+        litro = self.objeto_en_estante(1, measurement_unit=self.litros)
+
+        response = self.reservar()
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        reserva = ReservedProducts.objects.get()
+        self.assertEqual(reserva.shelf_object, litro)
+        # Se descuenta de la existencia, así que va en su unidad (litros).
+        self.assertAlmostEqual(reserva.amount_required, 0.5)
+
+    def test_reparte_entre_unidades_de_la_familia(self):
+        self.requerir_en(1.5, self.litros)
+        medio = self.objeto_en_estante(500, measurement_unit=self.mililitros)
+        litro = self.objeto_en_estante(1, measurement_unit=self.litros)
+
+        response = self.reservar()
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        reservado = dict(ReservedProducts.objects.values_list("shelf_object", "amount_required"))
+        self.assertAlmostEqual(reservado[medio.pk], 500)
+        self.assertAlmostEqual(reservado[litro.pk], 1)
+
+    def test_familia_insuficiente_rechaza(self):
+        self.requerir_en(2, self.litros)
+        self.objeto_en_estante(500, measurement_unit=self.mililitros)
+        self.objeto_en_estante(1, measurement_unit=self.litros)
+
+        response = self.reservar()
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertFalse(ReservedProducts.objects.exists())
+
+    def test_otra_familia_no_cuenta(self):
+        kilos = Catalog.objects.create(key="units", description="Kilogramos prueba")
+        BaseUnitValues.objects.create(measurement_unit=kilos, measurement_unit_base=kilos, si_value=1)
+        self.requerir_en(1, self.litros)
+        self.objeto_en_estante(5, measurement_unit=kilos)
+
+        response = self.reservar()
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
 class ProcedimientoSinObjetosTest(TestCase):
