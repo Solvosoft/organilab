@@ -646,8 +646,8 @@ class EquipmentSerializer(serializers.ModelSerializer):
         user = self.context["request"].user
         action_list = {
             "create": ["laboratory.add_object", "laboratory.view_object"],
-            "update": ["laboratory.change_object", "laboratory.view_object"],
-            "destroy": ["laboratory.delete_object", "laboratory.view_object"],
+            "update": ["laboratory.can_edit_equipment_material", "laboratory.view_object"],
+            "destroy": ["laboratory.can_delete_equipment_material", "laboratory.view_object"],
             "detail": ["laboratory.view_object"],
         }
         return get_actions_by_perms(user, action_list)
@@ -1740,8 +1740,8 @@ class ObjectSerializer(serializers.ModelSerializer):
         user = self.context["request"].user
         return {
             "create": user.has_perm("laboratory.add_object"),
-            "update": user.has_perm("laboratory.change_object"),
-            "destroy": user.has_perm("laboratory.delete_object"),
+            "update": user.has_perm("laboratory.can_edit_equipment_material"),
+            "destroy": user.has_perm("laboratory.can_delete_equipment_material"),
             "list": user.has_perm("laboratory.view_object"),
             "retrieve": user.has_perm("laboratory.view_object"),
         }

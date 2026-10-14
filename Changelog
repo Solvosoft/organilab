@@ -1,3 +1,7 @@
+14/10/2026
+Command to update users roles
+    - python manage.py update_roles
+
 28/09/2026
 Command to update all Objects to a specific organization
     - python manage.py update_objects_organization <organization_pk>

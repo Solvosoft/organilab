@@ -225,6 +225,8 @@ def update_administrador_laboratorio():
             "sga.view_recipientsize",
             "sga.add_recipientsize",
             "sga.delete_recipientsize",
+            "laboratory.can_edit_equipment_material",
+            "laboratory.can_delete_equipment_material"
         ],
     )
 
@@ -277,6 +279,8 @@ def update_lectura_agregado_sustancias():
             "laboratory.view_shelf",
             "sga.view_recipientsize",
             "sga.add_recipientsize",
+            "laboratory.can_edit_equipment_material",
+            "laboratory.can_delete_equipment_material"
         ],
     )
     remove_permissions(
@@ -459,6 +463,8 @@ def update_asistente_laboratorio():
             "sga.view_recipientsize",
             "sga.add_recipientsize",
             "sga.delete_recipientsize",
+            "laboratory.can_edit_equipment_material",
+            "laboratory.can_delete_equipment_material"
         ],
     )
 
@@ -847,6 +853,8 @@ def update_tecnico_laboratorio():
             "sga.view_recipientsize",
             "sga.add_recipientsize",
             "sga.delete_recipientsize",
+            "laboratory.can_edit_equipment_material",
+            "laboratory.can_delete_equipment_material"
         ],
     )
 
@@ -1023,6 +1031,8 @@ def update_administrador_superior():
             "djreservation.change_product",
             "djreservation.delete_product",
             "djreservation.add_reservation",
+            "laboratory.can_edit_equipment_material",
+            "laboratory.can_delete_equipment_material"
         ],
     )
 
@@ -1096,6 +1106,8 @@ def update_administrativo_centro_trabajo():
             "sga.view_recipientsize",
             "sga.add_recipientsize",
             "sga.delete_recipientsize",
+            "laboratory.can_edit_equipment_material",
+            "laboratory.can_delete_equipment_material"
         ],
     )
 
