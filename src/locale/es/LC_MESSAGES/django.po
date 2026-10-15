@@ -9188,3 +9188,6 @@ msgstr ""
 
 msgid "Created new substance"
 msgstr "Nueva sustancia creada"
+
+msgid "Marked as discard"
+msgstr "Desecho"

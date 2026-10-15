@@ -818,6 +818,7 @@ class LabOrOrgRequestAdmin(admin.ModelAdmin):
 admin.site.register(models.PrecursorReport, PrecursorReportAdmin)
 admin.site.register(models.PrecursorReportValues, PrecursorReportValuesAdmin)
 admin.site.register(models.ShelfObjectLimits)
+admin.site.register(models.BaseUnitValues)
 # OBSOLETO: SustanceCharacteristics se migró a sga.SubstanceCharacteristics.
 # Se retira del admin para que nadie escriba en el modelo antiguo; sus filas se
 # conservan un ciclo como respaldo de la migración y se eliminarán en la

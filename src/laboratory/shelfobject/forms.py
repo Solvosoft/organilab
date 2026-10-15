@@ -1354,7 +1354,8 @@ class EditEquimentShelfobjectForm(forms.ModelForm, GTForm):
         label=_("Status"),
         widget=genwidgets.Select,
     )
-    marked_as_discard = forms.BooleanField(widget=genwidgets.YesNoInput, required=False)
+    marked_as_discard = forms.BooleanField(widget=genwidgets.YesNoInput, required=False,
+                                           label=_("Marked as discard"))
     was_donated = forms.BooleanField(
         widget=genwidgets.YesNoInput, required=False, label=_("Was donated?")
     )

@@ -1309,3 +1309,6 @@ msgstr "¿Desea eliminar esta palabra de advertencia?"
 
 msgid "Weight"
 msgstr "Peso"
+
+msgid "Equipment Type"
+msgstr "Tipo de equipo"

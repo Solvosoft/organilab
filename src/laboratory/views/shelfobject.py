@@ -687,15 +687,19 @@ def view_equipment_shelfobject_detail(request, org_pk, lab_pk, pk):
                 "description": shelfobject.description,
                 "marked_as_discard": shelfobject.marked_as_discard,
                 "was_donated": shelfobject.was_donated,
+                "shelfobject_code": shelfobject.shelfobject_code
             },
         )
     else:
         form = EditEquimentShelfobjectForm(
             org_pk=org_pk,
             initial={
+                "shelfobject_code":shelfobject.shelfobject_code,
                 "status": shelfobject.status,
                 "marked_as_discard": shelfobject.marked_as_discard,
                 "description": shelfobject.description,
+                "shelfobject_code": shelfobject.shelfobject_code
+
             },
         )
     context = {

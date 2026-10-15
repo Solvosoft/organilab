@@ -135,7 +135,14 @@ var actions_log = {
 }
 
 var actions = {
-		    table_actions: [],  //table_actions
+		    table_actions: [		    {
+		            action:  function(data){
+                        window.open(provider_url,"_blank")
+                        },
+                    text: `<i class="fa fa-building-o" aria-hidden="true"></i>`,
+                    titleAttr: gettext('Providers'),
+                    className: "btn btn-success"
+                    }],  //table_actions
 			object_actions: [],
 			title: gettext('Actions'),
 			className:  "no-export-col"
@@ -155,16 +162,7 @@ var guarantee_actions = {
 }
 
 var training_actions = {
-		    table_actions: [
-		    {
-		            action:  function(data){
-                        window.open(provider_url,"_blank")
-                        },
-                    text: `<i class="fa fa-building-o" aria-hidden="true"></i>`,
-                    titleAttr: gettext('Providers'),
-                    className: "btn btn-success"
-                    }
-                    ],
+		    table_actions: [],
 			object_actions: [],
 			title: gettext('Actions'),
 			className:  "no-export-col"
