@@ -16,7 +16,45 @@ from urllib.parse import unquote, urljoin, urlparse
 
 from django.conf import settings
 from django.contrib.staticfiles import finders
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+from xhtml2pdf import default as xhtml2pdf_default
 from xhtml2pdf import pisa
+
+FONT_DIR = os.path.join(os.path.dirname(__file__), "static", "fonts")
+
+# Las fuentes base de PDF (Helvetica, Arial...) solo traen Latin-1: sin
+# subíndices (C₃H₈O₃), marcas de dirección (U+200E) ni griego. DejaVu Sans sí,
+# así que se registra una vez y los alias sans de xhtml2pdf apuntan a ella;
+# las plantillas siguen pidiendo "Helvetica, Arial, sans-serif" sin cambios.
+PDF_SANS_FONT = "DejaVuSans"
+_SANS_FACES = {
+    "normal": "DejaVuSans",
+    "bold": "DejaVuSans-Bold",
+    "italic": "DejaVuSans-Oblique",
+    "boldItalic": "DejaVuSans-BoldOblique",
+}
+_SANS_ALIASES = (
+    "helvetica", "arial", "sans", "sansserif", "sans-serif", "verdana",
+    "geneva", "ui-sans-serif", "system-ui", "ui-rounded", "fantasy", "emoji",
+)
+
+
+def register_pdf_fonts():
+    """Registra DejaVu Sans en reportlab y la usa para los alias sans."""
+    if PDF_SANS_FONT in pdfmetrics.getRegisteredFontNames():
+        return
+    for face in _SANS_FACES.values():
+        pdfmetrics.registerFont(TTFont(face, os.path.join(FONT_DIR, face + ".ttf")))
+    pdfmetrics.registerFontFamily(PDF_SANS_FONT, **_SANS_FACES)
+    for alias in _SANS_ALIASES:
+        xhtml2pdf_default.DEFAULT_FONT[alias] = PDF_SANS_FONT
+    xhtml2pdf_default.DEFAULT_FONT["helvetica-bold"] = _SANS_FACES["bold"]
+    xhtml2pdf_default.DEFAULT_FONT["helvetica-oblique"] = _SANS_FACES["italic"]
+    xhtml2pdf_default.DEFAULT_FONT["helvetica-boldoblique"] = _SANS_FACES["boldItalic"]
+
+
+register_pdf_fonts()
 
 
 class PDFRenderError(Exception):
