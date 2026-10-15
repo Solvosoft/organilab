@@ -52,6 +52,8 @@ Encabezado y pie van en frames estáticos; la numeración usa <pdf:pagenumber>.
                 text-align: center;
                 padding: 2pt;
                 font-size: 8pt;
+                /* Parte solo la palabra más ancha que su celda (nombres IUPAC). */
+                overflow-wrap: break-word;
             }
 
             #pdf_table_report th {

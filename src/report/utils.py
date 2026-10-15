@@ -82,9 +82,17 @@ PDF_TABLE_CHUNK = 100
 #: daba una fila más alta que la página y el PDF entero fallaba con LayoutError.
 PDF_COLUMN_WIDTHS = {"danger_indication": "35%"}
 
+#: En tablas anchas (más de PDF_WIDE_TABLE columnas, las que van en B4) el
+#: reparto automático deja el nombre tan estrecho que los nombres IUPAC
+#: ("2,4-Dinitrofenilhidracina") se montan sobre las columnas vecinas.
+PDF_WIDE_TABLE = 8
+PDF_WIDE_COLUMN_WIDTHS = {"name": "13%", "features": "9%"}
 
-def _pdf_header_cell(col):
+
+def _pdf_header_cell(col, wide=False):
     width = PDF_COLUMN_WIDTHS.get(col.get("name"))
+    if not width and wide:
+        width = PDF_WIDE_COLUMN_WIDTHS.get(col.get("name"))
     if width:
         return "<th width='%s'>%s</th>" % (width, col["title"])
     return "<th>%s</th>" % col["title"]
@@ -96,8 +104,9 @@ def get_pdf_table_content(table_content, cell_style_fn=None, chunk_size=PDF_TABL
     if not ("columns" in table_content and "dataset" in table_content):
         return ""
     table_content["columns"].insert(0, {"title": "Item"})
+    wide = len(table_content["columns"]) > PDF_WIDE_TABLE
     header = "".join(
-        _pdf_header_cell(col) for col in table_content["columns"] if "title" in col
+        _pdf_header_cell(col, wide) for col in table_content["columns"] if "title" in col
     )
     # repeat="1": xhtml2pdf repite el encabezado en cada página.
     opening = "<table id='pdf_table_report' repeat='1'><thead><tr>%s</tr></thead><tbody>" % header
