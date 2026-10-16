@@ -238,11 +238,6 @@ class ValidateLaboratoryRoomReportForm(ReportForm):
 
         return list(furniture.values_list("pk", flat=True).distinct())
 
-    def __init__(self, *args, **kwargs):
-        org_pk = kwargs.pop("org_pk", None)
-        kwargs.pop("user", None)
-        super(ValidateLaboratoryRoomReportForm, self).__init__(*args, **kwargs)
-
 
 class ObjectLogChangeBaseForm(ReportSimpleForm):
     period = forms.CharField(

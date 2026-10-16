@@ -46,6 +46,11 @@ class ReportFormsTest(ReportTestBase):
         )
         self.assertEqual(form.cleaned_data["name"], "mi-reporte")
 
+    def test_sin_laboratorio_usa_los_del_usuario(self):
+        form = ValidateLaboratoryRoomReportForm(self.base(), org_pk=self.org.pk, user=self.user)
+        self.assertTrue(form.is_valid(), form.errors)
+        self.assertIn(self.lab.pk, form.cleaned_data["laboratory"])
+
     def test_usuarios_elegidos_se_guardan_como_pk_de_usuario(self):
         form = OrganizationReactiveForm(
             self.base(users=[self.user.profile.pk]), org_pk=self.org.pk
