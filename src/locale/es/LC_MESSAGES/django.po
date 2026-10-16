@@ -6290,6 +6290,9 @@ msgstr "Incompatible"
 msgid "Total reactive weight"
 msgstr "Peso total de reactivos"
 
+msgid "Total reactive weight (mass units only)"
+msgstr "Peso total de reactivos (solo unidades de masa)"
+
 msgid "tons"
 msgstr "toneladas"
 

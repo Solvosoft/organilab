@@ -338,8 +338,10 @@ def _collect_alerts(all_shelves_data, alerts):
             # así que ``seen_pairs`` solo sirve para cortar los bucles internos.
             pair_key = (min(pk_a, pk_b), max(pk_a, pk_b))
 
-            for code_a in hcodes_a:
-                for code_b in hcodes_b:
+            # Ordenados: los códigos vienen en un set y se muestra el primer par
+            # incompatible; sin orden fijo, cada generación elegía uno distinto.
+            for code_a in sorted(hcodes_a):
+                for code_b in sorted(hcodes_b):
                     compat = get_h_code_compatibility(code_a, code_b)
                     if compat == 'R':
                         class_a = H_CODE_TO_CLASS.get(code_a, '')

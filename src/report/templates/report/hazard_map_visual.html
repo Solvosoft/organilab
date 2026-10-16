@@ -111,7 +111,7 @@
         </h4>
         {% if lab_data.tonnage %}
         <span class="badge bg-info text-dark p-2">
-            {% trans 'Total reactive weight' %}: {{ lab_data.tonnage.kilograms }} kg ({{ lab_data.tonnage.tons }} {% trans 'tons' %})
+            {% trans 'Total reactive weight (mass units only)' %}: {{ lab_data.tonnage.kilograms }} kg ({{ lab_data.tonnage.tons }} {% trans 'tons' %})
         </span>
         {% endif %}
     </div>

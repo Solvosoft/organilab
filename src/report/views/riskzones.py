@@ -1,4 +1,6 @@
+import copy
 import json
+import unicodedata
 from collections import defaultdict
 from io import BytesIO
 
@@ -492,9 +494,43 @@ def report_hazard_map_html(report):
     return len(map_data)
 
 
+def _sort_key_without_accents(text):
+    return unicodedata.normalize("NFKD", text).encode("ascii", "ignore").decode().casefold()
+
+
+def _pdf_substances_text(substances):
+    """Sustancias de un estante en un solo párrafo, para el PDF.
+
+    Una por línea, un estante lleno ocupa más que una página y xhtml2pdf no
+    parte una celda de tabla: el PDF entero fallaba. Sin repetidos (varias
+    unidades del mismo reactivo) y separadas por «; » porque cada una ya
+    lleva comas en sus códigos H.
+    """
+    return "; ".join(sorted(set(substances), key=_sort_key_without_accents))
+
+
+def _hazard_map_pdf_data(map_data):
+    """Copia de ``map_data`` con el texto de sustancias de cada estante.
+
+    Es una copia: ``table_content`` se guarda y lo usa también la vista web,
+    que sigue mostrando una sustancia por línea.
+    """
+    map_data = copy.deepcopy(map_data)
+    for lab_data in map_data:
+        for room in lab_data.get("rooms", []):
+            for furniture in room.get("furniture_list", []):
+                for row in furniture.get("grid") or []:
+                    for cell in row:
+                        for shelf in cell.get("shelves", []):
+                            shelf["substances_text"] = _pdf_substances_text(
+                                shelf.get("substances", [])
+                            )
+    return map_data
+
+
 def report_hazard_map_pdf(report, uri):
     """Generate PDF hazard map report."""
-    map_data = report.table_content.get("map_data", [])
+    map_data = _hazard_map_pdf_data(report.table_content.get("map_data", []))
     report_name = get_report_name(report)
     title = report.data.get("title", report_name)
 

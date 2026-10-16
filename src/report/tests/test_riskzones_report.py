@@ -304,3 +304,35 @@ class HazardMapReportTest(RiskZoneDataMixin, ReportTestBase):
         self.assertEqual(
             riskzones.report_hazard_map_html(report), len(set(self.org.get_my_laboratories))
         )
+
+
+class HazardMapPdfSubstancesTest(ReportTestBase):
+    """En el PDF las sustancias de un estante van en un párrafo; en la web, no."""
+
+    def map_data(self, substances):
+        shelf = {"name": "E1", "substances": substances}
+        return [{"rooms": [{"furniture_list": [{"grid": [[{"shelves": [shelf]}]]}]}]}]
+
+    def test_un_parrafo_sin_repetidos_y_en_orden(self):
+        texto = riskzones._pdf_substances_text(
+            ["Cloruro de sodio (Ninguno)", "Ácido acético (H226, H314)",
+             "Cloruro de sodio (Ninguno)", "Acetona (H225, H319)"]
+        )
+        self.assertEqual(
+            texto,
+            "Acetona (H225, H319); Ácido acético (H226, H314); Cloruro de sodio (Ninguno)",
+        )
+
+    def test_no_modifica_los_datos_de_la_web(self):
+        original = self.map_data(["B", "A", "A"])
+        pdf = riskzones._hazard_map_pdf_data(original)
+        shelf_pdf = pdf[0]["rooms"][0]["furniture_list"][0]["grid"][0][0]["shelves"][0]
+        shelf_web = original[0]["rooms"][0]["furniture_list"][0]["grid"][0][0]["shelves"][0]
+        self.assertEqual(shelf_pdf["substances_text"], "A; B")
+        self.assertNotIn("substances_text", shelf_web)
+        self.assertEqual(shelf_web["substances"], ["B", "A", "A"])
+
+    def test_estante_sin_sustancias(self):
+        pdf = riskzones._hazard_map_pdf_data(self.map_data([]))
+        shelf = pdf[0]["rooms"][0]["furniture_list"][0]["grid"][0][0]["shelves"][0]
+        self.assertEqual(shelf["substances_text"], "")

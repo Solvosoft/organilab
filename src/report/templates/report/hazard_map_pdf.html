@@ -4,8 +4,6 @@
 {% block extra_css %}
 .hazard-grid {
     width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed;
     margin-bottom: 10px;
 }
 .hazard-grid td {
@@ -27,6 +25,7 @@
 .shelf-cell small {
     display: block;
     font-size: 0.75em;
+    text-align: left;
 }
 h3.lab-title {
     font-size: 1.1em;
@@ -63,7 +62,6 @@ h5.furniture-title {
 }
 .alerts-table {
     width: 100%;
-    border-collapse: collapse;
     font-size: 0.7em;
 }
 .alerts-table th, .alerts-table td {
@@ -74,6 +72,12 @@ h5.furniture-title {
 .alerts-table th {
     background-color: #FF0000;
     color: #FFFFFF;
+}
+/* Un título (o el peso) no queda solo al pie de página, separado de lo que
+   sigue. Solo cuando tiene contenido debajo: si no, varios laboratorios vacíos
+   seguidos forman una cadena larga que xhtml2pdf corta por cualquier lado. */
+.keep-next {
+    -pdf-keep-with-next: true;
 }
 .tonnage-info {
     font-size: 0.85em;
@@ -93,17 +97,17 @@ h5.furniture-title {
 </table>
 
 {% for lab_data in map_data %}
-<h3 class="lab-title">{{ lab_data.laboratory }}</h3>
+<h3 class="lab-title{% if lab_data.tonnage or lab_data.rooms %} keep-next{% endif %}">{{ lab_data.laboratory }}</h3>
 
 {% if lab_data.tonnage %}
-<p class="tonnage-info">{% trans 'Total reactive weight' %}: {{ lab_data.tonnage.kilograms }} kg ({{ lab_data.tonnage.tons }} {% trans 'tons' %})</p>
+<p class="tonnage-info{% if lab_data.rooms %} keep-next{% endif %}">{% trans 'Total reactive weight (mass units only)' %}: {{ lab_data.tonnage.kilograms }} kg ({{ lab_data.tonnage.tons }} {% trans 'tons' %})</p>
 {% endif %}
 
 {% for room in lab_data.rooms %}
-<h4 class="room-title">{{ room.name }}</h4>
+<h4 class="room-title{% if room.furniture_list %} keep-next{% endif %}">{{ room.name }}</h4>
 
 {% for furniture in room.furniture_list %}
-<h5 class="furniture-title">{{ furniture.name }}</h5>
+<h5 class="furniture-title{% if furniture.grid %} keep-next{% endif %}">{{ furniture.name }}</h5>
 {% if furniture.grid %}
 <table class="hazard-grid">
     {% for row in furniture.grid %}
@@ -113,9 +117,7 @@ h5.furniture-title {
             {% for shelf in cell.shelves %}
             <div class="shelf-cell" style="background-color:{{ shelf.color }};{% if shelf.compat_code == 'R' %}color:#fff;{% endif %}">
                 <strong>{{ shelf.name }}</strong>
-                {% for sub in shelf.substances %}
-                <small>{{ sub }}</small>
-                {% endfor %}
+                {% if shelf.substances_text %}<small>{{ shelf.substances_text }}</small>{% endif %}
             </div>
             {% endfor %}
         </td>

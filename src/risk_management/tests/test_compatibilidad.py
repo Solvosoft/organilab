@@ -244,3 +244,22 @@ class MapaDePeligrosCasosBordeTest(BaseLaboratorySetUpTest):
         alertas = []
         _collect_alerts(self.estantes(), alertas)
         self.assertEqual([(a["shelf_a"], a["shelf_b"]) for a in alertas], [("Uno", "Tres")])
+
+    def test_alerta_muestra_siempre_el_mismo_par(self):
+        """Con varios pares incompatibles se reporta uno solo: el primero en orden.
+
+        Los códigos llegan en un set, cuyo orden cambia entre procesos; antes
+        cada generación del mapa podía mostrar un par distinto.
+        """
+        def par(codigos_a, codigos_b):
+            datos = {
+                1: {"name": "A", "h_codes": codigos_a, "furniture_pk": 1, "labroom_pk": 1},
+                2: {"name": "B", "h_codes": codigos_b, "furniture_pk": 1, "labroom_pk": 1},
+            }
+            alertas = []
+            _collect_alerts(datos, alertas)
+            self.assertEqual(len(alertas), 1)
+            return alertas[0]["code_a"], alertas[0]["code_b"]
+
+        self.assertEqual(par(["H290", "H272"], ["H370", "H225"]), ("H272", "H225"))
+        self.assertEqual(par(["H272", "H290"], ["H225", "H370"]), ("H272", "H225"))
