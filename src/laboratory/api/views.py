@@ -521,8 +521,11 @@ class EquipmentManagementViewset(AuthAllPermBaseObjectManagement):
     perms = {
         "list": ["laboratory.view_object"],
         "create": ["laboratory.add_object", "laboratory.view_object"],
-        "update": ["laboratory.change_object", "laboratory.view_object"],
-        "destroy": ["laboratory.delete_object", "laboratory.view_object"],
+        "update": ["laboratory.can_edit_equipment_material", "laboratory.view_object"],
+        "destroy": [
+            "laboratory.can_delete_equipment_material",
+            "laboratory.view_object",
+        ],
         "retrieve": ["laboratory.view_object"],
     }
 
@@ -1678,8 +1681,8 @@ class ObjectViewSet(AuthAllPermBaseObjectManagement):
     perms = {
         "list": ["laboratory.view_object"],
         "create": ["laboratory.add_object"],
-        "update": ["laboratory.change_object"],
-        "destroy": ["laboratory.delete_object"],
+        "update": ["laboratory.can_edit_equipment_material"],
+        "destroy": ["laboratory.can_delete_equipment_material"],
         "retrieve": ["laboratory.view_object"],
     }
 
