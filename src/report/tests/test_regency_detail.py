@@ -7,7 +7,8 @@ from django.utils import timezone
 
 from laboratory.models import Object, ObjectMaximumLimit
 from report.tests.utils import ReportTestBase
-from report.views.regency import BRAND, RISK_COLORS, report_regency
+from laboratory.report_utils import BRAND, RISK_COLORS
+from report.views.regency import report_regency
 from risk_management.tests.test_clasificacion_regencia import cuadro3, cuadro4, inventario as inventario_c3
 from risk_management.utils_risk import clasificar_establecimiento, get_inventory
 
