@@ -3,6 +3,7 @@ from io import BytesIO, StringIO
 
 import ezodf
 import xlwt
+from lxml import etree
 from django.utils.translation import gettext as _
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Border, Font, NamedStyle, PatternFill, Side
@@ -183,6 +184,9 @@ def spreadsheet_cell_style(role, col, value):
     return role
 
 
+ROW_HEIGHTS = {"title": 24, "section": 18}
+
+
 def spreadsheet_column_widths(rows, max_width=50, min_width=10):
     """Ancho de cada columna en caracteres; títulos y secciones no cuentan."""
     widths = {}
@@ -240,6 +244,8 @@ def write_xlsx(sheets):
             row = ws.max_row
             for col, value in enumerate(cells):
                 ws.cell(row, col + 1).style = "report_" + spreadsheet_cell_style(role, col, value)
+            if role in ROW_HEIGHTS:
+                ws.row_dimensions[row].height = ROW_HEIGHTS[role]
         for col, width in spreadsheet_column_widths(rows, options.get("max_width", 50)).items():
             ws.column_dimensions[get_column_letter(col + 1)].width = width
         freeze = options.get("freeze_row")
@@ -250,6 +256,7 @@ def write_xlsx(sheets):
             )
         # Al imprimir: horizontal y todas las columnas en el ancho de la página.
         ws.page_setup.orientation = "landscape"
+        ws.page_setup.paperSize = ws.PAPERSIZE_A4
         ws.page_setup.fitToWidth = 1
         ws.page_setup.fitToHeight = 0
         ws.sheet_properties.pageSetUpPr.fitToPage = True
@@ -305,6 +312,9 @@ def write_xls(sheets):
             for col, value in enumerate(cells):
                 style = styles[spreadsheet_cell_style(role, col, value)]
                 ws.write(r, col, "" if value is None else value, style)
+            if role in ROW_HEIGHTS:
+                ws.row(r).height_mismatch = True
+                ws.row(r).height = 20 * ROW_HEIGHTS[role]
         for col, width in spreadsheet_column_widths(rows, options.get("max_width", 50)).items():
             ws.col(col).width = 256 * width
         freeze = options.get("freeze_row")
@@ -312,6 +322,10 @@ def write_xls(sheets):
             ws.set_panes_frozen(True)
             ws.set_horz_split_pos(freeze)
             ws.set_remove_splits(True)
+        ws.portrait = False
+        ws.fit_num_pages = 1
+        ws.fit_width_to_pages = 1
+        ws.fit_height_to_pages = 0
     output = BytesIO()
     wb.save(output)
     return output
@@ -356,6 +370,41 @@ def _ods_styles(doc):
         doc.inject_style(ODS_STYLE % {"name": name, "cell": cell, "paragraph": paragraph, "text": text})
 
 
+ODS_ROW_STYLE = (
+    '<style:style xmlns:style="urn:oasis:names:tc:opendocument:xmlns:style:1.0" '
+    'style:name="report_row_%(role)s" style:family="table-row">'
+    '<style:table-row-properties style:row-height="%(height)spt" style:use-optimal-row-height="false"/>'
+    '</style:style>'
+)
+
+
+ODS_PAGE_LAYOUT = (
+    '<style:page-layout xmlns:style="urn:oasis:names:tc:opendocument:xmlns:style:1.0" '
+    'xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0" '
+    'style:name="report_page">'
+    '<style:page-layout-properties fo:page-width="29.7cm" fo:page-height="21cm" '
+    'style:print-orientation="landscape" fo:margin="1cm" '
+    'style:scale-to-X="1" style:scale-to-Y="0"/>'
+    '</style:page-layout>'
+)
+ODS_MASTER_PAGE = (
+    '<style:master-page xmlns:style="urn:oasis:names:tc:opendocument:xmlns:style:1.0" '
+    'style:name="Default" style:page-layout-name="report_page"/>'
+)
+
+
+def _ods_page_setup(doc):
+    # lxml directo: ezodf no sabe envolver estos elementos (fake_element falla).
+    doc.styles.automatic_styles.xmlnode.append(etree.fromstring(ODS_PAGE_LAYOUT))
+    doc.styles.master_styles.xmlnode.append(etree.fromstring(ODS_MASTER_PAGE))
+
+
+def _ods_row_styles(doc):
+    for role, height in ROW_HEIGHTS.items():
+        node = ezodf.xmlns.fake_element(ODS_ROW_STYLE % {"role": role, "height": height})
+        doc.content.automatic_styles.xmlnode.append(node.xmlnode)
+
+
 def _ods_column_style(doc, width, injected):
     if width not in injected:
         node = ezodf.xmlns.fake_element(ODS_COLUMN_STYLE % {"width": width, "cm": width * 0.21})
@@ -367,6 +416,8 @@ def _ods_column_style(doc, width, injected):
 def write_ods(sheets):
     doc = ezodf.newdoc(doctype="ods")
     _ods_styles(doc)
+    _ods_row_styles(doc)
+    _ods_page_setup(doc)
     injected = set()
     for name, rows, options in sheets:
         ncols = max([len(cells) for _role, cells in rows] + [1])
@@ -378,6 +429,8 @@ def write_ods(sheets):
                 if not _is_empty(value):
                     cell.set_value(value)
                 cell.style_name = "report_" + spreadsheet_cell_style(role, col, value)
+            if role in ROW_HEIGHTS:
+                sheet.row_info(r).style_name = "report_row_" + role
         widths = spreadsheet_column_widths(rows, options.get("max_width", 50))
         for col, width in widths.items():
             sheet.column_info(col).style_name = _ods_column_style(doc, width, injected)

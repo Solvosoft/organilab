@@ -85,6 +85,11 @@ class PresentacionDeTablasTest(SimpleTestCase):
         self.assertIn('<td class="c0">2</td><td class="c1">Sal</td>', html)
         self.assertTrue(html.endswith("</tbody></table>"))
 
+    def test_tabla_pdf_celda_sin_dato_queda_vacia(self):
+        html = get_pdf_table_content({"columns": [{"title": "Código"}, {"title": "Nombre"}], "dataset": [[None, "Cal"]]})
+        self.assertIn("<td>1</td><td></td><td>Cal</td>", html)
+        self.assertNotIn("None", html)
+
     def test_tabla_pdf_sin_filas_lo_dice(self):
         html = get_pdf_table_content({"columns": [{"title": "Nombre"}, {"title": "CAS"}], "dataset": []})
         self.assertIn("<th>Item</th><th>Nombre</th><th>CAS</th>", html)

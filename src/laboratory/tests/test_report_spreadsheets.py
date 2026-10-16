@@ -1,5 +1,7 @@
 """Estilo común de las hojas de cálculo de los reportes (XLSX, XLS y ODS)."""
 
+import zipfile
+
 import openpyxl
 import pyexcel
 from django.test import SimpleTestCase
@@ -105,6 +107,21 @@ class SaveOdsTest(SimpleTestCase):
         self.assertTrue(ws["A3"].alignment.wrap_text)
         self.assertEqual(ws.freeze_panes, "A3")
         self.assertEqual(ws.auto_filter.ref, "A2:C4")
+
+    def test_el_titulo_no_sale_cortado(self):
+        data = [["reporte-prueba"], ["Lab A"], ["X", "Y"], [1, 2]]
+        ws = openpyxl.load_workbook(
+            ExcelGraphBuilder().save_ods(data, format_type="xlsx")
+        ).worksheets[0]
+        self.assertEqual(ws.row_dimensions[1].height, 24)
+        self.assertEqual(ws.row_dimensions[2].height, 18)
+        ods = ExcelGraphBuilder().save_ods(data, format_type="ods")
+        with zipfile.ZipFile(ods) as archivo:
+            content = archivo.read("content.xml").decode()
+        self.assertIn('style:row-height="24pt"', content)
+        self.assertIn('table:style-name="report_row_title"', content)
+        xls = ExcelGraphBuilder().save_ods(data, format_type="xls")
+        self.assertEqual(leer(xls, "xls")[0], ["reporte-prueba"])
 
     def test_varias_tablas_no_fija_encabezado(self):
         data = [["r"], ["Lab A"], ["X", "Y"], [1, 2], ["Lab B"], ["X", "Y"], [3, 4]]

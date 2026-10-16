@@ -120,7 +120,7 @@ def get_pdf_table_content(table_content, cell_style_fn=None, chunk_size=PDF_TABL
         parts.append("<tr>")
         for col_idx, item in enumerate(row):
             style_attr = cell_style_fn(col_idx, item) if cell_style_fn else ""
-            parts.append("<td%s>%s</td>" % (style_attr, item))
+            parts.append("<td%s>%s</td>" % (style_attr, "" if item is None else item))
         parts.append("</tr>")
     if not table_content["dataset"]:
         # Sin filas, el PDF quedaba con el encabezado solo y no decía por qué.
