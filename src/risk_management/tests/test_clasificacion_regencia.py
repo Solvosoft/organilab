@@ -165,6 +165,9 @@ class ClasificarEstablecimientoTest(TestCase):
         self.assertTrue(detalles["Cloro"]["nominada_c3"])
         self.assertIsNone(detalles["Agua"]["umbral_c3"])
         self.assertIsNone(detalles["Agua"]["ratio_c3"])
+        # El reporte de regencia lee cada clave del detalle: sin `advertencias`
+        # el XLSX/ODS caía en el respaldo y publicaba «riesgo menor».
+        self.assertEqual([d["advertencias"] for d in res["detalles"]], [[], []])
 
     def test_umbral_individual_del_cuadro4_es_riesgo_mayor(self):
         inv = inventario(
@@ -186,6 +189,7 @@ class ClasificarEstablecimientoTest(TestCase):
         self.assertEqual(detalles["Hexano"]["umbral_c3"], 50.0)
         self.assertEqual(detalles["Hexano"]["ratio_c3"], 0.02)
         self.assertIsNone(detalles["Etanol"]["ratio_c3"])
+        self.assertEqual([d["advertencias"] for d in res["detalles"]], [[], []])
 
     def test_sumatoria_por_categoria_igual_o_mayor_a_uno_es_riesgo_mayor(self):
         inv = inventario(

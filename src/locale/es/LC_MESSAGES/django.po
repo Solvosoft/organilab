@@ -448,7 +448,7 @@ msgid "Resource type"
 msgstr "Tipo de recurso"
 
 msgid "Period"
-msgstr "PerÍodo"
+msgstr "Período"
 
 msgid "Normalizer"
 msgstr "Normalizador"

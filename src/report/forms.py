@@ -434,6 +434,16 @@ class ReactiveStockReportForm(ReportForm):
 
 
 class RegencyReportForm(ReportForm):
+    format = forms.ChoiceField(
+        widget=genwidgets.Select,
+        choices=(
+            ("xls", "XLS"),
+            ("xlsx", "XLSX"),
+            ("ods", "ODS"),
+        ),
+        required=False,
+        label=_("Format"),
+    )
 
     period = forms.CharField(
         widget=genwidgets.DateRangeInput, required=False, label=_("Period")
@@ -450,12 +460,6 @@ class RegencyReportForm(ReportForm):
             self.fields["laboratory"].queryset = Laboratory.objects.filter(
                 pk__in=lab_ids
             )
-
-        self.fields["format"].choices = (
-            ("xls", "XLS"),
-            ("xlsx", "XLSX"),
-            ("ods", "ODS"),
-        )
 
 
 class CompatibilityReportForm(ReportBase):

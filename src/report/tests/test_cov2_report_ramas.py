@@ -7,7 +7,6 @@ interfaz o desde la tarea Celery, que solo se ejercitaban (o ni eso) en
 Selenium.
 """
 
-from unittest.mock import patch
 
 from django.contrib.auth.models import Permission, User
 from django.contrib.contenttypes.models import ContentType
@@ -26,28 +25,8 @@ from report.datasets import shelfobjects_by_furniture
 from report.forms import ValidateObjectTypeForm
 from report.tests.utils import XHR, ReportTestBase
 from report.views import discard_objects, riskzones, stock
-from report.views.base import base_pdf
 from report.views.object_changes import _unlogged_with_history
-from report.views.regency import get_pdf_regency_table_content
 from sga.models import DangerIndication, SubstanceCharacteristics
-
-# Resultado fijo de la clasificación de regencia (no se importa de
-# test_regency_html para no volver a correr sus pruebas desde este módulo).
-RESULTADO = {
-    "clasificacion": "riesgo menor",
-    "criterio": "Sumatoria por debajo de 1.",
-    "sumatorias_por_categoria": {"Físico": 0.2},
-    "detalles": [
-        {
-            "nombre": "Acetona", "cas": "67-64-1", "cantidad_t": 0.5,
-            "nominada_c3": False, "umbral_c3": None, "ratio_c3": None,
-            "h_codes": "H225", "regla_cruzada_salud": False,
-            "detalle_contribuciones": "", "advertencias": "",
-            "contribuciones": {"Físico": 0.2},
-        }
-    ],
-    "trazabilidad": {},
-}
 
 
 class ShelfobjectsByFurnitureTest(ReportTestBase):
@@ -125,30 +104,6 @@ class DownloadOrganizationReportSuperuserTest(ReportTestBase):
             **XHR,
         )
         self.assertEqual(response.status_code, 401)
-
-
-class RegencyPdfTest(ReportTestBase):
-    """El PDF de regencia, pedido sin haber generado antes el HTML."""
-
-    def report(self, file_type):
-        return self.make_report("regency_report", file_type, years=2025, period="")
-
-    def test_tabla_pdf_calcula_si_no_hay_resumen(self):
-        report = self.report("pdf")
-        with patch(
-            "report.views.regency.clasificar_establecimiento", return_value=RESULTADO
-        ) as clasificar:
-            html = get_pdf_regency_table_content(report)
-        self.assertEqual(clasificar.call_count, 1)
-        self.assertIn("Acetona", html)
-
-    def test_base_pdf_usa_la_tabla_de_regencia(self):
-        report = self.report("pdf")
-        with patch("report.views.regency.clasificar_establecimiento", return_value=RESULTADO):
-            base_pdf(report, "http://testserver/")
-        report.refresh_from_db()
-        self.assertTrue(report.file.name.endswith(".pdf"))
-        self.assertIn("summary", report.table_content)
 
 
 class DiscardColumnListTest(ReportTestBase):

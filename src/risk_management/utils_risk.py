@@ -331,6 +331,7 @@ def clasificar_establecimiento(inventario, c3, umbral_H_df, map_H_to_tipo):
                     "contribuciones": {},
                     "detalle_contribuciones": [],
                     "regla_cruzada_salud": False,
+                    "advertencias": [],
                 }
             )
         return {
@@ -365,6 +366,7 @@ def clasificar_establecimiento(inventario, c3, umbral_H_df, map_H_to_tipo):
                         "contribuciones": {},
                         "detalle_contribuciones": [],
                         "regla_cruzada_salud": False,
+                        "advertencias": [],
                         "paso4_supera": (
                             r["nombre"] == fila["nombre"] and r["cas"] == fila["cas"]
                         ),

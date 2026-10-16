@@ -6,7 +6,7 @@ from django.test import TestCase, override_settings
 
 from laboratory.models import Catalog, Laboratory
 from report.models import TaskReport
-from report.views.regency import report_regency_doc, report_regency_xlsx
+from report.views.regency import report_regency
 
 
 @override_settings(MEDIA_ROOT="/tmp/organilab-test-media")
@@ -44,13 +44,13 @@ class RegencyReportWithoutTonsUnitTest(TestCase):
 
     def test_xlsx_se_genera(self):
         report = self.build_report("xlsx")
-        report_regency_xlsx(report)
+        report_regency(report)
         report.refresh_from_db()
         self.assertTrue(report.file)
 
     def test_ods_se_genera(self):
         report = self.build_report("ods")
-        report_regency_doc(report)
+        report_regency(report)
         report.refresh_from_db()
         self.assertTrue(report.file)
 
@@ -71,11 +71,11 @@ class RegencyReportWithoutTonsUnitTest(TestCase):
         with patch(
             "report.views.regency.clasificar_establecimiento", return_value=resultado
         ):
-            report_regency_xlsx(report)
+            report_regency(report)
         report.refresh_from_db()
         with report.file.open("rb") as fh:
             wb = openpyxl.load_workbook(fh)
-        self.assertEqual(wb["Resumen"]["A2"].value, "riesgo mayor")
+        self.assertEqual(wb["Resumen"]["A5"].value, "riesgo mayor")
         self.assertEqual(
             [c.value for c in wb["Sumatoria_categoría"][2]], [0.0, 0.0, 0.0]
         )

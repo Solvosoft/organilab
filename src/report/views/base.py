@@ -36,7 +36,6 @@ from report.utils import (
 )
 from django_celery_results.models import TaskResult
 
-from report.views.regency import get_pdf_regency_table_content
 
 
 def build_report(pk, absolute_uri):
@@ -107,9 +106,6 @@ def base_pdf(report, uri):
         total = ObjectChangeLogReportBuilder.objects.filter(
             report__task_report=report
         ).count()
-    elif report.type_report == "regency_report":
-        datalist = get_pdf_regency_table_content(report)
-        columns = 13
     else:
         cell_style_fn = None
         if report.type_report == "compatibility_report":
@@ -512,8 +508,6 @@ def report_organization_table(request, org_pk, pk):
         ).select_related("laboratory", "object", "unit").prefetch_related(
             "object__substancharacteristics_object"
         )
-    # regency_report usa la tabla general: su HTML guarda columnas y filas
-    # como los demás reportes.
     if task.type_report == "hazard_map_report":
         template_name = "report/hazard_map.html"
         content["map_data"] = task.table_content.get("map_data", [])
