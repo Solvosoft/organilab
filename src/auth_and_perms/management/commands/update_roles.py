@@ -221,6 +221,8 @@ def update_administrador_laboratorio():
             "laboratory.view_labororgrequest",
             "laboratory.change_labororgrequest",
             "laboratory.delete_labororgrequest",
+            "laboratory.can_edit_equipment_material",
+            "laboratory.can_delete_equipment_material",
         ],
     )
 
@@ -256,6 +258,7 @@ def update_administrador_laboratorio():
             "msds.add_msdsobject",
             "msds.change_msdsobject",
             "laboratory.can_approve_labororgrequest",
+            "laboratory.delete_object",
         ],
     )
 
@@ -457,6 +460,8 @@ def update_asistente_laboratorio():
         rol,
         [
             "laboratory.can_manage_reorder",
+            "laboratory.can_edit_equipment_material",
+            "laboratory.can_delete_equipment_material",
         ],
     )
 
@@ -856,6 +861,8 @@ def update_tecnico_laboratorio():
             "risk_management.view_structure",
             "risk_management.view_regent",
             "risk_management.view_workday",
+            "laboratory.can_edit_equipment_material",
+            "laboratory.can_delete_equipment_material",
         ],
     )
 
@@ -1045,6 +1052,8 @@ def update_administrador_superior():
             "djreservation.change_product",
             "djreservation.delete_product",
             "djreservation.add_reservation",
+            "laboratory.can_edit_equipment_material",
+            "laboratory.can_delete_equipment_material",
         ],
     )
 
@@ -1121,6 +1130,8 @@ def update_administrativo_centro_trabajo():
             "laboratory.view_informscheduler",
             "laboratory.change_informscheduler",
             "laboratory.can_manage_reorder",
+            "laboratory.can_edit_equipment_material",
+            "laboratory.can_delete_equipment_material",
         ],
     )
 

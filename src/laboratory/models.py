@@ -168,6 +168,10 @@ class Object(AbstractOrganizationRef):
         verbose_name = _("Object")
         verbose_name_plural = _("Objects")
         ordering = ["pk", "name"]
+        permissions = [
+            ("can_edit_equipment_material", "Can edit equipment and material"),
+            ("can_delete_equipment_material", "Can delete equipment and material"),
+        ]
 
     def __str__(self):
         return "%s %s" % (
