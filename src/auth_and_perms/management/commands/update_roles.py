@@ -223,6 +223,10 @@ def update_administrador_laboratorio():
             "laboratory.delete_labororgrequest",
             "laboratory.can_edit_equipment_material",
             "laboratory.can_delete_equipment_material",
+            "laboratory.change_shelfobjectmaintenance",
+            "laboratory.delete_shelfobjectmaintenance",
+            "laboratory.view_shelfobjectmaintenance",
+            "laboratory.change_shelfobjectcalibrate",
         ],
     )
 
@@ -462,6 +466,10 @@ def update_asistente_laboratorio():
             "laboratory.can_manage_reorder",
             "laboratory.can_edit_equipment_material",
             "laboratory.can_delete_equipment_material",
+            "laboratory.change_shelfobjectmaintenance",
+            "laboratory.delete_shelfobjectmaintenance",
+            "laboratory.view_shelfobjectmaintenance",
+            "laboratory.change_shelfobjectcalibrate",
         ],
     )
 
@@ -962,6 +970,8 @@ def update_tecnico_laboratorio():
             "sga.view_substance",
             "sga.change_substance",
             "auth_and_perms.institution_can_access",
+            "laboratory.change_shelfobjectmaintenance",
+            "laboratory.delete_shelfobjectmaintenance",
         ],
     )
 
