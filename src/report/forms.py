@@ -208,16 +208,16 @@ class ValidateLaboratoryRoomReportForm(ReportForm):
     is_precursor = forms.BooleanField(widget=genwidgets.YesNoInput, required=False)
 
     def clean_lab_room(self):
-
         lab_room = self.cleaned_data["lab_room"]
-        laboratory = self.cleaned_data["laboratory"]
+        laboratory = self.cleaned_data.get("laboratory")
+        if laboratory is None:
+            return []
 
+        rooms = LaboratoryRoom.objects.filter(laboratory__in=laboratory)
         if lab_room:
-            lab_room = LaboratoryRoom.objects.filter(pk__in=lab_room)
-        else:
-            lab_room = LaboratoryRoom.objects.filter(laboratory__in=laboratory)
+            rooms = rooms.filter(pk__in=lab_room)
 
-        return list(lab_room.values_list("pk", flat=True).distinct())
+        return list(rooms.values_list("pk", flat=True).distinct())
 
     def get_furniture(self, lab_room, laboratory):
         furniture = Furniture.objects.filter(labroom__laboratory__in=list(laboratory))
@@ -227,9 +227,11 @@ class ValidateLaboratoryRoomReportForm(ReportForm):
         return furniture
 
     def clean_furniture(self):
-        lab_room = self.cleaned_data["lab_room"]
+        lab_room = self.cleaned_data.get("lab_room", [])
         furniture = self.cleaned_data["furniture"]
-        laboratory = self.cleaned_data["laboratory"]
+        laboratory = self.cleaned_data.get("laboratory")
+        if laboratory is None:
+            return []
 
         if not furniture:
             furniture = self.get_furniture(lab_room, laboratory)

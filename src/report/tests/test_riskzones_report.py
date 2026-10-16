@@ -336,3 +336,37 @@ class HazardMapPdfSubstancesTest(ReportTestBase):
         pdf = riskzones._hazard_map_pdf_data(self.map_data([]))
         shelf = pdf[0]["rooms"][0]["furniture_list"][0]["grid"][0][0]["shelves"][0]
         self.assertEqual(shelf["substances_text"], "")
+
+
+class CompatibilityPdfTableTest(ReportTestBase):
+    COLUMNS = [{"name": "zone"}, {"name": "substances_a"}, {"name": "substances_b"}]
+
+    def table(self, *rows):
+        return riskzones.compatibility_pdf_table({"columns": self.COLUMNS, "dataset": [list(r) for r in rows]})
+
+    def test_quita_repetidos_y_ordena(self):
+        tabla = self.table(["Z1", "Sal; Ácido; Sal; Sal", "Cal"])
+        self.assertEqual(tabla["dataset"], [["Z1", "Ácido; Sal", "Cal"]])
+        self.assertEqual(tabla["items"], [1])
+
+    def test_lista_larga_sigue_en_otra_fila_sin_perder_sustancias(self):
+        sustancias = ["Sustancia %03d" % n for n in range(300)]
+        tabla = self.table(["Z1", "; ".join(sustancias), "Cal"], ["Z2", "Sal", "Yeso"])
+        filas_z1 = [f for f in tabla["dataset"] if f[0] == "Z1"]
+        self.assertGreater(len(filas_z1), 1)
+        total = len(filas_z1)
+        recuperadas = []
+        for parte, fila in enumerate(filas_z1, start=1):
+            self.assertTrue(fila[1].endswith("(%d of %d)" % (parte, total)))
+            texto = fila[1][: -len(" (%d of %d)" % (parte, total))]
+            self.assertLessEqual(len(texto), riskzones.COMPATIBILITY_PDF_MAX_CHARS)
+            recuperadas += texto.split("; ")
+        self.assertEqual(recuperadas, sustancias)
+        self.assertEqual(filas_z1[0][2], "Cal")
+        self.assertEqual(filas_z1[1][2], "")
+        self.assertEqual(tabla["items"], [1] * total + [2])
+
+    def test_no_modifica_la_tabla_original(self):
+        original = {"columns": self.COLUMNS, "dataset": [["Z1", "Sal; Sal", "Cal"]]}
+        riskzones.compatibility_pdf_table(original)
+        self.assertEqual(original["dataset"], [["Z1", "Sal; Sal", "Cal"]])

@@ -125,9 +125,12 @@ def base_pdf(report, uri):
                 return ""
 
             cell_style_fn = compat_style_fn
-        datalist = get_pdf_table_content(
-            report.table_content, cell_style_fn=cell_style_fn
-        )
+        table_content = report.table_content
+        if report.type_report == "compatibility_report":
+            from report.views.riskzones import compatibility_pdf_table
+
+            table_content = compatibility_pdf_table(table_content)
+        datalist = get_pdf_table_content(table_content, cell_style_fn=cell_style_fn)
         total = len(report.table_content["dataset"])
         if total > 0:
             columns = len(report.table_content["dataset"][0])

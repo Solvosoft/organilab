@@ -80,7 +80,14 @@ PDF_TABLE_CHUNK = 100
 #: fila entre páginas: con el ancho automático la columna de indicaciones de
 #: peligro quedaba estrecha, una sustancia con muchos códigos H (formaldehído)
 #: daba una fila más alta que la página y el PDF entero fallaba con LayoutError.
-PDF_COLUMN_WIDTHS = {"danger_indication": "35%"}
+PDF_COLUMN_WIDTHS = {
+    "danger_indication": "35%",
+    "substances_a": "18%",
+    "substances_b": "18%",
+    "laboratory_a": "8%",
+    "laboratory_b": "8%",
+    "reason": "8%",
+}
 
 #: En tablas anchas (más de PDF_WIDE_TABLE columnas, las que van en B4) el
 #: reparto automático deja el nombre tan estrecho que los nombres IUPAC
@@ -112,11 +119,12 @@ def get_pdf_table_content(table_content, cell_style_fn=None, chunk_size=PDF_TABL
     opening = "<table id='pdf_table_report' repeat='1'><thead><tr>%s</tr></thead><tbody>" % header
     closing = "</tbody></table>"
     parts = [opening]
+    items = table_content.get("items")
     for i, row in enumerate(table_content["dataset"], start=1):
         if i > 1 and (i - 1) % chunk_size == 0:
             parts.append(closing)
             parts.append(opening)
-        row.insert(0, i)
+        row.insert(0, items[i - 1] if items else i)
         parts.append("<tr>")
         for col_idx, item in enumerate(row):
             style_attr = cell_style_fn(col_idx, item) if cell_style_fn else ""

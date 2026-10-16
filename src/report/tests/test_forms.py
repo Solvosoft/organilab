@@ -1,4 +1,4 @@
-from laboratory.models import Furniture, LaboratoryRoom, Object
+from laboratory.models import Furniture, Laboratory, LaboratoryRoom, Object
 from report.forms import (
     CompatibilityReportForm,
     HazardMapReportForm,
@@ -50,6 +50,23 @@ class ReportFormsTest(ReportTestBase):
         form = ValidateLaboratoryRoomReportForm(self.base(), org_pk=self.org.pk, user=self.user)
         self.assertTrue(form.is_valid(), form.errors)
         self.assertIn(self.lab.pk, form.cleaned_data["laboratory"])
+
+    def test_laboratorio_no_permitido_es_error_de_validacion(self):
+        form = ValidateLaboratoryRoomReportForm(
+            self.base(laboratory=[999999], lab_room=[2]), org_pk=self.org.pk, user=self.user
+        )
+        self.assertFalse(form.is_valid())
+        self.assertIn("laboratory", form.errors)
+
+    def test_sala_de_otro_laboratorio_se_descarta(self):
+        otro = Laboratory.objects.create(name="Otro lab", organization=self.org)
+        sala_ajena = LaboratoryRoom.objects.create(name="Sala ajena", laboratory=otro)
+        form = ValidateLaboratoryRoomReportForm(
+            self.base(laboratory=[self.lab.pk], lab_room=[sala_ajena.pk]),
+            org_pk=self.org.pk, user=self.user,
+        )
+        self.assertTrue(form.is_valid(), form.errors)
+        self.assertEqual(form.cleaned_data["lab_room"], [])
 
     def test_usuarios_elegidos_se_guardan_como_pk_de_usuario(self):
         form = OrganizationReactiveForm(

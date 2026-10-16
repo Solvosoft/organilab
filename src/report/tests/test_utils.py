@@ -280,3 +280,17 @@ class ModelosYTareaTest(ReportTestBase):
 
         with self.assertRaises(ObjectDoesNotExist):
             task_report(999999, "http://testserver/")
+
+    def test_tarea_que_falla_conserva_el_error_y_lo_registra(self):
+        from unittest.mock import patch
+
+        from report.tasks import task_report
+
+        report = self.make_report("reactive_report", "pdf")
+        with patch("report.tasks.build_report", side_effect=ValueError("no cabe")):
+            with self.assertRaisesMessage(ValueError, "no cabe"):
+                task_report(report.pk, "http://testserver/")
+        self.assertEqual(
+            list(DocumentReportStatus.objects.filter(report=report).values_list("description", flat=True)),
+            ["Error al generar el reporte"],
+        )

@@ -6609,15 +6609,11 @@ msgstr "Zona de riesgo"
 msgid "Compatibility"
 msgstr "Compatibilidad"
 
-#, fuzzy
-#| msgid "Substance A"
 msgid "Substances A"
-msgstr "Substancia A"
+msgstr "Sustancias A"
 
-#, fuzzy
-#| msgid "Substance B"
 msgid "Substances B"
-msgstr "Substancia B"
+msgstr "Sustancias B"
 
 msgid "Laboratory A"
 msgstr "Laboratorio A"
@@ -7862,6 +7858,13 @@ msgstr "Excel"
 
 msgid "No records."
 msgstr "Sin registros."
+
+#, python-format
+msgid "(%(part)s of %(total)s)"
+msgstr "(%(part)s de %(total)s)"
+
+msgid "Error generating the report"
+msgstr "Error al generar el reporte"
 
 msgid "No changes were recorded with the selected filters."
 msgstr "No se registraron cambios con los filtros seleccionados."

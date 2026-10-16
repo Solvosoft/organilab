@@ -509,6 +509,53 @@ def _pdf_substances_text(substances):
     return "; ".join(sorted(set(substances), key=_sort_key_without_accents))
 
 
+COMPATIBILITY_PDF_SUBSTANCES = ("substances_a", "substances_b")
+COMPATIBILITY_PDF_MAX_CHARS = 1200
+
+
+def _split_substances(text, max_chars=COMPATIBILITY_PDF_MAX_CHARS):
+    items = sorted(
+        {item.strip() for item in str(text or "").split("; ") if item.strip()},
+        key=_sort_key_without_accents,
+    )
+    chunks, current = [], []
+    for item in items:
+        if current and len("; ".join(current + [item])) > max_chars:
+            chunks.append("; ".join(current))
+            current = []
+        current.append(item)
+    if current:
+        chunks.append("; ".join(current))
+    return chunks or [""]
+
+
+def compatibility_pdf_table(table_content):
+    """Copia de la tabla de compatibilidad para el PDF.
+
+    xhtml2pdf no parte una fila entre páginas: una lista de sustancias que no
+    cabe se reparte en filas consecutivas del mismo par, sin perder ninguna.
+    """
+    columns = copy.deepcopy(table_content["columns"])
+    names = [column.get("name") for column in columns]
+    positions = [names.index(name) for name in COMPATIBILITY_PDF_SUBSTANCES if name in names]
+    dataset, items = [], []
+    for number, row in enumerate(table_content["dataset"], start=1):
+        parts = {i: _split_substances(row[i]) for i in positions}
+        total = max([len(chunks) for chunks in parts.values()] + [1])
+        for index in range(total):
+            new_row = list(row)
+            for i, chunks in parts.items():
+                new_row[i] = chunks[index] if index < len(chunks) else ""
+                if len(chunks) > 1 and index < len(chunks):
+                    new_row[i] = "%s %s" % (
+                        new_row[i],
+                        _("(%(part)s of %(total)s)") % {"part": index + 1, "total": len(chunks)},
+                    )
+            dataset.append(new_row)
+            items.append(number)
+    return {"columns": columns, "dataset": dataset, "items": items}
+
+
 def _hazard_map_pdf_data(map_data):
     """Copia de ``map_data`` con el texto de sustancias de cada estante.
 
