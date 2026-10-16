@@ -85,6 +85,11 @@ class PresentacionDeTablasTest(SimpleTestCase):
         self.assertIn('<td class="c0">2</td><td class="c1">Sal</td>', html)
         self.assertTrue(html.endswith("</tbody></table>"))
 
+    def test_tabla_pdf_sin_filas_lo_dice(self):
+        html = get_pdf_table_content({"columns": [{"title": "Nombre"}, {"title": "CAS"}], "dataset": []})
+        self.assertIn("<th>Item</th><th>Nombre</th><th>CAS</th>", html)
+        self.assertIn("<tr><td colspan='3'>No records.</td></tr>", html)
+
     def test_tabla_pdf_con_indicaciones_de_peligro_largas(self):
         # Con ancho automático la columna quedaba estrecha y la fila del
         # formaldehído (nueve códigos H) era más alta que la página: xhtml2pdf
@@ -248,7 +253,7 @@ class TablaPdfDeCambiosTest(ReportTestBase):
         html = get_pdf_log_change_table_content(report)
 
         self.assertIn(f"{self.lab.name} | {obj.name}", html)
-        self.assertIn(f" :3.0 {unidad.description}", html)
+        self.assertIn(f"Difference: 3.0 {unidad.description}", html)
         self.assertIn("<td>Organilab Admin</td>", html)
         self.assertIn("<td>solo-usuario</td>", html)
         # Una fila sin usuario no rompe la tabla: queda la celda vacía.

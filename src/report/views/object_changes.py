@@ -166,7 +166,7 @@ def resume_queryset_doc(report, queryset, objs, log_filters):
         cas = obj_using.cas_code if obj_using else ""
         name = obj_using.name if obj_using else ""
         doc_list.append([f"{lab.name} | {name} {cas}"])
-        doc_list.append([f": {object_diff} {catalog.description}"])
+        doc_list.append([f"{_('Difference')}: {object_diff} {catalog.description}"])
         doc_list.append(
             [
                 _("User"),
@@ -201,12 +201,15 @@ def resume_queryset_doc(report, queryset, objs, log_filters):
             description = unit.description if unit else ""
             if old_log is not None:
                 doc_list.append([f"{labs[lab_id].name} | {name} {cas}"])
-                doc_list.append([f": {0} {description}"])
+                doc_list.append([f"{_('Difference')}: 0 {description}"])
                 doc_list.append([])
                 doc_list.append([])
         # El conteo siempre incluyó todo el inventario sin movimientos.
         total += 1
 
+    if not doc_list:
+        # Sin movimientos la hoja salía vacía y no decía por qué.
+        doc_list = [[_("No changes were recorded with the selected filters.")]]
     return {"record": total, "content": doc_list}
 
 

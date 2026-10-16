@@ -7863,6 +7863,9 @@ msgstr "Excel"
 msgid "No records."
 msgstr "Sin registros."
 
+msgid "No changes were recorded with the selected filters."
+msgstr "No se registraron cambios con los filtros seleccionados."
+
 msgid "IPER — Risk follow-up"
 msgstr "IPER — Seguimiento de riesgos"
 

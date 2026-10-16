@@ -1,10 +1,12 @@
 from datetime import datetime, timezone as dt_timezone
 
 from django.contrib.auth.models import User
+from django.urls import reverse
 
 from laboratory.models import Object, ObjectLogChange
 from report.models import ObjectChangeLogReport, ObjectChangeLogReportBuilder
 from report.tests.utils import ReportTestBase
+from report.utils import get_pdf_log_change_table_content
 from report.views.objects import report_objectlogchange_doc, report_objectlogchange_html
 from sga.models import SubstanceCharacteristics
 
@@ -78,14 +80,46 @@ class ObjectChangesReportTest(ReportTestBase):
         filas = [f for f in self.read_xlsx(report) if any(f)]
         textos = [str(f[0]) for f in filas]
         self.assertIn(f"{self.lab.name} | {self.cal.name} 1305-78-8", textos)
-        self.assertIn(f": 6.0 {self.unit().description}", textos)
+        self.assertIn(f"Difference: 6.0 {self.unit().description}", textos)
         self.assertIn("Organilab Admin", textos)
         self.assertIn("solo-usuario", textos)
         self.assertIn("Usuario borrado", textos)
         self.assertIn(None, [f[0] for f in filas if f[1] is not None])
         self.assertIn(f"{self.lab.name} | {self.tanque.name} {self.tanque.cas_code}", textos)
-        self.assertIn(f": 0 {self.unit().description}", textos)
+        self.assertIn(f"Difference: 0 {self.unit().description}", textos)
 
     def test_sin_laboratorios_usa_los_de_la_organizacion(self):
         report = self.report("html", laboratory=[], period="")
         self.assertGreaterEqual(report_objectlogchange_html(report), 4)
+
+
+class ObjectChangesEmptyReportTest(ReportTestBase):
+    """Sin movimientos en el periodo, cada formato lo dice en vez de salir en blanco."""
+
+    MENSAJE = "No changes were recorded with the selected filters."
+
+    def setUp(self):
+        super().setUp()
+        ObjectLogChange.objects.all().delete()
+
+    def report(self, file_type):
+        return self.make_report(
+            "report_objectschanges", file_type, period="01/03/2024 - 31/03/2024", precursor=True
+        )
+
+    def test_hoja_de_calculo(self):
+        report = self.report("xlsx")
+        report_objectlogchange_doc(report)
+        filas = [f for f in self.read_xlsx(report) if any(f)]
+        self.assertEqual(filas, [[self.MENSAJE]])
+
+    def test_pdf(self):
+        report = self.report("pdf")
+        report_objectlogchange_html(report)
+        self.assertEqual(get_pdf_log_change_table_content(report), "<p>%s</p>" % self.MENSAJE)
+
+    def test_pantalla(self):
+        report = self.report("html")
+        report_objectlogchange_html(report)
+        response = self.client.get(reverse("report:report_table", args=(self.org.pk, report.pk)))
+        self.assertContains(response, self.MENSAJE)

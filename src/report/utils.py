@@ -122,6 +122,11 @@ def get_pdf_table_content(table_content, cell_style_fn=None, chunk_size=PDF_TABL
             style_attr = cell_style_fn(col_idx, item) if cell_style_fn else ""
             parts.append("<td%s>%s</td>" % (style_attr, item))
         parts.append("</tr>")
+    if not table_content["dataset"]:
+        # Sin filas, el PDF quedaba con el encabezado solo y no decía por qué.
+        parts.append(
+            "<tr><td colspan='%s'>%s</td></tr>" % (len(table_content["columns"]), _("No records."))
+        )
     parts.append(closing)
     return "".join(parts)
 
@@ -244,7 +249,7 @@ def get_pdf_log_change_table_content(report):
         )
         parts.append(
             "<p style='padding:0px; font-size:12px;' >%s</p>"
-            % f" :{table.diff_value} {table.unit.description}"
+            % f"{_('Difference')}: {table.diff_value} {table.unit.description}"
         )
         parts.append(
             "<table id='pdf_table_report' repeat='1'><thead><tr>%s</tr></thead><tbody>"
@@ -266,6 +271,9 @@ def get_pdf_log_change_table_content(report):
             )
         parts.append("</tbody></table><br><br>")
 
+    if not parts:
+        # Sin movimientos el PDF salía en blanco y no decía por qué.
+        parts.append("<p>%s</p>" % _("No changes were recorded with the selected filters."))
     return "".join(parts)
 
 
