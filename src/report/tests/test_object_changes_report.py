@@ -92,6 +92,15 @@ class ObjectChangesReportTest(ReportTestBase):
         report = self.report("html", laboratory=[], period="")
         self.assertGreaterEqual(report_objectlogchange_html(report), 4)
 
+    def test_diferencia_de_la_hoja_sin_decimales_de_mas(self):
+        ObjectLogChange.objects.all().delete()
+        for _ in range(3):
+            self.log(self.cal, self.user, 0.3, 0.2)
+        report = self.report("xlsx")
+        report_objectlogchange_doc(report)
+        textos = [str(f[0]) for f in self.read_xlsx(report) if f and f[0]]
+        self.assertIn(f"Difference: -0.3 {self.unit().description}", textos)
+
 
 class ObjectChangesEmptyReportTest(ReportTestBase):
     """Sin movimientos en el periodo, cada formato lo dice en vez de salir en blanco."""
