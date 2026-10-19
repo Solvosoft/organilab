@@ -233,12 +233,11 @@ class ValidateLaboratoryRoomReportForm(ReportForm):
         if laboratory is None:
             return []
 
-        if not furniture:
-            furniture = self.get_furniture(lab_room, laboratory)
-        else:
-            furniture = self.get_furniture(lab_room, laboratory)
+        allowed = self.get_furniture(lab_room, laboratory)
+        if furniture:
+            allowed = allowed.filter(pk__in=furniture)
 
-        return list(furniture.values_list("pk", flat=True).distinct())
+        return list(allowed.values_list("pk", flat=True).distinct())
 
 
 class ObjectLogChangeBaseForm(ReportSimpleForm):
