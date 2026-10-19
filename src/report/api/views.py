@@ -1,4 +1,3 @@
-from datetime import datetime
 
 from django.conf import settings
 from django.db.models import Q, Value
@@ -35,7 +34,7 @@ from report.api.serializers import (
 )
 from django.db import connection
 
-from report.utils import filter_period, format_date
+from report.utils import period_range
 from laboratory.models import OrganizationStructure, PrecursorReport, PrecursorReportValues
 from django.contrib.admin.models import LogEntry, DELETION, CHANGE, ADDITION
 from laboratory.utils import organilab_logentry
@@ -197,27 +196,11 @@ class ReportDataLogViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
         else:
             return queryset.none()
 
-    def format_date_range(self, value):
-        dev = None
-        try:
-            dev = datetime.strptime(value, "%m/%d/%Y")
-        except ValueError as e:
-            pass
-        return dev
-
     def filter_period(self, dates, queryset):
-
-        dates = dates.split("-")
-        if len(dates) != 2:
+        period = period_range(dates, input_format="%m/%d/%Y")
+        if period is None:
             return queryset
-
-        dates[0] = self.format_date_range(dates[0].strip())
-        dates[1] = self.format_date_range(dates[1].strip())
-        # Una fecha que no se pudo leer queda en None, y filtrar con None da
-        # ValueError (500): un rango ilegible no filtra.
-        if None in dates:
-            return queryset
-        return queryset.filter(update_time__gte=dates[0], update_time__lte=dates[1])
+        return queryset.filter(update_time__range=period)
 
     def create_extra_filters(self, queryset):
         filters_list = ["user", "new_value", "old_value", "diff_value"]

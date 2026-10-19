@@ -96,7 +96,7 @@ class ReportDataLogApiTest(ReportTestBase):
             [r["user"] for r in data["data"]],
             ["Organilab Admin", "solo-usuario", "No user found"],
         )
-        self.assertEqual(data["data"][0]["update_time"], "03/10/2024, 12:00:00")
+        self.assertEqual(data["data"][0]["update_time"], "10/03/2024 06:00:00")
 
     def test_filtro_por_usuario(self):
         """El filterset exige un pk y el filtro extra pedía el texto en nombre

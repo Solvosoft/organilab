@@ -9,7 +9,8 @@ from report.utils import (
     set_format_table_columns,
     get_report_name,
     load_dataset_by_column,
-    format_datetime,
+    local_datetime,
+    period_range,
 )
 
 logger = logging.getLogger("organilab")
@@ -19,11 +20,9 @@ def get_dataset_report_discard_objects(report, laboratory, column_list=None):
     dataset = []
     filters = {"shelf__discard": True, "in_where_laboratory": laboratory}
     if "period" in report.data:
-        dates = report.data["period"].split("-")
-        if len(dates) == 2:
-            dates[0] = format_datetime(dates[0].strip(), "initial")
-            dates[1] = format_datetime(dates[1].strip(), "final")
-            filters.update({"creation_date__range": dates})
+        period = period_range(report.data["period"])
+        if period:
+            filters.update({"creation_date__range": period})
 
     shelfobjects = (
         ShelfObject.objects.filter(**filters)
@@ -61,7 +60,7 @@ def get_dataset_report_discard_objects(report, laboratory, column_list=None):
             "object": obj["object__name"] if obj["object__name"] else "",
             "amount": str(round(total, 3)),
             "unit": unit,
-            "date": obj["creation_date"].strftime("%Y-%m-%d"),
+            "date": local_datetime(obj["creation_date"], "%Y-%m-%d"),
             "created_by": (
                 obj["created_by__username"]
                 if obj["created_by__username"]
@@ -144,11 +143,9 @@ def get_dataset_report_discard_objects_html(report, column_list=None):
     labs = report.data.get("laboratory", [])
     labs = organization.get_my_laboratories if len(labs) == 0 else labs
     if "period" in report.data:
-        dates = report.data["period"].split("-")
-        if len(dates) == 2:
-            dates[0] = format_datetime(dates[0].strip(), "initial")
-            dates[1] = format_datetime(dates[1].strip(), "final")
-            filters.update({"creation_date__range": dates})
+        period = period_range(report.data["period"])
+        if period:
+            filters.update({"creation_date__range": period})
 
     for lab in labs:
         shelfobjects = (
@@ -193,7 +190,7 @@ def get_dataset_report_discard_objects_html(report, column_list=None):
                     if obj["created_by__username"]
                     else _("Unknown")
                 ),
-                "creation_date": obj["creation_date"].strftime("%Y-%m-%d"),
+                "creation_date": local_datetime(obj["creation_date"], "%Y-%m-%d"),
             }
 
             obj_item = list(data_column.values())

@@ -13,7 +13,7 @@ from laboratory.models import (
 )
 from laboratory.utils import get_user_laboratories
 from report.models import ObjectChangeLogReport, ObjectChangeLogReportBuilder
-from report.utils import filter_period
+from report.utils import filter_period, local_datetime
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -162,7 +162,7 @@ def resume_queryset_doc(report, queryset, objs, log_filters):
         lab_id, object_id, unit_id = key
         logs = groups[key]
         lab, obj_using, catalog = labs[lab_id], objects.get(object_id), units[unit_id]
-        object_diff = sum(log.diff_value for log in logs)
+        object_diff = round(sum(log.diff_value for log in logs), 3)
         cas = obj_using.cas_code if obj_using else ""
         name = obj_using.name if obj_using else ""
         doc_list.append([f"{lab.name} | {name} {cas}"])
@@ -180,7 +180,7 @@ def resume_queryset_doc(report, queryset, objs, log_filters):
             doc_list.append(
                 [
                     _user_display(values, user_map),
-                    values.update_time.strftime("%m/%d/%Y, %H:%M:%S"),
+                    local_datetime(values.update_time),
                     round(values.old_value, 3),
                     round(values.new_value, 3),
                     round(values.diff_value, 3),

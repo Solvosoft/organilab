@@ -25,6 +25,8 @@ from report.utils import (
     filter_period,
     format_date,
     format_datetime,
+    local_datetime,
+    period_range,
     get_conversion_units_to_kilograms,
     get_furniture_queryset_by_filters,
     get_pdf_log_change_table_content,
@@ -47,10 +49,29 @@ class FormatoDeFechasTest(SimpleTestCase):
         self.assertIsNone(format_date("2024-03-05"))
 
     def test_format_datetime_inicio_y_fin_del_dia(self):
-        self.assertEqual(format_datetime("05/03/2024", "initial"), datetime(2024, 3, 5))
         self.assertEqual(
-            format_datetime("05/03/2024", "final"), datetime(2024, 3, 5, 23, 59)
+            format_datetime("05/03/2024", "initial"), timezone.make_aware(datetime(2024, 3, 5))
         )
+        self.assertEqual(
+            format_datetime("05/03/2024", "final"),
+            timezone.make_aware(datetime(2024, 3, 5, 23, 59, 59, 999999)),
+        )
+
+    def test_period_range_incluye_el_ultimo_dia_completo(self):
+        inicio, fin = period_range("14/03/2026 - 14/03/2026")
+        self.assertEqual(inicio, timezone.make_aware(datetime(2026, 3, 14)))
+        self.assertEqual(fin, timezone.make_aware(datetime(2026, 3, 14, 23, 59, 59, 999999)))
+        self.assertEqual(
+            period_range("03/14/2026 - 03/14/2026", input_format="%m/%d/%Y"), (inicio, fin)
+        )
+        self.assertIsNone(period_range("14/03/2026 - ayer"))
+        self.assertIsNone(period_range(""))
+
+    def test_local_datetime_usa_la_zona_horaria_de_settings(self):
+        momento = datetime(2026, 3, 15, 2, 18, 55, tzinfo=dt_timezone.utc)
+        self.assertEqual(local_datetime(momento), "14/03/2026 20:18:55")
+        self.assertEqual(local_datetime(momento, "%Y-%m-%d"), "2026-03-14")
+        self.assertEqual(local_datetime(None), "")
 
     def test_format_datetime_invalida_devuelve_none(self):
         self.assertIsNone(format_datetime("no es fecha", "initial"))
@@ -263,7 +284,7 @@ class TablaPdfDeCambiosTest(ReportTestBase):
         self.assertIn("<td>solo-usuario</td>", html)
         # Una fila sin usuario no rompe la tabla: queda la celda vacía.
         self.assertIn("<td></td>", html)
-        self.assertEqual(html.count("<td>01/02/2024, 03:04:05</td>"), 3)
+        self.assertEqual(html.count("<td>01/01/2024 21:04:05</td>"), 3)
 
 
 class ModelosYTareaTest(ReportTestBase):

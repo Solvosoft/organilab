@@ -1,6 +1,7 @@
-from datetime import datetime, timedelta
+from datetime import datetime, time, timedelta
 
 from django.db.models import Prefetch
+from django.utils import timezone
 from django.utils.module_loading import import_string
 from django.utils.translation import gettext as _
 from djgentelella.models import Notification
@@ -26,14 +27,33 @@ def format_date(value):
     return dev
 
 
-def filter_period(text, queryset):
-
-    dates = text.split("-")
+def period_range(text, input_format="%d/%m/%Y"):
+    dates = (text or "").split("-")
     if len(dates) != 2:
+        return None
+    try:
+        start, end = (datetime.strptime(d.strip(), input_format).date() for d in dates)
+    except ValueError:
+        return None
+    return (
+        timezone.make_aware(datetime.combine(start, time.min)),
+        timezone.make_aware(datetime.combine(end, time.max)),
+    )
+
+
+def local_datetime(value, fmt="%d/%m/%Y %H:%M:%S"):
+    if not value:
+        return ""
+    if timezone.is_aware(value):
+        value = timezone.localtime(value)
+    return value.strftime(fmt)
+
+
+def filter_period(text, queryset):
+    period = period_range(text)
+    if period is None:
         return queryset
-    dates[0] = format_date(dates[0].strip())
-    dates[1] = format_date(dates[1].strip())
-    return queryset.filter(update_time__range=dates)
+    return queryset.filter(update_time__range=period)
 
 
 def set_format_table_columns(columns_fields):
@@ -271,7 +291,7 @@ def get_pdf_log_change_table_content(report):
                 "<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>"
                 % (
                     user,
-                    data.update_time.strftime("%m/%d/%Y, %H:%M:%S"),
+                    local_datetime(data.update_time),
                     data.old_value,
                     data.new_value,
                     data.diff_value,
@@ -286,17 +306,11 @@ def get_pdf_log_change_table_content(report):
 
 
 def format_datetime(value, position):
-    day_result = None
-    try:
-        day_result = datetime.strptime(value, "%d/%m/%Y")
-        if position == "initial":
-            day_result = day_result + timedelta(hours=0, minutes=0)
-        else:
-            day_result = day_result + timedelta(hours=23, minutes=59)
-    except ValueError as e:
-        pass
-
-    return day_result
+    day = format_date(value)
+    if day is None:
+        return None
+    moment = time.min if position == "initial" else time.max
+    return timezone.make_aware(datetime.combine(day.date(), moment))
 
 
 def get_conversion_units_to_kilograms(unit, amount, density=None):

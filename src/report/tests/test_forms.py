@@ -39,17 +39,34 @@ class ReportFormsTest(ReportTestBase):
         )
         self.assertTrue(form.is_valid(), form.errors)
         self.assertEqual(form.cleaned_data["lab_room"], [sala.pk])
-        # Los muebles se recalculan a partir de las salas: todos los de la sala 2.
-        self.assertEqual(
-            set(form.cleaned_data["furniture"]),
-            set(Furniture.objects.filter(labroom=sala).values_list("pk", flat=True)),
-        )
+        self.assertEqual(form.cleaned_data["furniture"], [mueble.pk])
         self.assertEqual(form.cleaned_data["name"], "mi-reporte")
 
     def test_sin_laboratorio_usa_los_del_usuario(self):
         form = ValidateLaboratoryRoomReportForm(self.base(), org_pk=self.org.pk, user=self.user)
         self.assertTrue(form.is_valid(), form.errors)
         self.assertIn(self.lab.pk, form.cleaned_data["laboratory"])
+
+    def test_sin_mueble_elegido_usa_todos_los_de_la_sala(self):
+        sala = LaboratoryRoom.objects.get(pk=2)
+        form = ValidateLaboratoryRoomReportForm(
+            self.base(laboratory=[self.lab.pk], lab_room=[sala.pk]), org_pk=self.org.pk, user=self.user
+        )
+        self.assertTrue(form.is_valid(), form.errors)
+        self.assertEqual(
+            set(form.cleaned_data["furniture"]),
+            set(Furniture.objects.filter(labroom=sala).values_list("pk", flat=True)),
+        )
+
+    def test_mueble_de_otra_sala_se_descarta(self):
+        sala = LaboratoryRoom.objects.get(pk=2)
+        otro_mueble = Furniture.objects.exclude(labroom=sala).first()
+        form = ValidateLaboratoryRoomReportForm(
+            self.base(laboratory=[self.lab.pk], lab_room=[sala.pk], furniture=[otro_mueble.pk]),
+            org_pk=self.org.pk, user=self.user,
+        )
+        self.assertTrue(form.is_valid(), form.errors)
+        self.assertEqual(form.cleaned_data["furniture"], [])
 
     def test_laboratorio_no_permitido_es_error_de_validacion(self):
         form = ValidateLaboratoryRoomReportForm(
