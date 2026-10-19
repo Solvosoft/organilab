@@ -203,8 +203,8 @@ class RoleAxisTest(TestCase):
 
         for role in CANONICAL_ROLES:
             with self.subTest(rol=role.name):
-                self.assertIn(
-                    role.name, haystack,
+                self.assertTrue(
+                    'ROLES["%s"]' % role.id in haystack or role.name in haystack,
                     "%s está en el eje pero no lo crea ni actualiza nadie. O se quitó "
                     "del código y sobra aquí, o se renombró." % role.name,
                 )

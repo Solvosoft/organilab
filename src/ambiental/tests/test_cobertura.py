@@ -30,6 +30,7 @@ from laboratory.models import Catalog
 from presentation.alerts import KEY_ALERT_TRIGGER, TRIGGER_ABSOLUTE, TRIGGER_PERCENT
 from presentation.models import AlertRule
 from risk_management.models import Buildings
+from auth_and_perms.roles import ROLES
 
 YEAR = "01/01/2026 - 31/12/2026"
 
@@ -309,7 +310,7 @@ class SelectsTest(BuildingAccessTestCase):
             ["Laboratorio de Química"],
         )
         # Con rol solo en el edificio B (sin laboratorios) no ve ninguno.
-        self.client.force_login(self.building_user("solo_b", {self.building_b: "Analista ambiental"}))
+        self.client.force_login(self.building_user("solo_b", {self.building_b: ROLES["analista_ambiental"]}))
         self.assertEqual(self.results("ambiental_laboratories", org_pk=self.organization.pk), [])
 
     def test_usuarios_de_la_organizacion(self):
@@ -326,7 +327,7 @@ class BuildingAccessUpdateTest(BuildingAccessTestCase):
 
     def setUp(self):
         super().setUp()
-        self.person = self.building_user("editable", {self.building: "Analista ambiental"})
+        self.person = self.building_user("editable", {self.building: ROLES["analista_ambiental"]})
         self.permission = ProfilePermission.objects.get(
             profile=self.person.profile, content_type=ContentType.objects.get_for_model(Buildings),
         )
@@ -335,17 +336,17 @@ class BuildingAccessUpdateTest(BuildingAccessTestCase):
         return list(Rol.objects.filter(name__in=names).values_list("pk", flat=True))
 
     def test_editar_roles_y_no_mover_de_edificio(self):
-        data = {"user": self.person.pk, "building": self.building_b.pk, "rol": self.roles("Analista ambiental")}
+        data = {"user": self.person.pk, "building": self.building_b.pk, "rol": self.roles(ROLES["analista_ambiental"])}
         response = self.put("api-buildingaccess-detail", data, pk=self.permission.pk)
         self.assertEqual(response.status_code, 400)
         self.assertIn("building", response.json())
 
         data["building"] = self.building.pk
-        data["rol"] = self.roles("Encargado de registro ambiental")
+        data["rol"] = self.roles(ROLES["registro_ambiental"])
         response = self.put("api-buildingaccess-detail", data, pk=self.permission.pk)
         self.assertEqual(response.status_code, 200, response.content)
         self.assertEqual(
-            list(self.permission.rol.values_list("name", flat=True)), ["Encargado de registro ambiental"]
+            list(self.permission.rol.values_list("name", flat=True)), [ROLES["registro_ambiental"]]
         )
 
     def test_borrar_acceso(self):

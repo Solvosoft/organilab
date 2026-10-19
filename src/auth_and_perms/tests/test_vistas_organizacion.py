@@ -19,6 +19,7 @@ from auth_and_perms.views import media_access
 from auth_and_perms.views.user_org_creation import set_rol_administrator_on_org
 from laboratory.models import UserOrganization
 from report.models import TaskReport
+from auth_and_perms.roles import ROLES
 
 
 class GestionDeOrganizacionBase(EscenarioOrganizaciones):
@@ -74,7 +75,7 @@ class UsuariosDeOrganizacionTest(GestionDeOrganizacionBase):
 class AdministradoresYRolesTest(GestionDeOrganizacionBase):
     def test_administradores_activos_de_la_organizacion(self):
         jefe = self.crear_usuario("jefe", self.org_a, first_name="Jefa", last_name="Mora")
-        rol = Rol.objects.create(name="Administrativo superior")
+        rol = Rol.objects.create(name=ROLES["administrativo_superior"])
         pp = ProfilePermission.objects.create(profile=jefe.profile, content_type=self.ct_org, object_id=self.org_a.pk)
         pp.rol.add(rol)
         response = self.client.get(reverse("auth_and_perms:get_org_administrators", args=[self.org_a.pk]))
@@ -138,7 +139,7 @@ class AdministradorDeOrganizacionHijaTest(EscenarioOrganizaciones):
     def test_en_una_hija_reutiliza_el_rol_de_gestion_de_la_raiz(self):
         raiz_admin = self.crear_usuario("raiz-admin")
         set_rol_administrator_on_org(raiz_admin.profile, self.org_a)
-        rol = Rol.objects.get(name="Organization Management", organizationstructure=self.org_a)
+        rol = Rol.objects.get(name=ROLES["organization_management"], organizationstructure=self.org_a)
         hija_admin = self.crear_usuario("hija-admin")
         set_rol_administrator_on_org(hija_admin.profile, self.org_a_hija)
         pp = ProfilePermission.objects.get(profile=hija_admin.profile, object_id=self.org_a_hija.pk)

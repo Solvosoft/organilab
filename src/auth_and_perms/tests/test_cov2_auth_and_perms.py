@@ -26,6 +26,7 @@ from laboratory.models import (
     ShelfObject,
     UserOrganization,
 )
+from auth_and_perms.roles import ROLES
 
 XHR = {"HTTP_X_REQUESTED_WITH": "XMLHttpRequest"}
 
@@ -210,7 +211,7 @@ class CacheDePertenenciaTest(EscenarioOrganizaciones):
 class CrearUsuarioDeOrganizacionTest(EscenarioOrganizaciones):
     """`create_user_organization`, que usa el comando `create_demo_organizations`."""
 
-    datos = {"phone_number": "8888-8888", "id_card": "1-1111-1111", "job_position": "Regente", "language": "es"}
+    datos = {"phone_number": "8888-8888", "id_card": "1-1111-1111", "job_position": ROLES["regente"], "language": "es"}
 
     def test_con_nombre_crea_la_organizacion_y_lo_hace_administrador(self):
         Group.objects.get_or_create(name="Profile")
@@ -220,7 +221,7 @@ class CrearUsuarioDeOrganizacionTest(EscenarioOrganizaciones):
         self.assertEqual(user.profile.id_card, "1-1111-1111")
         self.assertTrue(UserOrganization.objects.filter(user=user, organization=org).exists())
         self.assertTrue(
-            Rol.objects.filter(name="Organization Management", organizationstructure=org).exists()
+            Rol.objects.filter(name=ROLES["organization_management"], organizationstructure=org).exists()
         )
         self.assertTrue(user.groups.filter(name="Profile").exists())
 

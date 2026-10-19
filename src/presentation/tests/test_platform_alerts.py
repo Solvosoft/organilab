@@ -11,6 +11,8 @@ from pending_tasks.models import PendingTask
 from presentation import alerts
 from presentation.models import AlertEvent, AlertRule
 from presentation.tests.test_platform_parameters import PlatformTestCase, make_role_user
+from auth_and_perms.roles import ROLES
+from auth_and_perms.tests.roles import require_role
 
 PROCESS = "platform.test"
 FIRED = []
@@ -36,7 +38,7 @@ class AlertTestCase(PlatformTestCase):
         EmailTemplate.objects.create(code="platform-test-alert", subject="Alerta", message="{{ message }}")
         cls.percent = Catalog.objects.get(key=alerts.KEY_ALERT_TRIGGER, description=alerts.TRIGGER_PERCENT)
         cls.absolute = Catalog.objects.get(key=alerts.KEY_ALERT_TRIGGER, description=alerts.TRIGGER_ABSOLUTE)
-        cls.receiver = make_role_user("receptor", cls.child, "Analista ambiental")
+        cls.receiver = make_role_user("receptor", cls.child, ROLES["analista_ambiental"])
         cls.receiver.email = "receptor@example.com"
         cls.receiver.save()
 
@@ -56,7 +58,7 @@ class FireAlertTest(AlertTestCase):
 
     def test_fire_notifies_roles_by_email_task_and_bell(self):
         rule = self.make_rule(level=AlertRule.CRITICAL)
-        rule.notify_roles.add(Rol.objects.get(name="Analista ambiental"))
+        rule.notify_roles.add(require_role(self, "analista_ambiental"))
         event = alerts.fire_alert(rule, "Consumo alto", link="/detalle/")
         self.assertEqual(event.recipients, ["receptor"])
         notification = EmailNotification.objects.get()
@@ -67,7 +69,7 @@ class FireAlertTest(AlertTestCase):
 
     def test_non_critical_does_not_ring_the_bell(self):
         rule = self.make_rule(level=AlertRule.MEDIUM, create_task=False)
-        rule.notify_roles.add(Rol.objects.get(name="Analista ambiental"))
+        rule.notify_roles.add(require_role(self, "analista_ambiental"))
         alerts.fire_alert(rule, "Aviso")
         self.assertFalse(Notification.objects.filter(description="Aviso").exists())
         self.assertFalse(PendingTask.objects.exists())
@@ -127,7 +129,7 @@ class AlertRuleAPITest(AlertTestCase):
         self.assertEqual(response.json()["data"][0]["message"], "Disparo")
 
     def test_page_renders_for_platform_admins(self):
-        for username, rol_name in (("sup_a", "Administrativo superior"), ("amb_a", "Administrador ambiental")):
+        for username, rol_name in (("sup_a", ROLES["administrativo_superior"]), ("amb_a", ROLES["administrador_ambiental"])):
             self.client.force_login(make_role_user(username, self.child, rol_name))
             with self.subTest(rol=rol_name):
                 response = self.client.get(reverse("platform:alertrule_list", kwargs={"org_pk": self.child.pk}))

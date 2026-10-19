@@ -18,6 +18,7 @@ from presentation import feature_catalog as fc
 from presentation import url_inventory as ui
 from presentation.models import Tutorial
 from presentation.url_inventory import UrlEntry
+from auth_and_perms.roles import ROLES
 
 
 def vista_parcial(request):
@@ -165,10 +166,10 @@ class CoberturaPorRolTest(SimpleTestCase):
     def setUp(self):
         self.records = [
             {"urlname": None},
-            {"urlname": "app:ver", "status": 200, "test": "t1", "roles": ["Estudiante", "Gestión de X"],
+            {"urlname": "app:ver", "status": 200, "test": "t1", "roles": [ROLES["estudiante"], "Gestión de X"],
              "membership": "org_lab_user"},
             {"urlname": "app:super", "status": 200, "roles": ["superusuario"]},
-            {"urlname": "app:negada", "status": 403, "roles": ["Estudiante"]},
+            {"urlname": "app:negada", "status": 403, "roles": [ROLES["estudiante"]]},
             {"urlname": "app:fixture", "status": 200, "roles": ["Gestión de Y"]},
         ]
         self.steps = {

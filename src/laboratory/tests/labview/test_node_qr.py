@@ -16,6 +16,7 @@ from auth_and_perms.models import ProfilePermission, Rol
 from laboratory.tests.labview.utils import RolPermissionMixin, resolve_permissions
 from laboratory.tests.utils import BaseLaboratorySetUpTest
 from presentation.models import QRModel
+from auth_and_perms.roles import ROLES
 
 # Sin esta cabecera HandleErrorMiddleware redirige en vez de dejar pasar el 404.
 XHR = {"HTTP_X_REQUESTED_WITH": "XMLHttpRequest"}
@@ -134,7 +135,7 @@ class NodeQRPermissionTest(RolPermissionMixin, BaseLaboratorySetUpTest):
     def test_con_el_rol_de_ver_salas_hay_qr(self):
         # Un Rol canónico (el del catálogo de roles), no uno de prueba: así la
         # sonda de cobertura por rol cuenta este paso como ejercitado.
-        rol = Rol.objects.create(name="Administrador de Laboratorio")
+        rol = Rol.objects.create(name=ROLES["administrador_laboratorio"])
         rol.permissions.set(resolve_permissions(["laboratory.view_laboratoryroom"]))
         ProfilePermission.objects.get_or_create(
             profile=self.user.profile,

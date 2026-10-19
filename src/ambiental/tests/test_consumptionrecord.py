@@ -18,6 +18,7 @@ from ambiental.ambiental_defaults import (
 from ambiental.models import ConsumptionRecord
 from ambiental.tests.base import AmbientalTestCase
 from laboratory.models import Catalog, Provider
+from auth_and_perms.roles import ROLES
 
 
 def chunked_token(user, name="recibo.pdf"):
@@ -186,7 +187,7 @@ class ConsumptionRecordAPITest(AmbientalTestCase):
         self.assertEqual(self.post(self.payload()).status_code, 400)
 
     def test_registro_role_records_but_does_not_configure_points(self):
-        user = self.make_user("registro", self.organization, "Encargado de registro ambiental")
+        user = self.make_user("registro", self.organization, ROLES["registro_ambiental"])
         self.client.force_login(user)
         self.assertEqual(self.post(self.payload()).status_code, 201)
         response = self.client.post(
@@ -196,7 +197,7 @@ class ConsumptionRecordAPITest(AmbientalTestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_analista_role_is_read_only(self):
-        user = self.make_user("analista", self.organization, "Analista ambiental")
+        user = self.make_user("analista", self.organization, ROLES["analista_ambiental"])
         self.client.force_login(user)
         self.assertEqual(self.client.get(self.list_url()).status_code, 200)
         self.assertEqual(self.post(self.payload()).status_code, 403)
@@ -214,7 +215,7 @@ class ConsumptionRecordAPITest(AmbientalTestCase):
 class ConsumptionRecordViewTest(AmbientalTestCase):
 
     def test_page_renders_for_each_role(self):
-        for rol_name in ("Administrador ambiental", "Encargado de registro ambiental", "Analista ambiental"):
+        for rol_name in (ROLES["administrador_ambiental"], ROLES["registro_ambiental"], ROLES["analista_ambiental"]):
             with self.subTest(rol=rol_name):
                 user = self.make_user("u_" + rol_name.split()[0], self.organization, rol_name)
                 self.client.force_login(user)

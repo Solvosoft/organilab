@@ -4,7 +4,7 @@ import importlib
 from datetime import date, datetime, timedelta
 from django.conf import settings
 from django.urls import reverse
-from django.utils.timezone import now
+from django.utils.timezone import localdate
 from django.utils.translation import gettext as _
 
 from laboratory.models import OrganizationStructure
@@ -18,7 +18,7 @@ app = importlib.import_module(settings.CELERY_MODULE).app
 
 @app.task
 def create_establishment_reports():
-    day = now().date() - timedelta(days=1)
+    day = localdate() - timedelta(days=1)
     for risk in RiskZone.objects.all():
         labs = list(
             risk.buildings.using(settings.READONLY_DATABASE)
@@ -42,7 +42,7 @@ def send_iper_update_reminders():
     from risk_management.models import IPERAssessment
     from risk_management.models_utils import get_iper_config
 
-    today = now().date()
+    today = localdate()
     seen_labs = set()
     queryset = (
         IPERAssessment.objects.exclude(status=IPERAssessment.OBSOLETE)

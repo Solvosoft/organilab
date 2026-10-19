@@ -6,6 +6,7 @@ from django.urls import reverse
 from auth_and_perms.models import Profile, ProfilePermission, Rol
 from auth_and_perms.tests.escenario import EscenarioOrganizaciones
 from laboratory.models import Object, OrganizationStructure, OrganizationStructureRelations, UserOrganization
+from auth_and_perms.roles import ROLES
 
 
 class Select2Base(EscenarioOrganizaciones):
@@ -163,7 +164,7 @@ class OrganizacionesYPerfilesTest(Select2Base):
         )
 
     def test_arbol_con_rol_administrativo_superior(self):
-        rol = Rol.objects.create(name="Administrativo superior")
+        rol = Rol.objects.create(name=ROLES["administrativo_superior"])
         pp = ProfilePermission.objects.create(
             profile=self.admin_a.profile, content_type=self.ct_org, object_id=self.org_a.pk
         )

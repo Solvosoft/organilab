@@ -14,6 +14,7 @@ from laboratory.models import (
     Protocol,
     UserOrganization,
 )
+from auth_and_perms.roles import ROLES
 
 
 class BaseUtilsTest(TestCase):
@@ -28,7 +29,7 @@ class BaseUtilsTest(TestCase):
         self.ct_org = ContentType.objects.get_for_model(OrganizationStructure)
 
     def dar_rol_administrativo_superior(self, profile):
-        rol = Rol.objects.create(name="Administrativo superior")
+        rol = Rol.objects.create(name=ROLES["administrativo_superior"])
         self.org.rol.add(rol)
         pp = ProfilePermission.objects.create(profile=profile, content_type=self.ct_org, object_id=self.org.pk)
         pp.rol.add(rol)

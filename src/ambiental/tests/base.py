@@ -19,6 +19,8 @@ from laboratory.models import (
     UserOrganization,
 )
 from risk_management.models import Buildings
+from auth_and_perms.roles import ROLES
+from auth_and_perms.tests.roles import require_role
 
 
 class AmbientalTestCase(TestCase):
@@ -30,7 +32,7 @@ class AmbientalTestCase(TestCase):
     `update_roles` en producción.
     """
 
-    rol_name = "Administrador ambiental"
+    rol_name = ROLES["administrador_ambiental"]
 
     @classmethod
     def setUpTestData(cls):
@@ -70,7 +72,7 @@ class AmbientalTestCase(TestCase):
             content_type=ContentType.objects.get_for_model(OrganizationStructure),
             object_id=organization.pk,
         )
-        permission.rol.add(Rol.objects.get(name=rol_name))
+        permission.rol.add(require_role(cls, rol_name))
         return user
 
     def setUp(self):

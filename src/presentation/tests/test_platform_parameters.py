@@ -17,6 +17,8 @@ from presentation.parameters import (
     get_parameter,
     resolve_parameter,
 )
+from auth_and_perms.roles import ROLES
+from auth_and_perms.tests.roles import require_role
 
 
 def make_role_user(username, organization, rol_name):
@@ -27,7 +29,7 @@ def make_role_user(username, organization, rol_name):
         profile=profile, organization=organization,
         content_type=ContentType.objects.get_for_model(OrganizationStructure), object_id=organization.pk,
     )
-    permission.rol.add(Rol.objects.get(name=rol_name))
+    permission.rol.add(require_role(make_role_user, rol_name))
     return user
 
 
@@ -36,11 +38,11 @@ class PlatformTestCase(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        Rol.objects.get_or_create(name="Administrativo superior")
+        Rol.objects.get_or_create(name=ROLES["administrativo_superior"])
         update_ambiental_roles()
         cls.root = OrganizationStructure.objects.create(name="Universidad")
         cls.child = OrganizationStructure.objects.create(name="Escuela", parent=cls.root)
-        cls.user = make_role_user("superior", cls.child, "Administrativo superior")
+        cls.user = make_role_user("superior", cls.child, ROLES["administrativo_superior"])
 
     def setUp(self):
         self.client.force_login(self.user)
@@ -104,12 +106,12 @@ class ParameterAPITest(PlatformTestCase):
         self.assertEqual(response.status_code, 404)
 
     def test_role_without_permission_is_denied(self):
-        user = make_role_user("analista", self.child, "Analista ambiental")
+        user = make_role_user("analista", self.child, ROLES["analista_ambiental"])
         self.client.force_login(user)
         self.assertEqual(self.client.get(self.url("list")).status_code, 403)
 
     def test_page_renders_for_platform_admins(self):
-        for username, rol_name in (("superior2", "Administrativo superior"), ("amb", "Administrador ambiental")):
+        for username, rol_name in (("superior2", ROLES["administrativo_superior"]), ("amb", ROLES["administrador_ambiental"])):
             user = make_role_user(username, self.child, rol_name)
             self.client.force_login(user)
             with self.subTest(rol=rol_name):

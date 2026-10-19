@@ -31,6 +31,7 @@ from presentation.models import (
 )
 from presentation.tests import test_platform_alerts as alert_base
 from presentation.utils import build_qr_instance, get_qr_by_instance, update_qr_instance
+from auth_and_perms.roles import ROLES
 
 EVALUADOS = []
 
@@ -173,10 +174,10 @@ class ParametrosTest(TestCase):
 class EjeDeRolesTest(TestCase):
 
     def test_busqueda_por_id_y_por_nombre(self):
-        self.assertEqual(role_catalog.get_role("estudiante").name, "Estudiante")
+        self.assertEqual(role_catalog.get_role("estudiante").name, ROLES["estudiante"])
         with self.assertRaises(LookupError):
             role_catalog.get_role("no-existe")
-        self.assertEqual(role_catalog.resolve_name("Estudiante").id, "estudiante")
+        self.assertEqual(role_catalog.resolve_name(ROLES["estudiante"]).id, "estudiante")
         self.assertIsNone(role_catalog.resolve_name("Gestión de objetos"))
         self.assertEqual(role_catalog.canonical_ids(), tuple(r.id for r in role_catalog.CANONICAL_ROLES))
         self.assertIn("estudiante", role_catalog.canonical_ids())

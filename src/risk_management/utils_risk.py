@@ -5,6 +5,7 @@ from laboratory.models import ObjectMaximumLimit, Object, Catalog
 from laboratory.utils_base_unit import cached_units
 from report.utils import get_conversion_units_to_kilograms
 from typing import List, Dict, Optional, Tuple
+import datetime
 import math
 import json
 import argparse
@@ -16,6 +17,7 @@ from django.core.files.base import ContentFile
 
 from risk_management.models import EstablishmentLogs
 from sga.models import DangerSubstance, DangerSubstanceCategory, DangerIndication
+from django.utils import timezone
 from django.utils.translation import gettext as _
 
 
@@ -706,6 +708,7 @@ def build_establishment_xls(res):
 
 
 def create_estableshment_logs_data(element, day, labs):
+    moment = timezone.make_aware(datetime.datetime.combine(day, datetime.time.min))
     filters = {
         "object__type": 0,
         "created_at": day,
@@ -736,7 +739,7 @@ def create_estableshment_logs_data(element, day, labs):
                 health=sumatories.get("Salud", 0.0),
                 physical=sumatories.get("Físico", 0.0),
                 establishment_status=res["clasificacion"].capitalize(),
-                date=day,
+                date=moment,
             )
             log.xls_content.save(filename, ContentFile(xls_bytes), save=True)
         else:
@@ -747,5 +750,5 @@ def create_estableshment_logs_data(element, day, labs):
                 health=0.0,
                 physical=0.0,
                 establishment_status="Desconocido",
-                date=day,
+                date=moment,
             )

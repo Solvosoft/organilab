@@ -14,6 +14,7 @@ from django.test import TestCase, override_settings
 from auth_and_perms.models import Profile, ProfilePermission, Rol
 from authentication.oidc_backend import OrganiLabOIDCBackend
 from laboratory.models import OrganizationStructure, UserOrganization
+from auth_and_perms.roles import ROLES
 
 
 def respuesta_userinfo(claims):
@@ -37,7 +38,7 @@ class OIDCBackendTest(TestCase):
 
     def test_primer_ingreso_crea_usuario_y_perfil_con_los_claims(self):
         org = OrganizationStructure.objects.create(name="Universidad")
-        rol = Rol.objects.create(name="Estudiante")
+        rol = Rol.objects.create(name=ROLES["estudiante"])
         Group.objects.get_or_create(name="Profile")
         Group.objects.get_or_create(name="SGAView")
         with override_settings(DEFAULT_ORG_PK=org.pk, DEFAULT_ROL_NAME="estudiante"):
@@ -70,10 +71,10 @@ class OIDCBackendTest(TestCase):
 
     def test_rol_por_defecto_ya_asignado_no_se_duplica(self):
         org = OrganizationStructure.objects.create(name="Universidad")
-        rol = Rol.objects.create(name="Estudiante")
+        rol = Rol.objects.create(name=ROLES["estudiante"])
         user = User.objects.create_user("previo")
         profile = Profile.objects.create(user=user)
-        with override_settings(DEFAULT_ORG_PK=org.pk, DEFAULT_ROL_NAME="Estudiante"):
+        with override_settings(DEFAULT_ORG_PK=org.pk, DEFAULT_ROL_NAME=ROLES["estudiante"]):
             self.backend._assign_default_org(profile)
             self.backend._assign_default_org(profile)
         pp = ProfilePermission.objects.get(profile=profile, object_id=org.pk)

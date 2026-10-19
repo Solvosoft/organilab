@@ -12,6 +12,7 @@ from ambiental.ambiental_defaults import (
 from ambiental.models import ConsumptionRecord
 from ambiental.tests.test_reports import ReportTestCase
 from laboratory.models import Catalog, Provider
+from auth_and_perms.roles import ROLES
 
 
 class WasteTest(ReportTestCase):
@@ -51,7 +52,7 @@ class WasteTest(ReportTestCase):
         self.assertEqual(self.client.get(url, {"is_waste": "false"}).json()["recordsFiltered"], 3)
 
     def test_pages_render_for_each_role(self):
-        for rol_name in ("Administrador ambiental", "Encargado de registro ambiental", "Analista ambiental"):
+        for rol_name in (ROLES["administrador_ambiental"], ROLES["registro_ambiental"], ROLES["analista_ambiental"]):
             user = self.make_user("w_" + rol_name.split()[0], self.organization, rol_name)
             self.client.force_login(user)
             kwargs = {"org_pk": self.organization.pk}

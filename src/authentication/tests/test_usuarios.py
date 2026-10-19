@@ -5,6 +5,7 @@ from django.urls import reverse
 
 from auth_and_perms.tests.escenario import EscenarioOrganizaciones
 from authentication.forms import CreateUserForm, PasswordChangeForm
+from auth_and_perms.roles import ROLES
 
 
 class CambioDePerfilTest(EscenarioOrganizaciones):
@@ -23,7 +24,7 @@ class CambioDePerfilTest(EscenarioOrganizaciones):
             "email": f"{username}@ejemplo.cr",
             "phone_number": "8888-8888",
             "language": "es",
-            "job_position": "Regente",
+            "job_position": ROLES["regente"],
             "identification": "1-1111-1111",
             "address": "San José",
             "workplace": [self.org_a.pk],
@@ -37,7 +38,7 @@ class CambioDePerfilTest(EscenarioOrganizaciones):
         )
         self.usuario.refresh_from_db()
         self.assertEqual(self.usuario.first_name, "Cambiado")
-        self.assertEqual(self.usuario.profile.job_position, "Regente")
+        self.assertEqual(self.usuario.profile.job_position, ROLES["regente"])
         self.assertEqual(list(self.usuario.profile.workplace.all()), [self.org_a])
 
     def test_ver_el_perfil_de_otro_usuario_da_404(self):
