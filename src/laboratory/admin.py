@@ -457,6 +457,22 @@ class InformSchedulerAdmin(OrganizationInfoAdminMixin, admin.ModelAdmin):
     inlines = [PeriodScheduledAdmin]
 
 
+class OrganizationWithChildrenFilter(admin.SimpleListFilter):
+    title = _("Organization")
+    parameter_name = "organization_tree"
+
+    def lookups(self, request, model_admin):
+        return [(org.pk, org.name) for org in models.OrganizationStructure.objects.order_by("name")]
+
+    def queryset(self, request, queryset):
+        organization = models.OrganizationStructure.objects.filter(pk=self.value()).first()
+        if organization is None:
+            return queryset
+        return queryset.filter(
+            organization_where_action_taken__in=organization.descendants(include_self=True)
+        )
+
+
 @admin.register(models.ObjectLogChange)
 class ObjectLogAdmin(OrganizationWhereActionAdminMixin, admin.ModelAdmin):
     list_display = [
@@ -489,7 +505,7 @@ class ObjectLogAdmin(OrganizationWhereActionAdminMixin, admin.ModelAdmin):
     ]
     list_filter = [
         "update_time",
-        "organization_where_action_taken",
+        OrganizationWithChildrenFilter,
         "precursor",
         "type_action",
         ("deleted_user_info", admin.EmptyFieldListFilter),
