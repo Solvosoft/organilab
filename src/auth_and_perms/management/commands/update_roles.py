@@ -1,3 +1,5 @@
+import logging
+
 from django.contrib.auth.models import Group, Permission
 from django.core.management import BaseCommand
 from django.db import transaction
@@ -5,6 +7,8 @@ from django.db import transaction
 from auth_and_perms.management.roles import ROLE_DEFINITIONS, ROOT_ORGANIZATION
 from auth_and_perms.models import Rol
 from laboratory.models import OrganizationStructure
+
+logger = logging.getLogger(__name__)
 
 # Se crea uno por organización raíz al registrarla (views/user_org_creation.py).
 PER_ORGANIZATION = {"organization_management"}
@@ -100,7 +104,7 @@ def sync_role(key, definition, available, warn):
     return changes
 
 
-def sync_roles(keys=None, warn=print):
+def sync_roles(keys=None, warn=logger.warning):
     available = permission_map()
     changes = []
     for key in keys or ROLE_DEFINITIONS:
@@ -108,7 +112,7 @@ def sync_roles(keys=None, warn=print):
     return changes
 
 
-def update_group_permissions(warn=print):
+def update_group_permissions(warn=logger.warning):
     group = Group.objects.filter(name="RegisterOrganization").first()
     if group:
         group.permissions.add(*resolve_permissions(REGISTER_ORGANIZATION_GROUP, permission_map(), warn))

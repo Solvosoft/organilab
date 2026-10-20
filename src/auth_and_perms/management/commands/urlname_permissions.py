@@ -1194,60 +1194,15 @@ URLNAME_PERMISSIONS = {
     ],
     "index_msds": [
         {
-            "name": "Add MSDS Object",
-            "category": "MSDS Object",
-            "permission": "msds.add_msdsobject",
+            "name": "Change SDS Traceability",
+            "category": "SDS Traceability",
+            "permission": "sga.change_sdstraceability",
         },
         {
-            "name": "Change MSDS Object",
-            "category": "MSDS Object",
-            "permission": "msds.change_msdsobject",
+            "name": "View SDS Traceability",
+            "category": "SDS Traceability",
+            "permission": "sga.view_sdstraceability",
         },
-        {
-            "name": "Delete MSDS Object",
-            "category": "MSDS Object",
-            "permission": "msds.delete_msdsobject",
-        },
-        {
-            "name": "View MSDS Object",
-            "category": "MSDS Object",
-            "permission": "msds.view_msdsobject",
-        },
-    ],
-    # "msds_msdsobject_create" se retiró: el alta de fichas ya no tiene pantalla
-    # propia, se hace en el paso 1 del asistente de sustancias. Las vecinas
-    # msds_msdsobject_upate/delete/detail tampoco resuelven a ninguna URL y
-    # habría que revisarlas junto al resto del catálogo.
-    "msds_msdsobject_upate": [
-        {
-            "name": "Change MSDS Object",
-            "category": "MSDS Object",
-            "permission": "msds.change_msdsobject",
-        },
-        {
-            "name": "View MSDS Object",
-            "category": "MSDS Object",
-            "permission": "msds.view_msdsobject",
-        },
-    ],
-    "msds_msdsobject_delete": [
-        {
-            "name": "Delete MSDS Object",
-            "category": "MSDS Object",
-            "permission": "msds.delete_msdsobject",
-        },
-        {
-            "name": "View MSDS Object",
-            "category": "MSDS Object",
-            "permission": "msds.view_msdsobject",
-        },
-    ],
-    "msds_msdsobject_detail": [
-        {
-            "name": "View MSDS Object",
-            "category": "MSDS Object",
-            "permission": "msds.view_msdsobject",
-        }
     ],
     "warning_words": [
         {
@@ -1570,7 +1525,7 @@ URLNAME_PERMISSIONS = {
             "category": "Risk Management",
             "permission": "risk_management.view_riskzone",
         },
-        {"name": "View MSDS", "category": "MSDS", "permission": "msds.view_msdsobject"},
+        {"name": "View SDS Traceability", "category": "SDS Traceability", "permission": "sga.view_sdstraceability"},
         {
             "name": "View Recipient Size",
             "category": "Recipient Size",
@@ -1612,9 +1567,9 @@ URLNAME_PERMISSIONS = {
             "permission": "sga.change_templatesga",
         },
         {
-            "name": "View MSDS Object",
-            "category": "MSDS Object",
-            "permission": "msds.view_msdsobject",
+            "name": "View SDS Traceability",
+            "category": "SDS Traceability",
+            "permission": "sga.view_sdstraceability",
         },
         {
             "name": "Add Object Features",
@@ -1822,64 +1777,6 @@ URLNAME_PERMISSIONS = {
             "name": "View Inform",
             "category": "Inform",
             "permission": "laboratory.view_inform",
-        },
-    ],
-    "entrylist": [
-        {
-            "name": "View Blog Entry",
-            "category": "Blog Entry",
-            "permission": "blog.view_entry",
-        },
-        {
-            "name": "Delete Blog Entry",
-            "category": "Blog Entry",
-            "permission": "blog.delete_entry",
-        },
-    ],
-    "entrycreate": [
-        {
-            "name": "Add Blog Entry",
-            "category": "Blog Entry",
-            "permission": "blog.add_entry",
-        },
-        {
-            "name": "View Blog Entry",
-            "category": "Blog Entry",
-            "permission": "blog.view_entry",
-        },
-        {
-            "name": "Add Blog Category",
-            "category": "Blog Category",
-            "permission": "blog.add_category",
-        },
-    ],
-    "entry_update": [
-        {
-            "name": "Change Blog Entry",
-            "category": "Blog Entry",
-            "permission": "blog.change_entry",
-        },
-        {
-            "name": "View Blog Entry",
-            "category": "Blog Entry",
-            "permission": "blog.view_entry",
-        },
-        {
-            "name": "Add Blog Category",
-            "category": "Blog Category",
-            "permission": "blog.add_category",
-        },
-    ],
-    "entry_delete": [
-        {
-            "name": "Delete Blog Entry",
-            "category": "Blog Entry",
-            "permission": "blog.delete_entry",
-        },
-        {
-            "name": "View Blog Entry",
-            "category": "Blog Entry",
-            "permission": "blog.view_entry",
         },
     ],
     "profile": [
@@ -2118,24 +2015,14 @@ URLNAME_PERMISSIONS = {
     ],
     "list_msds": [
         {
-            "name": "Add MSDS Object",
-            "category": "MSDS Object",
-            "permission": "msds.add_msdsobject",
+            "name": "Change SDS Traceability",
+            "category": "SDS Traceability",
+            "permission": "sga.change_sdstraceability",
         },
         {
-            "name": "Change MSDS Object",
-            "category": "MSDS Object",
-            "permission": "msds.change_msdsobject",
-        },
-        {
-            "name": "Delete MSDS Object",
-            "category": "MSDS Object",
-            "permission": "msds.delete_msdsobject",
-        },
-        {
-            "name": "View MSDS Object",
-            "category": "MSDS Object",
-            "permission": "msds.view_msdsobject",
+            "name": "View SDS Traceability",
+            "category": "SDS Traceability",
+            "permission": "sga.view_sdstraceability",
         },
     ],
     "delete_form": [
@@ -2689,9 +2576,9 @@ URLNAME_PERMISSIONS = {
     ],
     "tutorials": [
         {
-            "name": "View MSDS Object",
-            "category": "MSDS Object",
-            "permission": "msds.view_msdsobject",
+            "name": "View SDS Traceability",
+            "category": "SDS Traceability",
+            "permission": "sga.view_sdstraceability",
         },
         {
             "name": "View Regulation Document",

@@ -12,7 +12,7 @@ class MsdsTest(TestCase):
         self.user = User.objects.get(pk=1)
         permission = Permission.objects.get(codename="institution_can_access")
         self.user.user_permissions.add(permission)
-        for codename in ["view_msdsobject", "add_msdsobject"]:
+        for codename in ["view_sdstraceability", "change_object"]:
             perm = Permission.objects.get(codename=codename)
             self.user.user_permissions.add(perm)
         self.url_attr = {"org_pk": 1}
@@ -42,6 +42,7 @@ class MsdsTest(TestCase):
         self.assertTrue(response.context["object_list"].count() == 15)
 
 
+import atexit  # noqa: E402
 import shutil  # noqa: E402
 import tempfile  # noqa: E402
 import zipfile  # noqa: E402
@@ -60,10 +61,7 @@ from sga.models import (  # noqa: E402
 )
 
 MEDIA_TMP = tempfile.mkdtemp(prefix="msds_tests_")
-
-
-def tearDownModule():
-    shutil.rmtree(MEDIA_TMP, ignore_errors=True)
+atexit.register(shutil.rmtree, MEDIA_TMP, ignore_errors=True)
 
 
 def crear_sustancia(organization, name, cas="", **kwargs):
@@ -104,7 +102,7 @@ class ListMsdsFiltersTest(TestCase):
         cls.org = OrganizationStructure.objects.get(pk=1)
         cls.otra = OrganizationStructure.objects.create(name="Otra organización")
         cls.user = User.objects.get(pk=1)
-        for codename in ["view_msdsobject", "add_msdsobject"]:
+        for codename in ["view_sdstraceability", "change_object"]:
             cls.user.user_permissions.add(Permission.objects.get(codename=codename))
         _, cls.sc_acetona = crear_sustancia(cls.org, "Acetona", cas="67-64-1")
         _, cls.sc_etanol = crear_sustancia(

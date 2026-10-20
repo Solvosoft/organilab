@@ -71,7 +71,7 @@ FEATURES = (
                 name="Consultar el árbol de fichas",
                 actors=TODOS_LOS_ROLES,
                 routes=("msds:index_msds", "msds:list_msds"),
-                permissions=("msds.view_msdsobject",),
+                permissions=("sga.view_sdstraceability",),
                 source="src/msds/views.py index_msds, get_list_msds",
             ),
             Step(
@@ -79,7 +79,7 @@ FEATURES = (
                 name="Registrar una ficha",
                 actors=("administrador_laboratorio", "tecnico_laboratorio", "sga"),
                 routes=("msds:sds_create",),
-                permissions=("msds.add_msdsobject",),
+                permissions=("laboratory.change_object", "auth_and_perms.institution_can_access"),
                 source="src/msds/views.py sds_create",
             ),
             Step(

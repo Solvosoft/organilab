@@ -1,5 +1,5 @@
 {% load i18n %}
-{% if perms.auth_and_perms.institution_can_access or perms.msds.view_msdsobject %}
+{% if perms.auth_and_perms.institution_can_access or perms.sga.view_sdstraceability %}
 	<li>
 		<a>
 			<i class="fa fa-tags"></i>
@@ -24,7 +24,7 @@
 				</li>
 			{% endif %}
 
-			{% if perms.msds.view_msdsobject %}
+			{% if perms.sga.view_sdstraceability %}
 				<li>
 					<a href="{% url 'msds:index_msds' org_pk=org_pk %}">
 						{% trans 'FDS: Security sheets' %}
