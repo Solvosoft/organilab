@@ -220,14 +220,23 @@ class FeedbackView(PermissionRequiredMixin, CreateView):
     permission_required = "auth_and_perms.institution_can_access"
     form_class = FeedbackEntryForm
 
+    def load_org_and_lab(self, params):
+        self.org = self.lab = None
+        try:
+            if "org_pk" in params:
+                self.org = int(params["org_pk"])
+            if "lab_pk" in params:
+                self.lab = int(params["lab_pk"])
+        except ValueError:
+            self.org = self.lab = None
+
     def get(self, request, *args, **kwargs):
-        self.lab = None
-        self.org = None
-        if "org_pk" in request.GET:
-            self.org = int(request.GET["org_pk"])
-        if "lab_pk" in request.GET:
-            self.lab = int(request.GET["lab_pk"])
+        self.load_org_and_lab(request.GET)
         return CreateView.get(self, request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.load_org_and_lab(request.POST)
+        return CreateView.post(self, request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super(FeedbackView, self).get_context_data()
@@ -286,19 +295,10 @@ class FeedbackView(PermissionRequiredMixin, CreateView):
         return html
 
     def get_success_url(self):
-        try:
-            lab_pk = int(self.request.POST.get("lab_pk", 0))
-            org_pk = int(self.request.POST.get("org_pk", 0))
-        except Exception:
-            lab_pk = 0
-            org_pk = 0
-            print("exeption")
-        if lab_pk and org_pk:
-            print("reverse 1")
+        if self.lab and self.org:
             return reverse(
-                "laboratory:labindex", kwargs={"lab_pk": lab_pk, "org_pk": org_pk}
+                "laboratory:labindex", kwargs={"lab_pk": self.lab, "org_pk": self.org}
             )
-        print("reverse 2")
         return reverse("index")
 
 

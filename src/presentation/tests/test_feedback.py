@@ -57,23 +57,16 @@ class FeedbackTest(TestCase):
         )
 
     def test_add_feedback_lab_org_fail(self):
-        f = ContentFile(b"Hello world!", name="hello-world.pdf")
-
         data = {
-            "title": "Falla reserva",
             "explanation": "No se efectuo la reserva el día indicado",
-            "related_file": f,
             "org_pk": 1,
             "lab_pk": 1,
         }
         pre = FeedbackEntry.objects.count()
-        response = self.client.post(reverse("feedback"), data=data, follow=True)
-        pos = FeedbackEntry.objects.count()
+        response = self.client.post(reverse("feedback"), data=data)
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(pos > pre)
-        self.assertRedirects(
-            response, reverse("laboratory:labindex", kwargs={"lab_pk": 1, "org_pk": 1})
-        )
+        self.assertEqual(FeedbackEntry.objects.count(), pre)
+        self.assertIn("title", response.context["form"].errors)
 
     def test_index_auth(self):
         response = self.client.get(reverse("index"))
