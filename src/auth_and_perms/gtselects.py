@@ -689,7 +689,7 @@ class ObjectByOrganization(BaseSelect2View):
     def get_queryset(self):
         queryset = super().get_queryset()
         if self.organization:
-            queryset = queryset.filter(organization=self.organization).order_by("name")
+            queryset = queryset.filter(organization__in=self.organization.ancestors(include_self=True)).order_by("name")
         else:  # pragma: no cover - `list` exige la organización en el serializer
             queryset = queryset.none()
         return queryset
