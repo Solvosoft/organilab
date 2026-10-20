@@ -154,9 +154,8 @@ FEATURES = (
             ),
         ),
         notes=(
-            "HALLAZGO-ORG-1: `get_org_administrators` (`:542`) filtra por "
-            '`rol__name="Administrativo superior"`, una **cadena literal**. Renombrar '
-            "ese rol deja la consulta vacía sin que nada falle.",
+            "`get_org_administrators` filtra por "
+            '`rol__name=ROLES["administrativo_superior"]`, el nombre del archivo de roles.',
             "Listar roles exige `change_rol`, no `view_rol`: no se puede dar consulta "
             "de roles sin dar edición.",
         ),

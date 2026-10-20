@@ -5,10 +5,10 @@ import tempfile
 from unittest import mock
 
 from django.test import SimpleTestCase, TestCase
-from weasyprint import HTML
 
 from laboratory import utils_pdf
 from laboratory.models import Catalog
+from presentation.pdf import html_to_pdf
 
 
 def generar_pdf(lineas):
@@ -16,7 +16,8 @@ def generar_pdf(lineas):
     html = "".join("<p>%s</p>" % linea for linea in lineas)
     fd, ruta = tempfile.mkstemp(suffix=".pdf")
     os.close(fd)
-    HTML(string="<html><body>%s</body></html>" % html).write_pdf(ruta)
+    with open(ruta, "wb") as archivo:
+        html_to_pdf("<html><body>%s</body></html>" % html, output=archivo)
     return ruta
 
 

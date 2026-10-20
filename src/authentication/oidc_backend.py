@@ -12,6 +12,7 @@ from laboratory.models import (
     UserOrganization,
     OrganizationStructure,
 )
+from auth_and_perms.roles import ROLES
 
 logger = logging.getLogger(__name__)
 
@@ -115,7 +116,7 @@ class OrganiLabOIDCBackend(OIDCAuthenticationBackend):
         org_ct = ContentType.objects.get(
             app_label="laboratory", model="organizationstructure"
         )
-        rol_name = getattr(settings, "DEFAULT_ROL_NAME", "Estudiante")
+        rol_name = getattr(settings, "DEFAULT_ROL_NAME", ROLES["estudiante"])
         pp, _ = ProfilePermission.objects.get_or_create(
             profile=profile,
             content_type=org_ct,

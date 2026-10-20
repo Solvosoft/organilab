@@ -75,10 +75,9 @@ class BaseLaboratorySetUpTest(BaseSetUpTest):
         self.user.user_permissions.add(perm2)
 
         ct3 = ContentType.objects.get_for_model(ObjectFeatures)
-        perm4 = Permission.objects.get(
-            content_type=ct3, codename="change_objectfeatures"
-        )
-        self.user.user_permissions.add(perm4)
+        for codename in ["view_objectfeatures", "change_objectfeatures"]:
+            perm4 = Permission.objects.get(content_type=ct3, codename=codename)
+            self.user.user_permissions.add(perm4)
 
         ct4 = ContentType.objects.get_for_model(Profile)
         for codename in ["view_profile", "change_own_profile"]:

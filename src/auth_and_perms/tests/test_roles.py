@@ -19,7 +19,7 @@ class RequireRoleTest(TestCase):
         with mock.patch("sys.stderr") as stderr:
             with self.assertRaises(unittest.SkipTest) as error:
                 require_role(self, "auditor_iper")
-        self.assertIn("Auditor IPER", str(error.exception))
+        self.assertIn(ROLES["auditor_iper"], str(error.exception))
         self.assertIn(self.id(), stderr.write.call_args.args[0])
 
     def test_rol_faltante_desde_la_preparacion_de_la_clase(self):

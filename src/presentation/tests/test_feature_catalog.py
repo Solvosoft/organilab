@@ -180,34 +180,19 @@ class FeatureCatalogTest(TestCase):
 
 
 class RoleAxisTest(TestCase):
-    """El eje de roles no puede separarse de `update_roles.py`, que es la autoridad."""
+    """El eje de roles no puede separarse de `auth_and_perms/management/roles.py`, que es la autoridad."""
 
-    def test_todo_rol_canonico_existe_en_update_roles(self):
-        from pathlib import Path
-
-        from django.conf import settings
-
-        source = (
-            Path(settings.BASE_DIR)
-            / "auth_and_perms" / "management" / "commands" / "update_roles.py"
-        ).read_text(encoding="utf-8")
-        static = (
-            Path(settings.BASE_DIR)
-            / "auth_and_perms" / "management" / "commands" / "add_static_rol.py"
-        ).read_text(encoding="utf-8")
-        creation = (
-            Path(settings.BASE_DIR)
-            / "auth_and_perms" / "views" / "user_org_creation.py"
-        ).read_text(encoding="utf-8")
-        haystack = source + static + creation
+    def test_todo_rol_canonico_existe_en_el_archivo_de_roles(self):
+        from auth_and_perms.roles import ROLE_DEFINITIONS
 
         for role in CANONICAL_ROLES:
             with self.subTest(rol=role.name):
-                self.assertTrue(
-                    'ROLES["%s"]' % role.id in haystack or role.name in haystack,
-                    "%s está en el eje pero no lo crea ni actualiza nadie. O se quitó "
-                    "del código y sobra aquí, o se renombró." % role.name,
+                self.assertIn(
+                    role.id, ROLE_DEFINITIONS,
+                    "%s está en el eje pero no en el archivo de roles. O se quitó "
+                    "de ahí y sobra aquí, o se renombró." % role.name,
                 )
+                self.assertEqual(ROLE_DEFINITIONS[role.id]["name"], role.name)
 
     def test_los_alias_no_se_solapan(self):
         """Un nombre no puede resolver a dos roles: la atribución sería ambigua."""

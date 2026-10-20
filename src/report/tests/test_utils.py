@@ -112,9 +112,10 @@ class PresentacionDeTablasTest(SimpleTestCase):
         self.assertNotIn("None", html)
 
     def test_tabla_pdf_sin_filas_lo_dice(self):
-        html = get_pdf_table_content({"columns": [{"title": "Nombre"}, {"title": "CAS"}], "dataset": []})
+        with translation.override("es"):
+            html = get_pdf_table_content({"columns": [{"title": "Nombre"}, {"title": "CAS"}], "dataset": []})
         self.assertIn("<th>Item</th><th>Nombre</th><th>CAS</th>", html)
-        self.assertIn("<tr><td colspan='3'>No records.</td></tr>", html)
+        self.assertIn("<tr><td colspan='3'>Sin registros.</td></tr>", html)
 
     def test_tabla_pdf_con_indicaciones_de_peligro_largas(self):
         # Con ancho automático la columna quedaba estrecha y la fila del

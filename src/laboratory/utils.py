@@ -31,6 +31,7 @@ from laboratory.models import (
     ShelfObject,
 )
 from django.utils.translation import gettext_lazy as _
+from auth_and_perms.roles import ROLES
 
 
 def check_user_has_perm(user, perm):
@@ -164,7 +165,7 @@ def get_laboratories_from_organization(rootpk, user):
         profile=user.profile,
         content_type__app_label="laboratory",
         content_type__model="organizationstructure",
-        rol__name="Administrativo superior",
+        rol__name=ROLES["administrativo_superior"],
         rol__organizationstructure=organization,
     )
     if pp.exists():
@@ -636,7 +637,7 @@ def get_lab_ids(organization, profile):
         object_id__in=org_ids,
         content_type__app_label="laboratory",
         content_type__model="organizationstructure",
-        rol__name="Administrativo superior",
+        rol__name=ROLES["administrativo_superior"],
     ).exists()
 
     if has_org_permission:

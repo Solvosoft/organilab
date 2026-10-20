@@ -2,8 +2,9 @@ from django.contrib.auth.models import Permission
 from django.core.management import BaseCommand
 
 from auth_and_perms.models import Rol
+from auth_and_perms.roles import ROLES
 
-ROLE_NAME = "Solo Lectura"
+ROLE_NAME = ROLES["solo_lectura"]
 
 # Permissions the role must NOT have (write/delete capabilities it
 # currently holds despite being a read-only role).

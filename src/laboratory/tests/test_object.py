@@ -192,11 +192,12 @@ class ObjectFeaturesViewTest(BaseLaboratorySetUpTest):
 
     def test_list_objectfeature(self):
         url = reverse(
-            "laboratory:provider_view",
+            "laboratory:objectfeatures_view",
             kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk},
         )
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "laboratory/objectfeatures_list.html")
 
     def test_add_objectfeature(self):
         url = reverse(

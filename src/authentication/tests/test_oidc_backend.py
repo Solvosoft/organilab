@@ -11,10 +11,11 @@ from django.core.exceptions import SuspiciousOperation
 from django.db import IntegrityError
 from django.test import TestCase, override_settings
 
-from auth_and_perms.models import Profile, ProfilePermission, Rol
+from auth_and_perms.models import Profile, ProfilePermission
 from authentication.oidc_backend import OrganiLabOIDCBackend
 from laboratory.models import OrganizationStructure, UserOrganization
 from auth_and_perms.roles import ROLES
+from auth_and_perms.tests.roles import require_role
 
 
 def respuesta_userinfo(claims):
@@ -38,7 +39,7 @@ class OIDCBackendTest(TestCase):
 
     def test_primer_ingreso_crea_usuario_y_perfil_con_los_claims(self):
         org = OrganizationStructure.objects.create(name="Universidad")
-        rol = Rol.objects.create(name=ROLES["estudiante"])
+        rol = require_role(self, "estudiante")
         Group.objects.get_or_create(name="Profile")
         Group.objects.get_or_create(name="SGAView")
         with override_settings(DEFAULT_ORG_PK=org.pk, DEFAULT_ROL_NAME="estudiante"):
@@ -71,7 +72,7 @@ class OIDCBackendTest(TestCase):
 
     def test_rol_por_defecto_ya_asignado_no_se_duplica(self):
         org = OrganizationStructure.objects.create(name="Universidad")
-        rol = Rol.objects.create(name=ROLES["estudiante"])
+        rol = require_role(self, "estudiante")
         user = User.objects.create_user("previo")
         profile = Profile.objects.create(user=user)
         with override_settings(DEFAULT_ORG_PK=org.pk, DEFAULT_ROL_NAME=ROLES["estudiante"]):

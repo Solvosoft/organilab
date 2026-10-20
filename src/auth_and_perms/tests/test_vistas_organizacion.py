@@ -19,7 +19,7 @@ from auth_and_perms.views import media_access
 from auth_and_perms.views.user_org_creation import set_rol_administrator_on_org
 from laboratory.models import UserOrganization
 from report.models import TaskReport
-from auth_and_perms.roles import ROLES
+from auth_and_perms.roles import ROLE_DEFINITIONS, ROLES
 
 
 class GestionDeOrganizacionBase(EscenarioOrganizaciones):
@@ -140,6 +140,7 @@ class AdministradorDeOrganizacionHijaTest(EscenarioOrganizaciones):
         raiz_admin = self.crear_usuario("raiz-admin")
         set_rol_administrator_on_org(raiz_admin.profile, self.org_a)
         rol = Rol.objects.get(name=ROLES["organization_management"], organizationstructure=self.org_a)
+        self.assertEqual(rol.description, ROLE_DEFINITIONS["organization_management"]["description"])
         hija_admin = self.crear_usuario("hija-admin")
         set_rol_administrator_on_org(hija_admin.profile, self.org_a_hija)
         pp = ProfilePermission.objects.get(profile=hija_admin.profile, object_id=self.org_a_hija.pk)

@@ -20,6 +20,7 @@ from laboratory.models import (
 )
 from laboratory.utils import organilab_logentry
 from django.contrib.sites.models import Site
+from auth_and_perms.roles import ROLES
 
 
 class Command(BaseCommand):
@@ -42,7 +43,7 @@ class Command(BaseCommand):
         )
 
     def read_docs(self, documento, domain):
-        self.rol = Rol.objects.get(name="Administrador de Laboratorio")
+        self.rol = Rol.objects.get(name=ROLES["administrador_laboratorio"])
         try:
             wb = openpyxl.load_workbook(documento)
         except FileNotFoundError:
@@ -293,7 +294,7 @@ class Command(BaseCommand):
             organization=organization,
         )
         if profile.user.email in [""]:
-            role = Rol.objects.get(name="Solo Lectura")
+            role = Rol.objects.get(name=ROLES["solo_lectura"])
             pp.rol.add(role)
             pp.save()
         elif self.rol:
@@ -330,5 +331,5 @@ class Command(BaseCommand):
             )
 
     def handle(self, *args, **options):
-        self.rol = Rol.objects.get(name="Administrador de Laboratorio")
+        self.rol = Rol.objects.get(name=ROLES["administrador_laboratorio"])
         self.read_docs(options["doc"], options["domain"])

@@ -45,6 +45,7 @@ from laboratory.models import (
 from laboratory.utils import organilab_logentry, register_laboratory_contenttype
 from laboratory.views.djgeneric import ListView, DeleteView
 from django.conf import settings
+from auth_and_perms.roles import ROLES
 
 
 @login_required
@@ -471,7 +472,7 @@ def get_org_administrators(request, pk):
         ProfilePermission.objects.filter(
             content_type=ct,
             object_id=org.pk,
-            rol__name="Administrativo superior",
+            rol__name=ROLES["administrativo_superior"],
             profile__user__in=active_user_pks,
         )
         .select_related("profile__user")

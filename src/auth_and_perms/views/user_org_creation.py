@@ -13,7 +13,7 @@ from auth_and_perms.models import (
     Rol,
 )
 from laboratory.models import OrganizationStructure, UserOrganization
-from django.utils.translation import gettext_lazy as _
+from auth_and_perms.roles import ROLE_DEFINITIONS, ROLES
 
 
 def set_profile_administrator(profile, rol):
@@ -37,7 +37,8 @@ def set_rol_administrator_on_org(
 
     if organization.parent is None:
         group, _x = Group.objects.get_or_create(name="RegisterOrganization")
-        rol = Rol.objects.create(name=_("Organization Management"))
+        definition = ROLE_DEFINITIONS["organization_management"]
+        rol = Rol.objects.create(name=definition["name"], description=definition["description"])
         ct = ContentType.objects.filter(
             app_label=organization._meta.app_label, model=organization._meta.model_name
         ).first()
@@ -51,7 +52,7 @@ def set_rol_administrator_on_org(
     else:
         root_org = organization.root
         rol = Rol.objects.filter(
-            name=_("Organization Management"), organizationstructure=root_org
+            name=ROLES["organization_management"], organizationstructure=root_org
         ).first()
         if rol:
             ct = ContentType.objects.filter(

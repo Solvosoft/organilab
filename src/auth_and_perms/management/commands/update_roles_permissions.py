@@ -1,6 +1,7 @@
 from django.contrib.auth.models import Permission
 from django.core.management import BaseCommand
 from auth_and_perms.models import Rol
+from auth_and_perms.roles import ROLES
 
 
 class Command(BaseCommand):
@@ -44,7 +45,7 @@ class Command(BaseCommand):
         ]
 
     def create_rol(self):
-        student_rol = Rol.objects.get(name="Estudiante")
+        student_rol = Rol.objects.get(name=ROLES["estudiante"])
 
         for perm in self.data:
             for model, perms in perm.items():

@@ -17,17 +17,19 @@ lo diga:
    o por el estado de un flujo (quien pidió algo frente a quien lo aprueba).
 
 Este módulo **no duplica los permisos**: esos viven en
-``auth_and_perms/management/commands/update_roles.py``, que es la autoridad. Aquí solo
+``auth_and_perms/management/roles.py``, que es la autoridad. Aquí solo
 está la identidad de cada rol —id estable, nombre canónico, alias y capa— para poder
 decir "esta funcionalidad la ejecuta este rol" y "este rol no lo ejercita ninguna
 prueba". El guardián comprueba que los dos ficheros no se separen.
-
-Sobre los alias: las fixtures escriben los nombres a su manera —``capacitacion.json``
-dice ``Docente`` donde el catálogo dice ``Profesor``, y ``Tecnico`` sin tilde—. Sin la
-tabla de alias, una prueba que sí ejercita un rol se contaría como que no lo ejercita.
 """
 
 from collections import namedtuple
+from pathlib import Path
+
+from auth_and_perms.roles import ROLES
+
+ROLES_FILE = "auth_and_perms/management/roles.py"
+ROLES_FILE_LINES = (Path(__file__).resolve().parent.parent / ROLES_FILE).read_text(encoding="utf-8").splitlines()
 
 #: ``layer`` dice de qué capa sale la autoridad: solo ``rol`` concede permisos.
 Role = namedtuple(
@@ -36,101 +38,73 @@ Role = namedtuple(
 )
 
 
-def _rol(id, name, defined_in, description, aliases=()):
+def _defined_in(id):
+    return "%s:%d" % (ROLES_FILE, ROLES_FILE_LINES.index('    "%s": {' % id) + 1)
+
+
+def _rol(id, description, aliases=()):
     return Role(
-        id=id, name=name, layer="rol", canonical=True, defined_in=defined_in,
+        id=id, name=ROLES[id], layer="rol", canonical=True, defined_in=_defined_in(id),
         aliases=tuple(aliases), counts_as_coverage=True, description=description,
     )
 
 
-#: Los roles institucionales. Orden: el de `update_roles.py:handle()`.
+#: Los roles institucionales. Orden: el de `auth_and_perms/management/roles.py`.
 CANONICAL_ROLES = (
-    _rol("estudiante", "Estudiante",
-         "auth_and_perms/management/commands/update_roles.py:30",
+    _rol("estudiante",
          "Acceso básico: consulta el laboratorio y su perfil, agrega/retira objetos de "
          "estantes y permisos básicos de desechos. Es el rol de reserva del alta por "
          "OIDC (`authentication/oidc_backend.py:112`)."),
-    _rol("depositante_residuos", "Depositante de residuos",
-         "auth_and_perms/management/commands/update_roles.py:47",
-         "Registra y gestiona desechos. Se le quitan explícitamente los permisos de "
-         "edición de SGA (`update_roles.py:61-85`)."),
-    _rol("creador_laboratorio", "Creador de laboratorio",
-         "auth_and_perms/management/commands/update_roles.py:163",
+    _rol("depositante_residuos",
+         "Registra y gestiona desechos."),
+    _rol("creador_laboratorio",
          "Crea la estructura física: laboratorios, salas, muebles, estantes, objetos. "
          "Sin reportes, sin SGA y sin reservaciones."),
-    _rol("administrador_laboratorio", "Administrador de Laboratorio",
-         "auth_and_perms/management/commands/update_roles.py:212",
-         "Máxima autoridad operativa del laboratorio. Único con "
-         "`laboratory.can_manage_inform_status` (`update_roles.py:100`) y uno de los dos "
-         "con `can_approve_labororgrequest`."),
-    _rol("lectura_agregado_sustancias", "Lectura y agregado de sustancias",
-         "auth_and_perms/management/commands/update_roles.py:265",
+    _rol("administrador_laboratorio",
+         "Máxima autoridad operativa del laboratorio. No tiene "
+         "`can_approve_labororgrequest`: pide laboratorios u organizaciones, pero no los aprueba."),
+    _rol("lectura_agregado_sustancias",
          "Consulta general más registrar y editar objetos de inventario y su "
          "trazabilidad."),
-    _rol("asistente_laboratorio", "Asistente de laboratorio",
-         "auth_and_perms/management/commands/update_roles.py:450",
+    _rol("asistente_laboratorio",
          "Procedimientos, inventario, informes y reservaciones; puede crear estructura "
          "organizacional."),
-    _rol("profesor", "Profesor",
-         "auth_and_perms/management/commands/update_roles.py:531",
+    _rol("profesor",
          "Crea y administra procedimientos académicos: plantillas, pasos, observaciones "
-         "y objetos requeridos.",
-         aliases=("Docente",)),
-    _rol("tesista_desechos", "Tesista modulo desechos",
-         "auth_and_perms/management/commands/update_roles.py:581",
+         "y objetos requeridos."),
+    _rol("tesista_desechos",
          "Desechos y flujo de laboratorio. No gestiona usuarios, roles ni estructura."),
-    _rol("solo_lectura", "Solo Lectura",
-         "auth_and_perms/management/commands/update_roles.py:756",
+    _rol("solo_lectura",
          "Consulta amplia sin crear ni eliminar. Para auditoría y supervisión."),
-    _rol("tecnico_laboratorio", "Técnico de Laboratorio",
-         "auth_and_perms/management/commands/update_roles.py:828",
-         "Opera el día a día: inventario, estantes, académico y reservaciones.",
-         aliases=("Tecnico de Laboratorio",)),
-    _rol("sga", "SGA",
-         "auth_and_perms/management/commands/update_roles.py:948",
+    _rol("tecnico_laboratorio",
+         "Opera el día a día: inventario, estantes, académico y reservaciones."),
+    _rol("sga",
          "Acceso completo y exclusivo al módulo SGA, con etiquetado full."),
-    _rol("regente", "Regente",
-         "auth_and_perms/management/commands/update_roles.py:979",
+    _rol("regente",
          "Solo lectura con cobertura total, más los reportes de regencia y precursores. "
-         "Diseñado para el Regente Químico.",
-         aliases=("Regente Quimico", "Regente Químico")),
-    _rol("administrativo_superior", "Administrativo superior",
-         "auth_and_perms/management/commands/update_roles.py:1005",
-         "Máxima autoridad administrativa. Único con IPER completo activo y el rol que "
-         "`get_org_administrators` busca por nombre literal "
-         "(`views/organizationstructure.py:542`)."),
-    _rol("administrativo_centro_trabajo", "Administrativo de centro de trabajo",
-         "auth_and_perms/management/commands/update_roles.py:1030",
+         "Diseñado para el Regente Químico."),
+    _rol("administrativo_superior",
+         "Máxima autoridad administrativa. Único con `can_approve_labororgrequest` y el rol "
+         "que busca `get_org_administrators`."),
+    _rol("administrativo_centro_trabajo",
          "Como el administrativo superior a nivel de centro, sin gestión de usuarios ni "
          "de roles."),
-    _rol("auditor_iper", "Auditor IPER",
-         "auth_and_perms/management/commands/update_roles.py:1231",
+    _rol("auditor_iper",
          "IPER en solo lectura más `view_all_iper` y `add_iperobservation`. Se le quita "
-         "`view_riskzone` (`:1243`). Se autocrea si no existe."),
-    _rol("administrador_iper", "Administrador IPER",
-         "auth_and_perms/management/commands/update_roles.py:1254",
-         "IPER completo, incluidos `manage_iper_catalog` y `request_iper`. Se autocrea "
-         "si no existe."),
-    _rol("administrador_ambiental", "Administrador ambiental",
-         "auth_and_perms/management/commands/update_roles.py:1296",
+         "`view_riskzone`."),
+    _rol("administrador_iper",
+         "IPER completo, incluidos `manage_iper_catalog` y `request_iper`."),
+    _rol("administrador_ambiental",
          "Módulo ambiental completo: puntos de medición, consumos, bases de "
          "normalización, alertas y acceso por edificio. Asignado en la organización cubre "
-         "todos sus edificios; asignado sobre un edificio, solo ese. Se autocrea si no existe."),
-    _rol("registro_ambiental", "Encargado de registro ambiental",
-         "auth_and_perms/management/commands/update_roles.py:1302",
+         "todos sus edificios; asignado sobre un edificio, solo ese."),
+    _rol("registro_ambiental",
          "Registra consumos y residuos de los puntos de medición; no configura los "
-         "puntos ni las reglas. Se asigna en la organización o por edificio. Se autocrea si "
-         "no existe."),
-    _rol("analista_ambiental", "Analista ambiental",
-         "auth_and_perms/management/commands/update_roles.py:1307",
+         "puntos ni las reglas. Se asigna en la organización o por edificio."),
+    _rol("analista_ambiental",
          "Solo lectura de consumos, indicadores y reportes ambientales, en la "
-         "organización o por edificio. Se autocrea si no existe."),
-    _rol("manejo_sustancias", "Manejo de sustancias del laboratorio",
-         "auth_and_perms/management/commands/add_static_rol.py:17",
-         "Rol construido con PKs de permiso escritas a mano (`:19-51`): depende del "
-         "orden de las migraciones y no sobrevive a una base distinta."),
-    _rol("organization_management", "Organization Management",
-         "auth_and_perms/views/user_org_creation.py:40",
+         "organización o por edificio."),
+    _rol("organization_management",
          "Se crea una por organización raíz al registrarla, con todos los permisos del "
          "grupo `RegisterOrganization`. Es el superadministrador de la organización."),
 )

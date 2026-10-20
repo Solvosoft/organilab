@@ -5,8 +5,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase
 from django.urls import reverse
 
-from auth_and_perms.management.commands.update_roles import update_ambiental_roles
-from auth_and_perms.models import Profile, ProfilePermission, Rol
+from auth_and_perms.management.commands.update_roles import sync_roles
+from auth_and_perms.models import Profile, ProfilePermission
 from laboratory.models import OrganizationStructure, UserOrganization
 from presentation.models import SystemParameter
 from presentation.parameters import (
@@ -38,8 +38,7 @@ class PlatformTestCase(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        Rol.objects.get_or_create(name=ROLES["administrativo_superior"])
-        update_ambiental_roles()
+        sync_roles(["administrativo_superior", "administrador_ambiental", "registro_ambiental", "analista_ambiental"])
         cls.root = OrganizationStructure.objects.create(name="Universidad")
         cls.child = OrganizationStructure.objects.create(name="Escuela", parent=cls.root)
         cls.user = make_role_user("superior", cls.child, ROLES["administrativo_superior"])

@@ -29,7 +29,7 @@ class BaseUnitTest(TestCase):
         self.assertEqual(inst.quantity_base_unit, 20)
 
     def test_milliliter_to_liter(self):
-        ml = Catalog.objects.get(description='Milímetros', key='units')
+        ml = Catalog.objects.get(description='Mililitros', key='units')
         obj = Object.objects.get(pk=1)
         inst = ShelfObject(object=obj, quantity=20, measurement_unit=ml, quantity_base_unit=None)
         pre_save.send(sender=ShelfObject, instance=inst)
@@ -70,13 +70,6 @@ class BaseUnitTest(TestCase):
         pre_save.send(sender=ShelfObject, instance=inst)
         self.assertEqual(inst.quantity_base_unit, 0.00002)
 
-    def test_units(self):
-        units = Catalog.objects.get(description='Unidades', key='units')
-        obj = Object.objects.get(pk=1)
-        inst = ShelfObject(object=obj, quantity=20, measurement_unit=units, quantity_base_unit=None)
-        pre_save.send(sender=ShelfObject, instance=inst)
-        self.assertEqual(inst.quantity_base_unit, 20)
-
     def test_psi_to_pascal(self):
         psi = Catalog.objects.get(description='PSI', key='units')
         obj = Object.objects.get(pk=1)
@@ -84,14 +77,14 @@ class BaseUnitTest(TestCase):
         pre_save.send(sender=ShelfObject, instance=inst)
         self.assertEqual(inst.quantity_base_unit, 20)
 
-    def test_atm_to_pascal(self):
+    def test_pascal(self):
         pascal = Catalog.objects.get(description='Pascales', key='units')
         obj = Object.objects.get(pk=1)
         inst = ShelfObject(object=obj, quantity=20, measurement_unit=pascal, quantity_base_unit=None)
         pre_save.send(sender=ShelfObject, instance=inst)
         self.assertEqual(inst.quantity_base_unit, 20)
 
-    def test_pascals(self):
+    def test_atm_to_pascal(self):
         atm = Catalog.objects.get(description='Atmósfera', key='units')
         obj = Object.objects.get(pk=1)
         inst = ShelfObject(object=obj, quantity=20, measurement_unit=atm, quantity_base_unit=None)

@@ -17,7 +17,7 @@ para ver el catálogo y `laboratory.do_report` para generar y descargar
 from presentation.feature_catalog import Feature, Step
 
 #: Quien puede pedir un reporte. `Regente` está por diseño: su rol es de solo lectura
-#: **más** los reportes de regencia y precursores (`update_roles.py:979`).
+#: **más** los reportes de regencia y precursores (`auth_and_perms/management/roles.py`).
 SOLICITANTES = ("administrativo_superior", "administrador_laboratorio", "regente",
                 "asistente_laboratorio", "solo_lectura",
                 "administrativo_centro_trabajo")

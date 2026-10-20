@@ -28,6 +28,8 @@ from django.conf import settings
 import logging
 from django.views.decorators.http import require_http_methods
 import json
+
+logger = logging.getLogger("organilab")
 from django.utils import timezone
 from django.contrib.auth import authenticate, login
 
@@ -69,8 +71,10 @@ def login_with_bccr(request):
         if authclient.validar_servicio():
             data = authclient.solicitar_autenticacion(identification)
             try:
-                if int(data["id_solicitud"]) > 0:
-                    app = AuthorizedApplication.objects.all().first()
+                app = AuthorizedApplication.objects.all().first()
+                if int(data["id_solicitud"]) > 0 and app is None:
+                    logger.warning("No AuthorizedApplication configured to notify the BCCR authentication")
+                elif int(data["id_solicitud"]) > 0:
                     url = app.notification_url + str(data["id_solicitud"])
                     headers = {
                         "Authorization": "Token %s" % (app.token),
@@ -80,10 +84,9 @@ def login_with_bccr(request):
                     }
                     response = requests.post(url, headers=headers)
                     response.raise_for_status()
-                    print(url, " --> ", str(response.status_code))
-                    print(response.content)
-            except Exception as e:
-                print(e)
+                    logger.info("BCCR authentication notified (status %s)", response.status_code)
+            except Exception:
+                logger.exception("Error notifying the BCCR authentication")
 
         else:
             # logger.warning({'message':"Auth BCCR not available", 'location': __file__})

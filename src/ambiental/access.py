@@ -17,12 +17,13 @@ from django.contrib.contenttypes.models import ContentType
 
 from auth_and_perms.organization_utils import organization_permissions
 from risk_management.models import Buildings
+from auth_and_perms.roles import ROLES
 
 #: Roles que se pueden asignar sobre un edificio.
 BUILDING_ROLES = (
-    "Administrador ambiental",
-    "Encargado de registro ambiental",
-    "Analista ambiental",
+    ROLES["administrador_ambiental"],
+    ROLES["registro_ambiental"],
+    ROLES["analista_ambiental"],
 )
 
 

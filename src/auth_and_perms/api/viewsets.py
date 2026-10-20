@@ -76,7 +76,7 @@ class RolAPI(
     mixins.CreateModelMixin,
     viewsets.GenericViewSet,
 ):
-    queryset = Rol.objects.all()
+    queryset = Rol.objects.all().order_by("pk")
     serializer_class = RolSerializer
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]

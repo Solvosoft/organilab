@@ -18,14 +18,14 @@ el resto se cubre con pruebas de cliente o unitarias.
 | `json` | 45 |
 | `descarga` | 18 |
 | `accion` | 29 |
-| `infra` | 701 |
-| **total** | **1798** |
+| `infra` | 706 |
+| **total** | **1803** |
 
 Páginas: 191, de las cuales **52 sin ninguna prueba**.
 
 ## Rutas por app
 
-Se omiten las categorías `api` e `infra` (1495 rutas de routers DRF y de
+Se omiten las categorías `api` e `infra` (1500 rutas de routers DRF y de
 la administración de Django): están en `inventario_urls.csv`.
 
 ### academic — 9 páginas, 0 sin prueba
@@ -201,7 +201,7 @@ la administración de Django): están en `inventario_urls.csv`.
 | `mylabs` | `/<int:org_pk>/my_labs/` | pagina | `laboratory.views.laboratory.LaboratoryListView` | `laboratory/laboratory_list.html` | org_pk | sí | sí |
 | `object_reservation` | `/reserve_object/<int:modelpk>` | pagina | `laboratory.reservation.ShelfObjectReservation` | `djreservation/product_form.html` | modelpk | — | sí |
 | `object_view` | `/lab/<int:org_pk>/<int:lab_pk>/object/list/` | pagina | `laboratory.views.objects.object_view` | `laboratory/object_list.html` | org_pk, lab_pk | sí | sí |
-| `objectfeatures_view` | `/lab/<int:org_pk>/<int:lab_pk>/features/list/` | pagina | `laboratory.views.objectfeature.objectfeatures_view` | `laboratory/objectfeatures_list.html` | org_pk, lab_pk | sí | — |
+| `objectfeatures_view` | `/lab/<int:org_pk>/<int:lab_pk>/features/list/` | pagina | `laboratory.views.objectfeature.objectfeatures_view` | `laboratory/objectfeatures_list.html` | org_pk, lab_pk | sí | sí |
 | `objectview_create` | `/lab/<int:org_pk>/<int:lab_pk>/objects/create` | pagina | `laboratory.views.objects.ObjectView.__init__.<locals>.ObjectCreateView` | `laboratory/objectview_form.html` | org_pk, lab_pk | — | sí |
 | `objectview_delete` | `/lab/<int:org_pk>/<int:lab_pk>/objects/delete/<int:pk>` | pagina | `laboratory.views.objects.ObjectView.__init__.<locals>.ObjectDeleteView` | `laboratory/objectview_delete.html` | org_pk, lab_pk, pk | — | sí |
 | `objectview_update` | `/lab/<int:org_pk>/<int:lab_pk>/objects/edit/<int:pk>` | pagina | `laboratory.views.objects.ObjectView.__init__.<locals>.ObjectUpdateView` | `laboratory/objectview_form.html` | org_pk, lab_pk, pk | — | sí |

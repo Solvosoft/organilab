@@ -819,7 +819,7 @@ class UserseslLookup(BaseSelect2View):
             queryset = User.objects.filter(
                 pk__in=get_users_from_organization(self.organization.root.pk),
                 is_active=True,
-            )
+            ).order_by(self.order_by)
         else:
             queryset = queryset.none()
 
@@ -920,7 +920,7 @@ class RiskLaboratorylLookup(BaseSelect2View):
             )
             queryset = Laboratory.objects.filter(
                 pk__in=organization.get_my_laboratories
-            )
+            ).order_by(self.order_by)
         else:
             queryset = queryset.none()
 

@@ -41,6 +41,7 @@ from laboratory.utils import (
     get_rols_from_organization,
 )
 from django.utils.translation import gettext_lazy as _
+from auth_and_perms.roles import ROLES
 
 
 def str2bool(v):
@@ -267,7 +268,7 @@ class GroupS2(BaseSelect2View, AllPermission):
 
     def get_queryset(self):
         user = self.request.user
-        return get_roles_by_user(user)
+        return get_roles_by_user(user).order_by(self.order_by)
 
     def get_text_display(self, obj):
         org_str = ""
@@ -550,7 +551,7 @@ class GroupsByProfile(BaseSelect2View):
 
     def get_queryset(self):
         # `list` solo llega aquí con el serializer válido, y `profile` es obligatorio.
-        return self.profile.groups.all()
+        return self.profile.groups.all().order_by(self.order_by)
 
     def list(self, request, *args, **kwargs):
         self.serializer = ValidateProfileSerializer(data=request.GET)
@@ -595,6 +596,7 @@ class UsersByOrganization(BaseSelect2View):
                 User.objects.using(settings.READONLY_DATABASE)
                 .filter(pk__in=user_ids)
                 .distinct()
+                .order_by(self.order_by)
             )
         else:  # pragma: no cover - `list` exige la organización en el serializer
             queryset = queryset.none()
@@ -637,7 +639,7 @@ class OrgTree(BaseSelect2View):
         queryset = super().get_queryset()
         if self.user:
             roles = self.user.profile.profilepermission_set.filter(
-                rol__name="Administrativo superior"
+                rol__name=ROLES["administrativo_superior"]
             )
             if self.user.is_superuser or roles.exists():
                 parents, parents_pks = get_org_parents_info(self.user)

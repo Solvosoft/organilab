@@ -85,8 +85,7 @@ FEATURES = (
             Step(
                 id="revisar",
                 name="Revisar la solicitud y aprobarla o rechazarla",
-                # Solo el administrativo superior: a «Administrador de Laboratorio»
-                # `update_roles.py:259` le QUITA este permiso. Ver la nota.
+                # Solo el administrativo superior. Ver la nota.
                 actors=("administrativo_superior",),
                 routes=("laboratory:lab_or_org_request_review",),
                 permissions=("laboratory.can_approve_labororgrequest",),
@@ -95,14 +94,11 @@ FEATURES = (
             ),
         ),
         notes=(
-            "**Un solo rol puede aprobar**: «Administrativo superior» "
-            "(`update_roles.py:1018`, dentro de `add_permissions`). A «Administrador de "
-            "Laboratorio» el mismo comando le **quita** `can_approve_labororgrequest` "
-            "(`:259`, dentro de `remove_permissions`), así que quien manda en el "
+            "**Un solo rol puede aprobar**: «Administrativo superior» es el único con "
+            "`can_approve_labororgrequest` en `auth_and_perms/management/roles.py`. "
+            "«Administrador de Laboratorio» no lo tiene, así que quien manda en el "
             "laboratorio puede pedir pero no aprobar. Es el permiso de aprobación mejor "
-            "acotado del sistema, y conviene no confundirse: `update_roles.py` aplica "
-            "**deltas**, y una línea con el nombre de un permiso puede estar "
-            "concediéndolo o retirándolo.",
+            "acotado del sistema.",
             "**Ninguna de las dos rutas tiene prueba unitaria.**",
         ),
     ),

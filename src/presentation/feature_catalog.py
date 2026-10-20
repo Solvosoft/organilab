@@ -191,8 +191,8 @@ def read_probe(directory=None):
 def observations_by_route(records):
     """``urlname`` -> lo observado: roles canónicos, ruido y códigos de estado.
 
-    Los nombres de rol se traducen por el eje (`role_catalog.resolve_name`), que conoce
-    los alias —``Docente`` es ``Profesor``— y devuelve ``None`` para los roles de
+    Los nombres de rol se traducen por el eje (`role_catalog.resolve_name`), que
+    devuelve ``None`` para los roles de
     fixture tipo «Gestión de X», que no existen en producción y por tanto no son
     cobertura de nada.
     """

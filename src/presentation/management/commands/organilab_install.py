@@ -60,31 +60,20 @@ CORE_STEPS = (
          note="pictogramas SGA y ONU en MEDIA"),
 )
 
-# Estos NO van en la ruta por defecto, y no es una omisión:
+# Estos NO van en la ruta por defecto:
 #
-#   * `update_roles` y `update_roles_permissions` ACTUALIZAN roles que tienen
-#     que existir de antes. En una base recién creada no hay ningún `Rol`
-#     (las fixtures que los traen son de la suite de pruebas, e `init_checks`
-#     solo carga sga_components.json), así que el primero avisaría y se saltaría
-#     casi todo, y el segundo revienta directamente con `Rol.DoesNotExist`
-#     buscando "Estudiante".
-#   * `add_static_rol` crea un rol concediéndole permisos por **PK numérico
-#     fijo** (276, 455, 658...). Los PK de `auth.Permission` se asignan según el
-#     orden en que corren las migraciones, así que en otra base apuntan a otros
-#     permisos. Concedería permisos arbitrarios sin fallar.
-#   * Además `update_roles` es declarativo: hace `add_permissions` y
-#     `remove_permissions`, o sea que revierte cualquier ajuste manual de esos
-#     roles.
+#   * `update_roles` deja cada rol igual a `auth_and_perms/management/roles.py`:
+#     crea los que faltan, y agrega y quita permisos, así que revierte cualquier
+#     ajuste manual de esos roles.
+#   * `update_roles_permissions` revienta con `Rol.DoesNotExist` si no existe
+#     "Estudiante"; corre después de `update_roles`, que lo crea.
 #
-# Se dejan accesibles con --with-roles para quien sepa que su base sí tiene los
-# roles esperados.
+# Se dejan accesibles con --with-roles.
 ROLE_STEPS = (
     Step("update_roles",
-         note="permisos declarados de los roles conocidos (DECLARATIVO: revierte ajustes manuales)"),
+         note="roles según auth_and_perms/management/roles.py (revierte ajustes manuales)"),
     Step("update_roles_permissions", kwargs={"noinput": True},
          note="permisos extra del rol Estudiante (falla si el rol no existe)"),
-    Step("add_static_rol", kwargs={"noinput": True}, on_upgrade=False,
-         note="rol 'Manejo de sustancias' (permisos por PK numérico fijo)"),
 )
 
 
@@ -103,9 +92,8 @@ class Command(BaseCommand):
             "--with-roles",
             action="store_true",
             dest="with_roles",
-            help="Corre además los comandos de roles (update_roles, "
-                 "update_roles_permissions, add_static_rol). Requiere que los roles "
-                 "base ya existan; ver el comentario de ROLE_STEPS.",
+            help="Corre además los comandos de roles (update_roles y "
+                 "update_roles_permissions); ver el comentario de ROLE_STEPS.",
         )
         parser.add_argument(
             "--dry-run",

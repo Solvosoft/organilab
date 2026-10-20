@@ -19,7 +19,7 @@ con ese rol.
 | Sin ninguna prueba | 8 |
 | Rutas navegables huérfanas | 0 |
 | Apps pendientes de catalogar | 2 |
-| Roles canónicos | 21 |
+| Roles canónicos | 20 |
 | Roles canónicos sin aparecer en ningún paso | 0 |
 
 ## Funcionalidades
@@ -168,7 +168,7 @@ La puerta de entrada del sistema multiinquilino: el usuario elige en qué organi
 |---|---|---|---|---|
 | **Elegir la organización con la que se trabaja** | Estudiante, Profesor, Técnico de Laboratorio, Administrador de Laboratorio, Administrativo superior, Regente, Solo Lectura | — | — | `auth_and_perms:select_organization_by_user` |
 | **Ver el mapa de laboratorios** | Administrador de Laboratorio, Administrativo superior, Regente | `risk_management.view_riskzone` | — | `auth_and_perms:map_of_laboratories` |
-| **Listar organizaciones y sus laboratorios** | Administrativo superior, Organization Management, Administrador de Laboratorio, Administrativo de centro de trabajo | `laboratory.view_organizationstructure` | — | `auth_and_perms:lab_org_list` |
+| **Listar organizaciones y sus laboratorios** | Administrativo superior, Administración de Organización, Administrador de Laboratorio, Administrativo de centro de trabajo | `laboratory.view_organizationstructure` | — | `auth_and_perms:lab_org_list` |
 
 Hallazgos:
 
@@ -182,18 +182,18 @@ La pantalla desde la que un administrador arma su inquilino: da de alta usuarios
 
 | Paso | Actores | Permiso | Transición | Rutas |
 |---|---|---|---|---|
-| **Abrir el gestor de la organización** | Administrativo superior, Organization Management, Administrador de Laboratorio, Administrativo de centro de trabajo | `laboratory.can_manage_org_permissions` | — | `auth_and_perms:organizationManager` |
-| **Añadir usuarios a la organización** | Administrativo superior, Organization Management, Administrador de Laboratorio, Administrativo de centro de trabajo | `auth.add_user`<br>`laboratory.change_organizationstructure`<br>`auth_and_perms.view_profile` | — | `auth_and_perms:add_user`<br>`auth_and_perms:addusersorganization`<br>`auth_and_perms:get_users` |
-| **Consultar, crear y editar los roles de la organización** | Administrativo superior, Organization Management, Administrador de Laboratorio, Administrativo de centro de trabajo | `auth_and_perms.change_rol`<br>`auth_and_perms.view_rol` | — | `auth_and_perms:list_rol_by_org`<br>`auth_and_perms:update_rol`<br>`auth_and_perms:get_rol`<br>`auth_and_perms:get_roles_by_organization` |
-| **Quitar un rol de la organización** | Administrativo superior, Organization Management, Administrador de Laboratorio, Administrativo de centro de trabajo | `auth_and_perms.delete_rol` | — | `auth_and_perms:del_rol_by_org` |
-| **Copiar el juego de roles a otra organización** | Administrativo superior, Organization Management, Administrador de Laboratorio, Administrativo de centro de trabajo | `laboratory.change_organizationstructure` | — | `auth_and_perms:copy_rols` |
-| **Habilitar organizaciones hijas y relacionar modelos** | Administrativo superior, Organization Management, Administrador de Laboratorio, Administrativo de centro de trabajo | `laboratory.change_organizationstructure` | — | `auth_and_perms:enable_child_organizations`<br>`auth_and_perms:add_contenttype_to_org` |
-| **Listar y desvincular los laboratorios de la organización** | Administrativo superior, Organization Management, Administrador de Laboratorio, Administrativo de centro de trabajo | `laboratory.view_organizationstructurerelations`<br>`laboratory.delete_organizationstructurerelations` | — | `auth_and_perms:org_lab_relations_list` |
-| **Consultar quién administra la organización** | Administrativo superior, Organization Management, Administrador de Laboratorio, Administrativo de centro de trabajo | — | — | `auth_and_perms:get_org_administrators` |
+| **Abrir el gestor de la organización** | Administrativo superior, Administración de Organización, Administrador de Laboratorio, Administrativo de centro de trabajo | `laboratory.can_manage_org_permissions` | — | `auth_and_perms:organizationManager` |
+| **Añadir usuarios a la organización** | Administrativo superior, Administración de Organización, Administrador de Laboratorio, Administrativo de centro de trabajo | `auth.add_user`<br>`laboratory.change_organizationstructure`<br>`auth_and_perms.view_profile` | — | `auth_and_perms:add_user`<br>`auth_and_perms:addusersorganization`<br>`auth_and_perms:get_users` |
+| **Consultar, crear y editar los roles de la organización** | Administrativo superior, Administración de Organización, Administrador de Laboratorio, Administrativo de centro de trabajo | `auth_and_perms.change_rol`<br>`auth_and_perms.view_rol` | — | `auth_and_perms:list_rol_by_org`<br>`auth_and_perms:update_rol`<br>`auth_and_perms:get_rol`<br>`auth_and_perms:get_roles_by_organization` |
+| **Quitar un rol de la organización** | Administrativo superior, Administración de Organización, Administrador de Laboratorio, Administrativo de centro de trabajo | `auth_and_perms.delete_rol` | — | `auth_and_perms:del_rol_by_org` |
+| **Copiar el juego de roles a otra organización** | Administrativo superior, Administración de Organización, Administrador de Laboratorio, Administrativo de centro de trabajo | `laboratory.change_organizationstructure` | — | `auth_and_perms:copy_rols` |
+| **Habilitar organizaciones hijas y relacionar modelos** | Administrativo superior, Administración de Organización, Administrador de Laboratorio, Administrativo de centro de trabajo | `laboratory.change_organizationstructure` | — | `auth_and_perms:enable_child_organizations`<br>`auth_and_perms:add_contenttype_to_org` |
+| **Listar y desvincular los laboratorios de la organización** | Administrativo superior, Administración de Organización, Administrador de Laboratorio, Administrativo de centro de trabajo | `laboratory.view_organizationstructurerelations`<br>`laboratory.delete_organizationstructurerelations` | — | `auth_and_perms:org_lab_relations_list` |
+| **Consultar quién administra la organización** | Administrativo superior, Administración de Organización, Administrador de Laboratorio, Administrativo de centro de trabajo | — | — | `auth_and_perms:get_org_administrators` |
 
 Hallazgos:
 
-- HALLAZGO-ORG-1: `get_org_administrators` (`:542`) filtra por `rol__name="Administrativo superior"`, una **cadena literal**. Renombrar ese rol deja la consulta vacía sin que nada falle.
+- `get_org_administrators` filtra por `rol__name=ROLES["administrativo_superior"]`, el nombre del archivo de roles.
 - Listar roles exige `change_rol`, no `view_rol`: no se puede dar consulta de roles sin dar edición.
 
 ### `ORG-03` — Entrar con firma digital o segundo factor
@@ -219,8 +219,8 @@ Quien tiene el permiso entra en la sesión de otro usuario de su misma organizac
 
 | Paso | Actores | Permiso | Transición | Rutas |
 |---|---|---|---|---|
-| **Entrar como otro usuario** | Administrativo superior, Organization Management | `auth_and_perms.change_impostorlog` | crea ImpostorLog(logged_in) y la cookie impostor_token | `auth_and_perms:change_to_impostor` |
-| **Volver a la identidad propia** | Administrativo superior, Organization Management | — | cierra el ImpostorLog | `auth_and_perms:remove_impostor` |
+| **Entrar como otro usuario** | Administrativo superior, Administración de Organización | `auth_and_perms.change_impostorlog` | crea ImpostorLog(logged_in) y la cookie impostor_token | `auth_and_perms:change_to_impostor` |
+| **Volver a la identidad propia** | Administrativo superior, Administración de Organización | — | cierra el ImpostorLog | `auth_and_perms:remove_impostor` |
 
 Hallazgos:
 
@@ -229,7 +229,7 @@ Hallazgos:
 
 ### `INV-01` — Mantener el catálogo de objetos: reactivos, materiales y equipos
 
-*laboratory · ui · prioridad P1 · cobertura por ruta: parcial · Selenium: sí*
+*laboratory · ui · prioridad P1 · cobertura por ruta: completa · Selenium: sí*
 
 La ficha maestra de cada cosa que puede haber en el laboratorio, con sus características y sus rasgos. Los tres listados —sustancias, materiales y equipos— son la misma pantalla filtrada por el tipo de objeto.
 
@@ -317,7 +317,7 @@ Estados que atraviesa:
 Hallazgos:
 
 - El cambio de estado se protege con `laboratory.can_manage_inform_status` (`models.py:1674`) y se comprueba en la plantilla (`complete_inform.html:25`). Es el contraejemplo de HALLAZGO-ACAD-1: los mismos tres estados que `MyProcedure`, pero aquí el paso de aprobación sí tiene permiso propio.
-- HALLAZGO-INV-1: **el repositorio no dice quién tiene ese permiso.** `update_roles.py` solo lo menciona en `:100`, dentro del `remove_permissions` de «Depositante de residuos» — es decir, dice quién *no* lo tiene. El conjunto de permisos de cada rol canónico no está versionado en ninguna parte: `update_roles.py` aplica deltas sobre roles que supone existentes (`filter(...).first()` → «not found, skipping») y `upload_org_and_users.py:45` hace `Rol.objects.get(...)`, que en una instalación limpia revienta. La definición vive solo en las bases de producción.
+- Quién tiene ese permiso está en `auth_and_perms/management/roles.py`, que versiona los permisos de cada rol canónico; `update_roles` deja la base igual a ese archivo.
 
 ### `INV-07` — Consultar los reportes de inventario del laboratorio
 
@@ -352,9 +352,9 @@ El inquilino: se crea la organización, se edita, se le asocian acciones y event
 
 | Paso | Actores | Permiso | Transición | Rutas |
 |---|---|---|---|---|
-| **Crear la organización** | Administrativo superior, Organization Management | `laboratory.add_organizationstructure` | — | `laboratory:create_organization` |
-| **Editar la organización y sus acciones** | Administrativo superior, Organization Management | `laboratory.change_organizationstructure` | — | `laboratory:update_organization`<br>`laboratory:organization_actions` |
-| **Borrar la organización** | Administrativo superior, Organization Management | `laboratory.delete_organizationstructure` | — | `laboratory:delete_organization` |
+| **Crear la organización** | Administrativo superior, Administración de Organización | `laboratory.add_organizationstructure` | — | `laboratory:create_organization` |
+| **Editar la organización y sus acciones** | Administrativo superior, Administración de Organización | `laboratory.change_organizationstructure` | — | `laboratory:update_organization`<br>`laboratory:organization_actions` |
+| **Borrar la organización** | Administrativo superior, Administración de Organización | `laboratory.delete_organizationstructure` | — | `laboratory:delete_organization` |
 
 ### `LAB-02` — Solicitar un laboratorio u organización y aprobarlo
 
@@ -373,7 +373,7 @@ Estados que atraviesa:
 
 Hallazgos:
 
-- **Un solo rol puede aprobar**: «Administrativo superior» (`update_roles.py:1018`, dentro de `add_permissions`). A «Administrador de Laboratorio» el mismo comando le **quita** `can_approve_labororgrequest` (`:259`, dentro de `remove_permissions`), así que quien manda en el laboratorio puede pedir pero no aprobar. Es el permiso de aprobación mejor acotado del sistema, y conviene no confundirse: `update_roles.py` aplica **deltas**, y una línea con el nombre de un permiso puede estar concediéndolo o retirándolo.
+- **Un solo rol puede aprobar**: «Administrativo superior» es el único con `can_approve_labororgrequest` en `auth_and_perms/management/roles.py`. «Administrador de Laboratorio» no lo tiene, así que quien manda en el laboratorio puede pedir pero no aprobar. Es el permiso de aprobación mejor acotado del sistema.
 - **Ninguna de las dos rutas tiene prueba unitaria.**
 
 ### `LAB-03` — Crear un laboratorio y entrar a trabajar en él
@@ -751,7 +751,7 @@ Estados que atraviesa:
 
 Hallazgos:
 
-- Es el flujo con la separación de actores mejor implementada del sistema: cuatro permisos propios (`view_all_iper`, `request_iper`, `view_iper_dashboard`, `manage_iper_catalog`, `models.py:531-539`) y dos roles dedicados que además **se autocrean** si no existen (`update_roles.py:1231,1254`), a diferencia del resto del catálogo de roles. Al `Auditor IPER` se le retira `view_riskzone` a propósito (`:1243`): puede auditar la evaluación sin ver el mapa de zonas.
+- Es el flujo con la separación de actores mejor implementada del sistema: cuatro permisos propios (`view_all_iper`, `request_iper`, `view_iper_dashboard`, `manage_iper_catalog`, `models.py:531-539`) y dos roles dedicados (`Auditor IPER` y `Administrador IPER`). El `Auditor IPER` no tiene `view_riskzone` a propósito: puede auditar la evaluación sin ver el mapa de zonas.
 - Contraste con RES-01: aquí solicitar, llenar y auditar son tres permisos distintos; en reservaciones, cuatro actores del negocio son dos permisos.
 
 ### `IPER-02` — Recordar por correo las evaluaciones IPER que toca actualizar
@@ -787,16 +787,16 @@ Estados que atraviesa:
 
 | Paso | Actores | Permiso | Transición | Rutas |
 |---|---|---|---|---|
-| **Abrir el asistente y describir la sustancia (pasos 0 y 1)** | SGA, Administrador de Laboratorio, Técnico de Laboratorio, Lectura y agregado de sustancias, Manejo de sustancias del laboratorio | `laboratory.change_object`<br>`auth_and_perms.institution_can_access` | crea Substance en DRAFT(0) en el primer POST válido | `sga:create_sustance`<br>`sga:step_zero`<br>`sga:step_zero_pk`<br>`sga:step_one`<br>`sga:update_substance` |
-| **Completar la hoja de seguridad (paso 4)** | SGA, Administrador de Laboratorio, Técnico de Laboratorio, Lectura y agregado de sustancias, Manejo de sustancias del laboratorio | `sga.change_securityleaf`<br>`auth_and_perms.institution_can_access` | — | `sga:step_four` |
-| **Subir la ficha de datos de seguridad y seguir la extracción** | SGA, Administrador de Laboratorio, Técnico de Laboratorio, Lectura y agregado de sustancias, Manejo de sustancias del laboratorio | `sga.change_substancecharacteristics`<br>`auth_and_perms.institution_can_access` | dispara la tarea de extracción; el estado se consulta por polling | `sga:upload_sds`<br>`sga:upload_sds_pk`<br>`sga:sds_task_status` |
-| **Añadir el proveedor de la sustancia** | SGA, Administrador de Laboratorio, Técnico de Laboratorio, Lectura y agregado de sustancias, Manejo de sustancias del laboratorio | `sga.add_provider` | — | `sga:add_sga_provider` |
-| **Enviar la sustancia a revisión** | SGA, Administrador de Laboratorio, Técnico de Laboratorio, Lectura y agregado de sustancias, Manejo de sustancias del laboratorio | `sga.change_substance`<br>`auth_and_perms.institution_can_access` | DRAFT(0) → UNDER_REVIEW(1); notifica a los revisores | `sga:send_to_review` |
-| **Ver la bandeja de sustancias por aprobar** | Administrativo superior, SGA, Organization Management | `sga.view_substance`<br>`auth_and_perms.institution_can_access` | — | `sga:approved_substance`<br>`sga:get_substance` |
-| **Dejar, editar o borrar observaciones sobre la sustancia** | Administrativo superior, SGA, Organization Management, Administrador de Laboratorio | `sga.view_substanceobservation`<br>`sga.change_substanceobservation`<br>`sga.delete_substanceobservation` | — | `sga:add_observation`<br>`sga:update_observation`<br>`sga:delete_observation` |
-| **Abrir el detalle de la sustancia en revisión** | Administrativo superior, SGA, Organization Management | `sga.change_substance`<br>`auth_and_perms.institution_can_access` | — | `sga:detail_substance` |
-| **Aprobar la sustancia** | Administrativo superior, SGA, Organization Management | `sga.change_substance`<br>`auth_and_perms.institution_can_access` | ReviewSubstance.is_approved=True y Substance.status=APPROVED(2); emite códigos y crea el objeto de inventario | `sga:accept_substance` |
-| **Eliminar la sustancia** | Administrativo superior, SGA, Organization Management, Administrador de Laboratorio | `sga.delete_substance`<br>`auth_and_perms.institution_can_access` | — | `sga:delete_substance` |
+| **Abrir el asistente y describir la sustancia (pasos 0 y 1)** | SGA, Administrador de Laboratorio, Técnico de Laboratorio, Lectura y agregado de sustancias | `laboratory.change_object`<br>`auth_and_perms.institution_can_access` | crea Substance en DRAFT(0) en el primer POST válido | `sga:create_sustance`<br>`sga:step_zero`<br>`sga:step_zero_pk`<br>`sga:step_one`<br>`sga:update_substance` |
+| **Completar la hoja de seguridad (paso 4)** | SGA, Administrador de Laboratorio, Técnico de Laboratorio, Lectura y agregado de sustancias | `sga.change_securityleaf`<br>`auth_and_perms.institution_can_access` | — | `sga:step_four` |
+| **Subir la ficha de datos de seguridad y seguir la extracción** | SGA, Administrador de Laboratorio, Técnico de Laboratorio, Lectura y agregado de sustancias | `sga.change_substancecharacteristics`<br>`auth_and_perms.institution_can_access` | dispara la tarea de extracción; el estado se consulta por polling | `sga:upload_sds`<br>`sga:upload_sds_pk`<br>`sga:sds_task_status` |
+| **Añadir el proveedor de la sustancia** | SGA, Administrador de Laboratorio, Técnico de Laboratorio, Lectura y agregado de sustancias | `sga.add_provider` | — | `sga:add_sga_provider` |
+| **Enviar la sustancia a revisión** | SGA, Administrador de Laboratorio, Técnico de Laboratorio, Lectura y agregado de sustancias | `sga.change_substance`<br>`auth_and_perms.institution_can_access` | DRAFT(0) → UNDER_REVIEW(1); notifica a los revisores | `sga:send_to_review` |
+| **Ver la bandeja de sustancias por aprobar** | Administrativo superior, SGA, Administración de Organización | `sga.view_substance`<br>`auth_and_perms.institution_can_access` | — | `sga:approved_substance`<br>`sga:get_substance` |
+| **Dejar, editar o borrar observaciones sobre la sustancia** | Administrativo superior, SGA, Administración de Organización, Administrador de Laboratorio | `sga.view_substanceobservation`<br>`sga.change_substanceobservation`<br>`sga.delete_substanceobservation` | — | `sga:add_observation`<br>`sga:update_observation`<br>`sga:delete_observation` |
+| **Abrir el detalle de la sustancia en revisión** | Administrativo superior, SGA, Administración de Organización | `sga.change_substance`<br>`auth_and_perms.institution_can_access` | — | `sga:detail_substance` |
+| **Aprobar la sustancia** | Administrativo superior, SGA, Administración de Organización | `sga.change_substance`<br>`auth_and_perms.institution_can_access` | ReviewSubstance.is_approved=True y Substance.status=APPROVED(2); emite códigos y crea el objeto de inventario | `sga:accept_substance` |
+| **Eliminar la sustancia** | Administrativo superior, SGA, Administración de Organización, Administrador de Laboratorio | `sga.delete_substance`<br>`auth_and_perms.institution_can_access` | — | `sga:delete_substance` |
 
 Hallazgos:
 
@@ -864,27 +864,26 @@ Los datos maestros que la etiqueta imprime: la empresa que figura como responsab
 
 | Rol | En el catálogo | Definido en |
 |---|:-:|---|
-| Estudiante | sí | `auth_and_perms/management/commands/update_roles.py:30` |
-| Depositante de residuos | sí | `auth_and_perms/management/commands/update_roles.py:47` |
-| Creador de laboratorio | sí | `auth_and_perms/management/commands/update_roles.py:163` |
-| Administrador de Laboratorio | sí | `auth_and_perms/management/commands/update_roles.py:212` |
-| Lectura y agregado de sustancias | sí | `auth_and_perms/management/commands/update_roles.py:265` |
-| Asistente de laboratorio | sí | `auth_and_perms/management/commands/update_roles.py:450` |
-| Profesor | sí | `auth_and_perms/management/commands/update_roles.py:531` |
-| Tesista modulo desechos | sí | `auth_and_perms/management/commands/update_roles.py:581` |
-| Solo Lectura | sí | `auth_and_perms/management/commands/update_roles.py:756` |
-| Técnico de Laboratorio | sí | `auth_and_perms/management/commands/update_roles.py:828` |
-| SGA | sí | `auth_and_perms/management/commands/update_roles.py:948` |
-| Regente | sí | `auth_and_perms/management/commands/update_roles.py:979` |
-| Administrativo superior | sí | `auth_and_perms/management/commands/update_roles.py:1005` |
-| Administrativo de centro de trabajo | sí | `auth_and_perms/management/commands/update_roles.py:1030` |
-| Auditor IPER | sí | `auth_and_perms/management/commands/update_roles.py:1231` |
-| Administrador IPER | sí | `auth_and_perms/management/commands/update_roles.py:1254` |
-| Administrador ambiental | sí | `auth_and_perms/management/commands/update_roles.py:1296` |
-| Encargado de registro ambiental | sí | `auth_and_perms/management/commands/update_roles.py:1302` |
-| Analista ambiental | sí | `auth_and_perms/management/commands/update_roles.py:1307` |
-| Manejo de sustancias del laboratorio | sí | `auth_and_perms/management/commands/add_static_rol.py:17` |
-| Organization Management | sí | `auth_and_perms/views/user_org_creation.py:40` |
+| Estudiante | sí | `auth_and_perms/management/roles.py:4` |
+| Depositante de residuos | sí | `auth_and_perms/management/roles.py:28` |
+| Creador de laboratorio | sí | `auth_and_perms/management/roles.py:106` |
+| Administrador de Laboratorio | sí | `auth_and_perms/management/roles.py:160` |
+| Lectura y agregado de sustancias | sí | `auth_and_perms/management/roles.py:350` |
+| Asistente de laboratorio | sí | `auth_and_perms/management/roles.py:417` |
+| Profesor | sí | `auth_and_perms/management/roles.py:561` |
+| Tesista modulo desechos | sí | `auth_and_perms/management/roles.py:602` |
+| Solo Lectura | sí | `auth_and_perms/management/roles.py:660` |
+| Técnico de Laboratorio | sí | `auth_and_perms/management/roles.py:724` |
+| SGA | sí | `auth_and_perms/management/roles.py:859` |
+| Regente | sí | `auth_and_perms/management/roles.py:942` |
+| Administrativo superior | sí | `auth_and_perms/management/roles.py:1030` |
+| Administrativo de centro de trabajo | sí | `auth_and_perms/management/roles.py:1546` |
+| Auditor IPER | sí | `auth_and_perms/management/roles.py:1711` |
+| Administrador IPER | sí | `auth_and_perms/management/roles.py:1727` |
+| Administrador ambiental | sí | `auth_and_perms/management/roles.py:1753` |
+| Encargado de registro ambiental | sí | `auth_and_perms/management/roles.py:1787` |
+| Analista ambiental | sí | `auth_and_perms/management/roles.py:1806` |
+| Administración de Organización | sí | `auth_and_perms/management/roles.py:1822` |
 
 Los pseudo-roles no conceden permisos y se listan aparte:
 

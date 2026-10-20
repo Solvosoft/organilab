@@ -60,7 +60,7 @@ COLUMNS = {
 
 
 def read_xlsm_data(uploaded_file, shelf):
-    wb = openpyxl.load_workbook(uploaded_file, keep_vba=True)
+    wb = openpyxl.load_workbook(uploaded_file)
     ws = wb["Formato de Iventario"]
 
     records = []

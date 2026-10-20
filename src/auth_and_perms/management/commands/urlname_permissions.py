@@ -3664,7 +3664,7 @@ URLNAME_PERMISSIONS = {
         },
     ],
     # La papelera es de la biblioteca: sus permisos viven en djgentelella,
-    # no en laboratory. update_roles.update_papelera() ya se los da a los
+    # no en laboratory. auth_and_perms/management/roles.py ya se los da a los
     # roles fijos; esto es lo que permite configurarlos por organización.
     "trash_list": [
         {

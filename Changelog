@@ -1,3 +1,12 @@
+20/10/2026
+Roles centralized in src/auth_and_perms/management/roles.py (name, description and permissions).
+update_roles syncs every role from that file: creates missing roles (linked to UNA),
+sets descriptions and exact permissions. Safe to run more than once.
+    - python manage.py update_roles --dry-run
+    - python manage.py update_roles
+Command to regenerate the roles file from the database
+    - python manage.py export_roles
+
 14/10/2026
 Command to update users roles
     - python manage.py update_roles

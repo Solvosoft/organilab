@@ -57,7 +57,7 @@
 | Reportes (detalle, consolidado, costos, indicadores, comparación, residuos) | `src/ambiental/reports.py`, registrados en `src/report/register.py` |
 | Panel y gráficos | `src/ambiental/views.py` `AmbientalDashboard`, `src/ambiental/gtcharts.py` |
 | Alertas | `src/ambiental/alerts.py`, tarea `src/ambiental/tasks.py` (`CELERYBEAT_SCHEDULE`, día 2 de cada mes) |
-| Roles | `update_roles.py` `update_ambiental_roles`: Administrador ambiental, Encargado de registro ambiental, Analista ambiental |
+| Roles | `src/auth_and_perms/management/roles.py` (aplicados con `update_roles`): Administrador ambiental, Encargado de registro ambiental, Analista ambiental |
 | Acceso por edificio | `src/ambiental/access.py`, `src/ambiental/api/building_access.py` |
 | Catálogo de funcionalidades | `src/presentation/features/ambiental.py` (AMB-01 a AMB-09) |
 
