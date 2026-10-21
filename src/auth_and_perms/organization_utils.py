@@ -65,6 +65,34 @@ def user_is_allowed_on_organization(user, organization):
     )
 
 
+def get_sds_shared_organization_ids(user, org_pk):
+    """Organizaciones cuyas sustancias y fichas de seguridad ve `org_pk`.
+
+    Las fichas se comparten con toda la estructura: el árbol completo de la raíz
+    (los reactivos suelen crearse en la organización padre y los usan los
+    laboratorios hijos) más las organizaciones que algún nodo del árbol tiene
+    relacionadas explícitamente, que pueden no colgar de él.
+    """
+    organization = get_object_or_404(OrganizationStructure, pk=org_pk)
+    user_is_allowed_on_organization(user, organization)
+
+    # La propia organización se añade aparte: con un `parent` que apunta a sí
+    # misma, `descendants` devuelve vacío aunque se pida `include_self`.
+    tree_ids = {organization.pk} | set(
+        OrganizationStructure.objects.descendants(
+            organization.root, include_self=True
+        ).values_list("pk", flat=True)
+    )
+    related_ids = set(
+        OrganizationStructureRelations.objects.filter(
+            organization__in=tree_ids,
+            content_type__app_label="laboratory",
+            content_type__model="organizationstructure",
+        ).values_list("object_id", flat=True)
+    )
+    return tree_ids | related_ids
+
+
 def organization_can_change_laboratory(laboratory, organization, raise_exec=False):
     if laboratory.organization == organization:
         return True

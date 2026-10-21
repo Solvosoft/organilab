@@ -21,6 +21,7 @@ from django.utils.translation import gettext as _
 from presentation.pdf import html_to_pdf
 
 from auth_and_perms.organization_utils import (
+    get_sds_shared_organization_ids,
     organization_can_change_laboratory,
     user_is_allowed_on_organization,
 )
@@ -230,7 +231,13 @@ def sds_coverage_svg(request, org_pk):
     from sga.models import SubstanceCharacteristics
     from django.db.models import Subquery, OuterRef
 
-    qs = SubstanceCharacteristics.objects.filter(object_related__organization__pk=org_pk)
+    # Mismo alcance que la lista de fichas (msds:list_msds): la cobertura se
+    # mide sobre las sustancias que la organización ve, no solo las que creó.
+    qs = SubstanceCharacteristics.objects.filter(
+        object_related__organization__in=get_sds_shared_organization_ids(
+            request.user, org_pk
+        )
+    )
     total = qs.count()
 
     if total == 0:
