@@ -698,16 +698,16 @@ class ListUserSerializer(serializers.ModelSerializer):
                 content_type__model="organizationstructure",
                 object_id=org[1],
             ).first()
-
-            buttons += (
-                "<li class='list-group-item d-flex justify-content-between align-items-start'>"
-                "<span class='dropdown-item-text small'>%s</span> "
-                "<button class='btn btn-sm btn-secondary' title='%s' "
-                "data-user='%s' data-org='%s' onclick=get_roles_in_organization(this)>"
-                "<i class='fa fa-user-md' aria-hidden='true'></i> "
-                "<span class='badge bg-secondary'>%s</span></button></li>"
-                % (org[0], _("Roles"), obj.pk, org[1], pp.rol.count() if pp else 0)
-            )
+            if pp:
+                buttons += (
+                    "<li class='list-group-item d-flex justify-content-between align-items-start'>"
+                    "<span class='dropdown-item-text small'>%s</span> "
+                    "<button class='btn btn-sm btn-secondary' title='%s' "
+                    "data-user='%s' data-org='%s' onclick=get_roles_in_organization(this)>"
+                    "<i class='fa fa-user-md' aria-hidden='true'></i> "
+                    "<span class='badge bg-secondary'>%s</span></button></li>"
+                    % (org[0], _("Roles"), obj.pk, org[1], pp.rol.count() if pp else 0)
+                )
         buttons += "</ul>"
         return buttons
 
