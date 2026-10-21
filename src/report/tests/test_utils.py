@@ -114,8 +114,9 @@ class PresentacionDeTablasTest(SimpleTestCase):
     def test_tabla_pdf_sin_filas_lo_dice(self):
         with translation.override("es"):
             html = get_pdf_table_content({"columns": [{"title": "Nombre"}, {"title": "CAS"}], "dataset": []})
+            sin_registros = translation.gettext("No records.")
         self.assertIn("<th>Item</th><th>Nombre</th><th>CAS</th>", html)
-        self.assertIn("<tr><td colspan='3'>Sin registros.</td></tr>", html)
+        self.assertIn("<tr><td colspan='3'>%s</td></tr>" % sin_registros, html)
 
     def test_tabla_pdf_con_indicaciones_de_peligro_largas(self):
         # Con ancho automático la columna quedaba estrecha y la fila del
@@ -312,7 +313,9 @@ class ModelosYTareaTest(ReportTestBase):
         with patch("report.tasks.build_report", side_effect=ValueError("no cabe")):
             with self.assertRaisesMessage(ValueError, "no cabe"):
                 task_report(report.pk, "http://testserver/")
+        with translation.override(report.language):
+            mensaje = translation.gettext("Error generating the report")
         self.assertEqual(
             list(DocumentReportStatus.objects.filter(report=report).values_list("description", flat=True)),
-            ["Error al generar el reporte"],
+            [mensaje],
         )

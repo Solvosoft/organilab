@@ -4,7 +4,7 @@
 {% has_perm_in_org organization.pk 'laboratory.do_report' as can_report %}
 {% has_perm_in_org organization.pk 'risk_management.view_riskzone' as can_riskzone %}
 {% has_perm_in_org organization.pk 'derb.view_customform' as can_inform %}
-{% has_perm_in_org organization.pk 'msds.view_msdsobject' as can_msds %}
+{% has_perm_in_org organization.pk 'sga.view_sdstraceability' as can_msds %}
 {% has_perm_in_org organization.pk 'sga.view_substance' as can_sustance %}
 {% has_perm_in_org organization.pk 'auth_and_perms.institution_can_access' as institution_can_access %}
 

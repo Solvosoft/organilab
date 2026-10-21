@@ -496,8 +496,8 @@ El archivo de hojas de datos de seguridad: se listan las disponibles, se registr
 
 | Paso | Actores | Permiso | Transición | Rutas |
 |---|---|---|---|---|
-| **Consultar el árbol de fichas** | Estudiante, Profesor, Técnico de Laboratorio, Asistente de laboratorio, Administrador de Laboratorio, Administrativo superior, Regente, Solo Lectura | `msds.view_msdsobject` | — | `msds:index_msds`<br>`msds:list_msds` |
-| **Registrar una ficha** | Administrador de Laboratorio, Técnico de Laboratorio, SGA | `msds.add_msdsobject` | — | `msds:sds_create` |
+| **Consultar el árbol de fichas** | Estudiante, Profesor, Técnico de Laboratorio, Asistente de laboratorio, Administrador de Laboratorio, Administrativo superior, Regente, Solo Lectura | `sga.view_sdstraceability` | — | `msds:index_msds`<br>`msds:list_msds` |
+| **Registrar una ficha** | Administrador de Laboratorio, Técnico de Laboratorio, SGA | `laboratory.change_object`<br>`auth_and_perms.institution_can_access` | — | `msds:sds_create` |
 | **Verificar la trazabilidad de las fichas extraídas** | SGA, Regente, Administrativo superior | `sga.view_sdstraceability` | — | `msds:verified_sds` |
 
 ### `DERB-01` — Construir un formulario dinámico
@@ -866,24 +866,24 @@ Los datos maestros que la etiqueta imprime: la empresa que figura como responsab
 |---|:-:|---|
 | Estudiante | sí | `auth_and_perms/management/roles.py:4` |
 | Depositante de residuos | sí | `auth_and_perms/management/roles.py:28` |
-| Creador de laboratorio | sí | `auth_and_perms/management/roles.py:106` |
-| Administrador de Laboratorio | sí | `auth_and_perms/management/roles.py:160` |
-| Lectura y agregado de sustancias | sí | `auth_and_perms/management/roles.py:350` |
-| Asistente de laboratorio | sí | `auth_and_perms/management/roles.py:417` |
-| Profesor | sí | `auth_and_perms/management/roles.py:561` |
-| Tesista modulo desechos | sí | `auth_and_perms/management/roles.py:602` |
-| Solo Lectura | sí | `auth_and_perms/management/roles.py:660` |
-| Técnico de Laboratorio | sí | `auth_and_perms/management/roles.py:724` |
-| SGA | sí | `auth_and_perms/management/roles.py:859` |
-| Regente | sí | `auth_and_perms/management/roles.py:942` |
-| Administrativo superior | sí | `auth_and_perms/management/roles.py:1030` |
-| Administrativo de centro de trabajo | sí | `auth_and_perms/management/roles.py:1546` |
-| Auditor IPER | sí | `auth_and_perms/management/roles.py:1711` |
-| Administrador IPER | sí | `auth_and_perms/management/roles.py:1727` |
-| Administrador ambiental | sí | `auth_and_perms/management/roles.py:1753` |
-| Encargado de registro ambiental | sí | `auth_and_perms/management/roles.py:1787` |
-| Analista ambiental | sí | `auth_and_perms/management/roles.py:1806` |
-| Administración de Organización | sí | `auth_and_perms/management/roles.py:1822` |
+| Creador de laboratorio | sí | `auth_and_perms/management/roles.py:105` |
+| Administrador de Laboratorio | sí | `auth_and_perms/management/roles.py:159` |
+| Lectura y agregado de sustancias | sí | `auth_and_perms/management/roles.py:345` |
+| Asistente de laboratorio | sí | `auth_and_perms/management/roles.py:412` |
+| Profesor | sí | `auth_and_perms/management/roles.py:552` |
+| Tesista modulo desechos | sí | `auth_and_perms/management/roles.py:593` |
+| Solo Lectura | sí | `auth_and_perms/management/roles.py:651` |
+| Técnico de Laboratorio | sí | `auth_and_perms/management/roles.py:716` |
+| SGA | sí | `auth_and_perms/management/roles.py:846` |
+| Regente | sí | `auth_and_perms/management/roles.py:929` |
+| Administrativo superior | sí | `auth_and_perms/management/roles.py:1016` |
+| Administrativo de centro de trabajo | sí | `auth_and_perms/management/roles.py:1523` |
+| Auditor IPER | sí | `auth_and_perms/management/roles.py:1687` |
+| Administrador IPER | sí | `auth_and_perms/management/roles.py:1703` |
+| Administrador ambiental | sí | `auth_and_perms/management/roles.py:1729` |
+| Encargado de registro ambiental | sí | `auth_and_perms/management/roles.py:1763` |
+| Analista ambiental | sí | `auth_and_perms/management/roles.py:1782` |
+| Administración de Organización | sí | `auth_and_perms/management/roles.py:1798` |
 
 Los pseudo-roles no conceden permisos y se listan aparte:
 

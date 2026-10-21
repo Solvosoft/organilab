@@ -50,8 +50,6 @@ CORE_STEPS = (
          note="catálogos del módulo ambiental (recursos, unidades, puntos)"),
     Step("create_pendingtasks_group",
          note="grupo de tareas pendientes"),
-    Step("add_pendingtask_permissions_to_roles",
-         note="permisos de tareas pendientes sobre los roles que ya existan"),
     Step("setup_sga_view_group",
          note="grupo SGAView"),
     # Escribe en MEDIA. Es idempotente (se salta los que ya existen), pero no
@@ -60,20 +58,16 @@ CORE_STEPS = (
          note="pictogramas SGA y ONU en MEDIA"),
 )
 
-# Estos NO van en la ruta por defecto:
+# Este NO va en la ruta por defecto:
 #
 #   * `update_roles` deja cada rol igual a `auth_and_perms/management/roles.py`:
 #     crea los que faltan, y agrega y quita permisos, así que revierte cualquier
 #     ajuste manual de esos roles.
-#   * `update_roles_permissions` revienta con `Rol.DoesNotExist` si no existe
-#     "Estudiante"; corre después de `update_roles`, que lo crea.
 #
-# Se dejan accesibles con --with-roles.
+# Se deja accesible con --with-roles.
 ROLE_STEPS = (
     Step("update_roles",
          note="roles según auth_and_perms/management/roles.py (revierte ajustes manuales)"),
-    Step("update_roles_permissions", kwargs={"noinput": True},
-         note="permisos extra del rol Estudiante (falla si el rol no existe)"),
 )
 
 
@@ -92,8 +86,7 @@ class Command(BaseCommand):
             "--with-roles",
             action="store_true",
             dest="with_roles",
-            help="Corre además los comandos de roles (update_roles y "
-                 "update_roles_permissions); ver el comentario de ROLE_STEPS.",
+            help="Corre además update_roles; ver el comentario de ROLE_STEPS.",
         )
         parser.add_argument(
             "--dry-run",

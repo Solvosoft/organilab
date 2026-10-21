@@ -26,7 +26,7 @@ class Command(BaseCommand):
                     "laboratory.do_report",
                     "sga.view_substance",
                     "risk_management.view_riskzone",
-                    "msds.view_msdsobject",
+                    "sga.view_sdstraceability",
                     "laboratory.can_view_disposal",
                     "laboratory.can_manage_disposal",
                 ],
@@ -45,16 +45,6 @@ class Command(BaseCommand):
                 "permissions": [
                     "laboratory.change_organizationstructure",
                     "laboratory.view_organizationstructure",
-                ],
-            },
-            {
-                "name": "Blog",
-                "permissions": [
-                    "blog.view_entry",
-                    "blog.delete_entry",
-                    "blog.add_entry",
-                    "blog.change_entry",
-                    "blog.add_category",
                 ],
             },
             {"name": "Profile", "permissions": ["auth.change_user"]},

@@ -54,7 +54,7 @@ namespace,nombre,patrón,vista,archivo:línea,categoría,plantilla,kwargs,seleni
 ,dangersearch-list,/gtapis/^danger/$,sga.gtselects.DangerGModelLookup,src/sga/gtselects.py:52,api,,,0,0
 ,delete_product_reservation,/reservation/delete_product_reservation/<int:pk>/,djreservation.views.deleteProduct,site-packages/djreservation/views.py:253,infra,,pk,0,0
 ,djgentelella-js-catalog,/djsi18n/,django.views.i18n.JavaScriptCatalog,site-packages/django/views/i18n.py:98,infra,,,0,0
-,download_all_regulations,/regulations/download/all,msds.views.download_all_regulations,src/msds/views.py:199,descarga,,,0,1
+,download_all_regulations,/regulations/download/all,msds.views.download_all_regulations,src/msds/views.py:202,descarga,,,0,1
 ,equipmenttype-list,/gtapis/^equipmenttype/$,laboratory.gtselects.EquipmentTypeLookup,src/laboratory/gtselects.py:775,api,,,0,0
 ,error_view,/index/error,presentation.views.error_view,src/presentation/views.py:315,pagina,error_view.html,,1,1
 ,eslochart-detail,/gtapis/^eslo/(?P<pk>[^/.]+)/$,risk_management.gtcharts.EstablishmentLogsClassChart,src/risk_management/gtcharts.py:809,api,,pk,0,1
@@ -133,7 +133,7 @@ namespace,nombre,patrón,vista,archivo:línea,categoría,plantilla,kwargs,seleni
 ,provider-list,/gtapis/^provider/$,laboratory.gtselects.ProviderLookup,src/laboratory/gtselects.py:416,api,,,0,0
 ,prudencesearch-list,/gtapis/^prudence/$,sga.gtselects.PrudenceGModelLookup,src/sga/gtselects.py:46,api,,,0,0
 ,regent_laboratories-list,/gtapis/^regent_laboratories/$,risk_management.gtselects.RegentLaboraratory,src/risk_management/gtselects.py:101,api,,,0,0
-,regulation_docs,/regulations/,msds.views.regulation_view,src/msds/views.py:187,pagina,regulation/regulations_document.html,,1,1
+,regulation_docs,/regulations/,msds.views.regulation_view,src/msds/views.py:190,pagina,regulation/regulations_document.html,,1,1
 ,relorgbase-detail,/gtapis/^relorgbase/(?P<pk>[^/.]+)/$,auth_and_perms.gtselects.RelOrgBaseS2,src/auth_and_perms/gtselects.py:291,api,,pk,0,1
 ,relorgbase-list,/gtapis/^relorgbase/$,auth_and_perms.gtselects.RelOrgBaseS2,src/auth_and_perms/gtselects.py:291,api,,,0,1
 ,relorgfullbase-detail,/gtapis/^relorgfullbase/(?P<pk>[^/.]+)/$,auth_and_perms.gtselects.RelOrgFullS2,src/auth_and_perms/gtselects.py:349,api,,pk,0,1
@@ -1510,7 +1510,7 @@ msds,api-sds-traceability-verify,/msds/<int:org_pk>/api/sds/^api_sds_traceabilit
 msds,index_msds,/msds/<int:org_pk>/index_msds/,msds.views.index_msds,src/msds/views.py:26,pagina,index_msds.html,org_pk,1,1
 msds,list_msds,/msds/<int:org_pk>/list/,msds.views.get_list_msds,src/msds/views.py:48,json,,org_pk,0,1
 msds,sds_create,/msds/<int:org_pk>/sds/create/,msds.views.sds_create,src/msds/views.py:172,accion,,org_pk,0,1
-msds,verified_sds,/msds/<int:org_pk>/verified_sds/,msds.views.verified_sds,src/msds/views.py:214,pagina,msds/verified_sds.html,org_pk,0,0
+msds,verified_sds,/msds/<int:org_pk>/verified_sds/,msds.views.verified_sds,src/msds/views.py:217,pagina,msds/verified_sds.html,org_pk,0,0
 pending_tasks,api-pending_tasks-archive-finished,/pending_tasks/api/^api_pending_tasks/archive_finished/$,pending_tasks.api.views.PendingTaskViewSet,src/pending_tasks/api/views.py:36,api,,,0,1
 pending_tasks,api-pending_tasks-archive-finished,/pending_tasks/api/^api_pending_tasks/archive_finished\.(?P<format>[a-z0-9]+)/?$,pending_tasks.api.views.PendingTaskViewSet,src/pending_tasks/api/views.py:36,api,,format,0,1
 pending_tasks,api-pending_tasks-detail,/pending_tasks/api/^api_pending_tasks/(?P<pk>[^/.]+)/$,pending_tasks.api.views.PendingTaskViewSet,src/pending_tasks/api/views.py:36,api,,pk,0,1

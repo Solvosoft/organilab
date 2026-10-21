@@ -24,7 +24,7 @@ logger = logging.getLogger("organilab")
 
 
 @login_required
-@permission_required("msds.view_msdsobject", raise_exception=True)
+@permission_required("sga.view_sdstraceability", raise_exception=True)
 def index_msds(request, org_pk):
     source_labels = dict(SDSTraceability.SDS_SOURCE_CHOICES)
     existing_sources = (
@@ -46,7 +46,7 @@ def index_msds(request, org_pk):
 
 
 @login_required
-@permission_required("msds.view_msdsobject", raise_exception=True)
+@permission_required("sga.view_sdstraceability", raise_exception=True)
 def get_list_msds(request, org_pk):
     # La trazabilidad es un historial: una sustancia puede acumular varias fichas
     # a lo largo del tiempo. Esta pantalla busca sustancias, así que muestra solo
@@ -170,7 +170,10 @@ def get_list_msds(request, org_pk):
 
 
 @login_required
-@permission_required("msds.add_msdsobject", raise_exception=True)
+@permission_required(
+    ("laboratory.change_object", "auth_and_perms.institution_can_access"),
+    raise_exception=True,
+)
 def sds_create(request, org_pk):
     """Redirige al asistente de sustancias de SGA.
 
