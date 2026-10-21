@@ -557,10 +557,12 @@ ROLE_DEFINITIONS = {
         ),
         "permissions": [
             "academic.add_myprocedure",
+            "academic.add_procedure",
             "academic.add_procedureobservations",
             "academic.add_procedurerequiredobject",
             "academic.add_procedurestep",
             "academic.change_myprocedure",
+            "academic.change_procedure",
             "academic.change_procedureobservations",
             "academic.change_procedurerequiredobject",
             "academic.change_procedurestep",
@@ -569,6 +571,7 @@ ROLE_DEFINITIONS = {
             "academic.delete_procedurerequiredobject",
             "academic.delete_procedurestep",
             "academic.view_myprocedure",
+            "academic.view_procedure",
             "academic.view_procedureobservations",
             "academic.view_procedurerequiredobject",
             "academic.view_procedurestep",
@@ -817,6 +820,7 @@ ROLE_DEFINITIONS = {
             "reservations_management.delete_reservations",
             "reservations_management.delete_reservedproducts",
             "reservations_management.view_reservations",
+            "reservations_management.view_reservedproducts",
             "risk_management.view_buildings",
             "risk_management.view_incidentreport",
             "risk_management.view_regent",
@@ -846,10 +850,11 @@ ROLE_DEFINITIONS = {
     "sga": {
         "name": "SGA",
         "description": (
-            "Acceso completo y exclusivo al módulo SGA: sustancias, hojas de seguridad, pictogramas y "
-            "etiquetas."
+            "Gestiona el módulo SGA: sustancias, indicaciones de peligro, pictogramas, etiquetas y "
+            "hojas de seguridad."
         ),
         "permissions": [
+            "auth_and_perms.institution_can_access",
             "sga.add_builderinformation",
             "sga.add_component",
             "sga.add_dangerindication",
@@ -874,6 +879,7 @@ ROLE_DEFINITIONS = {
             "sga.add_warningword",
             "sga.change_builderinformation",
             "sga.change_component",
+            "sga.change_dangerindication",
             "sga.change_dangerprudence",
             "sga.change_displaylabel",
             "sga.change_hcodecategory",
@@ -885,6 +891,7 @@ ROLE_DEFINITIONS = {
             "sga.change_reviewsubstance",
             "sga.change_securityleaf",
             "sga.change_sgacomplement",
+            "sga.change_substance",
             "sga.change_substancecharacteristics",
             "sga.change_substanceobservation",
             "sga.change_templatesga",
@@ -919,6 +926,7 @@ ROLE_DEFINITIONS = {
             "sga.view_reviewsubstance",
             "sga.view_securityleaf",
             "sga.view_sgacomplement",
+            "sga.view_substance",
             "sga.view_substancecharacteristics",
             "sga.view_substanceobservation",
             "sga.view_templatesga",
@@ -929,8 +937,8 @@ ROLE_DEFINITIONS = {
     "regente": {
         "name": "Regente",
         "description": (
-            "Solo lectura con cobertura total del sistema, incluye reportes de regencia y precursores. "
-            "Diseñado para el Regente Químico."
+            "Consulta en solo lectura el laboratorio, el inventario, SGA, riesgos y MSDS. Diseñado para"
+            " el Regente Químico."
         ),
         "permissions": [
             "auth.view_user",
@@ -1524,7 +1532,7 @@ ROLE_DEFINITIONS = {
         "name": "Administrativo de centro de trabajo",
         "description": (
             "Administra laboratorios, inventario, académico, riesgo y reservaciones a nivel de centro "
-            "de trabajo. Sin gestión de usuarios/roles. Acceso puntual a SGA."
+            "de trabajo. Sin gestión de roles. Acceso puntual a SGA."
         ),
         "permissions": [
             "academic.add_commentprocedurestep",
@@ -1687,9 +1695,8 @@ ROLE_DEFINITIONS = {
     "auditor_iper": {
         "name": "Auditor IPER",
         "description": (
-            "Rol de auditoria para el modulo IPER de la Universidad Nacional (UNA). Permite consultar "
-            "evaluaciones, peligros y observaciones IPER de todos los laboratorios de la organizacion, "
-            "y agregar observaciones de auditoria."
+            "Audita el módulo IPER: consulta evaluaciones, peligros y observaciones de todos los "
+            "laboratorios de la organización y agrega observaciones de auditoría."
         ),
         "permissions": [
             "risk_management.add_iperobservation",
@@ -1703,9 +1710,9 @@ ROLE_DEFINITIONS = {
     "administrador_iper": {
         "name": "Administrador IPER",
         "description": (
-            "Rol de administracion para el modulo IPER de la Universidad Nacional (UNA). Permite crear,"
-            " editar, eliminar y consultar evaluaciones, peligros y observaciones IPER de todos los "
-            "laboratorios de la organizacion, y administrar el catalogo/matriz de riesgo IPER."
+            "Administra el módulo IPER: crea, edita, elimina y consulta evaluaciones, peligros y "
+            "observaciones de todos los laboratorios de la organización, y gestiona el catálogo y la "
+            "matriz de riesgo IPER."
         ),
         "permissions": [
             "risk_management.add_iperassessment",
