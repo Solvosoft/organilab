@@ -333,21 +333,3 @@ def get_conversion_units_to_kilograms(unit, amount, density=None):
             # Libra -> kilogramo es una masa: la densidad no interviene.
             result = result * 0.4536
     return result
-
-
-def ods_safe(value, default=""):
-    return default if value is None else value
-
-
-def sanitize_ods_table(table):
-    cleaned = []
-    for row in table:
-        if row is None:
-            cleaned.append([""])
-            continue
-        if isinstance(row, (str, int, float, bool)):
-            cleaned.append([ods_safe(row)])
-            continue
-
-        cleaned.append([ods_safe(cell) for cell in row])
-    return cleaned

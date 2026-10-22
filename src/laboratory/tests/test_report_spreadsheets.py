@@ -98,6 +98,13 @@ class SaveOdsTest(SimpleTestCase):
         salida = ExcelGraphBuilder().save_ods([["r"], ["A", "B"], [None, 1]], format_type="ods")
         self.assertEqual(leer(salida, "ods")[2], ["", 1])
 
+    def test_fila_nula_y_texto_suelto_en_todos_los_formatos(self):
+        data = [["reporte"], None, "texto suelto", ["A", None, 1]]
+        for formato in FORMATOS:
+            with self.subTest(formato=formato):
+                salida = ExcelGraphBuilder().save_ods(data, format_type=formato)
+                self.assertEqual(leer(salida, formato), [["reporte"], [], ["texto suelto"], ["A", "", 1]])
+
     def test_estilos_del_xlsx(self):
         salida = ExcelGraphBuilder().save_ods([list(f) for f in self.DATA], format_type="xlsx")
         ws = openpyxl.load_workbook(salida).worksheets[0]

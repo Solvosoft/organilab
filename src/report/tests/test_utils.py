@@ -34,7 +34,6 @@ from report.utils import (
     get_pdf_log_change_table_content,
     get_pdf_table_content,
     get_report_name,
-    sanitize_ods_table,
     set_format_table_columns,
 )
 from presentation.pdf import html_to_pdf
@@ -156,12 +155,6 @@ class PresentacionDeTablasTest(SimpleTestCase):
 
     def test_tabla_pdf_sin_dataset_queda_vacia(self):
         self.assertEqual(get_pdf_table_content({"columns": []}), "")
-
-    def test_sanitize_ods_table_limpia_nulos_y_escalares(self):
-        self.assertEqual(
-            sanitize_ods_table([None, "texto", 3, ["a", None, 1]]),
-            [[""], ["texto"], [3], ["a", "", 1]],
-        )
 
 
 class NombreYDuracionTest(SimpleTestCase):
