@@ -26,6 +26,8 @@ from io import BytesIO
 
 from report.models import DocumentReportStatus
 from report.utils import (
+    report_file_date,
+    local_datetime,
     get_pdf_table_content,
     create_notification,
     get_report_name,
@@ -358,7 +360,7 @@ def report_status(request, org_pk):
             if status_qs.exists():
                 for text in status_qs:
                     description += "<li>%s %s </li>" % (
-                        text.report_time.strftime("%m/%d/%Y, %H:%M:%S"),
+                        local_datetime(text.report_time),
                         text.description,
                     )
 
@@ -527,7 +529,7 @@ def regency_report(request, org_pk):
             org_pk=org_pk,
             user=request.user,
             initial={
-                "name": slugify(title + " " + now().strftime("%x").replace("/", "-")),
+                "name": slugify(title + " " + report_file_date()),
                 "title": title,
                 "organization": org_pk,
                 "report_name": "regency_report",

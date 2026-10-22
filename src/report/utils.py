@@ -41,6 +41,11 @@ def period_range(text, input_format="%d/%m/%Y"):
     )
 
 
+def report_file_date():
+    """Fecha local para el nombre de los archivos de reporte (dd-mm-aaaa)."""
+    return timezone.localdate().strftime("%d-%m-%Y")
+
+
 def local_datetime(value, fmt="%d/%m/%Y %H:%M:%S"):
     if not value:
         return ""

@@ -11,7 +11,7 @@ from django.urls import reverse_lazy, reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.text import slugify
-from django.utils.timezone import now
+from report.utils import report_file_date
 from django.views.generic import TemplateView
 from rest_framework import status
 from rest_framework.response import Response
@@ -496,7 +496,7 @@ class RiskZoneReport(ListView):
                 "form": RiskZoneReportForm(
                     initial={
                         "name": slugify(
-                            title + " " + now().strftime("%x").replace("/", "-")
+                            title + " " + report_file_date()
                         ),
                         "title": title,
                         "organization": self.org,

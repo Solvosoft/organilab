@@ -16,7 +16,7 @@ from django.template.loader import get_template
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.text import slugify
-from django.utils.timezone import now
+from report.utils import report_file_date
 from django.utils.translation import gettext as _
 from presentation.pdf import html_to_pdf
 
@@ -139,7 +139,7 @@ class OrganizationReactivePresenceList(ReportListView):
                 "form": OrganizationReactiveForm(
                     initial={
                         "name": slugify(
-                            title + " " + now().strftime("%x").replace("/", "-")
+                            title + " " + report_file_date()
                         ),
                         "title": title,
                         "organization": self.org,
@@ -190,7 +190,7 @@ class ChemicalInventoryReport(ReportListView):
                 "form": ReportForm(
                     initial={
                         "name": slugify(
-                            title + " " + now().strftime("%x").replace("/", "-")
+                            title + " " + report_file_date()
                         ),
                         "title": title,
                         "organization": self.org,

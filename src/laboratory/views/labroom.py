@@ -15,7 +15,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required, permission_required
 from djgentelella.decorators.perms import any_permission_required
 from django.utils.text import slugify
-from django.utils.timezone import now
+from report.utils import report_file_date
 from django.utils.translation import gettext as _
 
 from laboratory.forms import (
@@ -257,7 +257,7 @@ class LaboratoryRoomReportView(ListView):
                 "form": LaboratoryRoomReportForm(
                     initial={
                         "name": slugify(
-                            title + " " + now().strftime("%x").replace("/", "-")
+                            title + " " + report_file_date()
                         ),
                         "title": title,
                         "organization": self.org,
