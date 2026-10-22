@@ -23,6 +23,9 @@ ROLE_DEFINITIONS = {
             "laboratory.view_shelf",
             "laboratory.view_shelfobject",
             "sga.view_recipientsize",
+            "laboratory.view_laboratoryprocess",
+            "laboratory.view_protocol",
+            "laboratory.view_furniture",
         ],
     },
     "depositante_residuos": {
@@ -484,7 +487,6 @@ ROLE_DEFINITIONS = {
             "laboratory.change_inform",
             "laboratory.change_laboratory",
             "laboratory.change_laboratoryroom",
-            "laboratory.change_object",
             "laboratory.change_objectfeatures",
             "laboratory.change_protocol",
             "laboratory.change_provider",
@@ -499,7 +501,6 @@ ROLE_DEFINITIONS = {
             "laboratory.delete_furniture",
             "laboratory.delete_inform",
             "laboratory.delete_laboratoryroom",
-            "laboratory.delete_object",
             "laboratory.delete_objectfeatures",
             "laboratory.delete_protocol",
             "laboratory.delete_provider",
@@ -591,6 +592,7 @@ ROLE_DEFINITIONS = {
             "laboratory.view_shelfobjectguarantee",
             "laboratory.view_shelfobjectlog",
             "laboratory.view_shelfobjecttraining",
+            "laboratory.view_laboratoryprocess",
         ],
     },
     "tesista_desechos": {
