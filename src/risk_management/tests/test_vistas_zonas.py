@@ -107,6 +107,42 @@ class ZonaDeOtraOrganizacionTest(RiskTestCase):
         self.assertEqual(response.status_code, 404)
         self.assertTrue(RiskZone.objects.filter(pk=self.other_zone.pk).exists())
 
+    def datos_de_zona(self, lab):
+        return {
+            "name": "Zona nueva",
+            "num_workers": 4,
+            "zone_type": self.zone_type.pk,
+            "buildings": [self.building.pk],
+            "laboratories": [lab.pk],
+        }
+
+    def test_el_formulario_solo_ofrece_laboratorios_de_la_organizacion(self):
+        for name, kwargs in (("riskzone_create", {}), ("riskzone_update", {"pk": self.zone.pk})):
+            with self.subTest(name=name):
+                response = self.client.get(url(name, org_pk=self.organization.pk, **kwargs))
+                laboratorios = response.context["form"].fields["laboratories"].queryset
+                self.assertIn(self.lab, laboratorios)
+                self.assertNotIn(self.other_lab, laboratorios)
+
+    def test_crear_zona_con_laboratorio_propio(self):
+        self.client.post(url("riskzone_create", org_pk=self.organization.pk), self.datos_de_zona(self.lab))
+        zona = RiskZone.objects.get(name="Zona nueva")
+        self.assertEqual(list(zona.laboratories.all()), [self.lab])
+
+    def test_no_se_asocia_un_laboratorio_ajeno(self):
+        response = self.client.post(
+            url("riskzone_create", org_pk=self.organization.pk), self.datos_de_zona(self.other_lab)
+        )
+        self.assertIn("laboratories", response.context["form"].errors)
+        self.assertFalse(RiskZone.objects.filter(name="Zona nueva").exists())
+
+        response = self.client.post(
+            url("riskzone_update", org_pk=self.organization.pk, pk=self.zone.pk),
+            self.datos_de_zona(self.other_lab),
+        )
+        self.assertIn("laboratories", response.context["form"].errors)
+        self.assertEqual(list(self.zone.laboratories.all()), [self.lab])
+
     def test_jornadas_de_una_zona_ajena_es_404(self):
         propia = self.client.get(url("workday_list", org_pk=self.organization.pk, risk_zone=self.zone.pk))
         self.assertEqual(propia.status_code, 200)
