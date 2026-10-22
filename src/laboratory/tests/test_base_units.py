@@ -1,7 +1,7 @@
 from django.db.models.signals import pre_save
 from django.test import TestCase
 
-from laboratory.models import ShelfObject, Catalog, Object
+from laboratory.models import BaseUnitValues, Catalog, Object, ShelfObject
 
 
 class BaseUnitTest(TestCase):
@@ -40,7 +40,7 @@ class BaseUnitTest(TestCase):
         obj = Object.objects.get(pk=1)
         inst = ShelfObject(object=obj, quantity=20, measurement_unit=m3, quantity_base_unit=None)
         pre_save.send(sender=ShelfObject, instance=inst)
-        self.assertEqual(inst.quantity_base_unit, 20)
+        self.assertAlmostEqual(inst.quantity_base_unit, 20000)
 
     def test_liter(self):
         liter = Catalog.objects.get(description='Litros', key='units')
@@ -75,7 +75,7 @@ class BaseUnitTest(TestCase):
         obj = Object.objects.get(pk=1)
         inst = ShelfObject(object=obj, quantity=20, measurement_unit=psi, quantity_base_unit=None)
         pre_save.send(sender=ShelfObject, instance=inst)
-        self.assertEqual(inst.quantity_base_unit, 20)
+        self.assertAlmostEqual(inst.quantity_base_unit, 137895.18, places=2)
 
     def test_pascal(self):
         pascal = Catalog.objects.get(description='Pascales', key='units')
@@ -216,3 +216,57 @@ class QuantityBaseUnitImpactCommandTest(TestCase):
         out = StringIO()
         call_command("report_quantity_base_unit_impact", stdout=out)
         self.assertIn("  ninguna", out.getvalue())
+
+
+class FixBaseUnitsMigrationTest(TestCase):
+    """La migración 0227 lleva PSI, Metro cúbico y Libra a la base de su familia."""
+
+    fixtures = ["laboratory_data.json"]
+
+    def setUp(self):
+        from importlib import import_module
+
+        self.migration = import_module("laboratory.migrations.0227_fix_base_unit_psi_cubic_meter_pound")
+        self.libra, _ = Catalog.objects.get_or_create(key="units", description="Libra")
+        BaseUnitValues.objects.update_or_create(
+            measurement_unit=self.libra, defaults={"measurement_unit_base": self.libra, "si_value": 1}
+        )
+        for description in ("PSI", "Metro cúbico"):
+            unit = Catalog.objects.get(key="units", description=description)
+            BaseUnitValues.objects.filter(measurement_unit=unit).update(measurement_unit_base=unit)
+        self.m3 = Catalog.objects.get(key="units", description="Metro cúbico")
+        obj = Object.objects.get(pk=1)
+        shelf = ShelfObject.objects.first().shelf
+        self.en_libras = ShelfObject.objects.create(object=obj, shelf=shelf, quantity=10, measurement_unit=self.libra)
+        self.en_m3 = ShelfObject.objects.create(object=obj, shelf=shelf, quantity=2, measurement_unit=self.m3)
+        ShelfObject.objects.filter(pk__in=[self.en_libras.pk, self.en_m3.pk]).update(quantity_base_unit=0)
+
+    def base(self, description):
+        unit = Catalog.objects.get(key="units", description=description)
+        values = BaseUnitValues.objects.get(measurement_unit=unit)
+        return values.measurement_unit_base.description, values.si_value
+
+    def test_corrige_las_bases_y_recalcula_las_existencias(self):
+        from django.apps import apps
+
+        self.migration.fix_base_units(apps, None)
+
+        self.assertEqual(self.base("PSI"), ("Pascales", 0.0001450377))
+        self.assertEqual(self.base("Metro cúbico"), ("Litros", 0.001))
+        self.assertEqual(self.base("Libra"), ("Kilogramos", 2.20462))
+        self.en_libras.refresh_from_db()
+        self.en_m3.refresh_from_db()
+        self.assertAlmostEqual(self.en_libras.quantity_base_unit, 4.5359, places=4)
+        self.assertAlmostEqual(self.en_m3.quantity_base_unit, 2000)
+
+    def test_revertir_deja_la_configuracion_anterior(self):
+        from django.apps import apps
+
+        self.migration.fix_base_units(apps, None)
+        self.migration.restore_base_units(apps, None)
+
+        self.assertEqual(self.base("PSI"), ("PSI", 0.0001450377))
+        self.assertEqual(self.base("Metro cúbico"), ("Metro cúbico", 0.001))
+        self.assertEqual(self.base("Libra"), ("Libra", 1))
+        self.en_libras.refresh_from_db()
+        self.assertEqual(self.en_libras.quantity_base_unit, 10)
