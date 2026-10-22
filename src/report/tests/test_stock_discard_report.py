@@ -1,6 +1,10 @@
 from datetime import date, datetime, timezone as dt_timezone
 
+import xlrd
+from django.utils import translation
+
 from laboratory.models import MaterialCapacity, Object, Shelf, ShelfObject
+from report.forms import ReactiveStockReportForm
 from report.tests.utils import ReportTestBase
 from report.views import discard_objects, stock
 from sga.models import SubstanceCharacteristics
@@ -70,15 +74,29 @@ class StockReportTest(ReportTestBase):
 
     def test_documento_con_laboratorio_inexistente_y_sin_laboratorios(self):
         report = self.make_report("stock_reactive_report", "xlsx", laboratory=[self.lab.pk, 999999])
-        total = stock.report_stock(report)
+        with translation.override("es"):
+            total = stock.report_stock(report)
+            laboratorio = translation.gettext("Laboratory or work center")
+            titulo = translation.gettext("Chemical substances inventory")
         filas = self.read_xlsx(report)
         self.assertEqual(len(filas) - 2, total)
-        self.assertEqual(sum(1 for f in filas if f[0] == "Laboratorio o centro de trabajo"), 1)
+        self.assertEqual(sum(1 for f in filas if f[0] == laboratorio), 1)
+        self.assertIn(titulo, [f[0] for f in filas])
 
         todos = self.make_report("stock_reactive_report", "xlsx", laboratory=[])
-        stock.report_stock(todos)
-        nombres = [f[1] for f in self.read_xlsx(todos) if f[0] == "Laboratorio o centro de trabajo"]
+        with translation.override("es"):
+            stock.report_stock(todos)
+        nombres = [f[1] for f in self.read_xlsx(todos) if f[0] == laboratorio]
         self.assertIn(self.lab.name, nombres)
+
+    def test_documento_en_xls(self):
+        self.assertIn("xls", dict(ReactiveStockReportForm.base_fields["format"].choices))
+        report = self.make_report("stock_reactive_report", "xls", laboratory=[self.lab.pk])
+        self.assertGreater(stock.report_stock(report), 0)
+        report.refresh_from_db()
+        with report.file.open("rb") as fh:
+            hoja = xlrd.open_workbook(file_contents=fh.read()).sheet_by_index(0)
+        self.assertGreater(hoja.nrows, 2)
 
     def test_cartel_html_agrupa_por_estado_fisico(self):
         report = self.make_report("chemicalinventory", "html")

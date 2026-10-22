@@ -1,3 +1,7 @@
+import tempfile
+
+import ezodf
+import xlrd
 from django.contrib.auth.models import User
 
 from laboratory.models import Object, ObjectFeatures, ObjectLogChange, ShelfObjectLimits
@@ -7,6 +11,7 @@ from report.views.objects import (
     report_limit_object_html,
     report_objects_doc,
     report_objects_html,
+    get_dataset_report_organization_reactive,
     report_organization_reactive_list_doc,
     report_reactive_exposition_html,
     report_reactive_precursor_doc,
@@ -201,6 +206,40 @@ class OrganizationReactiveReportTest(ReportTestBase):
         self.assertEqual(fila["name"], "Sin Perfil")
         self.assertEqual(fila["id_card"], "")
         self.assertEqual(fila["substance"], self.cal.name)
+
+    def leer_hoja(self, report):
+        report.refresh_from_db()
+        with report.file.open("rb") as fh:
+            contenido = fh.read()
+        if report.file_type == "xlsx":
+            return self.read_xlsx(report)
+        if report.file_type == "xls":
+            hoja = xlrd.open_workbook(file_contents=contenido).sheet_by_index(0)
+            return [hoja.row_values(fila) for fila in range(hoja.nrows)]
+        with tempfile.NamedTemporaryFile(suffix=".ods") as tmp:
+            tmp.write(contenido)
+            tmp.flush()
+            hoja = ezodf.opendoc(tmp.name).sheets[0]
+            return [[celda.value for celda in fila] for fila in hoja.rows()]
+
+    def test_documento_con_valores_nulos_en_todos_los_formatos(self):
+        perfil = self.user.profile
+        perfil.id_card = None
+        perfil.job_position = None
+        perfil.save()
+        Object.objects.filter(pk=self.cal.pk).update(code=None)
+
+        for formato in ("xlsx", "xls", "ods"):
+            with self.subTest(formato=formato):
+                report = self.make_report(
+                    "report_organization_reactive_list", formato, users=[self.user.pk]
+                )
+                fila = [f for f in get_dataset_report_organization_reactive(report) if f[3] == self.cal.name][0]
+                self.assertEqual((fila[2], fila[7], fila[8]), (None, None, None))
+
+                self.assertEqual(report_organization_reactive_list_doc(report), 2)
+                cal = [f for f in self.leer_hoja(report) if self.cal.name in f][0]
+                self.assertEqual([cal[2] or "", cal[7] or "", cal[8] or ""], ["", "", ""])
 
     def test_documento_con_perfil(self):
         report = self.make_report(

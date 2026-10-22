@@ -379,7 +379,8 @@ def procedureStepDetail(request, org_pk, pk):
     )
 
 
-@method_decorator(permission_required("academic.add_procedurestep"), name="dispatch")
+@method_decorator(login_required, name="dispatch")
+@method_decorator(permission_required("academic.add_procedurestep", raise_exception=True), name="dispatch")
 class ProcedureStepCreateView(FormView):
     form_class = StepForm
     template_name = "academic/procedure_steps.html"

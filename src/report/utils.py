@@ -41,6 +41,11 @@ def period_range(text, input_format="%d/%m/%Y"):
     )
 
 
+def report_file_date():
+    """Fecha local para el nombre de los archivos de reporte (dd-mm-aaaa)."""
+    return timezone.localdate().strftime("%d-%m-%Y")
+
+
 def local_datetime(value, fmt="%d/%m/%Y %H:%M:%S"):
     if not value:
         return ""
@@ -151,7 +156,6 @@ def get_pdf_table_content(table_content, cell_style_fn=None, chunk_size=PDF_TABL
             parts.append("<td%s>%s</td>" % (style_attr, "" if item is None else item))
         parts.append("</tr>")
     if not table_content["dataset"]:
-        # Sin filas, el PDF quedaba con el encabezado solo y no decía por qué.
         parts.append(
             "<tr><td colspan='%s'>%s</td></tr>" % (len(table_content["columns"]), _("No records."))
         )
@@ -300,7 +304,6 @@ def get_pdf_log_change_table_content(report):
         parts.append("</tbody></table><br><br>")
 
     if not parts:
-        # Sin movimientos el PDF salía en blanco y no decía por qué.
         parts.append("<p>%s</p>" % _("No changes were recorded with the selected filters."))
     return "".join(parts)
 
@@ -330,21 +333,3 @@ def get_conversion_units_to_kilograms(unit, amount, density=None):
             # Libra -> kilogramo es una masa: la densidad no interviene.
             result = result * 0.4536
     return result
-
-
-def ods_safe(value, default=""):
-    return default if value is None else value
-
-
-def sanitize_ods_table(table):
-    cleaned = []
-    for row in table:
-        if row is None:
-            cleaned.append([""])
-            continue
-        if isinstance(row, (str, int, float, bool)):
-            cleaned.append([ods_safe(row)])
-            continue
-
-        cleaned.append([ods_safe(cell) for cell in row])
-    return cleaned

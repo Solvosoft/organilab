@@ -500,13 +500,7 @@ def _sort_key_without_accents(text):
 
 
 def _pdf_substances_text(substances, no_density=()):
-    """Sustancias de un estante en un solo párrafo, para el PDF.
-
-    Una por línea, un estante lleno ocupa más que una página y xhtml2pdf no
-    parte una celda de tabla: el PDF entero fallaba. Sin repetidos (varias
-    unidades del mismo reactivo) y separadas por «; » porque cada una ya
-    lleva comas en sus códigos H.
-    """
+    """Sustancias de un estante en un solo párrafo, sin repetidos y separadas por «; »."""
     mark = format_html(' <span class="no-density">({})</span>', _("No density"))
     return format_html_join(
         "; ",

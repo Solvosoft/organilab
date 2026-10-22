@@ -181,8 +181,8 @@ def report_stock(report):
     content = [
         [""],
         [
-            "Invetario de sustancias químicas",
-            "Fecha: " + now().strftime("%d/%m/%Y"),
+            _("Chemical substances inventory"),
+            "%s: %s" % (_("Date"), now().strftime("%d/%m/%Y")),
         ],
     ]
 
@@ -204,19 +204,19 @@ def report_stock(report):
             [""],
             [""],
             [
-                "Laboratorio o centro de trabajo",
-                laboratory.name if laboratory.name else "N/A",
+                _("Laboratory or work center"),
+                laboratory.name if laboratory.name else _("N/A"),
             ],
             [
-                "Nombre del coordinador",
-                laboratory.coordinator if laboratory.coordinator else "N/A",
+                _("Coordinator name"),
+                laboratory.coordinator if laboratory.coordinator else _("N/A"),
             ],
             [
-                "Unidad Académica o Administrativa",
-                laboratory.unit if laboratory.unit else "N/A",
+                _("Academic or Administrative Unit"),
+                laboratory.unit if laboratory.unit else _("N/A"),
             ],
-            ["Teléfono", laboratory.phone_number if laboratory.phone_number else "N/A"],
-            ["Email", laboratory.email if laboratory.email else "N/A"],
+            [_("Phone"), laboratory.phone_number if laboratory.phone_number else _("N/A")],
+            [_("Email"), laboratory.email if laboratory.email else _("N/A")],
         ]
         content += headers + columns + get_stock_dataset(lab_id, None)
 

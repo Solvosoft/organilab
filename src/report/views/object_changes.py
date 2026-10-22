@@ -208,7 +208,6 @@ def resume_queryset_doc(report, queryset, objs, log_filters):
         total += 1
 
     if not doc_list:
-        # Sin movimientos la hoja salía vacía y no decía por qué.
         doc_list = [[_("No changes were recorded with the selected filters.")]]
     return {"record": total, "content": doc_list}
 

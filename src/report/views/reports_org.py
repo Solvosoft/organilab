@@ -9,7 +9,7 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.utils.text import slugify
-from django.utils.timezone import now
+from report.utils import report_file_date
 from django.utils.translation import gettext as _
 from laboratory.api.serializers import PrecursorSerializer
 from laboratory.models import (
@@ -79,7 +79,7 @@ class ObjectList(ListView):
                 "form": ObjectReportForm(
                     initial={
                         "name": slugify(
-                            title_view + " " + now().strftime("%x").replace("/", "-")
+                            title_view + " " + report_file_date()
                         ),
                         "title": title_view,
                         "organization": self.org,
@@ -111,7 +111,7 @@ class LimitedShelfObjectList(ListView):
         ]
         context["form"] = ReportForm(
             initial={
-                "name": slugify(title + " " + now().strftime("%x").replace("/", "-")),
+                "name": slugify(title + " " + report_file_date()),
                 "title": title,
                 "organization": self.org,
                 "report_name": "report_limit_objects",
@@ -143,7 +143,7 @@ class ReactivePrecursorObjectList(ListView):
                 "form": ReportForm(
                     initial={
                         "name": slugify(
-                            title + " " + now().strftime("%x").replace("/", "-")
+                            title + " " + report_file_date()
                         ),
                         "title": title,
                         "organization": self.org,
@@ -174,7 +174,7 @@ class LogObjectView(ReportListView):
                 "form": ObjectLogChangeBaseForm(
                     initial={
                         "name": slugify(
-                            title + " " + now().strftime("%x").replace("/", "-")
+                            title + " " + report_file_date()
                         ),
                         "title": title,
                         "organization": self.org,
@@ -331,7 +331,7 @@ class DiscardShelfReportView(ListView):
         context = super(DiscardShelfReportView, self).get_context_data(**kwargs)
         title = _("Waste objects by shelf report")
         initial_data = {
-            "name": slugify(title + " " + now().strftime("%x").replace("/", "-")),
+            "name": slugify(title + " " + report_file_date()),
             "title": title,
             "organization": self.org,
             "report_name": "report_waste_objects",
@@ -366,7 +366,7 @@ class ReactiveReport(ListView):
                 "form": ReportForm(
                     initial={
                         "name": slugify(
-                            title + " " + now().strftime("%x").replace("/", "-")
+                            title + " " + report_file_date()
                         ),
                         "title": title,
                         "organization": self.org,
@@ -397,7 +397,7 @@ class RiskZoneReport(ListView):
                 "form": RiskZoneReportForm(
                     initial={
                         "name": slugify(
-                            title + " " + now().strftime("%x").replace("/", "-")
+                            title + " " + report_file_date()
                         ),
                         "title": title,
                         "organization": self.org,
@@ -429,7 +429,7 @@ class ReactiveStockReport(ListView):
                 "form": ReactiveStockReportForm(
                     initial={
                         "name": slugify(
-                            title + " " + now().strftime("%x").replace("/", "-")
+                            title + " " + report_file_date()
                         ),
                         "title": title,
                         "organization": self.org,
@@ -457,7 +457,7 @@ class FurnitureReportView(ListView):
         context = super(FurnitureReportView, self).get_context_data(**kwargs)
         title = _("Objects by Furniture Report")
         initial_data = {
-            "name": slugify(title + " " + now().strftime("%x").replace("/", "-")),
+            "name": slugify(title + " " + report_file_date()),
             "title": title,
             "organization": self.org,
             "report_name": "report_furniture",
@@ -509,7 +509,7 @@ class CompatibilityReport(ListView):
                 "form": CompatibilityReportForm(
                     initial={
                         "name": slugify(
-                            title + " " + now().strftime("%x").replace("/", "-")
+                            title + " " + report_file_date()
                         ),
                         "title": title,
                         "organization": self.org,
@@ -540,7 +540,7 @@ class HazardMapReport(ListView):
                 "form": HazardMapReportForm(
                     initial={
                         "name": slugify(
-                            title + " " + now().strftime("%x").replace("/", "-")
+                            title + " " + report_file_date()
                         ),
                         "title": title,
                         "organization": self.org,
@@ -623,7 +623,7 @@ class DonationReportView(ListView):
                 "form": ReportForm(
                     initial={
                         "name": slugify(
-                            title + " " + now().strftime("%x").replace("/", "-")
+                            title + " " + report_file_date()
                         ),
                         "title": title,
                         "organization": self.org,

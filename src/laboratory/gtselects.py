@@ -83,43 +83,6 @@ class RolGModelLookup(BaseSelect2View):
     fields = ["name"]
 
 
-@register_lookups(prefix="organization_rols", basename="organization_rols")
-class OrganizationRolslLookup(BaseSelect2View):
-    model = Rol
-    org = None
-    fields = ["name"]
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-
-        if self.org:
-            queryset = queryset.filter(
-                pk__in=self.org.root.rol.values_list("pk", flat=True)
-            )
-        else:
-            queryset = queryset.none()
-
-        return queryset
-
-    def list(self, request, *args, **kwargs):
-        self.serializer = ValidateOrganizationSerializer(
-            data=request.GET, context={"user": request.user}
-        )
-
-        if self.serializer.is_valid():
-            self.org = self.serializer.validated_data["organization"]
-            check_user_on_organization(request.user, self.org)
-            return super().list(request, *args, **kwargs)
-
-        return Response(
-            {
-                "status": "Bad request",
-                "errors": self.serializer.errors,
-            },
-            status=status.HTTP_400_BAD_REQUEST,
-        )
-
-
 @register_lookups(prefix="object", basename="objectsearch")
 class ObjectGModelLookup(BaseSelect2View):
     model = Object

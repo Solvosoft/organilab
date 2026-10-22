@@ -26,6 +26,8 @@ from io import BytesIO
 
 from report.models import DocumentReportStatus
 from report.utils import (
+    report_file_date,
+    local_datetime,
     get_pdf_table_content,
     create_notification,
     get_report_name,
@@ -223,7 +225,7 @@ def create_request_by_report(request, org_pk):
                     else:
                         response.update({"form_errors": form.errors})
 
-    if status_code != 200 or status_code != 201:
+    if status_code not in (200, 201):
         reason = _("Report can't be processed, try again or contact administrator")
     response = JsonResponse(response, status=status_code, reason=reason)
     return response
@@ -266,8 +268,7 @@ def download_report(request, org_pk):
     response["end"] = state in ("SUCCESS", "FAILURE", "REVOKED")
 
     if state in ("FAILURE", "REVOKED"):
-        tb = getattr(result, "traceback", None)
-        response["error"] = (tb or result.result or "")[:5000]
+        response["error"] = _("Error generating the report")
         return JsonResponse(response, status=200)
 
     if task.status == _("Generated") and state == "SUCCESS":
@@ -290,7 +291,7 @@ def download_report(request, org_pk):
             create_notification(request.user, file_name, task.file.url)
             response.update({"url_file": task.file.url, "type_report": task.file_type})
 
-    if status_code != 200 or status_code != 201:
+    if status_code not in (200, 201):
         reason = _("Report can't be processed, try again or contact administrator")
     response = JsonResponse(response, status=status_code, reason=reason)
     return response
@@ -350,8 +351,7 @@ def report_status(request, org_pk):
                 end = state in ("SUCCESS", "FAILURE", "REVOKED")
 
                 if state == "FAILURE":
-                    tb = getattr(result, "traceback", None)
-                    error = (tb or result.result or "")[:5000]
+                    error = _("Error generating the report")
 
             status_qs = DocumentReportStatus.objects.filter(
                 report=form.cleaned_data["taskreport"]
@@ -360,7 +360,7 @@ def report_status(request, org_pk):
             if status_qs.exists():
                 for text in status_qs:
                     description += "<li>%s %s </li>" % (
-                        text.report_time.strftime("%m/%d/%Y, %H:%M:%S"),
+                        local_datetime(text.report_time),
                         text.description,
                     )
 
@@ -422,7 +422,7 @@ def create_organization_request_by_report(request, org_pk):
                     else:
                         response.update({"form_errors": form.errors})
 
-    if status_code != 200 or status_code != 201:
+    if status_code not in (200, 201):
         reason = _("Report can't be processed, try again or contact administrator")
     response = JsonResponse(response, status=status_code, reason=reason)
     return response
@@ -482,7 +482,7 @@ def download__organization_report(request, org_pk):
     else:
         status_code = 401
 
-    if status_code != 200 or status_code != 201:
+    if status_code not in (200, 201):
         reason = _("Report can't be processed, try again or contact administrator")
     response = JsonResponse(response, status=status_code, reason=reason)
     return response
@@ -529,7 +529,7 @@ def regency_report(request, org_pk):
             org_pk=org_pk,
             user=request.user,
             initial={
-                "name": slugify(title + " " + now().strftime("%x").replace("/", "-")),
+                "name": slugify(title + " " + report_file_date()),
                 "title": title,
                 "organization": org_pk,
                 "report_name": "regency_report",

@@ -226,14 +226,15 @@ class DownloadReportTest(ReportTestBase):
         self.assertEqual(response.json()["state"], "PENDING")
         self.assertFalse(response.json()["end"])
 
-    def test_fallo_devuelve_la_traza(self):
+    def test_fallo_no_envia_la_traza_al_navegador(self):
         report, celery = self.task(status="FAILURE", traceback="Traceback: boom")
         response = self.client.get(
             self.url(), {"task": celery.task_id, "taskreport": report.pk}
         )
         data = response.json()
         self.assertEqual((data["state"], data["end"]), ("FAILURE", True))
-        self.assertEqual(data["error"], "Traceback: boom")
+        self.assertEqual(data["error"], gettext("Error generating the report"))
+        self.assertNotIn("Traceback", response.content.decode())
         report.refresh_from_db()
         self.assertEqual(report.status, "Generated")
 
@@ -244,6 +245,7 @@ class DownloadReportTest(ReportTestBase):
         )
         data = response.json()
         self.assertTrue(data["result"])
+        self.assertEqual(response.reason_phrase, "OK")
         self.assertEqual(
             data["url_file"],
             reverse("report:report_table", kwargs={"org_pk": self.org.pk, "pk": report.pk}),
@@ -294,7 +296,7 @@ class ReportTableTest(ReportTestBase):
 
 
 class ReportStatusTest(ReportTestBase):
-    def test_fallo_expone_el_error_y_el_historial(self):
+    def test_fallo_da_un_mensaje_generico_y_el_historial(self):
         report = self.make_report("reactive_report")
         DocumentReportStatus.objects.create(report=report, description="Inicio")
         TaskResult.objects.create(task_id="t-1", status="FAILURE", result="error simple")
@@ -304,7 +306,8 @@ class ReportStatusTest(ReportTestBase):
         )
         data = response.json()
         self.assertEqual((data["state"], data["end"]), ("FAILURE", True))
-        self.assertEqual(data["error"], "error simple")
+        self.assertEqual(data["error"], gettext("Error generating the report"))
+        self.assertNotIn("error simple", response.content.decode())
         self.assertIn("Inicio", data["text"])
 
 
