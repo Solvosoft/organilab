@@ -229,10 +229,10 @@ class ConversionAKilogramosTest(TestCase):
         kilos = self.unit("Kilogramos")
         libra = Catalog.objects.create(key="units", description="Libra")
         BaseUnitValues.objects.create(
-            measurement_unit=libra, measurement_unit_base=kilos, si_value=1
+            measurement_unit=libra, measurement_unit_base=kilos, si_value=2.20462
         )
         self.assertAlmostEqual(
-            get_conversion_units_to_kilograms(libra, 10, density=99), 4.536
+            get_conversion_units_to_kilograms(libra, 10, density=99), 4.5359, places=4
         )
 
     def test_unidad_sin_conversion_da_cero(self):

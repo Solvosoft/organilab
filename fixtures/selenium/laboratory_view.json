@@ -778,7 +778,7 @@
   "model": "laboratory.baseunitvalues",
   "pk": 22,
   "fields": {
-   "measurement_unit_base": 71,
+   "measurement_unit_base": 70,
    "measurement_unit": 71,
    "si_value": 0.0001450377
   }
@@ -805,7 +805,7 @@
   "model": "laboratory.baseunitvalues",
   "pk": 25,
   "fields": {
-   "measurement_unit_base": 68,
+   "measurement_unit_base": 62,
    "measurement_unit": 68,
    "si_value": 0.001
   }
