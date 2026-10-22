@@ -140,6 +140,14 @@ class ObjectGModelLookup(BaseSelect2View):
     }
     permission_classes = (AnyPermissionByAction,)
 
+    def get_text_display(self, obj):
+        code = obj.code if obj.code!=None else ""
+        text_display = (
+            f" {code} {obj.name}"
+        )
+
+        return text_display
+
     def get_queryset(self):
         if self.shelf and self.shelf.limit_only_objects and self.shelfobjet_type:
             return self.shelf.available_objects_when_limit.filter(
@@ -150,9 +158,10 @@ class ObjectGModelLookup(BaseSelect2View):
 
         if self.org_pk and self.shelfobjet_type:
             queryset = queryset.filter(
-                organization__in=self.org_pk.ancestors(include_self=True),
+                Q(organization__in=self.org_pk.ancestors(include_self=True))
+                | Q(organization__in=self.org_pk.descendants()),
                 type=self.shelfobjet_type,
-            )
+            ).distinct()
         else:
             queryset = queryset.none()
         return queryset
@@ -469,8 +478,10 @@ class ObjectAvailableLookup(BaseSelect2View):
         queryset = super().get_queryset()
         if self.org_pk:
             queryset = queryset.filter(
-                organization__in=self.org_pk.ancestors(include_self=True)
-            )
+               Q(organization__in=self.org_pk.ancestors(include_self=True))
+                | Q(organization__in=self.org_pk.descendants()),
+
+            ).distint()
         else:
             queryset = queryset.none()
         return queryset
