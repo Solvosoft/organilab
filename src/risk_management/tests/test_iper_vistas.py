@@ -9,6 +9,7 @@ import io
 
 import openpyxl
 from django.urls import reverse
+from django.utils.timezone import localdate
 
 from laboratory.models import Catalog, Object, OrganizationStructure
 from pending_tasks.models import PendingTask
@@ -27,7 +28,7 @@ from risk_management.models import (
 from risk_management.tests.base import RiskTestCase, crear_usuario
 from risk_management.tests.test_vistas_zonas import AJAX, MiembroSinRolMixin
 
-HOY = datetime.date.today()
+HOY = localdate()
 
 
 def url(name, **kwargs):
