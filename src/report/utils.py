@@ -156,7 +156,6 @@ def get_pdf_table_content(table_content, cell_style_fn=None, chunk_size=PDF_TABL
             parts.append("<td%s>%s</td>" % (style_attr, "" if item is None else item))
         parts.append("</tr>")
     if not table_content["dataset"]:
-        # Sin filas, el PDF quedaba con el encabezado solo y no decía por qué.
         parts.append(
             "<tr><td colspan='%s'>%s</td></tr>" % (len(table_content["columns"]), _("No records."))
         )
@@ -305,7 +304,6 @@ def get_pdf_log_change_table_content(report):
         parts.append("</tbody></table><br><br>")
 
     if not parts:
-        # Sin movimientos el PDF salía en blanco y no decía por qué.
         parts.append("<p>%s</p>" % _("No changes were recorded with the selected filters."))
     return "".join(parts)
 

@@ -230,8 +230,6 @@ def _xlsx_styles():
 def write_xlsx(sheets):
     wb = Workbook()
     wb.remove(wb.active)
-    # Estilos con nombre: se registran una vez y cada celda solo los referencia
-    # (asignar fuente, borde y relleno celda por celda era 10 veces más lento).
     for name, attrs in _xlsx_styles().items():
         style = NamedStyle(name="report_" + name)
         for attr, value in attrs.items():
