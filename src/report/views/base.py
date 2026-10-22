@@ -266,8 +266,7 @@ def download_report(request, org_pk):
     response["end"] = state in ("SUCCESS", "FAILURE", "REVOKED")
 
     if state in ("FAILURE", "REVOKED"):
-        tb = getattr(result, "traceback", None)
-        response["error"] = (tb or result.result or "")[:5000]
+        response["error"] = _("Error generating the report")
         return JsonResponse(response, status=200)
 
     if task.status == _("Generated") and state == "SUCCESS":
@@ -350,8 +349,7 @@ def report_status(request, org_pk):
                 end = state in ("SUCCESS", "FAILURE", "REVOKED")
 
                 if state == "FAILURE":
-                    tb = getattr(result, "traceback", None)
-                    error = (tb or result.result or "")[:5000]
+                    error = _("Error generating the report")
 
             status_qs = DocumentReportStatus.objects.filter(
                 report=form.cleaned_data["taskreport"]
