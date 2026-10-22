@@ -1592,7 +1592,7 @@ report,donations_report,/report/reports/<int:org_pk>/donations-report/,report.vi
 report,generate_organization_report,/report/<int:org_pk>/download/organization/,report.views.base.download__organization_report,src/report/views/base.py:431,json,,org_pk,0,1
 report,generate_report,/report/<int:org_pk>/download/,report.views.base.download_report,src/report/views/base.py:232,json,,org_pk,0,1
 report,hazard_map_report,/report/reports/<int:org_pk>/hazard_map/,report.views.reports_org.HazardMapReport,src/report/views/reports_org.py:525,pagina,report/base_report_form_view.html,org_pk,0,0
-report,hazard_map_visual,/report/reports/<int:org_pk>/hazard_map/visual/,report.views.riskzones.hazard_map_visual_view,src/report/views/riskzones.py:603,pagina,report/hazard_map_visual.html,org_pk,0,1
+report,hazard_map_visual,/report/reports/<int:org_pk>/hazard_map/visual/,report.views.riskzones.hazard_map_visual_view,src/report/views/riskzones.py:612,pagina,report/hazard_map_visual.html,org_pk,0,1
 report,object_change_logs,/report/reports/<int:org_pk>/objectchanges/,report.views.reports_org.LogObjectView,src/report/views/reports_org.py:159,pagina,report/base_report_form_view.html,org_pk,0,0
 report,precursor_report,/report/reports/<int:org_pk>/precursors/,report.views.reports_org.PrecursorsView,src/report/views/reports_org.py:189,pagina,report/precursor_report.html,org_pk,1,1
 report,precursor_report_values_view,/report/reports/<int:org_pk>/precursor-values-list/<int:precusor_pk>/,report.views.reports_org.PrecursorReportValuesView,src/report/views/reports_org.py:557,pagina,report/precursor_report_values_view.html,org_pk|precusor_pk,0,0

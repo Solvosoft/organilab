@@ -10,6 +10,7 @@ from django.http import Http404
 from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.utils import timezone
+from django.utils.html import format_html, format_html_join
 from django.utils.translation import gettext as _
 
 from laboratory.models import (
@@ -498,7 +499,7 @@ def _sort_key_without_accents(text):
     return unicodedata.normalize("NFKD", text).encode("ascii", "ignore").decode().casefold()
 
 
-def _pdf_substances_text(substances):
+def _pdf_substances_text(substances, no_density=()):
     """Sustancias de un estante en un solo párrafo, para el PDF.
 
     Una por línea, un estante lleno ocupa más que una página y xhtml2pdf no
@@ -506,7 +507,15 @@ def _pdf_substances_text(substances):
     unidades del mismo reactivo) y separadas por «; » porque cada una ya
     lleva comas en sus códigos H.
     """
-    return "; ".join(sorted(set(substances), key=_sort_key_without_accents))
+    mark = format_html(' <span class="no-density">({})</span>', _("No density"))
+    return format_html_join(
+        "; ",
+        "{}{}",
+        (
+            (substance, mark if substance in no_density else "")
+            for substance in sorted(set(substances), key=_sort_key_without_accents)
+        ),
+    )
 
 
 COMPATIBILITY_PDF_SUBSTANCES = ("substances_a", "substances_b")
@@ -570,7 +579,7 @@ def _hazard_map_pdf_data(map_data):
                     for cell in row:
                         for shelf in cell.get("shelves", []):
                             shelf["substances_text"] = _pdf_substances_text(
-                                shelf.get("substances", [])
+                                shelf.get("substances", []), set(shelf.get("no_density", []))
                             )
     return map_data
 

@@ -2528,6 +2528,9 @@ msgstr "Umbral"
 msgid "Density"
 msgstr "Densidad"
 
+msgid "Density in g/mL (decree 44741). Use a dot for decimals, e.g. 0.789."
+msgstr "Densidad en g/mL (decreto 44741). Use punto decimal, por ejemplo 0.789."
+
 #, fuzzy
 #| msgid "It belongs to the regulations of decree 44741"
 msgid ""
@@ -6289,6 +6292,15 @@ msgstr "Incompatible"
 
 msgid "Total reactive weight"
 msgstr "Peso total de reactivos"
+
+msgid "Reactives without registered density"
+msgstr "Reactivos sin densidad registrada"
+
+msgid "They are measured by volume and are not included in the total weight."
+msgstr "Se miden por volumen y no se incluyen en el peso total."
+
+msgid "No density"
+msgstr "Sin densidad"
 
 msgid "Total reactive weight (mass units only)"
 msgstr "Peso total de reactivos (solo unidades de masa)"
