@@ -2,7 +2,7 @@ import re
 
 import django_excel
 from django.contrib.admin.models import DELETION, CHANGE, ADDITION
-from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404
@@ -23,8 +23,9 @@ from risk_management.forms import IncidentReportForm
 from risk_management.models import IncidentReport, Buildings, RiskZone
 
 
+@method_decorator(login_required, name="dispatch")
 @method_decorator(
-    permission_required("risk_management.view_incidentreport"), name="dispatch"
+    permission_required("risk_management.view_incidentreport", raise_exception=True), name="dispatch"
 )
 class IncidentReportList(djgeneric.ListView):
     model = IncidentReport
@@ -56,8 +57,9 @@ class IncidentReportList(djgeneric.ListView):
         return context
 
 
+@method_decorator(login_required, name="dispatch")
 @method_decorator(
-    permission_required("risk_management.add_incidentreport"), name="dispatch"
+    permission_required("risk_management.add_incidentreport", raise_exception=True), name="dispatch"
 )
 class IncidentReportCreate(djgeneric.CreateView):
     model = IncidentReport
@@ -98,8 +100,9 @@ class IncidentReportCreate(djgeneric.CreateView):
         return success_url
 
 
+@method_decorator(login_required, name="dispatch")
 @method_decorator(
-    permission_required("risk_management.change_incidentreport"), name="dispatch"
+    permission_required("risk_management.change_incidentreport", raise_exception=True), name="dispatch"
 )
 class IncidentReportEdit(djgeneric.UpdateView):
     model = IncidentReport
@@ -134,8 +137,9 @@ class IncidentReportEdit(djgeneric.UpdateView):
         return success_url
 
 
+@method_decorator(login_required, name="dispatch")
 @method_decorator(
-    permission_required("risk_management.delete_incidentreport"), name="dispatch"
+    permission_required("risk_management.delete_incidentreport", raise_exception=True), name="dispatch"
 )
 class IncidentReportDelete(djgeneric.DeleteView):
     model = IncidentReport
@@ -163,8 +167,9 @@ class IncidentReportDelete(djgeneric.DeleteView):
         return success_url
 
 
+@method_decorator(login_required, name="dispatch")
 @method_decorator(
-    permission_required("risk_management.view_incidentreport"), name="dispatch"
+    permission_required("risk_management.view_incidentreport", raise_exception=True), name="dispatch"
 )
 class IncidentReportDetail(djgeneric.DetailView):
     model = IncidentReport
@@ -213,7 +218,8 @@ def make_book_incidentreport(incidents):
     return content
 
 
-@permission_required("laboratory.do_report")
+@login_required
+@permission_required("laboratory.do_report", raise_exception=True)
 def report_incidentreport(request, org_pk, risk_pk, pk):
     user_is_allowed_on_organization(request.user, org_pk)
 

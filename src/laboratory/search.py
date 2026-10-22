@@ -22,7 +22,8 @@ from djgentelella.decorators.perms import any_permission_required
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
     any_permission_required(
-        ["laboratory.can_manage_disposal", "laboratory.can_view_disposal"]
+        ["laboratory.can_manage_disposal", "laboratory.can_view_disposal"],
+        raise_exception=True,
     ),
     name="dispatch",
 )

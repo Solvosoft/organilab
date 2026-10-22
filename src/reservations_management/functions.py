@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 import pytz
 from django.conf import settings
 from django.contrib.admin.models import CHANGE
-from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -321,7 +321,8 @@ def get_related_data_sets(requested_product):
     }
 
 
-@permission_required("laboratory.change_shelfobject")
+@login_required
+@permission_required("laboratory.change_shelfobject", raise_exception=True)
 def validate_reservation(request, org_pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -424,7 +425,8 @@ def validate_reservation(request, org_pk):
     )
 
 
-@permission_required("laboratory.change_shelfobject")
+@login_required
+@permission_required("laboratory.change_shelfobject", raise_exception=True)
 def increase_stock(request, org_pk):
     was_increase = False
 
