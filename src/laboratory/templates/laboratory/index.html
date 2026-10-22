@@ -146,7 +146,7 @@
 								</li>
 							{% endif %}
 
-							{% if perms.laboratory.add_shelfobject %}
+							{% if perms.laboratory.add_shelfobject and perms.laboratory.add_object %}
 									<li class="list-group-item">
 									<a
 										href="{% url 'laboratory:load_archive' org_pk=org_pk lab_pk=laboratory %}"><strong>{% trans 'Load reagent inventory' %}</strong></a>

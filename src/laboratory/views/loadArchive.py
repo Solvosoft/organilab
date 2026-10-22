@@ -104,7 +104,7 @@ def read_xlsm_data(uploaded_file, shelf):
 
 
 @login_required
-@permission_required("laboratory.add_shelfobject", raise_exception=True)
+@permission_required(["laboratory.add_shelfobject","laboratory.add_object"], raise_exception=True)
 def load_archive(request, org_pk, lab_pk):
     org = get_object_or_404(OrganizationStructure, pk=org_pk)
     lab = get_object_or_404(Laboratory, pk=lab_pk)
