@@ -74,15 +74,17 @@ class StockReportTest(ReportTestBase):
         report = self.make_report("stock_reactive_report", "xlsx", laboratory=[self.lab.pk, 999999])
         with translation.override("es"):
             total = stock.report_stock(report)
+            laboratorio = translation.gettext("Laboratory or work center")
+            titulo = translation.gettext("Chemical substances inventory")
         filas = self.read_xlsx(report)
         self.assertEqual(len(filas) - 2, total)
-        self.assertEqual(sum(1 for f in filas if f[0] == "Laboratorio o centro de trabajo"), 1)
-        self.assertIn("Inventario de sustancias químicas", [f[0] for f in filas])
+        self.assertEqual(sum(1 for f in filas if f[0] == laboratorio), 1)
+        self.assertIn(titulo, [f[0] for f in filas])
 
         todos = self.make_report("stock_reactive_report", "xlsx", laboratory=[])
         with translation.override("es"):
             stock.report_stock(todos)
-        nombres = [f[1] for f in self.read_xlsx(todos) if f[0] == "Laboratorio o centro de trabajo"]
+        nombres = [f[1] for f in self.read_xlsx(todos) if f[0] == laboratorio]
         self.assertIn(self.lab.name, nombres)
 
     def test_cartel_html_agrupa_por_estado_fisico(self):
