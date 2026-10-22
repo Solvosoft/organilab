@@ -23,4 +23,6 @@ def task_report(pk, absolute_uri):
         if report is not None:
             with translation.override(report.language):
                 document_status(report, _("Error generating the report"))
+                report.status = _("Failed")
+                report.save(update_fields=["status"])
         raise

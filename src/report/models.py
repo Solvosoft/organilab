@@ -11,10 +11,12 @@ from organilab.model_defaults import get_default_language
 DELIVER = _("Delivered")
 WAIT = _("On hold")
 GENERATED = _("Generated")
+FAILED = _("Failed")
 STATUS_TEMPLATE = [
     (_("On hold"), WAIT),
     (_("Delivered"), DELIVER),
     (_("Generated"), GENERATED),
+    (_("Failed"), FAILED),
 ]
 
 

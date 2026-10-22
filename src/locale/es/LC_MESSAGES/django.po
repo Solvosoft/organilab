@@ -6302,6 +6302,9 @@ msgstr "Se miden por volumen y no se incluyen en el peso total."
 msgid "No density"
 msgstr "Sin densidad"
 
+msgid "Failed"
+msgstr "Fallido"
+
 msgid "Chemical substances inventory"
 msgstr "Inventario de sustancias químicas"
 

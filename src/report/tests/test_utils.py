@@ -319,3 +319,6 @@ class ModelosYTareaTest(ReportTestBase):
             list(DocumentReportStatus.objects.filter(report=report).values_list("description", flat=True)),
             [mensaje],
         )
+        report.refresh_from_db()
+        with translation.override(report.language):
+            self.assertEqual(report.status, translation.gettext("Failed"))
