@@ -245,6 +245,7 @@ class DownloadReportTest(ReportTestBase):
         )
         data = response.json()
         self.assertTrue(data["result"])
+        self.assertEqual(response.reason_phrase, "OK")
         self.assertEqual(
             data["url_file"],
             reverse("report:report_table", kwargs={"org_pk": self.org.pk, "pk": report.pk}),

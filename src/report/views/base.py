@@ -225,7 +225,7 @@ def create_request_by_report(request, org_pk):
                     else:
                         response.update({"form_errors": form.errors})
 
-    if status_code != 200 or status_code != 201:
+    if status_code not in (200, 201):
         reason = _("Report can't be processed, try again or contact administrator")
     response = JsonResponse(response, status=status_code, reason=reason)
     return response
@@ -291,7 +291,7 @@ def download_report(request, org_pk):
             create_notification(request.user, file_name, task.file.url)
             response.update({"url_file": task.file.url, "type_report": task.file_type})
 
-    if status_code != 200 or status_code != 201:
+    if status_code not in (200, 201):
         reason = _("Report can't be processed, try again or contact administrator")
     response = JsonResponse(response, status=status_code, reason=reason)
     return response
@@ -422,7 +422,7 @@ def create_organization_request_by_report(request, org_pk):
                     else:
                         response.update({"form_errors": form.errors})
 
-    if status_code != 200 or status_code != 201:
+    if status_code not in (200, 201):
         reason = _("Report can't be processed, try again or contact administrator")
     response = JsonResponse(response, status=status_code, reason=reason)
     return response
@@ -482,7 +482,7 @@ def download__organization_report(request, org_pk):
     else:
         status_code = 401
 
-    if status_code != 200 or status_code != 201:
+    if status_code not in (200, 201):
         reason = _("Report can't be processed, try again or contact administrator")
     response = JsonResponse(response, status=status_code, reason=reason)
     return response
