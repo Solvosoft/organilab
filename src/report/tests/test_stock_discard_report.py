@@ -1,8 +1,10 @@
 from datetime import date, datetime, timezone as dt_timezone
 
+import xlrd
 from django.utils import translation
 
 from laboratory.models import MaterialCapacity, Object, Shelf, ShelfObject
+from report.forms import ReactiveStockReportForm
 from report.tests.utils import ReportTestBase
 from report.views import discard_objects, stock
 from sga.models import SubstanceCharacteristics
@@ -86,6 +88,15 @@ class StockReportTest(ReportTestBase):
             stock.report_stock(todos)
         nombres = [f[1] for f in self.read_xlsx(todos) if f[0] == laboratorio]
         self.assertIn(self.lab.name, nombres)
+
+    def test_documento_en_xls(self):
+        self.assertIn("xls", dict(ReactiveStockReportForm.base_fields["format"].choices))
+        report = self.make_report("stock_reactive_report", "xls", laboratory=[self.lab.pk])
+        self.assertGreater(stock.report_stock(report), 0)
+        report.refresh_from_db()
+        with report.file.open("rb") as fh:
+            hoja = xlrd.open_workbook(file_contents=fh.read()).sheet_by_index(0)
+        self.assertGreater(hoja.nrows, 2)
 
     def test_cartel_html_agrupa_por_estado_fisico(self):
         report = self.make_report("chemicalinventory", "html")

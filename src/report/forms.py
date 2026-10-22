@@ -421,6 +421,7 @@ class ReactiveStockReportForm(ReportForm):
     format = forms.ChoiceField(
         widget=genwidgets.Select,
         choices=(
+            ("xls", "XLS"),
             ("xlsx", "XLSX"),
             ("ods", "ODS"),
         ),
