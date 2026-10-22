@@ -1,5 +1,7 @@
 from datetime import date, datetime, timezone as dt_timezone
 
+from django.utils import translation
+
 from laboratory.models import MaterialCapacity, Object, Shelf, ShelfObject
 from report.tests.utils import ReportTestBase
 from report.views import discard_objects, stock
@@ -70,13 +72,16 @@ class StockReportTest(ReportTestBase):
 
     def test_documento_con_laboratorio_inexistente_y_sin_laboratorios(self):
         report = self.make_report("stock_reactive_report", "xlsx", laboratory=[self.lab.pk, 999999])
-        total = stock.report_stock(report)
+        with translation.override("es"):
+            total = stock.report_stock(report)
         filas = self.read_xlsx(report)
         self.assertEqual(len(filas) - 2, total)
         self.assertEqual(sum(1 for f in filas if f[0] == "Laboratorio o centro de trabajo"), 1)
+        self.assertIn("Inventario de sustancias químicas", [f[0] for f in filas])
 
         todos = self.make_report("stock_reactive_report", "xlsx", laboratory=[])
-        stock.report_stock(todos)
+        with translation.override("es"):
+            stock.report_stock(todos)
         nombres = [f[1] for f in self.read_xlsx(todos) if f[0] == "Laboratorio o centro de trabajo"]
         self.assertIn(self.lab.name, nombres)
 

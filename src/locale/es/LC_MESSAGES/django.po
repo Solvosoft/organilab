@@ -6200,7 +6200,7 @@ msgid "All"
 msgstr ""
 
 msgid "Object type"
-msgstr "Tipo de objecto"
+msgstr "Tipo de objeto"
 
 msgid "If you want to delimit this query select laboratory rooms (Optional)"
 msgstr ""
@@ -6302,6 +6302,21 @@ msgstr "Se miden por volumen y no se incluyen en el peso total."
 msgid "No density"
 msgstr "Sin densidad"
 
+msgid "Chemical substances inventory"
+msgstr "Inventario de sustancias químicas"
+
+msgid "Laboratory or work center"
+msgstr "Laboratorio o centro de trabajo"
+
+msgid "Coordinator name"
+msgstr "Nombre del coordinador"
+
+msgid "Academic or Administrative Unit"
+msgstr "Unidad Académica o Administrativa"
+
+msgid "N/A"
+msgstr "N/A"
+
 msgid "Total reactive weight (mass units only)"
 msgstr "Peso total de reactivos (solo unidades de masa)"
 
@@ -6372,7 +6387,7 @@ msgid "Final amount"
 msgstr "Cantidad final"
 
 msgid "Starting report creation"
-msgstr "Iniciando creacíon del reporte"
+msgstr "Iniciando creación del reporte"
 
 msgid "Loading data to analyze in"
 msgstr "Cargando datos a analizar en"

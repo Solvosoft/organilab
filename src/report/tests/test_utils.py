@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta, timezone as dt_timezone
+from unittest.mock import patch
 
 from django.contrib.auth.models import User
 from django.template.loader import render_to_string
@@ -27,6 +28,7 @@ from report.utils import (
     format_datetime,
     local_datetime,
     period_range,
+    report_file_date,
     get_conversion_units_to_kilograms,
     get_furniture_queryset_by_filters,
     get_pdf_log_change_table_content,
@@ -72,6 +74,11 @@ class FormatoDeFechasTest(SimpleTestCase):
         self.assertEqual(local_datetime(momento), "14/03/2026 20:18:55")
         self.assertEqual(local_datetime(momento, "%Y-%m-%d"), "2026-03-14")
         self.assertEqual(local_datetime(None), "")
+
+    def test_fecha_del_nombre_de_archivo_es_local_y_dia_mes_anio(self):
+        noche_en_costa_rica = datetime(2026, 10, 17, 5, 30, tzinfo=dt_timezone.utc)
+        with patch("django.utils.timezone.now", return_value=noche_en_costa_rica):
+            self.assertEqual(report_file_date(), "16-10-2026")
 
     def test_format_datetime_invalida_devuelve_none(self):
         self.assertIsNone(format_datetime("no es fecha", "initial"))
