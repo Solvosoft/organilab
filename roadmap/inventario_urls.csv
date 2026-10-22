@@ -104,14 +104,14 @@ namespace,nombre,patrón,vista,archivo:línea,categoría,plantilla,kwargs,seleni
 ,objectlimitschart-detail,/gtapis/^objectlimits/(?P<pk>[^/.]+)/$,laboratory.gtcharts.ObjectLimitsClassChart,src/laboratory/gtcharts.py:84,api,,pk,0,1
 ,objectlimitschart-list,/gtapis/^objectlimits/$,laboratory.gtcharts.ObjectLimitsClassChart,src/laboratory/gtcharts.py:84,api,,,0,1
 ,objectorgavailable-list,/gtapis/^objectorgavailable/$,laboratory.gtselects.ObjectAvailableLookup,src/laboratory/gtselects.py:454,api,,,0,1
-,objectorgsearch-list,/gtapis/^objectorgsearch/$,laboratory.gtselects.ObjectGModelLookup,src/laboratory/gtselects.py:123,api,,,0,1
+,objectorgsearch-list,/gtapis/^objectorgsearch/$,laboratory.gtselects.ObjectGModelLookup,src/laboratory/gtselects.py:129,api,,,0,1
 ,objectsearch-list,/gtapis/^object/$,laboratory.gtselects.ObjectGModelLookup,src/laboratory/gtselects.py:123,api,,,0,0
 ,oidc_authentication_callback,/oidc/callback/,mozilla_django_oidc.views.OIDCAuthenticationCallbackView,site-packages/mozilla_django_oidc/views.py:22,infra,,,0,0
 ,oidc_authentication_init,/oidc/authenticate/,mozilla_django_oidc.views.OIDCAuthenticationRequestView,site-packages/mozilla_django_oidc/views.py:162,infra,,,0,0
 ,oidc_logout,/oidc/logout/,mozilla_django_oidc.views.OIDCLogoutView,site-packages/mozilla_django_oidc/views.py:242,infra,,,0,0
 ,org_profiles-list,/gtapis/^org_profiles/$,laboratory.gtselects.OrganizationProfileslLookup,src/laboratory/gtselects.py:608,api,,,0,0
 ,org_providers-list,/gtapis/^org_providers/$,laboratory.gtselects.OrganizationProviderslLookup,src/laboratory/gtselects.py:684,api,,,0,0
-,organization_roles-list,/gtapis/^organization_roles/$,laboratory.gtselects.OrganizationRolslLookup,src/laboratory/gtselects.py:86,api,,,0,0
+,organization_roles-list,/gtapis/^organization_roles/$,laboratory.gtselects.OrganizationRolslLookup,src/laboratory/gtselects.py:538,api,,,0,0
 ,organization_rols-list,/gtapis/^organization_rols/$,laboratory.gtselects.OrganizationRolslLookup,src/laboratory/gtselects.py:86,api,,,0,0
 ,orgbyuser-list,/gtapis/^orgbyuser/$,auth_and_perms.gtselects.OrgbyUserOrgS2,src/auth_and_perms/gtselects.py:513,api,,,0,1
 ,orgtree-list,/gtapis/^orgtree/$,auth_and_perms.gtselects.OrgTree,src/auth_and_perms/gtselects.py:629,api,,,0,1
@@ -1592,7 +1592,7 @@ report,donations_report,/report/reports/<int:org_pk>/donations-report/,report.vi
 report,generate_organization_report,/report/<int:org_pk>/download/organization/,report.views.base.download__organization_report,src/report/views/base.py:431,json,,org_pk,0,1
 report,generate_report,/report/<int:org_pk>/download/,report.views.base.download_report,src/report/views/base.py:232,json,,org_pk,0,1
 report,hazard_map_report,/report/reports/<int:org_pk>/hazard_map/,report.views.reports_org.HazardMapReport,src/report/views/reports_org.py:525,pagina,report/base_report_form_view.html,org_pk,0,0
-report,hazard_map_visual,/report/reports/<int:org_pk>/hazard_map/visual/,report.views.riskzones.hazard_map_visual_view,src/report/views/riskzones.py:603,pagina,report/hazard_map_visual.html,org_pk,0,1
+report,hazard_map_visual,/report/reports/<int:org_pk>/hazard_map/visual/,report.views.riskzones.hazard_map_visual_view,src/report/views/riskzones.py:612,pagina,report/hazard_map_visual.html,org_pk,0,1
 report,object_change_logs,/report/reports/<int:org_pk>/objectchanges/,report.views.reports_org.LogObjectView,src/report/views/reports_org.py:159,pagina,report/base_report_form_view.html,org_pk,0,0
 report,precursor_report,/report/reports/<int:org_pk>/precursors/,report.views.reports_org.PrecursorsView,src/report/views/reports_org.py:189,pagina,report/precursor_report.html,org_pk,1,1
 report,precursor_report_values_view,/report/reports/<int:org_pk>/precursor-values-list/<int:precusor_pk>/,report.views.reports_org.PrecursorReportValuesView,src/report/views/reports_org.py:557,pagina,report/precursor_report_values_view.html,org_pk|precusor_pk,0,0

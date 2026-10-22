@@ -1357,10 +1357,7 @@ class ReactiveForm(GTForm, forms.ModelForm):
         widget=genwidgets.TextInput,
         required=False,
         label=_("Density"),
-        help_text=_(
-            "It belongs to the regulations of decree 44741, "
-            "only use dot like 0.344 on decimal"
-        ),
+        help_text=_("Density in g/mL (decree 44741). Use a dot for decimals, e.g. 0.789."),
     )
 
     def __init__(self, *args, **kwargs):

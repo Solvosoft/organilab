@@ -92,6 +92,9 @@ class SustanceCharacteristicsForm(GTForm, forms.ModelForm):
             "threshold": genwidgets.TextInput,
             "is_pure": genwidgets.YesNoInput,
         }
+        help_texts = {
+            "density": _("Density in g/mL (decree 44741). Use a dot for decimals, e.g. 0.789."),
+        }
 
 
 class DangerIndicationForm(GTForm, forms.ModelForm):

@@ -27,6 +27,11 @@
     font-size: 0.75em;
     text-align: left;
 }
+.no-density {
+    color: #C00000;
+    background-color: #FFFFFF;
+    font-weight: bold;
+}
 h3.lab-title {
     font-size: 1.1em;
     margin-top: 15px;
@@ -100,7 +105,17 @@ h5.furniture-title {
 <h3 class="lab-title{% if lab_data.tonnage or lab_data.rooms %} keep-next{% endif %}">{{ lab_data.laboratory }}</h3>
 
 {% if lab_data.tonnage %}
-<p class="tonnage-info{% if lab_data.rooms %} keep-next{% endif %}">{% trans 'Total reactive weight (mass units only)' %}: {{ lab_data.tonnage.kilograms }} kg ({{ lab_data.tonnage.tons }} {% trans 'tons' %})</p>
+<p class="tonnage-info{% if lab_data.rooms %} keep-next{% endif %}">{% trans 'Total reactive weight' %}: {{ lab_data.tonnage.kilograms }} kg ({{ lab_data.tonnage.tons }} {% trans 'tons' %})</p>
+{% endif %}
+
+{% if lab_data.tonnage.without_density %}
+<h4 class="room-title keep-next">{% trans 'Reactives without registered density' %}</h4>
+<p class="tonnage-info">{% trans 'They are measured by volume and are not included in the total weight.' %}</p>
+<ul class="tonnage-info">
+    {% for item in lab_data.tonnage.without_density %}
+    <li>{{ item.name }} ({{ item.quantity }} {{ item.unit }})</li>
+    {% endfor %}
+</ul>
 {% endif %}
 
 {% for room in lab_data.rooms %}

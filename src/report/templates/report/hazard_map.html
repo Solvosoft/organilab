@@ -32,11 +32,22 @@
         <h4 class="mb-0">{{ lab_data.laboratory }}</h4>
         {% if lab_data.tonnage %}
         <span class="badge bg-info text-dark p-2">
-            {% trans 'Total reactive weight (mass units only)' %}: {{ lab_data.tonnage.kilograms }} kg ({{ lab_data.tonnage.tons }} {% trans 'tons' %})
+            {% trans 'Total reactive weight' %}: {{ lab_data.tonnage.kilograms }} kg ({{ lab_data.tonnage.tons }} {% trans 'tons' %})
         </span>
         {% endif %}
     </div>
     <div class="card-body">
+    {% if lab_data.tonnage.without_density %}
+    <div class="mb-4">
+        <h5 class="text-muted">{% trans 'Reactives without registered density' %}</h5>
+        <p class="text-muted small mb-1">{% trans 'They are measured by volume and are not included in the total weight.' %}</p>
+        <ul class="small mb-0">
+            {% for item in lab_data.tonnage.without_density %}
+            <li>{{ item.name }} ({{ item.quantity }} {{ item.unit }})</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
 
     {% for room in lab_data.rooms %}
     <div class="mb-4">
@@ -57,7 +68,7 @@
                             {% if shelf.substances %}
                             <br>
                             {% for sub in shelf.substances %}
-                                <small>{{ sub }}</small>{% if not forloop.last %}<br>{% endif %}
+                                <small>{{ sub }}</small>{% if sub in shelf.no_density %} <small class="text-danger">({% trans 'No density' %})</small>{% endif %}{% if not forloop.last %}<br>{% endif %}
                             {% endfor %}
                             {% endif %}
                         </div>

@@ -1,7 +1,6 @@
 import logging
 
 from laboratory.models import (
-    BaseUnitValues,
     Furniture,
     LaboratoryRoom,
     Object,
@@ -9,7 +8,7 @@ from laboratory.models import (
     ShelfObject,
 )
 from laboratory import dataconfig
-from laboratory.utils_base_unit import get_conversion_units
+from laboratory.utils_base_unit import cached_units, get_conversion_units, get_unit_info
 from risk_management.compatibility_utils import (
     COMPAT_LABELS,
     H_CODE_TO_CLASS,
@@ -29,12 +28,25 @@ HAZARD_COLORS = {
 }
 
 
+MASS_BASE = "Kilogramos"
+VOLUME_BASE = "Litros"
+
+
+def _missing_density(shelf_object, characteristic):
+    """El reactivo se mide por volumen y no tiene densidad para pasarlo a peso."""
+    info = get_unit_info(shelf_object.measurement_unit_id)
+    if info is None or info.base_description != VOLUME_BASE:
+        return False
+    density = characteristic.density if characteristic else 0
+    return not density or density <= 0
+
+
 def collect_room_shelf_hcodes(room):
     """Collect h_codes per shelf for all shelves in a LaboratoryRoom.
 
-    Returns: {shelf_pk: {"name": str, "h_codes": set(str), "substances": [str]}}
+    Returns: {shelf_pk: {"name": str, "h_codes": set(str), "substances": [str],
+    "no_density": [str]}}
     """
-    shelf_data = {}
     shelf_objects = ShelfObject.objects.filter(
         shelf__furniture__labroom=room,
         object__type=Object.REACTIVE,
@@ -44,6 +56,12 @@ def collect_room_shelf_hcodes(room):
         'object__substancharacteristics_object__h_code'
     )
 
+    with cached_units():
+        return _collect_shelf_data(shelf_objects)
+
+
+def _collect_shelf_data(shelf_objects):
+    shelf_data = {}
     for so in shelf_objects:
         shelf = so.shelf
         obj = so.object
@@ -52,6 +70,7 @@ def collect_room_shelf_hcodes(room):
                 "name": shelf.name,
                 "h_codes": set(),
                 "substances": [],
+                "no_density": [],
                 "furniture_pk": shelf.furniture_id,
                 "labroom_pk": shelf.furniture.labroom_id,
             }
@@ -61,18 +80,15 @@ def collect_room_shelf_hcodes(room):
         # coste entero del overlay de riesgo.  ``.all()`` sí la usa.
         prefetched = list(obj.substancharacteristics_object.all())
         sga_char = prefetched[0] if prefetched else None
+        label = obj.name
         if sga_char:
             h_codes = [h.code for h in sga_char.h_code.all()]
             if h_codes:
                 shelf_data[shelf.pk]["h_codes"].update(h_codes)
-                codes_str = ", ".join(sorted(h_codes))
-                shelf_data[shelf.pk]["substances"].append(
-                    "%s (%s)" % (obj.name, codes_str)
-                )
-            else:
-                shelf_data[shelf.pk]["substances"].append(obj.name)
-        else:
-            shelf_data[shelf.pk]["substances"].append(obj.name)
+                label = "%s (%s)" % (obj.name, ", ".join(sorted(h_codes)))
+        shelf_data[shelf.pk]["substances"].append(label)
+        if _missing_density(so, sga_char):
+            shelf_data[shelf.pk]["no_density"].append(label)
 
     return shelf_data
 
@@ -127,48 +143,47 @@ def _empty_summary():
     return {"green": 0, "yellow": 0, "red": 0, "gray": 0}
 
 
-def _kg_conversion_map():
-    """``measurement_unit_id`` -> ``True`` cuando la unidad se mide en kilogramos.
-
-    Una sola consulta.  Antes se preguntaba por ``BaseUnitValues`` una vez por
-    objeto, dentro del bucle.
-    """
-    units = BaseUnitValues.objects.select_related(
-        "measurement_unit_base"
-    ).filter(measurement_unit_base__description="Kilogramos")
-    return set(units.values_list("measurement_unit_id", flat=True))
-
-
 def compute_tonnage_aggregates(laboratory):
     """Masa de reactivos en kg y toneladas, por laboratorio, sala y mueble.
 
-    El total del laboratorio es lo que consumía el mapa de peligros; los
-    desgloses por sala y por mueble son lo que faltaba para razonar sobre
-    riesgo por zona y no sólo por laboratorio entero.
+    Los reactivos en volumen se pasan a kg con su densidad (g/mL, que equivale a
+    kg/L); los que no la tienen registrada quedan fuera del peso y se listan en
+    ``without_density``.
     """
-    kg_units = _kg_conversion_map()
     totals = {"laboratory": 0.0, "rooms": {}, "furniture": {}}
+    without_density = []
 
     shelf_objects = ShelfObject.objects.filter(
         in_where_laboratory=laboratory,
         object__type=Object.REACTIVE,
-    ).select_related("measurement_unit", "shelf__furniture")
+    ).select_related("measurement_unit", "shelf__furniture", "object").prefetch_related(
+        "object__substancharacteristics_object"
+    )
 
-    # ``measurement_unit``, ``quantity``, ``shelf`` y ``shelf.furniture`` son NOT
-    # NULL, y toda unidad de ``kg_units`` tiene ``BaseUnitValues``, así que la
-    # conversión nunca devuelve ``None``: no hacen falta guardas para esos casos.
-    for so in shelf_objects:
-        if so.measurement_unit_id not in kg_units:
-            continue
-        converted = get_conversion_units(so.measurement_unit, float(so.quantity))
-        totals["laboratory"] += converted
-        furniture = so.shelf.furniture
-        totals["furniture"][furniture.pk] = (
-            totals["furniture"].get(furniture.pk, 0.0) + converted
-        )
-        totals["rooms"][furniture.labroom_id] = (
-            totals["rooms"].get(furniture.labroom_id, 0.0) + converted
-        )
+    with cached_units():
+        for so in shelf_objects:
+            info = get_unit_info(so.measurement_unit_id)
+            if info is None or info.base_description not in (MASS_BASE, VOLUME_BASE):
+                continue
+            converted = get_conversion_units(so.measurement_unit_id, float(so.quantity))
+            if info.base_description == VOLUME_BASE:
+                characteristic = so.object.get_sga_characteristic()
+                if _missing_density(so, characteristic):
+                    without_density.append({
+                        "name": so.object.name,
+                        "quantity": so.quantity,
+                        "unit": so.measurement_unit.description,
+                    })
+                    continue
+                converted *= characteristic.density
+            totals["laboratory"] += converted
+            furniture = so.shelf.furniture
+            totals["furniture"][furniture.pk] = (
+                totals["furniture"].get(furniture.pk, 0.0) + converted
+            )
+            totals["rooms"][furniture.labroom_id] = (
+                totals["rooms"].get(furniture.labroom_id, 0.0) + converted
+            )
 
     def as_tonnage(kilograms):
         return {
@@ -176,8 +191,9 @@ def compute_tonnage_aggregates(laboratory):
             "tons": round(kilograms / 1000, 6),
         }
 
+    without_density.sort(key=lambda item: item["name"].casefold())
     return {
-        "laboratory": as_tonnage(totals["laboratory"]),
+        "laboratory": dict(as_tonnage(totals["laboratory"]), without_density=without_density),
         "rooms": {pk: as_tonnage(kg) for pk, kg in totals["rooms"].items()},
         "furniture": {pk: as_tonnage(kg) for pk, kg in totals["furniture"].items()},
     }
@@ -217,6 +233,7 @@ def compute_lab_risk(laboratory, rooms=None):
                 "color": HAZARD_COLORS.get(compat_code, HAZARD_COLORS["-"]),
                 "worst_pair": worst_pair,
                 "substances": sdata["substances"],
+                "no_density": sdata["no_density"],
                 "name": sdata["name"],
             }
             shelf_hcodes[shelf_pk] = sorted(sdata["h_codes"])
@@ -309,6 +326,7 @@ def _shelf_to_dict(shelf, shelf_colors):
             "color": info["color"],
             "compat_code": info["compat_code"],
             "substances": info["substances"],
+            "no_density": info.get("no_density", []),
             "worst_pair": info["worst_pair"],
         }
     return {
@@ -317,6 +335,7 @@ def _shelf_to_dict(shelf, shelf_colors):
         "color": HAZARD_COLORS['-'],
         "compat_code": "-",
         "substances": [],
+        "no_density": [],
         "worst_pair": "",
     }
 
