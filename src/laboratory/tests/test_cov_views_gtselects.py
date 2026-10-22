@@ -89,25 +89,19 @@ class OrganizationRolsLookupTest(GTSelectsBase):
         self.org1.rol.add(self.rol)
 
     def test_lista_solo_los_roles_de_la_raiz_de_la_organizacion(self):
-        for basename in ("organization_rols", "organization_roles"):
-            with self.subTest(basename=basename):
-                response = self.consultar(basename, {"organization": self.org1.pk})
-                self.assertEqual(self.textos(response), ["Rol de la organización"])
+        response = self.consultar("organization_roles", {"organization": self.org1.pk})
+        self.assertEqual(self.textos(response), ["Rol de la organización"])
 
     def test_sin_organizacion_responde_400(self):
-        for basename in ("organization_rols", "organization_roles"):
-            with self.subTest(basename=basename):
-                response = self.consultar(basename, {})
-                self.assertEqual(response.status_code, 400)
-                self.assertIn("organization", json.loads(response.content)["errors"])
+        response = self.consultar("organization_roles", {})
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("organization", json.loads(response.content)["errors"])
 
     def test_usuario_ajeno_a_la_organizacion_recibe_403(self):
-        for basename in ("organization_rols", "organization_roles"):
-            with self.subTest(basename=basename):
-                response = self.consultar(
-                    basename, {"organization": self.org1.pk}, client=self.client4
-                )
-                self.assertEqual(response.status_code, 403)
+        response = self.consultar(
+            "organization_roles", {"organization": self.org1.pk}, client=self.client4
+        )
+        self.assertEqual(response.status_code, 403)
 
     def test_superusuario_consulta_cualquier_organizacion(self):
         self.user4.is_superuser = True
@@ -121,8 +115,10 @@ class OrganizationRolsLookupTest(GTSelectsBase):
         """Sin organización validada el lookup no lista nada (rama defensiva)."""
         from djgentelella.groute import routes
 
+        basenames = [basename for prefix, viewset, basename in routes.registry]
+        self.assertNotIn("organization_rols", basenames)
         for prefix, viewset, basename in routes.registry:
-            if basename in ("organization_rols", "organization_roles"):
+            if basename == "organization_roles":
                 vista = viewset()
                 vista.org = None
                 self.assertFalse(vista.get_queryset().exists())
