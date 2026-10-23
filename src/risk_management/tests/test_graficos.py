@@ -9,6 +9,7 @@ import json
 
 from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
+from django.utils.translation import gettext
 
 from laboratory.models import (
     BaseUnitValues,
@@ -140,7 +141,7 @@ class GraficosDeInventarioTest(RiskTestCase):
         self.assertEqual(response.status_code, 200)
         contenido = json.dumps(response.json(), ensure_ascii=False)
         self.assertIn("Etanol", contenido)
-        self.assertIn("Unidades", contenido)
+        self.assertIn(gettext("Unidades"), contenido)
         self.assertIn("7.0", contenido)
 
     def _reactivo(self, nombre, cantidad, unidad, base, si_value, densidad=None):
@@ -163,7 +164,7 @@ class GraficosDeInventarioTest(RiskTestCase):
 
     def _serie(self, data, serie, nombre):
         """Valor de ``nombre`` en la serie ``serie`` (en español o en inglés)."""
-        nombres = {"Toneladas (t)": ("Toneladas (t)",), "Metros (m)": ("Metros (m)", "Meters (m)")}[serie]
+        nombres = (serie, gettext(serie))
         datos = data["data"]
         etiquetas = datos["labels"]
         for dataset in datos["datasets"]:

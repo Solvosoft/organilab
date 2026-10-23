@@ -6747,7 +6747,7 @@ msgstr ""
 msgid "Libra (Lb)"
 msgstr ""
 
-msgid "Sustances per White Organ"
+msgid "Substances per White Organ"
 msgstr "Sustancias por Órgano blanco"
 
 msgid "Sustances per Percursor Type"
@@ -8349,7 +8349,7 @@ msgid "Otro datos"
 msgstr "Otro datos"
 
 msgid "Review Substance"
-msgstr "Crear  Sustancia"
+msgstr "Revisar sustancia"
 
 msgid "Environment"
 msgstr "Ambiente"

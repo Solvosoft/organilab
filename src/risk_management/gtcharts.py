@@ -271,7 +271,7 @@ class LaboratoryWhiteOrganChart(BaseChart, HorizontalBarChart):
     django_permissions_list = ["risk_management.view_riskzone"]
 
     def get_title(self):
-        return {"display": True, "text": _("Sustances per White Organ")}
+        return {"display": True, "text": _("Substances per White Organ")}
 
     def list(self, request):
         raise Http404("Not found")

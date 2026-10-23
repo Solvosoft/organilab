@@ -5,6 +5,7 @@ from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase, Client
 from django.urls import reverse
+from django.utils import translation
 
 from auth_and_perms.models import Profile, Rol, ProfilePermission
 from laboratory.models import OrganizationStructure
@@ -110,8 +111,9 @@ class PendingTaskModelTest(PendingTaskSetUpMixin, TestCase):
         self.assertEqual(PendingTask._meta.ordering, ["-creation_date"])
 
     def test_meta_verbose_name(self):
-        self.assertEqual(str(PendingTask._meta.verbose_name), "Pending task")
-        self.assertEqual(str(PendingTask._meta.verbose_name_plural), "Pending tasks")
+        with translation.override("en"):
+            self.assertEqual(str(PendingTask._meta.verbose_name), "Pending task")
+            self.assertEqual(str(PendingTask._meta.verbose_name_plural), "Pending tasks")
 
 
 class CreatePendingTaskUtilTest(PendingTaskSetUpMixin, TestCase):

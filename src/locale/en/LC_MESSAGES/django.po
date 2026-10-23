@@ -1020,7 +1020,7 @@ msgid "permissions"
 msgstr ""
 
 msgid "Rol"
-msgstr ""
+msgstr "Role"
 
 msgid "not found"
 msgstr ""
@@ -2552,7 +2552,7 @@ msgid "Model"
 msgstr ""
 
 msgid "Serie"
-msgstr ""
+msgstr "Serial number"
 
 msgid "Plaque"
 msgstr ""
@@ -4430,7 +4430,7 @@ msgid "CAS ID Number:"
 msgstr ""
 
 msgid "Inventario C&L:"
-msgstr ""
+msgstr "C&L Inventory:"
 
 msgid "Reference link"
 msgstr ""
@@ -4442,7 +4442,7 @@ msgid "Limit Quantity"
 msgstr ""
 
 msgid "Ingreso por donacion"
-msgstr ""
+msgstr "Donation income"
 
 msgid "Box detail"
 msgstr ""
@@ -4734,16 +4734,16 @@ msgid "Updated organization '%(name)s'"
 msgstr ""
 
 msgid "Sin FDS"
-msgstr ""
+msgstr "No SDS"
 
 msgid "Fuente"
-msgstr ""
+msgstr "Source"
 
 msgid "Cantidad"
-msgstr ""
+msgstr "Quantity"
 
 msgid "Porcentaje"
-msgstr ""
+msgstr "Percentage"
 
 msgid "The quantity is more than the shelf has"
 msgstr ""
@@ -6010,13 +6010,13 @@ msgid "Details of the substances"
 msgstr ""
 
 msgid "Físico"
-msgstr ""
+msgstr "Physical"
 
 msgid "Salud"
-msgstr ""
+msgstr "Health"
 
 msgid "Ambiental"
-msgstr ""
+msgstr "Environmental"
 
 msgid "Objects Report"
 msgstr ""
@@ -6461,15 +6461,15 @@ msgid "Sustances per Danger Indications"
 msgstr ""
 
 msgid "Litro (L)"
-msgstr ""
+msgstr "Liter (L)"
 
 msgid "Kilogramo (Kg)"
-msgstr ""
+msgstr "Kilogram (kg)"
 
 msgid "Libra (Lb)"
-msgstr ""
+msgstr "Pound (lb)"
 
-msgid "Sustances per White Organ"
+msgid "Substances per White Organ"
 msgstr ""
 
 msgid "Sustances per Percursor Type"
@@ -6488,19 +6488,19 @@ msgid "Substances quantity in tons"
 msgstr ""
 
 msgid "Unidades"
-msgstr ""
+msgstr "Units"
 
 msgid "Metros (m)"
 msgstr "Meters (m)"
 
 msgid "Pascales (Pa)"
-msgstr ""
+msgstr "Pascals (Pa)"
 
 msgid "PSI"
 msgstr ""
 
 msgid "Toneladas (t)"
-msgstr ""
+msgstr "Tons (t)"
 
 msgid "Risk Categories Summary"
 msgstr ""
@@ -6539,7 +6539,7 @@ msgid "Deleted incident report '%(desc)s'"
 msgstr ""
 
 msgid "Identificador"
-msgstr ""
+msgstr "Identifier"
 
 msgid "Creation Date"
 msgstr ""
@@ -6962,50 +6962,50 @@ msgid "Risk zone"
 msgstr ""
 
 msgid "Descipción corta"
-msgstr ""
+msgstr "Short description"
 
 msgid "Descipción corta de evento, max 500 caracteres"
-msgstr ""
+msgstr "Short description of the event, max 500 characters"
 
 msgid "Fecha del incidente"
-msgstr ""
+msgstr "Incident date"
 
 msgid "Causas del accidente"
-msgstr ""
+msgstr "Causes of the accident"
 
 msgid "Impacto a la infraestructura"
-msgstr ""
+msgstr "Impact on infrastructure"
 
 msgid "Indicando las consecuencias a corto, mediano y largo plazo."
-msgstr ""
+msgstr "Indicating the short, medium and long-term consequences."
 
 msgid "Impacto a las personas (empleados, visitantes y comunidad afectada)"
-msgstr ""
+msgstr "Impact on people (employees, visitors and affected community)"
 
 msgid "Impacto ambiental"
-msgstr ""
+msgstr "Environmental impact"
 
 msgid ""
 "Resultado de la implementación del Plan de Prevención, Preparación y "
 "Respuesta ante Accidentes Químicos."
-msgstr ""
+msgstr "Result of implementing the Chemical Accident Prevention, Preparedness and Response Plan."
 
 msgid ""
 "Medidas adoptadas para corregir la situación y para atenuar sus efectos."
-msgstr ""
+msgstr "Measures taken to correct the situation and mitigate its effects."
 
 msgid "Recomendaciones"
-msgstr ""
+msgstr "Recommendations"
 
 msgid ""
 "Recomendaciones que describan en detalle las medidas que se vayan a llevar a "
 "cabo para reducir el riesgo de que accidentes similares vuelvan a producirse."
-msgstr ""
+msgstr "Recommendations describing in detail the measures to be taken to reduce the risk of similar accidents happening again."
 
 msgid ""
 "En caso de intoxicación adjuntar copia de la notificación realizada al "
 "Centro Nacional de Control de Intoxicaciones (CNCI)"
-msgstr ""
+msgstr "In case of poisoning, attach a copy of the notification sent to the National Poison Control Center (CNCI)"
 
 msgid "Chemical"
 msgstr ""
@@ -7434,49 +7434,49 @@ msgid "Delete Workday"
 msgstr ""
 
 msgid "Resumen"
-msgstr ""
+msgstr "Summary"
 
 msgid "Clasificación"
-msgstr ""
+msgstr "Classification"
 
 msgid "Criterio"
-msgstr ""
+msgstr "Criterion"
 
 msgid "Sumatorias por Categoría"
-msgstr ""
+msgstr "Sums by category"
 
 msgid "Categoría"
-msgstr ""
+msgstr "Category"
 
 msgid "Valor"
-msgstr ""
+msgstr "Value"
 
 msgid "Detalle Sustancias"
-msgstr ""
+msgstr "Substance details"
 
 msgid "Nombre"
-msgstr ""
+msgstr "Name"
 
 msgid "Cantidad (t)"
-msgstr ""
+msgstr "Quantity (t)"
 
 msgid "Nominada C3"
-msgstr ""
+msgstr "Nominated C3"
 
 msgid "Umbral C3 (t)"
-msgstr ""
+msgstr "C3 threshold (t)"
 
 msgid "Ratio C3"
-msgstr ""
+msgstr "C3 ratio"
 
 msgid "Regla cruzada Salud"
-msgstr ""
+msgstr "Health cross rule"
 
 msgid "Detalle Contribuciones"
-msgstr ""
+msgstr "Contribution details"
 
 msgid "Advertencias"
-msgstr ""
+msgstr "Warnings"
 
 #, python-format
 msgid "Created risk zone '%(name)s'"
@@ -7766,7 +7766,7 @@ msgid "Emergency number"
 msgstr ""
 
 msgid "No. Registro"
-msgstr ""
+msgstr "Registration No."
 
 msgid "REACH No."
 msgstr ""
@@ -8043,7 +8043,7 @@ msgid "The full text of the R-phrases referred to in points 2 and 3"
 msgstr ""
 
 msgid "Otro datos"
-msgstr ""
+msgstr "Other data"
 
 msgid "Review Substance"
 msgstr ""
@@ -8450,7 +8450,7 @@ msgid "There can only be one Indication of Danger or Attention"
 msgstr ""
 
 msgid "En vivo"
-msgstr ""
+msgstr "Live"
 
 msgid "Available templates"
 msgstr ""
