@@ -441,10 +441,9 @@ class ObjectAvailableLookup(BaseSelect2View):
         queryset = super().get_queryset()
         if self.org_pk:
             queryset = queryset.filter(
-               Q(organization__in=self.org_pk.ancestors(include_self=True))
+                Q(organization__in=self.org_pk.ancestors(include_self=True))
                 | Q(organization__in=self.org_pk.descendants()),
-
-            ).distint()
+            ).distinct()
         else:
             queryset = queryset.none()
         return queryset
