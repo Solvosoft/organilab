@@ -1281,3 +1281,9 @@ msgstr "Peso"
 
 msgid "Equipment Type"
 msgstr "Tipo de equipo"
+
+msgid "Maximum Limit"
+msgstr "Límite Máximo"
+
+msgid "Minimum Limit"
+msgstr "Límite mínimo"

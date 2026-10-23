@@ -1442,9 +1442,7 @@ msgid "Profile in organization"
 msgstr "Perfil en la organización"
 
 msgid "User email exist, please try to add user on organization modal"
-msgstr ""
-"Usuario no existe, Lo lamentamos, intente agregar el usuario en modal de "
-"organización"
+msgstr "El correo electrónico del usuario ya existe; por favor, intenta añadir al usuario a través de la ventana modal de la organización."
 
 msgid "Password"
 msgstr "Contraseña"
