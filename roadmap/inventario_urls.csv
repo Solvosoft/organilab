@@ -104,7 +104,7 @@ namespace,nombre,patrón,vista,archivo:línea,categoría,plantilla,kwargs,seleni
 ,objectlimitschart-detail,/gtapis/^objectlimits/(?P<pk>[^/.]+)/$,laboratory.gtcharts.ObjectLimitsClassChart,src/laboratory/gtcharts.py:84,api,,pk,0,1
 ,objectlimitschart-list,/gtapis/^objectlimits/$,laboratory.gtcharts.ObjectLimitsClassChart,src/laboratory/gtcharts.py:84,api,,,0,1
 ,objectorgavailable-list,/gtapis/^objectorgavailable/$,laboratory.gtselects.ObjectAvailableLookup,src/laboratory/gtselects.py:426,api,,,0,1
-,objectorgsearch-list,/gtapis/^objectorgsearch/$,laboratory.gtselects.ObjectGModelLookup,src/laboratory/gtselects.py:86,api,,,0,1
+,objectorgsearch-list,/gtapis/^objectorgsearch/$,laboratory.gtselects.ObjectGModelLookup,src/laboratory/gtselects.py:92,api,,,0,1
 ,objectsearch-list,/gtapis/^object/$,laboratory.gtselects.ObjectGModelLookup,src/laboratory/gtselects.py:86,api,,,0,0
 ,oidc_authentication_callback,/oidc/callback/,mozilla_django_oidc.views.OIDCAuthenticationCallbackView,site-packages/mozilla_django_oidc/views.py:22,infra,,,0,0
 ,oidc_authentication_init,/oidc/authenticate/,mozilla_django_oidc.views.OIDCAuthenticationRequestView,site-packages/mozilla_django_oidc/views.py:162,infra,,,0,0
