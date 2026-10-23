@@ -427,15 +427,11 @@ msgstr "también?"
 msgid "An error has occurred"
 msgstr "Ha ocurrido un error"
 
-#, fuzzy
-#| msgid "Deleted!"
 msgid "Deleted date"
-msgstr "¡Eliminado!"
+msgstr "Fecha de eliminación"
 
-#, fuzzy
-#| msgid "Deleted!"
 msgid "Deleted by"
-msgstr "¡Eliminado!"
+msgstr "Eliminado por"
 
 msgid "Model"
 msgstr "Modelo"
@@ -453,10 +449,8 @@ msgstr ""
 msgid "Accept"
 msgstr "Aceptar"
 
-#, fuzzy
-#| msgid "An error has occurred"
 msgid "Sorry, an error occurred."
-msgstr "Ha ocurrido un error"
+msgstr "Lo sentimos, ocurrió un error."
 
 msgid ""
 "It is a feature related to the physical properties of this element, some "
@@ -700,23 +694,17 @@ msgstr "Reservación"
 msgid "Add"
 msgstr "Agregar"
 
-#, fuzzy
-#| msgid "Transfer In"
 msgid "Transfer Out"
-msgstr "Transferir aquí"
+msgstr "Transferir Hacia Otro Laboratorio"
 
-#, fuzzy
-#| msgid "Substance"
 msgid "Substract"
-msgstr "Sustancia"
+msgstr "Substraer"
 
 msgid "Log"
 msgstr "Bitácora"
 
-#, fuzzy
-#| msgid "Container"
 msgid "Manage Container"
-msgstr "Contenedor"
+msgstr "Manejar Contenedor"
 
 msgid "Move"
 msgstr "Mover"
@@ -757,26 +745,20 @@ msgstr "%(furniture)s muebles · %(shelves)s estantes · %(objects)s objetos"
 msgid "Open in another tab"
 msgstr "Abrir en otra pestaña"
 
-#, fuzzy
-#| msgid "No tasks in this column"
 msgid "No furniture in this room."
-msgstr "No hay tareas en esta columna"
+msgstr "No hay muebles en esta sala."
 
 msgid "shelves"
 msgstr "Estantes"
 
-#, fuzzy
-#| msgid "Report failed"
 msgid "Report"
-msgstr "Reporte fallido"
+msgstr "Reporte"
 
 msgid "Shelves without a position:"
 msgstr "Estantes sin posición:"
 
-#, fuzzy
-#| msgid "No code"
 msgid "QR code"
-msgstr "Sin código"
+msgstr "Código QR"
 
 msgid "Incompatibilities"
 msgstr "Incompatibilidades"
@@ -787,18 +769,15 @@ msgstr "alertas"
 msgid "empty"
 msgstr "vacío"
 
-#, fuzzy
-#| msgid "Objects"
 msgid "objects"
-msgstr "Objetos"
+msgstr "objetos"
 
 msgid "Search a room, furniture, shelf or object"
 msgstr "Busque una sala, un mueble, un estante o un objeto"
 
-#, fuzzy, javascript-format
-#| msgid "Showing first result from "
+#, javascript-format
 msgid "Showing the first result out of %s matched shelves"
-msgstr "Muestra el primer resultado de "
+msgstr "Se muestra el primer resultado de %s estantes encontrados"
 
 msgid "Object Features"
 msgstr "Características del objeto"
@@ -809,10 +788,8 @@ msgstr "Es contenedor?"
 msgid "View Detail"
 msgstr "Ver detalle"
 
-#, fuzzy
-#| msgid "Container Detail"
 msgid "Material Detail"
-msgstr "Detalle del Contenedor"
+msgstr "Detalle del material"
 
 msgid "Is Container"
 msgstr "Es Contenedor"
@@ -985,8 +962,6 @@ msgstr "Sustancia"
 msgid "CAS"
 msgstr ""
 
-#, fuzzy
-#| msgid "H Codes"
 msgid "H-codes"
 msgstr "Códigos H"
 
@@ -1026,10 +1001,8 @@ msgstr "¿Desea marcar este FDS como verificado?"
 msgid "Do you want to mark this FDS as unverified?"
 msgstr "¿Desea marcar este FDS como no verificado?"
 
-#, fuzzy
-#| msgid "FDS marked as unverified"
 msgid "FDS marked was updated"
-msgstr "FDS marcado como no verificado"
+msgstr "Se actualizó la marca de la FDS"
 
 msgid "Information from "
 msgstr "Información de "
@@ -1115,8 +1088,6 @@ msgstr "Saldo final"
 msgid "Reason to Spend"
 msgstr "Motivo del gasto"
 
-#, fuzzy
-#| msgid "Danger Category"
 msgid "Danger category"
 msgstr "Categoría de peligro"
 
@@ -1132,10 +1103,8 @@ msgstr "Edificios Cercanos"
 msgid "Create building"
 msgstr "Crear Edificio"
 
-#, fuzzy
-#| msgid "Updated"
 msgid "Update"
-msgstr "Actualizado"
+msgstr "Actualizar"
 
 msgid "Incident Date"
 msgstr "Fecha del incidente"

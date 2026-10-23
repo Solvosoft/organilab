@@ -821,10 +821,8 @@ msgstr "Reasignado por borrado de usuario"
 msgid "No roles assigned"
 msgstr "No se asignaron roles"
 
-#, fuzzy
-#| msgid "Relate user with this organization"
 msgid "Roles: manage the user's roles within the organization"
-msgstr "Relacionar usuario con esta organización"
+msgstr "Roles: gestiona los roles del usuario dentro de la organización"
 
 msgid "List Roles: show user's roles"
 msgstr ""
@@ -833,13 +831,9 @@ msgid ""
 "Incognito mode: browse the system as this user without modifying your session"
 msgstr ""
 
-#, fuzzy
-#| msgid ""
-#| "Inherited the profile of %(user)r from %(org)r to its child organizations"
 msgid ""
 "Inherit: propagate the user's profile and roles to all child organizations"
-msgstr ""
-"Se heredó el perfil de %(user)r desde %(org)r a sus organizaciones hijas"
+msgstr "Heredar: propaga el perfil y los roles del usuario a todas las organizaciones hijas"
 
 msgid "Remove: remove user from organization, can also disable platform access"
 msgstr ""
@@ -974,21 +968,15 @@ msgstr "Se vincularon los laboratorios %(labs)r a la organización %(org)r"
 msgid "Unlinked the laboratories %(labs)r from the organization %(org)r"
 msgstr "Se desvincularon los laboratorios %(labs)r de la organización %(org)r"
 
-#, fuzzy
-#| msgid "You don't have the permissions required to access this section"
 msgid "You don't have permissions to access this section"
-msgstr ""
-"Usted no cuenta con los privilegios suficientes para acceder este laboratorio"
+msgstr "No tiene permisos para acceder a esta sección"
 
-#, fuzzy
-#| msgid "Organization parent:"
 msgid "Organization parameter is required"
-msgstr "Organización padre:"
+msgstr "El parámetro de organización es obligatorio"
 
-#, fuzzy, python-format
-#| msgid "Unlinked the laboratories %(labs)r from the organization %(org)r"
+#, python-format
 msgid "Unlinked laboratory '%(lab)s' from organization '%(org)s'"
-msgstr "Se desvincularon los laboratorios %(labs)r de la organización %(org)r"
+msgstr "Se desvinculó el laboratorio '%(lab)s' de la organización '%(org)s'"
 
 msgid "Rols"
 msgstr "Roles"
@@ -1050,10 +1038,8 @@ msgstr "Idioma"
 msgid "Address"
 msgstr "Dirección"
 
-#, fuzzy
-#| msgid "Tutorials"
 msgid "Show tutorials"
-msgstr "Tutoriales"
+msgstr "Mostrar tutoriales"
 
 msgid "Enable automatic tutorial display on page visits"
 msgstr ""
@@ -1064,10 +1050,8 @@ msgstr "Centro de trabajo"
 msgid "Can add external user to organization"
 msgstr "Puede agregar usuarios externos a la organización"
 
-#, fuzzy
-#| msgid "Intitution can access"
 msgid "Institution can access"
-msgstr "Institución puede acceder"
+msgstr "La institución puede acceder"
 
 msgid "Can change own user/profile data"
 msgstr ""
@@ -1146,10 +1130,8 @@ msgstr "Lista de roles por usuario"
 msgid "Add organization"
 msgstr "Agregar Organización"
 
-#, fuzzy
-#| msgid "Clone organization"
 msgid "Click to manage this organization"
-msgstr "Clonar Organización"
+msgstr "Haga clic para gestionar esta organización"
 
 msgid "Choose"
 msgstr "Elegir"
@@ -1175,13 +1157,9 @@ msgstr "Relacionar Laboratorio"
 msgid "Unlink Laboratories"
 msgstr "Desvincular Laboratorios"
 
-#, fuzzy
-#| msgid "Disable child organizations filter?"
 msgid "Disable child organizations filter"
 msgstr "Deshabilitar filtro de organizaciones hijas"
 
-#, fuzzy
-#| msgid "Enable child organizations filter?"
 msgid "Enable child organizations filter"
 msgstr "Habilitar filtro de organizaciones hijas"
 
@@ -1329,10 +1307,8 @@ msgstr ""
 "laboratorio también eliminará los permisos de usuario para dicho laboratorio "
 "en esta organización."
 
-#, fuzzy
-#| msgid "Unlink Laboratories"
 msgid "Unlink Laboratory"
-msgstr "Desvincular Laboratorios"
+msgstr "Desvincular laboratorio"
 
 msgid "My laboratories"
 msgstr "Mis Laboratorios"
@@ -1532,16 +1508,6 @@ msgstr ""
 msgid "The email is used as username."
 msgstr "El correo será usado como nombre de usuario"
 
-#, fuzzy
-#| msgid ""
-#| "The user is created with the default role of Student, so they will be "
-#| "ready to be added to the desired laboratory. You can add an "
-#| "administrative role by adding the user to the organization in the "
-#| "organization tab. In both cases, the user should be assigned roles in "
-#| "each laboratory.\n"
-#| "Remember, you can use the user creation functionality via QR code "
-#| "provided in the laboratory administration to simplify the role assignment "
-#| "for a large number of users."
 msgid ""
 "The user is created with the default role of Student, so they will be\n"
 "\t\t\t\t\t\t\tready to be added to the desired laboratory. You can add an "
@@ -1551,15 +1517,7 @@ msgid ""
 "\t\t\t\t\t\t\tRemember, you can use the user creation functionality via QR "
 "code provided in the laboratory administration to\n"
 "\t\t\t\t\t\t\tsimplify the role assignment for a large number of users."
-msgstr ""
-"El usuario se crea con el rol Estudiante por defecto, por lo que quedará "
-"listo para agregar al laboratorio deseado, puede agregar un rol "
-"administrativo agregando el usuario a la organización en la pestaña de "
-"organización, en ambos caso al usuario se le deberán asignar los roles en "
-"cada laboratorio.\n"
-"Recuerde puede usar la funcionalidad de creación de usuarios mediante QR "
-"provista en la administración del laboratorio para simplificar la asignación "
-"de roles a un gran número de usuarios"
+msgstr "El usuario se crea con el rol Estudiante por defecto, por lo que queda listo para agregarlo al laboratorio deseado. Puede agregar un rol administrativo agregando al usuario a la organización en la pestaña de organización. En ambos casos, al usuario se le deben asignar roles en cada laboratorio. Recuerde que puede usar la creación de usuarios por código QR, disponible en la administración del laboratorio, para simplificar la asignación de roles a muchos usuarios."
 
 msgid "User Profile Explanations"
 msgstr "Explicación de los perfiles de usuario"
@@ -1707,38 +1665,26 @@ msgstr "Formulario personalizado '%(name)s' eliminado"
 msgid "Created custom form '%(name)s'"
 msgstr "Formulario personalizado '%(name)s' creado"
 
-#, fuzzy
-#| msgid "Organization"
 msgid "Organization ID"
-msgstr "Organización"
+msgstr "ID de la organización"
 
 msgid "Organization name"
 msgstr "Nombre de la Organización"
 
-#, fuzzy
-#| msgid "Creator"
 msgid "Creator Org ID"
-msgstr "Creador"
+msgstr "ID de la organización creadora"
 
-#, fuzzy
-#| msgid "Laboratory name"
 msgid "Creator Org name"
-msgstr "Nombre del Laboratorio"
+msgstr "Nombre de la organización creadora"
 
-#, fuzzy
-#| msgid "Register user"
 msgid "Register Org ID"
-msgstr "Registrar usuario"
+msgstr "ID de la organización de registro"
 
-#, fuzzy
-#| msgid "Register Object"
 msgid "Register Org name"
-msgstr "Registrar Material"
+msgstr "Nombre de la organización de registro"
 
-#, fuzzy
-#| msgid "Delete object"
 msgid "Related object"
-msgstr "Borrar objeto"
+msgstr "Objeto relacionado"
 
 msgid "Organilab Administration site"
 msgstr "Sitio administrativo de Organilab"
@@ -1847,10 +1793,8 @@ msgstr "No es Bioacumulable"
 msgid "Is precursor"
 msgstr "¿Es precursor?"
 
-#, fuzzy
-#| msgid "Is bioaccumulable?"
 msgid "Is bioaccumulable"
-msgstr "¿Es bioacumulable?"
+msgstr "Es bioacumulable"
 
 msgid "Maximum limit cannot be lower than minimum limit."
 msgstr "El límite máximo no puede ser menor que el límite mínimo."
@@ -1875,15 +1819,11 @@ msgstr ""
 msgid "Only .xlsm files are allowed."
 msgstr "Solo se permiten archivos .xlsm."
 
-#, fuzzy
-#| msgid "My lab or organization requests"
 msgid "This field is required for organization requests."
-msgstr "Mis solicitudes de laboratorio u organización"
+msgstr "Este campo es obligatorio para las solicitudes de organización."
 
-#, fuzzy
-#| msgid "This field is required."
 msgid "This field is required for laboratory requests."
-msgstr "Este campo es requerido."
+msgstr "Este campo es obligatorio para las solicitudes de laboratorio."
 
 msgid "Income"
 msgstr "Ingreso"
@@ -1904,10 +1844,8 @@ msgstr "Material de estante '%(name)s' creado con cantidad %(qty)s"
 msgid "Created refuse material shelfobject '%(name)s'"
 msgstr "Material de desecho '%(name)s' creado"
 
-#, fuzzy
-#| msgid "Measurement units"
 msgid "Measurement unit is not valid"
-msgstr "Unidades de medida"
+msgstr "La unidad de medida no es válida"
 
 #, python-format
 msgid "Created box shelfobject '%(name)s' with %(boxes)s boxes"
@@ -1944,10 +1882,8 @@ msgstr "Reserva creada para objeto de estante '%(name)s'"
 msgid "Reservation was performed successfully."
 msgstr "La reservación se ha realizado con éxito."
 
-#, fuzzy
-#| msgid "Box was increased successfully."
 msgid "Boxes were returned successfully."
-msgstr "La caja fue incrementada exitosamente."
+msgstr "Las cajas se devolvieron correctamente."
 
 #, python-format
 msgid "Created transfer request for '%(name)s' from '%(from)s' to '%(to)s'"
@@ -2049,15 +1985,11 @@ msgstr "Caja actualizada"
 msgid "Box was updated successfully."
 msgstr "La caja fue actualizada exitosamente."
 
-#, fuzzy
-#| msgid "The Recipient size saved successfully"
 msgid "Recipient size was created successfully."
-msgstr "El recipiente fue guardado con éxito"
+msgstr "Se creó con éxito el tamaño de recipiente."
 
-#, fuzzy
-#| msgid "Element was deleted successfully"
 msgid "Recipient size was deleted successfully."
-msgstr "Elemento eliminado exitosamente"
+msgstr "Se eliminó con éxito el tamaño de recipiente."
 
 msgid "Maintenance created"
 msgstr "Mantenimiento creado"
@@ -2183,10 +2115,8 @@ msgstr "Características de equipo eliminadas para '%(name)s'"
 msgid "Updated equipment '%(name)s'"
 msgstr "Equipo '%(name)s' actualizado"
 
-#, fuzzy
-#| msgid "Updated!"
 msgid "Updated"
-msgstr "¡Actualizado!"
+msgstr "Actualizado"
 
 msgid "Created"
 msgstr "Creado"
@@ -2285,15 +2215,11 @@ msgstr "Característica de objeto '%(name)s' actualizada"
 msgid "Deleted object feature '%(name)s'"
 msgstr "Característica de objeto '%(name)s' eliminada"
 
-#, fuzzy
-#| msgid "This endpoint requires lab_pk in the URL."
 msgid "This endpoint requires org_pk in the URL."
-msgstr "Este endpoint requiere lab_pk en la URL."
+msgstr "Este endpoint requiere org_pk en la URL."
 
-#, fuzzy
-#| msgid "Shelf object was decrease successfully."
 msgid "Shelf object was decreased successfully."
-msgstr "El objeto del estante fue disminuido exitosamente."
+msgstr "El objeto del estante se disminuyó correctamente."
 
 #, python-format
 msgid "Created %(type)s request '%(name)s'"
@@ -2327,10 +2253,8 @@ msgstr "Solicitud rechazada."
 msgid "Invalid format in shelf dataconfig "
 msgstr "Formato inválido en la configuración de datos del estante "
 
-#, fuzzy
-#| msgid "Invalid box selection."
 msgid "Invalid position"
-msgstr "Selección de caja inválida."
+msgstr "Posición inválida"
 
 msgid "The row does not exist"
 msgstr "La fila no existe"
@@ -2475,10 +2399,8 @@ msgstr "Organo blanco"
 msgid "Share with others"
 msgstr "Compartir con otros"
 
-#, fuzzy
-#| msgid "Bioaccumulable"
 msgid "Bioaccumulable?"
-msgstr "Bioacumulable"
+msgstr "¿Bioacumulable?"
 
 msgid "Molecular formula"
 msgstr "Formula molecular"
@@ -2553,10 +2475,8 @@ msgstr "Número ID CAS"
 msgid "Chemical formula"
 msgstr "Fórmula química"
 
-#, fuzzy
-#| msgid "Used Quantity"
 msgid "Units of the quantity"
-msgstr "Cantidad Utilizada"
+msgstr "Unidades de la cantidad"
 
 msgid "Capacity of the container"
 msgstr "Capacidad del envase"
@@ -2772,10 +2692,8 @@ msgstr "Características de sustancias"
 msgid "Limit material quantity"
 msgstr "Cantidad límite de material"
 
-#, fuzzy
-#| msgid "Expiration date"
 msgid "Expiration date?"
-msgstr "Fecha de expiración"
+msgstr "¿Fecha de vencimiento?"
 
 msgid "Liquid"
 msgstr "Líquido"
@@ -2813,10 +2731,8 @@ msgstr "Líquido viscoso"
 msgid "Kit"
 msgstr "Kit"
 
-#, fuzzy
-#| msgid "Equipment or reactive or sustance"
 msgid "Equipment or reactive or substance"
-msgstr "Equipo o reactivo o sustancia"
+msgstr "Equipo, reactivo o sustancia"
 
 msgid "Production batch"
 msgstr "Numero de lote"
@@ -2883,10 +2799,8 @@ msgid ""
 "(integer count)"
 msgstr ""
 
-#, fuzzy
-#| msgid "Units per box"
 msgid "Units per box (reference)"
-msgstr "Unidades por caja"
+msgstr "Unidades por caja (referencia)"
 
 msgid "Original number of units per box at creation time"
 msgstr ""
@@ -3014,10 +2928,8 @@ msgstr ""
 msgid "Organizations"
 msgstr "Organizaciones"
 
-#, fuzzy
-#| msgid "Change Organization Structure"
 msgid "Can manage organization permission structure"
-msgstr "Modificar estructura de organización"
+msgstr "Puede gestionar la estructura de permisos de la organización"
 
 msgid "Administrator"
 msgstr "Administrador"
@@ -3122,10 +3034,8 @@ msgstr "Informe"
 msgid "Protocol PDF File"
 msgstr "Archivo del protocolo en PDF"
 
-#, fuzzy
-#| msgid "Only .xlsm files are allowed."
 msgid "Only PDF files are allowed"
-msgstr "Solo se permiten archivos .xlsm."
+msgstr "Solo se permiten archivos PDF"
 
 msgid "short description"
 msgstr "descripción corta"
@@ -3208,25 +3118,17 @@ msgstr "Solicitud de laboratorio u organización"
 msgid "Lab or organization requests"
 msgstr "Solicitudes de laboratorio u organización"
 
-#, fuzzy
-#| msgid "Substance Observation"
 msgid "Substance laboratory"
-msgstr "Observación de sustancia"
+msgstr "Laboratorio de la sustancia"
 
-#, fuzzy
-#| msgid "Country"
 msgid "Counter"
-msgstr "Cantidad"
+msgstr "Contador"
 
-#, fuzzy
-#| msgid "Shelf Object Guarantee"
 msgid "Shelf object code counter"
-msgstr "Garantía de objeto en estante"
+msgstr "Contador de códigos de objetos de estante"
 
-#, fuzzy
-#| msgid "Shelf objects"
 msgid "Shelf object code counters"
-msgstr "Estante de los objetos"
+msgstr "Contadores de códigos de objetos de estante"
 
 msgid "Product added successful"
 msgstr "Producto Agregado exitosamente"
@@ -3306,10 +3208,8 @@ msgid ""
 "required)."
 msgstr ""
 
-#, fuzzy
-#| msgid "Final date cannot be equal or lower than current date."
 msgid "Final date cannot be equal or lower than initial date."
-msgstr "La fecha final no puede ser igual o menor a la fecha actual."
+msgstr "La fecha final no puede ser igual o menor a la fecha inicial."
 
 msgid "Initial date cannot be equal or lower than current date."
 msgstr "La fecha inicial no puede ser igual or menor a la fecha actual."
@@ -3332,10 +3232,8 @@ msgid "Subtract amount cannot be greater than the available shelf's amount."
 msgstr ""
 "El monto a substraer no puede ser mayor al monto disponible en el estante."
 
-#, fuzzy
-#| msgid "Shelf does not belong to this laboratory."
 msgid "Reservation does not belong to this laboratory."
-msgstr "El estante no pertenece a este laboratorio."
+msgstr "La reservación no pertenece a este laboratorio."
 
 msgid "Only box shelf object reservations can be returned through this action."
 msgstr ""
@@ -3343,12 +3241,8 @@ msgstr ""
 msgid "Only borrowed reservations can be returned."
 msgstr ""
 
-#, fuzzy
-#| msgid "The shelfobject quantity cannot be less than minimum limit."
 msgid "The shelfobject quantity cannot be less than maximum limit."
-msgstr ""
-"La cantidad de la sustancia o material no puede ser menor a la cantidad "
-"mínima."
+msgstr "La cantidad del objeto del estante no puede ser menor al límite máximo."
 
 msgid "Minimum limit cannot be greater than maximum limit."
 msgstr "Límite mínimo no puede ser mayor al límite máximo."
@@ -3356,10 +3250,8 @@ msgstr "Límite mínimo no puede ser mayor al límite máximo."
 msgid "Quantity cannot be greater than maximum limit."
 msgstr "La cantidad no puede mayor que el límite maximo."
 
-#, fuzzy
-#| msgid "Quantity cannot be greater than maximum limit."
 msgid "Quantity cannot be lower than minimum limit."
-msgstr "La cantidad no puede mayor que el límite maximo."
+msgstr "La cantidad no puede ser menor al límite mínimo."
 
 msgid ""
 "The transfer out cannot be performed since the boxes available for the "
@@ -3496,10 +3388,8 @@ msgstr ""
 "La cantidad de la sustancia o material no puede ser menor a la cantidad "
 "mínima."
 
-#, fuzzy
-#| msgid "This account is inactive."
 msgid "This object is not a reactive."
-msgstr "Su cuenta está activa."
+msgstr "Este objeto no es un reactivo."
 
 #, python-format
 msgid ""
@@ -3516,28 +3406,17 @@ msgstr ""
 "La cantidad no puede ser mayor que el límite máximo del contenedor: "
 "%(limit)s."
 
-#, fuzzy
-#| msgid ""
-#| "Measurement unit cannot be different than the shelf's measurement unit."
 msgid "Measurement unit is not compatible with the object's unit."
-msgstr "La unidad de medida no puede ser diferente a la del estante."
+msgstr "La unidad de medida no es compatible con la unidad del objeto."
 
-#, fuzzy
-#| msgid "Laboratory name visible"
 msgid "Laboratory context is required."
-msgstr "Nombre del laboratorio visible"
+msgstr "Se requiere el contexto del laboratorio."
 
-#, fuzzy
-#| msgid "Subtract amount cannot be greater than the available box units."
 msgid "Subtract amount cannot be greater than the available quantity."
-msgstr ""
-"La cantidad a restar no puede ser mayor que las unidades disponibles de la "
-"caja."
+msgstr "La cantidad a restar no puede ser mayor que la cantidad disponible."
 
-#, fuzzy
-#| msgid "Shelfobject does not belong to this laboratory."
 msgid "The recipient size does not belong to this laboratory."
-msgstr "El objeto de estante no pertenece a este laboratorio."
+msgstr "El tamaño de recipiente no pertenece a este laboratorio."
 
 msgid "Box units decreased"
 msgstr "Unidades de caja disminuidas"
@@ -3570,10 +3449,8 @@ msgstr "Devolver"
 msgid "Boxes %(codes)s returned from reservation #%(pk)d"
 msgstr ""
 
-#, fuzzy
-#| msgid "Box units decreased"
 msgid "Box units returned"
-msgstr "Unidades de caja disminuidas"
+msgstr "Unidades de caja devueltas"
 
 msgid "Created shelfobject limits"
 msgstr "Límites de objeto de estante creados"
@@ -3584,10 +3461,9 @@ msgstr "Observación agregada al objeto de estante"
 msgid "Cloned shelfobject limits"
 msgstr "Límites de objeto de estante clonados"
 
-#, fuzzy, python-format
-#| msgid "Move in the boxes %(boxes)s from the laboratory %(lab)s."
+#, python-format
 msgid "Income the boxes %(boxes)s from the laboratory %(lab)s."
-msgstr "Movió las cajas %(boxes)s desde el laboratorio %(lab)s."
+msgstr "Ingresó las cajas %(boxes)s desde el laboratorio %(lab)s."
 
 #, python-format
 msgid "Cloned shelfobject '%(name)s' to shelf '%(shelf)s'"
@@ -3660,11 +3536,9 @@ msgstr "Movió las cajas %(boxes)s desde el laboratorio %(lab)s."
 msgid "Moved shelfobject '%(name)s' to shelf '%(shelf)s'"
 msgstr "Objeto de estante '%(name)s' movido al estante '%(shelf)s'"
 
-#, fuzzy, python-format
-#| msgid "New period inform was created in the laboratory %s with the name %s"
+#, python-format
 msgid "New period inform was created in the laboratory %s"
-msgstr ""
-"Se creó un nuevo informe de periodo en el laboratorio %s con el nombre %s"
+msgstr "Se creó un nuevo informe de periodo en el laboratorio %s"
 
 msgid "New period inform"
 msgstr "Nuevo informe de periodo"
@@ -3894,10 +3768,8 @@ msgstr "Crear equipo"
 msgid "Update equipment"
 msgstr "Editar equipo"
 
-#, fuzzy
-#| msgid "Equipment type"
 msgid "Equipment Detail"
-msgstr "Tipo de equipo"
+msgstr "Detalle del equipo"
 
 msgid "Equipment Type List"
 msgstr "Lista de Tipos de Equipo"
@@ -4182,8 +4054,6 @@ msgstr "cajas"
 msgid "Reservation History"
 msgstr "Historial de Reservaciones"
 
-#, fuzzy
-#| msgid "Amount Returned"
 msgid "Amount returned"
 msgstr "Cantidad devuelta"
 
@@ -4208,10 +4078,8 @@ msgstr "Editar Objeto"
 msgid "Delete Object"
 msgstr "Eliminar Material"
 
-#, fuzzy
-#| msgid "Material"
 msgid "Material Detail"
-msgstr "Materiales"
+msgstr "Detalle del material"
 
 msgid "Delete object feature"
 msgstr "Eliminar características de objeto"
@@ -4289,10 +4157,8 @@ msgstr "Registrar Proveedor"
 msgid "Update Provider"
 msgstr "Editar Proveedor"
 
-#, fuzzy
-#| msgid "Select Provider"
 msgid "Delete Provider"
-msgstr "Seleccione Proveedor"
+msgstr "Eliminar proveedor"
 
 msgid "Delete Register User QR"
 msgstr "Eliminar QR de registro de usuario"
@@ -4608,15 +4474,11 @@ msgstr "¿Está seguro de que quiere borrar este objeto?"
 msgid "Download QR"
 msgstr "Descargar QR"
 
-#, fuzzy
-#| msgid "Printing date"
 msgid "Print label"
-msgstr "Fecha de impresión"
+msgstr "Imprimir etiqueta"
 
-#, fuzzy
-#| msgid "Label"
 msgid "Label PDF"
-msgstr "Etiqueta"
+msgstr "PDF de la etiqueta"
 
 msgid "Features"
 msgstr "Características"
@@ -4654,10 +4516,8 @@ msgstr "Actualizar Reactivo"
 msgid "Update Limits"
 msgstr "Actualizar límites"
 
-#, fuzzy
-#| msgid "Reactive Stats"
 msgid "Reactive Detail"
-msgstr "Estadísticas de reactivos"
+msgstr "Detalle del reactivo"
 
 msgid "Select the Shelf"
 msgstr "Seleccione el Estante"
@@ -4765,15 +4625,9 @@ msgid "Quantity cannot be greater than the shelf's quantity limit: %(limit)s."
 msgstr ""
 "La cantidad no puede ser mayor a la cantidad límite del estante: %(limit)s."
 
-#, fuzzy
-#| msgid ""
-#| "Resulting quantity cannot be greater than the shelf's quantity limit: %"
-#| "(limit)s."
 msgid ""
 "Resulting quantity cannot be greater than the shelf's quantity limit: 40.0."
-msgstr ""
-"La cantidad resultante no puede ser mayor a la cantidad límite del estante: %"
-"(limit)s."
+msgstr "La cantidad resultante no puede ser mayor que el límite de cantidad del estante: 40.0."
 
 msgid "You do not have permission to perform this action."
 msgstr "No tienes los permisos necesarios para realizar esta acción."
@@ -4815,20 +4669,14 @@ msgstr "Fecha inicial no puede ser menor a la fecha actual"
 msgid "Final date can't be lower than current date"
 msgstr "Fecha final no puede ser menor a la fecha actual"
 
-#, fuzzy
-#| msgid "Delete Shelf"
 msgid "Delete shelf"
 msgstr "Eliminar estante"
 
-#, fuzzy
-#| msgid "Deleting ShelfObject by shelf"
 msgid "Delete ShelfObject by shelf"
-msgstr "Eliminación de objeto de estante"
+msgstr "Eliminación de objeto de estante por estante"
 
-#, fuzzy
-#| msgid "Object feature"
 msgid "Object Created"
-msgstr "Característica del objeto"
+msgstr "Objeto creado"
 
 #, python-format
 msgid "%(value)s is not a valid molecular formula"
@@ -5063,10 +4911,8 @@ msgstr ""
 msgid "Cantidad"
 msgstr ""
 
-#, fuzzy
-#| msgid "Used Percentage"
 msgid "Porcentaje"
-msgstr "Porcentaje Utilizado"
+msgstr "Porcentaje"
 
 msgid "The quantity is more than the shelf has"
 msgstr "La cantidad es mayor a la que posee el estante"
@@ -5155,8 +5001,6 @@ msgstr "Estante '%(name)s' actualizado"
 msgid "Verify SDS"
 msgstr "Verificar SDS"
 
-#, fuzzy
-#| msgid "Unverify FDS"
 msgid "Unverify SDS"
 msgstr "Desverificar FDS"
 
@@ -5166,10 +5010,8 @@ msgstr "La verificación se ha realizado con éxito."
 msgid "The unverification was performed successfully."
 msgstr "La desverificación se ha realizado con éxito."
 
-#, fuzzy
-#| msgid "Object doesn't exists"
 msgid "The SDS doesn't exist."
-msgstr "Objeto no existe"
+msgstr "La FDS no existe."
 
 msgid "Regulation File"
 msgstr "Archivo de regulación"
@@ -5217,30 +5059,20 @@ msgstr "Finalizada"
 msgid "Link"
 msgstr "Enlace"
 
-#, fuzzy
-#| msgid "Is active"
 msgid "Is archived"
-msgstr "Está activo"
+msgstr "Está archivado"
 
-#, fuzzy
-#| msgid "Pending Task"
 msgid "Pending task"
 msgstr "Tarea pendiente"
 
-#, fuzzy
-#| msgid "Pending Tasks"
 msgid "Pending tasks"
-msgstr "Tareas Pendientes"
+msgstr "Tareas pendientes"
 
-#, fuzzy
-#| msgid "Pending Task"
 msgid "Pending task manager"
-msgstr "Tarea pendiente"
+msgstr "Gestor de tareas pendientes"
 
-#, fuzzy
-#| msgid "Pending Tasks"
 msgid "Pending task managers"
-msgstr "Tareas Pendientes"
+msgstr "Gestores de tareas pendientes"
 
 msgid ""
 "You have been assigned a task because you have a change in a laboratory that "
@@ -5271,8 +5103,6 @@ msgstr "están en las cuotas mínimas."
 msgid "Detail of objects at the limit"
 msgstr "Detalle de objetos al límite"
 
-#, fuzzy
-#| msgid "Minimum Limit"
 msgid "MinimunLimit"
 msgstr "Límite mínimo"
 
@@ -5313,10 +5143,8 @@ msgstr "No hay tareas finalizadas"
 msgid "New pending task: %s"
 msgstr "Nueva tarea pendiente: %s"
 
-#, fuzzy
-#| msgid "Contract"
 msgid "Content"
-msgstr "Contrato"
+msgstr "Contenido"
 
 msgid "Explanation"
 msgstr "Explicación"
@@ -5378,10 +5206,8 @@ msgstr "Donaciones"
 msgid "General"
 msgstr "Uso general"
 
-#, fuzzy
-#| msgid "permissions"
 msgid "Permissions"
-msgstr "permisos"
+msgstr "Permisos"
 
 msgid "Substances"
 msgstr "Sustancias"
@@ -5389,20 +5215,16 @@ msgstr "Sustancias"
 msgid "Scheduled Tasks"
 msgstr ""
 
-#, fuzzy
-#| msgid "Rol name"
 msgid "URL name(s)"
-msgstr "Nombre del rol"
+msgstr "Nombre(s) de URL"
 
 msgid ""
 "Django URL name where this tutorial applies. Comma-separated for multiple "
 "pages."
 msgstr ""
 
-#, fuzzy
-#| msgid "Target organs"
 msgid "Target roles"
-msgstr "Órganos afectados"
+msgstr "Roles destinatarios"
 
 msgid "Roles that should see this tutorial. Empty = all users."
 msgstr ""
@@ -5410,10 +5232,8 @@ msgstr ""
 msgid "Chapter"
 msgstr ""
 
-#, fuzzy
-#| msgid "Not started"
 msgid "Auto start"
-msgstr "No iniciado"
+msgstr "Inicio automático"
 
 msgid "Start automatically on first visit (if user has tutorials enabled)"
 msgstr ""
@@ -5421,18 +5241,14 @@ msgstr ""
 msgid "Order"
 msgstr ""
 
-#, fuzzy
-#| msgid "Tutorials"
 msgid "Tutorial"
-msgstr "Tutoriales"
+msgstr "Tutorial"
 
 msgid "Tutorials"
 msgstr "Tutoriales"
 
-#, fuzzy
-#| msgid "High-risk establishment"
 msgid "Highlight element"
-msgstr "Establecimiento de alto riesgo"
+msgstr "Elemento a resaltar"
 
 msgid "Modal dialog"
 msgstr ""
@@ -5440,10 +5256,8 @@ msgstr ""
 msgid "Popover tooltip"
 msgstr ""
 
-#, fuzzy
-#| msgid "To"
 msgid "Top"
-msgstr "Hasta"
+msgstr "Arriba"
 
 msgid "Bottom"
 msgstr ""
@@ -5451,41 +5265,29 @@ msgstr ""
 msgid "Left"
 msgstr ""
 
-#, fuzzy
-#| msgid "Height"
 msgid "Right"
-msgstr "Alto"
+msgstr "Derecha"
 
-#, fuzzy
-#| msgid "Step"
 msgid "Step key"
-msgstr "Paso"
+msgstr "Clave del paso"
 
 msgid "Supports HTML"
 msgstr ""
 
-#, fuzzy
-#| msgid "Step"
 msgid "Step type"
-msgstr "Paso"
+msgstr "Tipo de paso"
 
-#, fuzzy
-#| msgid "Select box"
 msgid "CSS selector"
-msgstr "Seleccionar caja"
+msgstr "Selector CSS"
 
 msgid "CSS selector of the target element to highlight"
 msgstr ""
 
-#, fuzzy
-#| msgid "Position:"
 msgid "Position"
-msgstr "Posición:"
+msgstr "Posición"
 
-#, fuzzy
-#| msgid "Action"
 msgid "Action URL"
-msgstr "Acciones"
+msgstr "URL de la acción"
 
 msgid "URL to navigate after this step (for cross-page tutorials)"
 msgstr ""
@@ -5493,33 +5295,23 @@ msgstr ""
 msgid "Image"
 msgstr ""
 
-#, fuzzy
-#| msgid "Tutorials"
 msgid "Tutorial step"
-msgstr "Tutoriales"
+msgstr "Paso del tutorial"
 
-#, fuzzy
-#| msgid "Tutorials"
 msgid "Tutorial steps"
-msgstr "Tutoriales"
+msgstr "Pasos del tutorial"
 
 msgid "Completed"
 msgstr "Completado"
 
-#, fuzzy
-#| msgid "Current"
 msgid "Current step"
-msgstr "Actual"
+msgstr "Paso actual"
 
-#, fuzzy
-#| msgid "Start Date"
 msgid "Started at"
-msgstr "Fecha de inicio"
+msgstr "Iniciado el"
 
-#, fuzzy
-#| msgid "Completed"
 msgid "Completed at"
-msgstr "Completado"
+msgstr "Completado el"
 
 msgid "Dismissed"
 msgstr ""
@@ -5527,10 +5319,8 @@ msgstr ""
 msgid "User temporarily dismissed this tutorial"
 msgstr ""
 
-#, fuzzy
-#| msgid "Tutorials"
 msgid "Tutorial progress"
-msgstr "Tutoriales"
+msgstr "Progreso del tutorial"
 
 msgid "QR Url"
 msgstr "Enlace QR"
@@ -5831,10 +5621,8 @@ msgstr "Administración"
 msgid "All Rights Reserved."
 msgstr "Todos los Derechos Reservados."
 
-#, fuzzy
-#| msgid "Laboratory view"
 msgid "Laboratory view (new)"
-msgstr "Vista de laboratorio"
+msgstr "Vista de laboratorio (nueva)"
 
 msgid "user profile icon"
 msgstr "icono de perfil"
@@ -5860,16 +5648,10 @@ msgstr "Tipo de Permiso"
 msgid "Your username and password didn't match. Please try again."
 msgstr "Su usuario y contraseña no concuerdan. Por favor inténtelo de nuevo."
 
-#, fuzzy
-#| msgid ""
-#| "Your account doesn't have access to this page. To proceed,\n"
-#| "                        please login with an account that has access."
 msgid ""
 "Your account doesn't have access to this page. To proceed,\n"
 "\t\t\t\t\t\t\t\t\t\t\tplease login with an account that has access."
-msgstr ""
-"Su cuenta no tiene permisos para acceder a esta página. Para proceder,\n"
-"                        Inicie sesión con una cuenta que tenga acceso."
+msgstr "Su cuenta no tiene acceso a esta página. Para continuar, inicie sesión con una cuenta que tenga acceso."
 
 msgid "Single Sign-On"
 msgstr "Inicio Único"
@@ -5877,15 +5659,11 @@ msgstr "Inicio Único"
 msgid "Lost your password?"
 msgstr "¿Olvidó su contraseña?"
 
-#, fuzzy
-#| msgid "Are you sure you want to delete"
 msgid "Are you sure that you want to logout?"
-msgstr "¿Está seguro de que desea eliminar?"
+msgstr "¿Está seguro de que desea cerrar sesión?"
 
-#, fuzzy
-#| msgid "Logged out"
 msgid "Log out"
-msgstr "Cerrar Sesión"
+msgstr "Cerrar sesión"
 
 msgid "Do you want to login again?"
 msgstr "¿Desea iniciar sesión nuevamente?"
@@ -6142,10 +5920,8 @@ msgstr "No iniciado"
 msgid "Restart"
 msgstr "Reiniciar"
 
-#, fuzzy
-#| msgid "Start Date"
 msgid "Start"
-msgstr "Fecha de inicio"
+msgstr "Iniciar"
 
 msgid "steps"
 msgstr "pasos"
@@ -6153,23 +5929,17 @@ msgstr "pasos"
 msgid "No tutorials available for your current role."
 msgstr ""
 
-#, fuzzy
-#| msgid "Training Resources"
 msgid "Additional resources"
-msgstr "Capacitaciones"
+msgstr "Recursos adicionales"
 
 msgid "MSDS Files"
 msgstr "Archivo MSDS"
 
-#, fuzzy
-#| msgid "Tutorials"
 msgid "Tutorials enabled"
-msgstr "Tutoriales"
+msgstr "Tutoriales habilitados"
 
-#, fuzzy
-#| msgid "Tutorials"
 msgid "Tutorials disabled"
-msgstr "Tutoriales"
+msgstr "Tutoriales deshabilitados"
 
 msgid "Thank you for your help. We will check your problem as soon as we can"
 msgstr ""
@@ -6227,10 +5997,8 @@ msgstr "Registrar usuario"
 msgid "Object type is not allowed"
 msgstr "Tipo de objeto no permitido"
 
-#, fuzzy
-#| msgid "Organization Structure"
 msgid "Organization is required"
-msgstr "Estructura de organización"
+msgstr "La organización es obligatoria"
 
 msgid "Furniture is not allowed"
 msgstr "Mueble no permitido"
@@ -6262,10 +6030,8 @@ msgstr "Descargar el reporte en este enlace"
 msgid "Diagnostic"
 msgstr "Diagnóstico"
 
-#, fuzzy
-#| msgid "Reactive"
 msgid "Reactives"
-msgstr "Reactivo"
+msgstr "Reactivos"
 
 msgid "Reactives with H-codes"
 msgstr "Reactivos con códigos H"
@@ -6273,10 +6039,8 @@ msgstr "Reactivos con códigos H"
 msgid "Unique H-codes"
 msgstr "Códigos H únicos"
 
-#, fuzzy
-#| msgid "Hazard"
 msgid "Hazard Map"
-msgstr "Peligro"
+msgstr "Mapa de peligros"
 
 msgid "Legend"
 msgstr "Leyenda"
@@ -6395,18 +6159,14 @@ msgstr "Iniciando creación del reporte"
 msgid "Loading data to analyze in"
 msgstr "Cargando datos a analizar en"
 
-#, fuzzy
-#| msgid "Created"
 msgid "created in"
-msgstr "Creado"
+msgstr "creado en"
 
 msgid "with"
-msgstr ""
+msgstr "con"
 
-#, fuzzy
-#| msgid "No records."
 msgid "records"
-msgstr "Sin registros."
+msgstr "registros"
 
 msgid "Report can't be processed, try again or contact administrator"
 msgstr ""
@@ -6513,10 +6273,8 @@ msgstr ""
 msgid "Salud"
 msgstr ""
 
-#, fuzzy
-#| msgid "Impacto ambiental"
 msgid "Ambiental"
-msgstr "Impacto ambiental"
+msgstr "Ambiental"
 
 msgid "Objects Report"
 msgstr "Reporte de Objetos"
@@ -6614,18 +6372,14 @@ msgstr "Cuadro 3"
 msgid "Square 4"
 msgstr "Cuadro 4"
 
-#, fuzzy
-#| msgid "Threshold"
 msgid "Yes Exceeds Threshold"
-msgstr "Umbral"
+msgstr "Sí supera el umbral"
 
 msgid "None"
 msgstr ""
 
-#, fuzzy
-#| msgid "Threshold"
 msgid "No Exceeds Threshold"
-msgstr "Umbral"
+msgstr "No supera el umbral"
 
 msgid "Table 4, 3 or none"
 msgstr "Cuadro 4, 3 o ninguna"
@@ -6754,15 +6508,11 @@ msgid "Amount to return cannot exceed the required amount (%(max)s)."
 msgstr ""
 "La cantidad a devolver no puede superar la cantidad requerida (%(max)s)."
 
-#, fuzzy
-#| msgid "Invalid search"
 msgid "Invalid data."
-msgstr "Búsqueda Inválida"
+msgstr "Datos inválidos."
 
-#, fuzzy
-#| msgid "Only rols selected"
 msgid "No boxes selected."
-msgstr "Solo usar roles seleccionados"
+msgstr "No se seleccionaron cajas."
 
 #, python-format
 msgid "Returned %(amount)s units to stock from reservation"
@@ -6817,10 +6567,8 @@ msgstr "Se devuelve"
 msgid "Amount Returned"
 msgstr "Cantidad devuelta"
 
-#, fuzzy
-#| msgid "Reserved"
 msgid "Reserved boxes"
-msgstr "Reservar"
+msgstr "Cajas reservadas"
 
 msgid "List of reserved box entries: [{'code': 'b-0001', 'units': 12}]"
 msgstr ""
@@ -6837,10 +6585,8 @@ msgstr ""
 msgid "Automatic decrease via reservation #%(pk)d"
 msgstr ""
 
-#, fuzzy
-#| msgid "Box units decreased"
 msgid "Box units decreased via reservation"
-msgstr "Unidades de caja disminuidas"
+msgstr "Unidades de caja disminuidas por reservación"
 
 #, python-format
 msgid "Boxes %(codes)s consumed automatically from reservation #%(pk)d"
@@ -6879,10 +6625,8 @@ msgstr "Fecha de devolución"
 msgid "No products in this reservation."
 msgstr "No hay productos en esta reserva."
 
-#, fuzzy
-#| msgid "Reserved Products"
 msgid "Return Product"
-msgstr "Productos reservados"
+msgstr "Devolver producto"
 
 msgid "Confirm Return"
 msgstr "Confirmar devolución"
@@ -6893,10 +6637,8 @@ msgstr "Unidades reservadas"
 msgid "Units to return"
 msgstr "Unidades a devolver"
 
-#, fuzzy
-#| msgid "Ensure this value is greater than or equal to 0."
 msgid "Enter units greater than 0 for at least one box."
-msgstr "Asegúrese que el valor es mayor o igual que 0."
+msgstr "Ingrese unidades mayores a 0 en al menos una caja."
 
 msgid "Enter a valid amount."
 msgstr "Valor ingresado invalido"
@@ -6932,10 +6674,8 @@ msgstr "¿Está seguro de que desea cerrar esta reserva?"
 msgid "Yes, close it"
 msgstr "Sí, cerrarla"
 
-#, fuzzy
-#| msgid "Back to the reservations list"
 msgid "Back to reservation"
-msgstr "Regresar a la lista de reservaciones"
+msgstr "Volver a la reservación"
 
 msgid "Already Returned"
 msgstr "Ya devuelto"
@@ -6951,24 +6691,19 @@ msgstr ""
 "La reserva aún no ha iniciado. No se permiten devoluciones antes de la fecha "
 "de inicio."
 
-#, fuzzy
-#| msgid "Invalid box selection."
 msgid "Invalid box code."
-msgstr "Selección de caja inválida."
+msgstr "Código de caja inválido."
 
 #, python-format
 msgid "Units must be greater than 0 for box %(code)s."
 msgstr "Las unidades deben ser mayores a 0 para la caja %(code)s."
 
-#, fuzzy, python-format
-#| msgid "Units must be greater than 0 for box %(code)s."
+#, python-format
 msgid "Units exceed reserved amount for box %(code)s."
-msgstr "Las unidades deben ser mayores a 0 para la caja %(code)s."
+msgstr "Las unidades superan la cantidad reservada de la caja %(code)s."
 
-#, fuzzy
-#| msgid "Enter a valid amount."
 msgid "Invalid amount."
-msgstr "Valor ingresado invalido"
+msgstr "Cantidad inválida."
 
 #, python-format
 msgid "Amount must be between 0 and %(max)s."
@@ -7811,10 +7546,8 @@ msgstr "Nueva versión sin peligros"
 msgid "Start clean"
 msgstr "Empezar de cero"
 
-#, fuzzy
-#| msgid "Create maintenance"
 msgid "Create an independent copy"
-msgstr "Crear mantenimiento"
+msgstr "Crear una copia independiente"
 
 msgid "Duplicate"
 msgstr "Duplicar"
@@ -7923,10 +7656,8 @@ msgstr "Lista de Regentes"
 msgid "Register Regent"
 msgstr "Registrar Regente"
 
-#, fuzzy
-#| msgid "Update Request"
 msgid "Update Regent"
-msgstr "Actualizar Solicitud"
+msgstr "Actualizar regente"
 
 msgid "Delete Regent"
 msgstr "Eliminar regente"
@@ -8000,24 +7731,18 @@ msgstr "Actualizar Jornada Laboral"
 msgid "Delete Workday"
 msgstr "Eliminar Jornada Laboral"
 
-#, fuzzy
-#| msgid "Resume"
 msgid "Resumen"
 msgstr "Resumen"
 
 msgid "Clasificación"
 msgstr "Clasificación"
 
-#, fuzzy
-#| msgid "Criterion"
 msgid "Criterio"
 msgstr "Criterio"
 
 msgid "Sumatorias por Categoría"
 msgstr ""
 
-#, fuzzy
-#| msgid "Category"
 msgid "Categoría"
 msgstr "Categoría"
 
@@ -8033,26 +7758,20 @@ msgstr ""
 msgid "Cantidad (t)"
 msgstr ""
 
-#, fuzzy
-#| msgid "Nominated"
 msgid "Nominada C3"
-msgstr "Nominada"
+msgstr "Nominada C3"
 
 msgid "Umbral C3 (t)"
 msgstr ""
 
-#, fuzzy
-#| msgid "Ratio"
 msgid "Ratio C3"
-msgstr "Ratio"
+msgstr "Ratio C3"
 
 msgid "Regla cruzada Salud"
 msgstr ""
 
-#, fuzzy
-#| msgid "Health contributions"
 msgid "Detalle Contribuciones"
-msgstr "Contribuciones de salud"
+msgstr "Detalle de contribuciones"
 
 msgid "Advertencias"
 msgstr ""
@@ -9154,10 +8873,9 @@ msgstr ""
 msgid "Approved substance '%(name)s'"
 msgstr "Sustancia '%(name)s' aprobada"
 
-#, fuzzy, python-format
-#| msgid "Substance '%(name)s' has been approved."
+#, python-format
 msgid "Substance '%(name)s' has been approved."
-msgstr "Su solicitud '%(name)s' ha sido %(status)s"
+msgstr "La sustancia '%(name)s' fue aprobada."
 
 #, python-format
 msgid "Deleted substance '%(name)s'"
