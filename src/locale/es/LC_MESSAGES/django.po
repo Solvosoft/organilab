@@ -825,18 +825,18 @@ msgid "Roles: manage the user's roles within the organization"
 msgstr "Roles: gestiona los roles del usuario dentro de la organización"
 
 msgid "List Roles: show user's roles"
-msgstr ""
+msgstr "Listar roles: muestra los roles del usuario"
 
 msgid ""
 "Incognito mode: browse the system as this user without modifying your session"
-msgstr ""
+msgstr "Modo incógnito: navega el sistema como este usuario sin modificar su sesión"
 
 msgid ""
 "Inherit: propagate the user's profile and roles to all child organizations"
 msgstr "Heredar: propaga el perfil y los roles del usuario a todas las organizaciones hijas"
 
 msgid "Remove: remove user from organization, can also disable platform access"
-msgstr ""
+msgstr "Quitar: quita al usuario de la organización; también puede deshabilitar su acceso a la plataforma"
 
 msgid "User not found, Sorry try to use add user button on organization list"
 msgstr ""
@@ -1042,7 +1042,7 @@ msgid "Show tutorials"
 msgstr "Mostrar tutoriales"
 
 msgid "Enable automatic tutorial display on page visits"
-msgstr ""
+msgstr "Mostrar automáticamente los tutoriales al visitar las páginas"
 
 msgid "Workplace"
 msgstr "Centro de trabajo"
@@ -1054,7 +1054,7 @@ msgid "Institution can access"
 msgstr "La institución puede acceder"
 
 msgid "Can change own user/profile data"
-msgstr ""
+msgstr "Puede cambiar los datos de su propio usuario y perfil"
 
 msgid "permissions"
 msgstr "permisos"
@@ -1335,7 +1335,7 @@ msgid "Manage Rol"
 msgstr "Administrar perfil"
 
 msgid "Sustract"
-msgstr "Eliminar"
+msgstr "Sustraer"
 
 msgid "Only rols selected"
 msgstr "Solo usar roles seleccionados"
@@ -1390,7 +1390,7 @@ msgstr "Usuario eliminado: %(full_name)s (%(username)s)"
 msgid ""
 "You have active impostor session <a class=\"text-white fw-bold text-"
 "decoration-underline\" href=\"%(reverseurl)s?all=1\">Finish it</a>"
-msgstr ""
+msgstr "Tiene una sesión de suplantación activa <a class=\"text-white fw-bold text-decoration-underline\" href=\"%(reverseurl)s?all=1\">Finalizarla</a>"
 
 msgid "Request User is the same as current user"
 msgstr "Usuario solicitando es el mismo que el usuario actual"
@@ -2230,7 +2230,7 @@ msgid "Updated %(type)s request '%(name)s'"
 msgstr "Solicitud de %(type)s '%(name)s' actualizada"
 
 msgid "You can only delete your own requests."
-msgstr ""
+msgstr "Solo puede eliminar sus propias solicitudes."
 
 #, python-format
 msgid "Deleted %(type)s request '%(name)s'"
@@ -2388,10 +2388,10 @@ msgid "Is Container?"
 msgstr "¿Es un Contenedor?"
 
 msgid "Iarc"
-msgstr ""
+msgstr "IARC"
 
 msgid "Imdg"
-msgstr ""
+msgstr "IMDG"
 
 msgid "White Organ"
 msgstr "Organo blanco"
@@ -2797,13 +2797,13 @@ msgstr "Unidades por caja"
 msgid ""
 "List of box entries, each with \"code\" (e.g. \"b-0001\") and \"units\" "
 "(integer count)"
-msgstr ""
+msgstr "Lista de cajas, cada una con \"code\" (p. ej. \"b-0001\") y \"units\" (cantidad entera)"
 
 msgid "Units per box (reference)"
 msgstr "Unidades por caja (referencia)"
 
 msgid "Original number of units per box at creation time"
-msgstr ""
+msgstr "Cantidad original de unidades por caja al crearla"
 
 msgid "Unit code"
 msgstr "Código de unidad"
@@ -2923,7 +2923,7 @@ msgid "Piece of furniture"
 msgstr "Pieza de mueble"
 
 msgid "Three-letter code used in substance codes"
-msgstr ""
+msgstr "Código de tres letras usado en los códigos de sustancias"
 
 msgid "Organizations"
 msgstr "Organizaciones"
@@ -2953,7 +2953,7 @@ msgid "Coordinator"
 msgstr "Coordinador"
 
 msgid "Area"
-msgstr ""
+msgstr "Área"
 
 msgid "Responsible"
 msgstr "Responsable"
@@ -3236,10 +3236,10 @@ msgid "Reservation does not belong to this laboratory."
 msgstr "La reservación no pertenece a este laboratorio."
 
 msgid "Only box shelf object reservations can be returned through this action."
-msgstr ""
+msgstr "Solo las reservaciones de objetos en cajas se pueden devolver con esta acción."
 
 msgid "Only borrowed reservations can be returned."
-msgstr ""
+msgstr "Solo se pueden devolver las reservaciones prestadas."
 
 msgid "The shelfobject quantity cannot be less than maximum limit."
 msgstr "La cantidad del objeto del estante no puede ser menor al límite máximo."
@@ -3334,7 +3334,7 @@ msgid "Object does not exist in the shelf."
 msgstr "El objeto no existe en el estante."
 
 msgid "Object does not exist in the furniture."
-msgstr "El objeto no existe en el laboratorio."
+msgstr "El objeto no existe en el mueble."
 
 msgid "Object does not exist in the labroom."
 msgstr "El objeto no existe en la sala de laboratorio."
@@ -3447,7 +3447,7 @@ msgstr "Devolver"
 
 #, python-format
 msgid "Boxes %(codes)s returned from reservation #%(pk)d"
-msgstr ""
+msgstr "Cajas %(codes)s devueltas de la reservación #%(pk)d"
 
 msgid "Box units returned"
 msgstr "Unidades de caja devueltas"
@@ -3474,7 +3474,7 @@ msgid "Created partial shelfobject '%(name)s'"
 msgstr "Objeto de estante parcial '%(name)s' creado"
 
 msgid "Change quantity"
-msgstr "Cantidad de material"
+msgstr "Cambiar cantidad"
 
 #, python-format
 msgid "Updated shelfobject '%(name)s' quantity"
@@ -4146,7 +4146,7 @@ msgid "Update your Protocol"
 msgstr "Editar sus protocolos"
 
 msgid "Laboratory providers management"
-msgstr "Administración de sala de laboratorio"
+msgstr "Administración de proveedores del laboratorio"
 
 msgid "Providers List"
 msgstr "Listado de Proveedores"
@@ -5038,7 +5038,7 @@ msgid "Storage Class"
 msgstr "Clase de almacenamiento"
 
 msgid "Country"
-msgstr "Cantidad"
+msgstr "País"
 
 msgid "Download all"
 msgstr "Descargar"
@@ -5122,7 +5122,7 @@ msgid "Archive task"
 msgstr "Archivar tarea"
 
 msgid "Unassigned"
-msgstr ""
+msgstr "Sin asignar"
 
 msgid "Archive all finished tasks"
 msgstr "Archivar todas las tareas terminadas"
@@ -5213,7 +5213,7 @@ msgid "Substances"
 msgstr "Sustancias"
 
 msgid "Scheduled Tasks"
-msgstr ""
+msgstr "Tareas programadas"
 
 msgid "URL name(s)"
 msgstr "Nombre(s) de URL"
@@ -5227,10 +5227,10 @@ msgid "Target roles"
 msgstr "Roles destinatarios"
 
 msgid "Roles that should see this tutorial. Empty = all users."
-msgstr ""
+msgstr "Roles que deben ver este tutorial. Vacío = todos los usuarios."
 
 msgid "Chapter"
-msgstr ""
+msgstr "Capítulo"
 
 msgid "Auto start"
 msgstr "Inicio automático"
@@ -5239,7 +5239,7 @@ msgid "Start automatically on first visit (if user has tutorials enabled)"
 msgstr ""
 
 msgid "Order"
-msgstr ""
+msgstr "Orden"
 
 msgid "Tutorial"
 msgstr "Tutorial"
@@ -5251,19 +5251,19 @@ msgid "Highlight element"
 msgstr "Elemento a resaltar"
 
 msgid "Modal dialog"
-msgstr ""
+msgstr "Ventana modal"
 
 msgid "Popover tooltip"
-msgstr ""
+msgstr "Globo emergente"
 
 msgid "Top"
 msgstr "Arriba"
 
 msgid "Bottom"
-msgstr ""
+msgstr "Abajo"
 
 msgid "Left"
-msgstr ""
+msgstr "Izquierda"
 
 msgid "Right"
 msgstr "Derecha"
@@ -5272,7 +5272,7 @@ msgid "Step key"
 msgstr "Clave del paso"
 
 msgid "Supports HTML"
-msgstr ""
+msgstr "Admite HTML"
 
 msgid "Step type"
 msgstr "Tipo de paso"
@@ -5281,7 +5281,7 @@ msgid "CSS selector"
 msgstr "Selector CSS"
 
 msgid "CSS selector of the target element to highlight"
-msgstr ""
+msgstr "Selector CSS del elemento a resaltar"
 
 msgid "Position"
 msgstr "Posición"
@@ -5290,10 +5290,10 @@ msgid "Action URL"
 msgstr "URL de la acción"
 
 msgid "URL to navigate after this step (for cross-page tutorials)"
-msgstr ""
+msgstr "URL a la que se navega después de este paso (tutoriales entre páginas)"
 
 msgid "Image"
-msgstr ""
+msgstr "Imagen"
 
 msgid "Tutorial step"
 msgstr "Paso del tutorial"
@@ -5314,10 +5314,10 @@ msgid "Completed at"
 msgstr "Completado el"
 
 msgid "Dismissed"
-msgstr ""
+msgstr "Descartado"
 
 msgid "User temporarily dismissed this tutorial"
-msgstr ""
+msgstr "El usuario descartó temporalmente este tutorial"
 
 msgid "Tutorial progress"
 msgstr "Progreso del tutorial"
@@ -5678,7 +5678,7 @@ msgid "Password changed"
 msgstr "Contraseña modificada"
 
 msgid "Password Reset"
-msgstr "Cambiar Contraseña"
+msgstr "Restablecer contraseña"
 
 msgid "Password reset successfully"
 msgstr "Contraseña reiniciada con éxito"
@@ -5927,7 +5927,7 @@ msgid "steps"
 msgstr "pasos"
 
 msgid "No tutorials available for your current role."
-msgstr ""
+msgstr "No hay tutoriales disponibles para su rol actual."
 
 msgid "Additional resources"
 msgstr "Recursos adicionales"
@@ -5967,7 +5967,7 @@ msgid "Format"
 msgstr "Formato"
 
 msgid "All"
-msgstr ""
+msgstr "Todos"
 
 msgid "Object type"
 msgstr "Tipo de objeto"
@@ -5992,7 +5992,7 @@ msgid "If you want to delimit this query select users (Optional)"
 msgstr "Si deseas delimitar la consulta selecciona usuarios (Opcional)"
 
 msgid "Filter User"
-msgstr "Registrar usuario"
+msgstr "Filtrar usuarios"
 
 msgid "Object type is not allowed"
 msgstr "Tipo de objeto no permitido"
@@ -6174,7 +6174,7 @@ msgstr ""
 "administrador"
 
 msgid "Unauthorized"
-msgstr ""
+msgstr "No autorizado"
 
 msgid "Invalid form"
 msgstr "Formularion inválido"
@@ -6376,7 +6376,7 @@ msgid "Yes Exceeds Threshold"
 msgstr "Sí supera el umbral"
 
 msgid "None"
-msgstr ""
+msgstr "Ninguno"
 
 msgid "No Exceeds Threshold"
 msgstr "No supera el umbral"
@@ -6520,7 +6520,7 @@ msgstr "%(amount)s unidades devueltas al stock desde reserva"
 
 #, python-format
 msgid "Return via reservation #%(pk)d"
-msgstr ""
+msgstr "Devolución por la reservación #%(pk)d"
 
 msgid "Denied"
 msgstr "Rechazado"
@@ -6571,7 +6571,7 @@ msgid "Reserved boxes"
 msgstr "Cajas reservadas"
 
 msgid "List of reserved box entries: [{'code': 'b-0001', 'units': 12}]"
-msgstr ""
+msgstr "Lista de cajas reservadas: [{'code': 'b-0001', 'units': 12}]"
 
 #, python-format
 msgid ""
@@ -6583,14 +6583,14 @@ msgstr ""
 
 #, python-format
 msgid "Automatic decrease via reservation #%(pk)d"
-msgstr ""
+msgstr "Disminución automática por la reservación #%(pk)d"
 
 msgid "Box units decreased via reservation"
 msgstr "Unidades de caja disminuidas por reservación"
 
 #, python-format
 msgid "Boxes %(codes)s consumed automatically from reservation #%(pk)d"
-msgstr ""
+msgstr "Cajas %(codes)s consumidas automáticamente por la reservación #%(pk)d"
 
 msgid "Manage Reservation"
 msgstr "Administrar reservaciones"
@@ -6648,10 +6648,10 @@ msgstr ""
 "Las unidades deben estar entre 0 y la cantidad reservada para cada caja."
 
 msgid "No reserved box information found for this product."
-msgstr ""
+msgstr "No se encontró información de cajas reservadas para este producto."
 
 msgid "Error loading product data."
-msgstr ""
+msgstr "Error al cargar los datos del producto."
 
 msgid "Manage Product"
 msgstr "Administración de producto"
@@ -6707,7 +6707,7 @@ msgstr "Cantidad inválida."
 
 #, python-format
 msgid "Amount must be between 0 and %(max)s."
-msgstr ""
+msgstr "La cantidad debe estar entre 0 y %(max)s."
 
 msgid "Could not process the return. Please verify the values."
 msgstr "No se pudo procesar la devolución. Por favor verifique los valores."
@@ -7807,7 +7807,7 @@ msgid "Update Structure"
 msgstr "Actualizar Estructura"
 
 msgid "Object name"
-msgstr "Administración de objetos"
+msgstr "Nombre del objeto"
 
 #, python-format
 msgid "Created recipient size '%(name)s'"
@@ -7840,7 +7840,7 @@ msgid "Approve"
 msgstr "Aprobar"
 
 msgid "Generate PDF"
-msgstr "Uso general"
+msgstr "Generar PDF"
 
 msgid "Milimeters"
 msgstr "Milímetros"
@@ -7911,7 +7911,7 @@ msgid "Danger Category"
 msgstr "Categoría de peligo"
 
 msgid "Danger type"
-msgstr "Clasificación de peligro"
+msgstr "Tipo de peligro"
 
 msgid "Warning Class"
 msgstr "Clase de peligro"
@@ -7923,13 +7923,13 @@ msgid "Weigth"
 msgstr "Peso"
 
 msgid "Warning Word"
-msgstr "Crear palabra de advertencia"
+msgstr "Palabra de advertencia"
 
 msgid "Help for prudence advice"
 msgstr "Ayuda en los consejos de prudencia"
 
 msgid "Prudence Advices"
-msgstr "Crear consejo de prudencia"
+msgstr "Consejos de prudencia"
 
 msgid "Warning words"
 msgstr "Palabras de advertencia"
@@ -7974,7 +7974,7 @@ msgid "Agrochemical"
 msgstr "Agroquímicos"
 
 msgid "Substance laboratories"
-msgstr "Características de sustancia"
+msgstr "Sustancia Laboratorios"
 
 msgid "White organ"
 msgstr "Organo blanco"
@@ -8055,7 +8055,7 @@ msgid "WarningWord"
 msgstr "Palabra de advertencia"
 
 msgid "Direction"
-msgstr "Descripción"
+msgstr "Dirección"
 
 msgid "Telephone number"
 msgstr "Teléfono"
@@ -8070,7 +8070,7 @@ msgid "REACH No."
 msgstr "REACH No."
 
 msgid "Identified uses"
-msgstr "Usos específicos finales"
+msgstr "Usos identificados"
 
 msgid "Reference"
 msgstr "Referencia"
@@ -8101,7 +8101,7 @@ msgid "Most important symptoms and effects, both acute and delayed"
 msgstr "Principales síntomas y efectos, agudos y retardados"
 
 msgid "Other Causes"
-msgstr "Otros Peligros"
+msgstr "Otras causas"
 
 msgid ""
 "Indication of any medical attention and special treatment that should be "
@@ -8158,7 +8158,7 @@ msgid "Skin protection"
 msgstr "Protección de la piel"
 
 msgid "Corporal protection"
-msgstr "Controles de exposición/protección individual"
+msgstr "Protección corporal"
 
 msgid "Breath protection"
 msgstr "Protección respiratoria"
@@ -8209,7 +8209,7 @@ msgid "Vapor density"
 msgstr "Densidad de vapor"
 
 msgid "Relative density"
-msgstr "Administración de Reactivos"
+msgstr "Densidad relativa"
 
 msgid "Water solubility"
 msgstr "Solubilidad en agua"
@@ -8311,7 +8311,7 @@ msgid "Contaminated packaging"
 msgstr "Envases contaminados"
 
 msgid "ONU Number"
-msgstr "Número CAS"
+msgstr "Número ONU"
 
 msgid "United Nations proper shipping name"
 msgstr "Designación oficial de transporte de las Naciones Unidas"
@@ -8381,7 +8381,7 @@ msgid "Section"
 msgstr "Sección"
 
 msgid "Manual upload"
-msgstr ""
+msgstr "Carga manual"
 
 msgid "SDS source"
 msgstr "Origen"
@@ -8390,22 +8390,22 @@ msgid "SDS revision date"
 msgstr "Fecha de revisión"
 
 msgid "Download URL"
-msgstr "Descargar QR"
+msgstr "Descargar URL"
 
 msgid "Verified by"
-msgstr ""
+msgstr "Verificado por"
 
 msgid "Verified date"
-msgstr "Fecha de impresión"
+msgstr "Fecha de verificación"
 
 msgid "Is verified"
-msgstr ""
+msgstr "Está verificada"
 
 msgid "SDS traceability"
-msgstr ""
+msgstr "Trazabilidad de FDS"
 
 msgid "SDS traceability records"
-msgstr ""
+msgstr "Registros de trazabilidad de FDS"
 
 msgid "Create New Recipient"
 msgstr "Crear Nuevo Recipiente"
@@ -8453,7 +8453,7 @@ msgid "Seler address"
 msgstr "Dirección del vendedor"
 
 msgid "Company Information"
-msgstr "Información Comercial"
+msgstr "Información de la empresa"
 
 msgid "Graphics"
 msgstr "Gráficos"
@@ -8539,13 +8539,13 @@ msgid "Bioaccomulable"
 msgstr "Bioacumulable"
 
 msgid "Generate GHS Label"
-msgstr "Generado"
+msgstr "Generar etiqueta SGA"
 
 msgid "Generate Label"
-msgstr "Generado"
+msgstr "Generar etiqueta"
 
 msgid "Click \"Generate Label\" to preview"
-msgstr ""
+msgstr "Haga clic en \"Generar etiqueta\" para ver la vista previa"
 
 msgid ""
 "If you want to edit or delete the observations that you have created, you "
@@ -8705,7 +8705,7 @@ msgstr "Enviar a revisión"
 msgid ""
 "Security sheet (SDS) is required to send this substance for review. Please "
 "upload it in the previous step."
-msgstr ""
+msgstr "La hoja de seguridad (FDS) es obligatoria para enviar esta sustancia a revisión. Súbala en el paso anterior."
 
 msgid "Changing de code field create new instance"
 msgstr "Cambiando el campo de código genera una nueva instancia"
@@ -8855,7 +8855,7 @@ msgid "Edit Company"
 msgstr "Editar Compañía"
 
 msgid "A warning word with this name and weight already exists."
-msgstr ""
+msgstr "Ya existe una palabra de advertencia con este nombre y peso."
 
 #, python-format
 msgid "Updated substance '%(name)s'"
@@ -8867,7 +8867,7 @@ msgstr "Características de sustancia '%(name)s' actualizadas"
 
 #, python-format
 msgid "Substance '%(name)s' was already approved."
-msgstr ""
+msgstr "La sustancia '%(name)s' ya fue aprobada."
 
 #, python-format
 msgid "Approved substance '%(name)s'"
@@ -8921,11 +8921,11 @@ msgstr "Actualizar indicacion de peligro"
 msgid ""
 "You must upload a security sheet (SDS) before sending the substance for "
 "review."
-msgstr ""
+msgstr "Debe subir una hoja de seguridad (FDS) antes de enviar la sustancia a revisión."
 
 #, python-format
 msgid "Sent substance '%(name)s' for review"
-msgstr "Sustancia aprobada '%(name)s' desde solicitud"
+msgstr "Se envió la sustancia '%(name)s' a revisión"
 
 msgid "Created review substance"
 msgstr "Sustancia de revisión creada"
@@ -8935,16 +8935,16 @@ msgid "Substance '%(name)s' has been sent for review."
 msgstr "La sustancia '%(name)s' ha sido enviada para su análisis."
 
 msgid "Security sheet (SDS) is required to send this substance for review."
-msgstr ""
+msgstr "La hoja de seguridad (FDS) es obligatoria para enviar esta sustancia a revisión."
 
 msgid "Method not allowed"
 msgstr "No permitido"
 
 msgid "No security sheet was received."
-msgstr ""
+msgstr "No se recibió ninguna hoja de seguridad."
 
 msgid "Created new substance"
 msgstr "Nueva sustancia creada"
 
 msgid "Marked as discard"
-msgstr "Desecho"
+msgstr "Marcado como desecho"

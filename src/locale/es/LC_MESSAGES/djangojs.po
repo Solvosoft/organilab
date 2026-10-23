@@ -978,7 +978,7 @@ msgid "Verified Date"
 msgstr "Fecha de verificación"
 
 msgid "No file"
-msgstr ""
+msgstr "Sin archivo"
 
 msgid "Verified"
 msgstr "Verificado"
