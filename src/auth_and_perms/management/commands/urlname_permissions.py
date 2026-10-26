@@ -3700,6 +3700,36 @@ URLNAME_PERMISSIONS = {
             "permission": "presentation.change_notificationsetting"
         },
     ],
+    "laboratory_organization_auditory": [
+        {
+            "name": "View users in laboratory and organizations",
+            "category": "User Roles",
+            "permission": "laboratory.view_organizationstructure"
+        }
+    ],
+    "material_equipment_list": [
+        {
+            "name": "Add Object",
+            "category": "Object",
+            "permission": "laboratory.add_object",
+        },
+        {
+            "name": "Change Object",
+            "category": "Object",
+            "permission": "laboratory.can_edit_equipment_material",
+        },
+        {
+            "name": "Delete Object",
+            "category": "Object",
+            "permission": "laboratory.can_delete_equipment_material",
+        },
+        {
+            "name": "View Object",
+            "category": "Object",
+            "permission": "laboratory.view_object",
+        },
+    ],
+
 }
 
 # create_sustance, update_substance y step_one son la misma vista, así que
