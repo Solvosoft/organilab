@@ -1528,6 +1528,7 @@ ROLE_DEFINITIONS = {
             "sga.view_templatesga",
             "sga.view_warningclass",
             "sga.view_warningword",
+            "djgentelella.view_trash"
         ],
     },
     "administrativo_centro_trabajo": {
@@ -1692,6 +1693,7 @@ ROLE_DEFINITIONS = {
             "sga.view_substanceobservation",
             "sga.view_templatesga",
             "sga.view_warningword",
+            "djgentelella.view_trash"
         ],
     },
     "auditor_iper": {
