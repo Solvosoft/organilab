@@ -166,6 +166,7 @@ ROLE_DEFINITIONS = {
             " Acceso de solo consulta a SGA y MSDS. Máxima autoridad operativa del laboratorio."
         ),
         "permissions": [
+            "laboratory.can_view_contract",
             "academic.add_commentprocedurestep",
             "academic.add_myprocedure",
             "academic.add_procedure",
@@ -548,6 +549,7 @@ ROLE_DEFINITIONS = {
             "sga.view_recipientsize",
             "sga.view_sdstraceability",
             "sga.view_templatesga",
+            "laboratory.can_view_contract"
         ],
     },
     "profesor": {
@@ -725,6 +727,7 @@ ROLE_DEFINITIONS = {
             " acceso puntual a algunas funciones de SGA. Rol operativo de planta."
         ),
         "permissions": [
+            "laboratory.can_view_contract",
             "academic.add_commentprocedurestep",
             "academic.add_myprocedure",
             "academic.add_procedure",
@@ -1528,7 +1531,8 @@ ROLE_DEFINITIONS = {
             "sga.view_templatesga",
             "sga.view_warningclass",
             "sga.view_warningword",
-            "djgentelella.view_trash"
+            "djgentelella.view_trash",
+            "laboratory.can_view_contract"
         ],
     },
     "administrativo_centro_trabajo": {
@@ -1693,7 +1697,8 @@ ROLE_DEFINITIONS = {
             "sga.view_substanceobservation",
             "sga.view_templatesga",
             "sga.view_warningword",
-            "djgentelella.view_trash"
+            "djgentelella.view_trash",
+            "laboratory.can_view_contract"
         ],
     },
     "auditor_iper": {
