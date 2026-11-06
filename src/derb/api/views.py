@@ -152,7 +152,7 @@ class OrganizationUsersView(APIView):
         user_is_allowed_on_organization(request.user, org)
         pagination = self.pagination_class
         try:
-            lab_pk = int(request.query_params["lab"][0])
+            lab_pk = int(request.query_params["lab"])
             lab = get_object_or_404(Laboratory, pk=lab_pk)
             organization_can_change_laboratory(lab, org)
             lab_queryset = OrganizationStructure.os_manager.organization_tree(

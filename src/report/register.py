@@ -99,11 +99,9 @@ REPORT_FORMS = {
     "regency_report": {
         "task": "report.tasks.task_report",
         "form": "report.forms.RegencyReportForm",
-        "html": "report.views.regency.report_regency_html",
-        "pdf": "report.views.base.base_pdf",
-        "xls": "report.views.regency.report_regency_doc",
-        "xlsx": "report.views.regency.report_regency_xlsx",
-        "ods": "report.views.regency.report_regency_doc",
+        "xls": "report.views.regency.report_regency",
+        "xlsx": "report.views.regency.report_regency",
+        "ods": "report.views.regency.report_regency",
     },
     "compatibility_report": {
         "task": "report.tasks.task_report",

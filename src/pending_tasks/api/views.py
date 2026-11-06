@@ -76,7 +76,9 @@ class PendingTaskViewSet(
     def get_serializer_class(self):
         if self.action in self.serializer_class:
             return self.serializer_class[self.action]
-        return super().get_serializer_class()
+        # `super()` devolvía el diccionario y la API navegable (que arma su formulario
+        # con `get_serializer()`) reventaba con 500 en `archive_finished`.
+        return PendingTaskSerializer
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())

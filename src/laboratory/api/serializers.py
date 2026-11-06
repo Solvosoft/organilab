@@ -3,6 +3,7 @@ import logging
 from django.conf import settings
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
@@ -13,10 +14,6 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from django.db import transaction
 
-from auth_and_perms.organization_utils import (
-    user_is_allowed_on_organization,
-    organization_can_change_laboratory,
-)
 from laboratory.models import (
     CommentInform,
     Inform,
@@ -38,7 +35,7 @@ from laboratory.models import (
     LaboratoryRoom,
     Furniture,
     LabOrOrgRequest,
-    RegisterUserQR,
+    RegisterUserQR, OrganizationStructureRelations,
 )
 
 from laboratory.models import Protocol
@@ -49,6 +46,17 @@ from sga.api.serializers import ChoicesGTS2Serializer
 from sga.models import DangerIndication, SubstanceCharacteristics
 
 logger = logging.getLogger("organilab")
+
+
+def organization_is_valid_for_view(organization, org_pk_view):
+    """La organización del objeto es la de la URL o una relacionada con ella."""
+    if organization.pk == org_pk_view:
+        return True
+    return OrganizationStructureRelations.objects.filter(
+        organization=organization,
+        content_type=ContentType.objects.get_for_model(OrganizationStructure),
+        object_id=org_pk_view,
+    ).exists()
 
 
 class ReservedProductsSerializer(serializers.ModelSerializer):
@@ -243,9 +251,6 @@ class InformDataTableSerializer(serializers.Serializer):
 
 class BaseShelfObjectSerializer:
 
-    def get_object_type(self, obj):
-        return obj.object.get_type_display()
-
     def get_object_name(self, obj):
         return obj.object.name
 
@@ -395,31 +400,6 @@ class ShelfObjectTableSerializer(serializers.Serializer):
     recordsTotal = serializers.IntegerField(required=True)
 
 
-class BaseOrganizationLaboratory(serializers.Serializer):
-    organization = serializers.PrimaryKeyRelatedField(
-        queryset=OrganizationStructure.objects.using(settings.READONLY_DATABASE)
-    )
-    laboratory = serializers.PrimaryKeyRelatedField(
-        queryset=Laboratory.objects.using(settings.READONLY_DATABASE)
-    )
-
-    def validate_organization(self, value):
-        user_is_allowed_on_organization(self.user, value)
-        return value
-
-    def validate(self, value):
-        if not organization_can_change_laboratory(
-            value["laboratory"], value["organization"]
-        ):
-            raise ValidationError(detail="Wrong Laboratory")
-        return value
-
-    user = None
-
-    def set_user(self, user):
-        self.user = user
-
-
 class ShelfLabViewSerializer(serializers.Serializer):
     shelf = serializers.PrimaryKeyRelatedField(
         queryset=Shelf.objects.using(settings.READONLY_DATABASE), required=False
@@ -489,7 +469,7 @@ class ValidateEquipmentSerializer(serializers.ModelSerializer):
                 {"type": _("Type equipment object is not valid.")}
             )
 
-        if organization.pk != org_pk_view:
+        if not organization_is_valid_for_view(organization, org_pk_view):
             logger.debug(
                 f"ValidateEquipmentSerializer --> organization.pk ({organization.pk}) != org_pk_view ({org_pk_view})"
             )
@@ -666,8 +646,8 @@ class EquipmentSerializer(serializers.ModelSerializer):
         user = self.context["request"].user
         action_list = {
             "create": ["laboratory.add_object", "laboratory.view_object"],
-            "update": ["laboratory.change_object", "laboratory.view_object"],
-            "destroy": ["laboratory.delete_object", "laboratory.view_object"],
+            "update": ["laboratory.can_edit_equipment_material", "laboratory.view_object"],
+            "destroy": ["laboratory.can_delete_equipment_material", "laboratory.view_object"],
             "detail": ["laboratory.view_object"],
         }
         return get_actions_by_perms(user, action_list)
@@ -914,7 +894,7 @@ class ValidateReactiveSerializer(serializers.ModelSerializer):
                 {"type": _("Type equipment object is not valid.")}
             )
 
-        if organization.pk != org_pk_view:
+        if not organization_is_valid_for_view(organization, org_pk_view):
             logger.debug(
                 f"ValidateReactiveSerializer --> organization.pk ({organization.pk}) != org_pk_view ({org_pk_view})"
             )
@@ -1760,8 +1740,8 @@ class ObjectSerializer(serializers.ModelSerializer):
         user = self.context["request"].user
         return {
             "create": user.has_perm("laboratory.add_object"),
-            "update": user.has_perm("laboratory.change_object"),
-            "destroy": user.has_perm("laboratory.delete_object"),
+            "update": user.has_perm("laboratory.can_edit_equipment_material"),
+            "destroy": user.has_perm("laboratory.can_delete_equipment_material"),
             "list": user.has_perm("laboratory.view_object"),
             "retrieve": user.has_perm("laboratory.view_object"),
         }
@@ -1991,8 +1971,13 @@ class ObjectValidateSerializer(serializers.ModelSerializer):
 
             defaults = {"capacity": capacity}
 
-            # solo permite cambiar unit si NO tiene relaciones
-            if not has_rel:
+            # solo permite cambiar unit si NO tiene relaciones; si aún no hay
+            # capacidad registrada no hay unidad que cambiar y hace falta una
+            # (la columna no admite nulos y el alta reventaba con un 500).
+            if (
+                not has_rel
+                or not MaterialCapacity.objects.filter(object=instance).exists()
+            ):
                 defaults["capacity_measurement_unit"] = unit
 
             MaterialCapacity.objects.update_or_create(

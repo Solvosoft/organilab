@@ -9,6 +9,7 @@ from auth_and_perms.node_tree import (
 )
 from laboratory.models import OrganizationStructure, Object, ShelfObject, UserOrganization
 import json
+from auth_and_perms.roles import ROLES
 
 
 class TestCaseBase(TestCase):
@@ -155,10 +156,10 @@ class OrganizationsByUserViewTest(TestCaseBase):
 
     def get_organizations_id_by_user(self):
         # Mirrors OrgTree.get_queryset() branching in auth_and_perms/gtselects.py:
-        # superusers/"Administrativo superior" get the full org tree, everyone
+        # superusers/ROLES["administrativo_superior"] get the full org tree, everyone
         # else only gets the organizations they're directly a member of.
         roles = self.user.profile.profilepermission_set.filter(
-            rol__name="Administrativo superior"
+            rol__name=ROLES["administrativo_superior"]
         )
         if self.user.is_superuser or roles.exists():
             parents, parents_pks = get_org_parents_info(self.user)

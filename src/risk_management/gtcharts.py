@@ -3,7 +3,8 @@ from django.utils import timezone
 from random import randint
 
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import Case, F, FloatField, Sum, Value, When
+from django.db.models import Case, F, FloatField, OuterRef, Subquery, Sum, Value, When
+from django.db.models.functions import Coalesce, NullIf
 from rest_framework import permissions
 from django.utils.translation import gettext_lazy as _
 from django.http import Http404
@@ -15,6 +16,7 @@ from djgentelella.chartjs import (
 from djgentelella.groute import register_lookups
 from rest_framework.response import Response
 
+from auth_and_perms.organization_utils import user_is_allowed_on_organization
 from laboratory.models import (
     Object,
     ShelfObject,
@@ -24,7 +26,7 @@ from laboratory.models import (
     Object,
     Laboratory,
 )
-from laboratory.utils_base_unit import get_conversion_units
+from laboratory.utils_base_unit import cached_units, get_conversion_units
 from risk_management.api.serializer import RiskZoneSerializer
 from risk_management.models import (
     RiskZone,
@@ -39,7 +41,7 @@ from risk_management.iper_defaults import (
     KEY_RISK_LEVEL,
     RISK_LEVELS,
 )
-from sga.models import DangerIndication
+from sga.models import DangerIndication, SubstanceCharacteristics
 
 default_colors = [
     "229, 158, 64",
@@ -80,11 +82,68 @@ class BaseChart:
     authentication_classes = [SessionAuthentication, BasicAuthentication]
     colors = default_colors
 
+    def get_organization(self, request, pk):
+        # El permiso de modelo no basta: sin esto cualquier usuario con
+        # view_riskzone veía los gráficos de otra organización cambiando el pk.
+        organization = get_object_or_404(OrganizationStructure, pk=pk)
+        user_is_allowed_on_organization(request.user, organization)
+        return organization
+
     def get_color(self):
         self.index = (self.index + 1) % len(self.colors)
         color_list = self.colors[self.index]
         color = "rgb(" + color_list + ")"
         return color
+
+    UNIT_SERIES = {"Litros": "litro", "Kilogramos": "kilo", "Libra": "libra"}
+
+    def build_unit_series(self, categories, category_path):
+        """Litros, kilos y libras por categoría, con una consulta en total.
+
+        ``categories`` es ``[(clave, etiqueta)]`` en el orden en que se
+        grafican y ``category_path`` la ruta desde ShelfObject hasta la clave.
+        Antes había una consulta por categoría y cinco más por shelfobject
+        para averiguar y convertir su unidad.
+        """
+        self.litro_data = []
+        self.kilo_data = []
+        self.libra_data = []
+        totals = {}
+        if not self.no_labs:
+            rows = (
+                ShelfObject.objects.filter(**self.filters)
+                .filter(**{"%s__isnull" % category_path: False})
+                .values_list(category_path, "pk", "measurement_unit", "quantity")
+                .order_by()
+                .distinct()
+            )
+            with cached_units() as unit_map:
+                for category, pk, unit_id, quantity in rows:
+                    info = unit_map.get(unit_id)
+                    series = self.UNIT_SERIES.get(info.base_description) if info else None
+                    if series is None:
+                        logger.error(f"Error in base unit {unit_id}, obj: {pk}")
+                        continue
+                    amount = get_conversion_units(unit_id, quantity)
+                    bucket = totals.setdefault(category, {"litro": 0, "kilo": 0, "libra": 0})
+                    bucket[series] += amount
+
+        labels = []
+        for key, label in categories:
+            bucket = totals.get(key)
+            if not bucket or not any(value > 0 for value in bucket.values()):
+                continue
+            labels.append(label)
+            self.litro_data.append(round(float(bucket["litro"]), 2))
+            self.kilo_data.append(round(float(bucket["kilo"]), 2))
+            self.libra_data.append(round(float(bucket["libra"]), 2))
+
+        if not labels:
+            labels.append(_("No data registered"))
+            self.litro_data.append(0)
+            self.kilo_data.append(0)
+            self.libra_data.append(0)
+        return labels
 
     def get_extra_filters(self):
         serializer = RiskZoneSerializer(data=self.request.query_params)
@@ -96,7 +155,9 @@ class BaseChart:
         laboratories = []
         if serializer.is_valid():
             has_filter = False
-            if "risk_zone" in serializer.validated_data:
+            # Con un QueryDict DRF entrega [] para los campos ausentes: un filtro vacío
+            # no es un filtro (antes vaciaba el gráfico de toda la organización).
+            if serializer.validated_data.get("risk_zone"):
                 risk_zones = [
                     risk.pk for risk in serializer.validated_data["risk_zone"]
                 ]
@@ -105,7 +166,7 @@ class BaseChart:
                 ).values_list("buildings__laboratories__pk", flat=True)
                 laboratories += risk_zone
                 has_filter = True
-            if "buildings" in serializer.validated_data:
+            if serializer.validated_data.get("buildings"):
                 buildings = [
                     building.pk for building in serializer.validated_data["buildings"]
                 ]
@@ -143,7 +204,7 @@ class LaboratoryDangerIndicationChart(BaseChart, HorizontalBarChart):
 
     def retrieve(self, request, pk):
         self.request = request
-        self.organization = get_object_or_404(OrganizationStructure, pk=pk)
+        self.organization = self.get_organization(request, pk)
         data = self.get_graph_data()
         serializer = self.serializer_class(data)
         return Response(serializer.data)
@@ -165,64 +226,14 @@ class LaboratoryDangerIndicationChart(BaseChart, HorizontalBarChart):
         return options
 
     def get_labels(self):
-        labels = []
-        self.litro_data = []
-        self.kilo_data = []
-        self.libra_data = []
-        self.liquid_data_total = 0
         self.get_extra_filters()
-
-        queryset = ShelfObject.objects.filter(**self.filters).distinct()
-        if self.no_labs:
-            queryset = queryset.none()
-
-        for dangerindication in DangerIndication.objects.all():
-            litro_amount = 0
-            kilo_amount = 0
-            libra_amount = 0
-            for obj in queryset.filter(
-                object__substancharacteristics_object__h_code=dangerindication
-            ):
-                base_unit = BaseUnitValues.objects.filter(
-                    measurement_unit=obj.measurement_unit
-                ).first()
-                if (
-                    base_unit
-                    and base_unit.measurement_unit_base.description == "Kilogramos"
-                ):
-                    kilo_amount += get_conversion_units(
-                        obj.measurement_unit, obj.quantity
-                    )
-                elif (
-                    base_unit
-                    and base_unit.measurement_unit_base.description == "Litros"
-                ):
-                    litro_amount += get_conversion_units(
-                        obj.measurement_unit, obj.quantity
-                    )
-                elif (
-                    base_unit and base_unit.measurement_unit_base.description == "Libra"
-                ):
-                    libra_amount += get_conversion_units(
-                        obj.measurement_unit,
-                    )
-                else:
-                    logger.error(
-                        f"Error in base unit {obj.measurement_unit}, obj: {obj.pk}"
-                    )
-
-            if litro_amount > 0 or kilo_amount > 0 or libra_amount > 0:
-                labels.append(dangerindication.code)
-                self.litro_data.append(round(float(litro_amount), 2))
-                self.kilo_data.append(round(float(kilo_amount), 2))
-                self.libra_data.append(round(float(libra_amount), 2))
-
-        if not labels:
-            labels.append(_("No data registered"))
-            self.litro_data.append(0)
-            self.kilo_data.append(0)
-            self.libra_data.append(0)
-        return labels
+        categories = [
+            (code, code)
+            for code in DangerIndication.objects.values_list("code", flat=True)
+        ]
+        return self.build_unit_series(
+            categories, "object__substancharacteristics_object__h_code"
+        )
 
     def get_datasets(self):
         self.index = randint(0, len(self.colors))
@@ -260,14 +271,14 @@ class LaboratoryWhiteOrganChart(BaseChart, HorizontalBarChart):
     django_permissions_list = ["risk_management.view_riskzone"]
 
     def get_title(self):
-        return {"display": True, "text": _("Sustances per White Organ")}
+        return {"display": True, "text": _("Substances per White Organ")}
 
     def list(self, request):
         raise Http404("Not found")
 
     def retrieve(self, request, pk):
         self.request = request
-        self.organization = get_object_or_404(OrganizationStructure, pk=pk)
+        self.organization = self.get_organization(request, pk)
         data = self.get_graph_data()
         serializer = self.serializer_class(data)
         return Response(serializer.data)
@@ -292,63 +303,11 @@ class LaboratoryWhiteOrganChart(BaseChart, HorizontalBarChart):
         self.catalogs = Catalog.objects.filter(key="white_organ").values(
             "pk", "description"
         )
-        labels = []
-        self.litro_data = []
-        self.kilo_data = []
-        self.libra_data = []
         self.get_extra_filters()
-
-        queryset = ShelfObject.objects.filter(**self.filters).distinct()
-        if self.no_labs:
-            queryset = queryset.none()
-
-        for catalog in self.catalogs:
-            litro_amount = 0
-            kilo_amount = 0
-            libra_amount = 0
-            for obj in queryset.filter(
-                object__substancharacteristics_object__white_organ__pk=catalog["pk"]
-            ):
-                base_unit = BaseUnitValues.objects.filter(
-                    measurement_unit=obj.measurement_unit
-                ).first()
-                if (
-                    base_unit
-                    and base_unit.measurement_unit_base.description == "Kilogramos"
-                ):
-                    kilo_amount += get_conversion_units(
-                        obj.measurement_unit, obj.quantity
-                    )
-                elif (
-                    base_unit
-                    and base_unit.measurement_unit_base.description == "Litros"
-                ):
-                    litro_amount += get_conversion_units(
-                        obj.measurement_unit, obj.quantity
-                    )
-                elif (
-                    base_unit and base_unit.measurement_unit_base.description == "Libra"
-                ):
-                    libra_amount += get_conversion_units(
-                        obj.measurement_unit, obj.quantity
-                    )
-                else:
-                    logger.error(
-                        f"Error in base unit {obj.measurement_unit}, obj: {obj.pk}"
-                    )
-
-            if litro_amount > 0 or kilo_amount > 0 or libra_amount > 0:
-                labels.append(catalog["description"])
-                self.litro_data.append(round(float(litro_amount), 2))
-                self.kilo_data.append(round(float(kilo_amount), 2))
-                self.libra_data.append(round(float(libra_amount), 2))
-
-        if not labels:
-            labels.append(_("No data registered"))
-            self.litro_data.append(0)
-            self.kilo_data.append(0)
-            self.libra_data.append(0)
-        return labels
+        categories = [(catalog["pk"], catalog["description"]) for catalog in self.catalogs]
+        return self.build_unit_series(
+            categories, "object__substancharacteristics_object__white_organ"
+        )
 
     def get_datasets(self):
         self.index = randint(0, len(self.colors))
@@ -393,7 +352,7 @@ class LaboratoryPrecursorTypeChart(BaseChart, HorizontalBarChart):
 
     def retrieve(self, request, pk):
         self.request = request
-        self.organization = get_object_or_404(OrganizationStructure, pk=pk)
+        self.organization = self.get_organization(request, pk)
         data = self.get_graph_data()
         serializer = self.serializer_class(data)
         return Response(serializer.data)
@@ -419,61 +378,10 @@ class LaboratoryPrecursorTypeChart(BaseChart, HorizontalBarChart):
             "pk", "description"
         )
         self.get_extra_filters()
-        queryset = ShelfObject.objects.filter(**self.filters).distinct()
-        if self.no_labs:
-            queryset = queryset.none()
-        labels = []
-        self.litro_data = []
-        self.kilo_data = []
-        self.libra_data = []
-
-        for catalog in self.catalogs:
-            litro_amount = 0
-            kilo_amount = 0
-            libra_amount = 0
-            for obj in queryset.filter(
-                object__substancharacteristics_object__precursor_type__pk=catalog["pk"]
-            ):
-                base_unit = BaseUnitValues.objects.filter(
-                    measurement_unit=obj.measurement_unit
-                ).first()
-                if (
-                    base_unit
-                    and base_unit.measurement_unit_base.description == "Kilogramos"
-                ):
-                    kilo_amount += get_conversion_units(
-                        obj.measurement_unit, obj.quantity
-                    )
-                elif (
-                    base_unit
-                    and base_unit.measurement_unit_base.description == "Litros"
-                ):
-                    litro_amount += get_conversion_units(
-                        obj.measurement_unit, obj.quantity
-                    )
-                elif (
-                    base_unit and base_unit.measurement_unit_base.description == "Libra"
-                ):
-                    libra_amount += get_conversion_units(
-                        obj.measurement_unit, obj.quantity
-                    )
-                else:
-                    logger.error(
-                        f"Error in base unit {obj.measurement_unit}, obj: {obj.pk}"
-                    )
-
-            if litro_amount > 0 or kilo_amount > 0 or libra_amount > 0:
-                labels.append(catalog["description"])
-                self.litro_data.append(round(float(litro_amount), 2))
-                self.kilo_data.append(round(float(kilo_amount), 2))
-                self.libra_data.append(round(float(libra_amount), 2))
-
-        if not labels:
-            labels.append(_("No data registered"))
-            self.litro_data.append(0)
-            self.kilo_data.append(0)
-            self.libra_data.append(0)
-        return labels
+        categories = [(catalog["pk"], catalog["description"]) for catalog in self.catalogs]
+        return self.build_unit_series(
+            categories, "object__substancharacteristics_object__precursor_type"
+        )
 
     def get_datasets(self):
         self.index = randint(0, len(self.colors))
@@ -518,7 +426,7 @@ class LaboratoryNFPAChart(BaseChart, HorizontalBarChart):
 
     def retrieve(self, request, pk):
         self.request = request
-        self.organization = get_object_or_404(OrganizationStructure, pk=pk)
+        self.organization = self.get_organization(request, pk)
         data = self.get_graph_data()
         serializer = self.serializer_class(data)
         return Response(serializer.data)
@@ -540,63 +448,14 @@ class LaboratoryNFPAChart(BaseChart, HorizontalBarChart):
         return options
 
     def get_labels(self):
-        self.catalogs = Catalog.objects.filter(key="nfpa").values("pk", "description")
-        self.litro_data = []
-        self.kilo_data = []
-        self.libra_data = []
-        labels = []
+        self.catalogs = Catalog.objects.filter(key="nfpa").values(
+            "pk", "description"
+        )
         self.get_extra_filters()
-        queryset = ShelfObject.objects.filter(**self.filters).distinct()
-        if self.no_labs:
-            queryset = queryset.none()
-
-        for catalog in self.catalogs:
-            litro_amount = 0
-            kilo_amount = 0
-            libra_amount = 0
-            for obj in queryset.filter(
-                object__substancharacteristics_object__nfpa__pk=catalog["pk"]
-            ):
-                base_unit = BaseUnitValues.objects.filter(
-                    measurement_unit=obj.measurement_unit
-                ).first()
-                if (
-                    base_unit
-                    and base_unit.measurement_unit_base.description == "Kilogramos"
-                ):
-                    kilo_amount += get_conversion_units(
-                        obj.measurement_unit, obj.quantity
-                    )
-                elif (
-                    base_unit
-                    and base_unit.measurement_unit_base.description == "Litros"
-                ):
-                    litro_amount += get_conversion_units(
-                        obj.measurement_unit, obj.quantity
-                    )
-                elif (
-                    base_unit and base_unit.measurement_unit_base.description == "Libra"
-                ):
-                    libra_amount += get_conversion_units(
-                        obj.measurement_unit, obj.quantity
-                    )
-                else:
-                    logger.error(
-                        f"Error in base unit {obj.measurement_unit}, obj: {obj.pk}"
-                    )
-
-            if litro_amount > 0 or kilo_amount > 0 or libra_amount > 0:
-                labels.append(catalog["description"])
-                self.litro_data.append(round(float(litro_amount), 2))
-                self.kilo_data.append(round(float(kilo_amount), 2))
-                self.libra_data.append(round(float(libra_amount), 2))
-
-        if not labels:
-            labels.append(_("No data registered"))
-            self.litro_data.append(0)
-            self.kilo_data.append(0)
-            self.libra_data.append(0)
-        return labels
+        categories = [(catalog["pk"], catalog["description"]) for catalog in self.catalogs]
+        return self.build_unit_series(
+            categories, "object__substancharacteristics_object__nfpa"
+        )
 
     def get_datasets(self):
         self.index = randint(0, len(self.colors))
@@ -641,7 +500,7 @@ class LaboratoryUECodeChart(BaseChart, HorizontalBarChart):
 
     def retrieve(self, request, pk):
         self.request = request
-        self.organization = get_object_or_404(OrganizationStructure, pk=pk)
+        self.organization = self.get_organization(request, pk)
         data = self.get_graph_data()
         serializer = self.serializer_class(data)
         return Response(serializer.data)
@@ -667,62 +526,11 @@ class LaboratoryUECodeChart(BaseChart, HorizontalBarChart):
             "pk", "description"
         )
         self.aggrateparams = {}
-        labels = []
-        self.litro_data = []
-        self.kilo_data = []
-        self.libra_data = []
         self.get_extra_filters()
-        queryset = ShelfObject.objects.filter(**self.filters).distinct()
-        if self.no_labs:
-            queryset = queryset.none()
-
-        for catalog in self.catalogs:
-            litro_amount = 0
-            kilo_amount = 0
-            libra_amount = 0
-            for obj in queryset.filter(
-                object__substancharacteristics_object__ue_code__pk=catalog["pk"]
-            ):
-                base_unit = BaseUnitValues.objects.filter(
-                    measurement_unit=obj.measurement_unit
-                ).first()
-                if (
-                    base_unit
-                    and base_unit.measurement_unit_base.description == "Kilogramos"
-                ):
-                    kilo_amount += get_conversion_units(
-                        obj.measurement_unit, obj.quantity
-                    )
-                elif (
-                    base_unit
-                    and base_unit.measurement_unit_base.description == "Litros"
-                ):
-                    litro_amount += get_conversion_units(
-                        obj.measurement_unit, obj.quantity
-                    )
-                elif (
-                    base_unit and base_unit.measurement_unit_base.description == "Libra"
-                ):
-                    libra_amount += get_conversion_units(
-                        obj.measurement_unit, obj.quantity
-                    )
-                else:
-                    logger.error(
-                        f"Error in base unit {obj.measurement_unit}, obj: {obj.pk}"
-                    )
-
-            if litro_amount > 0 or kilo_amount > 0 or libra_amount > 0:
-                labels.append(catalog["description"])
-                self.litro_data.append(round(float(litro_amount), 2))
-                self.kilo_data.append(round(float(kilo_amount), 2))
-                self.libra_data.append(round(float(libra_amount), 2))
-
-        if not labels:
-            labels.append(_("No data registered"))
-            self.litro_data.append(0)
-            self.kilo_data.append(0)
-            self.libra_data.append(0)
-        return labels
+        categories = [(catalog["pk"], catalog["description"]) for catalog in self.catalogs]
+        return self.build_unit_series(
+            categories, "object__substancharacteristics_object__ue_code"
+        )
 
     def get_datasets(self):
         self.index = randint(0, len(self.colors))
@@ -767,7 +575,7 @@ class LaboratoryStorageClassChart(BaseChart, HorizontalBarChart):
 
     def retrieve(self, request, pk):
         self.request = request
-        self.organization = get_object_or_404(OrganizationStructure, pk=pk)
+        self.organization = self.get_organization(request, pk)
         data = self.get_graph_data()
         serializer = self.serializer_class(data)
         return Response(serializer.data)
@@ -792,62 +600,11 @@ class LaboratoryStorageClassChart(BaseChart, HorizontalBarChart):
         self.catalogs = Catalog.objects.filter(key="storage_class").values(
             "pk", "description"
         )
-        self.litro_data = []
-        self.kilo_data = []
-        self.libra_data = []
-        labels = []
         self.get_extra_filters()
-        queryset = ShelfObject.objects.filter(**self.filters).distinct()
-        if self.no_labs:
-            queryset = queryset.none()
-
-        for catalog in self.catalogs:
-            litro_amount = 0
-            kilo_amount = 0
-            libra_amount = 0
-            for obj in queryset.filter(
-                object__substancharacteristics_object__storage_class__pk=catalog["pk"]
-            ):
-                base_unit = BaseUnitValues.objects.filter(
-                    measurement_unit=obj.measurement_unit
-                ).first()
-                if (
-                    base_unit
-                    and base_unit.measurement_unit_base.description == "Kilogramos"
-                ):
-                    kilo_amount += get_conversion_units(
-                        obj.measurement_unit, obj.quantity
-                    )
-                elif (
-                    base_unit
-                    and base_unit.measurement_unit_base.description == "Litros"
-                ):
-                    litro_amount += get_conversion_units(
-                        obj.measurement_unit, obj.quantity
-                    )
-                elif (
-                    base_unit and base_unit.measurement_unit_base.description == "Libra"
-                ):
-                    libra_amount += get_conversion_units(
-                        obj.measurement_unit, obj.quantity
-                    )
-                else:
-                    logger.error(
-                        f"Error in base unit {obj.measurement_unit}, obj: {obj.pk}"
-                    )
-
-            if litro_amount > 0 or kilo_amount > 0 or libra_amount > 0:
-                labels.append(catalog["description"])
-                self.litro_data.append(round(float(litro_amount), 2))
-                self.kilo_data.append(round(float(kilo_amount), 2))
-                self.libra_data.append(round(float(libra_amount), 2))
-
-        if not labels:
-            labels.append(_("No data registered"))
-            self.litro_data.append(0)
-            self.kilo_data.append(0)
-            self.libra_data.append(0)
-        return labels
+        categories = [(catalog["pk"], catalog["description"]) for catalog in self.catalogs]
+        return self.build_unit_series(
+            categories, "object__substancharacteristics_object__storage_class"
+        )
 
     def get_datasets(self):
         self.index = randint(0, len(self.colors))
@@ -892,7 +649,7 @@ class SubstanceQuantityTonsChart(BaseChart, HorizontalBarChart):
 
     def retrieve(self, request, pk):
         self.request = request
-        self.organization = get_object_or_404(OrganizationStructure, pk=pk)
+        self.organization = self.get_organization(request, pk)
         data = self.get_graph_data()
         serializer = self.serializer_class(data)
         return Response(serializer.data)
@@ -916,6 +673,7 @@ class SubstanceQuantityTonsChart(BaseChart, HorizontalBarChart):
         self.other_datasets = {}
         self.other_units = [
             ("unidades", _("Unidades")),
+            ("metros", _("Metros (m)")),
             ("pascales", _("Pascales (Pa)")),
             ("psi", _("PSI")),
         ]
@@ -929,6 +687,24 @@ class SubstanceQuantityTonsChart(BaseChart, HorizontalBarChart):
         pascal_pks = self._get_unit_pks_by_base("Pascales")
         psi_pks = self._get_unit_pks_by_base("PSI")
 
+        # Densidad (kg/L) de la ficha SGA del objeto, la de menor pk como
+        # Object.get_sga_characteristic(); sin dato se asume la del agua.
+        density = Coalesce(
+            NullIf(
+                Subquery(
+                    SubstanceCharacteristics.objects.filter(
+                        object_related=OuterRef("object")
+                    ).order_by("pk").values("density")[:1]
+                ),
+                Value(0.0),
+            ),
+            Value(1.0),
+            output_field=FloatField(),
+        )
+
+        # quantity_base_unit ya está en la unidad base de su familia (kg, L, m³...).
+        # Los volúmenes pasan a masa con la densidad; la longitud no es masa, así
+        # que los metros van en su propia serie y no suman toneladas.
         results = ShelfObject.objects.filter(
             object__organization=self.organization,
             object__type=Object.REACTIVE,
@@ -944,14 +720,18 @@ class SubstanceQuantityTonsChart(BaseChart, HorizontalBarChart):
                 ),
                 When(
                     measurement_unit__pk__in=litro_pks,
-                    then=F("quantity_base_unit") / Value(1000.0),
-                ),
-                When(
-                    measurement_unit__pk__in=metro_pks,
-                    then=F("quantity_base_unit") / Value(1000.0),
+                    then=F("quantity_base_unit") * density / Value(1000.0),
                 ),
                 When(
                     measurement_unit__pk__in=m3_pks,
+                    then=F("quantity_base_unit") * density,
+                ),
+                default=Value(0.0),
+                output_field=FloatField(),
+            )),
+            metros=Sum(Case(
+                When(
+                    measurement_unit__pk__in=metro_pks,
                     then=F("quantity_base_unit"),
                 ),
                 default=Value(0.0),
@@ -1039,7 +819,7 @@ class EstablishmentLogsClassChart(BaseChart, HorizontalBarChart):
 
     def retrieve(self, request, pk):
         self.request = request
-        self.organization = get_object_or_404(OrganizationStructure, pk=pk)
+        self.organization = self.get_organization(request, pk)
         zone_param = request.GET.get("zone")
         if zone_param is None:
             raise Http404("Zone parameter is required")
@@ -1047,6 +827,8 @@ class EstablishmentLogsClassChart(BaseChart, HorizontalBarChart):
             self.pk = int(zone_param)
         except (ValueError, TypeError):
             raise Http404("Invalid zone parameter")
+        # La zona tiene que ser de la organización de la URL.
+        get_object_or_404(RiskZone, pk=self.pk, organization=self.organization)
         data = self.get_graph_data()
         serializer = self.serializer_class(data)
         return Response(serializer.data)
@@ -1144,7 +926,7 @@ class IPERBaseChart(BaseChart):
 
     def retrieve(self, request, pk):
         self.request = request
-        self.organization = get_object_or_404(OrganizationStructure, pk=pk)
+        self.organization = self.get_organization(request, pk)
         data = self.get_graph_data()
         serializer = self.serializer_class(data)
         return Response(serializer.data)

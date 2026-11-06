@@ -49,6 +49,11 @@ from laboratory.models import (
 )
 from derb.models import CustomForm
 from laboratory.utils import organilab_logentry
+from laboratory.utils_base_unit import (
+    get_conversion_from_base_unit,
+    get_conversion_units,
+    get_unit_family,
+)
 from laboratory.views.djgeneric import (
     ListView as DJListView,
     CreateView as DJCreateView,
@@ -56,7 +61,6 @@ from laboratory.views.djgeneric import (
 )
 from organilab import settings
 from reservations_management.models import ReservedProducts
-from . import convertions
 
 
 @login_required
@@ -103,7 +107,9 @@ def get_my_procedures(request, org_pk, lab_pk):
 @login_required
 @permission_required("academic.add_myprocedure", raise_exception=True)
 def create_my_procedures(request, org_pk, lab_pk, content_type, model):
-    form = MyProcedureForm(request.POST)
+    # Solo un POST crea: todos los campos son opcionales, así que un formulario
+    # ligado al GET vacío validaba y creaba un procedimiento sin datos.
+    form = MyProcedureForm(request.POST if request.method == "POST" else None)
     laboratory = get_object_or_404(Laboratory, pk=lab_pk)
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -152,24 +158,17 @@ def remove_my_procedure(request, org_pk, lab_pk, pk):
     user_is_allowed_on_organization(request.user, organization)
     organization_can_change_laboratory(laboratory, organization)
     my_procedure = get_object_or_404(MyProcedure, pk=pk)
-    if my_procedure:
-        organilab_logentry(
-            request.user,
-            my_procedure,
-            DELETION,
-            "myprocedures",
-            changed_data=["name", "procedure", "organization"],
-            change_message=_("Deleted my procedure '%(name)s'")
-            % {"name": my_procedure.name},
-            relobj=lab_pk,
-        )
-        my_procedure.delete()
-        return redirect(
-            reverse(
-                "academic:get_my_procedures",
-                kwargs={"lab_pk": lab_pk, "org_pk": org_pk},
-            )
-        )
+    organilab_logentry(
+        request.user,
+        my_procedure,
+        DELETION,
+        "myprocedures",
+        changed_data=["name", "procedure", "organization"],
+        change_message=_("Deleted my procedure '%(name)s'")
+        % {"name": my_procedure.name},
+        relobj=lab_pk,
+    )
+    my_procedure.delete()
     return redirect(
         reverse(
             "academic:get_my_procedures", kwargs={"lab_pk": lab_pk, "org_pk": org_pk}
@@ -380,7 +379,8 @@ def procedureStepDetail(request, org_pk, pk):
     )
 
 
-@method_decorator(permission_required("academic.add_procedurestep"), name="dispatch")
+@method_decorator(login_required, name="dispatch")
+@method_decorator(permission_required("academic.add_procedurestep", raise_exception=True), name="dispatch")
 class ProcedureStepCreateView(FormView):
     form_class = StepForm
     template_name = "academic/procedure_steps.html"
@@ -429,7 +429,8 @@ class ProcedureStepCreateView(FormView):
                     )
                     % {"name": custom_form.name},
                 )
-            except (json.JSONDecodeError, KeyError):
+            except (json.JSONDecodeError, KeyError, TypeError):
+                # TypeError: JSON válido que no es un objeto (lista, texto, número).
                 pass
 
         organilab_logentry(
@@ -518,7 +519,8 @@ class ProcedureStepUpdateView(DJUpdateView):
                         )
                         % {"name": custom_form.name},
                     )
-            except (json.JSONDecodeError, KeyError):
+            except (json.JSONDecodeError, KeyError, TypeError):
+                # TypeError: JSON válido que no es un objeto (lista, texto, número).
                 pass
 
         organilab_logentry(
@@ -573,16 +575,6 @@ def get_procedure(request, org_pk, pk):
     return JsonResponse(
         {"title": procedure.title, "pk": procedure.pk, "msg": msg}, status=result_status
     )
-
-
-@login_required
-@permission_required("academic.view_myprocedure", raise_exception=True)
-def download_myprocedure(request, org_pk, pk):
-    organization = get_object_or_404(
-        OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
-    )
-    user_is_allowed_on_organization(request.user, organization)
-    procedure = get_object_or_404(Procedure, pk=pk)
 
 
 @login_required
@@ -648,14 +640,8 @@ def generate_reservation(request, org_pk, lab_pk):
                     )
                     if total_material_units < obj.quantity:
                         obj_unknown.append(obj.object.__str__())
-                else:
-                    shelfobjects = ShelfObject.objects.filter(
-                        in_where_laboratory=lab,
-                        object=obj.object,
-                        measurement_unit=obj.measurement_unit,
-                    ).aggregate(total=Coalesce(Sum("quantity"), 0.0))
-                    if shelfobjects["total"] < obj.quantity:
-                        obj_unknown.append(obj.object.__str__())
+                elif not _has_enough_stock(lab, obj):
+                    obj_unknown.append(obj.object.__str__())
 
             if obj_unknown:
                 result = status.HTTP_400_BAD_REQUEST
@@ -705,54 +691,74 @@ def add_procedure_reservation(request, objects, form, lab, org):
             _add_non_box_reservation(request, obj, form, lab, org)
 
 
+# Margen para comparar cantidades convertidas en coma flotante (0.1 L + 0.2 L).
+STOCK_EPSILON = 1e-9
+
+
+def _non_box_stock(lab, obj):
+    """Existencias sin caja que pueden cubrir ``obj`` y la cantidad pedida.
+
+    Devuelve ``(queryset, cantidad_pedida, campo)``. Si la unidad tiene unidad
+    base, se compara dentro de su familia (500 mL contra 1 L) en unidad base con
+    ``quantity_base_unit``; si no, sólo contra la misma unidad, como antes.
+    """
+    family = get_unit_family(obj.measurement_unit)
+    required = get_conversion_units(obj.measurement_unit, obj.quantity)
+    base = ShelfObject.objects.filter(in_where_laboratory=lab, object=obj.object)
+    if family is None or required is None:
+        queryset = base.filter(measurement_unit=obj.measurement_unit)
+        return queryset, obj.quantity, "quantity"
+    queryset = base.filter(measurement_unit__in=family, is_box=False)
+    return queryset, required, "quantity_base_unit"
+
+
+def _has_enough_stock(lab, obj):
+    queryset, required, field = _non_box_stock(lab, obj)
+    total = queryset.aggregate(total=Coalesce(Sum(field), 0.0))["total"]
+    return total + STOCK_EPSILON >= required
+
+
 def _add_non_box_reservation(request, obj, form, lab, org):
-    shelf_objects = (
-        ShelfObject.objects.filter(
-            in_where_laboratory=lab,
-            object=obj.object,
-            measurement_unit=obj.measurement_unit,
-        )
-        .distinct()
-        .order_by("quantity")
-    )
-    obj_quantity = obj.quantity
-    total = 0
+    queryset, required, field = _non_box_stock(lab, obj)
+    shelf_objects = queryset.distinct().order_by(field, "pk")
+    remaining = required
     for shelf_object in shelf_objects:
-        shelf_object_total = shelf_object.quantity
-        result = 0
-        if total < obj_quantity:
-            if obj_quantity <= shelf_object_total:
-                result = obj_quantity - total
-            elif total + shelf_object_total > obj_quantity:
-                result = obj_quantity - total
-            else:
-                result += shelf_object_total
-            total += result
-            reserved = ReservedProducts.objects.create(
-                shelf_object=shelf_object,
-                user=request.user,
-                initial_date=form.cleaned_data["initial_date"],
-                final_date=form.cleaned_data["final_date"],
-                amount_required=result,
-                laboratory=lab,
-                organization=org,
-            )
-            organilab_logentry(
-                request.user,
-                reserved,
-                ADDITION,
-                changed_data=[
-                    "shelf_object",
-                    "user",
-                    "initial_date",
-                    "final_date",
-                    "amount_required",
-                    "laboratory",
-                    "organization",
-                ],
-                change_message=_("Created reservation for '%(obj)s' (%(amount)s units)")
-                % {"obj": str(shelf_object.object), "amount": result},
-            )
+        if remaining <= STOCK_EPSILON:
+            break
+        available = getattr(shelf_object, field)
+        if available <= 0:
+            continue
+        taken = min(remaining, available)
+        remaining -= taken
+        # La reserva se descuenta de la existencia, así que va en su unidad.
+        result = taken
+        if field == "quantity_base_unit":
+            result = get_conversion_from_base_unit(shelf_object.measurement_unit, taken)
+        reserved = ReservedProducts.objects.create(
+            shelf_object=shelf_object,
+            user=request.user,
+            initial_date=form.cleaned_data["initial_date"],
+            final_date=form.cleaned_data["final_date"],
+            amount_required=result,
+            laboratory=lab,
+            organization=org,
+        )
+        organilab_logentry(
+            request.user,
+            reserved,
+            ADDITION,
+            changed_data=[
+                "shelf_object",
+                "user",
+                "initial_date",
+                "final_date",
+                "amount_required",
+                "laboratory",
+                "organization",
+            ],
+            change_message=_("Created reservation for '%(obj)s' (%(amount)s units)")
+            % {"obj": str(shelf_object.object), "amount": result},
+        )
 
 
 def _select_boxes_for_shelf(shelf_object, amount_required):

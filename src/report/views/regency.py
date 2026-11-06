@@ -1,9 +1,14 @@
 from django.core.files.base import ContentFile
+from django.db.models import Min
+from django.utils import timezone
 from django.utils.translation import gettext as _
 
-from laboratory.models import OrganizationStructure
-from laboratory.report_utils import ExcelGraphBuilder
-from report.utils import get_report_name, format_date, sanitize_ods_table
+from laboratory.models import ObjectMaximumLimit, OrganizationStructure
+from laboratory.report_utils import write_spreadsheet
+from report.utils import (
+    format_date,
+    get_report_name,
+)
 from risk_management.utils_risk import (
     cargar_cuadro3,
     cargar_sga_referencia,
@@ -13,147 +18,13 @@ from risk_management.utils_risk import (
 )
 
 
-def report_regency_html(report):
-    get_pdf_regency_table_content(report)
-    return 0
+def get_regency_filters(report):
+    """Filtro del inventario, el mismo para XLS, XLSX y ODS.
 
-
-def report_regency_xlsx(report):
-    builder = ExcelGraphBuilder()
-    builder.ws.title = "Resumen"
-    builder.wb.create_sheet("Sumatoria_categoría")
-    builder.wb.create_sheet("Detalle")
-    organization = OrganizationStructure.objects.filter(
-        pk=report.data["organization"]
-    ).first()
-
-    filters = {
-        "object__type": 0,
-        "object__isnull": False,
-        "measurement_unit__isnull": False,
-        "laboratory__pk__in": organization.get_my_laboratories,
-    }
-    if report.data["laboratory"]:
-        filters.update({"laboratory__pk__in": report.data["laboratory"]})
-    if "period" in report.data:
-        if report.data["period"]:
-            dates = report.data["period"].split("-")
-            if len(dates) == 2:
-                dates[0] = format_date(dates[0].strip())
-                dates[1] = format_date(dates[1].strip())
-                filters.update({"created_at__range": dates})
-
-    inv = get_inventory(filters)
-    inv = inv.drop_duplicates(subset=["nombre", "h_codes", "cas", "cantidad_t"])
-    c3 = cargar_cuadro3()
-    c4 = cargar_umbral_por_H()
-    mapH_tipo = cargar_sga_referencia()
-    try:
-
-        res = clasificar_establecimiento(inv, c3, c4, mapH_tipo)
-
-        builder.ws.append([_("Classification"), _("Criterion")])
-        builder.ws.append([str(res["clasificacion"]), str(res["criterio"])])
-        builder.style_header()
-        builder.autosize_columns()
-
-        sumatoria = res["sumatorias_por_categoria"]
-
-        builder.ws = builder.wb["Sumatoria_categoría"]
-        builder.ws.append([_("Physical"), _("Health"), _("Environmental")])
-        builder.ws.append(
-            [
-                sumatoria["Físico"],
-                sumatoria["Salud"],
-                sumatoria["Ambiental"],
-            ]
-        )
-        builder.style_header()
-        builder.autosize_columns()
-
-        builder.ws = builder.wb["Detalle"]
-        builder.ws.append(
-            [
-                _("Name"),
-                _("CAS"),
-                _("Quantity"),
-                _("Nominated"),
-                _("Threshold"),
-                _("Ratio"),
-                _("H-codes"),
-                _("Cross rule"),
-                _("Detail"),
-                _("Warnings"),
-                _("Health contributions"),
-                _("Physical contributions"),
-                _("Environmental contributions"),
-            ]
-        )
-
-        for details in res["detalles"]:
-            builder.ws.append(
-                [
-                    details["nombre"],
-                    details["cas"],
-                    round(details["cantidad_t"], 3),
-                    builder.safe_bool(details["nominada_c3"]),
-                    details["umbral_c3"],
-                    details["ratio_c3"],
-                    details["h_codes"],
-                    builder.safe_bool(details["regla_cruzada_salud"]),
-                    (
-                        " | ".join(details["detalle_contribuciones"])
-                        if details["detalle_contribuciones"]
-                        else ""
-                    ),
-                    " | ".join(
-                        details["advertencias"] if details["advertencias"] else ""
-                    ),
-                    round(details["contribuciones"].get("Salud", 0.0), 3),
-                    round(details["contribuciones"].get("Físico", 0.0), 3),
-                    round(details["contribuciones"].get("Ambiental", 0.0), 3),
-                ]
-            )
-        builder.style_header()
-        builder.autosize_columns()
-        builder.format_border_cell(len(res["detalles"]), 13)
-
-    except Exception as e:
-        builder.ws.append([_("Classification"), _("Criterion")])
-        builder.ws.append(["riesgo menor", ""])
-        builder.style_header()
-        builder.autosize_columns()
-        builder.ws = builder.wb["Sumatoria_categoría"]
-        builder.ws.append([_("Physical"), _("Health"), _("Environmental")])
-        builder.ws.append(
-            [
-                0.0,
-                0.0,
-                0.0,
-            ]
-        )
-        builder.style_header()
-        builder.autosize_columns()
-
-        builder.ws = builder.wb["Detalle"]
-        builder.ws.append(
-            [
-                _("Data not available"),
-            ]
-        )
-
-    report_name = get_report_name(report)
-    file = builder.save()
-    file_name = f"{report_name}.{report.file_type}"
-    file.seek(0)
-    doc = ContentFile(file.getvalue(), name=file_name)
-    report.file = doc
-    report.save()
-    return 0
-
-
-def report_regency_doc(report):
-    builder = ExcelGraphBuilder()
+    Toma los laboratorios elegidos (o todos los de la organización) y el
+    `period` del formulario; sin periodo, o con una fecha que no se entiende,
+    se usan todos los registros hasta hoy.
+    """
     organization = OrganizationStructure.objects.filter(
         pk=report.data["organization"]
     ).first()
@@ -163,204 +34,156 @@ def report_regency_doc(report):
         "measurement_unit__isnull": False,
         "laboratory__pk__in": organization.get_my_laboratories,
     }
-    if "period" in report.data:
-        if report.data["period"]:
-            dates = report.data["period"].split("-")
-            if len(dates) == 2:
-                dates[0] = format_date(dates[0].strip())
-                dates[1] = format_date(dates[1].strip())
-                filters.update({"created_at__range": dates})
-
-    if report.data["laboratory"]:
+    if report.data.get("laboratory"):
         filters.update({"laboratory__pk__in": report.data["laboratory"]})
-    content = []
-    inv = get_inventory(filters)
-    inv = inv.drop_duplicates(subset=["nombre", "h_codes", "cas", "cantidad_t"])
+    period = get_regency_period(report)
+    if period:
+        filters.update({"created_at__range": list(period)})
+    return filters
+
+
+def get_regency_period(report):
+    """(inicio, fin) del `period` del formulario, o None si viene vacío o no se entiende."""
+    dates = (report.data.get("period") or "").split("-")
+    if len(dates) == 2:
+        start, end = format_date(dates[0].strip()), format_date(dates[1].strip())
+        if start and end:
+            return start, end
+    return None
+
+
+def get_regency_period_label(report):
+    """El período que cubren los datos, para mostrarlo en el resumen.
+
+    Sin período elegido se usan todos los registros: va desde el primero
+    hasta hoy.
+    """
+    period = get_regency_period(report)
+    if period:
+        start, end = period
+    else:
+        start = ObjectMaximumLimit.objects.filter(
+            **get_regency_filters(report)
+        ).aggregate(first=Min("created_at"))["first"]
+        end = timezone.localdate()
+        if start is None:
+            return "-"
+    return "%s - %s" % (start.strftime("%d/%m/%Y"), end.strftime("%d/%m/%Y"))
+
+
+def get_regency_inventory(report):
+    inv = get_inventory(get_regency_filters(report))
+    return inv.drop_duplicates(subset=["nombre", "h_codes", "cas", "cantidad_t"])
+
+
+def classify_regency(inv):
     c3 = cargar_cuadro3()
     c4 = cargar_umbral_por_H()
     mapH_tipo = cargar_sga_referencia()
-    try:
-        res = clasificar_establecimiento(inv, c3, c4, mapH_tipo)
-        sumatoria = res["sumatorias_por_categoria"]
-        content = [
-            [_("Classification"), _("Criterion")],
-            [str(res["clasificacion"]), str(res["criterio"])],
-            [],
-            [_("Totals by category")],
-            [_("Physical"), _("Health"), _("Environmental")],
-            [
-                sumatoria["Físico"],
-                sumatoria["Salud"],
-                sumatoria["Ambiente"],
-            ],
-        ]
-        content.append([])
-        content.append([_("Details of the substances")])
-        content.append(
-            [
-                _("Name"),
-                _("CAS"),
-                _("Quantity"),
-                _("Nominated"),
-                _("Threshold"),
-                _("Ratio"),
-                _("H-codes"),
-                _("Cross rule"),
-                _("Detail"),
-                _("Warnings"),
-                _("Health contributions"),
-                _("Physical contributions"),
-                _("Environmental contributions"),
-            ]
-        )
-
-        for details in res["detalles"]:
-            content.append(
-                [
-                    details["nombre"],
-                    details["cas"],
-                    round(details["cantidad_t"], 3),
-                    _("Yes") if details["nominada_c3"] else _("No"),
-                    details["umbral_c3"],
-                    details["ratio_c3"],
-                    details["h_codes"],
-                    _("Yes") if details["regla_cruzada_salud"] else _("No"),
-                    (
-                        " | ".join(details["detalle_contribuciones"])
-                        if details["detalle_contribuciones"]
-                        else ""
-                    ),
-                    " | ".join(
-                        details["advertencias"] if details["advertencias"] else ""
-                    ),
-                    round(details["contribuciones"].get("Salud", 0.0), 3),
-                    round(details["contribuciones"].get("Físico", 0.0), 3),
-                    round(details["contribuciones"].get("Ambiental", 0.0), 3),
-                ]
-            )
-    except Exception as e:
-        content = [
-            [_("Classification"), _("Criterion")],
-            ["riesgo menor", ""],
-            [],
-            [_("Totals by category")],
-            [_("Physical"), _("Health"), _("Environmental")],
-            [0.0, 0.0, 0.0],
-        ]
-        content.append([])
-        content.append([_("Details of the substances")])
-        content.append(_("Data not available"))
-    report_name = get_report_name(report)
-    content.insert(0, [report_name])
-    content = sanitize_ods_table(content)
-    file = builder.save_ods(content, format_type=report.file_type)
-    file_name = f"{report_name}.{report.file_type}"
-    file.seek(0)
-    doc = ContentFile(file.getvalue(), name=file_name)
-    report.file = doc
-    report.save()
-    return len(content)
+    return clasificar_establecimiento(inv, c3, c4, mapH_tipo)
 
 
-def get_pdf_regency_table_content(report):
-    filters = {
-        "object__type": 0,
-        "created_at__year": report.data["years"],
-        "object__isnull": False,
-        "measurement_unit__isnull": False,
-        "laboratory__organization__pk": report.data["organization"],
-    }
-    if report.data["laboratory"]:
-        filters.update({"laboratory__pk__in": report.data["laboratory"]})
-    inv = get_inventory(filters)
-    inv = inv.drop_duplicates(subset=["nombre", "h_codes", "cas", "cantidad_t"])
-    c3 = cargar_cuadro3()
-    c4 = cargar_umbral_por_H()
-    mapH_tipo = cargar_sga_referencia()
-    res = clasificar_establecimiento(inv, c3, c4, mapH_tipo)
-    sumatoria = res["sumatorias_por_categoria"]
-    pdf_table = ""
-    pdf_table += "<h3>Resumen</h3><table id='pdf_table_report'><thead><tr>"
-    for col in [_("Classification"), _("Criterion")]:
-        pdf_table += "<th>%s</th>" % (col)
-    pdf_table += "</tr></thead><tbody>"
-    pdf_table += "<tr><td>%s</td><td>%s</td></tr></tbody></table>" % (
-        res["clasificacion"],
-        res["criterio"],
-    )
-    pdf_table += (
-        "<br><table id='pdf_table_report'><thead><tr><th>%s</th><th>%s</th><th>%s</th></tr></thead><tbody>"
-        % (_("Físico"), _("Salud"), _("Ambiental"))
-    )
-    pdf_table += "<tr><td>%s</td><td>%s</td><td>%s</td></tr></tbody></table>" % (
-        sumatoria["Físico"],
-        sumatoria["Salud"],
-        sumatoria["Ambiental"],
-    )
-    pdf_table += "</tr></thead></table><br>"
-    pdf_table += (
-        "<h3>Detalle de las sustancias</h3><table id='pdf_table_report'><thead><tr>"
-    )
-    pdf_table += (
-        "<th>%s</th>"
-        "<th>%s</th>"
-        "<th>%s</th>"
-        "<th>%s</th>"
-        "<th>%s</th>"
-        "<th>%s</th>"
-        "<th>%s</th>"
-        "<th>%s</th>"
-        "<th>%s</th>"
-        "<th>%s</th>"
-        "<th>%s</th>"
-        "<th>%s</th>"
-        "<th>%s</th>"
-    ) % (
-        _("Nombre"),
+REGENCY_SHEETS = ("Resumen", "Sumatoria_categoría", "Detalle")
+#: Ancho máximo de columna por hoja: el criterio del resumen es una frase que
+#: debe verse entera (XLS no agranda la fila); el detalle se ajusta en líneas.
+REGENCY_MAX_WIDTH = {"Resumen": 90}
+
+
+def get_regency_detail_header():
+    return [
+        _("Name"),
         _("CAS"),
-        _("Cantidad"),
-        _("Nominada"),
-        _("Umbral"),
+        _("Quantity"),
+        _("Nominated"),
+        _("Threshold"),
         _("Ratio"),
         _("H-codes"),
-        _("Regla Cruzada"),
-        _("Detalle"),
-        _("Advertencias"),
-        _("Contribuciones en salud"),
-        _("Contribuciones en físico"),
-        _("Contribuciones en ambiente"),
-    )
-    pdf_table += "</tr></thead><tbody>"
-    for data in res["detalles"]:
-        pdf_table += "<tr>"
-        pdf_table += "<td>%s</td>" % (data["nombre"])
-        pdf_table += "<td>%s</td>" % (data["cas"])
-        pdf_table += "<td>%s</td>" % (data["cantidad_t"])
-        pdf_table += "<td>%s</td>" % (_("Yes") if data["nominada_c3"] else _("No"))
-        pdf_table += "<td>%s</td>" % (data["umbral_c3"] if data["umbral_c3"] else "")
-        pdf_table += "<td>%s</td>" % (data["ratio_c3"] if data["ratio_c3"] else "")
-        pdf_table += "<td>%s</td>" % (data["h_codes"])
-        pdf_table += "<td>%s</td>" % (
-            _("Yes") if data["regla_cruzada_salud"] else _("No")
-        )
-        pdf_table += "<td>%s</td>" % (
-            data["detalle_contribuciones"]
-            if data["detalle_contribuciones"]
-            else "No hay detalle"
-        )
-        pdf_table += "<td>%s</td>" % (
-            data["advertencias"] if data["advertencias"] else "No hay advertencias"
-        )
-        pdf_table += "<td>%s</td>" % (
-            round(data["contribuciones"].get("Salud", 0.0), 3)
-        )
-        pdf_table += "<td>%s</td>" % (
-            round(data["contribuciones"].get("Físico", 0.0), 3)
-        )
-        pdf_table += "<td>%s</td>" % (
-            round(data["contribuciones"].get("Ambiental", 0.0), 3)
-        )
-        pdf_table += "</tr>"
-    pdf_table += "</tbody></table>"
+        _("Cross rule"),
+        _("Detail"),
+        _("Warnings"),
+        _("Health contributions"),
+        _("Physical contributions"),
+        _("Environmental contributions"),
+    ]
 
-    return pdf_table
+
+def get_regency_detail_row(details):
+    return [
+        details["nombre"],
+        details["cas"],
+        round(details["cantidad_t"], 3),
+        _("Yes") if details["nominada_c3"] else _("No"),
+        details["umbral_c3"],
+        details["ratio_c3"],
+        details["h_codes"],
+        _("Yes") if details["regla_cruzada_salud"] else _("No"),
+        " | ".join(details["detalle_contribuciones"] or []),
+        " | ".join(details["advertencias"] or []),
+        round(details["contribuciones"].get("Salud", 0.0), 3),
+        round(details["contribuciones"].get("Físico", 0.0), 3),
+        round(details["contribuciones"].get("Ambiental", 0.0), 3),
+    ]
+
+
+def get_regency_sheets(report):
+    """Contenido del informe regencial, igual para XLSX, XLS y ODS.
+
+    Devuelve ``(hojas, total)``: cada hoja es ``(nombre, filas)`` y cada fila
+    ``(rol, celdas)``. El rol (title, label, header, cell, risk) dice cómo se
+    dibuja; cada formato solo lo traduce a su librería, así las tres salidas
+    no se desalinean. ``total`` es cuántas sustancias tiene el detalle.
+    """
+    title = report.data.get("title") or get_report_name(report)
+    inv = get_regency_inventory(report)
+    try:
+        res = classify_regency(inv)
+        # Las clasificaciones de «riesgo mayor» por Cuadro 3/4 no calculan
+        # sumatorias y devuelven el diccionario vacío.
+        sumatoria = res["sumatorias_por_categoria"]
+        classification = [str(res["clasificacion"]), str(res["criterio"])]
+        totals = [
+            sumatoria.get("Físico", 0.0),
+            sumatoria.get("Salud", 0.0),
+            sumatoria.get("Ambiental", 0.0),
+        ]
+        detail = [("header", get_regency_detail_header())]
+        detail += [("cell", get_regency_detail_row(d)) for d in res["detalles"]]
+        total = len(res["detalles"])
+    except Exception:
+        classification = ["riesgo menor", ""]
+        totals = [0.0, 0.0, 0.0]
+        detail = [("cell", [_("Data not available")])]
+        total = 0
+    summary = [
+        ("title", [title]),
+        ("label", [_("Period"), get_regency_period_label(report)]),
+        ("blank", []),
+        ("header", [_("Classification"), _("Criterion")]),
+        ("risk", classification),
+    ]
+    totals_sheet = [
+        ("header", [_("Physical"), _("Health"), _("Environmental")]),
+        ("cell", totals),
+    ]
+    return list(zip(REGENCY_SHEETS, (summary, totals_sheet, detail))), total
+
+
+def save_regency_file(report, content):
+    report_name = get_report_name(report)
+    report.file = ContentFile(
+        content.getvalue(), name=f"{report_name}.{report.file_type}"
+    )
+    report.save()
+
+
+def report_regency(report):
+    """XLSX, XLS y ODS: las mismas hojas, filas y estilos."""
+    sheets, total = get_regency_sheets(report)
+    book = []
+    for name, rows in sheets:
+        options = {"max_width": REGENCY_MAX_WIDTH.get(name, 50)}
+        if rows and rows[0][0] == "header":
+            options["freeze_row"] = 1
+        book.append((name, rows, options))
+    save_regency_file(report, write_spreadsheet(book, report.file_type))
+    return total

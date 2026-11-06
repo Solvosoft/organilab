@@ -117,6 +117,17 @@
     </div>
     <div id="labDetail{{ lab_data.laboratory_pk }}" class="collapse">
     <div class="card-body">
+    {% if lab_data.tonnage.without_density %}
+    <div class="mb-4">
+        <h5 class="text-muted">{% trans 'Reactives without registered density' %}</h5>
+        <p class="text-muted small mb-1">{% trans 'They are measured by volume and are not included in the total weight.' %}</p>
+        <ul class="small mb-0">
+            {% for item in lab_data.tonnage.without_density %}
+            <li>{{ item.name }} ({{ item.quantity }} {{ item.unit }})</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
 
     {% for room in lab_data.rooms %}
     <div class="mb-4">
@@ -142,7 +153,7 @@
                                     {% if shelf.substances %}
                                     <br>
                                     {% for sub in shelf.substances %}
-                                        <small class="text-muted">{{ sub }}</small>{% if not forloop.last %}<br>{% endif %}
+                                        <small class="text-muted">{{ sub }}</small>{% if sub in shelf.no_density %} <small class="text-danger">({% trans 'No density' %})</small>{% endif %}{% if not forloop.last %}<br>{% endif %}
                                     {% endfor %}
                                     {% endif %}
                                 </div>
@@ -173,7 +184,7 @@
 </div>
 
 {% empty %}
-<div class="alert alert-info">{% trans 'No laboratory data available.' %}</div>
+<p class="text-muted text-center mt-3">{% trans 'No laboratory data available.' %}</p>
 {% endfor %}
 
 <script>

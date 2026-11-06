@@ -125,4 +125,7 @@ CLAUDE.md
 
 # Datos crudos de la sonda de cobertura por rol: se regeneran con 'make feature-coverage'.
 roadmap/.feature_probe/
+# Datos crudos de cobertura y rendimiento: se regeneran con 'make coverage-all' / 'make perf'.
+roadmap/.coverage/
+roadmap/.perf/
 .registry.env 

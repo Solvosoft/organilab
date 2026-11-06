@@ -151,7 +151,7 @@ def _decrease_box_stock(reserved_product):
                 box["quantity"] = (
                     shelfobject.get_shelfobject_conversion_from_two_units(
                         shelfobject.shelf.measurement_unit,
-                        shelfobject.measurement_unit,
+                        shelfobject.quantity,
                     )
                     * units
                     if shelfobject.shelf.measurement_unit

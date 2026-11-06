@@ -15,7 +15,10 @@ from django.shortcuts import render, get_object_or_404
 from django.urls.base import reverse
 from django.utils.translation import gettext as _
 
-from auth_and_perms.organization_utils import user_is_allowed_on_organization
+from auth_and_perms.organization_utils import (
+    get_sds_shared_organization_ids,
+    user_is_allowed_on_organization,
+)
 from laboratory.models import OrganizationStructure
 from msds.models import RegulationDocument
 from sga.models import SDSTraceability
@@ -23,14 +26,20 @@ from sga.models import SDSTraceability
 logger = logging.getLogger("organilab")
 
 
+def _org_traceability_filter(user, org_pk):
+    return Q(
+        sga_substance_characteristics__object_related__organization__in=(
+            get_sds_shared_organization_ids(user, org_pk)
+        )
+    )
+
+
 @login_required
-@permission_required("msds.view_msdsobject", raise_exception=True)
+@permission_required("sga.view_sdstraceability", raise_exception=True)
 def index_msds(request, org_pk):
     source_labels = dict(SDSTraceability.SDS_SOURCE_CHOICES)
     existing_sources = (
-        SDSTraceability.objects.filter(
-            sga_substance_characteristics__object_related__organization__pk=org_pk
-        )
+        SDSTraceability.objects.filter(_org_traceability_filter(request.user, org_pk))
         .order_by("source")
         .values_list("source", flat=True)
         .distinct()
@@ -46,7 +55,7 @@ def index_msds(request, org_pk):
 
 
 @login_required
-@permission_required("msds.view_msdsobject", raise_exception=True)
+@permission_required("sga.view_sdstraceability", raise_exception=True)
 def get_list_msds(request, org_pk):
     # La trazabilidad es un historial: una sustancia puede acumular varias fichas
     # a lo largo del tiempo. Esta pantalla busca sustancias, así que muestra solo
@@ -59,9 +68,7 @@ def get_list_msds(request, org_pk):
         .values("pk")[:1]
     )
     objs = (
-        SDSTraceability.objects.filter(
-            sga_substance_characteristics__object_related__organization__pk=org_pk
-        )
+        SDSTraceability.objects.filter(_org_traceability_filter(request.user, org_pk))
         .filter(pk=Subquery(latest_per_substance))
         .select_related("sga_substance_characteristics__object_related")
     )
@@ -170,7 +177,10 @@ def get_list_msds(request, org_pk):
 
 
 @login_required
-@permission_required("msds.add_msdsobject", raise_exception=True)
+@permission_required(
+    ("laboratory.change_object", "auth_and_perms.institution_can_access"),
+    raise_exception=True,
+)
 def sds_create(request, org_pk):
     """Redirige al asistente de sustancias de SGA.
 

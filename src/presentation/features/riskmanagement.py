@@ -335,10 +335,9 @@ FEATURES = (
             "Es el flujo con la separación de actores mejor implementada del sistema: "
             "cuatro permisos propios (`view_all_iper`, `request_iper`, "
             "`view_iper_dashboard`, `manage_iper_catalog`, `models.py:531-539`) y dos "
-            "roles dedicados que además **se autocrean** si no existen "
-            "(`update_roles.py:1231,1254`), a diferencia del resto del catálogo de "
-            "roles. Al `Auditor IPER` se le retira `view_riskzone` a propósito "
-            "(`:1243`): puede auditar la evaluación sin ver el mapa de zonas.",
+            "roles dedicados (`Auditor IPER` y `Administrador IPER`). El `Auditor IPER` "
+            "no tiene `view_riskzone` a propósito: puede auditar la evaluación sin ver "
+            "el mapa de zonas.",
             "Contraste con RES-01: aquí solicitar, llenar y auditar son tres permisos "
             "distintos; en reservaciones, cuatro actores del negocio son dos permisos.",
         ),

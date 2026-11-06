@@ -10,14 +10,12 @@ Las cuadrículas viajan como ``{"cells": [[...], [...]]}`` **sin** ``rows`` ni
 cómo sea su laboratorio, y un ancho único mentiría sobre ella.
 """
 
-from django.contrib.contenttypes.models import ContentType
 from django.db.models import Count, Sum
 from django.urls import reverse
 
 from laboratory import dataconfig
 from laboratory.models import Furniture, LaboratoryRoom, Shelf, ShelfObject
-from presentation.models import QRModel
-from presentation.utils import build_qr_instance
+from laboratory.qr_nodes import QRUrlBuilder, labview_deep_link
 
 #: Capacidades que la interfaz consulta para decidir qué pintar.  Se envían
 #: para *mostrar*; cada endpoint vuelve a exigir la suya para *autorizar*.
@@ -119,71 +117,27 @@ class TreeBuilder:
             )
         return totals
 
-    def get_qr_map(self, rooms, furniture, shelves):
-        """Los QR de cada nodo, en una consulta por tipo.
+    def get_qr_urls(self):
+        """Las URLs de los QR; el SVG se genera cuando el navegador lo pide.
 
-        Los que falten se crean aquí, igual que hacía ``get_qr_svg_img`` al
-        pintar la plantilla antigua: si no, una sala o un estante recién
-        creados se quedarían sin QR y el usuario perdería una función que hoy
-        tiene sin pedir nada.
+        Antes se creaban aquí los QR faltantes y viajaba el base64 de cada uno:
+        segundos de CPU y respuestas de varios MB.
         """
-        qr_map = {}
-        for model, objects, deep_link in (
-            (LaboratoryRoom, rooms, lambda obj: self.deep_link(labroom=obj.pk)),
-            (
-                Furniture,
-                furniture,
-                lambda obj: self.deep_link(
-                    labroom=obj.labroom_id, furniture=obj.pk
-                ),
-            ),
-            (
-                Shelf,
-                list(shelves.values()),
-                lambda obj: self.deep_link(
-                    labroom=obj.furniture.labroom_id,
-                    furniture=obj.furniture_id,
-                    shelf=obj.pk,
-                ),
-            ),
-        ):
-            if not objects:
-                continue
-            content_type = ContentType.objects.get_for_model(model)
-            rows = QRModel.objects.filter(
-                content_type=content_type,
-                organization=self.organization,
-                object_id__in=[obj.pk for obj in objects],
-            ).values("object_id", "b64_image")
-            found = {row["object_id"]: row["b64_image"] for row in rows}
-            for obj in objects:
-                if obj.pk not in found:
-                    qr = build_qr_instance(
-                        self.absolute(deep_link(obj)), obj, self.organization.pk
-                    )
-                    found[obj.pk] = qr.b64_image
-            qr_map[model.__name__] = found
-        return qr_map
-
-    def absolute(self, path):
-        """El QR se imprime y se escanea fuera: necesita la URL completa."""
-        if self.request is None:
-            return path
-        return self.request.build_absolute_uri(path)
+        return QRUrlBuilder(self.organization.pk, self.laboratory.pk)
 
     # -- enlaces -----------------------------------------------------------
 
     def deep_link(self, labroom=None, furniture=None, shelf=None):
         """El contrato de siempre: ``?labroom=&furniture=&shelf=``.
 
-        Es el mismo query string que llevan los QR impresos y los enlaces del
-        mapa de peligros, de modo que un enlace copiado desde aquí y uno
-        pegado en la pared abran lo mismo.
+        Ver ``laboratory.qr_nodes.labview_deep_link``; la base se resuelve una
+        vez por árbol en vez de un ``reverse()`` por nodo.
         """
-        base = reverse(
-            "laboratory:labview",
-            kwargs={"org_pk": self.organization.pk, "lab_pk": self.laboratory.pk},
-        )
+        base = getattr(self, "_labview_base", None)
+        if base is None:
+            base = self._labview_base = labview_deep_link(
+                self.organization.pk, self.laboratory.pk
+            )
         parts = []
         if labroom is not None:
             parts.append("labroom=%d" % labroom)
@@ -192,6 +146,25 @@ class TreeBuilder:
         if shelf is not None:
             parts.append("shelf=%d" % shelf)
         return base + ("?" + "&".join(parts) if parts else "")
+
+    def furniture_report_base(self):
+        base = getattr(self, "_furniture_report_base", None)
+        if base is None:
+            base = self._furniture_report_base = reverse(
+                "report:reports_furniture_detail",
+                kwargs={"org_pk": self.organization.pk},
+            )
+        return base
+
+    def shelves_by_furniture(self, shelves):
+        """``{mueble: {pk: estante}}``, calculado una vez por diccionario."""
+        cached = getattr(self, "_shelf_groups", None)
+        if cached is None or cached[0] is not shelves:
+            groups = {}
+            for pk, shelf in shelves.items():
+                groups.setdefault(shelf.furniture_id, {})[pk] = shelf
+            self._shelf_groups = cached = (shelves, groups)
+        return cached[1]
 
     # -- construcción ------------------------------------------------------
 
@@ -203,7 +176,7 @@ class TreeBuilder:
         shelves = self.get_shelves(furniture)
         counts = self.get_shelfobject_counts(furniture)
         occupancy = self.get_occupancy(furniture)
-        qr_map = self.get_qr_map(rooms, furniture, shelves)
+        qr_map = self.get_qr_urls()
         risk = self.build_risk() if self.risk else None
 
         by_room = {}
@@ -236,7 +209,7 @@ class TreeBuilder:
         shelves = self.get_shelves(items)
         counts = self.get_shelfobject_counts(items)
         occupancy = self.get_occupancy(items)
-        qr_map = self.get_qr_map([], items, shelves)
+        qr_map = self.get_qr_urls()
         risk = self.build_risk() if self.risk else None
 
         return {
@@ -263,7 +236,7 @@ class TreeBuilder:
         return {
             "id": room.pk,
             "name": room.name,
-            "qr": qr_map.get("LaboratoryRoom", {}).get(room.pk),
+            "qr": qr_map.url("labroom", room.pk),
             "deep_link": self.deep_link(labroom=room.pk),
             "counts": {
                 "furniture": len(furniture_data),
@@ -275,9 +248,7 @@ class TreeBuilder:
         }
 
     def build_furniture(self, item, grid, shelves, counts, occupancy, qr_map, risk):
-        own_shelves = {
-            pk: shelf for pk, shelf in shelves.items() if shelf.furniture_id == item.pk
-        }
+        own_shelves = self.shelves_by_furniture(shelves).get(item.pk, {})
         placed = set(dataconfig.iter_shelf_pks(grid))
         # Un estante sin celda no puede desaparecer del mapa: se muestra en una
         # bandeja aparte para que el editor pueda colocarlo.
@@ -290,19 +261,12 @@ class TreeBuilder:
             "type_name": str(item.type) if item.type else "",
             "color": item.color,
             "labroom": item.labroom_id,
-            "qr": qr_map.get("Furniture", {}).get(item.pk),
+            "qr": qr_map.url("furniture", item.pk),
             "deep_link": self.deep_link(labroom=item.labroom_id, furniture=item.pk),
             # El reporte del mueble ya existe y se pide por query string; se
             # arma aquí para que el mapa lo ofrezca sin consultar nada más.
             "report_url": "%s?laboratory=%d&furniture=%d"
-            % (
-                reverse(
-                    "report:reports_furniture_detail",
-                    kwargs={"org_pk": self.organization.pk},
-                ),
-                self.laboratory.pk,
-                item.pk,
-            ),
+            % (self.furniture_report_base(), self.laboratory.pk, item.pk),
             "grid": {"cells": grid},
             "unplaced": unplaced,
             "shelves": {
@@ -334,7 +298,7 @@ class TreeBuilder:
             "infinity_quantity": shelf.infinity_quantity,
             "occupancy_percent": self.occupancy_percent(shelf, occupancy),
             "counts": {"shelfobjects": counts.get(shelf.pk, 0)},
-            "qr": qr_map.get("Shelf", {}).get(shelf.pk),
+            "qr": qr_map.url("shelf", shelf.pk),
             "deep_link": self.deep_link(
                 labroom=shelf.furniture.labroom_id,
                 furniture=shelf.furniture_id,

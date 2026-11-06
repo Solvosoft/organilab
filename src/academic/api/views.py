@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from django.template.loader import render_to_string, get_template
 from django.utils import timezone
 from django.utils.decorators import method_decorator
-from weasyprint import HTML
+from presentation.pdf import html_to_pdf
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status, mixins
 from rest_framework.authentication import SessionAuthentication, BaseAuthentication
@@ -224,55 +224,47 @@ class ProcedureStepCommentAPI(
     @action(detail=True, methods=["put"])
     def update_comment(self, request, org_pk, lab_pk, pk=None):
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "update_comment")
-        comment = None
+        # Acción ``detail=True``: el router siempre entrega ``pk``.
+        serializer = ProcedureStepCommentSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        comment = get_object_or_404(CommentProcedureStep, pk=pk)
+        comment.comment = request.data["comment"]
+        comment.save()
+        query = (
+            self.get_queryset()
+            .filter(procedure_step=comment.procedure_step)
+            .order_by("pk")
+        )
+        template = render_to_string(
+            "academic/comment.html",
+            {"comments": query, "user": request.user},
+            request,
+        )
 
-        if pk:
-            serializer = ProcedureStepCommentSerializer(data=request.data)
-            if serializer.is_valid():
-                comment = get_object_or_404(CommentProcedureStep, pk=pk)
-            else:
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-            if comment:
-                comment.comment = request.data["comment"]
-                comment.save()
-                query = (
-                    self.get_queryset()
-                    .filter(procedure_step=comment.procedure_step)
-                    .order_by("pk")
-                )
-                template = render_to_string(
-                    "academic/comment.html",
-                    {"comments": query, "user": request.user},
-                    request,
-                )
-
-                return Response({"data": template}, status=status.HTTP_200_OK)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"data": template}, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=["delete"])
     def delete_comment(self, request, org_pk, lab_pk, pk=None):
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "delete_comment")
-        if pk:
-            comment = get_object_or_404(
-                CommentProcedureStep.objects.using(settings.READONLY_DATABASE), pk=pk
-            )
-            procedure_step = comment.procedure_step
-            comment.delete()
-            template = render_to_string(
-                "academic/comment.html",
-                {
-                    "comments": self.get_queryset()
-                    .filter(procedure_step=procedure_step)
-                    .order_by("pk"),
-                    "user": request.user,
-                },
-                request,
-            )
+        # Acción ``detail=True``: el router siempre entrega ``pk``.
+        comment = get_object_or_404(
+            CommentProcedureStep.objects.using(settings.READONLY_DATABASE), pk=pk
+        )
+        procedure_step = comment.procedure_step
+        comment.delete()
+        template = render_to_string(
+            "academic/comment.html",
+            {
+                "comments": self.get_queryset()
+                .filter(procedure_step=procedure_step)
+                .order_by("pk"),
+                "user": request.user,
+            },
+            request,
+        )
 
-            return Response({"data": template}, status=status.HTTP_200_OK)
-
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response({"data": template}, status=status.HTTP_200_OK)
 
 
 @method_decorator(login_required, name="dispatch")
@@ -371,9 +363,7 @@ class MyProceduresAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
         }
         template = get_template("academic/my_procedure_pdf.html")
         html = template.render(context=context)
-        pdf = HTML(
-            string=html, encoding="utf-8", base_url=request.build_absolute_uri()
-        ).write_pdf()
+        pdf = html_to_pdf(html, base_url=request.build_absolute_uri())
         response = HttpResponse(pdf, content_type="application/pdf")
         response["Content-Disposition"] = (
             f'attachment; filename="procedure_{my_procedure.pk}.pdf"'

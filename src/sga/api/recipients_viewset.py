@@ -67,12 +67,10 @@ class RecipientSizeAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
     @action(detail=True, methods=["get"])
     def get_recipient(self, request, org_pk, pk=None, *args, **kwargs):
         self._check_permission_on_organization(request, org_pk, "list")
-        if pk:
-            recipient = get_object_or_404(RecipientSize, pk=pk)
-            serializer = RecipientSizeSerializer(recipient)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        # Acción ``detail=True``: el router siempre entrega ``pk``.
+        recipient = get_object_or_404(RecipientSize, pk=pk)
+        serializer = RecipientSizeSerializer(recipient)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(detail=False, methods=["post"])
     def create_recipient(self, request, org_pk, *args, **kwargs):
@@ -119,33 +117,31 @@ class RecipientSizeAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
     def update_recipient(self, request, org_pk, pk=None, *args, **kwargs):
         self._check_permission_on_organization(request, org_pk, "update")
 
-        if pk:
-            recipient = get_object_or_404(RecipientSize, pk=pk)
-            form = RecipientSizeForm(data=request.data, instance=recipient)
-            serializer = RecipientSizeSerializer(data=request.data, instance=recipient)
+        # Acción ``detail=True``: el router siempre entrega ``pk``.
+        recipient = get_object_or_404(RecipientSize, pk=pk)
+        form = RecipientSizeForm(data=request.data, instance=recipient)
+        serializer = RecipientSizeSerializer(data=request.data, instance=recipient)
 
-            if serializer.is_valid() and form.is_valid():
-                recipient = serializer.save()
-                organilab_logentry(
-                    request.user,
-                    recipient,
-                    CHANGE,
-                    "recipient size",
-                    relobj=[self.organization],
-                    changed_data=form.changed_data,
-                    change_message=_("Updated recipient size '%(name)s'")
-                    % {"name": recipient.name},
-                )
+        if serializer.is_valid() and form.is_valid():
+            recipient = serializer.save()
+            organilab_logentry(
+                request.user,
+                recipient,
+                CHANGE,
+                "recipient size",
+                relobj=[self.organization],
+                changed_data=form.changed_data,
+                change_message=_("Updated recipient size '%(name)s'")
+                % {"name": recipient.name},
+            )
 
-                return JsonResponse(
-                    {"detail": _("Item updated successfully.")},
-                    status=status.HTTP_200_OK,
-                )
-            else:
-                return Response(
-                    {"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
-                )
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+            return JsonResponse(
+                {"detail": _("Item updated successfully.")},
+                status=status.HTTP_200_OK,
+            )
+        return Response(
+            {"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
+        )
 
     @action(detail=False, methods=["delete"])
     def delete_recipient(self, request, org_pk):

@@ -12,14 +12,14 @@ from django.core.exceptions import FieldDoesNotExist
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import redirect, get_object_or_404, render
 from django.template.loader import get_template
-from django.urls import reverse_lazy, path
 from django.urls.base import reverse
 from django.utils.decorators import method_decorator
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
-from weasyprint import HTML
+from presentation.pdf import html_to_pdf
+from laboratory.templatetags.lab_data_retriever import annotate_object_counts
 
 from academic.models import MyProcedure
 from auth_and_perms.models import Profile, ProfilePermission
@@ -54,7 +54,7 @@ from laboratory.utils import (
     get_lab_ids,
     check_user_access_kwargs_org_lab,
 )
-from laboratory.views.djgeneric import CreateView, UpdateView, ListView, DeleteView
+from laboratory.views.djgeneric import UpdateView, ListView, DeleteView
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
 from presentation.models import FeedbackEntry
 
@@ -93,54 +93,6 @@ class LaboratoryEdit(UpdateView):
             relobj=self.object,
         )
         return super(LaboratoryEdit, self).form_valid(form)
-
-
-class LaboratoryView(object):
-    model = Laboratory
-    template_name_base = "laboratory/laboratory_"
-
-    def __init__(self):
-        self.create = login_required(
-            CreateView.as_view(
-                model=self.model,
-                fields=("name",),
-                success_url=reverse_lazy("laboratory:laboratory_list"),
-                template_name=self.template_name_base + "form.html",
-            )
-        )
-
-        self.edit = login_required(
-            UpdateView.as_view(
-                model=self.model,
-                fields=("name",),
-                success_url=reverse_lazy("laboratory:laboratory_list"),
-                template_name=self.template_name_base + "form.html",
-            )
-        )
-
-        self.delete = login_required(
-            DeleteView.as_view(
-                model=self.model,
-                success_url=reverse_lazy("laboratory:laboratory_list"),
-                template_name=self.template_name_base + "delete.html",
-            )
-        )
-
-        self.list = login_required(
-            ListView.as_view(
-                model=self.model,
-                paginate_by=10,
-                template_name=self.template_name_base + "list.html",
-            )
-        )
-
-    def get_urls(self):
-        return [
-            path("list", self.list, name="laboratory_list"),
-            path("create", self.create, name="laboratory_create"),
-            path("edit/<int:pk>/", self.edit, name="laboratory_update"),
-            path("delete/<int:pk>/", self.delete, name="laboratory_delete"),
-        ]
 
 
 @method_decorator(login_required, name="dispatch")
@@ -215,33 +167,6 @@ class CreateLaboratoryFormView(FormView):
 
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
-    permission_required("laboratory.add_laboratory", raise_exception=True),
-    name="dispatch",
-)
-class CreateLaboratoryView(CreateView):
-    form_class = LaboratoryCreate
-    success_url = "/"
-
-    def post(self, request, *args, **kwargs):
-        user = self.request.user
-        form = self.get_form()
-        if request.user.has_perm("laboratory.add_laboratory"):
-            if form.is_valid():
-                form.save(user)
-                return redirect(self.success_url)
-        else:
-            messages.error(
-                request,
-                _(
-                    "Sorry, there is not available laboratory, please contact the administrator and request a laboratory enrollment"
-                ),
-            )
-            # Translate
-            return redirect(self.success_url)
-
-
-@method_decorator(login_required, name="dispatch")
-@method_decorator(
     permission_required("laboratory.view_laboratory", raise_exception=True),
     name="dispatch",
 )
@@ -253,9 +178,9 @@ class LaboratoryListView(ListView):
     ordering = ["name"]
 
     def get_queryset(self):
-        organization = OrganizationStructure.objects.filter(pk=self.org).first()
-        if organization is None:
-            return self.model.objects.none()
+        # djgeneric.ListView.get ya respondió 404 si la organización no existe
+        # (check_user_access_kwargs_org_lab la busca antes de llegar aquí).
+        organization = OrganizationStructure.objects.get(pk=self.org)
 
         user = self.request.user
         profile = getattr(user, "profile", None)
@@ -264,7 +189,7 @@ class LaboratoryListView(ListView):
         q = self.request.GET.get("search_fil", "")
         if q != "":
             queryset = queryset.filter(name__icontains=q)
-        return queryset.order_by(*self.ordering)
+        return annotate_object_counts(queryset).order_by(*self.ordering)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -484,9 +409,7 @@ def get_pdf_register_user_qr(request, org_pk, lab_pk, pk):
     }
 
     html = template.render(context=context)
-    page = HTML(
-        string=html, base_url=request.build_absolute_uri(), encoding="utf-8"
-    ).write_pdf()
+    page = html_to_pdf(html, base_url=request.build_absolute_uri())
     response = HttpResponse(page, content_type="application/pdf")
     response["Content-Disposition"] = (
         'attachment; filename="register_user_qr_%s%s%s.pdf"' % (org_pk, lab_pk, pk)
@@ -658,8 +581,24 @@ def get_logentry_from_registeruserqr(request, org_pk, lab_pk, pk):
     )
 
 
+def get_register_user_qr(org_pk, lab_pk, pk):
+    """El QR solo vale para el laboratorio y la organización para los que se emitió.
+
+    Sin este filtro bastaba cambiar `org_pk`/`lab_pk` en la URL para recibir el rol
+    del QR en cualquier laboratorio u organización.
+    """
+    return get_object_or_404(
+        RegisterUserQR,
+        pk=pk,
+        organization_register_id=org_pk,
+        object_id=lab_pk,
+        content_type__app_label="laboratory",
+        content_type__model="laboratory",
+    )
+
+
 def login_register_user_qr(request, org_pk, lab_pk, pk):
-    user_qr = get_object_or_404(RegisterUserQR, pk=pk)
+    user_qr = get_register_user_qr(org_pk, lab_pk, pk)
     return render(
         request,
         "laboratory/register_user_qr/login_register_user.html",
@@ -800,8 +739,9 @@ def add_user_to_rel_obj(request, user, org_pk, lab_pk, qr_obj, id_card=None):
     )
 
 
+@login_required
 def redirect_user_to_labindex(request, org_pk, lab_pk, pk):
-    user_qr = get_object_or_404(RegisterUserQR, pk=pk)
+    user_qr = get_register_user_qr(org_pk, lab_pk, pk)
     add_user_to_rel_obj(request, request.user, org_pk, lab_pk, user_qr, id_card=None)
     return redirect(
         reverse("laboratory:labindex", kwargs={"org_pk": org_pk, "lab_pk": lab_pk})
@@ -809,19 +749,28 @@ def redirect_user_to_labindex(request, org_pk, lab_pk, pk):
 
 
 def create_user_qr(request, org_pk, lab_pk, pk, user=None):
-    user_qr = get_object_or_404(RegisterUserQR, pk=pk)
+    user_qr = get_register_user_qr(org_pk, lab_pk, pk)
     password_form = PasswordCodeForm(user=None, code=user_qr.code)
     register_form = RegisterForm(obj=None)
     instance, obj, context = None, None, {}
 
     if request.method == "POST":
         if user:
+            # Solo el propio usuario autenticado puede completar sus datos: antes
+            # cualquiera con el código del QR reescribía el correo y la clave de
+            # cualquier `user` de la URL.
+            if not request.user.is_authenticated or request.user.pk != user:
+                raise Http404()
             instance = get_object_or_404(User, pk=user)
             obj = instance.pk
             context.update({"instance": instance.pk})
         register_form = RegisterForm(request.POST, instance=instance, obj=obj)
+        password_form = PasswordCodeForm(
+            request.POST, user=instance, code=user_qr.code
+        )
 
-        if register_form.is_valid():
+        # El código del QR se valida antes de crear la cuenta o de dar el rol.
+        if register_form.is_valid() and password_form.is_valid():
             instance = register_form.save(commit=False)
             instance.username = register_form.cleaned_data["email"]
             if not user_qr.activate_user:
@@ -851,19 +800,15 @@ def create_user_qr(request, org_pk, lab_pk, pk, user=None):
                 id_card = register_form.cleaned_data["id_card"]
                 add_user_to_rel_obj(request, instance, org_pk, lab_pk, user_qr, id_card)
 
-            password_form = PasswordCodeForm(
-                request.POST, user=instance, code=user_qr.code
-            )
-            if password_form.is_valid():
-                instance.set_password(password_form.cleaned_data["password"])
-                instance.save()
-                login(request, instance)
-                return redirect(
-                    reverse(
-                        "laboratory:labindex",
-                        kwargs={"org_pk": org_pk, "lab_pk": lab_pk},
-                    )
+            instance.set_password(password_form.cleaned_data["password"])
+            instance.save()
+            login(request, instance)
+            return redirect(
+                reverse(
+                    "laboratory:labindex",
+                    kwargs={"org_pk": org_pk, "lab_pk": lab_pk},
                 )
+            )
 
     context.update(
         {

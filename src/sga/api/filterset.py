@@ -6,7 +6,7 @@ from django_filters import FilterSet, CharFilter
 from django.db.models import Q
 from djgentelella.fields.drfdatetime import DateTimeRangeTextWidget
 
-from sga.models import ReviewSubstance, DisplayLabel, RecipientSize, HCodeCategory, \
+from sga.models import ReviewSubstance, DisplayLabel, RecipientSize, \
     DangerSubstance, DangerSubstanceCategory
 from sga.models import Substance
 
@@ -36,9 +36,8 @@ class ReviewSubstanceFilterSet(FilterSet):
         )
 
     def filter_comercial_name(self, queryset, name, value):
-        if value:
-            return queryset.filter(substance__comercial_name__icontains=value)
-        return queryset
+        # django-filter no llama al método con valores vacíos.
+        return queryset.filter(substance__comercial_name__icontains=value)
 
     class Meta:
         model = ReviewSubstance
@@ -80,18 +79,6 @@ class RecipientsFilterSet(FilterSet):
     class Meta:
         model = RecipientSize
         fields = ["name", "width", "height"]
-
-
-class HCategoryFilterSet(FilterSet):
-    class Meta:
-        model = HCodeCategory
-        fields = {
-            "name": ["icontains"],
-            "threshold": ["exact"],
-            "danger_category": ["exact"],
-            "h_code": ["exact"],
-            "measurement_unit": ["exact"],
-        }
 
 
 class DangerSubstanceFilterSet(FilterSet):

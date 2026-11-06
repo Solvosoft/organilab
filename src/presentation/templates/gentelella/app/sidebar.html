@@ -47,7 +47,7 @@
 						</a>
 					</li>
 				{% endif %}
-				{% if org_pk %}
+				{% if org_pk and perms.djgentelella.view_trash %}
 					<li>
 						<a class="nav-link" href="{% url 'laboratory:trash_list' org_pk %}"
 									title="{% trans 'Trash' %}">

@@ -11,17 +11,23 @@ from django.conf import settings
 from django.contrib.auth.decorators import permission_required, login_required
 from django.http import Http404
 from django.http.response import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from django.template.loader import get_template
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.text import slugify
-from django.utils.timezone import now
+from report.utils import report_file_date
 from django.utils.translation import gettext as _
-from weasyprint import HTML
+from presentation.pdf import html_to_pdf
 
+from auth_and_perms.organization_utils import (
+    get_sds_shared_organization_ids,
+    organization_can_change_laboratory,
+    user_is_allowed_on_organization,
+)
 from laboratory.forms import H_CodeForm
 from laboratory.models import (
+    Laboratory,
     ShelfObject,
     OrganizationStructure,
     UserOrganization,
@@ -38,16 +44,18 @@ from report.forms import (
 @login_required
 @permission_required("laboratory.do_report", raise_exception=True)
 def report_shelf_objects(request, org_pk, lab_pk, pk):
+    # Sin estas comprobaciones bastaba `do_report` en cualquier organización
+    # para descargar objetos de otro laboratorio (por pk, o todos con lab_pk=0).
+    organization = get_object_or_404(OrganizationStructure, pk=org_pk)
+    laboratory = get_object_or_404(Laboratory, pk=lab_pk)
+    user_is_allowed_on_organization(request.user, organization)
+    organization_can_change_laboratory(laboratory, organization, raise_exec=True)
 
-    if not pk:
-        if lab_pk:
-            shelf_objects = ShelfObject.objects.filter(
-                shelf__furniture__labroom__laboratory__pk=lab_pk
-            )
-        else:
-            shelf_objects = ShelfObject.objects.all()
-    else:
-        shelf_objects = ShelfObject.objects.filter(pk=pk)
+    shelf_objects = ShelfObject.objects.filter(
+        shelf__furniture__labroom__laboratory=laboratory
+    )
+    if pk:
+        shelf_objects = shelf_objects.filter(pk=pk)
 
     context = {
         "user": request.user,
@@ -64,9 +72,7 @@ def report_shelf_objects(request, org_pk, lab_pk, pk):
     template = get_template("pdf/shelf_object_pdf.html")
 
     html = template.render(context=context)
-    page = HTML(
-        string=html, encoding="utf-8", base_url=request.build_absolute_uri()
-    ).write_pdf()
+    page = html_to_pdf(html, base_url=request.build_absolute_uri())
 
     response = HttpResponse(page, content_type="application/pdf")
 
@@ -104,7 +110,7 @@ def report_h_code(request, *args, **kwargs):
     }
 
     html = template.render(context=context)
-    page = HTML(string=html, encoding="utf-8").write_pdf()
+    page = html_to_pdf(html)
 
     response = HttpResponse(page, content_type="application/pdf")
 
@@ -133,7 +139,7 @@ class OrganizationReactivePresenceList(ReportListView):
                 "form": OrganizationReactiveForm(
                     initial={
                         "name": slugify(
-                            title + " " + now().strftime("%x").replace("/", "-")
+                            title + " " + report_file_date()
                         ),
                         "title": title,
                         "organization": self.org,
@@ -144,23 +150,6 @@ class OrganizationReactivePresenceList(ReportListView):
             }
         )
         return context
-
-
-def getLevelClass(level):
-    color = {
-        0: "default",
-        1: "danger",
-        2: "info",
-        3: "warning",
-        4: "default",
-        5: "danger",
-        6: "info",
-    }
-    level = level % 6
-    cl = "col-md-12"
-    if level:
-        cl = "col-md-%d offset-md-%d" % (12 - level, level)
-    return cl, color[level]
 
 
 @login_required
@@ -174,9 +163,8 @@ def report_index(request, org_pk):
     if not user_perms:
         raise Http404
 
-    org = OrganizationStructure.objects.filter(pk=org_pk).first()
-    if not org:
-        raise Http404
+    # La membresía apunta por FK a la organización: si existe, la org también.
+    org = user_perms.organization
 
     context = {"organization": org, "org_pk": org_pk}
     return render(request, "laboratory/reports/report_index.html", context=context)
@@ -202,7 +190,7 @@ class ChemicalInventoryReport(ReportListView):
                 "form": ReportForm(
                     initial={
                         "name": slugify(
-                            title + " " + now().strftime("%x").replace("/", "-")
+                            title + " " + report_file_date()
                         ),
                         "title": title,
                         "organization": self.org,
@@ -243,7 +231,13 @@ def sds_coverage_svg(request, org_pk):
     from sga.models import SubstanceCharacteristics
     from django.db.models import Subquery, OuterRef
 
-    qs = SubstanceCharacteristics.objects.filter(object_related__organization__pk=org_pk)
+    # Mismo alcance que la lista de fichas (msds:list_msds): la cobertura se
+    # mide sobre las sustancias que la organización ve, no solo las que creó.
+    qs = SubstanceCharacteristics.objects.filter(
+        object_related__organization__in=get_sds_shared_organization_ids(
+            request.user, org_pk
+        )
+    )
     total = qs.count()
 
     if total == 0:
@@ -341,9 +335,8 @@ def sds_coverage_svg(request, org_pk):
     else:
         angle = 0
         for _label, count, color in segments:
+            # Cada segmento tiene al menos una sustancia: sweep siempre es > 0.
             sweep = count / total * 360
-            if sweep <= 0:
-                continue
             end_angle = angle + min(sweep, 359.99)
             d = _donut_arc_path(cx, donut_cy, r_outer, r_inner, angle, end_angle)
             parts.append(

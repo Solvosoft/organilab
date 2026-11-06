@@ -1,7 +1,7 @@
-from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 
 
 class HTMLPresentation:
 
     def get_description_display(self):
-        return format_html(self.description)
+        return mark_safe(self.description)

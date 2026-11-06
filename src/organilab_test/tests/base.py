@@ -31,6 +31,79 @@ from selenium.common.exceptions import (
 from selenium.webdriver.support.ui import WebDriverWait
 
 
+_private_display = None
+
+
+def use_private_display():
+    """Da al proceso actual su propio Xvfb y apunta DISPLAY a él (una vez por proceso).
+
+    Con --parallel todos los Chrome comparten la pantalla de xvfb-run y se
+    roban el foco unos a otros. La emulación de foco cubre focus/blur, pero no
+    el ratón: cada vez que el servidor X reapila las ventanas, la que queda
+    debajo o la que se activa recibe movimientos con la posición del puntero
+    real y buttons=0, que cortan cualquier arrastre (dragula) o gesto en curso.
+    Con una pantalla por worker cada navegador es la única ventana de su
+    display y siempre tiene el foco.
+
+    SELENIUM_PRIVATE_DISPLAY: "1" siempre, "0" nunca, "auto" (por defecto) solo
+    en los workers de --parallel, para no esconder el navegador a quien corre
+    una prueba suelta y quiere verla. Si no hay Xvfb instalado no hace nada.
+    """
+    global _private_display
+    mode = os.getenv("SELENIUM_PRIVATE_DISPLAY", "auto").lower()
+    if mode == "0":
+        return
+    if mode != "1":
+        import multiprocessing
+
+        if multiprocessing.parent_process() is None:
+            return  # corrida en serie: se respeta el DISPLAY recibido
+    if _private_display is not None and _private_display.poll() is None:
+        return
+    xvfb = shutil.which("Xvfb")
+    if not xvfb:
+        return
+
+    import atexit
+    import subprocess
+    from multiprocessing.util import Finalize
+
+    def die_with_worker():
+        # PR_SET_PDEATHSIG: el kernel le manda SIGTERM a Xvfb si el worker
+        # muere sin pasar por sus finalizadores (p.ej. matado por señal).
+        # No se usa -terminate de Xvfb: cerraría la pantalla en cuanto una
+        # clase cierra su Chrome para abrir otro (Cap3BoxesTest lo hace).
+        try:
+            import ctypes
+            import signal
+
+            ctypes.CDLL("libc.so.6", use_errno=True).prctl(1, signal.SIGTERM)
+        except Exception:  # noqa: BLE001 - fuera de Linux no hay prctl
+            pass
+
+    # -displayfd: Xvfb elige un número de display libre y lo escribe en el fd
+    # cuando ya acepta conexiones, así que no hay carrera ni espera fija.
+    read_fd, write_fd = os.pipe()
+    proc = subprocess.Popen(
+        [xvfb, "-displayfd", str(write_fd), "-screen", "0", "1920x1080x24", "-nolisten", "tcp"],
+        pass_fds=(write_fd,),
+        preexec_fn=die_with_worker,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    os.close(write_fd)
+    with os.fdopen(read_fd) as pipe:
+        number = pipe.readline().strip()
+    if not number:
+        proc.kill()
+        return
+    os.environ["DISPLAY"] = ":%s" % number
+    _private_display = proc
+    # Los workers de multiprocessing no ejecutan atexit; Finalize sí.
+    Finalize(proc, proc.terminate, exitpriority=10)
+    atexit.register(proc.terminate)
+
+
 class SeleniumBase(StaticLiveServerTestCase):
     # Retardo entre capturas. Sólo aplica al generar el GIF: le da al navegador
     # tiempo de pintar la transición para que la animación no salte.
@@ -292,6 +365,9 @@ class SeleniumBase(StaticLiveServerTestCase):
         # de las pruebas de reservaciones se comprobó que no cambia nada.
         page_load_strategy = os.getenv("SELENIUM_PAGE_LOAD_STRATEGY", "normal")
 
+        if not is_docker:
+            use_private_display()
+
         if is_docker:
             driverpath = os.getenv("CHROMEDRIVER_DIR", "/usr/bin/chromedriver")
             options = webdriver.ChromeOptions()
@@ -333,6 +409,7 @@ class SeleniumBase(StaticLiveServerTestCase):
         )
         cls.ob = Screenshot(cls.selenium)
         cls.selenium.set_window_size(1280, 720)
+        cls.emulate_window_focus()
 
         cls.tmp = Path(getattr(settings, 'SELENIUM_SCREENSHOTS_DIR', Path(settings.BASE_DIR) / "tmp"))
         cls.screenshot_size = "1280x720"
@@ -368,6 +445,61 @@ class SeleniumBase(StaticLiveServerTestCase):
             """
 
         cls.action = ActionChains(cls.selenium)
+
+    @classmethod
+    def emulate_window_focus(cls):
+        """Hace que la pestaña actual se comporte como si su ventana tuviese el foco.
+
+        Con --parallel todos los Chrome comparten la misma pantalla (un único
+        Xvfb) y sólo uno tiene el foco del sistema; cada worker que abre o
+        navega su navegador se lo quita al resto. En la ventana sin foco
+        document.hasFocus() es false, `focus` no se dispara y, cuando otro
+        worker le quita el foco, se dispara `blur`. El datetimepicker de
+        gentelella se abre con `focus` y se cierra (destruyendo sus celdas) con
+        `blur`, así que el día que se iba a clicar desaparecía bajo el test
+        (StaleElementReference en las reservas). Con la emulación la página se
+        comporta como en una ventana con foco pase lo que pase fuera de ella.
+
+        No cubre el ratón: para los arrastres ver bring_window_to_front().
+        La emulación de foco de DevTools es por pestaña (target), así que hay
+        que volver a pedirla al pasar a otra pestaña.
+        """
+        try:
+            cls.selenium.execute_cdp_cmd(
+                "Emulation.setFocusEmulationEnabled", {"enabled": True}
+            )
+        except Exception:  # noqa: BLE001 - navegador sin CDP (p.ej. Firefox)
+            pass
+
+    def bring_window_to_front(self):
+        """Da a la ventana del navegador el foco real del sistema y espera a tenerlo.
+
+        La emulación de foco basta para los eventos focus/blur, pero no para el
+        ratón: cuando una ventana sin foco recibe el mousedown, Chrome la
+        activa y el servidor X le entrega un movimiento con la posición real
+        del puntero y ningún botón pulsado (buttons=0). Si eso cae en medio de
+        un arrastre, dragula lo toma como que se soltó el botón y lo cancela.
+        Activándola antes del gesto, ese movimiento llega antes del mousedown y
+        no estorba. Para saber cuándo tiene el foco de verdad hay que apagar la
+        emulación un momento: con ella document.hasFocus() siempre es true.
+        """
+        driver = self.selenium
+        if not hasattr(driver, "execute_cdp_cmd"):
+            return
+        try:
+            driver.execute_cdp_cmd(
+                "Emulation.setFocusEmulationEnabled", {"enabled": False}
+            )
+            driver.execute_cdp_cmd("Page.bringToFront", {})
+            WebDriverWait(driver, self.interactable_timeout).until(
+                lambda d: d.execute_script("return document.hasFocus()")
+            )
+        except TimeoutException:
+            # Otro worker volvió a quitarle el foco: el gesto sigue y `expect`
+            # dirá si surtió efecto.
+            pass
+        finally:
+            self.emulate_window_focus()
 
     def setUp(self):
         super().setUp()
@@ -421,6 +553,7 @@ class SeleniumBase(StaticLiveServerTestCase):
             for handle in reversed(driver.window_handles):
                 driver.switch_to.window(handle)
                 if driver.execute_script("return window.name") == window_name:
+                    self.emulate_window_focus()
                     return True
             return False
 
@@ -822,6 +955,7 @@ class SeleniumBase(StaticLiveServerTestCase):
             source = self.selenium.find_element(By.XPATH, obj["x"])
             target = self.selenium.find_element(By.XPATH, obj["y"])
 
+            self.bring_window_to_front()
             self.action.move_to_element(source).click_and_hold().perform()
             self.scaled_sleep(0.2)
             # El primer desplazamiento es el que marca el inicio del arrastre.
@@ -928,7 +1062,30 @@ class SeleniumBase(StaticLiveServerTestCase):
                 raise
             self.extra_action(obj, fresh)
 
+    def wait_gone(self, xpath, timeout=None):
+        """Espera a que no quede visible ningún elemento que case con `xpath`."""
+
+        def gone(driver):
+            for element in driver.find_elements(By.XPATH, xpath):
+                try:
+                    if element.is_displayed():
+                        return False
+                except StaleElementReferenceException:
+                    continue  # se quitó del DOM entre la búsqueda y la consulta
+            return True
+
+        WebDriverWait(self.selenium, timeout or self.element_timeout).until(
+            gone,
+            "%s sigue visible (url: %s)" % (xpath, self.selenium.current_url),
+        )
+
     def apply_utils(self, obj):
+
+        if "wait_gone" in obj:
+            # Antes de buscar el elemento del paso: p.ej. que se cierre el
+            # aviso de un guardado AJAX para que no tape ni reemplace lo que
+            # el paso va a abrir.
+            self.wait_gone(obj["wait_gone"])
 
         if "scroll" in obj:
             self.selenium.execute_script(obj["scroll"])

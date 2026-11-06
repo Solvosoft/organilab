@@ -17,6 +17,8 @@ from laboratory.models import Catalog, UserOrganization
 from presentation.alerts import KEY_ALERT_TRIGGER, TRIGGER_PERCENT
 from presentation.models import AlertEvent, AlertRule
 from risk_management.models import Buildings
+from auth_and_perms.roles import ROLES
+from auth_and_perms.tests.roles import require_role
 
 
 class BuildingAccessTestCase(ReportTestCase):
@@ -40,7 +42,7 @@ class BuildingAccessTestCase(ReportTestCase):
                 profile=profile, organization=self.organization,
                 content_type=ContentType.objects.get_for_model(Buildings), object_id=building.pk,
             )
-            permission.rol.add(Rol.objects.get(name=rol_name))
+            permission.rol.add(require_role(self, rol_name))
         return user
 
     def url(self, name, **kwargs):
@@ -71,7 +73,7 @@ class MixedBuildingRolesTest(BuildingAccessTestCase):
     def setUp(self):
         super().setUp()
         self.mixed = self.building_user("mixto", {
-            self.building: "Administrador ambiental", self.building_b: "Analista ambiental",
+            self.building: ROLES["administrador_ambiental"], self.building_b: ROLES["analista_ambiental"],
         })
         self.client.force_login(self.mixed)
 
@@ -135,7 +137,7 @@ class SingleBuildingRegistryTest(BuildingAccessTestCase):
 
     def setUp(self):
         super().setUp()
-        self.registry = self.building_user("registro_a", {self.building: "Encargado de registro ambiental"})
+        self.registry = self.building_user("registro_a", {self.building: ROLES["registro_ambiental"]})
         self.client.force_login(self.registry)
 
     def test_api_and_selects_hide_the_other_building(self):
@@ -175,7 +177,7 @@ class SingleBuildingRegistryTest(BuildingAccessTestCase):
         )
 
     def test_platform_needs_an_organization_role(self):
-        admin_a = self.building_user("admin_a", {self.building: "Administrador ambiental"})
+        admin_a = self.building_user("admin_a", {self.building: ROLES["administrador_ambiental"]})
         self.client.force_login(admin_a)
         for name in ("platform:systemparameter_list", "platform:notificationsetting_list", "platform:alertrule_list",
                      "platform:api-systemparameter-list", "platform:api-alertrule-list"):
@@ -191,15 +193,15 @@ class AlertRecipientsTest(BuildingAccessTestCase):
     def test_rule_roles_only_notify_people_who_see_the_building(self):
         # Los dos tienen el rol de la regla, pero cada uno en un edificio distinto: la
         # alerta de A no puede llegarle a quien solo ve B.
-        self.building_user("vigia_a", {self.building: "Analista ambiental"})
-        self.building_user("vigia_b", {self.building_b: "Analista ambiental"})
+        self.building_user("vigia_a", {self.building: ROLES["analista_ambiental"]})
+        self.building_user("vigia_b", {self.building_b: ROLES["analista_ambiental"]})
         self.record(self.water_point, 3, "90", self.m3)
         rule = AlertRule.objects.create(
             organization=self.organization, name="Agua", process="ambiental.consumption",
             trigger=Catalog.objects.get(key=KEY_ALERT_TRIGGER, description=TRIGGER_PERCENT),
             threshold={"percent": "20"}, created_by=self.user, create_task=False, notify_responsible=False,
         )
-        rule.notify_roles.add(Rol.objects.get(name="Analista ambiental"))
+        rule.notify_roles.add(require_role(self, "analista_ambiental"))
         evaluate_rule(rule, today=datetime.date(2026, 4, 5))
         event = AlertEvent.objects.get()
         self.assertIn("vigia_a", event.recipients)
@@ -213,41 +215,41 @@ class BuildingAccessScreenTest(BuildingAccessTestCase):
 
     def test_organization_admin_grants_and_updates_without_duplicates(self):
         person = self.building_user("persona", {})
-        data = {"user": person.pk, "building": self.building_b.pk, "rol": self.roles("Analista ambiental")}
+        data = {"user": person.pk, "building": self.building_b.pk, "rol": self.roles(ROLES["analista_ambiental"])}
         response = self.post("api-buildingaccess-list", data)
         self.assertEqual(response.status_code, 201, response.content)
         self.assertEqual(response.json()["building"]["text"], "Edificio B")
-        data["rol"] = self.roles("Encargado de registro ambiental")
+        data["rol"] = self.roles(ROLES["registro_ambiental"])
         self.assertEqual(self.post("api-buildingaccess-list", data).status_code, 201)
         permission = ProfilePermission.objects.get(profile=person.profile, object_id=self.building_b.pk)
-        self.assertEqual(list(permission.rol.values_list("name", flat=True)), ["Encargado de registro ambiental"])
+        self.assertEqual(list(permission.rol.values_list("name", flat=True)), [ROLES["registro_ambiental"]])
         self.assertTrue(BuildingAccess(person, self.organization).has("ambiental.add_consumptionrecord", self.building_b))
         self.assertFalse(BuildingAccess(person, self.organization).has("ambiental.view_consumptionrecord", self.building))
 
     def test_non_environmental_roles_are_rejected(self):
         person = self.building_user("persona2", {})
-        other_rol = Rol.objects.create(name="Estudiante")
+        other_rol = Rol.objects.create(name=ROLES["estudiante"])
         response = self.post("api-buildingaccess-list", {"user": person.pk, "building": self.building.pk, "rol": [other_rol.pk]})
         self.assertEqual(response.status_code, 400)
 
     def test_building_admin_only_manages_own_building(self):
-        admin_a = self.building_user("admin_a2", {self.building: "Administrador ambiental"})
-        person = self.building_user("persona3", {self.building_b: "Analista ambiental"})
+        admin_a = self.building_user("admin_a2", {self.building: ROLES["administrador_ambiental"]})
+        person = self.building_user("persona3", {self.building_b: ROLES["analista_ambiental"]})
         self.client.force_login(admin_a)
         rows = self.client.get(self.url("api-buildingaccess-list")).json()["data"]
         self.assertEqual({row["building"]["text"] for row in rows}, {"Edificio A"})
         response = self.post("api-buildingaccess-list", {
-            "user": person.pk, "building": self.building_b.pk, "rol": self.roles("Administrador ambiental"),
+            "user": person.pk, "building": self.building_b.pk, "rol": self.roles(ROLES["administrador_ambiental"]),
         })
         self.assertEqual(response.status_code, 400)
         response = self.post("api-buildingaccess-list", {
-            "user": person.pk, "building": self.building.pk, "rol": self.roles("Analista ambiental"),
+            "user": person.pk, "building": self.building.pk, "rol": self.roles(ROLES["analista_ambiental"]),
         })
         self.assertEqual(response.status_code, 201, response.content)
         self.assertEqual(self.client.get(self.url("building_access_list")).status_code, 200)
 
     def test_removing_user_or_building_cleans_access(self):
-        person = self.building_user("persona4", {self.building: "Analista ambiental", self.building_b: "Analista ambiental"})
+        person = self.building_user("persona4", {self.building: ROLES["analista_ambiental"], self.building_b: ROLES["analista_ambiental"]})
         building_pps = ProfilePermission.objects.filter(
             profile=person.profile, content_type=ContentType.objects.get_for_model(Buildings)
         )

@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.contrib.admin.models import ADDITION, DELETION, CHANGE
-from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
@@ -15,7 +15,8 @@ from laboratory.utils import organilab_logentry
 from laboratory.views.djgeneric import CreateView, DeleteView, UpdateView
 
 
-@permission_required("laboratory.view_protocol")
+@login_required
+@permission_required("laboratory.view_protocol", raise_exception=True)
 def protocol_list(request, *args, **kwargs):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE),
@@ -26,7 +27,8 @@ def protocol_list(request, *args, **kwargs):
     return render(request, "laboratory/protocol/protocol_list.html", context=context)
 
 
-@method_decorator(permission_required("laboratory.add_protocol"), name="dispatch")
+@method_decorator(login_required, name="dispatch")
+@method_decorator(permission_required("laboratory.add_protocol", raise_exception=True), name="dispatch")
 class ProtocolCreateView(CreateView):
     model = Protocol
     template_name = "laboratory/protocol/create.html"
@@ -61,7 +63,8 @@ class ProtocolCreateView(CreateView):
         return super().form_invalid(form)
 
 
-@method_decorator(permission_required("laboratory.change_protocol"), name="dispatch")
+@method_decorator(login_required, name="dispatch")
+@method_decorator(permission_required("laboratory.change_protocol", raise_exception=True), name="dispatch")
 class ProtocolUpdateView(UpdateView):
     model = Protocol
     success_url = "/"
@@ -84,7 +87,8 @@ class ProtocolUpdateView(UpdateView):
         return super(ProtocolUpdateView, self).form_valid(form)
 
 
-@method_decorator(permission_required("laboratory.delete_protocol"), name="dispatch")
+@method_decorator(login_required, name="dispatch")
+@method_decorator(permission_required("laboratory.delete_protocol", raise_exception=True), name="dispatch")
 class ProtocolDeleteView(DeleteView):
     model = Protocol
     template_name = "laboratory/protocol/delete.html"

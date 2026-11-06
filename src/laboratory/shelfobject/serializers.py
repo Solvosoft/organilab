@@ -165,7 +165,11 @@ class ReserveShelfObjectSerializer(serializers.ModelSerializer):
 
         full_count = int(amount_required)
         fraction = amount_required - full_count
-        min_partial_units = math.ceil(fraction * units_per_box) if fraction > 0 else 0
+        # Se redondea antes del techo: 1.3 - 1 da 0.30000000000000004 en coma
+        # flotante y, sin redondear, se reservaban 4 unidades en vez de 3.
+        min_partial_units = (
+            math.ceil(round(fraction * units_per_box, 6)) if fraction > 0 else 0
+        )
 
         # Separate complete boxes from partial ones
         complete_boxes = [b for b in quantity_units if b["units"] >= units_per_box]
@@ -241,14 +245,7 @@ class ReserveShelfObjectSerializer(serializers.ModelSerializer):
                     )
                 }
             )
-        if final_date <= current_datetime:
-            raise serializers.ValidationError(
-                {
-                    "final_date": _(
-                        "Final date cannot be equal or lower than current date."
-                    )
-                }
-            )
+        # final_date > initial_date > ahora: no hace falta otra comprobación.
 
         shelf_object = data["shelf_object"]
         if shelf_object.is_box:
@@ -1035,37 +1032,6 @@ class UpdateBoxShelfObjectSerializer(serializers.ModelSerializer):
             "reactive_expiration_date",
         ]
 
-    def validate(self, data):
-        instance = self.instance
-        current_box_count = (
-            len(instance.quantity_units) if instance.quantity_units else 0
-        )
-
-        quantity_box_changed = (
-            "quantity_box" in data and data["quantity_box"] != current_box_count
-        )
-        units_per_box_changed = (
-            "units_per_box" in data and data["units_per_box"] != instance.units_per_box
-        )
-
-        if not (quantity_box_changed or units_per_box_changed):
-            return data
-
-        original_units = instance.units_per_box
-        boxes = instance.quantity_units or []
-        boxes_modified = any(box["units"] != original_units for box in boxes)
-
-        if boxes_modified:
-            raise serializers.ValidationError(
-                {
-                    "quantity_box": _(
-                        "Cannot change the number of boxes or units per box because one or more "
-                        "boxes have already been modified. Use the decrease or increase actions instead."
-                    )
-                }
-            )
-        return data
-
 
 class EquipmentShelfObjectSerializer(
     ValidateShelfSerializer, serializers.ModelSerializer
@@ -1811,10 +1777,13 @@ class TransferInShelfObjectSerializer(ValidateShelfSerializer):
                     errors, save_to_key="transfer_object"
                 )
                 if is_box:
-                    if len(transfer_object.quantity_units) < int(
-                        transfer_object.amount_to_transfer
+                    # TranferObject no tiene ``amount_to_transfer`` (su
+                    # ``quantity`` es el número de cajas) y "quantity" ya se
+                    # agrupó en "transfer_object": ambas cosas daban 500.
+                    if len(transfer_object.object.quantity_units or []) < int(
+                        transfer_object.quantity
                     ):
-                        updated_errors["quantity"].append(
+                        updated_errors.setdefault("transfer_object", []).append(
                             _(
                                 "The transfer out cannot be performed since the boxes available for the source object is less than the amount to transfer."
                             )
@@ -1828,9 +1797,12 @@ class ShelfObjectPk(serializers.Serializer):
 
     def validate_search(self, value):
         attr = super().validate(value)
-        if not re.findall(r"pk?=?(\d+)", attr):
+        match = re.search(r"pk?=?(\d+)", attr)
+        if not match:
             raise serializers.ValidationError(_("Invalid search"))
-        return attr
+        # Las vistas toman el pk con split("="): se normaliza a "pk=<n>" para
+        # que "p1234" no deje la lista sin segundo elemento (IndexError, 500).
+        return "pk=%s" % match.group(1)
 
 
 class SearchShelfObjectSerializer(serializers.Serializer):
@@ -2163,6 +2135,15 @@ class ManageContainerSerializer(ContainerSerializer):
     shelf_object = serializers.PrimaryKeyRelatedField(
         queryset=ShelfObject.objects.using(settings.READONLY_DATABASE)
     )
+
+    def validate_shelf_object(self, value):
+        # Sin esta comprobación se podía cambiar el contenedor de un objeto de
+        # cualquier laboratorio u organización conociendo su pk.
+        if value.in_where_laboratory_id != self.context.get("laboratory_id"):
+            raise serializers.ValidationError(
+                _("Object does not exist in the laboratory.")
+            )
+        return value
 
     def validate(self, data):
         data = super().validate(data)
@@ -3311,11 +3292,7 @@ class IncreaseReactiveShelfObjectSerializer(serializers.Serializer):
         """Validaciones cruzadas: cantidad, unidad de medida y shelf"""
         data = super().validate(data)
 
-        shelf_object = data.get("shelf_object")
-        if not shelf_object:
-            raise serializers.ValidationError(
-                {"shelf_object": _("Shelf object is required.")}
-            )
+        shelf_object = data["shelf_object"]  # campo obligatorio
 
         # For box objects, skip measurement unit and quantity validation
         if shelf_object.is_box:
@@ -3510,10 +3487,11 @@ class DecreaseReactiveShelfObjectSerializer(serializers.Serializer):
                 logger.debug(
                     f"validate_measurement_unit_and_quantity --> limits.minimun_limit ({limits.minimum_limit}) > quantity ({total})"
                 )
+                # El formato va fuera de _(): dentro, el texto ya interpolado
+                # no coincide con ningún msgid y nunca se traducía.
                 decrease_errors["amount"] = _(
                     "Quantity cannot be less than the container object minimun limit: %(limit)s."
-                    % {"limit": limits.minimum_limit}
-                )
+                ) % {"limit": limits.minimum_limit}
 
         limit_obj_error = limit_objects_by_shelf(
             shelf_object.shelf, shelf_object.object

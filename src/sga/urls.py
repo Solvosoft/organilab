@@ -9,7 +9,6 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
 from .api.api import DangerSubstanceViewSet, DangerSubstanceCategoryViewSet
-from .api.hdanger_category_viewset import HCodeCategoryViewSet
 from .api.labels_viewset import DisplayLabelViewSet
 from .api.recipients_viewset import RecipientSizeAPI
 from .api.review_flow_substance import ReviewSubstanceViewSet
@@ -19,7 +18,6 @@ from .views.danger_substance.views import (
     danger_substance_view,
     danger_substance_category_view,
 )
-from .views.h_danger_category import HCategoryView
 from .views.substance import views as substance
 
 router = DefaultRouter()
@@ -29,7 +27,6 @@ router.register(
 )
 router.register("api_labels", DisplayLabelViewSet, basename="api-labels")
 router.register("api_recipient_size", RecipientSizeAPI, basename="api-recipient-size")
-# router.register('api_hcategory', HCodeCategoryViewSet, basename='api-hcategory')
 router.register(
     "api_danger_substance", DangerSubstanceViewSet, basename="api-danger-substance"
 )
@@ -208,7 +205,6 @@ urlpatterns = [
     ),
     path("substance/provider/", substance.add_sga_provider, name="add_sga_provider"),
     path("substance/recipient/", substance.view_recipient_size, name="recipient_size"),
-    # path('categoriesh/', HCategoryView.as_view(), name='categoriesh'),
     path("danger_substance/", danger_substance_view, name="danger_substance"),
     path(
         "danger_subtance_category/",

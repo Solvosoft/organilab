@@ -178,16 +178,22 @@ def _source_of(callback):
     maquina. Dos casos:
 
     - codigo del repo: ruta relativa a la raiz.
-    - codigo de terceros: la mayoria de las vistas pasan por un decorador de
-      Django, asi que la ruta apunta a site-packages. Donde vive site-packages
+    - codigo de terceros (admin, DRF...): la ruta apunta a site-packages. Los
+      decoradores se desenvuelven antes, asi que una vista del repo con
+      `@login_required` apunta a la vista y no al decorador. Donde vive site-packages
       cambia con el entorno (`.venv/lib/...` en local, el toolcache de Python en
       GitHub Actions), de modo que se recorta a partir de `site-packages/`. Sin
       ese recorte el guardian del CSV es rojo permanente en CI aunque nadie haya
       tocado ninguna ruta.
     """
+    target = (
+        getattr(callback, "view_class", None)
+        or getattr(callback, "cls", None)
+        or inspect.unwrap(callback)
+    )
     try:
-        file = inspect.getsourcefile(callback)
-        line = inspect.getsourcelines(callback)[1]
+        file = inspect.getsourcefile(target)
+        line = inspect.getsourcelines(target)[1]
     except (TypeError, OSError):
         return ""
     if not file:

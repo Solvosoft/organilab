@@ -101,8 +101,7 @@ FEATURES = (
                 actors=ADMINISTRADORES,
                 routes=("auth_and_perms:list_rol_by_org", "auth_and_perms:update_rol",
                         "auth_and_perms:get_rol",
-                        "auth_and_perms:get_roles_by_organization",
-                        "auth_and_perms:add_rol_by_laboratory"),
+                        "auth_and_perms:get_roles_by_organization"),
                 permissions=("auth_and_perms.change_rol", "auth_and_perms.view_rol"),
                 source="src/auth_and_perms/views/organizationstructure.py",
             ),
@@ -155,9 +154,8 @@ FEATURES = (
             ),
         ),
         notes=(
-            "HALLAZGO-ORG-1: `get_org_administrators` (`:542`) filtra por "
-            '`rol__name="Administrativo superior"`, una **cadena literal**. Renombrar '
-            "ese rol deja la consulta vacía sin que nada falle.",
+            "`get_org_administrators` filtra por "
+            '`rol__name=ROLES["administrativo_superior"]`, el nombre del archivo de roles.',
             "Listar roles exige `change_rol`, no `view_rol`: no se puede dar consulta "
             "de roles sin dar edición.",
         ),

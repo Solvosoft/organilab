@@ -2,9 +2,9 @@ from django.shortcuts import get_object_or_404
 from djgentelella.groute import register_lookups
 from djgentelella.permission_management import AnyPermissionByAction
 from djgentelella.views.select2autocomplete import BaseSelect2View
-from requests import Response
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication
+from rest_framework.response import Response
 
 from auth_and_perms.organization_utils import user_is_allowed_on_organization
 from laboratory.gtselects import GPaginatorMoreElements
@@ -112,22 +112,18 @@ class RegentLaboraratory(BaseSelect2View):
     permission_classes = (AnyPermissionByAction,)
 
     def get_queryset(self):
+        # Solo se llega desde ``list``, que exige ``org_pk``: ``self.org`` siempre
+        # viene fijado aquí.
         queryset = super().get_queryset()
-
-        if self.org:
-            organization = get_object_or_404(OrganizationStructure, pk=self.org)
-
-            queryset = queryset.filter(
-                pk__in=organization.get_my_laboratories
-            ).distinct()
-        else:
-            queryset = queryset.none()
-
-        return queryset
+        organization = get_object_or_404(OrganizationStructure, pk=self.org)
+        return queryset.filter(pk__in=organization.get_my_laboratories).distinct()
 
     def list(self, request, *args, **kwargs):
         if self.request.GET.get("org_pk", None):
             self.org = self.request.GET.get("org_pk", None)
+            # Como en los otros dos selects: sin esto cualquier usuario listaba los
+            # laboratorios de otra organización cambiando org_pk.
+            user_is_allowed_on_organization(request.user, self.org)
             return super().list(request, *args, **kwargs)
 
         return Response(

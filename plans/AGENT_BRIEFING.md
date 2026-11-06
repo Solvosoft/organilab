@@ -345,8 +345,8 @@ router in the app's `urls.py`.
 | `make url-inventory-check` / `make feature-catalog-check` | Guardians for `roadmap/INVENTARIO_URLS.md` and the feature catalog. |
 
 **Management commands** (per-app `management/commands/`): `init_checks` (cache table +
-fixtures), `load_urlname_permissions` (sync URL-based perms), `update_roles` /
-`update_roles_permissions` (sync the canonical role catalog), and sga loaders
+fixtures), `load_urlname_permissions` (sync URL-based perms), `update_roles` (sync the
+roles from `auth_and_perms/management/roles.py`), and sga loaders
 (`load_danger_substances`, `load_danger_indications`, `upload_pictograms`).
 
 **Docker:** `docker/docker-compose.yml` runs PostgreSQL (port 5431), RabbitMQ, Mailhog

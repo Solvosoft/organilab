@@ -4,7 +4,7 @@ from django.core.management import BaseCommand
 
 GROUP_NAME = "SGAView"
 GROUP_PERMISSIONS = [
-    ("msds", "view_msdsobject"),
+    ("sga", "view_sdstraceability"),
 ]
 
 

@@ -41,6 +41,7 @@ from laboratory.utils import (
     get_rols_from_organization,
 )
 from django.utils.translation import gettext_lazy as _
+from auth_and_perms.roles import ROLES
 
 
 def str2bool(v):
@@ -166,9 +167,10 @@ class LabUserS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
-            if self.organization:
-                user_is_allowed_on_organization(self.request.user, self.organization)
-            return super().list(request, *args, **kwargs)
+        # Fuera del `if`: por `retrieve` la organización ya viene y `list` devolvía None.
+        if self.organization:
+            user_is_allowed_on_organization(self.request.user, self.organization)
+        return super().list(request, *args, **kwargs)
 
     def get_queryset(self):
         if self.organization:
@@ -195,7 +197,7 @@ class LabUserS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
                 profiles = profiles.filter(**filters).distinct()
                 queryset = queryset.exclude(profile__in=profiles)
                 return queryset.distinct().order_by("first_name")
-            return queryset.none()
+        # Sin objeto de destino (o sin organización) no hay a quién proponer.
         return self.model.objects.none()
 
     def get_text_display(self, obj):
@@ -266,7 +268,7 @@ class GroupS2(BaseSelect2View, AllPermission):
 
     def get_queryset(self):
         user = self.request.user
-        return get_roles_by_user(user)
+        return get_roles_by_user(user).order_by(self.order_by)
 
     def get_text_display(self, obj):
         org_str = ""
@@ -275,10 +277,8 @@ class GroupS2(BaseSelect2View, AllPermission):
                 org_str += " -- "
             org_str += org.name
 
-        if self.fields:
-            fields = [self.get_field_value(obj, x, str) for x in self.fields]
-            return self.text_separator.join(fields) + " (" + org_str + ")"
-        return str(obj)
+        fields = [self.get_field_value(obj, x, str) for x in self.fields]
+        return self.text_separator.join(fields) + " (" + org_str + ")"
 
 
 @register_lookups(prefix="userbase", basename="userbase")
@@ -348,7 +348,7 @@ class RelOrgBaseS2(generics.RetrieveAPIView, BaseSelect2View):
 
 @register_lookups(prefix="relorgfullbase", basename="relorgfullbase")
 class RelOrgFullS2(generics.RetrieveAPIView, BaseSelect2View):
-    """Like RelOrgBaseS2 but includes already-linked labs and marks them selected."""
+    """Like RelOrgBaseS2 but offers the root's labs (or the user's) not yet linked to the organization."""
 
     model = Laboratory
     fields = ["name"]
@@ -479,7 +479,9 @@ class LabOrgBaseS2(generics.RetrieveAPIView, BaseSelect2View):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
-        if self.organization is None:
+        # Defensa: aquí la organización ya existe (`retrieve` y el formulario válido la
+        # buscan con 404, el formulario inválido ya respondió 400).
+        if self.organization is None:  # pragma: no cover
             raise Http404(_("Organization not found"))
         return super().list(request, *args, **kwargs)
 
@@ -548,11 +550,8 @@ class GroupsByProfile(BaseSelect2View):
     profile = None
 
     def get_queryset(self):
-        queryset = super().get_queryset()
-
-        if self.profile:
-            return self.profile.groups.all()
-        return queryset.none()
+        # `list` solo llega aquí con el serializer válido, y `profile` es obligatorio.
+        return self.profile.groups.all().order_by(self.order_by)
 
     def list(self, request, *args, **kwargs):
         self.serializer = ValidateProfileSerializer(data=request.GET)
@@ -597,8 +596,9 @@ class UsersByOrganization(BaseSelect2View):
                 User.objects.using(settings.READONLY_DATABASE)
                 .filter(pk__in=user_ids)
                 .distinct()
+                .order_by(self.order_by)
             )
-        else:
+        else:  # pragma: no cover - `list` exige la organización en el serializer
             queryset = queryset.none()
 
         return queryset
@@ -639,7 +639,7 @@ class OrgTree(BaseSelect2View):
         queryset = super().get_queryset()
         if self.user:
             roles = self.user.profile.profilepermission_set.filter(
-                rol__name="Administrativo superior"
+                rol__name=ROLES["administrativo_superior"]
             )
             if self.user.is_superuser or roles.exists():
                 parents, parents_pks = get_org_parents_info(self.user)
@@ -663,7 +663,7 @@ class OrgTree(BaseSelect2View):
             return queryset.filter(pk__in=org_ids, active=True).order_by(
                 "level", "name"
             )
-        return queryset.none()
+        return queryset.none()  # pragma: no cover - `list` siempre fija `self.user`
 
     def list(self, request, *args, **kwargs):
         self.user = request.user
@@ -689,8 +689,10 @@ class ObjectByOrganization(BaseSelect2View):
     def get_queryset(self):
         queryset = super().get_queryset()
         if self.organization:
-            queryset = queryset.filter(organization=self.organization).order_by("name")
-        else:
+            queryset = queryset.filter(Q(organization__in=self.organization.ancestors(include_self=True))
+            | Q(organization__in=self.organization.descendants()),
+            ).order_by("name").distinct()
+        else:  # pragma: no cover - `list` exige la organización en el serializer
             queryset = queryset.none()
         return queryset
 

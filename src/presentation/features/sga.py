@@ -23,7 +23,7 @@ SUBSTANCE_STATES = (
 GATE = "auth_and_perms.institution_can_access"
 
 REDACTORES = ("sga", "administrador_laboratorio", "tecnico_laboratorio",
-              "lectura_agregado_sustancias", "manejo_sustancias")
+              "lectura_agregado_sustancias")
 REVISORES = ("administrativo_superior", "sga", "organization_management")
 CONSULTA = ("sga", "administrador_laboratorio", "tecnico_laboratorio", "regente",
             "solo_lectura", "estudiante")

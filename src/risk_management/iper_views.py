@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
 from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
-from django.utils.timezone import now
+from django.utils.timezone import localdate
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import TemplateView
 
@@ -117,7 +117,7 @@ class IPERAssessmentList(TemplateView):
         context["duplicate_form"] = IPERDuplicateForm(
             org_pk=self.kwargs["org_pk"],
             user=self.request.user,
-            initial={"assessment_date": now().date()},
+            initial={"assessment_date": localdate()},
         )
         return context
 
@@ -299,7 +299,7 @@ class IPERAssessmentDetail(DetailView):
             user=self.request.user,
             initial={
                 "laboratory": self.object.laboratory,
-                "assessment_date": now().date(),
+                "assessment_date": localdate(),
             },
         )
         return context
@@ -505,7 +505,7 @@ def iper_clone_for_update(request, org_pk, pk):
     new = IPERAssessment(
         organization=previous.organization,
         laboratory=previous.laboratory,
-        assessment_date=now().date(),
+        assessment_date=localdate(),
         responsible=previous.responsible or request.user,
         created_by=request.user,
         status=IPERAssessment.DRAFT,
@@ -887,22 +887,24 @@ class IPERDashboard(TemplateView):
 @permission_required("risk_management.view_iperassessment", raise_exception=True)
 def iper_lab_help(request, org_pk, lab_pk):
     user_is_allowed_on_organization(request.user, org_pk)
-    lab = get_object_or_404(Laboratory, pk=lab_pk)
+    # El laboratorio tiene que ser de la organización de la URL: con solo el pk se
+    # leía el inventario de un laboratorio de otra organización.
+    organization = get_object_or_404(OrganizationStructure, pk=org_pk)
+    lab = get_object_or_404(
+        Laboratory, pk=lab_pk, pk__in=list(organization.get_my_laboratories)
+    )
     items = []
     queryset = ShelfObject.objects.filter(in_where_laboratory=lab).select_related(
         "object"
     )[:500]
     for shelfobject in queryset:
+        # ``ShelfObject.object`` es NOT NULL; un objeto sin características
+        # simplemente no aporta códigos H.
         obj = shelfobject.object
-        if obj is None:
-            continue
         hcodes = []
-        try:
-            chars = obj.substancharacteristics_object.first()
-            if chars is not None:
-                hcodes = list(chars.h_code.values_list("code", flat=True))
-        except Exception:
-            hcodes = []
+        chars = obj.substancharacteristics_object.first()
+        if chars is not None:
+            hcodes = list(chars.h_code.values_list("code", flat=True))
         items.append(
             {
                 "name": obj.name,
@@ -940,7 +942,11 @@ def iper_catalog_add(request, org_pk):
         raise Http404()
     url = reverse("riskmanagement:iper_catalog_add", kwargs={"org_pk": org_pk})
     if request.method == "POST":
-        form = CatalogForm(request.POST, initial={"key": key})
+        # La clave validada arriba manda sobre la del formulario: si no, con un
+        # ?key= válido se podía crear una entrada en cualquier catálogo.
+        data = request.POST.copy()
+        data["key"] = key
+        form = CatalogForm(data, initial={"key": key})
         if form.is_valid():
             instance = form.save()
             return JsonResponse(

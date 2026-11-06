@@ -14,6 +14,7 @@ from ambiental.ambiental_defaults import (
 from ambiental.models import MeasurementPoint
 from ambiental.tests.base import AmbientalTestCase
 from laboratory.models import Catalog
+from auth_and_perms.roles import ROLES
 
 
 class AmbientalCatalogSeedTest(AmbientalTestCase):
@@ -51,7 +52,7 @@ class MeasurementPointViewTest(AmbientalTestCase):
         self.assertContains(response, "table-measurementpoint")
 
     def test_list_page_renders_for_every_ambiental_role(self):
-        for rol_name in ("Encargado de registro ambiental", "Analista ambiental"):
+        for rol_name in (ROLES["registro_ambiental"], ROLES["analista_ambiental"]):
             with self.subTest(rol=rol_name):
                 user = self.make_user(rol_name.replace(" ", "_"), self.organization, rol_name)
                 self.client.force_login(user)
@@ -61,7 +62,7 @@ class MeasurementPointViewTest(AmbientalTestCase):
                 self.assertEqual(response.status_code, 200)
 
     def test_list_page_requires_permission(self):
-        user = self.make_user("sin_permiso", self.organization, "Analista ambiental")
+        user = self.make_user("sin_permiso", self.organization, ROLES["analista_ambiental"])
         rol = user.profile.profilepermission_set.first().rol.first()
         rol.permissions.clear()
         self.client.force_login(user)
@@ -175,7 +176,7 @@ class MeasurementPointAPITest(AmbientalTestCase):
         self.assertEqual(response.status_code, 400)
 
     def test_readonly_role_cannot_create(self):
-        user = self.make_user("analista", self.organization, "Analista ambiental")
+        user = self.make_user("analista", self.organization, ROLES["analista_ambiental"])
         self.client.force_login(user)
         self.assertEqual(self.client.get(self.list_url()).status_code, 200)
         response = self.client.post(self.list_url(), data=self.payload(), content_type="application/json")

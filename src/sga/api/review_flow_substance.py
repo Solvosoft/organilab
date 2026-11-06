@@ -38,12 +38,11 @@ class ReviewSubstanceViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
     def filter_queryset(self, queryset):
         queryset = super().filter_queryset(queryset)
+        # Un BooleanField opcional nunca invalida el formulario: cualquier valor
+        # se interpreta como verdadero/falso.
         form = ValidateReviewSubstanceForm(self.request.GET)
-        if form.is_valid():
-
-            showapprove = form.cleaned_data["showapprove"] or False
-        else:
-            return queryset.none()
+        form.is_valid()
+        showapprove = form.cleaned_data["showapprove"]
         filter_data = {
             "substance__organization": self.organization,
             "is_approved": showapprove,

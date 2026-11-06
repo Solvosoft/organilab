@@ -45,7 +45,11 @@ from laboratory.shelfobject.utils import (
     get_available_containers_for_selection,
     get_containers_for_cloning,
 )
-from laboratory.utils import get_pk_org_ancestors, get_users_from_organization
+from laboratory.utils import (
+    check_user_access_kwargs_org_lab,
+    get_pk_org_ancestors,
+    get_users_from_organization,
+)
 from laboratory.utils_base_unit import get_related_units
 from risk_management.models import Regent, Buildings
 from sga.models import Pictogram
@@ -55,46 +59,28 @@ class GPaginatorMoreElements(GPaginator):
     page_size = 100
 
 
+def check_user_on_organization(user, organization):
+    """Los lookups que reciben la organización por query string solo responden a
+    quien tiene acceso a ella: sin esto cualquier usuario autenticado (o anónimo,
+    en risk_users) enumeraba usuarios, perfiles, roles o laboratorios de una
+    organización ajena con solo cambiar el pk.
+
+    Se acepta la pertenencia a la organización (o a un ancestro) y también el
+    acceso por roles sobre la organización o alguno de sus laboratorios, que es
+    lo que admiten las páginas desde donde se consultan estos lookups."""
+    if user.is_superuser:
+        return
+    if not isinstance(organization, OrganizationStructure):
+        organization = get_object_or_404(OrganizationStructure, pk=organization)
+    if check_user_access_kwargs_org_lab(organization.pk, None, user):
+        return
+    user_is_allowed_on_organization(user, organization)
+
+
 @register_lookups(prefix="rol", basename="rolsearch")
 class RolGModelLookup(BaseSelect2View):
     model = Rol
     fields = ["name"]
-
-
-@register_lookups(prefix="organization_rols", basename="organization_rols")
-class OrganizationRolslLookup(BaseSelect2View):
-    model = Rol
-    org = None
-    fields = ["name"]
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-
-        if self.org:
-            queryset = queryset.filter(
-                pk__in=self.org.root.rol.values_list("pk", flat=True)
-            )
-        else:
-            queryset = queryset.none()
-
-        return queryset
-
-    def list(self, request, *args, **kwargs):
-        self.serializer = ValidateOrganizationSerializer(
-            data=request.GET, context={"user": request.user}
-        )
-
-        if self.serializer.is_valid():
-            self.org = self.serializer.validated_data["organization"]
-            return super().list(request, *args, **kwargs)
-
-        return Response(
-            {
-                "status": "Bad request",
-                "errors": self.serializer.errors,
-            },
-            status=status.HTTP_400_BAD_REQUEST,
-        )
 
 
 @register_lookups(prefix="object", basename="objectsearch")
@@ -117,6 +103,14 @@ class ObjectGModelLookup(BaseSelect2View):
     }
     permission_classes = (AnyPermissionByAction,)
 
+    def get_text_display(self, obj):
+        code = obj.code if obj.code!=None else ""
+        text_display = (
+            f" {code} {obj.name}"
+        )
+
+        return text_display
+
     def get_queryset(self):
         if self.shelf and self.shelf.limit_only_objects and self.shelfobjet_type:
             return self.shelf.available_objects_when_limit.filter(
@@ -126,10 +120,11 @@ class ObjectGModelLookup(BaseSelect2View):
         queryset = super().get_queryset()
 
         if self.org_pk and self.shelfobjet_type:
-            organizations = get_pk_org_ancestors(self.org_pk.pk)
             queryset = queryset.filter(
-                organization__in=organizations, type=self.shelfobjet_type
-            )
+                Q(organization__in=self.org_pk.ancestors(include_self=True))
+                | Q(organization__in=self.org_pk.descendants()),
+                type=self.shelfobjet_type,
+            ).distinct()
         else:
             queryset = queryset.none()
         return queryset
@@ -292,7 +287,8 @@ class AvailableContainerLookup(BaseSelect2View):
         )
         if self.serializer.is_valid():
             self.laboratory = self.serializer.validated_data["laboratory"]
-            self.shelf = self.serializer.validated_data["shelf"]
+            # shelf es opcional en el serializer: sin él, lista vacía y no un 500.
+            self.shelf = self.serializer.validated_data.get("shelf")
             return super().list(request, *args, **kwargs)
         return Response(
             {
@@ -343,7 +339,7 @@ class ContainersForCloningLookup(BaseSelect2View):
 
         if self.serializer.is_valid():
             self.org = self.serializer.validated_data["organization"]
-            self.shelf = self.serializer.validated_data["shelf"]
+            self.shelf = self.serializer.validated_data.get("shelf")
             return super().list(request, *args, **kwargs)
         return Response(
             {
@@ -444,8 +440,10 @@ class ObjectAvailableLookup(BaseSelect2View):
     def get_queryset(self):
         queryset = super().get_queryset()
         if self.org_pk:
-            organizations = get_pk_org_ancestors(self.org_pk.pk)
-            queryset = queryset.filter(organization__in=organizations)
+            queryset = queryset.filter(
+                Q(organization__in=self.org_pk.ancestors(include_self=True))
+                | Q(organization__in=self.org_pk.descendants()),
+            ).distinct()
         else:
             queryset = queryset.none()
         return queryset
@@ -537,6 +535,7 @@ class OrganizationRolslLookup(BaseSelect2View):
 
         if self.serializer.is_valid():
             self.org = self.serializer.validated_data["organization"]
+            check_user_on_organization(request.user, self.org)
             return super().list(request, *args, **kwargs)
 
         return Response(
@@ -611,6 +610,7 @@ class OrganizationProfileslLookup(BaseSelect2View):
 
         if self.serializer.is_valid():
             self.org = self.serializer.validated_data["organization"]
+            check_user_on_organization(request.user, self.org)
             return super().list(request, *args, **kwargs)
 
         return Response(
@@ -683,6 +683,7 @@ class OrganizationProviderslLookup(BaseSelect2View):
 
         if self.serializer.is_valid():
             self.org = self.serializer.validated_data["organization"]
+            check_user_on_organization(request.user, self.org)
             return super().list(request, *args, **kwargs)
 
         return Response(
@@ -726,6 +727,7 @@ class UsersOrganizationsLookup(BaseSelect2View):
 
         if self.serializer.is_valid():
             self.org = self.serializer.validated_data["organization"]
+            check_user_on_organization(request.user, self.org)
             return super().list(request, *args, **kwargs)
 
         return Response(
@@ -780,7 +782,7 @@ class UserseslLookup(BaseSelect2View):
     perms = {
         "list": [],
     }
-    permission_classes = ()
+    permission_classes = (IsAuthenticated,)
     organization = None
 
     def get_queryset(self):
@@ -790,7 +792,7 @@ class UserseslLookup(BaseSelect2View):
             queryset = User.objects.filter(
                 pk__in=get_users_from_organization(self.organization.root.pk),
                 is_active=True,
-            )
+            ).order_by(self.order_by)
         else:
             queryset = queryset.none()
 
@@ -801,6 +803,8 @@ class UserseslLookup(BaseSelect2View):
         self.organization = OrganizationStructure.objects.filter(
             pk=self.organization
         ).first()
+        if self.organization:
+            check_user_on_organization(request.user, self.organization)
         return super().list(request, *args, **kwargs)
 
 
@@ -833,6 +837,8 @@ class RegentslLookup(BaseSelect2View):
         self.organization = OrganizationStructure.objects.filter(
             pk=self.organization
         ).first()
+        if self.organization:
+            check_user_on_organization(request.user, self.organization)
         return super().list(request, *args, **kwargs)
 
 
@@ -887,7 +893,7 @@ class RiskLaboratorylLookup(BaseSelect2View):
             )
             queryset = Laboratory.objects.filter(
                 pk__in=organization.get_my_laboratories
-            )
+            ).order_by(self.order_by)
         else:
             queryset = queryset.none()
 
@@ -895,7 +901,8 @@ class RiskLaboratorylLookup(BaseSelect2View):
 
     def list(self, request, *args, **kwargs):
         self.organization = self.request.GET.get("org_pk", None)
-
+        if self.organization:
+            check_user_on_organization(request.user, self.organization)
         return super().list(request, *args, **kwargs)
 
 
@@ -963,6 +970,7 @@ class RiskUsersOrganizations(BaseSelect2View):
     def list(self, request, *args, **kwargs):
         if self.request.GET.get("org_pk", None):
             self.org = self.request.GET.get("org_pk", None)
+            check_user_on_organization(request.user, self.org)
             return super().list(request, *args, **kwargs)
 
         return Response(
@@ -1019,6 +1027,7 @@ class LaboratoryBtOrganizations(BaseSelect2View):
     def list(self, request, *args, **kwargs):
         if self.request.GET.get("organization", None):
             self.org = self.request.GET.get("organization", None)
+            check_user_on_organization(request.user, self.org)
             return super().list(request, *args, **kwargs)
 
         return Response(

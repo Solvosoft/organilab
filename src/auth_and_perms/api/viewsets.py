@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib.admin.models import CHANGE, DELETION, ADDITION
 from django.contrib.auth.models import Permission, User, Group
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from django.http import HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404
@@ -24,7 +25,6 @@ from auth_and_perms.api.filterset import OrganizationStructureRelationsFilter
 from auth_and_perms.api.serializers import (
     RolSerializer,
     ProfilePermissionRolOrganizationSerializer,
-    OrganizationSerializer,
     ProfileFilterSet,
     ProfileRolDataTableSerializer,
     DeleteUserFromContenttypeSerializer,
@@ -64,7 +64,6 @@ from laboratory.models import (
 )
 from laboratory.utils import (
     get_profile_by_organization,
-    get_organizations_by_user,
     get_laboratories_from_organization,
     get_user_laboratories,
     organilab_logentry,
@@ -77,7 +76,7 @@ class RolAPI(
     mixins.CreateModelMixin,
     viewsets.GenericViewSet,
 ):
-    queryset = Rol.objects.all()
+    queryset = Rol.objects.all().order_by("pk")
     serializer_class = RolSerializer
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
@@ -150,9 +149,9 @@ class ProfileToContenttypeObjectAPI(mixins.CreateModelMixin, viewsets.GenericVie
                 pk=serializer.data["laboratory"],
             )
             if not organization_can_change_laboratory(contenttypeobj, organization):
-                return HttpResponseForbidden(
-                    _("Laboratory modification not authorized")
-                )
+                # perform_create no puede devolver una respuesta: CreateModelMixin la
+                # ignoraría y contestaría 201.
+                raise PermissionDenied(_("Laboratory modification not authorized"))
         elif serializer.data["typeofcontenttype"] == "organization":
             contenttypeobj = organization
             type_user = UserOrganization.LABORATORY_MANAGER
@@ -368,18 +367,6 @@ class UpdateRolOrganizationProfilePermission(
 
             return Response(serializer.data)
         return Response(serializer.errors)
-
-
-class OrganizationAPI(
-    mixins.ListModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet
-):
-    queryset = OrganizationStructure.objects.all()
-    serializer_class = OrganizationSerializer
-    authentication_classes = [SessionAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        return get_organizations_by_user(self.request.user)
 
 
 class UserLaboratoryOrganization(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -770,9 +757,6 @@ class DeleteUserFromContenttypeViewSet(mixins.ListModelMixin, viewsets.GenericVi
             pps.delete()
         return Response({"result": "ok"})
 
-    def list(self, request, *args, **kwargs):
-        return self.delete(request, *args, **kwargs)
-
 
 class UpdateGroupsByProfile(APIView):
     def post(self, request):
@@ -788,11 +772,13 @@ class UpdateGroupsByProfile(APIView):
         if serializer.is_valid():
             profile = serializer.validated_data["profile"]
             groups = serializer.validated_data.get("groups")
+            # Los grupos que se quitan se calculan antes de vaciar: después siempre
+            # quedaba vacío y la bitácora de lo removido nunca se escribía.
+            groups_pk = [x.pk for x in groups] if groups else []
+            groups_exclude = Group.objects.filter(
+                pk__in=list(profile.groups.exclude(pk__in=groups_pk).values_list("pk", flat=True))
+            )
             profile.groups.remove(*profile.groups.all())
-            if groups:
-                groups_pk = [x.pk for x in groups]
-                groups_exclude = profile.groups.all().exclude(pk__in=groups_pk)
-                profile.groups.remove(*profile.groups.all())
 
             if groups_exclude:
                 organilab_logentry(
@@ -1309,20 +1295,14 @@ class OrganizationLabRelationDeleteViewSet(AuthAllPermBaseObjectManagement):
         1. organization_id from URL parameter
         2. content_type for Laboratory model
         """
-        org_pk = self.kwargs.get("org_pk")
-
-        if not org_pk:
-            return OrganizationStructureRelations.objects.none()
-
-        lab_content_type = ContentType.objects.filter(
-            app_label="laboratory", model="laboratory"
-        ).first()
-
-        if not lab_content_type:
-            return OrganizationStructureRelations.objects.none()
+        # La ruta (`organization/<int:org_pk>/lab_relations/`) siempre trae `org_pk`, y
+        # `get_organization()` responde 404 si no existe y 403 si quien pide no
+        # pertenece a ella.
+        organization = self.get_organization()
+        lab_content_type = ContentType.objects.get_for_model(Laboratory)
 
         return OrganizationStructureRelations.objects.filter(
-            organization_id=org_pk, content_type=lab_content_type
+            organization_id=organization.pk, content_type=lab_content_type
         )
 
     def perform_destroy(self, instance):

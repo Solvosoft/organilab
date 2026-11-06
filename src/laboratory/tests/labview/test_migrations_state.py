@@ -16,6 +16,7 @@ from django.db.migrations.loader import MigrationLoader
 from django.db.migrations.questioner import NonInteractiveMigrationQuestioner
 from django.db.migrations.state import ProjectState
 from django.test import TestCase
+from django.utils import translation
 
 
 def _first_party_labels():
@@ -47,9 +48,10 @@ def pending_changes():
         ProjectState.from_apps(apps),
         NonInteractiveMigrationQuestioner(specified_apps=set(), dry_run=True),
     )
-    changes = autodetector.changes(
-        graph=loader.graph, trim_to_apps=None, convert_apps=None, migration_name=None
-    )
+    with translation.override(None):
+        changes = autodetector.changes(
+            graph=loader.graph, trim_to_apps=None, convert_apps=None, migration_name=None
+        )
     first_party = _first_party_labels()
     return {k: v for k, v in changes.items() if k in first_party}
 

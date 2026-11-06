@@ -11,6 +11,7 @@ from ambiental.models import ConsumptionRecord
 from ambiental.tests.base import AmbientalTestCase
 from laboratory.models import Catalog
 from report.models import TaskReport
+from auth_and_perms.roles import ROLES
 
 
 class ReportTestCase(AmbientalTestCase):
@@ -110,7 +111,7 @@ class ReportPagesTest(ReportTestCase):
             reverse("ambiental:report_consumption_summary", kwargs=kwargs),
             reverse("ambiental:report_consumption_cost", kwargs=kwargs),
         )
-        for rol_name in ("Administrador ambiental", "Encargado de registro ambiental", "Analista ambiental"):
+        for rol_name in (ROLES["administrador_ambiental"], ROLES["registro_ambiental"], ROLES["analista_ambiental"]):
             user = self.make_user("r_" + rol_name.split()[0], self.organization, rol_name)
             self.client.force_login(user)
             for url in urls:
@@ -125,7 +126,7 @@ class ReportQueueTest(ReportTestCase):
     """El reporte se pide por la cola común de `report` con un usuario con rol ambiental."""
 
     def test_analista_generates_the_summary(self):
-        user = self.make_user("analista_q", self.organization, "Analista ambiental")
+        user = self.make_user("analista_q", self.organization, ROLES["analista_ambiental"])
         self.client.force_login(user)
         response = self.client.get(
             reverse("report:create_report_request", kwargs={"org_pk": self.organization.pk}),
@@ -143,7 +144,7 @@ class ReportIndexTest(ReportTestCase):
     """Los reportes ambientales se listan en el índice común de reportes."""
 
     def test_index_lists_environmental_reports_for_ambiental_roles(self):
-        for rol_name in ("Administrador ambiental", "Analista ambiental"):
+        for rol_name in (ROLES["administrador_ambiental"], ROLES["analista_ambiental"]):
             self.client.force_login(self.make_user("idx_" + rol_name.split()[0], self.organization, rol_name))
             with self.subTest(rol=rol_name):
                 response = self.client.get(reverse("laboratory:reports", kwargs={"org_pk": self.organization.pk}))

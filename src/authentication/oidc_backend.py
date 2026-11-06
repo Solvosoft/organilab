@@ -2,7 +2,7 @@ import logging
 
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
-from django.db import IntegrityError
+from django.db import IntegrityError, transaction
 from mozilla_django_oidc.auth import OIDCAuthenticationBackend
 
 from auth_and_perms.models import Profile, ProfilePermission, Rol
@@ -12,6 +12,7 @@ from laboratory.models import (
     UserOrganization,
     OrganizationStructure,
 )
+from auth_and_perms.roles import ROLES
 
 logger = logging.getLogger(__name__)
 
@@ -25,20 +26,26 @@ class OrganiLabOIDCBackend(OIDCAuthenticationBackend):
 
     def create_user(self, claims):
         email = claims.get("email", "")
-        existing = self.UserModel.objects.filter(email__iexact=email)
-        if existing.count() > 1:
-            logger.error("OIDC: multiple users with email=%s, returning first", email)
-        user = existing.first()
-        if user:
-            return user
+        # Sin correo no hay con qué identificar una cuenta existente: buscar por
+        # `email=""` devolvería cualquier usuario sin correo (p. ej. un administrador).
+        if email:
+            existing = self.UserModel.objects.filter(email__iexact=email)
+            if existing.count() > 1:
+                logger.error("OIDC: multiple users with email=%s, returning first", email)
+            user = existing.first()
+            if user:
+                return user
         username = self._get_username(claims)
         try:
-            user = self.UserModel.objects.create_user(username, email=email)
+            with transaction.atomic():
+                user = self.UserModel.objects.create_user(username, email=email)
         except IntegrityError:
             logger.error(
                 "OIDC: username conflict for username=%s email=%s", username, email
             )
-            user = self.UserModel.objects.filter(email__iexact=email).first()
+            user = None
+            if email:
+                user = self.UserModel.objects.filter(email__iexact=email).first()
             if not user:
                 raise
             return user
@@ -109,7 +116,7 @@ class OrganiLabOIDCBackend(OIDCAuthenticationBackend):
         org_ct = ContentType.objects.get(
             app_label="laboratory", model="organizationstructure"
         )
-        rol_name = getattr(settings, "DEFAULT_ROL_NAME", "Estudiante")
+        rol_name = getattr(settings, "DEFAULT_ROL_NAME", ROLES["estudiante"])
         pp, _ = ProfilePermission.objects.get_or_create(
             profile=profile,
             content_type=org_ct,

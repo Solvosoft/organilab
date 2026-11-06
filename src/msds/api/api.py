@@ -92,12 +92,7 @@ class SDSTraceabilityViewSet(AuthAllPermBaseObjectManagement):
         self.organization = get_object_or_404(OrganizationStructure, pk=org_pk)
         user_is_allowed_on_organization(request.user, self.organization)
         sds = get_object_or_404(SDSTraceability, pk=request.query_params.get("pk", 0))
-
-        if not sds.sga_substance_characteristics:
-            return Response(
-                {"detail": _("No substance characteristics found.")},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-
+        # `sga_substance_characteristics` es obligatoria (FK no nula, CASCADE): toda
+        # traza tiene sus características.
         serializer = SGASubstanceCharacteristicsSerializer(sds.sga_substance_characteristics)
         return Response(serializer.data, status=status.HTTP_200_OK)

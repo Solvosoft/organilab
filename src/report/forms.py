@@ -11,7 +11,6 @@ from laboratory.models import (
     Furniture,
     LaboratoryRoom,
     Object,
-    ObjectLogChange,
     PrecursorReportValues,
     OrganizationStructure,
 )
@@ -23,17 +22,6 @@ from laboratory.utils import (
 from pending_tasks.tests import User
 from report.models import TaskReport, DocumentReportStatus
 from risk_management.models import RiskZone, Buildings
-
-
-def get_years():
-    years = [
-        (i, i)
-        for i in ObjectLogChange.objects.all()
-        .values_list("update_time__year", flat=True)
-        .distinct()
-        .order_by("update_time__year")
-    ]
-    return years
 
 
 class ReportBase(GTForm, forms.Form):
@@ -220,16 +208,16 @@ class ValidateLaboratoryRoomReportForm(ReportForm):
     is_precursor = forms.BooleanField(widget=genwidgets.YesNoInput, required=False)
 
     def clean_lab_room(self):
-
         lab_room = self.cleaned_data["lab_room"]
-        laboratory = self.cleaned_data["laboratory"]
+        laboratory = self.cleaned_data.get("laboratory")
+        if laboratory is None:
+            return []
 
+        rooms = LaboratoryRoom.objects.filter(laboratory__in=laboratory)
         if lab_room:
-            lab_room = LaboratoryRoom.objects.filter(pk__in=lab_room)
-        else:
-            lab_room = LaboratoryRoom.objects.filter(laboratory__in=laboratory)
+            rooms = rooms.filter(pk__in=lab_room)
 
-        return list(lab_room.values_list("pk", flat=True).distinct())
+        return list(rooms.values_list("pk", flat=True).distinct())
 
     def get_furniture(self, lab_room, laboratory):
         furniture = Furniture.objects.filter(labroom__laboratory__in=list(laboratory))
@@ -239,21 +227,17 @@ class ValidateLaboratoryRoomReportForm(ReportForm):
         return furniture
 
     def clean_furniture(self):
-        lab_room = self.cleaned_data["lab_room"]
+        lab_room = self.cleaned_data.get("lab_room", [])
         furniture = self.cleaned_data["furniture"]
-        laboratory = self.cleaned_data["laboratory"]
+        laboratory = self.cleaned_data.get("laboratory")
+        if laboratory is None:
+            return []
 
-        if not furniture:
-            furniture = self.get_furniture(lab_room, laboratory)
-        else:
-            furniture = self.get_furniture(lab_room, laboratory)
+        allowed = self.get_furniture(lab_room, laboratory)
+        if furniture:
+            allowed = allowed.filter(pk__in=furniture)
 
-        return list(furniture.values_list("pk", flat=True).distinct())
-
-    def __init__(self, *args, **kwargs):
-        org_pk = kwargs.pop("org_pk", None)
-        kwargs.pop("user", None)
-        super(ValidateLaboratoryRoomReportForm, self).__init__(*args, **kwargs)
+        return list(allowed.values_list("pk", flat=True).distinct())
 
 
 class ObjectLogChangeBaseForm(ReportSimpleForm):
@@ -287,15 +271,6 @@ class OrganizationReactiveForm(ReportBase):
                 user__in=get_users_from_organization(org_pk)
             )
 
-    def clean_user(self):
-        organization = self.cleaned_data["organization"]
-        users = self.cleaned_data["users"]
-
-        if not users:
-            users = get_users_from_organization(organization)
-
-        return list(users.values_list("pk", flat=True))
-
     def clean_users(self):
         organization = self.cleaned_data["organization"]
         users = self.cleaned_data["users"]
@@ -311,13 +286,12 @@ class ValidateObjectTypeForm(GTForm):
     type_id = forms.CharField(max_length=1)
 
     def clean_type_id(self):
+        # El campo es obligatorio: si llega vacío Django corta antes y este
+        # método no se llama, así que no hace falta una rama para el vacío.
         type_id = self.cleaned_data.get("type_id")
-        if type_id:
-            if type_id not in dict(Object.TYPE_CHOICES).keys():
-                self.add_error("type_id", _("Object type is not allowed"))
-            return type_id
-        else:
-            return None
+        if type_id not in dict(Object.TYPE_CHOICES).keys():
+            self.add_error("type_id", _("Object type is not allowed"))
+        return type_id
 
 
 class ValidateFurnitureForm(GTForm):
@@ -351,10 +325,14 @@ class ValidateFurnitureForm(GTForm):
         return int(org)
 
     def clean_laboratory(self):
-        organization = self.cleaned_data["organization"]
+        # Si la organización no validó, `clean_organization` ya dejó su error:
+        # leerla con [] tiraba KeyError en vez de devolver el formulario inválido.
+        organization = self.cleaned_data.get("organization")
         laboratory = self.cleaned_data["laboratory"]
 
         if not laboratory:
+            if organization is None:
+                return []
             return list(get_laboratories_from_organization(organization, self.user))
 
         return list(laboratory.values_list("pk", flat=True))
@@ -443,6 +421,7 @@ class ReactiveStockReportForm(ReportForm):
     format = forms.ChoiceField(
         widget=genwidgets.Select,
         choices=(
+            ("xls", "XLS"),
             ("xlsx", "XLSX"),
             ("ods", "ODS"),
         ),
@@ -452,6 +431,16 @@ class ReactiveStockReportForm(ReportForm):
 
 
 class RegencyReportForm(ReportForm):
+    format = forms.ChoiceField(
+        widget=genwidgets.Select,
+        choices=(
+            ("xls", "XLS"),
+            ("xlsx", "XLSX"),
+            ("ods", "ODS"),
+        ),
+        required=False,
+        label=_("Format"),
+    )
 
     period = forms.CharField(
         widget=genwidgets.DateRangeInput, required=False, label=_("Period")
@@ -468,12 +457,6 @@ class RegencyReportForm(ReportForm):
             self.fields["laboratory"].queryset = Laboratory.objects.filter(
                 pk__in=lab_ids
             )
-
-        self.fields["format"].choices = (
-            ("xls", "XLS"),
-            ("xlsx", "XLSX"),
-            ("ods", "ODS"),
-        )
 
 
 class CompatibilityReportForm(ReportBase):

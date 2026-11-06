@@ -100,6 +100,7 @@ def _old_build(laboratory):
                 "color": HAZARD_COLORS.get(compat_code, HAZARD_COLORS["-"]),
                 "worst_pair": worst_pair,
                 "substances": sdata["substances"],
+                "no_density": sdata["no_density"],
                 "name": sdata["name"],
             }
             if compat_code == "V":
@@ -198,3 +199,45 @@ class HazardMapEquivalenceTest(BaseLaboratorySetUpTest):
         self.assertGreater(tonnage["laboratory"]["kilograms"], 0)
         self.assertTrue(tonnage["rooms"], "no hubo desglose por sala")
         self.assertTrue(tonnage["furniture"], "no hubo desglose por mueble")
+
+
+class TonnageByDensityTest(BaseLaboratorySetUpTest):
+    """Los reactivos en volumen pesan con su densidad (g/mL = kg/L)."""
+
+    def add_reactive(self, name, quantity, unit, density=None):
+        obj = Object.objects.create(code=name, name=name, type=Object.REACTIVE, organization=self.org)
+        if density is not None:
+            SubstanceCharacteristics.objects.create(object_related=obj, density=density)
+        ShelfObject.objects.create(
+            object=obj,
+            shelf=Shelf.objects.get(pk=1),
+            quantity=quantity,
+            measurement_unit=Catalog.objects.get(key="units", description=unit),
+            in_where_laboratory=self.lab,
+            created_by=self.user,
+        )
+
+    def test_volumen_con_densidad_suma_y_sin_densidad_se_cuenta(self):
+        before = compute_tonnage_aggregates(self.lab)
+        self.add_reactive("Agua", 2, "Litros", density=1.0)
+        self.add_reactive("Etanol", 500, "Mililitros", density=0.8)
+        self.add_reactive("Sin ficha", 3, "Litros")
+        self.add_reactive("Densidad cero", 1, "Litros", density=0)
+        after = compute_tonnage_aggregates(self.lab)
+
+        lab_before, lab_after = before["laboratory"], after["laboratory"]
+        self.assertAlmostEqual(lab_after["kilograms"] - lab_before["kilograms"], 2.4, places=3)
+        nuevos = [item["name"] for item in lab_after["without_density"] if item not in lab_before["without_density"]]
+        self.assertEqual(sorted(nuevos), ["Densidad cero", "Sin ficha"])
+
+        shelf = Shelf.objects.get(pk=1)
+        marcados = collect_room_shelf_hcodes(shelf.furniture.labroom)[shelf.pk]["no_density"]
+        self.assertIn("Sin ficha", marcados)
+        self.assertIn("Densidad cero", marcados)
+        self.assertNotIn("Agua", marcados)
+        furniture = Shelf.objects.get(pk=1).furniture_id
+        self.assertAlmostEqual(
+            after["furniture"][furniture]["kilograms"] - before["furniture"].get(furniture, {"kilograms": 0})["kilograms"],
+            2.4,
+            places=3,
+        )

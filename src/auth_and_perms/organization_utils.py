@@ -27,37 +27,70 @@ def user_is_allowed_on_organization(user, organization):
 
     if isinstance(organization, (str, int)):
         organization = get_object_or_404(OrganizationStructure, pk=organization)
-    if organization.users.filter(pk=user.pk).exists():
+
+    # Una vista suele preguntar lo mismo varias veces en la misma petición
+    # (decorador, vista, serializer): solo se recuerda el sí, que es lo que no
+    # cambia a mitad de una petición.
+    allowed_cache = getattr(user, "_org_allowed_cache", None)
+    if allowed_cache is None:
+        allowed_cache = set()
+        try:
+            user._org_allowed_cache = allowed_cache
+        except AttributeError:
+            pass
+    if organization.pk in allowed_cache:
         return True
 
-    user_org_content_type = ContentType.objects.get_for_model(UserOrganization)
-    user_org_ids = UserOrganization.objects.filter(user=user).values_list(
-        "pk", flat=True
+    # La organización y sus ancestros en una consulta, en vez de dos por nivel.
+    org_ids = list(
+        organization.ancestors(include_self=True).values_list("pk", flat=True)
     )
-    has_relation = OrganizationStructureRelations.objects.filter(
-        organization=organization,
-        content_type=user_org_content_type,
-        object_id__in=user_org_ids,
+    allowed = OrganizationStructure.objects.filter(
+        pk__in=org_ids, users=user
     ).exists()
-
-    if has_relation:
-        return True
-
-    for ancestor in organization.ancestors():
-        if ancestor.users.filter(pk=user.pk).exists():
-            return True
-        has_ancestor_relation = OrganizationStructureRelations.objects.filter(
-            organization=ancestor,
+    if not allowed:
+        user_org_content_type = ContentType.objects.get_for_model(UserOrganization)
+        allowed = OrganizationStructureRelations.objects.filter(
+            organization__in=org_ids,
             content_type=user_org_content_type,
-            object_id__in=user_org_ids,
+            object_id__in=UserOrganization.objects.filter(user=user).values("pk"),
         ).exists()
-        if has_ancestor_relation:
-            return True
+    if allowed:
+        allowed_cache.add(organization.pk)
+        return True
 
     raise PermissionDenied(
         _("User %(user)s not allowed on organization %(organization)r ")
         % {"user": user, "organization": organization}
     )
+
+
+def get_sds_shared_organization_ids(user, org_pk):
+    """Organizaciones cuyas sustancias y fichas de seguridad ve `org_pk`.
+
+    Las fichas se comparten con toda la estructura: el árbol completo de la raíz
+    (los reactivos suelen crearse en la organización padre y los usan los
+    laboratorios hijos) más las organizaciones que algún nodo del árbol tiene
+    relacionadas explícitamente, que pueden no colgar de él.
+    """
+    organization = get_object_or_404(OrganizationStructure, pk=org_pk)
+    user_is_allowed_on_organization(user, organization)
+
+    # La propia organización se añade aparte: con un `parent` que apunta a sí
+    # misma, `descendants` devuelve vacío aunque se pida `include_self`.
+    tree_ids = {organization.pk} | set(
+        OrganizationStructure.objects.descendants(
+            organization.root, include_self=True
+        ).values_list("pk", flat=True)
+    )
+    related_ids = set(
+        OrganizationStructureRelations.objects.filter(
+            organization__in=tree_ids,
+            content_type__app_label="laboratory",
+            content_type__model="organizationstructure",
+        ).values_list("object_id", flat=True)
+    )
+    return tree_ids | related_ids
 
 
 def organization_can_change_laboratory(laboratory, organization, raise_exec=False):

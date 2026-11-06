@@ -8,10 +8,17 @@ from organilab_test.tests.base import OptimizedSeleniumBase, modifies_db
 FORMIO_TEXT_FIELD = "//span[contains(@class, 'btn') and contains(., 'Text Field')]"
 # Por data-key y no por texto: el palette de Formio se muestra traducido
 # (es: "Contraseña", "Casilla…"), así que el título no es estable.
-FORMIO_NUMBER = "//span[contains(@class, 'btn') and @data-key='number']"
-FORMIO_PASSWORD = "//span[contains(@class, 'btn') and @data-key='password']"
-FORMIO_CHECKBOX = "//span[contains(@class, 'btn') and @data-key='checkbox']"
-FORMIO_RADIO = "//span[contains(@class, 'btn') and @data-key='radio']"
+FORMIO_PALETTE = "//span[contains(@class, 'btn') and @data-key='{key}']"
+
+# El tema (Bootstrap 5) pone `scroll-behavior: smooth` en :root, así que
+# window.scrollTo() y el scroll que hace WebDriver al mover el puntero son
+# animados: el arrastre se iniciaba con la página aún desplazándose y el
+# mousedown caía sobre otro botón del palette (al arrastrar "Radio" se soltaba
+# "Button", el siguiente) o en un hueco. Se desplaza de golpe y centrado.
+FORMIO_PALETTE_SCROLL = (
+    "document.querySelector(\"#formio span.formcomponent[data-key='{key}']\")"
+    ".scrollIntoView({{block: 'center', behavior: 'instant'}});"
+)
 
 # Formio builder drop zone (top-level form uses formio-builder-form)
 FORMIO_DROP_ZONE = "//*[@id='formio']//div[contains(@class, 'drag-container')]"
@@ -22,9 +29,19 @@ FORMIO_DIALOG_TAB_DATA = FORMIO_DIALOG + "//li[2]/a"
 FORMIO_DIALOG_TAB_VALIDATION = FORMIO_DIALOG + "//li[3]/a"
 FORMIO_DIALOG_LABEL_INPUT = FORMIO_DIALOG + "//input[1]"
 FORMIO_DIALOG_SAVE = FORMIO_DIALOG + "//button[contains(@class, 'btn-success')]"
+# Diálogo abierto para un tipo concreto: la vista previa del diálogo pinta el
+# componente con la clase formio-component-<tipo>. Sirve para comprobar que lo
+# que se soltó es el componente arrastrado y no su vecino del palette.
+FORMIO_DIALOG_FOR = (
+    FORMIO_DIALOG + "//div[@ref='preview']"
+    "//div[contains(concat(' ', normalize-space(@class), ' '), ' formio-component-{type} ')]"
+)
 
 # Edit view page elements
 SAVE_FORM_BTN = "//*[@id='save_btn']"
+# SweetAlert2 11 marca el tipo de aviso en el propio popup (swal2-icon-success).
+SAVE_SUCCESS_ICON = "//div[contains(@class, 'swal2-popup') and contains(@class, 'swal2-icon-success')]"
+SWAL_POPUP = "//div[contains(@class, 'swal2-popup')]"
 RETURN_TO_LIST_BTN = "//button[@title='Form List']"
 
 # Form table action selectors
@@ -57,15 +74,7 @@ class InformsSeleniumTest(OptimizedSeleniumBase):
 
         Used at the end of Formio builder tests.
         """
-        return [
-            {
-                "path": SAVE_FORM_BTN,
-            },
-            {
-                "path": RETURN_TO_LIST_BTN,
-                "scroll": "window.scrollTo(0, 600)",
-                "sleep": 2,
-            },
+        return self._save_and_return() + [
             {
                 "path": "//button[contains(@class, 'swal2-confirm')]",
                 "sleep": 1,
@@ -77,6 +86,55 @@ class InformsSeleniumTest(OptimizedSeleniumBase):
             {
                 "path": "//button[contains(@class, 'btn-primary') and contains(@onclick, 'window.location')]",
                 "wait_ready": True,
+            },
+        ]
+
+    def _save_and_return(self):
+        """Guarda el formulario y pulsa "Volver a la lista" (abre la confirmación)."""
+        return [
+            {
+                "path": SAVE_FORM_BTN,
+            },
+            # El guardado es AJAX y su aviso de éxito (un Swal sin botones que
+            # se cierra solo) llega cuando responde el servidor. Si llega
+            # después de pulsar "Volver a la lista", Swal sustituye el diálogo
+            # de confirmación por ese aviso y el botón de confirmar no aparece
+            # nunca. Se espera a que el guardado termine y su aviso se cierre.
+            {
+                "path": SAVE_SUCCESS_ICON,
+                "presence_only": True,
+            },
+            {
+                "path": RETURN_TO_LIST_BTN,
+                "scroll": "window.scrollTo(0, 600)",
+                "wait_gone": SWAL_POPUP,
+                "sleep": 2,
+            },
+        ]
+
+    def _drag_from_palette(self, key):
+        """Pasos para arrastrar un componente del palette de Formio al lienzo.
+
+        El primer paso espera a que Formio pinte el palette (se construye en
+        window.onload, después de cargar formio.full.min.js); el segundo lo
+        lleva al centro de la pantalla sin animación y lo arrastra, exigiendo
+        que el diálogo que se abra sea el del tipo arrastrado.
+        """
+        source = FORMIO_PALETTE.format(key=key)
+        return [
+            {
+                "path": source,
+                "presence_only": True,
+            },
+            {
+                "path": source,
+                "scroll": FORMIO_PALETTE_SCROLL.format(key=key),
+                "extra_action": "drag_and_drop",
+                "x": source,
+                "y": FORMIO_DROP_ZONE,
+                "expect": FORMIO_DIALOG_FOR.format(type=key),
+                "wait_ready": True,
+                "sleep": 3,
             },
         ]
 
@@ -193,14 +251,7 @@ class InformsSeleniumTest(OptimizedSeleniumBase):
             {
                 "path": "//div[contains(@class, 'component-settings-button-remove')] | //div[contains(@class, 'component-btn-group')]/div[1]",
             },
-            {
-                "path": SAVE_FORM_BTN,
-            },
-            {
-                "path": RETURN_TO_LIST_BTN,
-                "scroll": "window.scrollTo(0, 600)",
-                "sleep": 2,
-            },
+        ] + self._save_and_return() + [
             {
                 "path": "//button[contains(@class, 'swal2-confirm')]",
                 "sleep": 1,
@@ -296,15 +347,7 @@ class InformsSeleniumTest(OptimizedSeleniumBase):
                 "path": FORM_TABLE_EDIT_ROW.format(row=1),
                 "sleep": 2,
             },
-            {
-                "path": FORMIO_NUMBER,
-                "extra_action": "drag_and_drop",
-                "x": FORMIO_NUMBER,
-                "y": FORMIO_DROP_ZONE,
-                "expect": FORMIO_DIALOG,
-                "wait_ready": True,
-                "sleep": 3,
-            },
+        ] + self._drag_from_palette("number") + [
             {
                 "path": FORMIO_DIALOG_TAB_DATA,
                 "sleep": 1,
@@ -345,15 +388,7 @@ class InformsSeleniumTest(OptimizedSeleniumBase):
                 "path": FORM_TABLE_EDIT_ROW.format(row=1),
                 "sleep": 2,
             },
-            {
-                "path": FORMIO_PASSWORD,
-                "extra_action": "drag_and_drop",
-                "x": FORMIO_PASSWORD,
-                "y": FORMIO_DROP_ZONE,
-                "expect": FORMIO_DIALOG,
-                "wait_ready": True,
-                "sleep": 3,
-            },
+        ] + self._drag_from_palette("password") + [
             {
                 "path": FORMIO_DIALOG_TAB_DATA,
                 "sleep": 1,
@@ -386,15 +421,7 @@ class InformsSeleniumTest(OptimizedSeleniumBase):
                 "path": FORM_TABLE_EDIT_ROW.format(row=1),
                 "sleep": 2,
             },
-            {
-                "path": FORMIO_CHECKBOX,
-                "extra_action": "drag_and_drop",
-                "x": FORMIO_CHECKBOX,
-                "y": FORMIO_DROP_ZONE,
-                "expect": FORMIO_DIALOG,
-                "wait_ready": True,
-                "sleep": 3,
-            },
+        ] + self._drag_from_palette("checkbox") + [
             {
                 "path": FORMIO_DIALOG_LABEL_INPUT,
                 "sleep": 1,
@@ -436,16 +463,7 @@ class InformsSeleniumTest(OptimizedSeleniumBase):
                 "path": FORM_TABLE_EDIT_ROW.format(row=1),
                 "sleep": 2,
             },
-            {
-                "path": FORMIO_RADIO,
-                "scroll": "window.scrollTo(0, 110)",
-                "extra_action": "drag_and_drop",
-                "x": FORMIO_RADIO,
-                "y": FORMIO_DROP_ZONE,
-                "expect": FORMIO_DIALOG,
-                "wait_ready": True,
-                "sleep": 3,
-            },
+        ] + self._drag_from_palette("radio") + [
             {
                 "path": FORMIO_DIALOG_LABEL_INPUT,
                 "extra_action": "clearinput",

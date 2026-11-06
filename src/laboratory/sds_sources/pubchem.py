@@ -203,12 +203,15 @@ class PubChemSource(SDSSource):
         from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
         from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
         from reportlab.lib import colors
+        from presentation.pdf import PDF_SANS_FONT, register_pdf_fonts
 
+        # Helvetica no dibuja griego ni subíndices de los nombres IUPAC.
+        register_pdf_fonts()
         doc = SimpleDocTemplate(dest_path, pagesize=letter, topMargin=1.5 * cm, bottomMargin=1.5 * cm)
         styles = getSampleStyleSheet()
-        title_style = ParagraphStyle('SDSTitle', parent=styles['Title'], fontSize=14, spaceAfter=6)
-        heading_style = ParagraphStyle('SDSHeading', parent=styles['Heading2'], fontSize=11, textColor=colors.darkblue, spaceBefore=10, spaceAfter=4)
-        normal_style = styles['Normal']
+        title_style = ParagraphStyle('SDSTitle', parent=styles['Title'], fontName=PDF_SANS_FONT + '-Bold', fontSize=14, spaceAfter=6)
+        heading_style = ParagraphStyle('SDSHeading', parent=styles['Heading2'], fontName=PDF_SANS_FONT + '-Bold', fontSize=11, textColor=colors.darkblue, spaceBefore=10, spaceAfter=4)
+        normal_style = ParagraphStyle('SDSNormal', parent=styles['Normal'], fontName=PDF_SANS_FONT)
 
         elements = []
         cas = meta.get('cas', 'N/A')

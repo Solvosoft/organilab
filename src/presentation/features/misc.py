@@ -50,8 +50,8 @@ FEATURES = (
             "por `type_in_organization` (:161).",
             "Que la app tenga una sola ruta esconde su alcance: los emisores están en "
             "`sga/utils.py:63`, `risk_management/tasks.py:67`, "
-            "`risk_management/iper_views.py:575`, `laboratory/tasks.py:69,197`, "
-            "`laboratory/task_utils.py:65` y `laboratory/limit_shelfobject.py:25`.",
+            "`risk_management/iper_views.py:575`, `laboratory/tasks.py:68,196` "
+            "y `laboratory/task_utils.py:65`.",
         ),
     ),
     Feature(
@@ -71,7 +71,7 @@ FEATURES = (
                 name="Consultar el árbol de fichas",
                 actors=TODOS_LOS_ROLES,
                 routes=("msds:index_msds", "msds:list_msds"),
-                permissions=("msds.view_msdsobject",),
+                permissions=("sga.view_sdstraceability",),
                 source="src/msds/views.py index_msds, get_list_msds",
             ),
             Step(
@@ -79,7 +79,7 @@ FEATURES = (
                 name="Registrar una ficha",
                 actors=("administrador_laboratorio", "tecnico_laboratorio", "sga"),
                 routes=("msds:sds_create",),
-                permissions=("msds.add_msdsobject",),
+                permissions=("laboratory.change_object", "auth_and_perms.institution_can_access"),
                 source="src/msds/views.py sds_create",
             ),
             Step(

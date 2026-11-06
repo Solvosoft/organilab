@@ -23,8 +23,9 @@ from laboratory.models import OrganizationStructure, Laboratory
 from laboratory.utils import get_user_laboratories
 
 
+@method_decorator(login_required, name="dispatch")
 @method_decorator(
-    permission_required("auth_and_perms.change_own_profile"), name="dispatch"
+    permission_required("auth_and_perms.change_own_profile", raise_exception=True), name="dispatch"
 )
 class ChangeUser(UpdateView):
     model = User
@@ -32,12 +33,11 @@ class ChangeUser(UpdateView):
     template_name = "auth/change_user.html"
 
     def dispatch(self, request, *args, **kwargs):
-        response = super().dispatch(request, *args, **kwargs)
-
-        if str(self.kwargs["pk"]) != str(request.user.pk):
+        # Se comprueba antes de despachar: con un POST, `super().dispatch` ya guardaría
+        # el formulario sobre el usuario ajeno aunque luego se respondiera 404.
+        if str(kwargs["pk"]) != str(request.user.pk):
             return HttpResponseNotFound("<h1>Page not found</h1>")
-        else:
-            return response
+        return super().dispatch(request, *args, **kwargs)
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -84,7 +84,7 @@ class ChangeUser(UpdateView):
 
 
 @login_required
-@permission_required("auth_and_perms.view_profile")
+@permission_required("auth_and_perms.view_profile", raise_exception=True)
 def get_profile(request, org_pk, pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -95,7 +95,8 @@ def get_profile(request, org_pk, pk):
     return render(request, "laboratory/profile_detail.html", context=context)
 
 
-@permission_required("auth_and_perms.change_own_profile")
+@login_required
+@permission_required("auth_and_perms.change_own_profile", raise_exception=True)
 @sensitive_post_parameters("password", "password_confirm")
 @require_http_methods(["POST"])
 def password_change(request, pk):

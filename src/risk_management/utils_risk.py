@@ -2,8 +2,10 @@ from django.contrib.contenttypes.models import ContentType
 from django.db.models import F
 
 from laboratory.models import ObjectMaximumLimit, Object, Catalog
+from laboratory.utils_base_unit import cached_units
 from report.utils import get_conversion_units_to_kilograms
 from typing import List, Dict, Optional, Tuple
+import datetime
 import math
 import json
 import argparse
@@ -15,7 +17,30 @@ from django.core.files.base import ContentFile
 
 from risk_management.models import EstablishmentLogs
 from sga.models import DangerSubstance, DangerSubstanceCategory, DangerIndication
+from django.utils import timezone
 from django.utils.translation import gettext as _
+
+
+# Columnas del inventario que consumen el reporte de regencia y la bitácora del
+# establecimiento. Un inventario vacío debe traerlas igual: `drop_duplicates` y
+# `clasificar_establecimiento` las piden por nombre.
+COLUMNAS_INVENTARIO = ("nombre", "cas", "condicion_proceso", "h_codes", "cantidad_t")
+
+
+def _cantidad_en_toneladas(limit, tons_unit, density):
+    """Cantidad de un `ObjectMaximumLimit` expresada en toneladas."""
+    quantity = limit.quantity or 0
+    if tons_unit is not None and limit.measurement_unit_id == tons_unit.pk:
+        return quantity
+    try:
+        return (
+            get_conversion_units_to_kilograms(
+                limit.measurement_unit_id, quantity, density
+            )
+            / 1000
+        )
+    except ZeroDivisionError:
+        return 0
 
 
 def get_inventory(filters=None):
@@ -31,142 +56,78 @@ def get_inventory(filters=None):
         key="process_condition",
     )
 
-    tons_unit = Catalog.objects.get(description="Toneladas")
+    # La unidad la crea una migración de datos (laboratory 0177), así que puede
+    # faltar: una base vaciada (flush), una instalación cargada desde fixtures o
+    # un catálogo depurado a mano. Sin ella simplemente no hay registros en
+    # toneladas; no es motivo para tumbar el reporte.
+    tons_unit = Catalog.objects.filter(key="units", description="Toneladas").first()
 
-    for obj in objs:
-        data = {}
-        total_shelfobjects = 0
-        sga_char = obj.substancharacteristics_object.first()
-        density = getattr(sga_char, "density", None) if sga_char else None
-        units = Catalog.objects.filter(
-            pk__in=objs_max.filter(object=obj).values_list(
-                "measurement_unit", flat=True
-            )
-        ).distinct()
-        h_codes = [
-            h_code
-            for h_code in (sga_char.h_code.values_list("code", flat=True) if sga_char else [])
-        ]
-        # Extraer los objectos con procesos de condición
-        max_objs = ObjectMaximumLimit.objects.filter(
-            object=obj,
-            measurement_unit__in=units,
-            process_condition__in=process_conditions,
-        )
-        # Se sacan el ultimo registro del objeto deacuerdo a su proceso de condición
-        if max_objs.exists():
-            for process in process_conditions.filter(
-                pk__in=max_objs.values_list("process_condition", flat=True)
-            ):
-                max_obj = max_objs.filter(process_condition=process).last()
-                # Si es un ton, se suma la cantidad
-                if max_obj.measurement_unit == tons_unit:
-                    total_shelfobjects += objs_max.quantity
-                else:
-                    # Si no es un ton, se calcula la cantidad de sustancia en kilogramos
-                    try:
-                        total_shelfobjects += (
-                            get_conversion_units_to_kilograms(
-                                max_obj.measurement_unit, max_obj.quantity, density
-                            )
-                            / 1000
-                        )
-                    except ZeroDivisionError:
-                        total_shelfobjects += 0
+    # Todo en memoria de una vez: los límites agrupados por objeto, las fichas
+    # SGA precargadas y las unidades en un mapa. Antes cada sustancia costaba
+    # media docena de consultas y la conversión de unidades otras tantas.
+    process_names = dict(process_conditions.values_list("pk", "description"))
+    limits_by_object = {}
+    for limit in objs_max.order_by("pk"):
+        limits_by_object.setdefault(limit.object_id, []).append(limit)
+    objs = objs.prefetch_related("substancharacteristics_object__h_code")
+
+    with cached_units():
+        for obj in objs:
+            data = {}
+            total_shelfobjects = 0
+            sga_char = obj.get_sga_characteristic()
+            density = getattr(sga_char, "density", None) if sga_char else None
+            h_codes = [h_code.code for h_code in sga_char.h_code.all()] if sga_char else []
+            # Los límites del objeto se toman siempre de `objs_max`, es decir,
+            # respetando los filtros pedidos (laboratorios de la organización,
+            # periodo...). Partir de `ObjectMaximumLimit.objects` mezclaba
+            # registros de cualquier laboratorio de cualquier organización.
+            obj_limits = limits_by_object.get(obj.pk, [])
+            # El último registro (mayor pk) por cada proceso de condición.
+            last_by_process = {}
+            for limit in obj_limits:
+                if limit.process_condition_id in process_names:
+                    last_by_process[limit.process_condition_id] = limit
+            if last_by_process:
+                for process_pk in sorted(last_by_process):
+                    total_shelfobjects += _cantidad_en_toneladas(
+                        last_by_process[process_pk], tons_unit, density
+                    )
+                    data = {
+                        "nombre": obj.name,
+                        "cas": obj.cas_code,
+                        "cantidad_t": total_shelfobjects,
+                        "h_codes": ";".join(h_codes),
+                        "condicion_proceso": process_names[process_pk],
+                    }
+            else:
+                # Sin proceso de condición, el último registro del objeto.
+                without_process = [
+                    limit for limit in obj_limits if limit.process_condition_id is None
+                ]
+                if not without_process:
+                    # Solo tiene registros con una condición fuera del catálogo
+                    # `process_condition`: no hay cantidad que sumar.
+                    continue
+                total_shelfobjects += round(
+                    _cantidad_en_toneladas(without_process[-1], tons_unit, density), 3
+                )
+
                 data = {
                     "nombre": obj.name,
                     "cas": obj.cas_code,
                     "cantidad_t": total_shelfobjects,
                     "h_codes": ";".join(h_codes),
-                    "condicion_proceso": process.description,
+                    "condicion_proceso": "",
                 }
-        else:
-            # Si no se encuentra ningun registro con proceso de condición, se saca el ultimo registro del objeto
-            max_obj = ObjectMaximumLimit.objects.filter(
-                object=obj, measurement_unit__in=units, process_condition__isnull=True
-            ).last()
-            if max_obj.measurement_unit == tons_unit:
-                total_shelfobjects += max_obj.quantity
-            else:
-                try:
-                    total_shelfobjects += round(
-                        get_conversion_units_to_kilograms(
-                            max_obj.measurement_unit, max_obj.quantity, density
-                        )
-                        / 1000,
-                        3,
-                    )
-                except ZeroDivisionError:
-                    total_shelfobjects += 0
+            dict_objs.append(data)
 
-            data = {
-                "nombre": obj.name,
-                "cas": obj.cas_code,
-                "cantidad_t": total_shelfobjects,
-                "h_codes": ";".join(h_codes),
-                "condicion_proceso": "",
-            }
-        dict_objs.append(data)
-
-    dataframe = pd.DataFrame(dict_objs)
+    dataframe = pd.DataFrame(dict_objs, columns=list(COLUMNAS_INVENTARIO))
     if not dataframe.empty:
         dataframe = dataframe.groupby(
             ["nombre", "cas", "condicion_proceso", "h_codes"], as_index=False
         ).agg(cantidad_t=("cantidad_t", "sum"))
     return dataframe
-
-
-def examples():
-    filters = {
-        "object__type": 0,
-        "laboratory__pk": 54,
-        "created_at__year": 2025,
-        "object__isnull": False,
-        "measurement_unit__isnull": False,
-    }
-    inv = get_inventory(filters)
-    inv = inv.drop_duplicates(subset=["nombre", "h_codes", "cas", "cantidad_t"])
-    danger_substances = list(
-        DangerSubstance.objects.all()
-        .annotate(
-            cas=F("cas_code"),
-            umbral_t=F("threshold"),
-            tipo_match=F("type_match"),
-            nombre_patron=F("patron_name"),
-            condiciones_especiales=F("especial_condition"),
-            nombre=F("name"),
-        )
-        .values(
-            "nombre",
-            "cas",
-            "umbral_t",
-            "tipo_match",
-            "h_codes_match",
-            "nombre_patron",
-            "condiciones_especiales",
-        )
-    )
-    c3 = cargar_cuadro3(pd.DataFrame(danger_substances))
-    danger_categories = list(
-        DangerSubstanceCategory.objects.all()
-        .annotate(
-            h_codes=F("h_code__code"),
-            categoria=F("category"),
-            seccion=F("section"),
-            condicion_proceso=F("process_condition"),
-            umbral_t=F("threshold"),
-        )
-        .values("h_code", "categoria", "seccion", "condicion_proceso", "umbral_t")
-    )
-    danger_categories_frame = pd.DataFrame(danger_categories)
-    danger_categories_frame.rename(
-        columns={"h_codes": "h_code"},
-    )
-    c4 = cargar_umbral_por_H(danger_categories_frame)
-    mapH_tipo = cargar_sga_referencia()
-    res = clasificar_establecimiento(inv, c3, c4, mapH_tipo)
-    with open("zzz-json", "w", encoding="utf-8") as f:
-        json.dump(res, f, ensure_ascii=False, indent=2)
 
 
 _MAPA_TIPO_SGA = {
@@ -215,50 +176,51 @@ COLUMNAS_CUADRO3 = (
 )
 
 
+# Los cargadores de sga (`load_danger_substances`, `load_danger_substances_category`)
+# traducen el vocabulario de los CSV del Decreto 44741 al de los modelos: el tipo de
+# coincidencia «h_categoria» se guarda como «type_match», «nombre_patron» como
+# «patron_name», las categorías «Físico/Salud/Ambiental» como «physical/health/
+# environmental» y la condición de proceso pasa a ser una entrada del Catalog. El
+# algoritmo de clasificación sigue hablando el idioma de los CSV, así que hay que
+# deshacer la traducción al leer de la base. Sin esto ninguna regla por categoría H ni
+# por patrón de nombre se aplicaba, las sumatorias de Físico y Ambiental quedaban
+# siempre en cero y ninguna condición de proceso coincidía.
+TIPO_MATCH_DESDE_MODELO = {
+    "type_match": "h_categoria",
+    "patron_name": "nombre_patron",
+}
+CATEGORIA_DESDE_MODELO = {
+    "physical": "Físico",
+    "health": "Salud",
+    "environmental": "Ambiental",
+}
+
+
 def cargar_cuadro3() -> pd.DataFrame:
-    # df = pd.read_csv(path_csv, dtype=str).fillna("")
-    danger_substances = list(
-        DangerSubstance.objects.all()
-        .annotate(
-            cas=F("cas_code"),
-            umbral_t=F("threshold"),
-            tipo_match=F("type_match"),
-            nombre_patron=F("patron_name"),
-            condiciones_especiales=F("especial_condition"),
-            nombre=F("name"),
+    # Una fila por sustancia, con sus códigos H unidos por «;» como en el CSV
+    # original. Con `.values("h_codes_match")` salía una fila por código H y el
+    # merge por CAS duplicaba la sustancia del inventario (y su contribución).
+    filas = []
+    for sustancia in DangerSubstance.objects.prefetch_related("h_codes_match"):
+        tipo = (sustancia.type_match or "").strip()
+        filas.append(
+            {
+                "cas": (sustancia.cas_code or "").strip(),
+                "nombre": sustancia.name or "",
+                "umbral_t": sustancia.threshold,
+                "tipo_match": TIPO_MATCH_DESDE_MODELO.get(tipo, tipo) or "cas",
+                "h_codes_match": ";".join(
+                    sorted(h.code for h in sustancia.h_codes_match.all())
+                ),
+                "nombre_patron": (sustancia.patron_name or "").strip(),
+                "condiciones_especiales": (sustancia.especial_condition or "").strip(),
+            }
         )
-        .values(
-            "nombre",
-            "cas",
-            "umbral_t",
-            "tipo_match",
-            "h_codes_match",
-            "nombre_patron",
-            "condiciones_especiales",
-        )
-    )
-    # Sin filas, pd.DataFrame([]) no tiene NINGUNA columna, y la comprobación
-    # de abajo reventaba con un mensaje que culpa a un cuadro3.csv que esta
-    # función ya no lee: los datos salen de DangerSubstance desde que se
-    # migraron a la base. Una organización sin sustancias peligrosas cargadas es
-    # un caso normal, no un error, así que se devuelve el marco vacío con sus
-    # columnas y el reporte sale sin filas en vez de con un 500.
-    df = pd.DataFrame(danger_substances, columns=COLUMNAS_CUADRO3)
-    df.rename(
-        columns={"h_codes_match": "h_codes"},
-    )
+    # Sin filas, pd.DataFrame([]) no tendría NINGUNA columna; una organización sin
+    # sustancias peligrosas cargadas es un caso normal, no un error, así que se
+    # devuelve el marco vacío con sus columnas y el reporte sale sin filas.
+    df = pd.DataFrame(filas, columns=COLUMNAS_CUADRO3)
     df["umbral_t"] = pd.to_numeric(df["umbral_t"], errors="coerce").fillna(math.inf)
-    df["cas"] = df["cas"].str.strip()
-    if "tipo_match" not in df.columns:
-        df["tipo_match"] = "cas"
-    else:
-        df["tipo_match"] = df["tipo_match"].str.strip()
-        df.loc[df["tipo_match"] == "", "tipo_match"] = "cas"
-    for col in ["h_codes_match", "nombre_patron", "condiciones_especiales"]:
-        if col not in df.columns:
-            df[col] = ""
-        else:
-            df[col] = df[col].astype(str).str.strip()
     return df[list(COLUMNAS_CUADRO3)]
 
 
@@ -268,39 +230,31 @@ COLUMNAS_UMBRAL_H = (
     "seccion",
     "condicion_proceso",
     "umbral_t",
+    "notas",
 )
 
 
 def cargar_umbral_por_H() -> pd.DataFrame:
-    # df = pd.read_csv(path_csv, dtype=str).fillna("")
-    danger_categories = list(
-        DangerSubstanceCategory.objects.all()
-        .annotate(
-            h_codes=F("h_code__code"),
-            categoria=F("category"),
-            seccion=F("section"),
-            condicion_proceso=F("process_condition"),
-            umbral_t=F("threshold"),
+    filas = []
+    for fila in DangerSubstanceCategory.objects.select_related("process_condition"):
+        categoria = (fila.category or "").strip()
+        filas.append(
+            {
+                "h_code": (fila.h_code_id or "").strip().upper(),
+                "categoria": CATEGORIA_DESDE_MODELO.get(categoria, categoria),
+                "seccion": (fila.section or "").strip().upper(),
+                "condicion_proceso": (
+                    fila.process_condition.description.strip()
+                    if fila.process_condition_id
+                    else ""
+                ),
+                "umbral_t": fila.threshold,
+                "notas": (fila.note or "").strip(),
+            }
         )
-        .values("h_code", "categoria", "seccion", "condicion_proceso", "umbral_t")
-    )
-    # Mismo caso que en cargar_cuadro3(): sin filas el marco no tiene columnas
-    # y reventaba culpando a un cuadro4_h_umbral.csv que ya no se lee.
-    df = pd.DataFrame(danger_categories, columns=COLUMNAS_UMBRAL_H)
-    df.rename(
-        columns={"h_codes": "h_code"},
-    )
+    # Mismo caso que en cargar_cuadro3(): sin filas el marco no tendría columnas.
+    df = pd.DataFrame(filas, columns=COLUMNAS_UMBRAL_H)
     df["umbral_t"] = pd.to_numeric(df["umbral_t"], errors="coerce")
-    df["h_code"] = df["h_code"].str.strip().str.upper()
-    df["categoria"] = df["categoria"].str.strip()  # ya viene normalizada
-    if "seccion" in df.columns:
-        df["seccion"] = df["seccion"].str.strip().str.upper()
-    else:
-        df["seccion"] = ""
-    if "condicion_proceso" in df.columns:
-        df["condicion_proceso"] = df["condicion_proceso"].astype(str).str.strip()
-    else:
-        df["condicion_proceso"] = ""
     return df
 
 
@@ -379,6 +333,7 @@ def clasificar_establecimiento(inventario, c3, umbral_H_df, map_H_to_tipo):
                     "contribuciones": {},
                     "detalle_contribuciones": [],
                     "regla_cruzada_salud": False,
+                    "advertencias": [],
                 }
             )
         return {
@@ -413,6 +368,7 @@ def clasificar_establecimiento(inventario, c3, umbral_H_df, map_H_to_tipo):
                         "contribuciones": {},
                         "detalle_contribuciones": [],
                         "regla_cruzada_salud": False,
+                        "advertencias": [],
                         "paso4_supera": (
                             r["nombre"] == fila["nombre"] and r["cas"] == fila["cas"]
                         ),
@@ -626,8 +582,12 @@ def contribuciones_por_sustancia(
             contrib = cantidad / umbral_min
             contribuciones_directas[cat] = contrib
             h_usados = ", ".join(grupo["h_code"].tolist())
+            # Las filas sin nota llegan como "": sin filtrarlas el detalle
+            # terminaba en " [, ]".
             notas_usadas = (
-                ", ".join(grupo["notas"].tolist()) if "notas" in grupo.columns else ""
+                ", ".join(n for n in grupo["notas"].tolist() if n)
+                if "notas" in grupo.columns
+                else ""
             )
             detalle_str = f"{_(cat)}: {cantidad}/{umbral_min} = {contrib:.4f} (H-codes: {h_usados})"
             if notas_usadas:
@@ -748,6 +708,7 @@ def build_establishment_xls(res):
 
 
 def create_estableshment_logs_data(element, day, labs):
+    moment = timezone.make_aware(datetime.datetime.combine(day, datetime.time.min))
     filters = {
         "object__type": 0,
         "created_at": day,
@@ -778,7 +739,7 @@ def create_estableshment_logs_data(element, day, labs):
                 health=sumatories.get("Salud", 0.0),
                 physical=sumatories.get("Físico", 0.0),
                 establishment_status=res["clasificacion"].capitalize(),
-                date=day,
+                date=moment,
             )
             log.xls_content.save(filename, ContentFile(xls_bytes), save=True)
         else:
@@ -789,5 +750,5 @@ def create_estableshment_logs_data(element, day, labs):
                 health=0.0,
                 physical=0.0,
                 establishment_status="Desconocido",
-                date=day,
+                date=moment,
             )

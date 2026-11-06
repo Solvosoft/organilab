@@ -1,7 +1,5 @@
-from datetime import datetime
 
 from django.conf import settings
-from django.core.exceptions import ValidationError
 from django.db.models import Q, Value
 from django.db.models.functions import Concat
 from django.shortcuts import get_object_or_404
@@ -36,8 +34,8 @@ from report.api.serializers import (
 )
 from django.db import connection
 
-from report.utils import filter_period, format_date
-from laboratory.models import PrecursorReportValues
+from report.utils import period_range
+from laboratory.models import OrganizationStructure, PrecursorReport, PrecursorReportValues
 from django.contrib.admin.models import LogEntry, DELETION, CHANGE, ADDITION
 from laboratory.utils import organilab_logentry
 from django.utils.translation import gettext as _
@@ -48,13 +46,20 @@ class ReportDataViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
     queryset = TaskReport.objects.all()
     serializer_class = ReportDataTableSerializer
-    pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     ordering_fields = ["pk"]
     ordering = ("pk",)
     limit = 10
     offset = 0
     report = None
+
+    # Los valores que manda el navegador (filtros, límite, desplazamiento) van
+    # siempre como parámetros de la consulta, nunca interpolados en el SQL: el
+    # filtro por columna se pegaba con `%` y bastaba una comilla para inyectar.
+    # Solo se interpolan nombres de columna, y esos salen de `datadict`.
+    DATASET_SQL = (
+        """from report_taskreport as lab join (SELECT id, jsonb_array_elements(jsonb_extract_path("table_content",  'dataset' )) as row_data from report_taskreport where id=%s) as ll on ll.id=lab.id"""  # noqa: E501
+    )
 
     def get_queryset(self):
         self.datadict = {
@@ -66,51 +71,40 @@ class ReportDataViewSet(viewsets.ViewSet):
             for data in self.datadict
             if data in self.request.GET
         }
-        sql_query = (
-            """Select ll.row_data::json from report_taskreport as lab join (SELECT id, jsonb_array_elements(jsonb_extract_path("table_content",  'dataset' )) as row_data from report_taskreport where id=%s) as ll on ll.id=lab.id %s order by %s %s;"""  # noqa: E501
-            % (
-                self.pk,
-                self.get_where_clause(),
-                self.get_ordering(),
-                self.get_limit_and_offset(),
-            )
+        where_clause, where_params = self.get_where_clause()
+        ordering = self.get_ordering()
+        sql_query = "Select ll.row_data::json %s %s %s limit %%s offset %%s;" % (
+            self.DATASET_SQL,
+            where_clause,
+            "order by " + ordering if ordering else "",
         )
+        params = [self.report.pk] + where_params + list(self.get_limit_and_offset())
         with connection.cursor() as cursor:
-            cursor.execute(sql_query)
+            cursor.execute(sql_query, params)
             return list(map(lambda x: x[0], cursor))
 
     def get_queryset_total(self):
-        sql_query = (
-            """Select COUNT(ll.row_data->>0) from report_taskreport as lab join (SELECT id, jsonb_array_elements(jsonb_extract_path("table_content",  'dataset' )) as row_data from report_taskreport where id=%s) as ll on ll.id=lab.id"""  # noqa: E501
-            % (self.pk,)
-        )
+        sql_query = "Select COUNT(ll.row_data->>0) %s" % self.DATASET_SQL
         with connection.cursor() as cursor:
-            cursor.execute(sql_query)
+            cursor.execute(sql_query, [self.report.pk])
             return cursor.fetchone()[0]
 
     def get_queryset_record_filtered_total(self):
-        sql_query = (
-            """Select COUNT(ll.row_data->>0) from report_taskreport as lab join (SELECT id, jsonb_array_elements(jsonb_extract_path("table_content",  'dataset' )) as row_data from report_taskreport where id= %s ) as ll on ll.id=lab.id %s"""  # noqa: E501
-            % (self.pk, self.get_where_clause())
-        )
+        where_clause, where_params = self.get_where_clause()
+        sql_query = "Select COUNT(ll.row_data->>0) %s %s" % (self.DATASET_SQL, where_clause)
         with connection.cursor() as cursor:
-            cursor.execute(sql_query)
+            cursor.execute(sql_query, [self.report.pk] + where_params)
             return cursor.fetchone()[0]
 
     def get_where_clause(self):
-        where_clause = ""
-        for i, item in enumerate(self.translation_columns):
-
-            if i:
-                where_clause += " AND "
-            where_clause += "LOWER(%s) LIKE '%%%s%%'" % (
-                item,
-                self.clean_where_item(self.translation_columns[item]),
-            )
-        if where_clause:
-            where_clause = "where " + where_clause
-
-        return where_clause
+        """Devuelve el `where` con marcadores y la lista de parámetros."""
+        clauses = []
+        params = []
+        for item, value in self.translation_columns.items():
+            clauses.append("LOWER(%s) LIKE %%s" % item)
+            params.append("%%%s%%" % self.clean_where_item(value))
+        where_clause = "where " + " AND ".join(clauses) if clauses else ""
+        return where_clause, params
 
     def clean_where_item(self, value):
         return value
@@ -118,44 +112,33 @@ class ReportDataViewSet(viewsets.ViewSet):
     def get_ordering(self):
         if "ordering" in self.request.GET:
             self.ordering = self.request.GET.getlist("ordering")
-        order_by_str = ""
-        ordering_str = ""
-        order_asc_desc = ""
+        order_by = []
 
-        for i, ordering in enumerate(self.ordering):
-
+        for ordering in self.ordering:
+            column, order_asc_desc = ordering, "asc"
             if ordering.startswith("-"):
-                ordering_str = self.datadict[ordering[1::]]
-                order_asc_desc = "desc"
-            else:
-                ordering_str = self.datadict[ordering]
-                order_asc_desc = "asc"
+                column, order_asc_desc = ordering[1:], "desc"
+            # Una columna que el reporte no tiene se ignora en vez de dar un 500.
+            if column in self.datadict:
+                order_by.append(self.datadict[column] + " " + order_asc_desc)
 
-            if i:
-                order_by_str += " , "
-            order_by_str += ordering_str + " " + order_asc_desc
-
-        return order_by_str
+        return " , ".join(order_by)
 
     def get_limit_and_offset(self):
-        limit_offset_str = ""
+        """Límite y desplazamiento como enteros no negativos."""
 
-        if "limit" in self.request.GET:
-            self.limit = self.request.GET.get("limit", self.limit)
+        def as_int(name, default):
+            try:
+                return max(int(self.request.GET.get(name, default)), 0)
+            except (TypeError, ValueError):
+                return default
 
-        if "offset" in self.request.GET:
-            self.offset = self.request.GET.get("offset", self.offset)
-
-        limit_offset_str = "limit %s offset %s" % (self.limit, self.offset)
-
-        return limit_offset_str
+        self.limit = as_int("limit", self.limit)
+        self.offset = as_int("offset", self.offset)
+        return self.limit, self.offset
 
     def get_serializer(self, data):
         return self.serializer_class(data)
-
-    def paginate_queryset(self, queryset):
-        self.paginator = self.pagination_class()
-        return self.paginator.paginate_queryset(queryset, self.request, view=self)
 
     def retrieve(self, request, pk, **kwargs):
         self.request = request
@@ -213,23 +196,11 @@ class ReportDataLogViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
         else:
             return queryset.none()
 
-    def format_date_range(self, value):
-        dev = None
-        try:
-            dev = datetime.strptime(value, "%m/%d/%Y")
-        except ValueError as e:
-            pass
-        return dev
-
     def filter_period(self, dates, queryset):
-
-        dates = dates.split("-")
-        if len(dates) != 2:
+        period = period_range(dates, input_format="%m/%d/%Y")
+        if period is None:
             return queryset
-
-        dates[0] = self.format_date_range(dates[0].strip())
-        dates[1] = self.format_date_range(dates[1].strip())
-        return queryset.filter(update_time__gte=dates[0], update_time__lte=dates[1])
+        return queryset.filter(update_time__range=period)
 
     def create_extra_filters(self, queryset):
         filters_list = ["user", "new_value", "old_value", "diff_value"]
@@ -243,12 +214,23 @@ class ReportDataLogViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
             if data in filters_list:
                 filters[data] = self.request.GET.get(data, "")
         queryset = queryset.filter(
-            Q(fullname__icontains=filters["user"]),
-            Q(user__username__icontains=filters["user"]),
             Q(new_value__icontains=filters["new_value"]),
             Q(old_value__icontains=filters["old_value"]),
             Q(diff_value__icontains=filters["diff_value"]),
         ).distinct()
+        # El usuario se busca por nombre completo O por nombre de usuario, y solo
+        # si se pidió: exigir ambas a la vez vaciaba la tabla al buscar por
+        # nombre, y el `icontains` vacío sobre el join descartaba siempre las
+        # filas sin usuario.
+        # El filterset ya exige que `user` sea un pk, así que también se acepta
+        # el pk aquí: con solo el texto, filtrar por usuario no daba nunca filas.
+        if filters["user"]:
+            user_q = Q(fullname__icontains=filters["user"]) | Q(
+                user__username__icontains=filters["user"]
+            )
+            if filters["user"].isdigit():
+                user_q |= Q(user__pk=int(filters["user"]))
+            queryset = queryset.filter(user_q)
 
         if "update_time" in self.request.GET:
             queryset = self.filter_period(self.request.GET.get("update_time"), queryset)
@@ -279,60 +261,6 @@ class ReportDataLogViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
         data = self.paginate_queryset(queryset)
 
         total = ObjectChangeLogReportBuilder.objects.count()
-        response = {
-            "data": data,
-            "recordsTotal": total,
-            "recordsFiltered": queryset.count(),
-            "draw": self.request.GET.get("draw", 1),
-        }
-        return Response(self.get_serializer(response).data)
-
-
-class RegencyViewSetX(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
-    authentication_classes = [SessionAuthentication]
-    permission_classes = [IsAuthenticated]
-    queryset = RegencyReportBuilder.objects.all().using(settings.READONLY_DATABASE)
-    serializer_class = RegencyDataTableSerializer
-    pagination_class = LimitOffsetPagination
-    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-    search_fields = [
-        "substance",
-        "danger_category",
-        "total",
-    ]
-    filterset_class = None
-    ordering_fields = [
-        "substance",
-        "danger_category",
-        "total",
-    ]
-    ordering = ("substance", "danger_category", "total")
-    report = None
-    step = None
-
-    def get_queryset(self):
-        queryset = self.queryset
-        if self.report and self.step:
-            return queryset.filter(report=self.report, danger_list=self.step)
-        else:
-            return queryset.none()
-
-    def retrieve(self, request, pk, **kwargs):
-        task_report = get_object_or_404(TaskReport, pk=pk)
-
-        self.step = request.GET.get("step", None)
-        self.report = RegencyReport.objects.filter(
-            task_report=task_report,
-        ).first()
-
-        queryset = self.filter_queryset(self.get_queryset())
-
-        if "ordering" in self.request.GET:
-            queryset = queryset.order_by(self.request.GET["ordering"])
-
-        data = self.paginate_queryset(queryset)
-
-        total = RegencyReportBuilder.objects.filter(report=self.report).count()
         response = {
             "data": data,
             "recordsTotal": total,
@@ -397,34 +325,41 @@ class PrecursorReportValuesViewSet(AuthAllPermBaseObjectManagement):
     ordering = "object__name"
 
     def get_queryset(self):
-        precusor_pk = self.get_precursor_pk_or_error()
+        return PrecursorReportValues.objects.filter(
+            precursor_report=self.get_precursor_report()
+        )
 
-        qs = PrecursorReportValues.objects.all()
+    def get_precursor_report(self):
+        """El reporte de precursores de la URL, si es de la organización de la URL.
 
-        if not precusor_pk:
-            return PrecursorReportValues.objects.none()
-
-        return qs.filter(precursor_report_id=precusor_pk)
-
-    def get_precursor_pk_or_error(self):
-        precusor_pk = self.kwargs.get("precusor_pk")
-        if not precusor_pk:
-            raise ValidationError(
-                {"precusor_pk": _("This endpoint requires precusor_pk in the URL.")}
+        Antes solo se filtraba por `precusor_pk`, así que desde la URL de la
+        organización propia se leían y modificaban los valores de un reporte de
+        cualquier otra organización.
+        """
+        if not hasattr(self, "_precursor_report"):
+            organization = get_object_or_404(
+                OrganizationStructure, pk=self.kwargs["org_pk"]
             )
-        return precusor_pk
-
-    def get_org_pk_or_error(self):
-        org_pk = self.kwargs.get("org_pk")
-        if not org_pk:
-            raise ValidationError(
-                {"org_pk": _("This endpoint requires org_pk in the URL.")}
+            self._precursor_report = get_object_or_404(
+                PrecursorReport,
+                pk=self.kwargs["precusor_pk"],
+                laboratory__in=list(organization.get_my_laboratories),
             )
-        return org_pk
+            self._related_objects = [self._precursor_report.laboratory, organization]
+        return self._precursor_report
+
+    def get_related_objects(self):
+        """Laboratorio y organización a los que se ata la bitácora.
+
+        Se pasaba el pk del reporte de precursores como `relobj`, y
+        `organilab_logentry` lo interpreta como pk de laboratorio: la entrada
+        quedaba colgada de otro laboratorio (o de ninguno).
+        """
+        self.get_precursor_report()
+        return self._related_objects
 
     def perform_create(self, serializer):
-        precusor_pk = self.get_precursor_pk_or_error()
-        precusor_value = serializer.save(precursor_report_id=precusor_pk)
+        precusor_value = serializer.save(precursor_report=self.get_precursor_report())
 
         organilab_logentry(
             self.request.user,
@@ -433,12 +368,10 @@ class PrecursorReportValuesViewSet(AuthAllPermBaseObjectManagement):
             "precursorreportvalues",
             changed_data=list(serializer.validated_data.keys()),
             change_message=_("Created precursor report value"),
-            relobj=precusor_pk,
+            relobj=self.get_related_objects(),
         )
 
     def perform_update(self, serializer):
-        precusor_pk = self.get_precursor_pk_or_error()
-
         precusor_value_before = self.get_object()
         before = {
             "object_id": precusor_value_before.object_id,
@@ -454,7 +387,7 @@ class PrecursorReportValuesViewSet(AuthAllPermBaseObjectManagement):
             "reason_to_spend": precusor_value_before.reason_to_spend,
         }
 
-        precusor_value = serializer.save(precursor_report_id=precusor_pk)
+        precusor_value = serializer.save(precursor_report=self.get_precursor_report())
 
         after = {
             "object_id": precusor_value.object_id,
@@ -479,11 +412,10 @@ class PrecursorReportValuesViewSet(AuthAllPermBaseObjectManagement):
             "precursorreportvalues",
             changed_data=changed_fields,
             change_message=_("Updated precursor report value"),
-            relobj=precusor_pk,
+            relobj=self.get_related_objects(),
         )
 
     def perform_destroy(self, instance):
-        precusor_pk = self.get_precursor_pk_or_error()
         precusor_value_id = instance.pk
         precusor_value_repr = str(instance)
 
@@ -495,7 +427,7 @@ class PrecursorReportValuesViewSet(AuthAllPermBaseObjectManagement):
             changed_data=["object", "quantity"],
             change_message=_("Deleted precursor report value"),
             object_repr=precusor_value_repr,
-            relobj=precusor_pk,
+            relobj=self.get_related_objects(),
         )
 
         instance.delete()

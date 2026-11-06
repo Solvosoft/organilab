@@ -67,6 +67,7 @@ class RiskZoneCreateForm(forms.ModelForm, GTForm):
             queryset = queryset.filter(
                 Q(organization__pk=org_pk) | Q(pk__in=extra_labs)
             ).distinct()
+        self.fields["laboratories"].queryset = queryset
 
         self.fields["zone_type"].widget.attrs["add_url"] = (
             reverse("riskmanagement:zone_type_add", args=(org_pk,))

@@ -18,15 +18,14 @@ def _get_user_rol_ids(user, org_pk):
     try:
         from laboratory.models import OrganizationStructure
         org_ct = ContentType.objects.get_for_model(OrganizationStructure)
-        profile_perms = ProfilePermission.objects.filter(
+        # Una consulta para todos los roles; antes era una por ProfilePermission.
+        rol_ids = ProfilePermission.objects.filter(
             profile=user.profile,
             content_type=org_ct,
             object_id=org_pk,
-        )
-        rol_ids = set()
-        for pp in profile_perms:
-            rol_ids.update(pp.rol.values_list('id', flat=True))
-        return rol_ids
+            rol__isnull=False,
+        ).values_list('rol__id', flat=True)
+        return set(rol_ids)
     except Exception:
         return set()
 
@@ -47,7 +46,7 @@ def _get_tutorials_for_page(user, org_pk, url_name):
         url_names = [u.strip() for u in t.url_name.split(',')]
         if url_name not in url_names:
             continue
-        target_rol_ids = set(t.target_roles.values_list('id', flat=True))
+        target_rol_ids = {rol.id for rol in t.target_roles.all()}
         if target_rol_ids and not target_rol_ids.intersection(user_rol_ids):
             continue
         matching.append(t)

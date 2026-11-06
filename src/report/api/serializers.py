@@ -14,6 +14,7 @@ from laboratory.models import (
 )
 from laboratory.utils import get_actions_by_perms
 from report.models import ObjectChangeLogReportBuilder, RegencyReportBuilder
+from report.utils import local_datetime
 
 
 class ReportDataTableSerializer(serializers.Serializer):
@@ -52,9 +53,7 @@ class ObjectChangeLogSerializer(serializers.ModelSerializer):
         return name
 
     def get_update_time(self, obj):
-        if obj.update_time:
-            return obj.update_time.strftime("%m/%d/%Y, %H:%M:%S")
-        return ""
+        return local_datetime(obj.update_time)
 
     class Meta:
         model = ObjectChangeLogReportBuilder

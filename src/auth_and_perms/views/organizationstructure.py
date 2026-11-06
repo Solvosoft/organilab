@@ -4,7 +4,6 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User, Group
 from django.contrib.contenttypes.models import ContentType
 from django.http import (
-    HttpResponseForbidden,
     Http404,
     HttpResponseRedirect,
     JsonResponse,
@@ -33,7 +32,6 @@ from auth_and_perms.models import ProfilePermission, Rol, Profile, GroupDescript
 from auth_and_perms.node_tree import get_organization_tree, get_org_parents_info
 from auth_and_perms.organization_utils import (
     user_is_allowed_on_organization,
-    organization_can_change_laboratory,
 )
 from auth_and_perms.utils import send_email
 from authentication.forms import CreateUserForm
@@ -47,6 +45,7 @@ from laboratory.models import (
 from laboratory.utils import organilab_logentry, register_laboratory_contenttype
 from laboratory.views.djgeneric import ListView, DeleteView
 from django.conf import settings
+from auth_and_perms.roles import ROLES
 
 
 @login_required
@@ -64,7 +63,6 @@ def organization_manage_view(request):
                 pks,
                 level=0,
                 parents=parents_pks,
-                append_info=False,
             )
     context = {
         "nodes": nodes,
@@ -244,11 +242,6 @@ def add_users_organization(request, pk):
     return redirect("auth_and_perms:organizationManager")
 
 
-def assign_rol_permissions(user, rols):
-    perms = list(rols.values_list("permissions", flat=True))
-    user.user_permissions.add(*perms)
-
-
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
     permission_required("auth_and_perms.change_rol", raise_exception=True),
@@ -264,6 +257,8 @@ class ListRolByOrganization(ListView):
             .using(settings.READONLY_DATABASE)
             .filter(organizationstructure=self.org)
             .order_by("pk")
+            # La plantilla lista los permisos de cada rol con su app.
+            .prefetch_related("permissions__content_type")
         )
         organization = get_object_or_404(
             OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=self.org
@@ -312,69 +307,6 @@ class DeleteRolByOrganization(DeleteView):
             relobj=OrganizationStructure.objects.filter(pk=self.org).first(),
         )
         return super().form_valid(form)
-
-
-def add_rol_by_laboratory(request):
-    cc_lab = ContentType.objects.get(app_label="laboratory", model="laboratory")
-    cc_org = ContentType.objects.get(
-        app_label="laboratory", model="organizationstructure"
-    )
-
-    if request.method == "POST":
-        form = AddProfileRolForm(request.POST)
-
-        if form.is_valid():
-            org = OrganizationStructure.objects.using(settings.READONLY_DATABASE).get(
-                pk=form.cleaned_data["org_pk"]
-            )
-            user_is_allowed_on_organization(request.user, org)
-            lab = Laboratory.objects.get(pk=form.cleaned_data["lab_pk"])
-            if not organization_can_change_laboratory(lab, org):
-                return HttpResponseForbidden(
-                    _("Laboratory modification not authorized")
-                )
-
-            profile_list = ProfilePermission.objects.using(
-                settings.READONLY_DATABASE
-            ).filter(content_type=cc_org, object_id=org.pk)
-
-            for profile in profile_list:
-                pp_lab = ProfilePermission.objects.filter(
-                    content_type=cc_lab, object_id=lab.pk, profile=profile.profile
-                )
-
-                if pp_lab.exists():
-                    pp_lab = pp_lab.first()
-                    pp_lab.rol.add(*form.cleaned_data["rols"])
-                else:
-                    pp_lab = ProfilePermission.objects.create(
-                        content_type=cc_lab, object_id=lab.pk, profile=profile.profile
-                    )
-                    pp_lab.rol.add(*form.cleaned_data["rols"])
-                assign_rol_permissions(pp_lab.profile.user, form.cleaned_data["rols"])
-                organilab_logentry(
-                    request.user,
-                    pp_lab.profile.user,
-                    CHANGE,
-                    "user",
-                    changed_data=[],
-                    change_message=_(
-                        "Assigned the roles %(rols)r to %(user)r on laboratory %(lab)r"
-                    )
-                    % {
-                        "rols": ", ".join(
-                            form.cleaned_data["rols"].values_list("name", flat=True)
-                        ),
-                        "user": pp_lab.profile.user.username,
-                        "lab": lab.name,
-                    },
-                    relobj=org,
-                )
-
-            messages.success(request, _("Element saved successfully"))
-        else:
-            messages.error(request, _("Error, form is invalid"))
-    return redirect("auth_and_perms:organizationManager")
 
 
 @method_decorator(login_required, name="dispatch")
@@ -525,6 +457,7 @@ def get_roles_by_organization(request, pk):
 @require_http_methods(["GET"])
 def get_org_administrators(request, pk):
     org = get_object_or_404(OrganizationStructure, pk=pk)
+    user_is_allowed_on_organization(request.user, org)
     ct = ContentType.objects.get_for_model(OrganizationStructure)
     active_user_pks = UserOrganization.objects.filter(
         organization=org,
@@ -539,7 +472,7 @@ def get_org_administrators(request, pk):
         ProfilePermission.objects.filter(
             content_type=ct,
             object_id=org.pk,
-            rol__name="Administrativo superior",
+            rol__name=ROLES["administrativo_superior"],
             profile__user__in=active_user_pks,
         )
         .select_related("profile__user")
@@ -569,7 +502,9 @@ def get_rol(request, pk):
 @permission_required("auth_and_perms.change_rol", raise_exception=True)
 @require_http_methods(["POST"])
 def update_rol(request, org_pk, pk):
-    rol = get_object_or_404(Rol, pk=pk)
+    user_is_allowed_on_organization(request.user, org_pk)
+    # Solo roles de la organización de la URL: antes se editaba cualquier rol por pk.
+    rol = get_object_or_404(Rol, pk=pk, organizationstructure__pk=org_pk)
     form = RolForm(request.POST, instance=rol)
     if form.is_valid():
         rol = form.save()
@@ -607,6 +542,7 @@ def enable_child_organizations(request):
         OrganizationStructure.objects.using(settings.READONLY_DATABASE),
         pk=request.POST.get("organization", 0),
     )
+    user_is_allowed_on_organization(request.user, organization)
     enable = request.POST.get("enable", "false")
     if enable == "true":
         organization.enable_child_organizations = True

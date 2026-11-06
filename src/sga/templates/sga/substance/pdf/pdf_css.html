@@ -1,129 +1,103 @@
 {% load static i18n %}
-
-
+{% comment %}
+Estilos de la hoja de seguridad para xhtml2pdf (presentation.pdf.html_to_pdf):
+CSS 2.1, encabezado y pie en frames estáticos, columnas como tablas.
+{% endcomment %}
 <style>
 @page {
-       margin: 2cm 1cm;
-       size: a4 portrait;
-       @bottom-right{
-       							content: "{% trans 'Page' %} " counter(page) " {% trans 'of' %} " counter(pages);
-       							font-size: 12px;
-       							    }
-     @bottom-left{
-              content: "{% trans "User" %}: {% if user.get_full_name %}{{ user.get_full_name }}{% else %}{{ user.username }}{% endif %}";
-              font-size: 1em;
-                  }
+    size: a4 portrait;
+    margin: 2.2cm 1cm 1.8cm 1cm;
 
-     @top-right{
-     								 content: "{{date_print}}";
-              width: 5.3cm;
-              font-family: "Arial", "sans-serif";
-              font-size: 1em;
-                 }
-
-					@top-center {
-														content:  "{% trans 'Security Leaf' %}";
-														width: 8cm;
-														font-family: "Arial", "sans-serif";
-														font-size: 1em;
-																}
-
-     @top-left {
-      								content: "";
-              background: url({% static 'img/logo_organilab.jpg' %}) no-repeat 0 0;
-              background-size: contain;
-              background-repeat: no-repeat;
-              width: 4cm;
-              height: 1cm;
-              margin-bottom: 0.5cm;
-                }
-            }
-
-.fw-bold{
-      font-weight: bold;
-}
-
-.clearfix{
- display: table;
-  width:100%;
-}
-
-.float-start {
- display: table-cell;
- width: 50%;
- text-align: left;
-}
-
-.float-end{
- display: table-cell;
- width: 50%;
- text-align: right;
-}
-
-.text-danger{
-  color:red;
-}
-
-.container{
-  margin-left:4%;
-  width: 90%;
-}
-.row{
-  display: table;
-  width:100%;
-  padding:5px;
-}
-
-.col-3{
-  display: table-cell;
-  width: 36%;
-}
-.col-6{
-  display: table-cell;
-  width: 50%;
-}
-
-.col-9{
-  display: table-cell;
-  width: 64%;
-
-}
-
-.text-left{
-    display: flex;
-    justify-content: flex-end;
-    text-align:right;
+    @frame header_frame {
+        -pdf-frame-content: header_content;
+        top: 0.6cm;
+        left: 1cm;
+        right: 1cm;
+        height: 1.4cm;
     }
 
-section{
-    font-family: Arial !important;
-
+    @frame footer_frame {
+        -pdf-frame-content: footer_content;
+        bottom: 0.5cm;
+        left: 1cm;
+        right: 1cm;
+        height: 1cm;
+    }
 }
 
-ol{
+body {
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 9pt;
+}
+
+#header_content td, #footer_content td {
+    font-size: 9pt;
+    border: none;
+    vertical-align: middle;
+}
+
+.fw-bold {
+    font-weight: bold;
+}
+
+.text-danger {
+    color: red;
+}
+
+.text-left {
+    text-align: right;
+}
+
+.container {
+    margin-left: 4%;
+    width: 90%;
+}
+
+ol {
     list-style-type: lower-alpha;
 }
 
-#header .container p{
-    font-size:12px;
-    margin:0;
-    padding:0;
+#header .container p {
+    font-size: 9pt;
+    margin: 0;
+    padding: 0;
     text-align: right;
 }
+
 table {
-        border-collapse: collapse;
-        table-layout: fixed;
-        width: 310px;
-}
-th{
-    background-color:lightgray;
-    text-align: center;
-}
-table, th, td {
-        border: solid 1px #666;
-        width: 110px;
-        word-wrap: break-word;
-        text-aling:center;
+    border-collapse: collapse;
 }
 
+th {
+    background-color: #D3D3D3;
+    text-align: center;
+}
+
+table, th, td {
+    border: 0.5pt solid #666666;
+    padding: 2pt;
+}
+
+/* Filas de dato (etiqueta + valor): tablas de maquetación sin bordes. */
+table.row {
+    width: 100%;
+}
+
+table.row td {
+    border: none;
+    padding: 1pt 2pt;
+    vertical-align: top;
+}
+
+td.col-3 {
+    width: 36%;
+}
+
+td.col-6 {
+    width: 50%;
+}
+
+td.col-9 {
+    width: 64%;
+}
 </style>

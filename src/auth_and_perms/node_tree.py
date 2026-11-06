@@ -20,14 +20,6 @@ def getLevelClass(level):
     return cl, color[level]
 
 
-def getNodeInformation(node):
-    users = []
-    labs = node.laboratory_set.all()
-    users += list(node.users.all())
-
-    return {"node": node, "users": users, "labs": labs}
-
-
 def get_descendants_by_org(pks, node, extras, user, parents):
     pks.append(node.pk)
     descendants = (
@@ -36,6 +28,8 @@ def get_descendants_by_org(pks, node, extras, user, parents):
         .filter(Q(users=user) | Q(pk__in=parents))
         .distinct()
         .order_by("level", "position")
+        # La plantilla pregunta por el padre de cada nodo.
+        .select_related("parent")
     )
     return descendants
 
@@ -47,14 +41,13 @@ def get_organization_tree(
     pks,
     level=0,
     parents=[],
-    append_info=True,
     extras={},
     has_children=False,
 ):
     descendants = get_descendants_by_org(pks, node, extras, user, parents)
     structure += [
         (
-            getNodeInformation(node) if append_info else node,
+            node,
             getLevelClass(level),
             True if descendants else has_children,
         )
@@ -70,7 +63,6 @@ def get_organization_tree(
                     pks,
                     level=level + 1,
                     parents=parents,
-                    append_info=append_info,
                     extras=extras,
                     has_children=False,
                 )

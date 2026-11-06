@@ -12,3 +12,5 @@ Faker==37.8.0
 # fallo entre procesos y aborta la corrida entera con "cannot pickle
 # 'traceback' object" en cuanto una prueba falla.
 tblib==3.2.2
+# Mide RSS/CPU del árbol de procesos (incluido Chrome) en `make perf`.
+psutil==7.0.0

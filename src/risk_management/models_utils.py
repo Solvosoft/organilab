@@ -74,16 +74,12 @@ class PriorityCalculator:
             dev = self.left_value < value > right_value
         elif self.operation == "=<>=":
             dev = self.left_value <= value >= right_value
-        elif self.operation == "=<>=":
-            dev = self.left_value <= value >= right_value
         elif self.operation == "<>=":
             dev = self.left_value < value >= right_value
         elif self.operation == "=<>":
             dev = self.left_value <= value > right_value
         elif self.operation == "<<":
             dev = self.left_value < value < right_value
-        elif self.operation == "=<<=":
-            dev = self.left_value <= value <= right_value
         elif self.operation == "=<<=":
             dev = self.left_value <= value <= right_value
         elif self.operation == "<<=":

@@ -1,5 +1,4 @@
 # Import functions of another modules
-import json
 
 from barcode import Code128
 from barcode.writer import SVGWriter
@@ -14,7 +13,6 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.template import Library
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-from djgentelella.models import ChunkedUpload
 
 from auth_and_perms.organization_utils import user_is_allowed_on_organization
 from laboratory.models import OrganizationStructure
@@ -120,26 +118,6 @@ def template_editor(request, org_pk):
     return render(request, "template_editor.html", context)
 
 
-# SGA Label Creator
-# Page
-@login_required
-def get_step(step):
-    if step is None:
-        step = 0
-    try:
-        step = int(step)
-        if step not in [0, 1, 2]:
-            step = 0
-    except ValueError:
-        step = 0
-    return step
-
-
-# SGA Label Information Page
-def clean_json_text(text):
-    return json.dumps(text)[1:-1]
-
-
 @login_required
 @permission_required(
     ("sga.add_displaylabel", "auth_and_perms.institution_can_access"),
@@ -161,45 +139,10 @@ def create_personal_template(request, org_pk):
         "org_pk": org_pk,
     }
 
-    if request.method == "POST":
-        form = PersonalSGAForm(request.POST)
-        label_form = LabelForm(request.POST)
-        builder_information_form = BuilderInformationForm(request.POST)
-
-        if (
-            form.is_valid()
-            and builder_information_form.is_valid()
-            and label_form.is_valid()
-        ):
-            instance = form.save(commit=False)
-            instance.user = user
-            logo_upload_id = form.cleaned_data["logo_upload_id"]
-
-            if logo_upload_id:
-                tmpupload = get_object_or_404(ChunkedUpload, upload_id=logo_upload_id)
-                instance.logo = tmpupload.get_uploaded_file()
-
-            builder_info = builder_information_form.save(commit=False)
-            builder_info.user = user
-            builder_info.save()
-            label = label_form.save(commit=False)
-            label.builderInformation = builder_info
-            label.save()
-            instance.label = label
-            instance.save()
-            return redirect(reverse("sga:add_personal", kwargs={"org_pk": org_pk}))
-        else:
-            messages.error(request, _("Invalid form"))
-            context = {
-                "laboratory": None,
-                "form": SGAEditorForm(),
-                "warningwords": WarningWord.objects.all(),
-                "generalform": PersonalForm(request.POST, user=user),
-                "form_url": reverse("sga:add_personal", kwargs={"org_pk": org_pk}),
-                "org_pk": org_pk,
-            }
-            return render(request, "template.html", context)
-
+    # Solo listado: las etiquetas se crean con el asistente ``sgalabel_create``.
+    # La rama POST que había aquí no tenía formulario que la usara y además daba
+    # 500 (``logo_upload_id`` no existe en PersonalSGAForm y ``template.html``
+    # no existe).
     return render(request, "personal_template.html", context)
 
 
@@ -226,14 +169,8 @@ def edit_personal_template(request, org_pk, pk):
             and builder_information_form.is_valid()
             and label_form.is_valid()
         ):
-            instance = form.save(commit=False)
-            upload_id = form.cleaned_data["logo_upload_id"]
-
-            if upload_id:
-                tmpupload = get_object_or_404(ChunkedUpload, upload_id=upload_id)
-                instance.logo = tmpupload.get_uploaded_file()
-
-            instance.save()
+            # PersonalSGAForm no declara logo_upload_id: el logo no se cambia aquí.
+            form.save()
             builder_information_form.save()
             label_form.save()
 
@@ -292,7 +229,8 @@ def delete_sgalabel(request, org_pk, pk):
     )
     user_is_allowed_on_organization(request.user, organization)
     template = get_object_or_404(DisplayLabel, pk=pk)
-    if template.user == request.user:
+    # DisplayLabel no tiene campo `user`: el autor es `created_by`.
+    if template.created_by == request.user:
         template.delete()
         messages.success(request, _("SGA label was deleted successfully"))
     else:
@@ -368,9 +306,7 @@ def create_recipient(request, org_pk):
         if form.is_valid():
             form.save()
             messages.success(request, _("The Recipient size saved successfully"))
-            return redirect("sga:add_recipient_size")
-        else:
-            return redirect("sga:add_recipient_size")
+        return redirect(reverse("sga:add_recipient_size", kwargs={"org_pk": org_pk}))
     return render(
         request, "add_recipient_size.html", context={"form": form, "org_pk": org_pk}
     )
@@ -388,7 +324,8 @@ def create_sgalabel(request, org_pk):
 
         if form.is_valid():
             instance = form.save(commit=False)
-            instance.user = request.user
+            instance.created_by = request.user
+            instance.organization = organization
             instance.json_representation = form.cleaned_data[
                 "template"
             ].json_representation
@@ -403,6 +340,7 @@ def create_sgalabel(request, org_pk):
             )
         else:
             messages.error(request, _("Form is invalid"))
+    return redirect(reverse("sga:add_personal", kwargs={"org_pk": org_pk}))
 
 
 @login_required
@@ -511,7 +449,12 @@ def sgalabel_step_two(request, org_pk, pk):
     return render(request, "sgalabel/step_two.html", context=context)
 
 
+@login_required
 def get_sgacomplement_by_substance(request, org_pk, pk):
+    organization = get_object_or_404(
+        OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
+    )
+    user_is_allowed_on_organization(request.user, organization)
     substance = get_object_or_404(Substance, pk=pk)
     complement = SGAComplement.objects.filter(substance=substance)
     if complement.exists():
@@ -521,7 +464,12 @@ def get_sgacomplement_by_substance(request, org_pk, pk):
     return JsonResponse(data)
 
 
+@login_required
 def get_company(request, org_pk, pk):
+    organization = get_object_or_404(
+        OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
+    )
+    user_is_allowed_on_organization(request.user, organization)
     builder_info = get_object_or_404(BuilderInformation, pk=pk)
     data = BuilderInformationSerializer(builder_info).data
     return JsonResponse(data)

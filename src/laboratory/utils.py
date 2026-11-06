@@ -31,25 +31,7 @@ from laboratory.models import (
     ShelfObject,
 )
 from django.utils.translation import gettext_lazy as _
-
-
-def check_group_has_perm(group, codename):
-    if codename:
-        _, perm = codename.split(".")
-        return group.permissions.filter(codename=perm).exists()
-    return False
-
-
-def sum_ancestors_group(user_org, lab_org, perm):
-    lab_parant = lab_org.get_ancestors(ascending=True, include_self=True)
-    user_org = user_org.first()  # first have the first org
-    for org in lab_parant:
-        if org.level >= user_org.level:
-            group = org.group if hasattr(org, "group") else None
-            if group:
-                if check_group_has_perm(group, perm):
-                    return True
-    return False
+from auth_and_perms.roles import ROLES
 
 
 def check_user_has_perm(user, perm):
@@ -96,17 +78,14 @@ def check_lab_group_has_perm(
     if not user.is_authenticated:
         return False
 
-    # Check org of labs
-    lab_org = lab.organization if hasattr(lab, "organization") else None
+    # Los permisos por grupo de organización eran de la época MPTT
+    # (``get_ancestors`` y ``org.group`` ya no existen): esa rama lanzaba
+    # AttributeError en cuanto el laboratorio era de una organización del
+    # usuario. Queda el permiso efectivo más el acceso al laboratorio.
     user_org = OrganizationStructure.os_manager.filter_user(user)
 
     if not user_org:
         user_org = []
-
-    # if lab have an organizations, compare that perms with perm param
-    if lab_org and lab_org in user_org:  # user have some organization
-        if sum_ancestors_group(user_org, lab_org, perm):  # check ancestor perms
-            return True
 
     user_perm = check_user_has_perm(user, perm)  # check if user has perms to do action
     labs = callback_filter(user, user_org)
@@ -186,7 +165,7 @@ def get_laboratories_from_organization(rootpk, user):
         profile=user.profile,
         content_type__app_label="laboratory",
         content_type__model="organizationstructure",
-        rol__name="Administrativo superior",
+        rol__name=ROLES["administrativo_superior"],
         rol__organizationstructure=organization,
     )
     if pp.exists():
@@ -202,7 +181,7 @@ def get_laboratories_from_organization(rootpk, user):
 
 def get_cas(object, default=None):
     result = default
-    sga_char = object.substancharacteristics_object.first()
+    sga_char = object.get_sga_characteristic()
     if sga_char and sga_char.cas_id_number:
         result = sga_char.cas_id_number
     return result
@@ -210,7 +189,7 @@ def get_cas(object, default=None):
 
 def get_imdg(object, default=None):
     result = default
-    sga_char = object.substancharacteristics_object.first()
+    sga_char = object.get_sga_characteristic()
     if sga_char:
         imdg = sga_char.imdg
         result = imdg.description if imdg else ""
@@ -219,7 +198,7 @@ def get_imdg(object, default=None):
 
 def get_molecular_formula(object, default=None):
     result = default
-    sga_char = object.substancharacteristics_object.first()
+    sga_char = object.get_sga_characteristic()
     if sga_char and sga_char.molecular_formula:
         result = sga_char.molecular_formula
     return result
@@ -326,7 +305,7 @@ def get_pk_org_ancestors(org_pk, descendants=True):
         if descendants:
             pks = pks + list(organization.descendants().values_list("pk", flat=True))
         else:
-            pks = pks + list(organization.acestors().values_list("pk", flat=True))
+            pks = pks + list(organization.ancestors().values_list("pk", flat=True))
         pks = UserOrganization.objects.filter(
             organization__in=pks, user__isnull=False
         ).values_list("organization", flat=True)
@@ -658,7 +637,7 @@ def get_lab_ids(organization, profile):
         object_id__in=org_ids,
         content_type__app_label="laboratory",
         content_type__model="organizationstructure",
-        rol__name="Administrativo superior",
+        rol__name=ROLES["administrativo_superior"],
     ).exists()
 
     if has_org_permission:

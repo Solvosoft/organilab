@@ -6,7 +6,7 @@ from laboratory.models import OrganizationStructure
 
 
 @login_required
-@permission_required("djgentelella.view_trash")
+@permission_required("djgentelella.view_trash", raise_exception=True)
 def get_trash_from_organization(request, org_pk):
     organization = get_object_or_404(OrganizationStructure, pk=org_pk)
     user_is_allowed_on_organization(request.user, organization)

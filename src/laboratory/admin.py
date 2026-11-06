@@ -1,9 +1,7 @@
 from django.contrib import admin
-from django.db.models import Q
 from django.http import HttpResponse
 from django.utils.translation import gettext_lazy as _
 
-from auth_and_perms.admin import DELETED_USER_TAG_MARKERS
 from laboratory import models
 from laboratory.task_utils import create_informsperiods
 from presentation.utils import update_qr_instance
@@ -137,12 +135,6 @@ class ShelfObject_Admin(admin.ModelAdmin):
 class Object_Admin(admin.ModelAdmin):
     search_fields = ["name"]
     list_display = ("code", "name", "type", "is_precursor")
-
-
-@admin.action(description="Run new informs utilities")
-def create_informs(admin, request, queryset):
-    for instance in queryset:
-        create_informsperiods(instance)
 
 
 @admin.action(description="Export Laboratory")
@@ -465,6 +457,22 @@ class InformSchedulerAdmin(OrganizationInfoAdminMixin, admin.ModelAdmin):
     inlines = [PeriodScheduledAdmin]
 
 
+class OrganizationWithChildrenFilter(admin.SimpleListFilter):
+    title = _("Organization")
+    parameter_name = "organization_tree"
+
+    def lookups(self, request, model_admin):
+        return [(org.pk, org.name) for org in models.OrganizationStructure.objects.order_by("name")]
+
+    def queryset(self, request, queryset):
+        organization = models.OrganizationStructure.objects.filter(pk=self.value()).first()
+        if organization is None:
+            return queryset
+        return queryset.filter(
+            organization_where_action_taken__in=organization.descendants(include_self=True)
+        )
+
+
 @admin.register(models.ObjectLogChange)
 class ObjectLogAdmin(OrganizationWhereActionAdminMixin, admin.ModelAdmin):
     list_display = [
@@ -497,7 +505,7 @@ class ObjectLogAdmin(OrganizationWhereActionAdminMixin, admin.ModelAdmin):
     ]
     list_filter = [
         "update_time",
-        "organization_where_action_taken",
+        OrganizationWithChildrenFilter,
         "precursor",
         "type_action",
         ("deleted_user_info", admin.EmptyFieldListFilter),
@@ -823,25 +831,10 @@ class LabOrOrgRequestAdmin(admin.ModelAdmin):
     list_select_related = ("requested_by", "organization")
 
 
-class LabOrgReassignedOnUserDeleteFilter(admin.SimpleListFilter):
-    title = _("Reassigned on user delete")
-    parameter_name = "reassigned_on_user_delete"
-
-    def lookups(self, request, model_admin):
-        return (("yes", _("Yes")),)
-
-    def queryset(self, request, queryset):
-        if self.value() == "yes":
-            marker_query = Q()
-            for marker in DELETED_USER_TAG_MARKERS:
-                marker_query |= Q(log_entry__object_repr__icontains=marker)
-            return queryset.filter(marker_query)
-        return queryset
-
-
 admin.site.register(models.PrecursorReport, PrecursorReportAdmin)
 admin.site.register(models.PrecursorReportValues, PrecursorReportValuesAdmin)
 admin.site.register(models.ShelfObjectLimits)
+admin.site.register(models.BaseUnitValues)
 # OBSOLETO: SustanceCharacteristics se migró a sga.SubstanceCharacteristics.
 # Se retira del admin para que nadie escriba en el modelo antiguo; sus filas se
 # conservan un ciclo como respaldo de la migración y se eliminarán en la

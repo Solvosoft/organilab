@@ -2,13 +2,34 @@ from datetime import datetime
 
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models import Count, OuterRef, Subquery
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from tree_queries.models import TreeNode
+from tree_queries.query import TreeQuerySet
 
 from laboratory import catalog
 from laboratory.models_utils import upload_files
 from presentation.models import AbstractOrganizationRef
+
+
+class WarningClassQuerySet(TreeQuerySet):
+    def labelled(self):
+        """Con lo que ``__str__`` necesita, para listar sin una consulta por fila.
+
+        La etiqueta de una clase repetida lleva el nombre del padre; saber si
+        está repetida costaba un ``COUNT`` por opción en cada formulario.
+        """
+        same_name = (
+            WarningClass.objects.filter(name=OuterRef("name"))
+            .order_by()
+            .values("name")
+            .annotate(total=Count("pk"))
+            .values("total")
+        )
+        return self.select_related("parent").annotate(
+            name_count=Subquery(same_name)
+        )
 
 
 class WarningClass(TreeNode):
@@ -24,20 +45,20 @@ class WarningClass(TreeNode):
 
     position = models.IntegerField(default=0)
 
+    objects = WarningClassQuerySet.as_manager(with_tree_fields=False)
+
     def __str__(self):
         name = self.name
 
+        name_count = getattr(self, "name_count", None)
+        if name_count is None:
+            name_count = WarningClass.objects.filter(name=self.name).count()
+
         if len(name) < 3 and self.parent:
             name = self.parent.name + " > " + name
-        elif WarningClass.objects.filter(name=self.name).count() > 1:
+        elif name_count > 1 and self.parent:
             name = self.parent.name + " > " + name
 
-        """
-        if self.danger_type == 'class':
-            name = "+ "+name
-        elif self.danger_type == 'category':
-            name = "# "+name
-        """
         return name
 
     class Meta:
@@ -904,7 +925,7 @@ class ReviewSubstance(AbstractOrganizationRef):
         verbose_name_plural = _("Review Substance")
 
     def __str__(self):
-        return f"{self.substance.created_by}- ${self.note}"
+        return f"{self.substance.created_by} - {self.note}"
 
 
 class SubstanceObservation(models.Model):
@@ -999,7 +1020,8 @@ class DangerSubstance(models.Model):
     )
 
     def __str__(self):
-        return self.name
+        # `name` admite nulos y __str__ no puede devolver None (rompía el admin).
+        return self.name or ""
 
 
 class DangerSubstanceCategory(models.Model):
@@ -1046,7 +1068,7 @@ class DangerSubstanceCategory(models.Model):
     )
 
     def __str__(self):
-        return self.note
+        return self.note or ""
 
 
 class SDSTraceability(models.Model):

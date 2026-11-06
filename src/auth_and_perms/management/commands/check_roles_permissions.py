@@ -76,41 +76,8 @@ class Command(BaseCommand):
             self.stdout.write(self.style.WARNING("  No roles found in the system."))
             return
 
-        issues = []
         for rol in roles:
-            perm_count = rol.permissions.count()
-            # Check for any permission in the role that no longer exists
-            # (orphaned M2M entries would raise, so we just report count)
-            self.stdout.write(f"  Rol [{rol.pk}] '{rol.name}' — {perm_count} permission(s)")
-
-            # Check if pending task perms are present
-            role_perm_codes = set(
-                f"{p.content_type.app_label}.{p.codename}"
-                for p in rol.permissions.all()
-            )
-            pending_missing = [
-                c for c in PENDING_TASK_PERMISSIONS if c not in role_perm_codes
-            ]
-            if pending_missing:
-                for c in pending_missing:
-                    self.stdout.write(
-                        self.style.WARNING(f"    [WARN] Missing pending task perm: {c}")
-                    )
-                issues.append(rol)
-
-        if issues:
-            self.stdout.write(
-                self.style.WARNING(
-                    f"\n  {len(issues)} role(s) are missing pending task permissions. "
-                    "Run: python manage.py add_pendingtask_permissions_to_roles"
-                )
-            )
-        else:
-            self.stdout.write(
-                self.style.SUCCESS(
-                    f"\n  All {roles.count()} role(s) have pending task permissions."
-                )
-            )
+            self.stdout.write(f"  Rol [{rol.pk}] '{rol.name}' — {rol.permissions.count()} permission(s)")
 
     def check_profile_group(self):
         self.stdout.write("\n--- Group: Profile ---")

@@ -69,6 +69,28 @@ class ShelfObjectReserveByLabViewTest(ShelfObjectSetUp):
         reserved_products = ReservedProducts.objects.filter(**self.filters).distinct()
         self.assertTrue(reserved_products.exists())
 
+    def test_shelfobject_reserve_by_labview_widget_formats(self):
+        """
+        #EXPECTED CASE(the dates arrive in the format the datetime widget writes)
+
+        El DateTimeInput de djgentelella fija su formato con el idioma activo
+        cuando se crea el widget (al importar el formulario): en español escribe
+        DD/MM/YYYY HH:mm:ss y en inglés YYYY-MM-DD HH:mm:ss. El servidor tiene
+        que aceptar ambos o, según el idioma con el que arrancó el proceso,
+        ninguna reserva se podría guardar.
+        """
+        for fmt in ("%d/%m/%Y %H:%M:%S", "%Y-%m-%d %H:%M:%S"):
+            with self.subTest(fmt=fmt):
+                ReservedProducts.objects.all().delete()
+                data = dict(
+                    self.data,
+                    initial_date=self.initial_date.strftime(fmt),
+                    final_date=self.final_date.strftime(fmt),
+                )
+                response = self.client.post(self.url, data=data)
+                self.assertEqual(response.status_code, 200, response.content)
+                self.assertTrue(ReservedProducts.objects.filter(**self.filters).exists())
+
     def test_shelfobject_reserve_by_labview_case2(self):
         """
         #UNEXPECTED CASE, BUT POSSIBLE(User 2 to other organization without permissions try to reserve shelfobject)

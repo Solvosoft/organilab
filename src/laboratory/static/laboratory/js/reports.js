@@ -179,7 +179,7 @@ function add_log_change_datatables(id, lab, obj, diff, unit, cas_code, url) {
     ],
         html_card = `<div class="card mt-5">
 	<div class="card-title text-center fw-bold">
-	<p>${lab} | ${obj} ${cas_code}  <br><p>${diff} ${unit}</p></p>
+	<p>${lab} | ${obj} ${cas_code}  <br><p>${gettext("Difference")}: ${diff} ${unit}</p></p>
 	<hr>
 	</div>
 	<div class="card-body"><table id=${id} class="log_changes_table mt-0 p-0 display table table-striped table-bordered text-center dt-responsive"></table>

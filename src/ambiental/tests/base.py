@@ -9,7 +9,7 @@ from ambiental.ambiental_defaults import (
     RESOURCE_WATER,
 )
 from ambiental.models import MeasurementPoint
-from auth_and_perms.management.commands.update_roles import update_ambiental_roles
+from auth_and_perms.management.commands.update_roles import sync_roles
 from auth_and_perms.models import Profile, ProfilePermission, Rol
 from laboratory.models import (
     Catalog,
@@ -19,6 +19,8 @@ from laboratory.models import (
     UserOrganization,
 )
 from risk_management.models import Buildings
+from auth_and_perms.roles import ROLES
+from auth_and_perms.tests.roles import require_role
 
 
 class AmbientalTestCase(TestCase):
@@ -26,15 +28,15 @@ class AmbientalTestCase(TestCase):
 
     Las pruebas no usan superusuario a propósito: `ProfileMiddleware` se salta a los
     superusuarios, así que una prueba que corre con uno no prueba ningún permiso. Los
-    permisos del rol salen de `update_ambiental_roles()`, la misma función que usa
+    permisos del rol salen de `sync_roles()`, la misma función que usa
     `update_roles` en producción.
     """
 
-    rol_name = "Administrador ambiental"
+    rol_name = ROLES["administrador_ambiental"]
 
     @classmethod
     def setUpTestData(cls):
-        update_ambiental_roles()
+        sync_roles(["administrador_ambiental", "registro_ambiental", "analista_ambiental"])
         cls.organization = OrganizationStructure.objects.create(name="Universidad")
         cls.other_organization = OrganizationStructure.objects.create(name="Otra")
         cls.user = cls.make_user("ambiental", cls.organization, cls.rol_name)
@@ -70,7 +72,7 @@ class AmbientalTestCase(TestCase):
             content_type=ContentType.objects.get_for_model(OrganizationStructure),
             object_id=organization.pk,
         )
-        permission.rol.add(Rol.objects.get(name=rol_name))
+        permission.rol.add(require_role(cls, rol_name))
         return user
 
     def setUp(self):

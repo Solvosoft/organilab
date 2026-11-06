@@ -9,6 +9,7 @@ from ambiental.normalization import building_people, get_base, preload_bases
 from ambiental.tests.base import AmbientalTestCase
 from laboratory.models import Catalog, Laboratory
 from risk_management.models import RiskZone, Workday, ZoneType
+from auth_and_perms.roles import ROLES
 
 
 class NormalizationTestCase(AmbientalTestCase):
@@ -124,13 +125,13 @@ class NormalizationBaseAPITest(NormalizationTestCase):
         self.assertIn("year", response.json())
 
     def test_registro_role_cannot_preload(self):
-        user = self.make_user("registro", self.organization, "Encargado de registro ambiental")
+        user = self.make_user("registro", self.organization, ROLES["registro_ambiental"])
         self.client.force_login(user)
         response = self.client.post(self.url("preload"), data=json.dumps({"year": 2026}), content_type="application/json")
         self.assertEqual(response.status_code, 403)
 
     def test_page_renders_for_each_role(self):
-        for rol_name in ("Administrador ambiental", "Encargado de registro ambiental", "Analista ambiental"):
+        for rol_name in (ROLES["administrador_ambiental"], ROLES["registro_ambiental"], ROLES["analista_ambiental"]):
             with self.subTest(rol=rol_name):
                 user = self.make_user("n_" + rol_name.split()[0], self.organization, rol_name)
                 self.client.force_login(user)

@@ -2,6 +2,7 @@ from django.utils import timezone
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from django.http import Http404
 from reservations_management.tasks import decrease_stock
 
@@ -14,6 +15,7 @@ from reservations_management.functions import add_decrease_stock_task
 
 
 class ApiReservedProductsCRUD(APIView):
+    permission_classes = [IsAuthenticated]
     # authentication_classes = [
     #     TokenAuthentication
     # ]
@@ -63,6 +65,7 @@ class ApiReservedProductsCRUD(APIView):
 
 
 class ApiListReservationReservedProduct(APIView):
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, pk, format=None):
         reserved_products = ReservedProducts.objects.filter(reservation_id=pk)

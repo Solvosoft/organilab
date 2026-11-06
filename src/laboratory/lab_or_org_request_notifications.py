@@ -1,4 +1,4 @@
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import User
 from django.utils.translation import gettext as _
 
 from djgentelella.async_notification.sending import send_email_from_template
@@ -39,10 +39,12 @@ def notify_request_created(instance):
         "name": instance.name,
         "user": instance.requested_by.get_full_name() or instance.requested_by.username,
     }
+    # Se filtra sobre los usuarios: un `exclude(user__email="")` sobre el grupo
+    # descartaba el grupo entero en cuanto un miembro no tenía correo.
     emails = list(
-        Group.objects.filter(name="RegisterOrganization")
-        .values_list("user__email", flat=True)
-        .exclude(user__email="")
+        User.objects.filter(groups__name="RegisterOrganization")
+        .exclude(email="")
+        .values_list("email", flat=True)
         .distinct()
     )
     for email in emails:

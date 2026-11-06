@@ -335,15 +335,9 @@ FEATURES = (
             "(`complete_inform.html:25`). Es el contraejemplo de HALLAZGO-ACAD-1: los "
             "mismos tres estados que `MyProcedure`, pero aquí el paso de aprobación sí "
             "tiene permiso propio.",
-            "HALLAZGO-INV-1: **el repositorio no dice quién tiene ese permiso.** "
-            "`update_roles.py` solo lo menciona en `:100`, dentro del "
-            "`remove_permissions` de «Depositante de residuos» — es decir, dice quién "
-            "*no* lo tiene. El conjunto de permisos de cada rol canónico no está "
-            "versionado en ninguna parte: `update_roles.py` aplica deltas sobre roles "
-            "que supone existentes (`filter(...).first()` → «not found, skipping») y "
-            "`upload_org_and_users.py:45` hace `Rol.objects.get(...)`, que en una "
-            "instalación limpia revienta. La definición vive solo en las bases de "
-            "producción.",
+            "Quién tiene ese permiso está en `auth_and_perms/management/roles.py`, "
+            "que versiona los permisos de cada rol canónico; `update_roles` deja la "
+            "base igual a ese archivo.",
         ),
     ),
     Feature(

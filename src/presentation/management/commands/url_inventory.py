@@ -183,7 +183,9 @@ class Command(BaseCommand):
         # genera el comando.
         writer = csv.writer(out, lineterminator="\n")
         writer.writerow(COLUMNS)
-        for entry in entries:
+        # Orden estable: el router de `gtapis` registra según el orden de importación
+        # de los módulos, y eso cambia si una prueba importa `gtcharts` antes que las URLs.
+        for entry in sorted(entries, key=lambda e: (e.namespace, e.name or "", e.pattern)):
             writer.writerow([
                 entry.namespace, entry.name, entry.pattern, entry.view, entry.source,
                 entry.category, entry.template, "|".join(entry.kwargs),

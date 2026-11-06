@@ -153,7 +153,7 @@
   "model": "auth_and_perms.rol",
   "pk": 1,
   "fields": {
-   "name": "Regente Quimico",
+   "name": "Regente",
    "color": "#e74c3c",
    "permissions": [
     [
@@ -458,7 +458,7 @@
   "model": "auth_and_perms.rol",
   "pk": 3,
   "fields": {
-   "name": "Tecnico de Laboratorio",
+   "name": "Técnico de Laboratorio",
    "color": "#2ecc71",
    "permissions": [
     [
@@ -528,7 +528,7 @@
   "model": "auth_and_perms.rol",
   "pk": 4,
   "fields": {
-   "name": "Docente",
+   "name": "Profesor",
    "color": "#f39c12",
    "permissions": [
     [

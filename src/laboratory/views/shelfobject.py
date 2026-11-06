@@ -5,18 +5,15 @@ Created on 26/12/2016
 @author: luisza
 """
 
-import json
 
 from django import forms
 from django.conf import settings
-from django.contrib import messages
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.contrib.auth.decorators import login_required, permission_required
-from django.http import JsonResponse, HttpResponse, HttpResponseNotFound
+from django.http import Http404, JsonResponse, HttpResponse, HttpResponseNotFound
 from django.shortcuts import get_object_or_404, render
 from django.template.loader import render_to_string
 from django.urls import reverse
-from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views.generic.edit import FormView
@@ -31,11 +28,10 @@ from auth_and_perms.organization_utils import (
     user_is_allowed_on_organization,
     organization_can_change_laboratory,
 )
-from laboratory import dataconfig, utils
+from laboratory import utils
 from laboratory.shelfobject.utils import has_active_reservations
 from laboratory.forms import (
     ReservationModalForm,
-    ShelfObjectListForm,
     ValidateShelfForm,
 )
 from laboratory.models import (
@@ -43,9 +39,7 @@ from laboratory.models import (
     Shelf,
     Object,
     Laboratory,
-    TranferObject,
     OrganizationStructure,
-    Furniture,
 )
 from laboratory.views.djgeneric import CreateView, UpdateView, DeleteView, DetailView
 from presentation.models import QRModel
@@ -68,18 +62,18 @@ from ..shelfobject.forms import (
 
 @login_required
 def list_shelfobject_render(request, shelf=0, row=0, col=0, org_pk=None, lab_pk=None):
-    if shelf == 0:
-        var = request.GET.get("shelf", "0")
-    else:
-        var = shelf
-    if var:
-        shelfobject = ShelfObject.objects.filter(object=var)
-    else:
-        shelfobject = ShelfObject.objects.all()
+    # Antes se buscaba Shelf.objects.get(pk=shelf) con el 0 por defecto, así que el
+    # listado por ?shelf= fallaba siempre; además no se acotaba al laboratorio.
+    shelf_pk = str(shelf or request.GET.get("shelf", ""))
+    if not shelf_pk.isdigit():
+        raise Http404()
+    shelf_obj = get_object_or_404(
+        Shelf, pk=shelf_pk, furniture__labroom__laboratory_id=lab_pk
+    )
 
     context = {
-        "object_list": shelfobject,
-        "data": Shelf.objects.get(pk=shelf),
+        "object_list": shelf_obj.shelfobject_set.all(),
+        "data": shelf_obj,
         "row": row,
         "col": col,
         "laboratory": lab_pk,
@@ -103,6 +97,10 @@ class ShelfObjectReservationModal(FormView):
 @login_required
 @ajax
 def list_shelfobject(request, *args, **kwargs):
+    if not utils.check_user_access_kwargs_org_lab(
+        kwargs["org_pk"], kwargs["lab_pk"], request.user
+    ):
+        raise Http404()
     return {
         "inner-fragments": {
             "#shelfobject": list_shelfobject_render(
@@ -129,11 +127,10 @@ class ShelfObjectForm(forms.ModelForm, GTForm):
             queryset=Object.objects.all(),
             widget=AutocompleteSelect(
                 "objectorgsearch",
-                url_suffix="-detail",
-                url_kwargs={"pk": org_pk},
                 attrs={
                     "data-dropdownparent": "#createshelfobjectform",
                     "data-s2filter-shelf": "#id_shelf",
+                    "data-s2filter-organization": org_pk,
                 },
             ),
             label=objecttype,
@@ -184,9 +181,9 @@ class ShelfObjectForm(forms.ModelForm, GTForm):
             "quantity": core.TextInput,
             "limit_quantity": core.TextInput,
             "measurement_unit": core.Select,
-            "limits": core.SelectWithAdd(
-                attrs={"add_url": reverse_lazy("laboratory:add_shelfobjectlimit")}
-            ),
+            # Sin «añadir»: la ruta add_shelfobjectlimit se eliminó (e01cdc2cb) y su
+            # reverse tumbaba el formulario entero con NoReverseMatch.
+            "limits": core.Select,
         }
 
 
@@ -204,9 +201,11 @@ class ShelfObjectRefuseForm(GTForm, forms.ModelForm):
             queryset=Object.objects.all(),
             widget=AutocompleteSelect(
                 "objectorgsearch",
-                url_suffix="-detail",
-                url_kwargs={"pk": org_pk},
-                attrs={"data-dropdownparent": "#createshelfobjectform"},
+                attrs={
+                    "data-dropdownparent": "#createshelfobjectform",
+                    "data-s2filter-shelf": "#id_shelf",
+                    "data-s2filter-organization": org_pk,
+                },
             ),
             label=objecttype,
             help_text=_("Search by name, code or CAS number"),
@@ -261,9 +260,9 @@ class ShelfObjectRefuseForm(GTForm, forms.ModelForm):
             "measurement_unit": core.Select,
             "description": core.TextInput,
             "marked_as_discard": core.HiddenInput,
-            "limits": core.SelectWithAdd(
-                attrs={"add_url": reverse_lazy("laboratory:add_shelfobjectlimit")}
-            ),
+            # Sin «añadir»: la ruta add_shelfobjectlimit se eliminó (e01cdc2cb) y su
+            # reverse tumbaba el formulario entero con NoReverseMatch.
+            "limits": core.Select,
         }
 
 
@@ -306,6 +305,19 @@ class ShelfObjectRefuseFormUpdate(GTForm, forms.ModelForm):
         }
 
 
+class LabShelfObjectQuerysetMixin:
+    """Solo los objetos de estante del laboratorio de la URL.
+
+    Sin esto el ``pk`` se resolvía contra todos los ShelfObject y desde el
+    laboratorio propio se podía ver, editar o borrar el de otro laboratorio.
+    """
+
+    def get_queryset(self):
+        return ShelfObject.objects.filter(
+            shelf__furniture__labroom__laboratory_id=self.lab
+        )
+
+
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
     permission_required("laboratory.add_shelfobject", raise_exception=True),
@@ -315,11 +327,6 @@ class ShelfObjectCreate(AJAXMixin, CreateView):
     model = ShelfObject
     form_class = ShelfObjectForm
     success_url = "/"
-
-    def get_success_url(self):
-        return reverse_lazy(
-            "laboratory:list_shelf", args=(self.org, self.lab, self.shelf.furniture.pk)
-        )
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
@@ -411,16 +418,10 @@ class ShelfObjectCreate(AJAXMixin, CreateView):
     permission_required("laboratory.change_shelfobject", raise_exception=True),
     name="dispatch",
 )
-class ShelfObjectEdit(AJAXMixin, UpdateView):
+class ShelfObjectEdit(LabShelfObjectQuerysetMixin, AJAXMixin, UpdateView):
     model = ShelfObject
     form_class = ShelfObjectFormUpdate
     success_url = "/"
-
-    def get_success_url(self):
-        return reverse_lazy(
-            "laboratory:list_shelf",
-            args=(self.org, self.lab, self.object.shelf.furniture.pk),
-        )
 
     def form_valid(self, form):
         old = self.model.objects.filter(pk=self.object.id).values("quantity")[0][
@@ -451,8 +452,8 @@ class ShelfObjectEdit(AJAXMixin, UpdateView):
             relobj=self.lab,
         )
 
-        row = form.cleaned_data["row"]
-        col = form.cleaned_data["col"]
+        row = form.cleaned_data["row"] or 0
+        col = form.cleaned_data["col"] or 0
         return {
             "inner-fragments": {
                 "#row_%d_col_%d_shelf_%d"
@@ -478,8 +479,10 @@ class ShelfObjectEdit(AJAXMixin, UpdateView):
         if form.is_valid():
             shelf = form.cleaned_data["shelf"]
             kwargs["initial"]["shelf"] = shelf
-            kwargs["initial"]["row"] = form.cleaned_data["row"]
-            kwargs["initial"]["col"] = form.cleaned_data["col"]
+            # row/col no son campos de ValidateShelfForm: cleaned_data["row"]
+            # reventaba con KeyError; vienen tal cual en la petición.
+            kwargs["initial"]["row"] = form.data.get("row")
+            kwargs["initial"]["col"] = form.data.get("col")
         return kwargs
 
 
@@ -489,7 +492,7 @@ class ShelfObjectEdit(AJAXMixin, UpdateView):
     permission_required("laboratory.change_shelfobject", raise_exception=True),
     name="dispatch",
 )
-class ShelfObjectSearchUpdate(AJAXMixin, UpdateView):
+class ShelfObjectSearchUpdate(LabShelfObjectQuerysetMixin, AJAXMixin, UpdateView):
     model = ShelfObject
     form_class = ShelfObjectFormUpdate
     success_url = "/"
@@ -553,7 +556,7 @@ class ShelfObjectSearchUpdate(AJAXMixin, UpdateView):
     permission_required("laboratory.delete_shelfobject", raise_exception=True),
     name="dispatch",
 )
-class ShelfObjectDelete(AJAXMixin, DeleteView):
+class ShelfObjectDelete(LabShelfObjectQuerysetMixin, AJAXMixin, DeleteView):
     model = ShelfObject
     success_url = "/"
 
@@ -594,193 +597,22 @@ class ShelfObjectDelete(AJAXMixin, DeleteView):
     permission_required("laboratory.view_shelfobject", raise_exception=True),
     name="dispatch",
 )
-class ShelfObjectDetail(AJAXMixin, DetailView):
+class ShelfObjectDetail(LabShelfObjectQuerysetMixin, AJAXMixin, DetailView):
     model = ShelfObject
-
-
-def get_shelfobject_template(request, lab, org, shelfobject):
-    return render_to_string(
-        template_name="laboratory/components/shelfobject.html",
-        context={"shelfobject": shelfobject, "laboratory": lab, "org_pk": org},
-        request=request,
-    )
-
-
-@login_required()
-def get_shelf_list(request):
-    form = ShelfObjectListForm(request.POST)
-    data = None
-    aux = []
-    unit = None
-    msg = None
-
-    if form.is_valid():
-        lab = form.cleaned_data["lab"].pk
-        furnitures = Furniture.objects.filter(labroom__laboratory__id=lab)
-
-        transfer_detail = TranferObject.objects.filter(
-            pk=form.cleaned_data["id"]
-        ).first()
-
-        if furnitures and transfer_detail:
-            msg = transfer_detail.get_object_detail()
-            unit = transfer_detail.object.measurement_unit
-
-            for furniture in furnitures:
-                data = dataconfig.iter_shelf_pks(furniture.get_grid())
-                if len(data) > 0:
-                    for shelf in Shelf.objects.filter(pk__in=data):
-                        if (
-                            unit == shelf.measurement_unit
-                            or shelf.measurement_unit is None
-                        ):
-                            aux.append({"id": shelf.pk, "shelf": shelf.get_shelf()})
-        else:
-            msg = form.errors
-    data = json.dumps(aux)
-    return JsonResponse({"data": data, "msg": msg})
-
-
-@login_required
-@permission_required("laboratory.add_tranferobject", raise_exception=True)
-def objects_transfer(request, org_pk, lab_pk, transfer_pk, shelf_pk):
-    transfer = get_object_or_404(TranferObject, pk=transfer_pk)
-    shelf = get_object_or_404(Shelf, pk=shelf_pk)
-    obj = transfer.object.object
-    lab_send_obj = ShelfObject.objects.get(pk=transfer.object.pk)
-    organization = get_object_or_404(
-        OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
-    )
-    user_is_allowed_on_organization(request.user, organization)
-
-    if lab_send_obj.quantity >= transfer.quantity:
-        lab_received_obj = ShelfObject.objects.filter(
-            object_id=obj.id, shelf_id=shelf_pk
-        ).first()
-
-        if lab_received_obj is not None:
-            old = lab_received_obj.quantity
-            lab_received_obj.quantity += transfer.quantity
-            if transfer.mark_as_discard:
-                lab_received_obj.marked_as_discard = True
-            lab_received_obj.in_where_laboratory_id = lab_pk
-            lab_received_obj.save()
-
-            log_object_change(
-                request.user,
-                transfer.laboratory_received.pk,
-                lab_received_obj,
-                old,
-                lab_received_obj.quantity,
-                "Transferencia de %s por parte del laboratorio %s"
-                % (transfer.get_object_detail(), transfer.laboratory_send.name),
-                1,
-                "Transfer",
-                create=False,
-                organization=organization,
-                is_box=transfer.object.is_box,
-            )
-
-        else:
-            new_object = ShelfObject.objects.create(
-                shelf=shelf,
-                object=obj,
-                quantity=transfer.quantity,
-                limit_quantity=0,
-                in_where_laboratory_id=lab_pk,
-                measurement_unit=lab_send_obj.measurement_unit,
-            )
-
-            schema = request.scheme + "://"
-            domain = schema + request.get_host()
-            url = domain + reverse(
-                "laboratory:rooms_list", kwargs={"org_pk": org_pk, "lab_pk": lab_pk}
-            )
-            url = url + "#labroom=%d&furniture=%d&shelf=%d&shelfobject=%d" % (
-                shelf.furniture.labroom.pk,
-                shelf.furniture.pk,
-                shelf.pk,
-                new_object.pk,
-            )
-            new_object.shelf_object_url = url
-            img, file = utils.generate_QR_img_file(
-                url, request.user, extension_file=".svg", file_name="qrcode"
-            )
-            new_object.shelf_object_qr = img
-
-            if transfer.mark_as_discard:
-                new_object.marked_as_discard = True
-            new_object.save()
-            log_object_change(
-                request.user,
-                transfer.laboratory_received.pk,
-                lab_send_obj,
-                0,
-                transfer.quantity,
-                "Transferencia de %s por parte del laboratorio %s"
-                % (transfer.get_object_detail(), transfer.laboratory_send.name),
-                1,
-                "Transfer",
-                create=False,
-                organization=organization,
-                is_box=transfer.object.is_box,
-            )
-
-            changed_data = [
-                "shelf",
-                "object",
-                "quantity",
-                "limit_quantity",
-                "measurement_unit",
-            ]
-            utils.organilab_logentry(
-                request.user,
-                new_object,
-                ADDITION,
-                "shelfobject",
-                changed_data=changed_data,
-                change_message=_("Created shelfobject '%(name)s' from transfer")
-                % {"name": str(new_object.object)},
-                relobj=[transfer.laboratory_received, transfer.laboratory_send],
-            )
-
-        old = lab_send_obj.quantity
-        lab_send_obj.quantity -= transfer.quantity
-        lab_send_obj.save()
-        transfer.status = 1
-        transfer.save()
-        log_object_change(
-            request.user,
-            transfer.laboratory_send.pk,
-            lab_send_obj,
-            old,
-            lab_send_obj.quantity,
-            "Transferencia de %s al laboratorio %s"
-            % (transfer.get_object_detail(), transfer.laboratory_received.name),
-            2,
-            "Transfer",
-            create=False,
-            organization=organization,
-            is_box=transfer.object.is_box,
-        )
-        messages.success(request, _("Transfer done successfully"))
-    else:
-        return JsonResponse(
-            {
-                "status": False,
-                "msg": _("The amount sends is more than the laboratory have"),
-            }
-        )
-    return JsonResponse({"status": True, "msg": _("Transfer done successfully")})
-
-
-objects_transfer.lab_pk_field = "lab_pk"
 
 
 @login_required
 @permission_required("laboratory.change_shelfobject", raise_exception=True)
 def edit_limit_object(request, *args, **kwargs):
-    shelf_object = ShelfObject.objects.filter(pk=kwargs["pk"]).first()
+    if not utils.check_user_access_kwargs_org_lab(
+        kwargs["org_pk"], kwargs["lab_pk"], request.user
+    ):
+        raise Http404()
+    shelf_object = get_object_or_404(
+        ShelfObject,
+        pk=kwargs["pk"],
+        shelf__furniture__labroom__laboratory_id=kwargs["lab_pk"],
+    )
     context = {
         "name": shelf_object.object.name,
         "msg": "",
@@ -811,18 +643,20 @@ def download_shelfobject_qr(request, org_pk, lab_pk, pk):
         Laboratory.objects.using(settings.READONLY_DATABASE), pk=lab_pk
     )
     organization_can_change_laboratory(lab, org)
-    shelfobject = get_object_or_404(ShelfObject, pk=pk)
-    try:
-        qr = QRModel.objects.get(
-            content_type__app_label=shelfobject._meta.app_label,
-            object_id=shelfobject.id,
-            organization=org_pk,
-            content_type__model=shelfobject._meta.model_name,
-        )
-        file = qr.qr_image
-        response = HttpResponse(file, content_type="image/svg")
-    except IOError:
+    shelfobject = get_object_or_404(
+        ShelfObject, pk=pk, shelf__furniture__labroom__laboratory=lab
+    )
+    # qr_image es el SVG en texto: el antiguo `except IOError` nunca saltaba y un
+    # objeto sin QR (QRModel.DoesNotExist) terminaba en un 500.
+    qr = QRModel.objects.filter(
+        content_type__app_label=shelfobject._meta.app_label,
+        object_id=shelfobject.id,
+        organization=org_pk,
+        content_type__model=shelfobject._meta.model_name,
+    ).last()
+    if qr is None or not qr.qr_image:
         return HttpResponseNotFound()
+    response = HttpResponse(qr.qr_image, content_type="image/svg")
     response["Content-Disposition"] = 'attachment; filename="shelfobject_%s.svg"' % (
         shelfobject.pk
     )
@@ -835,8 +669,12 @@ def download_shelfobject_qr(request, org_pk, lab_pk, pk):
     raise_exception=True,
 )
 def view_equipment_shelfobject_detail(request, org_pk, lab_pk, pk):
+    if not utils.check_user_access_kwargs_org_lab(org_pk, lab_pk, request.user):
+        raise Http404()
     shelfobject = get_object_or_404(
-        ShelfObject.objects.using(settings.READONLY_DATABASE), pk=pk
+        ShelfObject.objects.using(settings.READONLY_DATABASE),
+        pk=pk,
+        shelf__furniture__labroom__laboratory_id=lab_pk,
     )
     qr, url = get_or_create_qr_shelf_object(request, shelfobject, org_pk, lab_pk)
     form = None
@@ -849,15 +687,19 @@ def view_equipment_shelfobject_detail(request, org_pk, lab_pk, pk):
                 "description": shelfobject.description,
                 "marked_as_discard": shelfobject.marked_as_discard,
                 "was_donated": shelfobject.was_donated,
+                "shelfobject_code": shelfobject.shelfobject_code
             },
         )
     else:
         form = EditEquimentShelfobjectForm(
             org_pk=org_pk,
             initial={
+                "shelfobject_code":shelfobject.shelfobject_code,
                 "status": shelfobject.status,
                 "marked_as_discard": shelfobject.marked_as_discard,
                 "description": shelfobject.description,
+                "shelfobject_code": shelfobject.shelfobject_code
+
             },
         )
     context = {
@@ -1001,7 +843,9 @@ def generate_shelfobject_label(request, org_pk, lab_pk, pk, recipient):
     user_is_allowed_on_organization(request.user, org)
     organization_can_change_laboratory(lab, org)
     shelfobject = get_object_or_404(
-        ShelfObject.objects.using(settings.READONLY_DATABASE), pk=pk
+        ShelfObject.objects.using(settings.READONLY_DATABASE),
+        pk=pk,
+        shelf__furniture__labroom__laboratory=lab,
     )
     recipient = get_object_or_404(RecipientSize, pk=recipient)
 

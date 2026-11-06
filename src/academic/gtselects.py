@@ -32,18 +32,13 @@ class ProcedureGModelLookup(BaseSelect2View):
 
     def get_queryset(self):
 
+        # Solo se llega desde ``list``, que valida y fija ``org_pk`` antes.
         queryset = super().get_queryset()
-        if self.org_pk:
-            organizations = get_pk_org_ancestors(self.org_pk.pk, self.request.user)
-            content_type = ContentType.objects.get(
-                app_label="laboratory", model="organizationstructure"
-            )
-            queryset = queryset.filter(
-                object_id__in=organizations, content_type=content_type
-            )
-        else:
-            queryset = queryset.none()
-        return queryset
+        organizations = get_pk_org_ancestors(self.org_pk.pk, self.request.user)
+        content_type = ContentType.objects.get(
+            app_label="laboratory", model="organizationstructure"
+        )
+        return queryset.filter(object_id__in=organizations, content_type=content_type)
 
     def list(self, request, *args, **kwargs):
 

@@ -58,9 +58,7 @@ else:
     CORS_ALLOW_ALL_ORIGINS = True
 
 SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
-ADMINS = [
-    ("Solvo", "sitio@solvosoft.com"),
-]
+ADMINS = ["sitio@solvosoft.com"]
 # Application definition
 
 SITE_ID = 1
@@ -160,7 +158,8 @@ DATABASES = {
         "PORT": os.getenv("DBPORT", "5432"),
         "TEST": {
             "ENGINE": "django.db.backends.postgresql",
-            "NAME": os.getenv("DBNAME", "organilab_test"),
+            # DBTESTNAME permite correr dos suites a la vez sin pisarse la base.
+            "NAME": os.getenv("DBTESTNAME", os.getenv("DBNAME", "organilab_test")),
             "USER": os.getenv("DBUSER", "organilab_user"),
             "PASSWORD": os.getenv("DBPASSWORD", "0rg4n1l4b"),
             "HOST": os.getenv("DBHOST", "127.0.0.1"),
@@ -184,7 +183,6 @@ READONLY_DATABASE = os.getenv("READONLY_DATABASE", "default")
 
 _backends = [
     "django.contrib.auth.backends.ModelBackend",  # default
-    # 'auth_and_perms.authBackend.BCCRBackend',  # Digital signature
 ]
 if os.getenv("OIDC_RP_CLIENT_ID"):
     _backends.append("authentication.oidc_backend.OrganiLabOIDCBackend")
@@ -226,8 +224,6 @@ LANGUAGES = [
 TIME_ZONE = "America/Costa_Rica"
 
 USE_I18N = True
-
-USE_L10N = False
 
 USE_TZ = True
 
@@ -436,6 +432,13 @@ DATETIME_INPUT_FORMATS = [
     "%d/%m/%Y %H:%M",
     "%d/%m/%y %H:%M",
     "%d/%m/%Y %H:%M:%S",
+    # Formato que escribe el DateTimeInput de djgentelella cuando el widget se
+    # crea con el inglés activo: toma formats.get_format(...)[0] del idioma
+    # activo y en `en` es ISO con segundos. Los widgets de Meta.widgets se
+    # crean al importar el formulario, así que basta con que la primera
+    # petición tras arrancar (la que carga URLconf y vistas) sea en inglés para
+    # que todas las reservas fallen en el serializer con "formato erróneo".
+    "%Y-%m-%d %H:%M:%S",
 ]
 
 

@@ -132,20 +132,23 @@ class LabviewApiTest(RolPermissionMixin, BaseLaboratorySetUpTest):
         self.assertIn("qr", painted)
         self.assertIn("deep_link", painted)
 
-    def test_the_tree_materialises_missing_qr_codes(self):
+    def test_every_room_offers_a_qr_that_is_created_on_demand(self):
         """La plantilla antigua creaba el QR al vuelo si no existía.
 
-        Si el árbol solo leyera los ya guardados, una sala o un estante recién
-        creados se quedarían sin QR y el usuario perdería una función que hoy
-        tiene sin pedir nada.
+        Ahora el árbol trae la URL del QR y el SVG se crea cuando se pide: una
+        sala recién creada sigue teniendo QR sin que el árbol pague por él.
         """
         content_type = ContentType.objects.get_for_model(LaboratoryRoom)
         QRModel.objects.filter(content_type=content_type).delete()
 
         tree = self.client.get(self.url("api-labview-tree-list")).json()
         self.assertTrue(tree["rooms"])
+        self.assertFalse(QRModel.objects.filter(content_type=content_type).exists())
         for room in tree["rooms"]:
             self.assertTrue(room["qr"], "la sala %s se quedo sin QR" % room["id"])
+            response = self.client.get(room["qr"])
+            self.assertEqual(response.status_code, 200)
+            self.assertIn(b"<svg", response.content)
         self.assertTrue(
             QRModel.objects.filter(content_type=content_type).exists()
         )

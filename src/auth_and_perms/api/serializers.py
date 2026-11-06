@@ -104,12 +104,6 @@ class ProfilePermissionRolOrganizationSerializer(serializers.Serializer):
     )
 
 
-class OrganizationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = OrganizationStructure
-        fields = ["name", "parent"]
-
-
 class ProfileFilterSet(FilterSet):
 
     def filter_queryset(self, queryset):
@@ -444,7 +438,10 @@ class ValidateUserAccessOrgLabSerializer(UserAccessOrgLabValidateSerializer):
 
             is_owner = shelf_object.in_where_laboratory.organization == organization
 
-            if not is_related and not is_owner:
+            # Defensa en profundidad: `super().validate()` ya exige
+            # `organization_can_change_laboratory` sobre este mismo laboratorio (dueña,
+            # relacionada o relacionada vía una hija), así que esta rama no se alcanza.
+            if not is_related and not is_owner:  # pragma: no cover
                 logger.debug(
                     f"ValidateUserAccessOrgLabSerializer --> laboratory not related to organization"
                 )
@@ -490,7 +487,9 @@ class ValidateUserAccessOrgLabSerializer(UserAccessOrgLabValidateSerializer):
                     object_id=shelf_lab_pk,
                 ).exists()
 
-            if (
+            # Defensa en profundidad, inalcanzable por lo mismo que la rama del objeto:
+            # el laboratorio del estante es `laboratory`, ya validado en `super()`.
+            if (  # pragma: no cover
                 not shelf_is_related
                 and shelf.furniture.labroom.laboratory.organization != organization
             ):
@@ -699,16 +698,16 @@ class ListUserSerializer(serializers.ModelSerializer):
                 content_type__model="organizationstructure",
                 object_id=org[1],
             ).first()
-
-            buttons += (
-                "<li class='list-group-item d-flex justify-content-between align-items-start'>"
-                "<span class='dropdown-item-text small'>%s</span> "
-                "<button class='btn btn-sm btn-secondary' title='%s' "
-                "data-user='%s' data-org='%s' onclick=get_roles_in_organization(this)>"
-                "<i class='fa fa-user-md' aria-hidden='true'></i> "
-                "<span class='badge bg-secondary'>%s</span></button></li>"
-                % (org[0], _("Roles"), obj.pk, org[1], pp.rol.count() if pp else 0)
-            )
+            if pp:
+                buttons += (
+                    "<li class='list-group-item d-flex justify-content-between align-items-start'>"
+                    "<span class='dropdown-item-text small'>%s</span> "
+                    "<button class='btn btn-sm btn-secondary' title='%s' "
+                    "data-user='%s' data-org='%s' onclick=get_roles_in_organization(this)>"
+                    "<i class='fa fa-user-md' aria-hidden='true'></i> "
+                    "<span class='badge bg-secondary'>%s</span></button></li>"
+                    % (org[0], _("Roles"), obj.pk, org[1], pp.rol.count() if pp else 0)
+                )
         buttons += "</ul>"
         return buttons
 
@@ -860,7 +859,9 @@ class ProfileLaboratoryOrgRoles(serializers.ModelSerializer):
             roles = list(set(profile_perm.rol.all().values_list("name", flat=True)))
             roles = ", ".join(roles)
             return roles
-        return ""
+        # `LaboratoryOrganizationRoles` solo lista perfiles que tienen justo este
+        # `ProfilePermission` (mismos filtros), así que siempre hay uno.
+        return ""  # pragma: no cover
 
     def get_user(self, obj):
         return str(obj)

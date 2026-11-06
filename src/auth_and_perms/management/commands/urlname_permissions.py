@@ -1194,60 +1194,15 @@ URLNAME_PERMISSIONS = {
     ],
     "index_msds": [
         {
-            "name": "Add MSDS Object",
-            "category": "MSDS Object",
-            "permission": "msds.add_msdsobject",
+            "name": "Change SDS Traceability",
+            "category": "SDS Traceability",
+            "permission": "sga.change_sdstraceability",
         },
         {
-            "name": "Change MSDS Object",
-            "category": "MSDS Object",
-            "permission": "msds.change_msdsobject",
+            "name": "View SDS Traceability",
+            "category": "SDS Traceability",
+            "permission": "sga.view_sdstraceability",
         },
-        {
-            "name": "Delete MSDS Object",
-            "category": "MSDS Object",
-            "permission": "msds.delete_msdsobject",
-        },
-        {
-            "name": "View MSDS Object",
-            "category": "MSDS Object",
-            "permission": "msds.view_msdsobject",
-        },
-    ],
-    # "msds_msdsobject_create" se retiró: el alta de fichas ya no tiene pantalla
-    # propia, se hace en el paso 1 del asistente de sustancias. Las vecinas
-    # msds_msdsobject_upate/delete/detail tampoco resuelven a ninguna URL y
-    # habría que revisarlas junto al resto del catálogo.
-    "msds_msdsobject_upate": [
-        {
-            "name": "Change MSDS Object",
-            "category": "MSDS Object",
-            "permission": "msds.change_msdsobject",
-        },
-        {
-            "name": "View MSDS Object",
-            "category": "MSDS Object",
-            "permission": "msds.view_msdsobject",
-        },
-    ],
-    "msds_msdsobject_delete": [
-        {
-            "name": "Delete MSDS Object",
-            "category": "MSDS Object",
-            "permission": "msds.delete_msdsobject",
-        },
-        {
-            "name": "View MSDS Object",
-            "category": "MSDS Object",
-            "permission": "msds.view_msdsobject",
-        },
-    ],
-    "msds_msdsobject_detail": [
-        {
-            "name": "View MSDS Object",
-            "category": "MSDS Object",
-            "permission": "msds.view_msdsobject",
-        }
     ],
     "warning_words": [
         {
@@ -1570,7 +1525,7 @@ URLNAME_PERMISSIONS = {
             "category": "Risk Management",
             "permission": "risk_management.view_riskzone",
         },
-        {"name": "View MSDS", "category": "MSDS", "permission": "msds.view_msdsobject"},
+        {"name": "View SDS Traceability", "category": "SDS Traceability", "permission": "sga.view_sdstraceability"},
         {
             "name": "View Recipient Size",
             "category": "Recipient Size",
@@ -1612,9 +1567,9 @@ URLNAME_PERMISSIONS = {
             "permission": "sga.change_templatesga",
         },
         {
-            "name": "View MSDS Object",
-            "category": "MSDS Object",
-            "permission": "msds.view_msdsobject",
+            "name": "View SDS Traceability",
+            "category": "SDS Traceability",
+            "permission": "sga.view_sdstraceability",
         },
         {
             "name": "Add Object Features",
@@ -1822,64 +1777,6 @@ URLNAME_PERMISSIONS = {
             "name": "View Inform",
             "category": "Inform",
             "permission": "laboratory.view_inform",
-        },
-    ],
-    "entrylist": [
-        {
-            "name": "View Blog Entry",
-            "category": "Blog Entry",
-            "permission": "blog.view_entry",
-        },
-        {
-            "name": "Delete Blog Entry",
-            "category": "Blog Entry",
-            "permission": "blog.delete_entry",
-        },
-    ],
-    "entrycreate": [
-        {
-            "name": "Add Blog Entry",
-            "category": "Blog Entry",
-            "permission": "blog.add_entry",
-        },
-        {
-            "name": "View Blog Entry",
-            "category": "Blog Entry",
-            "permission": "blog.view_entry",
-        },
-        {
-            "name": "Add Blog Category",
-            "category": "Blog Category",
-            "permission": "blog.add_category",
-        },
-    ],
-    "entry_update": [
-        {
-            "name": "Change Blog Entry",
-            "category": "Blog Entry",
-            "permission": "blog.change_entry",
-        },
-        {
-            "name": "View Blog Entry",
-            "category": "Blog Entry",
-            "permission": "blog.view_entry",
-        },
-        {
-            "name": "Add Blog Category",
-            "category": "Blog Category",
-            "permission": "blog.add_category",
-        },
-    ],
-    "entry_delete": [
-        {
-            "name": "Delete Blog Entry",
-            "category": "Blog Entry",
-            "permission": "blog.delete_entry",
-        },
-        {
-            "name": "View Blog Entry",
-            "category": "Blog Entry",
-            "permission": "blog.view_entry",
         },
     ],
     "profile": [
@@ -2118,24 +2015,14 @@ URLNAME_PERMISSIONS = {
     ],
     "list_msds": [
         {
-            "name": "Add MSDS Object",
-            "category": "MSDS Object",
-            "permission": "msds.add_msdsobject",
+            "name": "Change SDS Traceability",
+            "category": "SDS Traceability",
+            "permission": "sga.change_sdstraceability",
         },
         {
-            "name": "Change MSDS Object",
-            "category": "MSDS Object",
-            "permission": "msds.change_msdsobject",
-        },
-        {
-            "name": "Delete MSDS Object",
-            "category": "MSDS Object",
-            "permission": "msds.delete_msdsobject",
-        },
-        {
-            "name": "View MSDS Object",
-            "category": "MSDS Object",
-            "permission": "msds.view_msdsobject",
+            "name": "View SDS Traceability",
+            "category": "SDS Traceability",
+            "permission": "sga.view_sdstraceability",
         },
     ],
     "delete_form": [
@@ -2689,9 +2576,9 @@ URLNAME_PERMISSIONS = {
     ],
     "tutorials": [
         {
-            "name": "View MSDS Object",
-            "category": "MSDS Object",
-            "permission": "msds.view_msdsobject",
+            "name": "View SDS Traceability",
+            "category": "SDS Traceability",
+            "permission": "sga.view_sdstraceability",
         },
         {
             "name": "View Regulation Document",
@@ -3138,28 +3025,6 @@ URLNAME_PERMISSIONS = {
             "name": "Update Building",
             "category": "Building",
             "permission": "risk_management.change_buildings",
-        },
-    ],
-    "h_code_categories_crud": [
-        {
-            "name": "Add H Code Category",
-            "category": "H Code Category",
-            "permission": "sga.add_hcodecategory",
-        },
-        {
-            "name": "Change H Code Category",
-            "category": "H Code Category",
-            "permission": "sga.change_hcodecategory",
-        },
-        {
-            "name": "Delete H Code Category",
-            "category": "H Code Category",
-            "permission": "sga.delete_hcodecategory",
-        },
-        {
-            "name": "View H Code Category",
-            "category": "H Code Category",
-            "permission": "sga.view_hcodecategory",
         },
     ],
     "risk_zone_report": [
@@ -3686,7 +3551,7 @@ URLNAME_PERMISSIONS = {
         },
     ],
     # La papelera es de la biblioteca: sus permisos viven en djgentelella,
-    # no en laboratory. update_roles.update_papelera() ya se los da a los
+    # no en laboratory. auth_and_perms/management/roles.py ya se los da a los
     # roles fijos; esto es lo que permite configurarlos por organización.
     "trash_list": [
         {
@@ -3705,48 +3570,48 @@ URLNAME_PERMISSIONS = {
             "permission": "djgentelella.delete_trash",
         },
     ],
-    'ambiental_consumptionrecord':[
+    'ambiental_consumptionrecord': [
         {
-            "name":"View Consumption Record",
-            "category":"Ambiental",
-            "permission":"ambiental.view_consumptionrecord"
+            "name": "View Consumption Record",
+            "category": "Ambiental",
+            "permission": "ambiental.view_consumptionrecord"
         },
         {
-            "name":"Delete Consumption Record",
-            "category":"Ambiental",
-            "permission":"ambiental.delete_consumptionrecord"
+            "name": "Delete Consumption Record",
+            "category": "Ambiental",
+            "permission": "ambiental.delete_consumptionrecord"
         },
         {
-            "name":"Add Consumption Record",
-            "category":"Ambiental",
-            "permission":"ambiental.add_consumptionrecord"
+            "name": "Add Consumption Record",
+            "category": "Ambiental",
+            "permission": "ambiental.add_consumptionrecord"
         },
         {
-            "name":"Update Consumption Record",
-            "category":"Ambiental",
-            "permission":"ambiental.change_consumptionrecord"
+            "name": "Update Consumption Record",
+            "category": "Ambiental",
+            "permission": "ambiental.change_consumptionrecord"
         },
     ],
-    'ambiental_measurementpoint':[
+    'ambiental_measurementpoint': [
         {
-            "name":"View Measurement Point",
-            "category":"Ambiental",
-            "permission":"ambiental.view_measurementpoint"
+            "name": "View Measurement Point",
+            "category": "Ambiental",
+            "permission": "ambiental.view_measurementpoint"
         },
         {
-            "name":"Add Measurement Point",
-            "category":"Ambiental",
-            "permission":"ambiental.add_measurementpoint"
+            "name": "Add Measurement Point",
+            "category": "Ambiental",
+            "permission": "ambiental.add_measurementpoint"
         },
         {
-            "name":"View Measurement Point",
-            "category":"Ambiental",
-            "permission":"ambiental.change_measurementpoint"
+            "name": "Update Measurement Point",
+            "category": "Ambiental",
+            "permission": "ambiental.change_measurementpoint"
         },
         {
-            "name":"Delete Measurement Point",
-            "category":"Ambiental",
-            "permission":"ambiental.delete_measurementpoint"
+            "name": "Delete Measurement Point",
+            "category": "Ambiental",
+            "permission": "ambiental.delete_measurementpoint"
         },
     ],
     "ambiental_normalizationbase": [
@@ -3771,7 +3636,7 @@ URLNAME_PERMISSIONS = {
             "permission": "ambiental.change_normalizationbase"
         },
     ],
-    "ambiental_consumptionalert":[
+    "ambiental_consumptionalert": [
         {
             "name": "Review Consumption Alert",
             "category": "Ambiental",
@@ -3835,6 +3700,36 @@ URLNAME_PERMISSIONS = {
             "permission": "presentation.change_notificationsetting"
         },
     ],
+    "laboratory_organization_auditory": [
+        {
+            "name": "View users in laboratory and organizations",
+            "category": "User Roles",
+            "permission": "laboratory.view_organizationstructure"
+        }
+    ],
+    "material_equipment_list": [
+        {
+            "name": "Add Object",
+            "category": "Object",
+            "permission": "laboratory.add_object",
+        },
+        {
+            "name": "Change Object",
+            "category": "Object",
+            "permission": "laboratory.can_edit_equipment_material",
+        },
+        {
+            "name": "Delete Object",
+            "category": "Object",
+            "permission": "laboratory.can_delete_equipment_material",
+        },
+        {
+            "name": "View Object",
+            "category": "Object",
+            "permission": "laboratory.view_object",
+        },
+    ],
+
 }
 
 # create_sustance, update_substance y step_one son la misma vista, así que

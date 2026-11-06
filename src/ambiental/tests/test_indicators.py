@@ -10,6 +10,7 @@ from ambiental.indicators import compare_periods, compute_indicator, variation
 from ambiental.models import ConsumptionRecord, NormalizationBase
 from ambiental.tests.test_reports import ReportTestCase
 from laboratory.models import Catalog
+from auth_and_perms.roles import ROLES
 
 JAN = (datetime.date(2026, 1, 1), datetime.date(2026, 1, 31))
 FEB = (datetime.date(2026, 2, 1), datetime.date(2026, 2, 28))
@@ -101,7 +102,7 @@ class IndicatorTest(ReportTestCase):
             reverse("ambiental:report_consumption_comparison", kwargs=kwargs),
         )
         for name in urls:
-            for rol_name in ("Administrador ambiental", "Encargado de registro ambiental", "Analista ambiental"):
+            for rol_name in (ROLES["administrador_ambiental"], ROLES["registro_ambiental"], ROLES["analista_ambiental"]):
                 user = self.make_user("i_%s_%s" % (urls.index(name), rol_name.split()[0]), self.organization, rol_name)
                 self.client.force_login(user)
                 with self.subTest(report=name, rol=rol_name):
@@ -119,7 +120,7 @@ class DashboardTest(ReportTestCase):
         )
 
     def test_dashboard_renders_cards_for_each_role(self):
-        for rol_name in ("Administrador ambiental", "Encargado de registro ambiental", "Analista ambiental"):
+        for rol_name in (ROLES["administrador_ambiental"], ROLES["registro_ambiental"], ROLES["analista_ambiental"]):
             user = self.make_user("d_" + rol_name.split()[0], self.organization, rol_name)
             self.client.force_login(user)
             with self.subTest(rol=rol_name):

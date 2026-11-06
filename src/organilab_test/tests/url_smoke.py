@@ -46,6 +46,22 @@ KNOWN_BROKEN = {
 }
 
 
+_INVENTORY = None
+
+
+def _cached_inventory():
+    """El inventario de URLs, calculado una vez por proceso.
+
+    Recorrer el resolutor e inspeccionar el código de cada vista cuesta unos
+    diez segundos y no depende de la base: repetirlo en cada clase de smoke
+    era la mayor parte de su `setUpClass`.
+    """
+    global _INVENTORY
+    if _INVENTORY is None:
+        _INVENTORY = build_inventory()
+    return _INVENTORY
+
+
 def _first_pk(model):
     obj = model._default_manager.first()
     if obj is None:
@@ -77,7 +93,7 @@ class UrlSmokeMixin:
     @classmethod
     def setUpTestData(cls):
         cls.inventory = [
-            entry for entry in build_inventory()
+            entry for entry in _cached_inventory()
             if entry.category == "pagina" and entry.namespace in cls.namespaces
         ]
 

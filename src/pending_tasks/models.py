@@ -69,7 +69,7 @@ class PendingTaskManager(models.Model):
         """
         object_id: Identificador del laboratorio
         """
-        regents = Regent.objects.filter(laboratory=self.object_id)
+        regents = Regent.objects.filter(laboratories=self.object_id)
         return regents
 
     def get_laboratory_reponsible_by_risk_zones(self):
@@ -82,7 +82,7 @@ class PendingTaskManager(models.Model):
         responsibles: Retorna los responsables de los laboratorios asociados a la zona de riesgo y edificios de la zona de riesgo.
         """
         risk_zone = RiskZone.objects.filter(pk=self.object_id)
-        laboratory_risk = set(risk_zone.values_list("laboratory", flat=True))
+        laboratory_risk = set(risk_zone.values_list("laboratories", flat=True))
         buildings_laboratory = set(
             risk_zone.values_list("buildings__laboratories", flat=True)
         )

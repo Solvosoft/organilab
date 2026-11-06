@@ -1,3 +1,20 @@
+20/10/2026
+Roles centralized in src/auth_and_perms/management/roles.py (name, description and permissions).
+    - python manage.py update_roles --dry-run
+    - python manage.py update_roles
+Command to regenerate the roles file from the database
+    - python manage.py export_roles (Nuevo no usar)
+    - python manage.py setup_sga_view_group
+    - python manage.py load_urlname_permissions
+
+14/10/2026
+Command to update users roles
+    - python manage.py update_roles
+
+28/09/2026
+Command to update all Objects to a specific organization
+    - python manage.py update_objects_organization <organization_pk>
+
 21/09/2026
 Command to update roles
     - python manage.py update_roles

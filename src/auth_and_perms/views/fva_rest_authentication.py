@@ -19,18 +19,24 @@
 @license: GPLv3
 """
 import requests
-from django.http.response import JsonResponse, Http404, HttpResponse
+import re
+
+from django.http.response import JsonResponse, Http404, HttpResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
 from pyfva.clientes.autenticador import ClienteAutenticador
 from django.conf import settings
 import logging
 from django.views.decorators.http import require_http_methods
 import json
+
+logger = logging.getLogger("organilab")
 from django.utils import timezone
 from django.contrib.auth import authenticate, login
 
 # from corebase import logger
 from ..models import AuthenticateDataRequest, AuthorizedApplication
+
+JSONP_CALLBACK_RE = re.compile(r"^[A-Za-z_$][\w$]*(\.[A-Za-z_$][\w$]*)*$")
 
 
 @csrf_exempt
@@ -65,8 +71,10 @@ def login_with_bccr(request):
         if authclient.validar_servicio():
             data = authclient.solicitar_autenticacion(identification)
             try:
-                if int(data["id_solicitud"]) > 0:
-                    app = AuthorizedApplication.objects.all().first()
+                app = AuthorizedApplication.objects.all().first()
+                if int(data["id_solicitud"]) > 0 and app is None:
+                    logger.warning("No AuthorizedApplication configured to notify the BCCR authentication")
+                elif int(data["id_solicitud"]) > 0:
                     url = app.notification_url + str(data["id_solicitud"])
                     headers = {
                         "Authorization": "Token %s" % (app.token),
@@ -76,10 +84,9 @@ def login_with_bccr(request):
                     }
                     response = requests.post(url, headers=headers)
                     response.raise_for_status()
-                    print(url, " --> ", str(response.status_code))
-                    print(response.content)
-            except Exception as e:
-                print(e)
+                    logger.info("BCCR authentication notified (status %s)", response.status_code)
+            except Exception:
+                logger.exception("Error notifying the BCCR authentication")
 
         else:
             # logger.warning({'message':"Auth BCCR not available", 'location': __file__})
@@ -113,7 +120,9 @@ def login_with_bccr(request):
             }
         )
 
-    return Http404()
+    # Antes `return Http404()`: devolvía la excepción como si fuera una respuesta y
+    # Django respondía 500.
+    raise Http404()
 
 
 def check_signature_window_status_register(request):
@@ -135,7 +144,11 @@ def check_signature_window_status_register(request):
             - FueExitosa: La transacción fue exitosa (no quiere decir que se haya firmado, solo que el proceso de consulta fue exitoso)
             - SeRealizo: True si ya se realizó el proceso de firma por el usuario o si existe un error a mostrar al usaurio
     """
-    callback = request.GET.get("callback")
+    callback = request.GET.get("callback", "")
+    # JSONP: el callback se refleja tal cual en la respuesta, así que solo se acepta un
+    # identificador de JavaScript (evita XSS reflejado).
+    if not JSONP_CALLBACK_RE.match(callback):
+        return HttpResponseBadRequest("Invalid callback")
     pk = request.GET.get("IdDeLaSolicitud", "")
     authdata = AuthenticateDataRequest.objects.filter(id_transaction=pk).first()
 

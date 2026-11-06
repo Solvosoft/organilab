@@ -45,8 +45,9 @@ class DerbAPITest(TestCase):
 
     def create_incident_report(self):
         zone = ZoneType.objects.create(name="Test Zone Type")
+        # La zona es de la organización de la URL: la API de incidentes rechaza zonas ajenas.
         risk = RiskZone.objects.create(name="Test Risk Zone", priority=1, num_workers=1,
-                                       zone_type=zone)
+                                       zone_type=zone, organization_id=1)
         data = {
             "short_description": "Incendió",
             "causes": "Alguien fumando",

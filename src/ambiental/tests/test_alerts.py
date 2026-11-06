@@ -19,6 +19,7 @@ from presentation.alerts import (
     TRIGGER_PERCENT,
 )
 from presentation.models import AlertEvent, AlertRule, SystemParameter
+from auth_and_perms.roles import ROLES
 
 
 class ConsumptionAlertTest(ReportTestCase):
@@ -120,7 +121,7 @@ class ConsumptionAlertScreenTest(ConsumptionAlertTest):
 
     def test_analista_sees_but_cannot_review(self):
         alert = self.make_alert()
-        self.client.force_login(self.make_user("analista_al", self.organization, "Analista ambiental"))
+        self.client.force_login(self.make_user("analista_al", self.organization, ROLES["analista_ambiental"]))
         self.assertEqual(self.client.get(
             reverse("ambiental:consumptionalert_list", kwargs={"org_pk": self.organization.pk})
         ).status_code, 200)
@@ -128,7 +129,7 @@ class ConsumptionAlertScreenTest(ConsumptionAlertTest):
         self.assertEqual(self.client.post(url, data=json.dumps({"note": "x"}), content_type="application/json").status_code, 403)
 
     def test_page_renders_for_each_role(self):
-        for rol_name in ("Administrador ambiental", "Encargado de registro ambiental"):
+        for rol_name in (ROLES["administrador_ambiental"], ROLES["registro_ambiental"]):
             self.client.force_login(self.make_user("al_" + rol_name.split()[0], self.organization, rol_name))
             with self.subTest(rol=rol_name):
                 self.assertEqual(self.client.get(

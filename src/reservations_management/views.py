@@ -1,4 +1,5 @@
 import json
+import math
 
 from django.contrib.admin.models import CHANGE
 from django.contrib.auth.mixins import PermissionRequiredMixin
@@ -238,6 +239,10 @@ class ReturnProductView(PermissionRequiredMixin, View):
         else:
             try:
                 amount = float(request.POST.get("amount_returned", 0))
+                # `float("nan")` no es menor que 0 ni mayor que el máximo: sin esto
+                # pasaba la validación y dejaba la cantidad del objeto en NaN.
+                if not math.isfinite(amount):
+                    raise ValueError(amount)
             except (TypeError, ValueError):
                 return JsonResponse(
                     {"success": False, "error": str(_("Invalid amount."))}
@@ -258,7 +263,9 @@ class ReturnProductView(PermissionRequiredMixin, View):
 
         if success:
             return JsonResponse({"success": True})
-        return JsonResponse(
+        # Defensa: las dos funciones de devolución solo fallan con valores que la
+        # vista ya rechazó arriba.
+        return JsonResponse(  # pragma: no cover
             {
                 "success": False,
                 "error": str(

@@ -2,7 +2,7 @@ import re
 
 import django_excel
 from django.contrib.admin.models import DELETION, CHANGE, ADDITION
-from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404
@@ -12,7 +12,7 @@ from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext as _
 from rest_framework import status
-from weasyprint import HTML
+from presentation.pdf import html_to_pdf
 from django.conf import settings
 
 from auth_and_perms.organization_utils import user_is_allowed_on_organization
@@ -23,8 +23,9 @@ from risk_management.forms import IncidentReportForm
 from risk_management.models import IncidentReport, Buildings, RiskZone
 
 
+@method_decorator(login_required, name="dispatch")
 @method_decorator(
-    permission_required("risk_management.view_incidentreport"), name="dispatch"
+    permission_required("risk_management.view_incidentreport", raise_exception=True), name="dispatch"
 )
 class IncidentReportList(djgeneric.ListView):
     model = IncidentReport
@@ -56,8 +57,9 @@ class IncidentReportList(djgeneric.ListView):
         return context
 
 
+@method_decorator(login_required, name="dispatch")
 @method_decorator(
-    permission_required("risk_management.add_incidentreport"), name="dispatch"
+    permission_required("risk_management.add_incidentreport", raise_exception=True), name="dispatch"
 )
 class IncidentReportCreate(djgeneric.CreateView):
     model = IncidentReport
@@ -98,8 +100,9 @@ class IncidentReportCreate(djgeneric.CreateView):
         return success_url
 
 
+@method_decorator(login_required, name="dispatch")
 @method_decorator(
-    permission_required("risk_management.change_incidentreport"), name="dispatch"
+    permission_required("risk_management.change_incidentreport", raise_exception=True), name="dispatch"
 )
 class IncidentReportEdit(djgeneric.UpdateView):
     model = IncidentReport
@@ -134,8 +137,9 @@ class IncidentReportEdit(djgeneric.UpdateView):
         return success_url
 
 
+@method_decorator(login_required, name="dispatch")
 @method_decorator(
-    permission_required("risk_management.delete_incidentreport"), name="dispatch"
+    permission_required("risk_management.delete_incidentreport", raise_exception=True), name="dispatch"
 )
 class IncidentReportDelete(djgeneric.DeleteView):
     model = IncidentReport
@@ -163,8 +167,9 @@ class IncidentReportDelete(djgeneric.DeleteView):
         return success_url
 
 
+@method_decorator(login_required, name="dispatch")
 @method_decorator(
-    permission_required("risk_management.view_incidentreport"), name="dispatch"
+    permission_required("risk_management.view_incidentreport", raise_exception=True), name="dispatch"
 )
 class IncidentReportDetail(djgeneric.DetailView):
     model = IncidentReport
@@ -199,6 +204,8 @@ def make_book_incidentreport(incidents):
                 re.sub(r"<.*?>", "", obj.causes),
                 re.sub(r"<.*?>", "", obj.infraestructure_impact),
                 re.sub(r"<.*?>", "", obj.people_impact),
+                # Faltaba: las columnas desde «Environment impact» quedaban corridas.
+                re.sub(r"<.*?>", "", obj.environment_impact),
                 re.sub(r"<.*?>", "", obj.result_of_plans),
                 re.sub(r"<.*?>", "", obj.mitigation_actions),
                 re.sub(r"<.*?>", "", obj.recomendations),
@@ -211,15 +218,18 @@ def make_book_incidentreport(incidents):
     return content
 
 
-@permission_required("laboratory.do_report")
+@login_required
+@permission_required("laboratory.do_report", raise_exception=True)
 def report_incidentreport(request, org_pk, risk_pk, pk):
     user_is_allowed_on_organization(request.user, org_pk)
 
-    risks = get_object_or_404(RiskZone, pk=risk_pk)
-    filters = {"risk_zone__in": [risks]}
+    # La zona tiene que ser de la organización de la URL y el incidente, de esa
+    # zona: antes cualquier pk de incidente se exportaba.
+    risks = get_object_or_404(RiskZone, pk=risk_pk, organization__pk=org_pk)
+    filters = {"risk_zone": risks}
 
     if pk:
-        filters = {"pk": pk}
+        filters["pk"] = pk
 
     incidentreport = IncidentReport.objects.filter(**filters)
 
@@ -240,9 +250,7 @@ def report_incidentreport(request, org_pk, risk_pk, pk):
         "title": _("Incident report in the risk zone %s") % risks.name,
     }
     html = template.render(context=context)
-    page = HTML(
-        string=html, base_url=request.build_absolute_uri(), encoding="utf-8"
-    ).write_pdf()
+    page = html_to_pdf(html, base_url=request.build_absolute_uri())
     response = HttpResponse(page, content_type="application/pdf")
     response["Content-Disposition"] = 'attachment; filename="incident_report.pdf"'
     return response
