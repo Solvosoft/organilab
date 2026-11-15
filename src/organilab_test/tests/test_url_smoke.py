@@ -50,7 +50,42 @@ class LaboratoryUrlSmokeTest(UrlSmokeMixin, TestCase):
     def extra_kwarg(self, entry, name):
         if name in ("row", "col"):
             return 0
+        route = entry.name.split(":")[-1]
+        if route == "equipment_import_review" and name == "key":
+            return self.equipment_upload().key
+        if route == "equipment_control_point" and name in ("pk", "point"):
+            point = self.control_point()
+            return point.shelfobject_id if name == "pk" else point.pk
         return super().extra_kwarg(entry, name)
+
+    # Equipos ISO 17025: la revisión de una importación y la carta de un punto
+    # necesitan su dato; se arma lo mínimo en el laboratorio del smoke.
+    def equipment_shelfobject(self):
+        from laboratory.models import Object, ShelfObject
+
+        return ShelfObject.objects.filter(in_where_laboratory_id=self.lab_pk, object__type=Object.EQUIPMENT).first()
+
+    def equipment_upload(self):
+        from laboratory.models import Shelf, TemporalUploadEquipment
+
+        shelf = Shelf.objects.filter(furniture__labroom__laboratory_id=self.lab_pk).first()
+        if shelf is None:
+            raise SkipRoute("el laboratorio de la fixture no tiene estantes")
+        return TemporalUploadEquipment.objects.get_or_create(
+            laboratory_id=self.lab_pk, shelf=shelf, kind="inventory",
+            defaults={"data": [{"row": 2, "internal_code": "LB-1", "name": "Balanza"}]},
+        )[0]
+
+    def control_point(self):
+        from laboratory.models import ControlMethod, ControlPoint
+
+        shelfobject = self.equipment_shelfobject()
+        if shelfobject is None:
+            raise SkipRoute("el laboratorio de la fixture no tiene equipos")
+        method = ControlMethod.objects.get_or_create(name="Smoke", defaults={"organization_id": self.org_pk})[0]
+        return ControlPoint.objects.get_or_create(
+            shelfobject=shelfobject, name="P1", defaults={"method": method, "organization_id": self.org_pk}
+        )[0]
 
 
 class ReportUrlSmokeTest(UrlSmokeMixin, TestCase):

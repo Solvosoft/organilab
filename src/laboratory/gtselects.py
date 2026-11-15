@@ -1,4 +1,7 @@
-from auth_and_perms.organization_utils import user_is_allowed_on_organization
+from auth_and_perms.organization_utils import (
+    user_is_allowed_on_organization,
+    organization_can_change_laboratory,
+)
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
@@ -670,7 +673,14 @@ class OrganizationProviderslLookup(BaseSelect2View):
         queryset = super().get_queryset()
 
         if self.org:
-            queryset = queryset.filter(laboratory__organization=self.org).distinct()
+            # Con laboratorio, se suman sus proveedores aunque sea un laboratorio
+            # compartido que pertenece a otra organización.
+            lab_pk = self.request.GET.get("laboratory", "")
+            laboratory = Laboratory.objects.filter(pk=lab_pk).first() if lab_pk.isdigit() else None
+            if laboratory and organization_can_change_laboratory(laboratory, self.org):
+                queryset = queryset & Provider.objects.for_laboratory(self.org, laboratory)
+            else:
+                queryset = queryset.filter(laboratory__organization=self.org).distinct()
         else:
             queryset = queryset.none()
 

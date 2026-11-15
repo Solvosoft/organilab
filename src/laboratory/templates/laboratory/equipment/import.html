@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans 'Import equipment' %}{% endblock %}
+{% block content %}
+<div class="offset-md-2 col-md-8">
+	<div class="page-header text-center"><h3>{% trans 'Import equipment from a spreadsheet' %}</h3></div>
+	<p>{% blocktrans trimmed %}
+		The columns are recognized by their headers, not by their position. Equipment already registered in
+		this laboratory with the same internal code is updated instead of duplicated, and an empty cell never
+		erases registered data. You will review every row before anything is saved.
+	{% endblocktrans %}</p>
+	<p><a href="{% url 'laboratory:equipment_import_template' org_pk lab_pk %}" class="btn btn-sm btn-outline-info">
+		<i class="fa fa-download"></i> {% trans 'Download the inventory template' %}</a></p>
+	<form method="post" class="form" autocomplete="off">
+		{% csrf_token %}
+		{{ form.as_horizontal }}
+		<button type="submit" class="btn btn-success float-end">{% trans 'Read spreadsheet' %}</button>
+	</form>
+</div>
+{% endblock %}
+{% block js %}
+{{ block.super }}
+{{ form.media }}
+{% endblock %}

@@ -30,6 +30,7 @@ from auth_and_perms.organization_utils import (
     organization_can_change_laboratory,
 )
 from auth_and_perms.views.user_org_creation import set_rol_administrator_on_org
+from djgentelella.permission_management import AllPermissionByAction
 from laboratory.api import serializers, filterset
 
 from laboratory.api.filterset import (
@@ -570,9 +571,12 @@ class EquipmentManagementViewset(AuthAllPermBaseObjectManagement):
         "update": ["laboratory.can_edit_equipment_material", "laboratory.view_object"],
         "destroy": ["laboratory.can_delete_equipment_material", "laboratory.view_object"],
         "retrieve": ["laboratory.view_object"],
+        "detail_template": ["laboratory.view_object"],
+        "get_values_for_update": ["laboratory.can_edit_equipment_material", "laboratory.view_object"],
     }
 
-    permission_classes = (PermissionByLaboratoryInOrganization,)
+    # Sin AllPermissionByAction el diccionario ``perms`` no se aplicaba.
+    permission_classes = (AllPermissionByAction, PermissionByLaboratoryInOrganization)
 
     queryset = Object.objects.filter(type=Object.EQUIPMENT)
     pagination_class = LimitOffsetPagination

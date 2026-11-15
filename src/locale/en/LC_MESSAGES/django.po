@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-13 23:28-0600\n"
+"POT-Creation-Date: 2026-11-15 15:39-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -1380,9 +1380,6 @@ msgstr ""
 msgid "Disabled child organizations for %(org)r"
 msgstr ""
 
-msgid "Organization Management"
-msgstr ""
-
 msgid "ID Card"
 msgstr ""
 
@@ -2174,6 +2171,9 @@ msgstr ""
 msgid "Request rejected."
 msgstr ""
 
+msgid "Equipment due activities"
+msgstr ""
+
 msgid "Invalid format in shelf dataconfig "
 msgstr ""
 
@@ -2190,6 +2190,310 @@ msgid "The column does not exist"
 msgstr ""
 
 msgid "The column still contains shelves"
+msgstr ""
+
+#, python-format
+msgid "%(activity)s of %(equipment)s is overdue since %(date)s."
+msgstr ""
+
+#, python-format
+msgid "%(activity)s of %(equipment)s is due on %(date)s."
+msgstr ""
+
+msgid "Program created"
+msgstr ""
+
+msgid "Program updated"
+msgstr ""
+
+msgid "Program deleted"
+msgstr ""
+
+msgid "Verification created"
+msgstr ""
+
+msgid "Verification updated"
+msgstr ""
+
+msgid "Verification deleted"
+msgstr ""
+
+msgid "Failure registered"
+msgstr ""
+
+msgid "Failure updated"
+msgstr ""
+
+msgid "Failure deleted"
+msgstr ""
+
+msgid "Document added"
+msgstr ""
+
+msgid "Document updated"
+msgstr ""
+
+msgid "Document deleted"
+msgstr ""
+
+msgid "Control method created"
+msgstr ""
+
+msgid "Control method updated"
+msgstr ""
+
+msgid "Control method deleted"
+msgstr ""
+
+msgid "The method belongs to another organization."
+msgstr ""
+
+msgid "The method is used by control points."
+msgstr ""
+
+msgid "Control point created"
+msgstr ""
+
+msgid "Control point updated"
+msgstr ""
+
+msgid "Control point deleted"
+msgstr ""
+
+msgid "Control record created"
+msgstr ""
+
+msgid "Control record updated"
+msgstr ""
+
+msgid "Control record deleted"
+msgstr ""
+
+msgid "UCL"
+msgstr ""
+
+msgid "CL"
+msgstr ""
+
+msgid "LCL"
+msgstr ""
+
+msgid "Individuals chart"
+msgstr ""
+
+msgid "Means chart"
+msgstr ""
+
+msgid "Corrected value"
+msgstr ""
+
+msgid "Corrected mean"
+msgstr ""
+
+msgid "Moving range chart"
+msgstr ""
+
+msgid "Ranges chart"
+msgstr ""
+
+msgid "Moving range"
+msgstr ""
+
+msgid "Range"
+msgstr ""
+
+#, python-format
+msgid "This control point needs %(n)s readings per record."
+msgstr ""
+
+msgid "Every reading must be a number."
+msgstr ""
+
+msgid ""
+"The reference period does not have enough records to calculate the limits."
+msgstr ""
+
+msgid "outside the control limits"
+msgstr ""
+
+msgid "outside the acceptance criterion"
+msgstr ""
+
+#, python-format
+msgid "%(point)s of %(equipment)s on %(date)s is %(reasons)s."
+msgstr ""
+
+msgid " and "
+msgstr ""
+
+msgid "Out of control or acceptance"
+msgstr ""
+
+msgid "Equipment control charts"
+msgstr ""
+
+msgid "Enter a valid date."
+msgstr ""
+
+msgid "Location and status"
+msgstr ""
+
+msgid "Specifications"
+msgstr ""
+
+msgid "Reception"
+msgstr ""
+
+msgid "Responsibility"
+msgstr ""
+
+msgid "Decommission"
+msgstr ""
+
+msgid "Readings"
+msgstr ""
+
+msgid ""
+"Separate the readings with a semicolon or a space, e.g. 5.00; 4.99; 5.01"
+msgstr ""
+
+msgid "Reference period from"
+msgstr ""
+
+msgid "Reference period to"
+msgstr ""
+
+msgid "Notes"
+msgstr ""
+
+msgid "Equipment inventory (one header row)"
+msgstr ""
+
+msgid "Equipment program PT-05 R-10 (calibration and maintenance)"
+msgstr ""
+
+msgid "Spreadsheet (.xlsx)"
+msgstr ""
+
+msgid "Format"
+msgstr ""
+
+msgid "Sheet"
+msgstr ""
+
+msgid "Leave empty to use the sheet with the most recognized rows."
+msgstr ""
+
+msgid "Destination shelf"
+msgstr ""
+
+msgid ""
+"New equipment is placed here; the spreadsheet location is kept as the "
+"specific physical location."
+msgstr ""
+
+msgid "Only .xlsx or .xlsm files are allowed."
+msgstr ""
+
+msgid "Internal code"
+msgstr ""
+
+msgid "Equipment"
+msgstr ""
+
+msgid "Brand"
+msgstr ""
+
+msgid "Model"
+msgstr ""
+
+msgid "Serial number"
+msgstr ""
+
+msgid "Asset number"
+msgstr ""
+
+msgid "Location"
+msgstr ""
+
+msgid "Responsible / custodian"
+msgstr ""
+
+msgid "Decommissioned"
+msgstr ""
+
+msgid "Calibration date"
+msgstr ""
+
+msgid "Next calibration"
+msgstr ""
+
+msgid "Conformity"
+msgstr ""
+
+msgid "Maintenance executed on"
+msgstr ""
+
+msgid "Invalid maintenance data."
+msgstr ""
+
+msgid "The next calibration must be after the calibration date."
+msgstr ""
+
+msgid ""
+"The spreadsheet does not register an executed maintenance for this equipment."
+msgstr ""
+
+msgid "Marked as withdrawn in the imported spreadsheet."
+msgstr ""
+
+msgid "Imported from the equipment program"
+msgstr ""
+
+#, python-format
+msgid "Activities: %s"
+msgstr ""
+
+msgid "No sheet with the selected format and equipment rows was found."
+msgstr ""
+
+#, python-format
+msgid ""
+"Import finished: %(created)s equipment created, %(updated)s updated, "
+"%(calibrations)s calibrations, %(maintenances)s maintenances and %(plans)s "
+"programs registered."
+msgstr ""
+
+msgid "Equipment program"
+msgstr ""
+
+msgid "Equipment life record"
+msgstr ""
+
+msgid "Inactive"
+msgstr ""
+
+#, fuzzy
+#| msgid "Otro datos"
+msgid "Up to date"
+msgstr "Other data"
+
+msgid "Due soon"
+msgstr ""
+
+msgid "Expired"
+msgstr ""
+
+msgid "The return to service cannot be before the failure."
+msgstr ""
+
+msgid "A means and ranges chart needs between 2 and 10 readings per record."
+msgstr ""
+
+msgid "Enter the readings."
+msgstr ""
+
+msgid "The end of the period must be after its start."
 msgstr ""
 
 msgid "Regent"
@@ -2220,9 +2524,6 @@ msgid "Last Name"
 msgstr ""
 
 msgid "Id Card"
-msgstr ""
-
-msgid "Location"
 msgstr ""
 
 msgid "Select Furniture"
@@ -2265,9 +2566,6 @@ msgid "Reactive"
 msgstr ""
 
 msgid "Material"
-msgstr ""
-
-msgid "Equipment"
 msgstr ""
 
 msgid "Use manual"
@@ -2372,9 +2670,7 @@ msgstr ""
 msgid "Density"
 msgstr ""
 
-msgid ""
-"It belongs to the regulations of decree 44741, only use dot like 0.344 on "
-"decimal"
+msgid "Density in g/mL (decree 44741). Use a dot for decimals, e.g. 0.789."
 msgstr ""
 
 msgid "Substance Name"
@@ -2546,9 +2842,6 @@ msgid "Comma separed name"
 msgstr ""
 
 msgid "Type"
-msgstr ""
-
-msgid "Model"
 msgstr ""
 
 msgid "Serie"
@@ -2751,6 +3044,84 @@ msgstr ""
 msgid "First date use"
 msgstr ""
 
+msgid "In service"
+msgstr ""
+
+msgid "Out of service"
+msgstr ""
+
+msgid "In maintenance"
+msgstr ""
+
+msgid "In calibration"
+msgstr ""
+
+msgid "Unique laboratory code of the equipment, e.g. LB-127"
+msgstr ""
+
+msgid "Institutional asset number"
+msgstr ""
+
+msgid "Photo"
+msgstr ""
+
+msgid "Associated software"
+msgstr ""
+
+msgid "Software version"
+msgstr ""
+
+msgid "Firmware version"
+msgstr ""
+
+msgid "Magnitude"
+msgstr ""
+
+msgid "Specific physical location"
+msgstr ""
+
+msgid "Equipment status"
+msgstr ""
+
+msgid "Use restriction"
+msgstr ""
+
+msgid "Resolution"
+msgstr ""
+
+msgid "Working range"
+msgstr ""
+
+msgid "Accuracy / tolerance"
+msgstr ""
+
+msgid "Acceptance criteria"
+msgstr ""
+
+msgid "Metrological requirements for use"
+msgstr ""
+
+msgid "Evidence that it meets specifications before use"
+msgstr ""
+
+msgid "Acceptance responsible"
+msgstr ""
+
+msgid "Personnel authorized to use it"
+msgstr ""
+
+msgid "Access restrictions"
+msgstr ""
+
+msgid "Decommission date"
+msgstr ""
+
+msgid "Decommission reason"
+msgstr ""
+
+msgid "Final disposition"
+msgstr ""
+
 msgid "Maintenance date"
 msgstr ""
 
@@ -2763,10 +3134,67 @@ msgstr ""
 msgid "Observation"
 msgstr ""
 
+msgid "Preventive"
+msgstr ""
+
+msgid "Corrective"
+msgstr ""
+
+msgid "Cleaning"
+msgstr ""
+
+msgid "Maintenance type"
+msgstr ""
+
+msgid "Program"
+msgstr ""
+
+msgid "Activities performed"
+msgstr ""
+
+msgid "Maintenance report"
+msgstr ""
+
+msgid "Affects the results of the last calibration"
+msgstr ""
+
+msgid "Details of any damage, malfunction, modification or repair"
+msgstr ""
+
 msgid "Name of Calibrator"
 msgstr ""
 
-msgid "Calibration date"
+msgid "Conforming"
+msgstr ""
+
+msgid "Non-conforming"
+msgstr ""
+
+msgid "Calibration laboratory"
+msgstr ""
+
+msgid "Calibration certificate"
+msgstr ""
+
+msgid "Certificate number"
+msgstr ""
+
+msgid "Calibration results"
+msgstr ""
+
+msgid "Uncertainty"
+msgstr ""
+
+msgid "Corrections / correction factors"
+msgstr ""
+
+msgid "Adjustments made"
+msgstr ""
+
+msgid "Acceptance criterion"
+msgstr ""
+
+msgid "If empty, it is calculated from the calibration program"
 msgstr ""
 
 msgid "Initial date"
@@ -2788,6 +3216,246 @@ msgid "Place"
 msgstr ""
 
 msgid "Contract"
+msgstr ""
+
+msgid "Calibration"
+msgstr ""
+
+msgid "Intermediate check"
+msgstr ""
+
+msgid "Preventive maintenance"
+msgstr ""
+
+msgid "Other"
+msgstr ""
+
+msgid "Days"
+msgstr ""
+
+msgid "Months"
+msgstr ""
+
+msgid "Activity"
+msgstr ""
+
+msgid "Optional, e.g. the type of intermediate check"
+msgstr ""
+
+msgid "Interval"
+msgstr ""
+
+msgid "Interval unit"
+msgstr ""
+
+msgid "Program start date"
+msgstr ""
+
+msgid "First due date when there are no records yet"
+msgstr ""
+
+msgid "Days of notice before the due date"
+msgstr ""
+
+msgid "Responsible"
+msgstr ""
+
+msgid "Is active"
+msgstr ""
+
+msgid "Equipment activity program"
+msgstr ""
+
+msgid "Equipment activity programs"
+msgstr ""
+
+msgid "Verification date"
+msgstr ""
+
+msgid "Verification type"
+msgstr ""
+
+#, fuzzy
+#| msgid "Resumen"
+msgid "Result"
+msgstr "Summary"
+
+msgid "Attached record"
+msgstr ""
+
+msgid "Intermediate checks"
+msgstr ""
+
+msgid "Failure date"
+msgstr ""
+
+msgid "Description of the damage or malfunction"
+msgstr ""
+
+msgid "Equipment taken out of service"
+msgstr ""
+
+msgid ""
+"While it is not returned to service the equipment is marked as out of service"
+msgstr ""
+
+msgid "Repair performed"
+msgstr ""
+
+msgid "Modifications made"
+msgstr ""
+
+msgid "Return to service date"
+msgstr ""
+
+msgid "Verification before using it again"
+msgstr ""
+
+msgid "Impact assessment on previous results"
+msgstr ""
+
+msgid "Report"
+msgstr ""
+
+msgid "Failure and repair"
+msgstr ""
+
+msgid "Failures and repairs"
+msgstr ""
+
+msgid "Document type"
+msgstr ""
+
+msgid "Version"
+msgstr ""
+
+msgid "File"
+msgstr ""
+
+msgid "Valid from"
+msgstr ""
+
+msgid "Equipment document"
+msgstr ""
+
+msgid "Equipment documents"
+msgstr ""
+
+msgid "Means and ranges (X̄-R)"
+msgstr ""
+
+msgid "Individuals and moving range (I-MR)"
+msgstr ""
+
+msgid "Chart type"
+msgstr ""
+
+msgid "Readings per record (n)"
+msgstr ""
+
+msgid "Between 2 and 10 for X̄-R; always 1 for I-MR"
+msgstr ""
+
+msgid "E2 for I-MR. Empty: standard table value"
+msgstr ""
+
+msgid "Decimal places"
+msgstr ""
+
+msgid "Control method"
+msgstr ""
+
+msgid "Control methods"
+msgstr ""
+
+msgid "Nominal value"
+msgstr ""
+
+msgid "Reference standard or material"
+msgstr ""
+
+msgid "E.g. the reference weights and their certificate"
+msgstr ""
+
+msgid "Correction"
+msgstr ""
+
+msgid ""
+"Subtracted from each mean, e.g. the indication error of the reference "
+"standard"
+msgstr ""
+
+msgid "Acceptance tolerance (±)"
+msgstr ""
+
+msgid ""
+"Maximum allowed difference between the corrected mean and the nominal value"
+msgstr ""
+
+msgid "Control point"
+msgstr ""
+
+msgid "Control points"
+msgstr ""
+
+msgid "Records in the reference period"
+msgstr ""
+
+msgid "Center line"
+msgstr ""
+
+msgid "Upper control limit"
+msgstr ""
+
+msgid "Lower control limit"
+msgstr ""
+
+msgid "Range center line"
+msgstr ""
+
+msgid "Range upper limit"
+msgstr ""
+
+msgid "Range lower limit"
+msgstr ""
+
+msgid "Constants used"
+msgstr ""
+
+msgid "Current"
+msgstr ""
+
+msgid "Control limits"
+msgstr ""
+
+msgid "Date"
+msgstr ""
+
+msgid "Mean"
+msgstr ""
+
+msgid "Limits applied"
+msgstr ""
+
+msgid "Out of control"
+msgstr ""
+
+msgid "Out of acceptance criterion"
+msgstr ""
+
+msgid "Deviation detected"
+msgstr ""
+
+msgid "Action taken"
+msgstr ""
+
+msgid "Recording the action resolves the alert of this record"
+msgstr ""
+
+msgid "Control record"
+msgstr ""
+
+msgid "Control records"
 msgstr ""
 
 msgid "Base unit"
@@ -2862,9 +3530,6 @@ msgstr ""
 msgid "Area"
 msgstr ""
 
-msgid "Responsible"
-msgstr ""
-
 msgid ""
 "Study centers, hospitals, transportation terminals, gas stations, or others "
 "that might be affected in the event of an emergency."
@@ -2901,9 +3566,6 @@ msgid "Laboratory Send"
 msgstr ""
 
 msgid "Laboratory Received"
-msgstr ""
-
-msgid "Report"
 msgstr ""
 
 msgid "Previous balance"
@@ -3076,6 +3738,9 @@ msgid "Container Options"
 msgstr ""
 
 msgid "Search by name"
+msgstr ""
+
+msgid "Marked as discard"
 msgstr ""
 
 msgid "Reason"
@@ -3253,6 +3918,9 @@ msgstr ""
 msgid "Initial date cannot be greater than final date."
 msgstr ""
 
+msgid "Another equipment of the organization already uses this code."
+msgstr ""
+
 msgid "Shelf object is not an equipment"
 msgstr ""
 
@@ -3395,6 +4063,9 @@ msgstr ""
 
 #, python-format
 msgid "Moved shelfobject '%(name)s' to shelf '%(shelf)s'"
+msgstr ""
+
+msgid "Location change"
 msgstr ""
 
 #, python-format
@@ -3597,16 +4268,120 @@ msgstr ""
 msgid "Substance"
 msgstr ""
 
-msgid "Date"
-msgstr ""
-
 msgid "Limit material of  the shelf"
 msgstr ""
 
 msgid "Laboratory Management"
 msgstr ""
 
+msgid ""
+"Chart type, readings per record and statistical constants for each kind of "
+"equipment or procedure. Empty constants take the standard table value for "
+"the number of readings; every value can be edited. Methods of the parent "
+"organizations are shared."
+msgstr ""
+
+msgid "Create control method"
+msgstr ""
+
+msgid "Edit control method"
+msgstr ""
+
+msgid "Control chart"
+msgstr ""
+
+msgid "Current limits"
+msgstr ""
+
+msgid "Reference period"
+msgstr ""
+
+msgid ""
+"There are no limits yet: register the reference period and calculate them."
+msgstr ""
+
+msgid "Calculate limits"
+msgstr ""
+
+msgid "Calculate and apply"
+msgstr ""
+
+msgid "Limits history"
+msgstr ""
+
+msgid "Register control"
+msgstr ""
+
+msgid "Edit control record"
+msgstr ""
+
+msgid "Import equipment"
+msgstr ""
+
+msgid "Import equipment from a spreadsheet"
+msgstr ""
+
+msgid ""
+"The columns are recognized by their headers, not by their position. "
+"Equipment already registered in this laboratory with the same internal code "
+"is updated instead of duplicated, and an empty cell never erases registered "
+"data. You will review every row before anything is saved."
+msgstr ""
+
+msgid "Download the inventory template"
+msgstr ""
+
+msgid "Read spreadsheet"
+msgstr ""
+
+msgid "Review equipment import"
+msgstr ""
+
+#, python-format
+msgid "Sheet «%(sheet)s»: %(count)s rows."
+msgstr ""
+
+msgid "Uncheck the rows you do not want to import and correct what is needed."
+msgstr ""
+
+#, python-format
+msgid "Already used by «%(name)s»: its sheet will be updated."
+msgstr ""
+
+msgid "Spreadsheet"
+msgstr ""
+
+msgid "Generated on"
+msgstr ""
+
+msgid "Last done"
+msgstr ""
+
+msgid "Next due"
+msgstr ""
+
+msgid "No records"
+msgstr ""
+
+msgid "Calibrations"
+msgstr ""
+
+msgid "Maintenance log"
+msgstr ""
+
+msgid "Documents"
+msgstr ""
+
+msgid "Training"
+msgstr ""
+
+msgid "History"
+msgstr ""
+
 msgid "Equipment List"
+msgstr ""
+
+msgid "Equipment program (PT-05)"
 msgstr ""
 
 msgid "Create equipment"
@@ -4220,22 +4995,33 @@ msgstr ""
 msgid "QR object"
 msgstr ""
 
-msgid "Click to edit equipment"
+msgid "Calibration valid until"
+msgstr ""
+
+msgid "Calibration due on"
+msgstr ""
+
+msgid "Calibration expired on"
+msgstr ""
+
+msgid "next"
+msgstr ""
+
+msgid "Equipment sheet"
+msgstr ""
+
+msgid "Control charts"
 msgstr ""
 
 msgid "Logs"
 msgstr ""
 
-msgid "Calibrations"
-msgstr ""
-
-msgid "Maintenance log"
-msgstr ""
-
-msgid "Training"
-msgstr ""
-
 msgid "Guarantees"
+msgstr ""
+
+msgid ""
+"Control points of the equipment (e.g. the masses checked on a balance). Open "
+"the chart of each point to register its controls."
 msgstr ""
 
 msgid "Create maintenance"
@@ -4266,6 +5052,36 @@ msgid "Create training"
 msgstr ""
 
 msgid "Edit training"
+msgstr ""
+
+msgid "Create program"
+msgstr ""
+
+msgid "Edit program"
+msgstr ""
+
+msgid "Create intermediate check"
+msgstr ""
+
+msgid "Edit intermediate check"
+msgstr ""
+
+msgid "Register failure"
+msgstr ""
+
+msgid "Edit failure"
+msgstr ""
+
+msgid "Add document"
+msgstr ""
+
+msgid "Edit document"
+msgstr ""
+
+msgid "Create control point"
+msgstr ""
+
+msgid "Edit control point"
 msgstr ""
 
 msgid "Measurement Unit Base"
@@ -4474,6 +5290,9 @@ msgid "This field may not be null."
 msgstr ""
 
 msgid "Authentication credentials were not provided."
+msgstr ""
+
+msgid "User renatafg not allowed on organization Org MK "
 msgstr ""
 
 msgid "This field may not be blank."
@@ -4968,24 +5787,6 @@ msgstr ""
 msgid "Related file"
 msgstr ""
 
-msgid "Percentage over the average"
-msgstr ""
-
-msgid "Maximum value"
-msgstr ""
-
-msgid "Months without records"
-msgstr ""
-
-msgid "Unknown trigger."
-msgstr ""
-
-msgid "Enter a number."
-msgstr ""
-
-msgid "The threshold must be greater than zero."
-msgstr ""
-
 msgid "Deleted"
 msgstr ""
 
@@ -5162,9 +5963,6 @@ msgstr ""
 msgid "Invalid value for this parameter."
 msgstr ""
 
-msgid "Is active"
-msgstr ""
-
 msgid "Subject"
 msgstr ""
 
@@ -5172,21 +5970,6 @@ msgid "Notification setting"
 msgstr ""
 
 msgid "Notification settings"
-msgstr ""
-
-msgid "Informative"
-msgstr ""
-
-msgid "Medium"
-msgstr ""
-
-msgid "Critical"
-msgstr ""
-
-msgid "Process"
-msgstr ""
-
-msgid "Trigger"
 msgstr ""
 
 msgid "Notify roles"
@@ -5199,9 +5982,6 @@ msgid "Create pending task"
 msgstr ""
 
 msgid "Alert rules"
-msgstr ""
-
-msgid "Recipients"
 msgstr ""
 
 msgid "Alert event"
@@ -5274,6 +6054,12 @@ msgstr ""
 msgid ""
 "Leave empty to use the message of the global template. Django template "
 "syntax."
+msgstr ""
+
+msgid "Process"
+msgstr ""
+
+msgid "Trigger"
 msgstr ""
 
 msgid "Default of the process"
@@ -5409,9 +6195,6 @@ msgid "Administration"
 msgstr ""
 
 msgid "All Rights Reserved."
-msgstr ""
-
-msgid "Laboratory view (new)"
 msgstr ""
 
 msgid "user profile icon"
@@ -5738,9 +6521,6 @@ msgstr ""
 msgid "On screen"
 msgstr ""
 
-msgid "Format"
-msgstr ""
-
 msgid "All"
 msgstr ""
 
@@ -5789,7 +6569,10 @@ msgstr ""
 msgid "Generated"
 msgstr ""
 
-msgid "Object doesn't exists"
+msgid "Failed"
+msgstr ""
+
+msgid "Error generating the report"
 msgstr ""
 
 msgid "Detail of the process please do not close this window"
@@ -5834,6 +6617,15 @@ msgstr ""
 msgid "tons"
 msgstr ""
 
+msgid "Reactives without registered density"
+msgstr ""
+
+msgid "They are measured by volume and are not included in the total weight."
+msgstr ""
+
+msgid "No density"
+msgstr ""
+
 msgid "No shelf layout configured for this furniture."
 msgstr ""
 
@@ -5864,6 +6656,9 @@ msgstr ""
 msgid "Summary Map"
 msgstr ""
 
+msgid "No changes were recorded with the selected filters."
+msgstr ""
+
 msgid "Consecutive"
 msgstr ""
 
@@ -5883,6 +6678,15 @@ msgid "Update Precursor Report Values"
 msgstr ""
 
 msgid "Delete Precursor Report Values"
+msgstr ""
+
+msgid "Laboratory or work center"
+msgstr ""
+
+msgid "Chemical substances inventory"
+msgstr ""
+
+msgid "No records."
 msgstr ""
 
 msgid "seconds"
@@ -5961,21 +6765,6 @@ msgstr ""
 msgid "ID Number"
 msgstr ""
 
-msgid "Classification"
-msgstr ""
-
-msgid "Criterion"
-msgstr ""
-
-msgid "Physical"
-msgstr ""
-
-msgid "Health"
-msgstr ""
-
-msgid "Environmental"
-msgstr ""
-
 msgid "Nominated"
 msgstr ""
 
@@ -6003,20 +6792,20 @@ msgstr ""
 msgid "Data not available"
 msgstr ""
 
-msgid "Totals by category"
+msgid "Classification"
 msgstr ""
 
-msgid "Details of the substances"
+msgid "Criterion"
 msgstr ""
 
-msgid "Físico"
-msgstr "Physical"
+msgid "Physical"
+msgstr ""
 
-msgid "Salud"
-msgstr "Health"
+msgid "Health"
+msgstr ""
 
-msgid "Ambiental"
-msgstr "Environmental"
+msgid "Environmental"
+msgstr ""
 
 msgid "Objects Report"
 msgstr ""
@@ -6199,6 +6988,10 @@ msgid ""
 "codes."
 msgstr ""
 
+#, python-format
+msgid "(%(part)s of %(total)s)"
+msgstr ""
+
 msgid "Container Capacity"
 msgstr ""
 
@@ -6212,6 +7005,15 @@ msgid "Maximum Annual Amount"
 msgstr ""
 
 msgid "Expiration date of the reagent"
+msgstr ""
+
+msgid "N/A"
+msgstr ""
+
+msgid "Coordinator name"
+msgstr ""
+
+msgid "Academic or Administrative Unit"
 msgstr ""
 
 msgid "Reserved product doesn't exists in this organization"
@@ -6515,9 +7317,6 @@ msgid "Hazards by category"
 msgstr ""
 
 msgid "IPER compliance"
-msgstr ""
-
-msgid "Current"
 msgstr ""
 
 msgid "Overdue"
@@ -6988,7 +7787,9 @@ msgstr "Environmental impact"
 msgid ""
 "Resultado de la implementación del Plan de Prevención, Preparación y "
 "Respuesta ante Accidentes Químicos."
-msgstr "Result of implementing the Chemical Accident Prevention, Preparedness and Response Plan."
+msgstr ""
+"Result of implementing the Chemical Accident Prevention, Preparedness and "
+"Response Plan."
 
 msgid ""
 "Medidas adoptadas para corregir la situación y para atenuar sus efectos."
@@ -7000,12 +7801,16 @@ msgstr "Recommendations"
 msgid ""
 "Recomendaciones que describan en detalle las medidas que se vayan a llevar a "
 "cabo para reducir el riesgo de que accidentes similares vuelvan a producirse."
-msgstr "Recommendations describing in detail the measures to be taken to reduce the risk of similar accidents happening again."
+msgstr ""
+"Recommendations describing in detail the measures to be taken to reduce the "
+"risk of similar accidents happening again."
 
 msgid ""
 "En caso de intoxicación adjuntar copia de la notificación realizada al "
 "Centro Nacional de Control de Intoxicaciones (CNCI)"
-msgstr "In case of poisoning, attach a copy of the notification sent to the National Poison Control Center (CNCI)"
+msgstr ""
+"In case of poisoning, attach a copy of the notification sent to the National "
+"Poison Control Center (CNCI)"
 
 msgid "Chemical"
 msgstr ""
@@ -7100,9 +7905,6 @@ msgid "On demand"
 msgstr ""
 
 msgid "Risk zone request"
-msgstr ""
-
-msgid "Version"
 msgstr ""
 
 msgid "Previous version"
@@ -7331,13 +8133,7 @@ msgstr ""
 msgid "Excel"
 msgstr ""
 
-msgid "No records."
-msgstr ""
-
 msgid "IPER — Risk follow-up"
-msgstr ""
-
-msgid "History"
 msgstr ""
 
 msgid "Dashboard"
@@ -7468,6 +8264,15 @@ msgstr "C3 threshold (t)"
 
 msgid "Ratio C3"
 msgstr "C3 ratio"
+
+msgid "Físico"
+msgstr "Physical"
+
+msgid "Salud"
+msgstr "Health"
+
+msgid "Ambiental"
+msgstr "Environmental"
 
 msgid "Regla cruzada Salud"
 msgstr "Health cross rule"
@@ -7663,9 +8468,6 @@ msgstr ""
 msgid "UIPA name"
 msgstr ""
 
-msgid "Brand"
-msgstr ""
-
 msgid "Danger indications"
 msgstr ""
 
@@ -7688,6 +8490,11 @@ msgid "Number CE"
 msgstr ""
 
 msgid "Molecular Weight"
+msgstr ""
+
+msgid ""
+"It belongs to the regulations of decree 44741, only use dot like 0.344 on "
+"decimal"
 msgstr ""
 
 msgid "Image representation"
@@ -8058,9 +8865,6 @@ msgid "Patron Name"
 msgstr ""
 
 msgid "CAS code"
-msgstr ""
-
-msgid "Notes"
 msgstr ""
 
 msgid "Especial Condition"

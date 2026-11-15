@@ -495,3 +495,11 @@ def update_sds_and_extract_data(
         "skipped": skipped,
         "errors": errors,
     }
+
+
+@app.task
+def check_equipment_due_activities():
+    """Evalúa las reglas de alerta de calibraciones, verificaciones y mantenimientos por vencer."""
+    from presentation.alerts import run_alert_rules
+
+    return run_alert_rules("laboratory.equipment_due")

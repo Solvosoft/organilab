@@ -44,6 +44,8 @@ class EditShelfobject(TestCase):
         )
         profile_permission.rol.add(create_status_rol)
         org = OrganizationStructure.objects.get(pk=1)
+        # Los roles autorizados se validan contra los de la organización raíz.
+        org.rol.add(create_status_rol)
         user_org = UserOrganization.objects.create(
             organization=org, user=self.user, type_in_organization=1
         )
@@ -247,3 +249,42 @@ class EditShelfobject(TestCase):
             json.loads(response.content)["status"][0] == _("This field is required.")
         )
         self.assertEqual(response.status_code, 400)
+
+    def test_rol_de_otra_organizacion_se_rechaza(self):
+        ajeno = Rol.objects.create(name="Rol ajeno", color="#000")
+        data = dict(self.data, authorized_roles_to_use_equipment=[ajeno.pk])
+        url = reverse(
+            "laboratory:api-shelfobject-edit-equipment-shelfobject",
+            kwargs={"org_pk": self.org_pk, "lab_pk": self.lab.pk, "pk": 13},
+        )
+        response = self.client.put(url, data=data, content_type="application/json")
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("authorized_roles_to_use_equipment", json.loads(response.content))
+
+    def test_campos_iso_y_baja(self):
+        url = reverse(
+            "laboratory:api-shelfobject-edit-equipment-shelfobject",
+            kwargs={"org_pk": self.org_pk, "lab_pk": self.lab.pk, "pk": 15},
+        )
+        data = dict(
+            self.data, shelfobject=15, internal_code="LB-127", brand="Senderpick", model="KW-089",
+            serial_number="S-1", physical_location="Mesa de balanzas", resolution="0.01 g",
+            decommission_date="01/11/2026", decommission_reason="Fuera de uso",
+        )
+        response = self.client.put(url, data=data, content_type="application/json")
+        self.assertEqual(response.status_code, 200, response.content)
+        ficha = ShelfObjectEquipmentCharacteristics.objects.get(shelfobject_id=15)
+        self.assertEqual(ficha.internal_code, "LB-127")
+        self.assertEqual(ficha.physical_location, "Mesa de balanzas")
+        self.assertEqual(ficha.equipment_status, ShelfObjectEquipmentCharacteristics.DECOMMISSIONED)
+
+    def test_codigo_interno_repetido_en_la_organizacion(self):
+        ShelfObjectEquipmentCharacteristics.objects.filter(shelfobject_id=15).update(internal_code="LB-127")
+        url = reverse(
+            "laboratory:api-shelfobject-edit-equipment-shelfobject",
+            kwargs={"org_pk": self.org_pk, "lab_pk": self.lab.pk, "pk": 13},
+        )
+        data = dict(self.data, internal_code="lb-127")
+        response = self.client.put(url, data=data, content_type="application/json")
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("internal_code", json.loads(response.content))

@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 import json
 
 from django.core import mail
@@ -36,8 +37,8 @@ class AlertTestCase(PlatformTestCase):
             notification_code="platform-test-alert",
         )
         EmailTemplate.objects.create(code="platform-test-alert", subject="Alerta", message="{{ message }}")
-        cls.percent = Catalog.objects.get(key=alerts.KEY_ALERT_TRIGGER, description=alerts.TRIGGER_PERCENT)
-        cls.absolute = Catalog.objects.get(key=alerts.KEY_ALERT_TRIGGER, description=alerts.TRIGGER_ABSOLUTE)
+        cls.percent = alerts.TRIGGER_PERCENT
+        cls.absolute = alerts.TRIGGER_ABSOLUTE
         cls.receiver = make_role_user("receptor", cls.child, ROLES["analista_ambiental"])
         cls.receiver.email = "receptor@example.com"
         cls.receiver.save()
@@ -53,8 +54,10 @@ class AlertTestCase(PlatformTestCase):
 
 class FireAlertTest(AlertTestCase):
 
-    def test_seeded_triggers(self):
-        self.assertEqual(Catalog.objects.filter(key=alerts.KEY_ALERT_TRIGGER).count(), 3)
+    def test_triggers_are_registered_in_code(self):
+        codes = dict(alerts.trigger_choices())
+        for code in (alerts.TRIGGER_PERCENT, alerts.TRIGGER_ABSOLUTE, alerts.TRIGGER_MISSING, alerts.TRIGGER_DUE):
+            self.assertIn(code, codes)
 
     def test_fire_notifies_roles_by_email_task_and_bell(self):
         rule = self.make_rule(level=AlertRule.CRITICAL)
@@ -66,6 +69,23 @@ class FireAlertTest(AlertTestCase):
         self.assertEqual(notification.message, "Consumo alto")
         self.assertEqual(PendingTask.objects.filter(name="Consumo alto").count(), 1)
         self.assertTrue(Notification.objects.filter(user=self.receiver, description="Consumo alto").exists())
+
+    def test_dedupe_key_fires_once_and_resolving_finishes_the_task(self):
+        rule = self.make_rule(level=AlertRule.MEDIUM)
+        rule.notify_roles.add(require_role(self, "analista_ambiental"))
+        first = alerts.fire_alert(rule, "Calibración por vencer", dedupe_key="equipo:1")
+        again = alerts.fire_alert(rule, "Calibración por vencer", dedupe_key="equipo:1")
+        self.assertEqual(first.pk, again.pk)
+        self.assertEqual(EmailNotification.objects.count(), 1)
+        task = PendingTask.objects.get(name="Calibración por vencer")
+        self.assertEqual(task.status, PendingTask.PENDING)
+        closed = alerts.resolve_alert(first, user=self.user)
+        self.assertEqual([event.pk for event in closed], [first.pk])
+        task.refresh_from_db()
+        self.assertEqual(task.status, PendingTask.FINISHED)
+        first.refresh_from_db()
+        self.assertIsNotNone(first.resolved_at)
+        self.assertEqual(first.organization, self.child)
 
     def test_non_critical_does_not_ring_the_bell(self):
         rule = self.make_rule(level=AlertRule.MEDIUM, create_task=False)
@@ -83,9 +103,9 @@ class FireAlertTest(AlertTestCase):
         self.assertEqual(AlertEvent.objects.count(), 1)
 
     def test_threshold_validation(self):
-        self.assertEqual(alerts.validate_threshold(alerts.TRIGGER_MISSING, "2"), {"months": 2})
-        with self.assertRaises(ValueError):
-            alerts.validate_threshold(alerts.TRIGGER_PERCENT, "-5")
+        self.assertEqual(alerts.validate_threshold(alerts.TRIGGER_MISSING, {"periods": "2"}), {"periods": 2})
+        with self.assertRaises(ValidationError):
+            alerts.validate_threshold(alerts.TRIGGER_PERCENT, {"percent": "-5"})
 
 
 class AlertRuleAPITest(AlertTestCase):
@@ -94,7 +114,7 @@ class AlertRuleAPITest(AlertTestCase):
         return reverse("platform:api-alertrule-" + name, kwargs={"org_pk": self.child.pk, **kwargs})
 
     def payload(self, **kwargs):
-        data = {"name": "Agua alta", "process": PROCESS, "trigger": self.percent.pk, "percent": "25",
+        data = {"name": "Agua alta", "process": PROCESS, "trigger": self.percent, "percent": "25",
                 "level": "critical", "notification_code": "", "notify_roles": [],
                 "notify_responsible": True, "create_task": True, "is_active": True}
         data.update(kwargs)
@@ -111,7 +131,7 @@ class AlertRuleAPITest(AlertTestCase):
         self.assertEqual(row["process"]["text"], "Proceso de prueba")
 
     def test_trigger_must_apply_to_process(self):
-        response = self.client.post(self.url("list"), data=json.dumps(self.payload(trigger=self.absolute.pk, value="3")),
+        response = self.client.post(self.url("list"), data=json.dumps(self.payload(trigger=self.absolute, value="3")),
                                     content_type="application/json")
         self.assertEqual(response.status_code, 400)
         self.assertIn("trigger", response.json())

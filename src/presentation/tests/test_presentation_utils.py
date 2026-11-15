@@ -1,3 +1,5 @@
+from django.core.exceptions import ValidationError
+from djgentelella.alerts.registry import ALERT_PROCESSES
 """Piezas sueltas de presentation: tareas Celery, sonda de salud, retroalimentación,
 modelos, parámetros, eje de roles, admin, QR y alertas."""
 import datetime
@@ -112,7 +114,7 @@ class StrDeModelosTest(TestCase):
         step = TutorialStep.objects.create(tutorial=tutorial, order=1, step_key="a", title="Paso", content="x")
         progress = TutorialProgress.objects.create(user=user, tutorial=tutorial)
         rule = AlertRule.objects.create(organization=organization, name="Regla", process="p",
-                                        trigger=alert_base.Catalog.objects.filter(key=alerts.KEY_ALERT_TRIGGER).first())
+                                        trigger=alerts.TRIGGER_PERCENT)
         self.assertEqual(str(FeedbackEntry(title="Falla")), "Falla")
         self.assertEqual(str(Donation(name="Ana", amount="10")), "Ana: $10")
         self.assertEqual(str(tutorial), "Inicio")
@@ -213,8 +215,8 @@ class CodigoQRTest(TestCase):
 class AlertasBordesTest(alert_base.AlertTestCase):
 
     def test_disparador_desconocido(self):
-        with self.assertRaises(ValueError):
-            alerts.validate_threshold("Desconocido", "5")
+        with self.assertRaises(ValidationError):
+            alerts.validate_threshold("Desconocido", {"value": "5"})
 
     def test_regla_sin_creador_no_crea_tarea(self):
         rule = self.make_rule(created_by=None, create_task=True)
@@ -232,11 +234,13 @@ class AlertasBordesTest(alert_base.AlertTestCase):
         alerts.register_alert_process("platform.sano", label="Sano",
                                       evaluator="presentation.tests.test_presentation_utils.evaluador_sano",
                                       triggers=(alerts.TRIGGER_PERCENT,))
-        self.addCleanup(alerts.ALERT_PROCESSES.pop, "platform.roto")
-        self.addCleanup(alerts.ALERT_PROCESSES.pop, "platform.sano")
+        self.addCleanup(ALERT_PROCESSES.pop, "platform.roto")
+        self.addCleanup(ALERT_PROCESSES.pop, "platform.sano")
         self.make_rule(process="platform.roto")
         sana = self.make_rule(process="platform.sano", name="Sana")
-        with mock.patch.object(alerts.logger, "exception") as exception:
+        from djgentelella.alerts import engine
+
+        with mock.patch.object(engine.logger, "exception") as exception:
             self.assertEqual(alerts.run_alert_rules("platform.roto"), 1)
         exception.assert_called_once()
         self.assertEqual(alerts.run_alert_rules("platform.sano"), 1)

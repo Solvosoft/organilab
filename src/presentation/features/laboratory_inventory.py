@@ -425,4 +425,113 @@ FEATURES = (
             ),
         ),
     ),
+    Feature(
+        id="INV-09",
+        name="Gestionar equipos según ISO/IEC 17025 (§6.4)",
+        module="laboratory",
+        kind="ui",
+        description=(
+            "La ficha de cada equipo con lo que pide la norma: identificación, ubicación y "
+            "su historial, estado y etiqueta visual, especificaciones, recepción, "
+            "responsables y baja. Además, el programa de calibraciones, verificaciones "
+            "intermedias, mantenimientos y limpiezas; los certificados; las fallas con su "
+            "evaluación de impacto; y los documentos. Ver plans/EQUIPOS_ISO17025_PLAN.md."
+        ),
+        priority="P1",
+        steps=(
+            Step(
+                id="ficha",
+                name="Completar la ficha ISO del equipo y registrar sus actividades",
+                actors=OPERADORES,
+                routes=("laboratory:equipment_shelfobject_detail",),
+                # La vista exige change_shelfobject + view_shelfobject con
+                # all_permission_required, que el guardián no sabe leer.
+                transition="programa → registro (calibración, verificación, mantenimiento) → próxima fecha",
+                source="src/laboratory/views/shelfobject.py view_equipment_shelfobject_detail, "
+                       "src/laboratory/equipment/api.py",
+            ),
+            Step(
+                id="importar",
+                name="Importar equipos desde el inventario o el programa PT-05 R-10 (Excel)",
+                actors=OPERADORES,
+                routes=("laboratory:equipment_import", "laboratory:equipment_import_review",
+                        "laboratory:equipment_import_template"),
+                permissions=("laboratory.add_shelfobject", "laboratory.add_object"),
+                transition="Excel → revisión fila por fila → equipos, calibraciones y programas",
+                source="src/laboratory/equipment/import_views.py, src/laboratory/equipment/importer.py",
+            ),
+            Step(
+                id="reportes",
+                name="Exportar el programa anual (PT-05) y la hoja de vida del equipo",
+                actors=CONSULTA,
+                routes=("laboratory:equipment_program_export", "laboratory:equipment_life_record_pdf"),
+                permissions=("laboratory.view_shelfobject",),
+                source="src/laboratory/equipment/reports.py",
+            ),
+            Step(
+                id="alertas",
+                name="Configurar quién recibe los avisos de actividades por vencer",
+                actors=("administrador_laboratorio", "administrativo_superior"),
+                routes=("platform:alertrule_list",),
+                permissions=("presentation.view_alertrule",),
+                source="src/presentation/platform/views.py alertrule_list",
+            ),
+        ),
+    ),
+    Feature(
+        id="INV-11",
+        name="Llevar cartas de control de equipos (X̄-R e I-MR)",
+        module="laboratory",
+        kind="ui",
+        description=(
+            "Registros de control por punto (p. ej. las masas de una balanza) con n lecturas, "
+            "media, rango y media corregida por el patrón; límites LCS/LC/LCI calculados con un "
+            "período de referencia y su historial; gráficos de medias y rangos; y alerta cuando "
+            "un registro sale de los límites o del criterio de aceptación. Métodos, constantes y "
+            "criterios configurables por tipo de equipo. Ver plans/EQUIPOS_ISO17025_PLAN.md (F3)."
+        ),
+        priority="P2",
+        steps=(
+            Step(
+                id="metodos",
+                name="Configurar los métodos de control y sus constantes",
+                actors=OPERADORES,
+                routes=("laboratory:equipment_control_methods",),
+                permissions=("laboratory.view_controlmethod",),
+                source="src/laboratory/equipment/control_views.py equipment_control_methods",
+            ),
+            Step(
+                id="registrar",
+                name="Registrar controles, ver las cartas y recalcular los límites",
+                actors=OPERADORES,
+                routes=("laboratory:equipment_control_point",),
+                permissions=("laboratory.view_controlpoint", "laboratory.view_controlmeasurement"),
+                transition="registro → evaluación con los límites vigentes → alerta si queda fuera",
+                source="src/laboratory/equipment/control_views.py, src/laboratory/equipment/control.py",
+            ),
+        ),
+    ),
+    Feature(
+        id="INV-10",
+        name="Avisar calibraciones, verificaciones y mantenimientos por vencer",
+        module="laboratory",
+        kind="celery",
+        description=(
+            "Cada mañana el planificador revisa los programas de actividades de los "
+            "equipos y avisa (correo, tarea pendiente y, si es crítica, campana) a quien "
+            "corresponde. Registrar la actividad resuelve la alerta con su evidencia."
+        ),
+        priority="P2",
+        steps=(
+            Step(
+                id="avisar",
+                name="Evaluar las reglas del proceso laboratory.equipment_due",
+                actors=("sistema",),
+                routes=(),
+                transition="crea AlertEvent y PendingTask; se resuelven al registrar la actividad",
+                source="src/laboratory/tasks.py check_equipment_due_activities, "
+                       "src/laboratory/equipment/alerts.py evaluate_rule",
+            ),
+        ),
+    ),
 )

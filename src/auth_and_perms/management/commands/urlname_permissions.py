@@ -2840,6 +2840,166 @@ URLNAME_PERMISSIONS = {
             "category": "Shelf Object Training",
             "permission": "laboratory.delete_shelfobjecttraining",
         },
+        {
+            "name": "View Shelf Object Maintenance",
+            "category": "Shelf Object Maintenance",
+            "permission": "laboratory.view_shelfobjectmaintenance",
+        },
+        {
+            "name": "Add Shelf Object Maintenance",
+            "category": "Shelf Object Maintenance",
+            "permission": "laboratory.add_shelfobjectmaintenance",
+        },
+        {
+            "name": "Change Shelf Object Maintenance",
+            "category": "Shelf Object Maintenance",
+            "permission": "laboratory.change_shelfobjectmaintenance",
+        },
+        {
+            "name": "Delete Shelf Object Maintenance",
+            "category": "Shelf Object Maintenance",
+            "permission": "laboratory.delete_shelfobjectmaintenance",
+        },
+        {
+            "name": "View Equipment Intermediate Check",
+            "category": "Equipment Intermediate Check",
+            "permission": "laboratory.view_shelfobjectverification",
+        },
+        {
+            "name": "Add Equipment Intermediate Check",
+            "category": "Equipment Intermediate Check",
+            "permission": "laboratory.add_shelfobjectverification",
+        },
+        {
+            "name": "Change Equipment Intermediate Check",
+            "category": "Equipment Intermediate Check",
+            "permission": "laboratory.change_shelfobjectverification",
+        },
+        {
+            "name": "Delete Equipment Intermediate Check",
+            "category": "Equipment Intermediate Check",
+            "permission": "laboratory.delete_shelfobjectverification",
+        },
+        {
+            "name": "View Equipment Failure",
+            "category": "Equipment Failure",
+            "permission": "laboratory.view_shelfobjectfailure",
+        },
+        {
+            "name": "Add Equipment Failure",
+            "category": "Equipment Failure",
+            "permission": "laboratory.add_shelfobjectfailure",
+        },
+        {
+            "name": "Change Equipment Failure",
+            "category": "Equipment Failure",
+            "permission": "laboratory.change_shelfobjectfailure",
+        },
+        {
+            "name": "Delete Equipment Failure",
+            "category": "Equipment Failure",
+            "permission": "laboratory.delete_shelfobjectfailure",
+        },
+        {
+            "name": "View Equipment Document",
+            "category": "Equipment Document",
+            "permission": "laboratory.view_equipmentdocument",
+        },
+        {
+            "name": "Add Equipment Document",
+            "category": "Equipment Document",
+            "permission": "laboratory.add_equipmentdocument",
+        },
+        {
+            "name": "Change Equipment Document",
+            "category": "Equipment Document",
+            "permission": "laboratory.change_equipmentdocument",
+        },
+        {
+            "name": "Delete Equipment Document",
+            "category": "Equipment Document",
+            "permission": "laboratory.delete_equipmentdocument",
+        },
+        {
+            "name": "View Equipment Activity Program",
+            "category": "Equipment Activity Program",
+            "permission": "laboratory.view_equipmentactivityplan",
+        },
+        {
+            "name": "Add Equipment Activity Program",
+            "category": "Equipment Activity Program",
+            "permission": "laboratory.add_equipmentactivityplan",
+        },
+        {
+            "name": "Change Equipment Activity Program",
+            "category": "Equipment Activity Program",
+            "permission": "laboratory.change_equipmentactivityplan",
+        },
+        {
+            "name": "Delete Equipment Activity Program",
+            "category": "Equipment Activity Program",
+            "permission": "laboratory.delete_equipmentactivityplan",
+        },
+        {
+            "name": "View Equipment Control Method",
+            "category": "Equipment Control Method",
+            "permission": "laboratory.view_controlmethod",
+        },
+        {
+            "name": "Add Equipment Control Method",
+            "category": "Equipment Control Method",
+            "permission": "laboratory.add_controlmethod",
+        },
+        {
+            "name": "Change Equipment Control Method",
+            "category": "Equipment Control Method",
+            "permission": "laboratory.change_controlmethod",
+        },
+        {
+            "name": "Delete Equipment Control Method",
+            "category": "Equipment Control Method",
+            "permission": "laboratory.delete_controlmethod",
+        },
+        {
+            "name": "View Equipment Control Point",
+            "category": "Equipment Control Point",
+            "permission": "laboratory.view_controlpoint",
+        },
+        {
+            "name": "Add Equipment Control Point",
+            "category": "Equipment Control Point",
+            "permission": "laboratory.add_controlpoint",
+        },
+        {
+            "name": "Change Equipment Control Point",
+            "category": "Equipment Control Point",
+            "permission": "laboratory.change_controlpoint",
+        },
+        {
+            "name": "Delete Equipment Control Point",
+            "category": "Equipment Control Point",
+            "permission": "laboratory.delete_controlpoint",
+        },
+        {
+            "name": "View Equipment Control Record",
+            "category": "Equipment Control Record",
+            "permission": "laboratory.view_controlmeasurement",
+        },
+        {
+            "name": "Add Equipment Control Record",
+            "category": "Equipment Control Record",
+            "permission": "laboratory.add_controlmeasurement",
+        },
+        {
+            "name": "Change Equipment Control Record",
+            "category": "Equipment Control Record",
+            "permission": "laboratory.change_controlmeasurement",
+        },
+        {
+            "name": "Delete Equipment Control Record",
+            "category": "Equipment Control Record",
+            "permission": "laboratory.delete_controlmeasurement",
+        },
     ],
     "view_shelfobject_contracts": [
         {

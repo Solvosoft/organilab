@@ -3,6 +3,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from djgentelella.alerts.models import AbstractAlertEvent, AbstractAlertRule
 
 
 class AbstractOrganizationRef(models.Model):
@@ -301,55 +302,40 @@ class NotificationSetting(AbstractOrganizationRef):
         return self.code
 
 
-class AlertRule(AbstractOrganizationRef):
+class AlertRule(AbstractOrganizationRef, AbstractAlertRule):
     """Una regla de alerta de un proceso: qué vigilar, cuándo disparar y a quién avisar.
 
-    El proceso (``process``) y cómo se evalúa lo registra la app dueña con
-    ``presentation.alerts.register_alert_process``; la plataforma no conoce los
-    procesos. ``threshold`` guarda el umbral según el disparador (ver
-    ``presentation.alerts.THRESHOLD_FIELDS``).
+    El núcleo (proceso, disparador por código, umbral, nivel, eventos con
+    ``dedupe_key`` y resolución) es ``djgentelella.alerts``. Organilab suma la
+    organización y a quién avisar: el responsable que indique el proceso y los
+    usuarios con ciertos roles en la organización. Ver ``presentation.alerts``.
     """
 
-    INFO = "info"
-    MEDIUM = "medium"
-    CRITICAL = "critical"
-    LEVELS = (
-        (INFO, _("Informative")),
-        (MEDIUM, _("Medium")),
-        (CRITICAL, _("Critical")),
-    )
-
-    name = models.CharField(max_length=255, verbose_name=_("Name"))
-    process = models.CharField(max_length=150, verbose_name=_("Process"))
-    trigger = models.ForeignKey(
-        "laboratory.Catalog",
-        on_delete=models.PROTECT,
-        limit_choices_to={"key": "alert_trigger"},
-        verbose_name=_("Trigger"),
-        related_name="alert_rules",
-    )
-    threshold = models.JSONField(default=dict, blank=True, verbose_name=_("Threshold"))
-    level = models.CharField(max_length=20, choices=LEVELS, default=MEDIUM, verbose_name=_("Level"))
-    notification_code = models.SlugField(
-        max_length=150, blank=True, default="", verbose_name=_("Email")
-    )
     notify_roles = models.ManyToManyField(
         "auth_and_perms.Rol", blank=True, verbose_name=_("Notify roles")
     )
     notify_responsible = models.BooleanField(default=True, verbose_name=_("Notify the responsible"))
     create_task = models.BooleanField(default=True, verbose_name=_("Create pending task"))
-    is_active = models.BooleanField(default=True, verbose_name=_("Is active"))
 
-    class Meta:
+    class Meta(AbstractAlertRule.Meta):
         verbose_name = _("Alert rule")
         verbose_name_plural = _("Alert rules")
         ordering = ["process", "name"]
 
-    def __str__(self):
-        return self.name
+    def get_recipients(self, obj=None, context=None):
+        """Los responsables que pasa el proceso (si la regla lo pide) y los usuarios de sus roles."""
+        from presentation.alerts import rule_recipients
+
+        context = context or {}
+        return rule_recipients(
+            self, context.get("responsible_users", ()), context.get("recipient_filter")
+        )
+
+    def get_event_kwargs(self, obj=None):
+        return {"organization": self.organization}
 
 
-class AlertEvent(models.Model):
+class AlertEvent(AbstractAlertEvent):
     """Cada vez que una regla se disparó: el historial que sirve para calibrarla."""
 
     rule = models.ForeignKey(
@@ -358,19 +344,8 @@ class AlertEvent(models.Model):
     organization = models.ForeignKey(
         "laboratory.OrganizationStructure", on_delete=models.CASCADE, null=True
     )
-    content_type = models.ForeignKey(ContentType, null=True, blank=True, on_delete=models.SET_NULL)
-    object_id = models.PositiveIntegerField(null=True, blank=True)
-    content_object = GenericForeignKey("content_type", "object_id")
-    message = models.TextField(verbose_name=_("Message"))
-    level = models.CharField(max_length=20, choices=AlertRule.LEVELS, verbose_name=_("Level"))
-    link = models.CharField(max_length=500, blank=True, default="", verbose_name=_("Link"))
-    recipients = models.JSONField(default=list, blank=True, verbose_name=_("Recipients"))
-    creation_date = models.DateTimeField(auto_now_add=True, verbose_name=_("Date"))
 
-    class Meta:
+    class Meta(AbstractAlertEvent.Meta):
         verbose_name = _("Alert event")
         verbose_name_plural = _("Alert events")
         ordering = ["-creation_date"]
-
-    def __str__(self):
-        return self.message

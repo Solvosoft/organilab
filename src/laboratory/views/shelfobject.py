@@ -6,6 +6,13 @@ Created on 26/12/2016
 """
 
 
+from laboratory.equipment.forms import (
+    ActivityPlanForm,
+    ControlPointForm,
+    EquipmentDocumentForm,
+    FailureForm,
+    VerificationForm,
+)
 from django import forms
 from django.conf import settings
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION
@@ -718,6 +725,8 @@ def view_equipment_shelfobject_detail(request, org_pk, lab_pk, pk):
                 "shelfobject": pk,
             },
             org_pk=org_pk,
+            lab_pk=lab_pk,
+            shelfobject=pk,
             prefix="create_maintenance",
         ),
         "update_maintenance_form": UpdateShelfobjectMaintenanceForm(
@@ -729,6 +738,8 @@ def view_equipment_shelfobject_detail(request, org_pk, lab_pk, pk):
             },
             prefix="update_maintenance",
             org_pk=org_pk,
+            lab_pk=lab_pk,
+            shelfobject=pk,
         ),
         "create_log_form": ShelfobjectLogForm(
             initial={
@@ -746,6 +757,9 @@ def view_equipment_shelfobject_detail(request, org_pk, lab_pk, pk):
                 "validator": request.user.profile.pk,
             },
             prefix="create_calibrate",
+            org_pk=org_pk,
+            lab_pk=lab_pk,
+            shelfobject=pk,
         ),
         "update_calibrate_form": UpdateShelfobjectCalibrateForm(
             initial={
@@ -755,6 +769,9 @@ def view_equipment_shelfobject_detail(request, org_pk, lab_pk, pk):
                 "validator": request.user.profile.pk,
             },
             prefix="update_calibrate",
+            org_pk=org_pk,
+            lab_pk=lab_pk,
+            shelfobject=pk,
         ),
         "guarantee_form": ShelfObjectGuaranteeForm(
             initial={
@@ -783,9 +800,39 @@ def view_equipment_shelfobject_detail(request, org_pk, lab_pk, pk):
             id_form="#create_training_form",
         ),
     }
+    scope = {"org_pk": org_pk, "lab_pk": lab_pk, "shelfobject": pk}
+    for name, form_class in (
+        ("plan", ActivityPlanForm),
+        ("verification", VerificationForm),
+        ("failure", FailureForm),
+        ("document", EquipmentDocumentForm),
+    ):
+        context["create_%s_form" % name] = form_class(prefix="create_%s" % name, **scope)
+        context["update_%s_form" % name] = form_class(prefix="update_%s" % name, **scope)
+    context["create_control_form"] = ControlPointForm(prefix="create_control", **scope)
+    context["update_control_form"] = ControlPointForm(prefix="update_control", **scope)
+    context.update(equipment_status_context(shelfobject))
     return render(
         request, "laboratory/shelfobject/equipment_edit.html", context=context
     )
+
+
+def equipment_status_context(shelfobject):
+    """Etiqueta visual de estado (ISO/IEC 17025 6.4.8) para la cabecera del equipo."""
+    characteristics = getattr(shelfobject, "shelfobjectequipmentcharacteristics", None)
+    if characteristics is None:
+        return {"equipment_characteristics": None, "equipment_plans": []}
+    calibration, next_calibration = characteristics.calibration_status()
+    plans = [
+        {"plan": plan, "next_due": plan.next_due(), "status": plan.due_status()}
+        for plan in shelfobject.equipmentactivityplan_set.filter(is_active=True)
+    ]
+    return {
+        "equipment_characteristics": characteristics,
+        "calibration_status": calibration,
+        "next_calibration": next_calibration,
+        "equipment_plans": plans,
+    }
 
 
 @login_required()

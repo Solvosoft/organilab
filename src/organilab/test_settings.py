@@ -3,6 +3,12 @@ from logging import Filter
 
 INSTALLED_APPS.append("organilab_test")
 
+# La base de pruebas no ejecuta createcachetable, y desde djgentelella 0.7.0 guardar
+# GentelellaSettings (initial_data.json) invalida su caché: con DatabaseCache
+# fallaba la carga de los fixtures. Si CACHE_URL apunta a Redis se respeta.
+if not CACHE_URL:
+    CACHES = {"default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"}}
+
 PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.MD5PasswordHasher",
 ]

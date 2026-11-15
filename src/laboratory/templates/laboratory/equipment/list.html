@@ -36,6 +36,13 @@
 					<a target="_blank" href="{% url 'laboratory:equipmenttype_list' org_pk=org_pk lab_pk=lab_pk %}"
 								class="btn btn-outline-primary">{% trans 'Equipment type' %}</a>
 				{% endif %}
+
+				{% if perms.laboratory.add_shelfobject and perms.laboratory.add_object %}
+					<a href="{% url 'laboratory:equipment_import' org_pk=org_pk lab_pk=lab_pk %}"
+								class="btn btn-outline-success"><i class="fa fa-upload"></i> {% trans 'Import equipment' %}</a>
+				{% endif %}
+				<a href="{% url 'laboratory:equipment_program_export' org_pk=org_pk lab_pk=lab_pk %}"
+							class="btn btn-outline-info"><i class="fa fa-file-excel-o"></i> {% trans 'Equipment program (PT-05)' %}</a>
 			</div>
 		</div>
 		<table class="table table-striped w-100 table-responsive" id="equipment_table"></table>

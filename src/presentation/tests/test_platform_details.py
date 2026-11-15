@@ -50,7 +50,7 @@ class AlertRuleDetailTest(alert_base.AlertTestCase):
         return reverse("platform:api-alertrule-" + name, kwargs={"org_pk": self.child.pk, **kwargs})
 
     def test_correo_desconocido_es_rechazado(self):
-        payload = {"name": "Agua", "process": alert_base.PROCESS, "trigger": self.percent.pk, "percent": "25",
+        payload = {"name": "Agua", "process": alert_base.PROCESS, "trigger": self.percent, "percent": "25",
                    "level": "critical", "notification_code": "correo-inexistente", "notify_roles": []}
         response = self.client.post(self.url("list"), data=json.dumps(payload), content_type="application/json")
         self.assertEqual(response.status_code, 400)

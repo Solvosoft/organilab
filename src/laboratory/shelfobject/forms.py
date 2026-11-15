@@ -35,6 +35,13 @@ from laboratory.models import (
     ShelfObjectLimits,
 )
 from reservations_management.models import ReservedProducts
+from laboratory.equipment.forms import (
+    CALIBRATION_ISO_WIDGETS,
+    EQUIPMENT_ISO_SECTIONS,
+    EQUIPMENT_ISO_WIDGETS,
+    MAINTENANCE_ISO_WIDGETS,
+    EquipmentScopedFormMixin,
+)
 from laboratory.shelfobject.serializers import (
     TransferInShelfObjectApproveWithContainerSerializer,
     ContainerSerializer,
@@ -1174,20 +1181,15 @@ class ContainerManagementForm(ContainerForm):
     shelf = forms.CharField(widget=genwidgets.HiddenInput)
 
 
-class ShelfobjectMaintenanceForm(GTForm, forms.ModelForm):
-
-    def __init__(self, *args, **kwargs):
-        org = kwargs.pop("org_pk")
-        super(ShelfobjectMaintenanceForm, self).__init__(*args, **kwargs)
-        self.fields["provider_of_maintenance"].queryset = Provider.objects.filter(
-            laboratory__organization__pk=org
-        )
+class ShelfobjectMaintenanceForm(EquipmentScopedFormMixin, GTForm, forms.ModelForm):
+    """Recibe ``org_pk``, ``lab_pk`` y ``shelfobject`` (ver ``EquipmentScopedFormMixin``)."""
 
     class Meta:
         model = ShelfObjectMaintenance
         fields = "__all__"
 
         widgets = {
+            **MAINTENANCE_ISO_WIDGETS,
             "maintenance_date": genwidgets.DateInput,
             "provider_of_maintenance": genwidgets.Select,
             "maintenance_observation": genwidgets.Textarea,
@@ -1198,20 +1200,15 @@ class ShelfobjectMaintenanceForm(GTForm, forms.ModelForm):
         }
 
 
-class UpdateShelfobjectMaintenanceForm(GTForm, forms.ModelForm):
-
-    def __init__(self, *args, **kwargs):
-        org = kwargs.pop("org_pk")
-        super(UpdateShelfobjectMaintenanceForm, self).__init__(*args, **kwargs)
-        self.fields["provider_of_maintenance"].queryset = Provider.objects.filter(
-            laboratory__organization__pk=org
-        )
+class UpdateShelfobjectMaintenanceForm(EquipmentScopedFormMixin, GTForm, forms.ModelForm):
+    """Recibe ``org_pk``, ``lab_pk`` y ``shelfobject`` (ver ``EquipmentScopedFormMixin``)."""
 
     class Meta:
         model = ShelfObjectMaintenance
         fields = "__all__"
 
         widgets = {
+            **MAINTENANCE_ISO_WIDGETS,
             "maintenance_date": genwidgets.DateInput,
             "provider_of_maintenance": genwidgets.Select,
             "maintenance_observation": genwidgets.Textarea,
@@ -1236,7 +1233,7 @@ class ShelfobjectLogForm(GTForm, forms.ModelForm):
         }
 
 
-class ShelfobjectCalibrateForm(GTForm, forms.ModelForm):
+class ShelfobjectCalibrateForm(EquipmentScopedFormMixin, GTForm, forms.ModelForm):
 
     field_order = (
         "calibrate_name",
@@ -1253,6 +1250,7 @@ class ShelfobjectCalibrateForm(GTForm, forms.ModelForm):
         fields = "__all__"
 
         widgets = {
+            **CALIBRATION_ISO_WIDGETS,
             "calibrate_name": genwidgets.TextInput,
             "calibration_date": genwidgets.DateInput,
             "observation": genwidgets.Textarea,
@@ -1263,7 +1261,7 @@ class ShelfobjectCalibrateForm(GTForm, forms.ModelForm):
         }
 
 
-class UpdateShelfobjectCalibrateForm(GTForm, forms.ModelForm):
+class UpdateShelfobjectCalibrateForm(EquipmentScopedFormMixin, GTForm, forms.ModelForm):
 
     field_order = (
         "calibrate_name",
@@ -1280,6 +1278,7 @@ class UpdateShelfobjectCalibrateForm(GTForm, forms.ModelForm):
         fields = "__all__"
 
         widgets = {
+            **CALIBRATION_ISO_WIDGETS,
             "calibrate_name": genwidgets.TextInput,
             "calibration_date": genwidgets.DateInput,
             "observation": genwidgets.Textarea,
@@ -1383,6 +1382,9 @@ class EditEquimentShelfobjectForm(forms.ModelForm, GTForm):
         self.fields["authorized_roles_to_use_equipment"].queryset = Rol.objects.filter(
             pk__in=org.root.rol.values_list("pk", flat=True)
         )
+        profiles = Profile.objects.filter(user__in=org.users.all())
+        for name in ("custodian", "acceptance_responsible", "authorized_users"):
+            self.fields[name].queryset = profiles
 
     field_order = [
         "status",
@@ -1400,7 +1402,7 @@ class EditEquimentShelfobjectForm(forms.ModelForm, GTForm):
         "first_date_use",
         "notes",
         "was_donated",
-    ]
+    ] + [name for _title, names in EQUIPMENT_ISO_SECTIONS for name in names]
 
     class Meta:
 
@@ -1409,6 +1411,7 @@ class EditEquimentShelfobjectForm(forms.ModelForm, GTForm):
 
         exclude = ["created_by"]
         widgets = {
+            **EQUIPMENT_ISO_WIDGETS,
             "organization": genwidgets.HiddenInput,
             "shelfobject": genwidgets.HiddenInput,
             "provider": genwidgets.Select,

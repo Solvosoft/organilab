@@ -2,7 +2,14 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_save
 
 from auth_and_perms.models import Profile
-from laboratory.models import ShelfObject, OrganizationStructure
+from laboratory.models import (
+    ShelfObject,
+    OrganizationStructure,
+    ShelfObjectEquipmentCharacteristics,
+    ShelfObjectObservation,
+    Object,
+)
+from django.utils.translation import gettext as _
 from django.conf import settings
 from djgentelella.async_notification.sending import send_email_from_template
 from laboratory.models import BlockedListNotification
@@ -54,6 +61,50 @@ def shelf_object_base_quantity(sender, **kwargs):
         instance.quantity_base_unit = (
             converted if converted is not None else instance.quantity
         )
+
+
+def shelf_location(shelf):
+    if shelf is None:
+        return ""
+    return " / ".join(
+        str(part) for part in (shelf.furniture.labroom.laboratory, shelf.furniture.labroom, shelf.furniture, shelf)
+    )
+
+
+@receiver(pre_save, sender=ShelfObject)
+def equipment_shelf_change(sender, instance, **kwargs):
+    """Historial de ubicación del equipo (ISO/IEC 17025 6.4.13): cambio de estante."""
+    if instance.pk is None or instance.object_id is None:
+        return
+    previous = ShelfObject.objects.filter(pk=instance.pk).select_related("object", "shelf").first()
+    if previous is None or previous.shelf_id == instance.shelf_id:
+        return
+    if previous.object.type != Object.EQUIPMENT:
+        return
+    ShelfObjectObservation.objects.create(
+        action_taken=_("Location change"),
+        description="%s → %s" % (shelf_location(previous.shelf), shelf_location(instance.shelf)),
+        shelf_object=instance,
+    )
+
+
+@receiver(pre_save, sender=ShelfObjectEquipmentCharacteristics)
+def equipment_physical_location_change(sender, instance, **kwargs):
+    """Historial de ubicación del equipo: cambio de la ubicación física específica."""
+    if instance.pk is None:
+        return
+    previous = (
+        ShelfObjectEquipmentCharacteristics.objects.filter(pk=instance.pk)
+        .values_list("physical_location", flat=True)
+        .first()
+    )
+    if previous is None or previous == instance.physical_location:
+        return
+    ShelfObjectObservation.objects.create(
+        action_taken=_("Location change"),
+        description="%s → %s" % (previous or "-", instance.physical_location or "-"),
+        shelf_object_id=instance.shelfobject_id,
+    )
 
 
 @receiver(pre_save, sender=OrganizationStructure)

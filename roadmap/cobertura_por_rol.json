@@ -65,6 +65,9 @@
     "INV-08/borrar": "solo superusuario",
     "INV-08/crear_editar": "solo superusuario",
     "INV-08/listar": "solo superusuario",
+    "INV-09/alertas": "ejercitado",
+    "INV-09/ficha": "ejercitado",
+    "INV-10/avisar": "fuera del alcance de la sonda",
     "IPER-01/anonimato": "nunca ejercitado",
     "IPER-01/auditar": "nunca ejercitado",
     "IPER-01/borrar": "nunca ejercitado",
@@ -185,7 +188,11 @@
     "SGA-05/borrar_empresa": "solo superusuario",
     "SGA-05/listar_empresas": "solo superusuario",
     "SGA-05/recipientes": "solo superusuario",
-    "TASK-01/ver_bandeja": "solo superusuario"
+    "TASK-01/ver_bandeja": "solo superusuario",
+    "INV-09/importar": "ejercitado",
+    "INV-09/reportes": "ejercitado",
+    "INV-11/metodos": "ejercitado",
+    "INV-11/registrar": "ejercitado"
   },
   "peticiones_observadas": 5049,
   "roles_ejercitados": {

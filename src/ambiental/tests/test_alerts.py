@@ -12,8 +12,7 @@ from ambiental.tests.test_reports import ReportTestCase
 from laboratory.models import Catalog
 from pending_tasks.models import PendingTask
 from presentation.alerts import (
-    ALERT_PROCESSES,
-    KEY_ALERT_TRIGGER,
+    get_process,
     TRIGGER_ABSOLUTE,
     TRIGGER_MISSING,
     TRIGGER_PERCENT,
@@ -35,14 +34,14 @@ class ConsumptionAlertTest(ReportTestCase):
     def rule(self, trigger, threshold, **kwargs):
         defaults = dict(
             organization=self.organization, name="Consumo de agua", process="ambiental.consumption",
-            trigger=Catalog.objects.get(key=KEY_ALERT_TRIGGER, description=trigger),
+            trigger=trigger,
             threshold=threshold, level=AlertRule.MEDIUM, created_by=self.user,
         )
         defaults.update(kwargs)
         return AlertRule.objects.create(**defaults)
 
     def test_process_and_email_template_are_registered(self):
-        self.assertIn("ambiental.consumption", ALERT_PROCESSES)
+        self.assertIsNotNone(get_process("ambiental.consumption"))
         self.assertTrue(EmailTemplate.objects.filter(code="ambiental-consumption-alert").exists())
 
     def test_percent_over_average_fires_once(self):
@@ -83,7 +82,7 @@ class ConsumptionAlertTest(ReportTestCase):
         self.assertEqual([alert.point for alert in alerts], [self.power_point])
 
     def test_missing_records(self):
-        rule = self.rule(TRIGGER_MISSING, {"months": 1}, create_task=False)
+        rule = self.rule(TRIGGER_MISSING, {"periods": 1}, create_task=False)
         alerts = evaluate_rule(rule, today=datetime.date(2026, 6, 10))
         self.assertEqual({alert.point for alert in alerts}, {self.water_point, self.power_point})
         self.assertEqual(alerts[0].period, datetime.date(2026, 6, 1))

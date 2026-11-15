@@ -1,34 +1,36 @@
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django.utils.translation import gettext_lazy as _
 from django_filters import FilterSet
 from djgentelella.async_notification.registry import get_all_contexts
+from djgentelella.serializers import DataTableSerializer
 from djgentelella.serializers.selects import GTS2SerializerBase
 from rest_framework import serializers
 
 from auth_and_perms.models import Rol
-from laboratory.models import Catalog
 from presentation.alerts import (
-    ALERT_PROCESSES,
-    KEY_ALERT_TRIGGER,
-    THRESHOLD_FIELDS,
+    get_process,
+    get_trigger,
     processes_for,
+    threshold_display,
+    threshold_fields,
+    trigger_choices,
     validate_threshold,
 )
 from presentation.api_mixins import OrganizationLogsViewSet
 from presentation.models import AlertEvent, AlertRule
 from presentation.platform.base import OrganizationPermissionMixin
 
-THRESHOLD_INPUTS = {field: trigger for trigger, (field, _label, _convert) in THRESHOLD_FIELDS.items()}
 
-
-class DataTableSerializer(serializers.Serializer):
-    draw = serializers.IntegerField(required=True)
-    recordsFiltered = serializers.IntegerField(required=True)
-    recordsTotal = serializers.IntegerField(required=True)
+def trigger_label(code):
+    try:
+        return str(get_trigger(code).label)
+    except DjangoValidationError:
+        return code
 
 
 class AlertRuleSerializer(serializers.ModelSerializer):
     process = serializers.SerializerMethodField()
-    trigger = GTS2SerializerBase()
+    trigger = serializers.SerializerMethodField()
     level = serializers.SerializerMethodField()
     notify_roles = GTS2SerializerBase(many=True)
     threshold_display = serializers.SerializerMethodField()
@@ -36,8 +38,11 @@ class AlertRuleSerializer(serializers.ModelSerializer):
     actions = serializers.SerializerMethodField()
 
     def get_process(self, obj):
-        info = ALERT_PROCESSES.get(obj.process)
-        return {"id": obj.process, "text": str(info["label"]) if info else obj.process}
+        process = get_process(obj.process)
+        return {"id": obj.process, "text": str(process.label) if process else obj.process}
+
+    def get_trigger(self, obj):
+        return {"id": obj.trigger, "text": trigger_label(obj.trigger)}
 
     def get_level(self, obj):
         return {"id": obj.level, "text": str(obj.get_level_display())}
@@ -46,8 +51,7 @@ class AlertRuleSerializer(serializers.ModelSerializer):
         return {"id": obj.notification_code, "text": obj.notification_code} if obj.notification_code else None
 
     def get_threshold_display(self, obj):
-        field, label, _convert = THRESHOLD_FIELDS.get(obj.trigger.description, (None, "", None))
-        return "%s: %s" % (label, obj.threshold.get(field, "")) if field else ""
+        return threshold_display(obj)
 
     def get_actions(self, obj):
         user = self.context["request"].user
@@ -58,9 +62,8 @@ class AlertRuleSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
-        field = THRESHOLD_FIELDS.get(instance.trigger.description, (None,))[0]
-        for name in THRESHOLD_INPUTS:
-            data[name] = instance.threshold.get(name, "") if name == field else ""
+        for name in threshold_fields():
+            data[name] = (instance.threshold or {}).get(name, "")
         return data
 
     class Meta:
@@ -77,17 +80,19 @@ class AlertRuleDataTableSerializer(DataTableSerializer):
 
 
 class AlertRuleSaveSerializer(serializers.ModelSerializer):
-    trigger = serializers.PrimaryKeyRelatedField(queryset=Catalog.objects.filter(key=KEY_ALERT_TRIGGER))
+    trigger = serializers.ChoiceField(choices=())
     notify_roles = serializers.PrimaryKeyRelatedField(queryset=Rol.objects.all(), many=True, required=False)
     notification_code = serializers.CharField(required=False, allow_blank=True, default="")
 
     def get_fields(self):
         fields = super().get_fields()
         user = self.context["request"].user
+        processes = processes_for(user)
         fields["process"] = serializers.ChoiceField(
-            choices=[(code, info["label"]) for code, info in processes_for(user).items()]
+            choices=[(code, process.label) for code, process in processes.items()]
         )
-        for name in THRESHOLD_INPUTS:
+        fields["trigger"].choices = trigger_choices()
+        for name in threshold_fields():
             fields[name] = serializers.CharField(required=False, allow_blank=True, write_only=True)
         return fields
 
@@ -98,17 +103,16 @@ class AlertRuleSaveSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         trigger = attrs["trigger"]
-        process = ALERT_PROCESSES[attrs["process"]]
-        if trigger.description not in process["triggers"]:
+        process = get_process(attrs["process"])
+        if trigger not in process.triggers:
             raise serializers.ValidationError({"trigger": [_("This trigger does not apply to the process.")]})
-        field = THRESHOLD_FIELDS[trigger.description][0]
-        raw = attrs.get(field, "")
-        for name in THRESHOLD_INPUTS:
-            attrs.pop(name, None)
+        raw = {name: attrs.pop(name, "") for name in threshold_fields()}
         try:
-            attrs["threshold"] = validate_threshold(trigger.description, raw)
-        except ValueError as error:
-            raise serializers.ValidationError({field: [str(error)]})
+            attrs["threshold"] = validate_threshold(trigger, raw)
+        except DjangoValidationError as error:
+            raise serializers.ValidationError(
+                {name: [str(message) for message in messages] for name, messages in error.message_dict.items()}
+            )
         return attrs
 
     class Meta:
@@ -141,7 +145,7 @@ class AlertRuleViewSet(OrganizationPermissionMixin, OrganizationLogsViewSet):
         "get_values_for_update": ["presentation.change_alertrule"],
         "destroy": ["presentation.delete_alertrule"],
     }
-    queryset = AlertRule.objects.select_related("trigger").prefetch_related("notify_roles")
+    queryset = AlertRule.objects.prefetch_related("notify_roles")
     search_fields = ["name", "process"]
     filterset_class = AlertRuleFilter
     ordering_fields = ["name", "process"]
@@ -155,10 +159,11 @@ class AlertEventSerializer(serializers.ModelSerializer):
     rule = GTS2SerializerBase()
     level = serializers.CharField(source="get_level_display")
     creation_date = serializers.DateTimeField(format="%Y-%m-%d %H:%M")
+    resolved_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M")
 
     class Meta:
         model = AlertEvent
-        fields = ("id", "rule", "message", "level", "link", "recipients", "creation_date")
+        fields = ("id", "rule", "message", "level", "link", "recipients", "creation_date", "resolved_at")
 
 
 class AlertEventDataTableSerializer(DataTableSerializer):

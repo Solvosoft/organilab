@@ -6,6 +6,7 @@ class LaboratoryConfig(AppConfig):
     name = 'laboratory'
 
     def ready(self):
+        self.register_equipment_alerts()
         import laboratory.signals
         from djgentelella.async_notification.registry import register_context
 
@@ -52,4 +53,45 @@ class LaboratoryConfig(AppConfig):
                 'subject': 'Rendered subject of the request',
                 'body': 'Rendered body of the request',
             },
+        )
+
+    def register_equipment_alerts(self):
+        """Alertas de actividades de equipo por vencer (laboratory/equipment/alerts.py)."""
+        from django.utils.translation import gettext_lazy as _
+        from djgentelella.async_notification.registry import register_context
+
+        from presentation.alerts import TRIGGER_DUE, register_alert_process
+        from laboratory.equipment.alerts import NOTIFICATION_CODE, PROCESS
+
+        import laboratory.equipment.signals  # noqa: F401
+        from laboratory.equipment.control import register_alerts as register_control_alerts
+
+        register_control_alerts()
+        register_context(
+            code="equipment-control-alert",
+            subject="{{ message }}",
+            models={"point": "laboratory.ControlPoint", "measurement": "laboratory.ControlMeasurement"},
+            extra_variables={"message": "Texto de la alerta", "link": "Enlace a la carta de control",
+                             "rule": "Regla que se disparó"},
+        )
+
+        register_context(
+            code=NOTIFICATION_CODE,
+            subject="{{ message }}",
+            models={"plan": "laboratory.EquipmentActivityPlan", "equipment": "laboratory.ShelfObject"},
+            extra_variables={
+                "message": "Texto de la alerta",
+                "link": "Enlace a la ficha del equipo",
+                "rule": "Regla que se disparó",
+                "status": "upcoming, due u overdue",
+                "next_due": "Fecha de vencimiento",
+            },
+        )
+        register_alert_process(
+            PROCESS,
+            label=_("Equipment due activities"),
+            evaluator="laboratory.equipment.alerts.evaluate_rule",
+            triggers=(TRIGGER_DUE,),
+            permission="laboratory.change_shelfobject",
+            notification_code=NOTIFICATION_CODE,
         )

@@ -23,12 +23,14 @@ from djgentelella.serializers.selects import GTS2SerializerBase, ChoicesGTS2Seri
 from djgentelella.views.select2autocomplete import GSerializerImgBase
 from auth_and_perms.api.serializers import ValidateUserAccessOrgLabSerializer
 from auth_and_perms.models import Profile, Rol
+from auth_and_perms.organization_utils import organization_can_change_laboratory
 from laboratory.api.serializers import BaseShelfObjectSerializer
 from rest_framework import serializers
 from laboratory.models import (
     ShelfObject,
     Shelf,
     Catalog,
+    EquipmentActivityPlan,
     Object,
     Laboratory,
     ShelfObjectLimits,
@@ -2318,10 +2320,11 @@ class ValidateShelfobjectEditSerializer(serializers.Serializer):
                 {"shelfobject": _("The shelfobject do not belong to the laboratory")}
             )
 
-        if organization.pk != shelfobject.in_where_laboratory.organization.pk:
+        # El laboratorio puede pertenecer a otra organización y estar compartido con esta.
+        if not organization_can_change_laboratory(shelfobject.in_where_laboratory, organization):
             logger.debug(
-                f"ValidateShelfobjectEditSerializer --> organization.pk ({organization.pk}) != "
-                f"shelfobject.in_where_laboratory.organization.pk: ({shelfobject.in_where_laboratory.organization.pk:})"
+                f"ValidateShelfobjectEditSerializer --> organization {organization.pk} can not change "
+                f"laboratory {shelfobject.in_where_laboratory.pk}"
             )
             raise serializers.ValidationError(
                 {"shelfobject": _("The shelfobject do not belong to the organization")}
@@ -2348,6 +2351,59 @@ class CustomDateInputFormat(serializers.DateField):
         return super(CustomDateInputFormat, self).to_internal_value(value)
 
 
+class MaintenanceIsoFieldsMixin(serializers.Serializer):
+    """Campos ISO/IEC 17025 del mantenimiento (tipo, actividades del PT-05, informe)."""
+
+    report = ChunkedFileField(required=False, allow_empty_file=True, allow_null=True)
+    activities = serializers.PrimaryKeyRelatedField(
+        queryset=Catalog.objects.filter(key="maintenance_activity"), many=True, required=False
+    )
+    damage_details = serializers.CharField(required=False, allow_blank=True, default="")
+
+    def get_fields(self, *args, **kwargs):
+        fields = super().get_fields(*args, **kwargs)
+        if "plan" in fields:
+            fields["plan"].queryset = EquipmentActivityPlan.objects.filter(
+                shelfobject_id=self.context.get("shelfobject")
+            )
+        return fields
+
+
+class CalibrationIsoFieldsMixin(serializers.Serializer):
+    """Campos ISO/IEC 17025 de la calibración (certificado, resultados, conformidad)."""
+
+    certificate = ChunkedFileField(required=False, allow_empty_file=True, allow_null=True)
+    next_calibration_date = DateFieldWithEmptyString(
+        input_formats=settings.DATE_INPUT_FORMATS, required=False, allow_null=True
+    )
+    provider = serializers.PrimaryKeyRelatedField(
+        queryset=Provider.objects.none(), required=False, allow_null=True
+    )
+
+    def get_fields(self, *args, **kwargs):
+        fields = super().get_fields(*args, **kwargs)
+        fields["provider"].queryset = Provider.objects.for_laboratory(
+            self.context["org_pk"], self.context["lab_pk"]
+        )
+        return fields
+
+    def validate(self, data):
+        data = super().validate(data)
+        next_date = data.get("next_calibration_date")
+        if next_date and data.get("calibration_date") and next_date <= data["calibration_date"]:
+            raise serializers.ValidationError(
+                {"next_calibration_date": _("The next calibration must be after the calibration date.")}
+            )
+        return data
+
+
+CALIBRATION_ISO_FIELDS = [
+    "provider", "certificate", "certificate_number", "results", "uncertainty",
+    "correction_factor", "adjustments", "acceptance_criterion", "conformity",
+    "next_calibration_date",
+]
+
+
 class ValidateMaintenenceProviders(serializers.Serializer):
     provider_of_maintenance = serializers.PrimaryKeyRelatedField(
         queryset=Provider.objects.using(settings.READONLY_DATABASE)
@@ -2359,13 +2415,14 @@ class ValidateMaintenenceProviders(serializers.Serializer):
         organization = get_object_or_404(
             OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
         )
-        fields["provider_of_maintenance"].queryset = Provider.objects.filter(
-            laboratory__organization=organization
+        fields["provider_of_maintenance"].queryset = Provider.objects.for_laboratory(
+            organization, self.context["lab_pk"]
         )
         return fields
 
 
 class CreateMaintenanceSerializer(
+    MaintenanceIsoFieldsMixin,
     ValidateShelfobjectEditSerializer,
     ValidateMaintenenceProviders,
     serializers.ModelSerializer,
@@ -2386,6 +2443,7 @@ class CreateMaintenanceSerializer(
 
 
 class UpdateMaintenanceSerializer(
+    MaintenanceIsoFieldsMixin,
     ValidateShelfobjectEditSerializer,
     ValidateMaintenenceProviders,
     serializers.ModelSerializer,
@@ -2407,6 +2465,12 @@ class MaintenanceSerializer(serializers.ModelSerializer):
     provider_of_maintenance = ProviderDisplayNameSerializer(many=False)
     validator = GTS2SerializerBase(many=False)
     maintenance_date = GTDateField()
+    maintenance_type_display = serializers.CharField(source="get_maintenance_type_display", read_only=True)
+    activities_display = serializers.SerializerMethodField()
+    report = ChunkedFileField(read_only=True)
+
+    def get_activities_display(self, obj):
+        return ", ".join(str(activity) for activity in obj.activities.all())
 
     def get_actions(self, obj):
         user = self.context["request"].user
@@ -2432,9 +2496,15 @@ class MaintenanceSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "maintenance_date",
+            "maintenance_type",
+            "maintenance_type_display",
+            "activities",
+            "activities_display",
             "provider_of_maintenance",
             "validator",
             "maintenance_observation",
+            "affects_calibration",
+            "report",
             "actions",
         ]
 
@@ -2497,7 +2567,7 @@ class ShelfObjectLogDatatableSerializer(serializers.Serializer):
 
 
 class ValidateShelfObjectCalibrateSerializer(
-    ValidateShelfobjectEditSerializer, serializers.ModelSerializer
+    CalibrationIsoFieldsMixin, ValidateShelfobjectEditSerializer, serializers.ModelSerializer
 ):
     calibration_date = DateFieldWithEmptyString(
         input_formats=settings.DATE_INPUT_FORMATS, required=True, allow_null=False
@@ -2523,11 +2593,11 @@ class ValidateShelfObjectCalibrateSerializer(
             "organization",
             "created_by",
             "observation",
-        ]
+        ] + CALIBRATION_ISO_FIELDS
 
 
 class UpdateShelfObjectCalibrateSerializer(
-    ValidateShelfobjectEditSerializer, serializers.ModelSerializer
+    CalibrationIsoFieldsMixin, ValidateShelfobjectEditSerializer, serializers.ModelSerializer
 ):
     calibration_date = DateFieldWithEmptyString(
         input_formats=settings.DATE_INPUT_FORMATS, required=True, allow_null=False
@@ -2548,6 +2618,10 @@ class ShelfObjectCalibrateSerializer(serializers.ModelSerializer):
     actions = serializers.SerializerMethodField()
     validator = GTS2SerializerBase(many=False)
     calibration_date = GTDateField()
+    next_calibration_date = GTDateField()
+    provider = serializers.CharField(source="provider.name", read_only=True, default="")
+    conformity = serializers.CharField(source="get_conformity_display", read_only=True)
+    certificate = ChunkedFileField(read_only=True)
 
     def get_actions(self, obj):
         user = self.context["request"].user
@@ -2574,6 +2648,11 @@ class ShelfObjectCalibrateSerializer(serializers.ModelSerializer):
             "id",
             "calibration_date",
             "calibrate_name",
+            "provider",
+            "certificate_number",
+            "certificate",
+            "conformity",
+            "next_calibration_date",
             "validator",
             "observation",
             "actions",
@@ -2871,6 +2950,23 @@ class ShelfObjectGuarenteeFilter(FilterSet):
         fields = {"created_by": ["exact"]}
 
 
+ISO_EQUIPMENT_FIELDS = [
+    # Identificación
+    "internal_code", "asset_number", "brand", "model", "serial_number", "photo",
+    "software_name", "software_version", "firmware_version", "magnitude",
+    # Ubicación y estado
+    "physical_location", "equipment_status", "use_restriction",
+    # Especificaciones
+    "measurement_unit", "resolution", "working_range", "accuracy_tolerance", "capacity",
+    "acceptance_criteria", "metrological_requirements",
+    # Recepción y responsabilidad
+    "acceptance_evidence", "acceptance_responsible", "custodian", "authorized_users",
+    "access_restrictions",
+    # Baja
+    "decommission_date", "decommission_reason", "final_disposition",
+]
+
+
 class EditEquimentShelfobjectCharacteristicSerializer(serializers.ModelSerializer):
 
     shelfobject = serializers.PrimaryKeyRelatedField(
@@ -2909,6 +3005,18 @@ class EditEquimentShelfobjectCharacteristicSerializer(serializers.ModelSerialize
     )
     notes = serializers.CharField(allow_null=True, allow_blank=True, required=False)
     shelfobject_code = serializers.CharField(required=False)
+    # ISO/IEC 17025 §6.4
+    photo = ChunkedFileField(required=False, allow_empty_file=True, allow_null=True)
+    acceptance_evidence = ChunkedFileField(required=False, allow_empty_file=True, allow_null=True)
+    decommission_date = CustomDateInputFormat(
+        input_formats=settings.DATE_INPUT_FORMATS, required=False, allow_null=True
+    )
+    magnitude = serializers.PrimaryKeyRelatedField(
+        queryset=Catalog.objects.filter(key="equipment_magnitude"), required=False, allow_null=True
+    )
+    authorized_users = serializers.PrimaryKeyRelatedField(
+        queryset=Profile.objects.none(), many=True, required=False
+    )
 
     def get_fields(self, *args, **kwargs):
         fields = super().get_fields(*args, **kwargs)
@@ -2916,19 +3024,44 @@ class EditEquimentShelfobjectCharacteristicSerializer(serializers.ModelSerialize
             shelfobject = get_object_or_404(
                 ShelfObject, pk=self.initial_data.get("shelfobject")
             )
-            org = self.context.get("organization", None)
             obj = shelfobject.object
             if hasattr(obj, "equipmentcharacteristics"):
                 providers = obj.equipmentcharacteristics.providers.values_list(
                     "pk", flat=True
                 )
                 fields["provider"].queryset = Provider.objects.filter(pk__in=providers)
-            fields["authorized_roles_to_use_equipment"].queryset = Rol.objects.filter(
-                organizationstructure__pk=org
+        org = OrganizationStructure.objects.filter(pk=self.context.get("org_pk")).first()
+        if org is not None:
+            # Igual que el formulario: los roles se definen en la organización raíz.
+            # En un campo many=True el queryset que valida es el de child_relation.
+            fields["authorized_roles_to_use_equipment"].child_relation.queryset = Rol.objects.filter(
+                pk__in=org.root.rol.values_list("pk", flat=True)
             )
+            profiles = Profile.objects.filter(user__in=org.users.all())
+            fields["authorized_users"].child_relation.queryset = profiles
+            for name in ("custodian", "acceptance_responsible"):
+                fields[name].queryset = profiles
         return fields
 
+    def validate_internal_code(self, value):
+        value = (value or "").strip()
+        if not value:
+            return value
+        shelfobject = ShelfObject.objects.filter(pk=self.initial_data.get("shelfobject")).first()
+        if shelfobject is None or shelfobject.in_where_laboratory is None:
+            return value
+        duplicated = ShelfObjectEquipmentCharacteristics.objects.filter(
+            internal_code__iexact=value,
+            shelfobject__in_where_laboratory__organization=shelfobject.in_where_laboratory.organization,
+        ).exclude(shelfobject=shelfobject)
+        if duplicated.exists():
+            raise serializers.ValidationError(_("Another equipment of the organization already uses this code."))
+        return value
+
     def validate(self, data):
+        # La baja conserva el historial (8.4): solo cambia el estado.
+        if data.get("decommission_date"):
+            data["equipment_status"] = ShelfObjectEquipmentCharacteristics.DECOMMISSIONED
 
         shelfobject = data["shelfobject"]
 
@@ -2958,7 +3091,7 @@ class EditEquimentShelfobjectCharacteristicSerializer(serializers.ModelSerialize
             "first_date_use",
             "shelfobject_code",
             "notes",
-        ]
+        ] + ISO_EQUIPMENT_FIELDS
 
 
 class EditEquipmentShelfObjectSerializer(serializers.ModelSerializer):

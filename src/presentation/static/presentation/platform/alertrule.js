@@ -1,8 +1,8 @@
-/** Muestra solo el campo de umbral que usa el disparador elegido. */
+/** Muestra solo los campos de umbral que usa el disparador elegido. */
 function toggle_threshold(prefix) {
-    const trigger = $("#id_" + prefix + "trigger option:selected").text().trim();
-    Object.entries(threshold_fields).forEach(function ([description, field]) {
-        $("#id_" + prefix + field).closest(".gtformfield").toggle(description === trigger);
+    const trigger = $("#id_" + prefix + "trigger").val();
+    Object.entries(threshold_fields).forEach(function ([field, field_trigger]) {
+        $("#id_" + prefix + field).closest(".gtformfield").toggle(field_trigger === trigger);
     });
 }
 
@@ -65,6 +65,7 @@ const events = ObjectCRUD("platform_alertevent", {
             {data: "rule", name: "rule", title: gettext("Alert rule"), type: "readonly", render: gt_print_list_object("text"), visible: true},
             {data: "level", name: "level", title: gettext("Level"), type: "readonly", visible: true},
             {data: "message", name: "message", title: gettext("Message"), type: "string", visible: true},
+            {data: "resolved_at", name: "resolved_at", title: gettext("Resolved at"), type: "readonly", visible: true},
             {data: "link", name: "link", title: gettext("Link"), type: "readonly", render: showlink, visible: true, sortable: false},
         ],
         addfilter: false,

@@ -659,6 +659,132 @@ class ShelfObjectEquipmentCharacteristics(AbstractOrganizationRef):
         null=True, blank=True, verbose_name=_("First date use")
     )
 
+    # --- ISO/IEC 17025 §6.4 (plans/EQUIPOS_ISO17025_PLAN.md) ---
+    IN_SERVICE = "in_service"
+    OUT_OF_SERVICE = "out_of_service"
+    IN_MAINTENANCE = "in_maintenance"
+    IN_CALIBRATION = "in_calibration"
+    DECOMMISSIONED = "decommissioned"
+    EQUIPMENT_STATUS = (
+        (IN_SERVICE, _("In service")),
+        (OUT_OF_SERVICE, _("Out of service")),
+        (IN_MAINTENANCE, _("In maintenance")),
+        (IN_CALIBRATION, _("In calibration")),
+        (DECOMMISSIONED, _("Decommissioned")),
+    )
+
+    # Identificación
+    internal_code = models.CharField(
+        max_length=50, blank=True, default="", verbose_name=_("Internal code"),
+        help_text=_("Unique laboratory code of the equipment, e.g. LB-127"),
+    )
+    asset_number = models.CharField(
+        max_length=100, blank=True, default="", verbose_name=_("Institutional asset number")
+    )
+    brand = models.CharField(max_length=150, blank=True, default="", verbose_name=_("Brand"))
+    model = models.CharField(max_length=150, blank=True, default="", verbose_name=_("Model"))
+    serial_number = models.CharField(
+        max_length=150, blank=True, default="", verbose_name=_("Serial number")
+    )
+    photo = models.ImageField(
+        upload_to=upload_files, null=True, blank=True, verbose_name=_("Photo")
+    )
+    software_name = models.CharField(
+        max_length=150, blank=True, default="", verbose_name=_("Associated software")
+    )
+    software_version = models.CharField(
+        max_length=100, blank=True, default="", verbose_name=_("Software version")
+    )
+    firmware_version = models.CharField(
+        max_length=100, blank=True, default="", verbose_name=_("Firmware version")
+    )
+    magnitude = catalog.GTForeignKey(
+        Catalog,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="equipment_magnitude",
+        key_name="key",
+        key_value="equipment_magnitude",
+        verbose_name=_("Magnitude"),
+    )
+    # Ubicación
+    physical_location = models.CharField(
+        max_length=255, blank=True, default="", verbose_name=_("Specific physical location")
+    )
+    # Estado
+    equipment_status = models.CharField(
+        max_length=20, choices=EQUIPMENT_STATUS, default=IN_SERVICE,
+        verbose_name=_("Equipment status"),
+    )
+    use_restriction = models.TextField(blank=True, default="", verbose_name=_("Use restriction"))
+    # Especificaciones
+    measurement_unit = models.CharField(
+        max_length=100, blank=True, default="", verbose_name=_("Measurement unit")
+    )
+    resolution = models.CharField(max_length=100, blank=True, default="", verbose_name=_("Resolution"))
+    working_range = models.CharField(
+        max_length=150, blank=True, default="", verbose_name=_("Working range")
+    )
+    accuracy_tolerance = models.CharField(
+        max_length=150, blank=True, default="", verbose_name=_("Accuracy / tolerance")
+    )
+    capacity = models.CharField(max_length=150, blank=True, default="", verbose_name=_("Capacity"))
+    acceptance_criteria = models.TextField(
+        blank=True, default="", verbose_name=_("Acceptance criteria")
+    )
+    metrological_requirements = models.TextField(
+        blank=True, default="", verbose_name=_("Metrological requirements for use")
+    )
+    # Recepción
+    acceptance_evidence = models.FileField(
+        upload_to=upload_files, null=True, blank=True,
+        verbose_name=_("Evidence that it meets specifications before use"),
+    )
+    acceptance_responsible = models.ForeignKey(
+        "auth_and_perms.Profile", null=True, blank=True, on_delete=models.SET_NULL,
+        related_name="accepted_equipment", verbose_name=_("Acceptance responsible"),
+    )
+    # Responsabilidad
+    custodian = models.ForeignKey(
+        "auth_and_perms.Profile", null=True, blank=True, on_delete=models.SET_NULL,
+        related_name="custodied_equipment", verbose_name=_("Responsible / custodian"),
+    )
+    authorized_users = models.ManyToManyField(
+        "auth_and_perms.Profile", blank=True, related_name="authorized_equipment",
+        verbose_name=_("Personnel authorized to use it"),
+    )
+    access_restrictions = models.TextField(
+        blank=True, default="", verbose_name=_("Access restrictions")
+    )
+    # Baja
+    decommission_date = models.DateField(null=True, blank=True, verbose_name=_("Decommission date"))
+    decommission_reason = models.TextField(
+        blank=True, default="", verbose_name=_("Decommission reason")
+    )
+    final_disposition = models.TextField(blank=True, default="", verbose_name=_("Final disposition"))
+
+    def last_calibration(self):
+        return (
+            self.shelfobject.shelfobjectcalibrate_set.order_by("-calibration_date", "-pk").first()
+        )
+
+    def calibration_plan(self):
+        return self.shelfobject.equipmentactivityplan_set.filter(
+            is_active=True, activity_kind=EquipmentActivityPlan.CALIBRATION
+        ).first()
+
+    def calibration_status(self, today=None):
+        """``(estado, próxima fecha)`` de la calibración, para la etiqueta visual (6.4.8).
+
+        Estados: ``not_required`` (sin programa de calibración), ``valid``,
+        ``due_soon`` (dentro de los días de aviso del programa) y ``expired``.
+        """
+        plan = self.calibration_plan()
+        if plan is None:
+            return "not_required", None
+        return plan.due_status(today), plan.next_due()
+
 
 class ShelfObjectMaintenance(AbstractOrganizationRef):
     shelfobject = models.ForeignKey(
@@ -685,6 +811,41 @@ class ShelfObjectMaintenance(AbstractOrganizationRef):
         null=True, blank=True, verbose_name=_("Observation")
     )
 
+    PREVENTIVE = "preventive"
+    CORRECTIVE = "corrective"
+    CLEANING = "cleaning"
+    MAINTENANCE_TYPES = (
+        (PREVENTIVE, _("Preventive")),
+        (CORRECTIVE, _("Corrective")),
+        (CLEANING, _("Cleaning")),
+    )
+    maintenance_type = models.CharField(
+        max_length=20, choices=MAINTENANCE_TYPES, default=PREVENTIVE,
+        verbose_name=_("Maintenance type"),
+    )
+    plan = models.ForeignKey(
+        "laboratory.EquipmentActivityPlan", null=True, blank=True, on_delete=models.SET_NULL,
+        verbose_name=_("Program"),
+    )
+    activities = catalog.GTManyToManyField(
+        Catalog,
+        blank=True,
+        related_name="maintenance_activities",
+        key_name="key",
+        key_value="maintenance_activity",
+        verbose_name=_("Activities performed"),
+    )
+    report = models.FileField(
+        upload_to=upload_files, null=True, blank=True, verbose_name=_("Maintenance report")
+    )
+    affects_calibration = models.BooleanField(
+        default=False, verbose_name=_("Affects the results of the last calibration")
+    )
+    damage_details = models.TextField(
+        blank=True, default="",
+        verbose_name=_("Details of any damage, malfunction, modification or repair"),
+    )
+
 
 class ShelfObjectLog(AbstractOrganizationRef):
     shelfobject = models.ForeignKey(
@@ -709,6 +870,39 @@ class ShelfObjectCalibrate(AbstractOrganizationRef):
     )
     calibration_date = models.DateField(
         null=False, blank=False, verbose_name=_("Calibration date")
+    )
+
+    CONFORMING = "conforming"
+    NON_CONFORMING = "non_conforming"
+    CONFORMITY = (
+        (CONFORMING, _("Conforming")),
+        (NON_CONFORMING, _("Non-conforming")),
+    )
+    provider = models.ForeignKey(
+        "laboratory.Provider", null=True, blank=True, on_delete=models.SET_NULL,
+        verbose_name=_("Calibration laboratory"),
+    )
+    certificate = models.FileField(
+        upload_to=upload_files, null=True, blank=True, verbose_name=_("Calibration certificate")
+    )
+    certificate_number = models.CharField(
+        max_length=100, blank=True, default="", verbose_name=_("Certificate number")
+    )
+    results = models.TextField(blank=True, default="", verbose_name=_("Calibration results"))
+    uncertainty = models.CharField(max_length=150, blank=True, default="", verbose_name=_("Uncertainty"))
+    correction_factor = models.CharField(
+        max_length=150, blank=True, default="", verbose_name=_("Corrections / correction factors")
+    )
+    adjustments = models.TextField(blank=True, default="", verbose_name=_("Adjustments made"))
+    acceptance_criterion = models.TextField(
+        blank=True, default="", verbose_name=_("Acceptance criterion")
+    )
+    conformity = models.CharField(
+        max_length=20, choices=CONFORMITY, blank=True, default="", verbose_name=_("Conformity")
+    )
+    next_calibration_date = models.DateField(
+        null=True, blank=True, verbose_name=_("Next calibration"),
+        help_text=_("If empty, it is calculated from the calibration program"),
     )
 
 
@@ -746,6 +940,408 @@ class ShelfObjectGuarantee(AbstractOrganizationRef):
     contract = models.FileField(
         null=True, blank=True, upload_to=upload_files, verbose_name=_("Contract")
     )
+
+
+class EquipmentActivityPlan(AbstractOrganizationRef):
+    """Programa de una actividad periódica del equipo (ISO/IEC 17025 6.4.7 y 6.4.13).
+
+    La próxima fecha sale del último registro de la actividad: la calibración más
+    reciente, la última verificación, el último mantenimiento preventivo o limpieza.
+    Los registros enlazados al plan (``plan``) mandan sobre los demás del mismo tipo;
+    sin registros, la fecha de inicio del programa es el primer vencimiento.
+    """
+
+    CALIBRATION = "calibration"
+    VERIFICATION = "verification"
+    PREVENTIVE_MAINTENANCE = "preventive_maintenance"
+    CLEANING = "cleaning"
+    OTHER = "other"
+    ACTIVITY_KINDS = (
+        (CALIBRATION, _("Calibration")),
+        (VERIFICATION, _("Intermediate check")),
+        (PREVENTIVE_MAINTENANCE, _("Preventive maintenance")),
+        (CLEANING, _("Cleaning")),
+        (OTHER, _("Other")),
+    )
+    DAYS = "days"
+    MONTHS = "months"
+    INTERVAL_UNITS = ((DAYS, _("Days")), (MONTHS, _("Months")))
+
+    VALID = "valid"
+    DUE_SOON = "due_soon"
+    EXPIRED = "expired"
+
+    shelfobject = models.ForeignKey("laboratory.ShelfObject", on_delete=models.CASCADE)
+    activity_kind = models.CharField(
+        max_length=30, choices=ACTIVITY_KINDS, verbose_name=_("Activity")
+    )
+    name = models.CharField(
+        max_length=150, blank=True, default="", verbose_name=_("Name"),
+        help_text=_("Optional, e.g. the type of intermediate check"),
+    )
+    interval_value = models.PositiveIntegerField(verbose_name=_("Interval"))
+    interval_unit = models.CharField(
+        max_length=10, choices=INTERVAL_UNITS, default=MONTHS, verbose_name=_("Interval unit")
+    )
+    start_date = models.DateField(
+        null=True, blank=True, verbose_name=_("Program start date"),
+        help_text=_("First due date when there are no records yet"),
+    )
+    reminder_days_before = models.PositiveIntegerField(
+        default=30, verbose_name=_("Days of notice before the due date")
+    )
+    responsible = models.ForeignKey(
+        "auth_and_perms.Profile", null=True, blank=True, on_delete=models.SET_NULL,
+        related_name="equipment_activity_plans", verbose_name=_("Responsible"),
+    )
+    is_active = models.BooleanField(default=True, verbose_name=_("Is active"))
+    notes = models.TextField(blank=True, default="", verbose_name=_("Notes"))
+
+    class Meta:
+        verbose_name = _("Equipment activity program")
+        verbose_name_plural = _("Equipment activity programs")
+        ordering = ["activity_kind", "pk"]
+
+    def __str__(self):
+        return self.name or self.get_activity_kind_display()
+
+    def interval(self):
+        from dateutil.relativedelta import relativedelta
+
+        if self.interval_unit == self.DAYS:
+            return relativedelta(days=self.interval_value)
+        return relativedelta(months=self.interval_value)
+
+    def records(self):
+        """``(queryset, campo de fecha)`` de los registros que cumplen esta actividad."""
+        so = self.shelfobject
+        if self.activity_kind == self.CALIBRATION:
+            return so.shelfobjectcalibrate_set.all(), "calibration_date"
+        if self.activity_kind == self.VERIFICATION:
+            qs = so.shelfobjectverification_set.all()
+            linked = qs.filter(plan=self)
+            return (linked if linked.exists() else qs), "verification_date"
+        maintenances = so.shelfobjectmaintenance_set.all()
+        linked = maintenances.filter(plan=self)
+        if linked.exists() or self.activity_kind == self.OTHER:
+            return linked, "maintenance_date"
+        if self.activity_kind == self.CLEANING:
+            return maintenances.filter(maintenance_type=ShelfObjectMaintenance.CLEANING), "maintenance_date"
+        return maintenances.filter(maintenance_type=ShelfObjectMaintenance.PREVENTIVE), "maintenance_date"
+
+    def last_record(self):
+        queryset, field = self.records()
+        return queryset.order_by("-%s" % field, "-pk").first()
+
+    def last_done(self):
+        record = self.last_record()
+        if record is None:
+            return None
+        _qs, field = self.records()
+        return getattr(record, field)
+
+    def next_due(self):
+        record = self.last_record()
+        if record is None:
+            return self.start_date
+        if self.activity_kind == self.CALIBRATION and record.next_calibration_date:
+            return record.next_calibration_date
+        _qs, field = self.records()
+        return getattr(record, field) + self.interval()
+
+    def due_status(self, today=None):
+        import datetime
+
+        due = self.next_due()
+        if due is None:
+            return self.VALID
+        today = today or datetime.date.today()
+        if due < today:
+            return self.EXPIRED
+        if (due - today).days <= self.reminder_days_before:
+            return self.DUE_SOON
+        return self.VALID
+
+
+class ShelfObjectVerification(AbstractOrganizationRef):
+    """Verificación intermedia (ISO/IEC 17025 6.4.10)."""
+
+    shelfobject = models.ForeignKey("laboratory.ShelfObject", on_delete=models.CASCADE)
+    plan = models.ForeignKey(
+        EquipmentActivityPlan, null=True, blank=True, on_delete=models.SET_NULL,
+        verbose_name=_("Program"),
+    )
+    verification_date = models.DateField(verbose_name=_("Verification date"))
+    verification_type = models.CharField(
+        max_length=150, blank=True, default="", verbose_name=_("Verification type")
+    )
+    result = models.TextField(blank=True, default="", verbose_name=_("Result"))
+    acceptance_criterion = models.TextField(
+        blank=True, default="", verbose_name=_("Acceptance criterion")
+    )
+    conformity = models.CharField(
+        max_length=20, choices=ShelfObjectCalibrate.CONFORMITY, blank=True, default="",
+        verbose_name=_("Conformity"),
+    )
+    responsible = models.ForeignKey(
+        "auth_and_perms.Profile", null=True, blank=True, on_delete=models.SET_NULL,
+        related_name="equipment_verifications", verbose_name=_("Responsible"),
+    )
+    document = models.FileField(
+        upload_to=upload_files, null=True, blank=True, verbose_name=_("Attached record")
+    )
+    observation = models.TextField(blank=True, default="", verbose_name=_("Observation"))
+
+    class Meta:
+        verbose_name = _("Intermediate check")
+        verbose_name_plural = _("Intermediate checks")
+
+
+class ShelfObjectFailure(AbstractOrganizationRef):
+    """Falla, reparación y vuelta al servicio (ISO/IEC 17025 6.4.9 y 7.10)."""
+
+    shelfobject = models.ForeignKey("laboratory.ShelfObject", on_delete=models.CASCADE)
+    failure_date = models.DateField(verbose_name=_("Failure date"))
+    description = models.TextField(verbose_name=_("Description of the damage or malfunction"))
+    blocked = models.BooleanField(
+        default=True, verbose_name=_("Equipment taken out of service"),
+        help_text=_("While it is not returned to service the equipment is marked as out of service"),
+    )
+    repair_done = models.TextField(blank=True, default="", verbose_name=_("Repair performed"))
+    modifications = models.TextField(blank=True, default="", verbose_name=_("Modifications made"))
+    provider = models.ForeignKey(
+        "laboratory.Provider", null=True, blank=True, on_delete=models.SET_NULL,
+        verbose_name=_("Provider"),
+    )
+    responsible = models.ForeignKey(
+        "auth_and_perms.Profile", null=True, blank=True, on_delete=models.SET_NULL,
+        related_name="equipment_failures", verbose_name=_("Responsible"),
+    )
+    return_to_service_date = models.DateField(
+        null=True, blank=True, verbose_name=_("Return to service date")
+    )
+    verification_before_use = models.TextField(
+        blank=True, default="", verbose_name=_("Verification before using it again")
+    )
+    impact_assessment = models.TextField(
+        blank=True, default="", verbose_name=_("Impact assessment on previous results")
+    )
+    report = models.FileField(
+        upload_to=upload_files, null=True, blank=True, verbose_name=_("Report")
+    )
+
+    class Meta:
+        verbose_name = _("Failure and repair")
+        verbose_name_plural = _("Failures and repairs")
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.apply_to_equipment_status()
+
+    def apply_to_equipment_status(self):
+        """Bloquea el equipo mientras la falla no tenga fecha de vuelta al servicio (6.4.9)."""
+        if not self.blocked:
+            return
+        # Siempre desde la base: la relación cacheada puede traer un estado viejo.
+        characteristics = ShelfObjectEquipmentCharacteristics.objects.filter(
+            shelfobject_id=self.shelfobject_id
+        ).only("pk", "equipment_status").first()
+        if characteristics is None:
+            return
+        status = characteristics.equipment_status
+        if self.return_to_service_date is None:
+            new_status = ShelfObjectEquipmentCharacteristics.OUT_OF_SERVICE
+        elif status == ShelfObjectEquipmentCharacteristics.OUT_OF_SERVICE:
+            other_open = ShelfObjectFailure.objects.filter(
+                shelfobject=self.shelfobject, blocked=True, return_to_service_date__isnull=True
+            ).exclude(pk=self.pk)
+            new_status = status if other_open.exists() else ShelfObjectEquipmentCharacteristics.IN_SERVICE
+        else:
+            return
+        if new_status != status:
+            ShelfObjectEquipmentCharacteristics.objects.filter(pk=characteristics.pk).update(
+                equipment_status=new_status
+            )
+
+
+class EquipmentDocument(AbstractOrganizationRef):
+    """Documentación del equipo (ISO/IEC 17025 6.4.3): manuales, instructivos, certificados."""
+
+    shelfobject = models.ForeignKey("laboratory.ShelfObject", on_delete=models.CASCADE)
+    document_type = catalog.GTForeignKey(
+        Catalog,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name="equipment_documents",
+        key_name="key",
+        key_value="equipment_document_type",
+        verbose_name=_("Document type"),
+    )
+    title = models.CharField(max_length=255, verbose_name=_("Title"))
+    version = models.CharField(max_length=50, blank=True, default="", verbose_name=_("Version"))
+    file = models.FileField(upload_to=upload_files, verbose_name=_("File"))
+    valid_from = models.DateField(null=True, blank=True, verbose_name=_("Valid from"))
+
+    class Meta:
+        verbose_name = _("Equipment document")
+        verbose_name_plural = _("Equipment documents")
+
+    def __str__(self):
+        return self.title
+
+
+class ControlMethod(AbstractOrganizationRef):
+    """Método de control estadístico reutilizable por tipo de equipo o procedimiento (F3).
+
+    Define el tipo de carta, cuántas lecturas tiene cada registro y las constantes. Las
+    constantes se precargan de la tabla estándar según ``subgroup_size`` y son editables:
+    nada del cálculo queda fijo en el código.
+    """
+
+    XBAR_R = "xbar_r"
+    I_MR = "i_mr"
+    CHART_TYPES = (
+        (XBAR_R, _("Means and ranges (X̄-R)")),
+        (I_MR, _("Individuals and moving range (I-MR)")),
+    )
+
+    name = models.CharField(max_length=150, verbose_name=_("Name"))
+    description = models.TextField(blank=True, default="", verbose_name=_("Description"))
+    chart_type = models.CharField(
+        max_length=10, choices=CHART_TYPES, default=XBAR_R, verbose_name=_("Chart type")
+    )
+    subgroup_size = models.PositiveSmallIntegerField(
+        default=5, verbose_name=_("Readings per record (n)"),
+        help_text=_("Between 2 and 10 for X̄-R; always 1 for I-MR"),
+    )
+    a2 = models.DecimalField(max_digits=8, decimal_places=4, null=True, blank=True, verbose_name="A2",
+                             help_text=_("E2 for I-MR. Empty: standard table value"))
+    d3 = models.DecimalField(max_digits=8, decimal_places=4, null=True, blank=True, verbose_name="D3")
+    d4 = models.DecimalField(max_digits=8, decimal_places=4, null=True, blank=True, verbose_name="D4")
+    decimal_places = models.PositiveSmallIntegerField(default=4, verbose_name=_("Decimal places"))
+    acceptance_criterion = models.TextField(
+        blank=True, default="", verbose_name=_("Acceptance criterion")
+    )
+
+    class Meta:
+        verbose_name = _("Control method")
+        verbose_name_plural = _("Control methods")
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        from laboratory.equipment import spc
+
+        if self.chart_type == self.I_MR:
+            self.subgroup_size = 1
+        defaults = spc.default_constants(self.chart_type, self.subgroup_size)
+        for name in ("a2", "d3", "d4"):
+            if getattr(self, name) is None:
+                setattr(self, name, defaults[name])
+        super().save(*args, **kwargs)
+
+    def constants(self):
+        from decimal import Decimal
+
+        # normalize(): el mismo texto recién creado (2.114) que leído de la base (2.1140).
+        return {name: Decimal(str(getattr(self, name))).normalize() for name in ("a2", "d3", "d4")}
+
+
+class ControlPoint(AbstractOrganizationRef):
+    """Un punto de control de un equipo, p. ej. «P1 (5 g)» de una balanza."""
+
+    shelfobject = models.ForeignKey("laboratory.ShelfObject", on_delete=models.CASCADE)
+    method = models.ForeignKey(ControlMethod, on_delete=models.PROTECT, verbose_name=_("Control method"))
+    name = models.CharField(max_length=150, verbose_name=_("Name"))
+    nominal_value = models.DecimalField(
+        max_digits=14, decimal_places=6, null=True, blank=True, verbose_name=_("Nominal value")
+    )
+    unit = models.CharField(max_length=50, blank=True, default="", verbose_name=_("Unit"))
+    reference_standard = models.CharField(
+        max_length=255, blank=True, default="", verbose_name=_("Reference standard or material"),
+        help_text=_("E.g. the reference weights and their certificate"),
+    )
+    correction = models.DecimalField(
+        max_digits=14, decimal_places=6, default=0, verbose_name=_("Correction"),
+        help_text=_("Subtracted from each mean, e.g. the indication error of the reference standard"),
+    )
+    tolerance = models.DecimalField(
+        max_digits=14, decimal_places=6, null=True, blank=True, verbose_name=_("Acceptance tolerance (±)"),
+        help_text=_("Maximum allowed difference between the corrected mean and the nominal value"),
+    )
+    is_active = models.BooleanField(default=True, verbose_name=_("Is active"))
+
+    class Meta:
+        verbose_name = _("Control point")
+        verbose_name_plural = _("Control points")
+        ordering = ["shelfobject", "nominal_value", "name"]
+
+    def __str__(self):
+        return self.name
+
+    def current_limits(self):
+        return self.controllimits_set.filter(is_current=True).first()
+
+
+class ControlLimits(AbstractOrganizationRef):
+    """Límites calculados con un período de referencia; se guarda cada recálculo."""
+
+    point = models.ForeignKey(ControlPoint, on_delete=models.CASCADE)
+    baseline_from = models.DateField(verbose_name=_("Reference period from"))
+    baseline_to = models.DateField(verbose_name=_("Reference period to"))
+    subgroups = models.PositiveIntegerField(verbose_name=_("Records in the reference period"))
+    center = models.DecimalField(max_digits=16, decimal_places=8, verbose_name=_("Center line"))
+    ucl = models.DecimalField(max_digits=16, decimal_places=8, verbose_name=_("Upper control limit"))
+    lcl = models.DecimalField(max_digits=16, decimal_places=8, verbose_name=_("Lower control limit"))
+    range_center = models.DecimalField(max_digits=16, decimal_places=8, verbose_name=_("Range center line"))
+    range_ucl = models.DecimalField(max_digits=16, decimal_places=8, verbose_name=_("Range upper limit"))
+    range_lcl = models.DecimalField(max_digits=16, decimal_places=8, verbose_name=_("Range lower limit"))
+    constants = models.JSONField(default=dict, verbose_name=_("Constants used"))
+    correction = models.DecimalField(max_digits=14, decimal_places=6, default=0, verbose_name=_("Correction"))
+    is_current = models.BooleanField(default=True, verbose_name=_("Current"))
+    notes = models.TextField(blank=True, default="", verbose_name=_("Notes"))
+
+    class Meta:
+        verbose_name = _("Control limits")
+        verbose_name_plural = _("Control limits")
+        ordering = ["-creation_date"]
+
+    def as_dict(self):
+        return {name: getattr(self, name) for name in
+                ("center", "ucl", "lcl", "range_center", "range_ucl", "range_lcl")}
+
+
+class ControlMeasurement(AbstractOrganizationRef):
+    """Un registro de control: las n lecturas de un punto en una fecha."""
+
+    point = models.ForeignKey(ControlPoint, on_delete=models.CASCADE)
+    measured_on = models.DateField(verbose_name=_("Date"))
+    values = models.JSONField(verbose_name=_("Readings"))
+    responsible = models.ForeignKey(
+        "auth_and_perms.Profile", null=True, blank=True, on_delete=models.SET_NULL,
+        related_name="control_measurements", verbose_name=_("Responsible"),
+    )
+    observation = models.TextField(blank=True, default="", verbose_name=_("Observation"))
+    mean = models.DecimalField(max_digits=16, decimal_places=8, verbose_name=_("Mean"))
+    range = models.DecimalField(max_digits=16, decimal_places=8, null=True, blank=True, verbose_name=_("Range"))
+    corrected_mean = models.DecimalField(max_digits=16, decimal_places=8, verbose_name=_("Corrected mean"))
+    limits = models.ForeignKey(
+        ControlLimits, null=True, blank=True, on_delete=models.SET_NULL, verbose_name=_("Limits applied")
+    )
+    out_of_control = models.BooleanField(default=False, verbose_name=_("Out of control"))
+    out_of_acceptance = models.BooleanField(default=False, verbose_name=_("Out of acceptance criterion"))
+    deviation = models.TextField(blank=True, default="", verbose_name=_("Deviation detected"))
+    corrective_action = models.TextField(
+        blank=True, default="", verbose_name=_("Action taken"),
+        help_text=_("Recording the action resolves the alert of this record"),
+    )
+
+    class Meta:
+        verbose_name = _("Control record")
+        verbose_name_plural = _("Control records")
+        ordering = ["point", "measured_on", "pk"]
 
 
 class BaseUnitValues(models.Model):
@@ -1450,6 +2046,23 @@ class Laboratory(BaseCreationObj):
         return rooms
 
 
+class ProviderQuerySet(models.QuerySet):
+    def for_laboratory(self, organization, laboratory):
+        """Proveedores que se pueden elegir trabajando en ``laboratory`` desde ``organization``.
+
+        Los proveedores se registran por laboratorio. Un laboratorio compartido con otra
+        organización (``OrganizationStructureRelations``) sigue perteneciendo a su dueña,
+        así que filtrar solo por ``laboratory__organization`` dejaba fuera a sus propios
+        proveedores. Se aceptan los del laboratorio, los de los laboratorios de la
+        organización y los que no tienen laboratorio.
+        """
+        return self.filter(
+            models.Q(laboratory=laboratory)
+            | models.Q(laboratory__organization=organization)
+            | models.Q(laboratory__isnull=True)
+        ).distinct()
+
+
 class Provider(BaseCreationObj):
     name = models.CharField(
         max_length=255, blank=True, default="", verbose_name=_("Name")
@@ -1464,6 +2077,8 @@ class Provider(BaseCreationObj):
     laboratory = models.ForeignKey(
         Laboratory, on_delete=models.CASCADE, blank=True, null=True
     )
+
+    objects = ProviderQuerySet.as_manager()
 
     def __str__(self):
         return self.name
@@ -2009,6 +2624,17 @@ class TemporalUploadReactive(BaseCreationObj):
         verbose_name=_("Shelf"),
         related_name="shelf_temp",
     )
+    data = JSONField()
+
+
+class TemporalUploadEquipment(BaseCreationObj):
+    """Filas leídas de un Excel de equipos, a la espera de su revisión (fase 2 ISO 17025)."""
+
+    key = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    laboratory = models.ForeignKey(Laboratory, on_delete=models.CASCADE, related_name="equipment_uploads")
+    shelf = models.ForeignKey(Shelf, on_delete=models.CASCADE, verbose_name=_("Shelf"), related_name="+")
+    kind = models.CharField(max_length=20, verbose_name=_("Format"))
+    sheet = models.CharField(max_length=100, blank=True, default="", verbose_name=_("Sheet"))
     data = JSONField()
 
 

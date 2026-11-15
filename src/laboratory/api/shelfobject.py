@@ -125,6 +125,7 @@ from laboratory.shelfobject.utils import (
     move_box_partial_quantity_to,
 )
 
+from djgentelella.permission_management import AllPermissionByAction
 from laboratory.utils import save_object_by_action, PermissionByLaboratoryInOrganization
 from laboratory.utils_base_unit import get_conversion_from_two_units, get_base_unit
 from sga.models import RecipientSize
@@ -2680,8 +2681,30 @@ class SearchLabView(viewsets.GenericViewSet):
         return JsonResponse({"search_list": search_list}, status=status.HTTP_200_OK)
 
 
+def equipment_record_perms(model_name):
+    """Mapa ``perms`` completo para un registro de equipo (``model_name`` en minúsculas).
+
+    ``AllPermissionByAction`` responde 403 en cualquier acción sin mapear, así que
+    las de lectura de ``BaseObjectManagement`` también tienen que estar.
+    """
+    view = "laboratory.view_%s" % model_name
+    change = ["laboratory.change_%s" % model_name, view]
+    return {
+        "list": [view],
+        "retrieve": [view],
+        "detail": [view],
+        "detail_template": [view],
+        "get_values_for_update": change,
+        "create": ["laboratory.add_%s" % model_name, view],
+        "update": change,
+        "destroy": ["laboratory.delete_%s" % model_name, view],
+    }
+
+
 class AuthAllPermBaseObjectManagementShelfObjectBase(AuthAllPermBaseObjectManagement):
-    permission_classes = (PermissionByLaboratoryInOrganization,)
+    # Primero el permiso por acción y después el ámbito org + laboratorio: con solo el
+    # segundo, el diccionario ``perms`` quedaba sin efecto (HALLAZGOS_COBERTURA.md).
+    permission_classes = (AllPermissionByAction, PermissionByLaboratoryInOrganization)
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     ordering_fields = ["pk"]
@@ -2690,8 +2713,13 @@ class AuthAllPermBaseObjectManagementShelfObjectBase(AuthAllPermBaseObjectManage
 
     def filter_queryset(self, queryset):
         queryset = super().filter_queryset(queryset)
-        if self.shelfobject:
-            return queryset.filter(shelfobject=self.shelfobject).distinct()
+        # Siempre desde la URL: el equipo tiene que estar en el laboratorio de la ruta.
+        shelfobject = self.kwargs.get("shelfobject")
+        lab_pk = self.kwargs.get("lab_pk")
+        if shelfobject and lab_pk:
+            return queryset.filter(
+                shelfobject=shelfobject, shelfobject__in_where_laboratory_id=lab_pk
+            ).distinct()
         return queryset.none()
 
     def list(self, request, *args, **kwargs):
@@ -2708,21 +2736,7 @@ class ShelfObjectMaintanenceViewset(AuthAllPermBaseObjectManagementShelfObjectBa
         "create": CreateMaintenanceSerializer,
         "update": UpdateMaintenanceSerializer,
     }
-    perms = {
-        "create": [
-            "laboratory.add_shelfobjectmaintenance",
-            "laboratory.view_shelfobjectmaintenance",
-        ],
-        "update": [
-            "laboratory.change_shelfobjectmaintenance",
-            "laboratory.view_shelfobjectmaintenance",
-        ],
-        "destroy": [
-            "laboratory.delete_shelfobjectmaintenance",
-            "laboratory.view_shelfobjectmaintenance",
-        ],
-        "detail": ["laboratory.view_shelfobjectmaintenance"],
-    }
+    perms = equipment_record_perms("shelfobjectmaintenance")
 
     queryset = ShelfObjectMaintenance.objects.all()
     search_fields = [
@@ -2857,18 +2871,7 @@ class ShelfObjectLogViewset(AuthAllPermBaseObjectManagementShelfObjectBase):
         "create": ValidateShelfObjectLogSerializer,
         "update": ValidateShelfObjectLogSerializer,
     }
-    perms = {
-        "create": ["laboratory.add_shelfobjectlog", "laboratory.view_shelfobjectlog"],
-        "update": [
-            "laboratory.change_shelfobjectlog",
-            "laboratory.view_shelfobjectlog",
-        ],
-        "destroy": [
-            "laboratory.delete_shelfobjectlog",
-            "laboratory.view_shelfobjectlog",
-        ],
-        "detail": ["laboratory.view_shelfobjectlog"],
-    }
+    perms = equipment_record_perms("shelfobjectlog")
 
     queryset = ShelfObjectLog.objects.all()
     search_fields = ["description", "created_by__first_name", "created_by__last_name"]
@@ -2975,21 +2978,7 @@ class ShelfObjectCalibrateViewset(AuthAllPermBaseObjectManagementShelfObjectBase
         "create": ValidateShelfObjectCalibrateSerializer,
         "update": ValidateShelfObjectCalibrateSerializer,
     }
-    perms = {
-        "create": [
-            "laboratory.add_shelfobjectcalibrate",
-            "laboratory.view_shelfobjectcalibrate",
-        ],
-        "update": [
-            "laboratory.change_shelfobjectcalibrate",
-            "laboratory.view_shelfobjectcalibrate",
-        ],
-        "destroy": [
-            "laboratory.delete_shelfobjectcalibrate",
-            "laboratory.view_shelfobjectcalibrate",
-        ],
-        "detail": ["laboratory.view_shelfobjectcalibrate"],
-    }
+    perms = equipment_record_perms("shelfobjectcalibrate")
 
     queryset = ShelfObjectCalibrate.objects.all()
     search_fields = [
@@ -3130,21 +3119,7 @@ class ShelfObjectGuaranteeViewset(AuthAllPermBaseObjectManagementShelfObjectBase
         "create": ValidateShelfObjectGuaranteeSerializer,
         "update": ValidateShelfObjectGuaranteeSerializer,
     }
-    perms = {
-        "create": [
-            "laboratory.add_shelfobjectguarantee",
-            "laboratory.view_shelfobjectguarantee",
-        ],
-        "update": [
-            "laboratory.change_shelfobjectguarantee",
-            "laboratory.view_shelfobjectguarantee",
-        ],
-        "destroy": [
-            "laboratory.delete_shelfobjectguarantee",
-            "laboratory.view_shelfobjectguarantee",
-        ],
-        "detail": ["laboratory.view_shelfobjectguarantee"],
-    }
+    perms = equipment_record_perms("shelfobjectguarantee")
 
     queryset = ShelfObjectGuarantee.objects.all()
     filterset_class = ShelfObjectGuarenteeFilter
@@ -3274,21 +3249,7 @@ class ShelfObjectTrainingViewset(AuthAllPermBaseObjectManagementShelfObjectBase)
         "create": ValidateShelfObjectTrainingSerializer,
         "update": ValidateShelfObjectTrainingSerializer,
     }
-    perms = {
-        "create": [
-            "laboratory.add_shelfobjecttraining",
-            "laboratory.view_shelfobjecttraining",
-        ],
-        "update": [
-            "laboratory.change_shelfobjecttraining",
-            "laboratory.view_shelfobjecttraining",
-        ],
-        "destroy": [
-            "laboratory.delete_shelfobjecttraining",
-            "laboratory.view_shelfobjecttraining",
-        ],
-        "detail": ["laboratory.view_shelfobjecttraining"],
-    }
+    perms = equipment_record_perms("shelfobjecttraining")
 
     queryset = ShelfObjectTraining.objects.all()
     search_fields = ["place", "observation", "number_of_hours"]

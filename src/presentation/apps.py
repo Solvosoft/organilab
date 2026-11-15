@@ -7,4 +7,5 @@ class PresentationConfig(AppConfig):
 
     def ready(self):
         import presentation.signals
+        import presentation.alerts  # noqa: F401  registra los canales de alerta de organilab
         super(PresentationConfig, self).ready()

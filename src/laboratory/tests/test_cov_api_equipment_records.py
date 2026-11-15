@@ -16,6 +16,7 @@ from laboratory.models import (
     ShelfObjectTraining,
     ShelfObjectObservation,
     Laboratory,
+    OrganizationStructureRelations,
 )
 from laboratory.tests.test_cov_api_base import CovApiBase
 
@@ -373,5 +374,9 @@ class ValidacionRegistrosEquipoTest(RegistrosEquipoBase):
     def test_objeto_de_otra_organizacion(self):
         ShelfObject.objects.filter(pk=self.equipo.pk).update(in_where_laboratory_id=2)
         Laboratory.objects.filter(pk=2).update(organization_id=3)
+        # Sin la relación que lo comparte con la organización 1 (ver test_equipment_org_scope).
+        OrganizationStructureRelations.objects.filter(
+            object_id=2, content_type__model="laboratory", organization_id=self.org.pk
+        ).delete()
         serializer = self.validar(self.base_data(), lab_pk=2)
         self.assertIn("shelfobject", serializer.errors)

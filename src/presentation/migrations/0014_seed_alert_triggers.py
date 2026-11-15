@@ -1,10 +1,14 @@
 from django.db import migrations
 
-from presentation.alerts import seed_alert_triggers
+# Copia congelada: el disparador pasó a ser un código de djgentelella.alerts
+# (0015) y presentation.alerts ya no siembra el catálogo.
+TRIGGERS = ("Variación porcentual", "Umbral absoluto", "Sin registro")
 
 
 def load_triggers(apps, schema_editor):
-    seed_alert_triggers(apps.get_model("laboratory", "Catalog"))
+    Catalog = apps.get_model("laboratory", "Catalog")
+    for description in TRIGGERS:
+        Catalog.objects.get_or_create(key="alert_trigger", description=description)
 
 
 class Migration(migrations.Migration):

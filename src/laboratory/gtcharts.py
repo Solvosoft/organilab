@@ -147,3 +147,7 @@ class ObjectLimitsClassChart(BaseChart, LineChart):
                 "data": self.data,
             }
         ]
+
+
+# Cartas de control de equipos (ISO/IEC 17025): djgentelella solo descubre <app>/gtcharts.py.
+from laboratory.equipment import charts as equipment_control_charts  # noqa: E402,F401

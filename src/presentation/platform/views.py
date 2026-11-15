@@ -1,3 +1,4 @@
+import json
 from functools import wraps
 
 from django.contrib.auth.decorators import login_required, permission_required
@@ -6,6 +7,7 @@ from django.shortcuts import get_object_or_404, render
 
 from auth_and_perms.organization_utils import organization_permissions, user_is_allowed_on_organization
 from laboratory.models import OrganizationStructure
+from presentation.alerts import threshold_fields
 from presentation.platform.forms import AlertRuleForm, NotificationSettingForm, SystemParameterForm
 
 
@@ -53,5 +55,8 @@ def alertrule_list(request, org_pk):
         "org_pk": org_pk,
         "form_create": AlertRuleForm(prefix="create", user=request.user),
         "form_update": AlertRuleForm(prefix="update", user=request.user),
+        "threshold_fields_json": json.dumps(
+            {name: trigger for name, (trigger, _field) in threshold_fields().items()}
+        ),
     }
     return render(request, "platform/alertrule_list.html", context=context)

@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans 'Review equipment import' %}{% endblock %}
+{% block content %}
+<div class="page-header text-center">
+	<h3>{% trans 'Review equipment import' %}</h3>
+	<p class="text-muted">{% blocktrans with sheet=temp.sheet count=temp.data|length %}Sheet «{{ sheet }}»: {{ count }} rows.{% endblocktrans %}
+	{% trans 'Uncheck the rows you do not want to import and correct what is needed.' %}</p>
+</div>
+<form method="post">
+	{% csrf_token %}
+	{{ formset.management_form }}
+	{% if formset.non_form_errors %}<div class="alert alert-danger">{{ formset.non_form_errors }}</div>{% endif %}
+	<div class="table-responsive">
+	<table class="table table-sm table-striped align-middle" id="equipment_import_table">
+		<thead><tr><th>#</th>{% for header in headers %}<th>{{ header }}</th>{% endfor %}</tr></thead>
+		<tbody>
+		{% for form in formset %}
+			<tr{% if form.errors %} class="table-danger"{% endif %}>
+				<td>{{ form.initial.row|default:forloop.counter }}</td>
+				{% for field in form.visible_fields %}{% if field.name in visible %}
+				<td>
+					{{ field }}
+					{% if field.name == "internal_code" and form.existing_name %}
+						<small class="text-warning d-block"><i class="fa fa-exclamation-triangle"></i>
+						{% blocktrans with name=form.existing_name %}Already used by «{{ name }}»: its sheet will be updated.{% endblocktrans %}</small>
+					{% endif %}
+					{% if field.name == "custodian" and form.responsible.value %}
+						<small class="text-muted d-block">{% trans 'Spreadsheet' %}: {{ form.responsible.value }}</small>
+					{% endif %}
+					{% for error in field.errors %}<small class="text-danger d-block">{{ error }}</small>{% endfor %}
+				</td>
+				{% endif %}{% endfor %}
+				{% for field in form.hidden_fields %}{{ field }}{% endfor %}
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+	</div>
+	<button type="submit" class="btn btn-success float-end">{% trans 'Import' %}</button>
+	<a href="{% url 'laboratory:equipment_import' org_pk lab_pk %}" class="btn btn-outline-secondary">{% trans 'Cancel' %}</a>
+</form>
+{% endblock %}

@@ -59,7 +59,8 @@
 			destroy_url: "{% url 'platform:api-alertrule-detail' org_pk 0 %}",
 		};
 		const event_urls = {list_url: "{% url 'platform:api-alertevent-list' org_pk %}"};
-		const threshold_fields = {"Variación porcentual": "percent", "Umbral absoluto": "value", "Sin registro": "months"};
+		// campo de umbral -> disparador que lo usa (djgentelella.alerts)
+		const threshold_fields = {{ threshold_fields_json|safe }};
 	</script>
 	<script src="{% static 'presentation/platform/alertrule.js' %}?v={% get_organilab_version %}"></script>
 {% endblock %}

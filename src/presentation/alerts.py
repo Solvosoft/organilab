@@ -1,6 +1,18 @@
-"""Alertas configurables: registro de procesos, validación de umbrales y disparo.
+"""Alertas configurables de organilab sobre ``djgentelella.alerts``.
 
-Una app que quiere alertas configurables registra su proceso en ``AppConfig.ready``::
+djgentelella pone el núcleo: el registro de procesos y disparadores (en código), los
+modelos abstractos, ``fire_alert`` con ``dedupe_key``, ``resolve_alert`` y los canales.
+Este módulo es la fachada de organilab y suma lo propio del proyecto:
+
+* **Destinatarios** (``rule_recipients``): el responsable que indique el proceso, si la
+  regla lo pide, más los usuarios con los roles de la regla en su organización.
+* **Canales:**
+  * ``email`` sale por ``send_process_email`` y respeta la ``NotificationSetting`` de la
+    organización.
+  * ``notification`` (la campana) avisa solo las críticas.
+  * ``pending_task`` crea la tarea pendiente y la cierra cuando la alerta se resuelve.
+
+Una app registra su proceso en ``AppConfig.ready``::
 
     register_alert_process(
         "ambiental.consumption", label=_("Atypical consumption"),
@@ -9,78 +21,60 @@ Una app que quiere alertas configurables registra su proceso en ``AppConfig.read
         permission="ambiental.add_measurementpoint",
         notification_code="ambiental-consumption-alert",
     )
-
-El evaluador recibe cada ``AlertRule`` activa del proceso y, cuando corresponde, llama
-a ``fire_alert``, que deja el ``AlertEvent`` y avisa: correo por
-``send_process_email``, tarea pendiente y, si la regla es crítica, notificación en la
-campana.
 """
 import logging
-from decimal import Decimal, InvalidOperation
 
 from django.contrib.auth import get_user_model
-from django.utils.module_loading import import_string
-from django.utils.translation import gettext_lazy as _
+from djgentelella.alerts import (  # noqa: F401  (API pública de la fachada)
+    TRIGGER_ABSOLUTE,
+    TRIGGER_DUE,
+    TRIGGER_MISSING,
+    TRIGGER_PERCENT,
+    AlertChannel,
+    EmailChannel,
+    NotificationChannel,
+    due_status,
+    fire_due_alert,
+    get_process,
+    get_trigger,
+    processes_for,
+    register_alert_process,
+    register_channel,
+    resolve_alert,
+    run_alert_rules,
+    trigger_choices,
+    validate_threshold,
+)
+from djgentelella.alerts import fire_alert as core_fire_alert
+from djgentelella.alerts.triggers import TRIGGERS
 
 logger = logging.getLogger("organilab")
 
-KEY_ALERT_TRIGGER = "alert_trigger"
-TRIGGER_PERCENT = "Variación porcentual"
-TRIGGER_ABSOLUTE = "Umbral absoluto"
-TRIGGER_MISSING = "Sin registro"
-TRIGGERS = (TRIGGER_PERCENT, TRIGGER_ABSOLUTE, TRIGGER_MISSING)
 
-#: disparador -> (campo del umbral, etiqueta, conversión)
-THRESHOLD_FIELDS = {
-    TRIGGER_PERCENT: ("percent", _("Percentage over the average"), Decimal),
-    TRIGGER_ABSOLUTE: ("value", _("Maximum value"), Decimal),
-    TRIGGER_MISSING: ("months", _("Months without records"), int),
-}
-
-ALERT_PROCESSES = {}
-
-
-def register_alert_process(code, label, evaluator, triggers, permission=None, notification_code=""):
-    ALERT_PROCESSES[code] = {
-        "code": code,
-        "label": label,
-        "evaluator": evaluator,
-        "triggers": tuple(triggers),
-        "permission": permission,
-        "notification_code": notification_code,
-    }
-
-
-def seed_alert_triggers(Catalog):
-    for description in TRIGGERS:
-        Catalog.objects.get_or_create(key=KEY_ALERT_TRIGGER, description=description)
-
-
-def processes_for(user):
-    """Los procesos cuyas reglas puede administrar el usuario."""
+def threshold_fields():
+    """``{campo: (disparador, ThresholdField)}`` de todos los disparadores registrados."""
     return {
-        code: info for code, info in ALERT_PROCESSES.items()
-        if not info["permission"] or user.has_perm(info["permission"])
+        name: (code, field)
+        for code, trigger in TRIGGERS.items()
+        for name, field in trigger.threshold_fields.items()
     }
 
 
-def validate_threshold(trigger_description, raw_value):
-    """``{campo: valor}`` del umbral, o ``ValueError`` con el motivo."""
-    if trigger_description not in THRESHOLD_FIELDS:
-        raise ValueError(_("Unknown trigger."))
-    field, _label, convert = THRESHOLD_FIELDS[trigger_description]
+def threshold_display(rule):
+    """Texto del umbral de la regla para las listas: ``Etiqueta: valor, ...``."""
     try:
-        value = convert(str(raw_value).strip())
-    except (TypeError, ValueError, InvalidOperation):
-        raise ValueError(_("Enter a number."))
-    if value <= 0:
-        raise ValueError(_("The threshold must be greater than zero."))
-    return {field: str(value) if isinstance(value, Decimal) else value}
+        trigger = get_trigger(rule.trigger)
+    except Exception:
+        return ""
+    return ", ".join(
+        "%s: %s" % (field.label, (rule.threshold or {}).get(name, ""))
+        for name, field in trigger.threshold_fields.items()
+        if (rule.threshold or {}).get(name, "") != ""
+    )
 
 
-def threshold_value(rule):
-    field, _label, convert = THRESHOLD_FIELDS[rule.trigger.description]
-    return convert(rule.threshold[field])
+def threshold_value(rule, name=None):
+    return rule.threshold_value(name)
 
 
 def rule_recipients(rule, responsible_users=(), recipient_filter=None):
@@ -105,71 +99,70 @@ def rule_recipients(rule, responsible_users=(), recipient_filter=None):
     return recipients
 
 
-def fire_alert(rule, message, obj=None, responsible_users=(), context=None, link="", recipient_filter=None):
-    """Registra el disparo de la regla y avisa a quien corresponda."""
-    from django.contrib.contenttypes.models import ContentType
+def fire_alert(rule, message, obj=None, responsible_users=(), context=None, link="",
+               recipient_filter=None, dedupe_key="", renotify_after=None):
+    """Registra el disparo de la regla y avisa por los canales del proceso.
 
-    from pending_tasks.utils import create_pending_task
-    from presentation.models import AlertEvent, AlertRule
-    from presentation.notifications import send_process_email
-    from report.utils import create_notification
-
+    Con ``dedupe_key``, mientras haya un evento abierto con esa clave no se crea otro.
+    """
     users = rule_recipients(rule, responsible_users, recipient_filter)
-    event = AlertEvent.objects.create(
-        rule=rule,
-        organization=rule.organization,
-        content_type=ContentType.objects.get_for_model(obj) if obj is not None else None,
-        object_id=obj.pk if obj is not None else None,
-        message=message,
-        level=rule.level,
-        link=link,
-        recipients=[user.get_username() for user in users],
+    return core_fire_alert(
+        rule, message, obj, dedupe_key=dedupe_key, recipients=users, context=context,
+        link=link, renotify_after=renotify_after,
     )
 
-    notification_code = rule.notification_code or ALERT_PROCESSES.get(rule.process, {}).get("notification_code")
-    if notification_code:
-        email_context = dict(context or {})
-        email_context.update({"message": message, "link": link, "rule": rule})
-        send_process_email(
-            rule.organization, notification_code, email_context,
-            [user.email for user in users if user.email],
-        )
 
-    if rule.create_task:
+# --- Canales de organilab ----------------------------------------------------------
+
+def send_organization_email(event, code, emails, context):
+    from presentation.notifications import send_process_email
+
+    send_process_email(event.rule.organization, code, context, emails)
+
+
+class PendingTaskChannel(AlertChannel):
+    """Tarea pendiente por destinatario (si la regla lo pide), cerrada al resolver."""
+
+    name = "pending_task"
+
+    def applies(self, event):
+        return event.rule.create_task
+
+    def send(self, event, users, context):
+        from django.contrib.contenttypes.models import ContentType
+
+        from pending_tasks.models import PendingTaskManager
+        from pending_tasks.utils import create_pending_task
+
+        rule = event.rule
         if rule.created_by is None:
             logger.warning("La regla de alerta %s no tiene creador: no se crea tarea", rule.pk)
-        else:
-            roles = list(rule.notify_roles.all())
-            profiles = [getattr(user, "profile", None) for user in users] or [None]
-            for profile in profiles:
-                create_pending_task(
-                    rule.created_by, str(message)[:255], roles, description=str(message),
-                    profile=profile, link=link, notify=True,
-                )
+            return
+        roles = list(rule.notify_roles.all())
+        profiles = [getattr(user, "profile", None) for user in users] or [None]
+        content_type = ContentType.objects.get_for_model(event)
+        for profile in profiles:
+            task = create_pending_task(
+                rule.created_by, str(event.message)[:255], roles, description=str(event.message),
+                profile=profile, link=event.link, notify=True,
+            )
+            PendingTaskManager.objects.create(content_type=content_type, object_id=event.pk, task=task)
 
-    if rule.level == AlertRule.CRITICAL:
-        for user in users:
-            create_notification(user, str(message), link)
-    return event
+    def on_resolve(self, event, resolution=None, user=None):
+        from django.contrib.contenttypes.models import ContentType
+
+        from pending_tasks.models import PendingTask
+
+        PendingTask.objects.filter(
+            pendingtaskmanager__content_type=ContentType.objects.get_for_model(event),
+            pendingtaskmanager__object_id=event.pk,
+        ).exclude(status=PendingTask.FINISHED).update(status=PendingTask.FINISHED)
 
 
-def run_alert_rules(process_code, **kwargs):
-    """Evalúa todas las reglas activas del proceso. Devuelve cuántas se evaluaron."""
-    from presentation.models import AlertRule
+def register_organilab_channels():
+    register_channel(EmailChannel(sender=send_organization_email))
+    register_channel(NotificationChannel(levels=["critical"]))
+    register_channel(PendingTaskChannel())
 
-    info = ALERT_PROCESSES.get(process_code)
-    if info is None:
-        return 0
-    evaluator = import_string(info["evaluator"])
-    rules = AlertRule.objects.filter(process=process_code, is_active=True).select_related(
-        "trigger", "organization", "created_by"
-    )
-    total = 0
-    for rule in rules:
-        try:
-            evaluator(rule, **kwargs)
-        except Exception:
-            # Una regla rota no puede frenar la evaluación de las demás organizaciones.
-            logger.exception("Falló la evaluación de la regla de alerta %s", rule.pk)
-        total += 1
-    return total
+
+register_organilab_channels()

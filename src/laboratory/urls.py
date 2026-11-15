@@ -2,6 +2,22 @@
 Created on 1/8/2016
 """
 
+from laboratory.equipment.reports import equipment_life_record_pdf, equipment_program_export
+from laboratory.equipment.import_views import (
+    equipment_import,
+    equipment_import_review,
+    equipment_import_template,
+)
+from laboratory.equipment.control_views import equipment_control_methods, equipment_control_point
+from laboratory.equipment.api import (
+    ControlMeasurementViewSet,
+    ControlMethodViewSet,
+    ControlPointViewSet,
+    EquipmentActivityPlanViewSet,
+    EquipmentDocumentViewSet,
+    ShelfObjectFailureViewSet,
+    ShelfObjectVerificationViewSet,
+)
 from django.urls import include
 from django.urls import path
 from rest_framework.routers import DefaultRouter
@@ -620,8 +636,38 @@ shelfobjecttraining_router.register(
     basename="api-shelfobject-training",
 )
 
+# Registros ISO/IEC 17025 del equipo (laboratory/equipment/api.py)
+equipment_records_router = DefaultRouter()
+equipment_records_router.register("plans", EquipmentActivityPlanViewSet, basename="api-equipment-plan")
+equipment_records_router.register(
+    "verifications", ShelfObjectVerificationViewSet, basename="api-equipment-verification"
+)
+equipment_records_router.register("failures", ShelfObjectFailureViewSet, basename="api-equipment-failure")
+equipment_records_router.register("documents", EquipmentDocumentViewSet, basename="api-equipment-document")
+equipment_records_router.register("control_points", ControlPointViewSet, basename="api-equipment-control-point")
+
+equipment_control_measurement_router = DefaultRouter()
+equipment_control_measurement_router.register(
+    "measurements", ControlMeasurementViewSet, basename="api-equipment-control-measurement"
+)
+equipment_control_method_router = DefaultRouter()
+equipment_control_method_router.register("methods", ControlMethodViewSet, basename="api-equipment-control-method")
+
 equipment_shelfobject_url = [
     path("", view_equipment_shelfobject_detail, name="equipment_shelfobject_detail"),
+    path("life_record.pdf", equipment_life_record_pdf, name="equipment_life_record_pdf"),
+    path("control/<int:point>/", equipment_control_point, name="equipment_control_point"),
+]
+
+equipment_import_urls = [
+    path("", equipment_import, name="equipment_import"),
+    path("template/", equipment_import_template, name="equipment_import_template"),
+    path("<uuid:key>/", equipment_import_review, name="equipment_import_review"),
+    path("program.xlsx", equipment_program_export, name="equipment_program_export"),
+]
+
+equipment_control_urls = [
+    path("", equipment_control_methods, name="equipment_control_methods"),
 ]
 objectrouter = DefaultRouter()
 objectrouter.register(
@@ -738,9 +784,20 @@ urlpatterns += organization_urls + [
         include(shelfobjecttraining_router.urls),
     ),
     path(
+        "shelfobject/equipment/api/<int:org_pk>/<int:lab_pk>/<int:shelfobject>/",
+        include(equipment_records_router.urls),
+    ),
+    path(
+        "shelfobject/equipment/api/<int:org_pk>/<int:lab_pk>/<int:shelfobject>/control_points/<int:point>/",
+        include(equipment_control_measurement_router.urls),
+    ),
+    path("equipment/control/api/<int:org_pk>/<int:lab_pk>/", include(equipment_control_method_router.urls)),
+    path(
         "lab/<int:org_pk>/<int:lab_pk>/shelfobject/<int:pk>/edit/",
         include(equipment_shelfobject_url),
     ),
+    path("lab/<int:org_pk>/<int:lab_pk>/equipment/import/", include(equipment_import_urls)),
+    path("lab/<int:org_pk>/<int:lab_pk>/equipment/control_methods/", include(equipment_control_urls)),
     path("equipment/api/<int:org_pk>/<int:lab_pk>/", include(objectrouter.urls)),
     path("<int:org_pk>/<int:lab_pk>/processes/", include(lab_process_router.urls)),
     path(

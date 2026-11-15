@@ -8,7 +8,7 @@
 >
 > All paths are relative to the repo root. **All application code lives under `src/`.**
 >
-> **Pending work** lives next to this file: `IPER_PENDIENTES.md`, `PENDIENTES_MENORES.md`,
+> **Pending work** lives next to this file: `EQUIPOS_ISO17025_PLAN.md` (equipos ISO 17025 §6.4), `IPER_PENDIENTES.md`, `PENDIENTES_MENORES.md`,
 > `PLATFORM_ADMIN_PLAN.md`, `MANAGEMENT_PLANS_PLAN.md`, `ENVIRONMENT_PLAN.md` (index and
 > order in `SIGMA_GAP_ANALYSIS.md`). Completed plans are deleted; see git history.
 

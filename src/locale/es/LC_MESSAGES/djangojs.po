@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-13 15:23-0600\n"
+"POT-Creation-Date: 2026-11-15 15:39-0600\n"
 "PO-Revision-Date: 2024-04-12 23:50-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -917,6 +917,9 @@ msgstr "No tienes permisos para ver o descargar el contrato."
 msgid "Validator"
 msgstr "Validador"
 
+msgid "Activities performed"
+msgstr "Actividades realizadas"
+
 msgid "Observation"
 msgstr "Observación"
 
@@ -925,6 +928,21 @@ msgstr "Última Actualización"
 
 msgid "Calibrator"
 msgstr "Calibrador"
+
+msgid "Calibration laboratory"
+msgstr "Laboratorio que calibró"
+
+msgid "Certificate number"
+msgstr "Número de certificado"
+
+msgid "Certificate"
+msgstr "Certificado"
+
+msgid "Conformity"
+msgstr "Conformidad"
+
+msgid "Next calibration"
+msgstr "Próxima calibración"
 
 msgid "Initial date"
 msgstr "Fecha inicial"
@@ -947,6 +965,75 @@ msgstr "Contrato"
 msgid "Providers"
 msgstr "Proveedores"
 
+msgid "Activity"
+msgstr "Actividad"
+
+msgid "Interval"
+msgstr "Intervalo"
+
+msgid "Last done"
+msgstr "Última realización"
+
+msgid "Next due"
+msgstr "Próximo vencimiento"
+
+msgid "Responsible"
+msgstr "Responsable"
+
+msgid "Verification type"
+msgstr "Tipo de verificación"
+
+msgid "Result"
+msgstr "Resultado"
+
+msgid "Record"
+msgstr "Registro"
+
+msgid "Failure date"
+msgstr "Fecha de la falla"
+
+msgid "Out of service"
+msgstr "Fuera de servicio"
+
+msgid "Repair performed"
+msgstr "Reparación realizada"
+
+msgid "Return to service"
+msgstr "Retorno al servicio"
+
+msgid "Control method"
+msgstr "Método de control"
+
+msgid "Nominal value"
+msgstr "Valor nominal"
+
+msgid "Correction"
+msgstr "Corrección"
+
+msgid "LCL / CL / UCL"
+msgstr "LCI / LC / LCS"
+
+msgid "Last control"
+msgstr "Último control"
+
+msgid "Chart"
+msgstr "Carta"
+
+msgid "Open"
+msgstr "Abrir"
+
+msgid "Document type"
+msgstr "Tipo de documento"
+
+msgid "Version"
+msgstr "Versión"
+
+msgid "Valid from"
+msgstr "Vigente desde"
+
+msgid "File"
+msgstr "Archivo"
+
 msgid "Action Taken"
 msgstr "Acción Tomada"
 
@@ -960,7 +1047,7 @@ msgid "Substance"
 msgstr "Sustancia"
 
 msgid "CAS"
-msgstr ""
+msgstr "CAS"
 
 msgid "H-codes"
 msgstr "Códigos H"
@@ -1046,6 +1133,9 @@ msgstr "Activa"
 msgid "Alert rule"
 msgstr "Regla de alerta"
 
+msgid "Resolved at"
+msgstr "Resuelta el"
+
 msgid "Link"
 msgstr "Enlace"
 
@@ -1062,7 +1152,7 @@ msgid "Parameter"
 msgstr "Parámetro"
 
 msgid "Total"
-msgstr ""
+msgstr "Total"
 
 msgid "Break threshold"
 msgstr "Umbral superado"
@@ -1090,9 +1180,6 @@ msgstr "Motivo del gasto"
 
 msgid "Danger category"
 msgstr "Categoría de peligro"
-
-msgid "Responsible"
-msgstr "Responsable"
 
 msgid "Regent Associated"
 msgstr "Regentes Asociados"
@@ -1148,14 +1235,8 @@ msgstr "Nombre del laboratorio oculto"
 msgid "Laboratory name visible"
 msgstr "Nombre del laboratorio visible"
 
-msgid "Version"
-msgstr "Versión"
-
 msgid "Next update"
 msgstr "Próxima actualización"
-
-msgid "Open"
-msgstr "Abrir"
 
 msgid "Duplicate"
 msgstr "Duplicar"
@@ -1278,12 +1359,3 @@ msgstr "¿Desea eliminar esta palabra de advertencia?"
 
 msgid "Weight"
 msgstr "Peso"
-
-msgid "Equipment Type"
-msgstr "Tipo de equipo"
-
-msgid "Maximum Limit"
-msgstr "Límite Máximo"
-
-msgid "Minimum Limit"
-msgstr "Límite mínimo"

@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% load i18n static gtsettings %}
+{% block pre_head %}{% define_true "use_chartjs" %}{% endblock %}
+{% block title %}{% trans 'Control chart' %}{% endblock %}
+{% block content %}
+<div class="row mb-3">
+	<div class="col-md-8">
+		<h3><a href="{% url 'laboratory:equipment_shelfobject_detail' org_pk lab_pk pk %}#pane-control">{{ point.shelfobject.object.name }}</a> · {{ point }}</h3>
+		<p class="mb-1">{% trans 'Control method' %}: <strong>{{ point.method }}</strong> ({{ point.method.get_chart_type_display }}, n = {{ point.method.subgroup_size }};
+			A2/E2 = {{ point.method.a2 }}, D3 = {{ point.method.d3 }}, D4 = {{ point.method.d4 }})</p>
+		<p class="mb-1">{% trans 'Nominal value' %}: {{ point.nominal_value|default:"—" }} {{ point.unit }} ·
+			{% trans 'Correction' %}: {{ point.correction }} ·
+			{% trans 'Acceptance tolerance (±)' %}: {{ point.tolerance|default:"—" }}</p>
+		{% if point.reference_standard %}<p class="mb-1 text-muted">{{ point.reference_standard }}</p>{% endif %}
+	</div>
+	<div class="col-md-4">
+		<div class="card"><div class="card-body p-2">
+			<h6>{% trans 'Current limits' %}</h6>
+			{% if limits %}
+			<small>{% trans 'Reference period' %}: {{ limits.baseline_from|date:"d/m/Y" }} – {{ limits.baseline_to|date:"d/m/Y" }} ({{ limits.subgroups }})</small>
+			<table class="table table-sm mb-1"><tr><th></th><th>{% trans 'LCL' %}</th><th>{% trans 'CL' %}</th><th>{% trans 'UCL' %}</th></tr>
+				<tr><th>X</th><td>{{ limits.lcl|floatformat:"-6" }}</td><td>{{ limits.center|floatformat:"-6" }}</td><td>{{ limits.ucl|floatformat:"-6" }}</td></tr>
+				<tr><th>R</th><td>{{ limits.range_lcl|floatformat:"-6" }}</td><td>{{ limits.range_center|floatformat:"-6" }}</td><td>{{ limits.range_ucl|floatformat:"-6" }}</td></tr></table>
+			{% else %}<p class="text-warning mb-1">{% trans 'There are no limits yet: register the reference period and calculate them.' %}</p>{% endif %}
+			{% if perms.laboratory.change_controlpoint %}
+			<button class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#limits_form_box">{% trans 'Calculate limits' %}</button>
+			{% endif %}
+		</div></div>
+	</div>
+</div>
+<div class="collapse mb-3" id="limits_form_box"><div class="card card-body">
+	<form id="limits_form">{{ limits_form.as_horizontal }}</form>
+	<div class="text-danger" id="limits_errors"></div>
+	<button class="btn btn-success" id="limits_submit">{% trans 'Calculate and apply' %}</button>
+</div></div>
+
+<div class="row">
+	<div class="col-lg-6">{% include 'gentelella/widgets/chartjs.html' with graph_url=means_chart %}</div>
+	<div class="col-lg-6">{% include 'gentelella/widgets/chartjs.html' with graph_url=ranges_chart %}</div>
+</div>
+
+<h4 class="mt-3">{% trans 'Control records' %}</h4>
+<table class="table table-striped w-100 table-responsive" id="measurement_table"></table>
+
+{% if limits_history|length > 1 %}
+<h5 class="mt-3">{% trans 'Limits history' %}</h5>
+<table class="table table-sm">
+	<tr><th>{% trans 'Date' %}</th><th>{% trans 'Reference period' %}</th><th>{% trans 'LCL' %}</th><th>{% trans 'CL' %}</th><th>{% trans 'UCL' %}</th><th>{% trans 'Notes' %}</th></tr>
+	{% for item in limits_history %}
+	<tr{% if item.is_current %} class="table-success"{% endif %}><td>{{ item.creation_date|date:"d/m/Y" }}</td><td>{{ item.baseline_from|date:"d/m/Y" }} – {{ item.baseline_to|date:"d/m/Y" }}</td>
+		<td>{{ item.lcl|floatformat:"-6" }}</td><td>{{ item.center|floatformat:"-6" }}</td><td>{{ item.ucl|floatformat:"-6" }}</td><td>{{ item.notes }}</td></tr>
+	{% endfor %}
+</table>
+{% endif %}
+
+{% trans 'Register control' as create_title %}
+{% trans 'Edit control record' as update_title %}
+{% include 'gentelella/blocks/modal_template.html' with form=create_form id="create_measurement_modal" title=create_title form_id="create_measurement_form" url=list_url %}
+{% include 'gentelella/blocks/modal_template.html' with form=update_form id="update_measurement_modal" title=update_title form_id="update_measurement_form" url=detail_url %}
+{% include 'gentelella/blocks/modal_template_delete.html' with id="delete_measurement_modal" form_id="delete_measurement_form" url=detail_url %}
+{% endblock %}
+{% block js %}
+{{ block.super }}
+<script>
+	const reload_events = {
+		form_submit: () => ({}),
+		success_form: () => setTimeout(() => window.location.reload(), 600),
+		error_form: () => {},
+	};
+	const yesno = (value) => value ? `<span class="badge bg-danger">${gettext("Yes")}</span>` : gettext("No");
+	const measurements = ObjectCRUD("controlmeasurementcrudobj", {
+		urls: {
+			list_url: "{{ list_url }}", create_url: "{{ list_url }}",
+			update_url: "{{ detail_url }}", destroy_url: "{{ detail_url }}",
+			get_values_for_update_url: "{% url 'laboratory:api-equipment-control-measurement-get-values-for-update' org_pk lab_pk pk point.pk 0 %}"
+		},
+		datatable_element: "#measurement_table",
+		modal_ids: {create: "#create_measurement_modal", update: "#update_measurement_modal", destroy: "#delete_measurement_modal"},
+		actions: {table_actions: [], object_actions: [], title: gettext('Actions'), className: "no-export-col"},
+		datatable_inits: {columns: [
+			{data: "id", name: "id", title: "ID", type: "string", visible: false},
+			{data: "measured_on", name: "measured_on", title: gettext("Date"), type: "date", dateformat: document.date_format, visible: true},
+			{data: "values", name: "values", title: gettext("Readings"), type: "readonly", visible: true},
+			{data: "mean", name: "mean", title: gettext("Mean"), type: "readonly", visible: true},
+			{data: "range", name: "range", title: gettext("Range"), type: "readonly", visible: true},
+			{data: "corrected_mean", name: "corrected_mean", title: gettext("Corrected mean"), type: "readonly", visible: true},
+			{data: "out_of_control", name: "out_of_control", title: gettext("Out of control"), type: "readonly", visible: true, render: yesno},
+			{data: "out_of_acceptance", name: "out_of_acceptance", title: gettext("Out of acceptance criterion"), type: "readonly", visible: true, render: yesno},
+			{data: "responsible", name: "responsible", title: gettext("Responsible"), type: "readonly", visible: true},
+			{data: "deviation", name: "deviation", title: gettext("Deviation detected"), type: "readonly", visible: true},
+			{data: "corrective_action", name: "corrective_action", title: gettext("Action taken"), type: "readonly", visible: true},
+			{data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: true},
+		], addfilter: false},
+		add_filter: false, relation_render: {}, delete_display: data => data["measured_on"] + " " + data["values"], create: "btn-success",
+		icons: {create: '<i class="fa fa-plus"></i>', clear: '<i class="fa fa-eraser"></i>', update: 'fa fa-edit me-1 fa-lg', destroy: 'fa fa-trash fa-lg'},
+		// Cada registro nuevo o corregido mueve los gráficos: se recarga la página.
+		// GTBaseFormModal mezcla sus eventos sin profundidad, por eso van los tres.
+		gt_form_modals: {
+			create: {events: reload_events}, update: {events: reload_events}, detail: {}, destroy: {},
+		},
+	});
+	measurements.init();
+
+	document.getElementById("limits_submit")?.addEventListener("click", function () {
+		const form = document.getElementById("limits_form");
+		const data = {
+			baseline_from: form.querySelector('[name="limits-baseline_from"]').value,
+			baseline_to: form.querySelector('[name="limits-baseline_to"]').value,
+			notes: form.querySelector('[name="limits-notes"]').value,
+		};
+		fetch("{% url 'laboratory:api-equipment-control-point-recalculate-limits' org_pk lab_pk pk point.pk %}", {
+			method: "POST", body: JSON.stringify(data),
+			headers: {'X-CSRFToken': getCookie('csrftoken'), 'Content-Type': "application/json"},
+		}).then(response => response.json().then(body => ({ok: response.ok, body})))
+		  .then(({ok, body}) => {
+			if (ok) { window.location.reload(); return; }
+			document.getElementById("limits_errors").innerText = Object.values(body).flat().join(" ");
+		});
+	});
+</script>
+{% endblock %}

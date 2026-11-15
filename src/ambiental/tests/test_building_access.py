@@ -14,7 +14,7 @@ from ambiental.tests.test_reports import ReportTestCase
 from auth_and_perms.api.viewsets import DeleteUserFromContenttypeViewSet
 from auth_and_perms.models import Profile, ProfilePermission, Rol
 from laboratory.models import Catalog, UserOrganization
-from presentation.alerts import KEY_ALERT_TRIGGER, TRIGGER_PERCENT
+from presentation.alerts import TRIGGER_PERCENT
 from presentation.models import AlertEvent, AlertRule
 from risk_management.models import Buildings
 from auth_and_perms.roles import ROLES
@@ -121,7 +121,7 @@ class MixedBuildingRolesTest(BuildingAccessTestCase):
         self.record(self.point_b, 3, "90", self.m3)
         rule = AlertRule.objects.create(
             organization=self.organization, name="Agua", process="ambiental.consumption",
-            trigger=Catalog.objects.get(key=KEY_ALERT_TRIGGER, description=TRIGGER_PERCENT),
+            trigger=TRIGGER_PERCENT,
             threshold={"percent": "20"}, created_by=self.user, create_task=False,
         )
         evaluate_rule(rule, today=datetime.date(2026, 4, 5))
@@ -198,7 +198,7 @@ class AlertRecipientsTest(BuildingAccessTestCase):
         self.record(self.water_point, 3, "90", self.m3)
         rule = AlertRule.objects.create(
             organization=self.organization, name="Agua", process="ambiental.consumption",
-            trigger=Catalog.objects.get(key=KEY_ALERT_TRIGGER, description=TRIGGER_PERCENT),
+            trigger=TRIGGER_PERCENT,
             threshold={"percent": "20"}, created_by=self.user, create_task=False, notify_responsible=False,
         )
         rule.notify_roles.add(require_role(self, "analista_ambiental"))

@@ -1,3 +1,4 @@
+from django.contrib.auth.models import Permission
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.urls import reverse
@@ -307,6 +308,12 @@ class EquipmentViewTest(BaseLaboratorySetUpTest):
     def setUp(self):
         super().setUp()
         self.kwargs = {"org_pk": self.org.pk, "lab_pk": self.lab.pk}
+        # Los roles del fixture son anteriores a la migración 0224; roles.py sí los concede.
+        self.user.user_permissions.add(
+            *Permission.objects.filter(
+                codename__in=["can_edit_equipment_material", "can_delete_equipment_material"]
+            )
+        )
 
         self.kwargs_update = self.kwargs.copy()
         self.kwargs_destroy1 = self.kwargs.copy()

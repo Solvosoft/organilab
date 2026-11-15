@@ -27,7 +27,7 @@ from ambiental.tests.test_normalization import NormalizationTestCase
 from ambiental.tests.test_reports import ReportTestCase
 from auth_and_perms.models import ProfilePermission, Rol
 from laboratory.models import Catalog
-from presentation.alerts import KEY_ALERT_TRIGGER, TRIGGER_ABSOLUTE, TRIGGER_PERCENT
+from presentation.alerts import TRIGGER_ABSOLUTE, TRIGGER_PERCENT
 from presentation.models import AlertRule
 from risk_management.models import Buildings
 from auth_and_perms.roles import ROLES
@@ -77,7 +77,7 @@ class ConsumptionModelsTest(ReportTestCase):
         self.assertEqual(str(base), "Edificio A 2026 %s: 5" % person)
         rule = AlertRule.objects.create(
             organization=self.organization, name="r", process="ambiental.consumption",
-            trigger=Catalog.objects.get(key=KEY_ALERT_TRIGGER, description=TRIGGER_ABSOLUTE),
+            trigger=TRIGGER_ABSOLUTE,
             threshold={"value": "1"}, level=AlertRule.MEDIUM, created_by=self.user,
         )
         alert = ConsumptionAlert.objects.create(
@@ -127,7 +127,7 @@ class AccessHelpersTest(ReportTestCase):
     def test_alerta_sin_revisar_lleva_acciones_por_edificio(self):
         rule = AlertRule.objects.create(
             organization=self.organization, name="r", process="ambiental.consumption",
-            trigger=Catalog.objects.get(key=KEY_ALERT_TRIGGER, description=TRIGGER_ABSOLUTE),
+            trigger=TRIGGER_ABSOLUTE,
             threshold={"value": "1"}, level=AlertRule.MEDIUM, created_by=self.user,
         )
         alert = ConsumptionAlert.objects.create(
@@ -385,7 +385,7 @@ class AlertBranchesTest(ReportTestCase):
     def rule(self, trigger, threshold):
         return AlertRule.objects.create(
             organization=self.organization, name="Consumo", process="ambiental.consumption",
-            trigger=Catalog.objects.get(key=KEY_ALERT_TRIGGER, description=trigger),
+            trigger=trigger,
             threshold=threshold, level=AlertRule.MEDIUM, created_by=self.user, create_task=False,
         )
 

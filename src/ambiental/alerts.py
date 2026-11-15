@@ -102,7 +102,7 @@ def raise_alert(rule, point, period, message, record=None, reference=None, regis
 
 def evaluate_rule(rule, today=None):
     today = today or datetime.date.today()
-    trigger = rule.trigger.description
+    trigger = rule.trigger
     threshold = threshold_value(rule)
     window = get_parameter(rule.organization, "ambiental.alert_window_months")
     points = MeasurementPoint.objects.filter(organization=rule.organization).select_related("building")

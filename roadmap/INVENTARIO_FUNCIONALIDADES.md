@@ -15,8 +15,8 @@ con ese rol.
 
 | Métrica | Valor |
 |---|---:|
-| Funcionalidades catalogadas | 56 |
-| Sin ninguna prueba | 8 |
+| Funcionalidades catalogadas | 59 |
+| Sin ninguna prueba | 9 |
 | Rutas navegables huérfanas | 0 |
 | Apps pendientes de catalogar | 2 |
 | Roles canónicos | 20 |
@@ -343,6 +343,40 @@ Los protocolos que el laboratorio documenta y adjunta. Usan borrado lógico: al 
 | **Listar protocolos** | Administrador de Laboratorio, Técnico de Laboratorio, Asistente de laboratorio, Lectura y agregado de sustancias, Estudiante, Profesor, Regente, Solo Lectura, Administrativo superior | `laboratory.view_protocol` | — | `laboratory:protocol_list` |
 | **Crear o editar un protocolo** | Administrador de Laboratorio, Técnico de Laboratorio, Asistente de laboratorio, Lectura y agregado de sustancias | `laboratory.add_protocol`<br>`laboratory.change_protocol` | — | `laboratory:protocol_create`<br>`laboratory:protocol_update` |
 | **Borrar un protocolo (va a la papelera)** | Administrador de Laboratorio, Técnico de Laboratorio, Asistente de laboratorio, Lectura y agregado de sustancias | `laboratory.delete_protocol` | — | `laboratory:protocol_delete` |
+
+### `INV-09` — Gestionar equipos según ISO/IEC 17025 (§6.4)
+
+*laboratory · ui · prioridad P1 · cobertura por ruta: completa · Selenium: —*
+
+La ficha de cada equipo con lo que pide la norma: identificación, ubicación y su historial, estado y etiqueta visual, especificaciones, recepción, responsables y baja. Además, el programa de calibraciones, verificaciones intermedias, mantenimientos y limpiezas; los certificados; las fallas con su evaluación de impacto; y los documentos. Ver plans/EQUIPOS_ISO17025_PLAN.md.
+
+| Paso | Actores | Permiso | Transición | Rutas |
+|---|---|---|---|---|
+| **Completar la ficha ISO del equipo y registrar sus actividades** | Administrador de Laboratorio, Técnico de Laboratorio, Asistente de laboratorio, Lectura y agregado de sustancias | — | programa → registro (calibración, verificación, mantenimiento) → próxima fecha | `laboratory:equipment_shelfobject_detail` |
+| **Importar equipos desde el inventario o el programa PT-05 R-10 (Excel)** | Administrador de Laboratorio, Técnico de Laboratorio, Asistente de laboratorio, Lectura y agregado de sustancias | `laboratory.add_shelfobject`<br>`laboratory.add_object` | Excel → revisión fila por fila → equipos, calibraciones y programas | `laboratory:equipment_import`<br>`laboratory:equipment_import_review`<br>`laboratory:equipment_import_template` |
+| **Exportar el programa anual (PT-05) y la hoja de vida del equipo** | Administrador de Laboratorio, Técnico de Laboratorio, Asistente de laboratorio, Lectura y agregado de sustancias, Estudiante, Profesor, Regente, Solo Lectura, Administrativo superior | `laboratory.view_shelfobject` | — | `laboratory:equipment_program_export`<br>`laboratory:equipment_life_record_pdf` |
+| **Configurar quién recibe los avisos de actividades por vencer** | Administrador de Laboratorio, Administrativo superior | `presentation.view_alertrule` | — | `platform:alertrule_list` |
+
+### `INV-11` — Llevar cartas de control de equipos (X̄-R e I-MR)
+
+*laboratory · ui · prioridad P2 · cobertura por ruta: completa · Selenium: —*
+
+Registros de control por punto (p. ej. las masas de una balanza) con n lecturas, media, rango y media corregida por el patrón; límites LCS/LC/LCI calculados con un período de referencia y su historial; gráficos de medias y rangos; y alerta cuando un registro sale de los límites o del criterio de aceptación. Métodos, constantes y criterios configurables por tipo de equipo. Ver plans/EQUIPOS_ISO17025_PLAN.md (F3).
+
+| Paso | Actores | Permiso | Transición | Rutas |
+|---|---|---|---|---|
+| **Configurar los métodos de control y sus constantes** | Administrador de Laboratorio, Técnico de Laboratorio, Asistente de laboratorio, Lectura y agregado de sustancias | `laboratory.view_controlmethod` | — | `laboratory:equipment_control_methods` |
+| **Registrar controles, ver las cartas y recalcular los límites** | Administrador de Laboratorio, Técnico de Laboratorio, Asistente de laboratorio, Lectura y agregado de sustancias | `laboratory.view_controlpoint`<br>`laboratory.view_controlmeasurement` | registro → evaluación con los límites vigentes → alerta si queda fuera | `laboratory:equipment_control_point` |
+
+### `INV-10` — Avisar calibraciones, verificaciones y mantenimientos por vencer
+
+*laboratory · celery · prioridad P2 · cobertura por ruta: **sin prueba** · Selenium: —*
+
+Cada mañana el planificador revisa los programas de actividades de los equipos y avisa (correo, tarea pendiente y, si es crítica, campana) a quien corresponde. Registrar la actividad resuelve la alerta con su evidencia.
+
+| Paso | Actores | Permiso | Transición | Rutas |
+|---|---|---|---|---|
+| **Evaluar las reglas del proceso laboratory.equipment_due** | Sistema | — | crea AlertEvent y PendingTask; se resuelven al registrar la actividad | — |
 
 ### `LAB-01` — Crear y administrar una organización
 
@@ -865,25 +899,25 @@ Los datos maestros que la etiqueta imprime: la empresa que figura como responsab
 | Rol | En el catálogo | Definido en |
 |---|:-:|---|
 | Estudiante | sí | `auth_and_perms/management/roles.py:4` |
-| Depositante de residuos | sí | `auth_and_perms/management/roles.py:31` |
-| Creador de laboratorio | sí | `auth_and_perms/management/roles.py:108` |
-| Administrador de Laboratorio | sí | `auth_and_perms/management/roles.py:162` |
-| Lectura y agregado de sustancias | sí | `auth_and_perms/management/roles.py:349` |
-| Asistente de laboratorio | sí | `auth_and_perms/management/roles.py:416` |
-| Profesor | sí | `auth_and_perms/management/roles.py:555` |
-| Tesista modulo desechos | sí | `auth_and_perms/management/roles.py:600` |
-| Solo Lectura | sí | `auth_and_perms/management/roles.py:658` |
-| Técnico de Laboratorio | sí | `auth_and_perms/management/roles.py:723` |
-| SGA | sí | `auth_and_perms/management/roles.py:857` |
-| Regente | sí | `auth_and_perms/management/roles.py:944` |
-| Administrativo superior | sí | `auth_and_perms/management/roles.py:1031` |
-| Administrativo de centro de trabajo | sí | `auth_and_perms/management/roles.py:1540` |
-| Auditor IPER | sí | `auth_and_perms/management/roles.py:1706` |
-| Administrador IPER | sí | `auth_and_perms/management/roles.py:1721` |
-| Administrador ambiental | sí | `auth_and_perms/management/roles.py:1747` |
-| Encargado de registro ambiental | sí | `auth_and_perms/management/roles.py:1781` |
-| Analista ambiental | sí | `auth_and_perms/management/roles.py:1800` |
-| Administración de Organización | sí | `auth_and_perms/management/roles.py:1816` |
+| Depositante de residuos | sí | `auth_and_perms/management/roles.py:33` |
+| Creador de laboratorio | sí | `auth_and_perms/management/roles.py:133` |
+| Administrador de Laboratorio | sí | `auth_and_perms/management/roles.py:187` |
+| Lectura y agregado de sustancias | sí | `auth_and_perms/management/roles.py:404` |
+| Asistente de laboratorio | sí | `auth_and_perms/management/roles.py:494` |
+| Profesor | sí | `auth_and_perms/management/roles.py:658` |
+| Tesista modulo desechos | sí | `auth_and_perms/management/roles.py:712` |
+| Solo Lectura | sí | `auth_and_perms/management/roles.py:770` |
+| Técnico de Laboratorio | sí | `auth_and_perms/management/roles.py:844` |
+| SGA | sí | `auth_and_perms/management/roles.py:1007` |
+| Regente | sí | `auth_and_perms/management/roles.py:1094` |
+| Administrativo superior | sí | `auth_and_perms/management/roles.py:1190` |
+| Administrativo de centro de trabajo | sí | `auth_and_perms/management/roles.py:1729` |
+| Auditor IPER | sí | `auth_and_perms/management/roles.py:1918` |
+| Administrador IPER | sí | `auth_and_perms/management/roles.py:1933` |
+| Administrador ambiental | sí | `auth_and_perms/management/roles.py:1959` |
+| Encargado de registro ambiental | sí | `auth_and_perms/management/roles.py:1993` |
+| Analista ambiental | sí | `auth_and_perms/management/roles.py:2012` |
+| Administración de Organización | sí | `auth_and_perms/management/roles.py:2028` |
 
 Los pseudo-roles no conceden permisos y se listan aparte:
 

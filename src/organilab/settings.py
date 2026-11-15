@@ -406,6 +406,11 @@ CELERYBEAT_SCHEDULE = {
         "task": "ambiental.tasks.check_consumption_anomalies",
         "schedule": crontab(minute=0, hour=6, day_of_month=2),
     },
+    # Calibraciones, verificaciones y mantenimientos de equipos por vencer (ISO 17025).
+    "check_equipment_due_activities": {
+        "task": "laboratory.tasks.check_equipment_due_activities",
+        "schedule": crontab(minute=10, hour=7),
+    },
 }
 
 INTERNAL_IPS = ("127.0.0.1",)
@@ -597,3 +602,6 @@ OIDC_POST_LOGOUT_REDIRECT_URL = os.getenv("OIDC_POST_LOGOUT_REDIRECT_URL", "")
 CAPACITATION_URL = os.getenv(
     "CAPACITATION_URL", "https://organilab.readthedocs.io/en/latest/capacitacion/"
 )
+
+# Reglas de alerta de djgentelella.alerts (presentation.alerts es la fachada).
+GT_ALERTS_RULE_MODEL = "presentation.AlertRule"

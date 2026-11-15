@@ -10,22 +10,22 @@ el resto se cubre con pruebas de cliente o unitarias.
 
 | Categoría | Rutas |
 |---|---:|
-| `pagina` | 191 |
+| `pagina` | 195 |
 | `parcial` | 4 |
-| `api` | 793 |
+| `api` | 861 |
 | `autocomplete` | 6 |
 | `ajax` | 10 |
 | `json` | 45 |
-| `descarga` | 18 |
+| `descarga` | 21 |
 | `accion` | 29 |
-| `infra` | 706 |
-| **total** | **1802** |
+| `infra` | 715 |
+| **total** | **1886** |
 
-Páginas: 191, de las cuales **52 sin ninguna prueba**.
+Páginas: 195, de las cuales **51 sin ninguna prueba**.
 
 ## Rutas por app
 
-Se omiten las categorías `api` e `infra` (1499 rutas de routers DRF y de
+Se omiten las categorías `api` e `infra` (1576 rutas de routers DRF y de
 la administración de Django): están en `inventario_urls.csv`.
 
 ### academic — 9 páginas, 0 sin prueba
@@ -126,7 +126,7 @@ la administración de Django): están en `inventario_urls.csv`.
 | `api-notificationtable-list` | `/tableapi/^notificationtableview/$` | autocomplete | `djgentelella.notification.base.NotificationViewSet` | — | — | — | — |
 | `api-notificationtable-list` | `/tableapi/^notificationtableview\.(?P<format>[a-z0-9]+)/?$` | autocomplete | `djgentelella.notification.base.NotificationViewSet` | — | format | — | — |
 
-### laboratory — 66 páginas, 13 sin prueba
+### laboratory — 70 páginas, 12 sin prueba
 
 | Nombre | Patrón | Categoría | Vista | Plantilla | kwargs | Selenium | Pruebas |
 |---|---|---|---|---|---|:-:|:-:|
@@ -146,6 +146,9 @@ la administración de Django): están en `inventario_urls.csv`.
 | `download_h_code_reports` | `/<int:org_pk>/reports/download/hcode` | descarga | `laboratory.views.reports.report_h_code` | `pdf/hcode_pdf.html` | org_pk | — | sí |
 | `download_register_user_qr` | `/register_user_qr/<int:org_pk>/<int:lab_pk>/download/<int:pk>/` | descarga | `laboratory.views.laboratory.get_pdf_register_user_qr` | `pdf/qr_pdf.html` | org_pk, lab_pk, pk | — | — |
 | `download_shelfobject_qr` | `/lab/<int:org_pk>/<int:lab_pk>/shelfobject/download_shelfobject_qr/<int:pk>/` | descarga | `laboratory.views.shelfobject.download_shelfobject_qr` | — | org_pk, lab_pk, pk | — | — |
+| `equipment_import_template` | `/lab/<int:org_pk>/<int:lab_pk>/equipment/import/template/` | descarga | `laboratory.equipment.import_views.equipment_import_template` | — | org_pk, lab_pk | — | sí |
+| `equipment_life_record_pdf` | `/lab/<int:org_pk>/<int:lab_pk>/shelfobject/<int:pk>/edit/life_record.pdf` | descarga | `laboratory.equipment.reports.equipment_life_record_pdf` | `laboratory/equipment/life_record_pdf.html` | org_pk, lab_pk, pk | — | sí |
+| `equipment_program_export` | `/lab/<int:org_pk>/<int:lab_pk>/equipment/import/program.xlsx` | descarga | `laboratory.equipment.reports.equipment_program_export` | — | org_pk, lab_pk | — | sí |
 | `generate_shelfobject_label` | `/<int:org_pk>/<int:lab_pk>/<int:pk>/generate_shelfobject_label/<int:recipient>/` | descarga | `laboratory.views.shelfobject.generate_shelfobject_label` | — | org_pk, lab_pk, pk, recipient | — | sí |
 | `node_qr_svg` | `/lab/<int:org_pk>/<int:lab_pk>/rooms/qr/<str:kind>/<int:pk>.svg` | descarga | `laboratory.qr_nodes.node_qr_svg` | — | org_pk, lab_pk, kind, pk | — | sí |
 | `organization_actions` | `/organization/manage/actions` | descarga | `laboratory.views.organizations.OrganizationActionsFormview` | — | — | — | sí |
@@ -174,8 +177,12 @@ la administración de Django): están en `inventario_urls.csv`.
 | `detail_period_scheduler` | `/inform_manager/<int:org_pk>/detail/<int:pk>/` | pagina | `laboratory.views.inform_period.InformSchedulerDetail` | `informs/informscheduler_detail.html` | org_pk, pk | — | sí |
 | `disposal_substance` | `/lab/<int:org_pk>/search/disposal/` | pagina | `laboratory.search.SearchDisposalObject` | `laboratory/disposal_substance.html` | org_pk | — | sí |
 | `edit_period_scheduler` | `/inform_manager/<int:org_pk>/edit/<int:pk>/` | pagina | `laboratory.views.inform_period.InformSchedulerEdit` | `informs/informscheduler_edit.html` | org_pk, pk | — | sí |
+| `equipment_control_methods` | `/lab/<int:org_pk>/<int:lab_pk>/equipment/control_methods/` | pagina | `laboratory.equipment.control_views.equipment_control_methods` | `laboratory/equipment/control_methods.html` | org_pk, lab_pk | — | sí |
+| `equipment_control_point` | `/lab/<int:org_pk>/<int:lab_pk>/shelfobject/<int:pk>/edit/control/<int:point>/` | pagina | `laboratory.equipment.control_views.equipment_control_point` | `laboratory/equipment/control_point.html` | org_pk, lab_pk, pk, point | — | sí |
+| `equipment_import` | `/lab/<int:org_pk>/<int:lab_pk>/equipment/import/` | pagina | `laboratory.equipment.import_views.equipment_import` | `laboratory/equipment/import.html` | org_pk, lab_pk | — | sí |
+| `equipment_import_review` | `/lab/<int:org_pk>/<int:lab_pk>/equipment/import/<uuid:key>/` | pagina | `laboratory.equipment.import_views.equipment_import_review` | `laboratory/equipment/import_review.html` | org_pk, lab_pk, key | — | sí |
 | `equipment_list` | `/lab/<int:org_pk>/<int:lab_pk>/equipment/` | pagina | `laboratory.views.objects.view_equipment_list` | `laboratory/equipment/list.html` | org_pk, lab_pk | sí | sí |
-| `equipment_shelfobject_detail` | `/lab/<int:org_pk>/<int:lab_pk>/shelfobject/<int:pk>/edit/` | pagina | `laboratory.views.shelfobject.view_equipment_shelfobject_detail` | `laboratory/shelfobject/equipment_edit.html` | org_pk, lab_pk, pk | — | — |
+| `equipment_shelfobject_detail` | `/lab/<int:org_pk>/<int:lab_pk>/shelfobject/<int:pk>/edit/` | pagina | `laboratory.views.shelfobject.view_equipment_shelfobject_detail` | `laboratory/shelfobject/equipment_edit.html` | org_pk, lab_pk, pk | — | sí |
 | `equipmenttype_list` | `/lab/<int:org_pk>/<int:lab_pk>/equipment/equipmenttype/` | pagina | `laboratory.views.catalogs.view_equipmenttype_list` | `laboratory/equipmenttype/list.html` | org_pk, lab_pk | — | — |
 | `furniture_create` | `/lab/<int:org_pk>/<int:lab_pk>/furniture/create/<int:labroom>/` | pagina | `laboratory.views.furniture.FurnitureCreateView` | `laboratory/furniture_form.html` | org_pk, lab_pk, labroom | — | sí |
 | `furniture_delete` | `/lab/<int:org_pk>/<int:lab_pk>/furniture/delete/<int:pk>/` | pagina | `laboratory.views.furniture.FurnitureDelete` | `laboratory/furniture_confirm_delete.html` | org_pk, lab_pk, pk | — | sí |

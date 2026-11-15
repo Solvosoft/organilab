@@ -1,0 +1,124 @@
+{% extends 'report/base_pdf.html' %}
+{% load i18n %}
+{% block extra_css %}
+	h3 { text-align: center; margin-bottom: 0.2cm; }
+	h4 { background-color: #DDEBF7; padding: 3px 6px; margin-top: 0.4cm; margin-bottom: 0.1cm; }
+	table { width: 100%; font-size: 9pt; }
+	table th, table td { border: 1px solid #555; padding: 3px 4px; vertical-align: top; }
+	table th { background-color: #f0f0f0; }
+	table.sheet th { width: 22%; text-align: left; }
+	table.sheet td { width: 28%; }
+	.muted { color: #666; }
+{% endblock %}
+{% block pdf_content %}
+<h3>{{ title }}</h3>
+<p style="text-align: center;">
+	<strong>{% if ch.internal_code %}{{ ch.internal_code }} — {% endif %}{{ object.object.name }}</strong><br>
+	<span class="muted">{% trans 'Generated on' %} {{ datetime|date:"d/m/Y H:i" }} · {{ object.in_where_laboratory }}</span>
+</p>
+
+{% if ch %}
+<h4>{% trans 'Identification' %}</h4>
+<table class="sheet">
+	<tr><th>{% trans 'Internal code' %}</th><td>{{ ch.internal_code }}</td><th>{% trans 'Institutional asset number' %}</th><td>{{ ch.asset_number }}</td></tr>
+	<tr><th>{% trans 'Brand' %}</th><td>{{ ch.brand }}</td><th>{% trans 'Model' %}</th><td>{{ ch.model }}</td></tr>
+	<tr><th>{% trans 'Serial number' %}</th><td>{{ ch.serial_number }}</td><th>{% trans 'Magnitude' %}</th><td>{{ ch.magnitude|default:"" }}</td></tr>
+	<tr><th>{% trans 'Associated software' %}</th><td>{{ ch.software_name }} {{ ch.software_version }}</td><th>{% trans 'Firmware version' %}</th><td>{{ ch.firmware_version }}</td></tr>
+</table>
+
+<h4>{% trans 'Location and status' %}</h4>
+<table class="sheet">
+	<tr><th>{% trans 'Laboratory' %}</th><td>{{ object.in_where_laboratory }}</td><th>{% trans 'Shelf' %}</th><td>{{ object.shelf.furniture.labroom }} / {{ object.shelf.furniture }} / {{ object.shelf }}</td></tr>
+	<tr><th>{% trans 'Specific physical location' %}</th><td>{{ ch.physical_location }}</td><th>{% trans 'Equipment status' %}</th><td>{{ ch.get_equipment_status_display }}</td></tr>
+	<tr><th>{% trans 'Use restriction' %}</th><td colspan="3">{{ ch.use_restriction }}</td></tr>
+</table>
+
+<h4>{% trans 'Specifications' %}</h4>
+<table class="sheet">
+	<tr><th>{% trans 'Measurement unit' %}</th><td>{{ ch.measurement_unit }}</td><th>{% trans 'Resolution' %}</th><td>{{ ch.resolution }}</td></tr>
+	<tr><th>{% trans 'Working range' %}</th><td>{{ ch.working_range }}</td><th>{% trans 'Accuracy / tolerance' %}</th><td>{{ ch.accuracy_tolerance }}</td></tr>
+	<tr><th>{% trans 'Capacity' %}</th><td>{{ ch.capacity }}</td><th>{% trans 'Acceptance criteria' %}</th><td>{{ ch.acceptance_criteria }}</td></tr>
+	<tr><th>{% trans 'Metrological requirements for use' %}</th><td colspan="3">{{ ch.metrological_requirements }}</td></tr>
+</table>
+
+<h4>{% trans 'Reception' %} · {% trans 'Responsibility' %}</h4>
+<table class="sheet">
+	<tr><th>{% trans 'Purchase Date' %}</th><td>{{ ch.purchase_equipment_date|date:"d/m/Y" }}</td><th>{% trans 'Delivery Date' %}</th><td>{{ ch.delivery_equipment_date|date:"d/m/Y" }}</td></tr>
+	<tr><th>{% trans 'First date use' %}</th><td>{{ ch.first_date_use|date:"d/m/Y" }}</td><th>{% trans 'Provider' %}</th><td>{{ ch.provider|default:"" }}</td></tr>
+	<tr><th>{% trans 'Acceptance responsible' %}</th><td>{{ ch.acceptance_responsible.user.get_full_name|default:"" }}</td><th>{% trans 'Responsible / custodian' %}</th><td>{{ ch.custodian.user.get_full_name|default:"" }}</td></tr>
+	<tr><th>{% trans 'Personnel authorized to use it' %}</th><td colspan="3">{% for profile in ch.authorized_users.all %}{{ profile.user.get_full_name|default:profile.user.username }}{% if not forloop.last %}, {% endif %}{% endfor %}{% for rol in ch.authorized_roles_to_use_equipment.all %}{% if forloop.first %} · {% endif %}{{ rol }}{% if not forloop.last %}, {% endif %}{% endfor %}</td></tr>
+	<tr><th>{% trans 'Access restrictions' %}</th><td colspan="3">{{ ch.access_restrictions }}</td></tr>
+</table>
+{% if ch.equipment_status == 'decommissioned' %}
+<h4>{% trans 'Decommission' %}</h4>
+<table class="sheet">
+	<tr><th>{% trans 'Decommission date' %}</th><td>{{ ch.decommission_date|date:"d/m/Y" }}</td><th>{% trans 'Final disposition' %}</th><td>{{ ch.final_disposition }}</td></tr>
+	<tr><th>{% trans 'Decommission reason' %}</th><td colspan="3">{{ ch.decommission_reason }}</td></tr>
+</table>
+{% endif %}
+{% endif %}
+
+<h4>{% trans 'Program' %}</h4>
+<table>
+	<tr><th>{% trans 'Activity' %}</th><th>{% trans 'Interval' %}</th><th>{% trans 'Last done' %}</th><th>{% trans 'Next due' %}</th><th>{% trans 'Responsible' %}</th></tr>
+	{% for plan in plans %}
+	<tr><td>{{ plan }}</td><td>{{ plan.interval_value }} {{ plan.get_interval_unit_display|lower }}</td><td>{{ plan.last_done|date:"d/m/Y" }}</td><td>{{ plan.next_due|date:"d/m/Y" }}</td><td>{{ plan.responsible.user.get_full_name|default:"" }}</td></tr>
+	{% empty %}<tr><td colspan="5" class="muted">{% trans 'No records' %}</td></tr>{% endfor %}
+</table>
+
+<h4>{% trans 'Calibrations' %}</h4>
+<table>
+	<tr><th>{% trans 'Date' %}</th><th>{% trans 'Calibration laboratory' %}</th><th>{% trans 'Certificate number' %}</th><th>{% trans 'Uncertainty' %}</th><th>{% trans 'Conformity' %}</th><th>{% trans 'Next calibration' %}</th></tr>
+	{% for item in calibrations %}
+	<tr><td>{{ item.calibration_date|date:"d/m/Y" }}</td><td>{{ item.provider|default:item.calibrate_name }}</td><td>{{ item.certificate_number }}</td><td>{{ item.uncertainty }}</td><td>{{ item.get_conformity_display }}</td><td>{{ item.next_calibration_date|date:"d/m/Y" }}</td></tr>
+	{% empty %}<tr><td colspan="6" class="muted">{% trans 'No records' %}</td></tr>{% endfor %}
+</table>
+
+<h4>{% trans 'Intermediate checks' %}</h4>
+<table>
+	<tr><th>{% trans 'Date' %}</th><th>{% trans 'Verification type' %}</th><th>{% trans 'Result' %}</th><th>{% trans 'Conformity' %}</th><th>{% trans 'Responsible' %}</th></tr>
+	{% for item in verifications %}
+	<tr><td>{{ item.verification_date|date:"d/m/Y" }}</td><td>{{ item.verification_type }}</td><td>{{ item.result }}</td><td>{{ item.get_conformity_display }}</td><td>{{ item.responsible.user.get_full_name|default:"" }}</td></tr>
+	{% empty %}<tr><td colspan="5" class="muted">{% trans 'No records' %}</td></tr>{% endfor %}
+</table>
+
+<h4>{% trans 'Maintenance log' %}</h4>
+<table>
+	<tr><th>{% trans 'Date' %}</th><th>{% trans 'Type' %}</th><th>{% trans 'Activities performed' %}</th><th>{% trans 'Provider' %}</th><th>{% trans 'Observation' %}</th></tr>
+	{% for item in maintenances %}
+	<tr><td>{{ item.maintenance_date|date:"d/m/Y" }}</td><td>{{ item.get_maintenance_type_display }}</td><td>{% for activity in item.activities.all %}{{ activity }}{% if not forloop.last %}, {% endif %}{% endfor %}</td><td>{{ item.provider_of_maintenance|default:"" }}</td><td>{{ item.maintenance_observation|default:"" }}{% if item.affects_calibration %} · {% trans 'Affects the results of the last calibration' %}{% endif %}</td></tr>
+	{% empty %}<tr><td colspan="5" class="muted">{% trans 'No records' %}</td></tr>{% endfor %}
+</table>
+
+<h4>{% trans 'Failures and repairs' %}</h4>
+<table>
+	<tr><th>{% trans 'Failure date' %}</th><th>{% trans 'Description' %}</th><th>{% trans 'Repair performed' %}</th><th>{% trans 'Return to service date' %}</th><th>{% trans 'Impact assessment on previous results' %}</th></tr>
+	{% for item in failures %}
+	<tr><td>{{ item.failure_date|date:"d/m/Y" }}</td><td>{{ item.description }}</td><td>{{ item.repair_done }}</td><td>{{ item.return_to_service_date|date:"d/m/Y" }}</td><td>{{ item.impact_assessment }}</td></tr>
+	{% empty %}<tr><td colspan="5" class="muted">{% trans 'No records' %}</td></tr>{% endfor %}
+</table>
+
+<h4>{% trans 'Documents' %}</h4>
+<table>
+	<tr><th>{% trans 'Document type' %}</th><th>{% trans 'Title' %}</th><th>{% trans 'Version' %}</th><th>{% trans 'Valid from' %}</th></tr>
+	{% for item in documents %}
+	<tr><td>{{ item.document_type|default:"" }}</td><td>{{ item.title }}</td><td>{{ item.version }}</td><td>{{ item.valid_from|date:"d/m/Y" }}</td></tr>
+	{% empty %}<tr><td colspan="4" class="muted">{% trans 'No records' %}</td></tr>{% endfor %}
+</table>
+
+<h4>{% trans 'Training' %}</h4>
+<table>
+	<tr><th>{% trans 'Initial date' %}</th><th>{% trans 'Final date' %}</th><th>{% trans 'Number of hours' %}</th><th>{% trans 'Place' %}</th></tr>
+	{% for item in trainings %}
+	<tr><td>{{ item.training_initial_date|date:"d/m/Y" }}</td><td>{{ item.training_final_date|date:"d/m/Y" }}</td><td>{{ item.number_of_hours }}</td><td>{{ item.place|default:"" }}</td></tr>
+	{% empty %}<tr><td colspan="4" class="muted">{% trans 'No records' %}</td></tr>{% endfor %}
+</table>
+
+<h4>{% trans 'History' %}</h4>
+<table>
+	<tr><th>{% trans 'Date' %}</th><th>{% trans 'Action Taken' %}</th><th>{% trans 'Description' %}</th></tr>
+	{% for item in history %}
+	<tr><td>{{ item.creation_date|date:"d/m/Y H:i" }}</td><td>{{ item.action_taken }}</td><td>{{ item.description|default:"" }}</td></tr>
+	{% empty %}<tr><td colspan="3" class="muted">{% trans 'No records' %}</td></tr>{% endfor %}
+</table>
+{% endblock %}
