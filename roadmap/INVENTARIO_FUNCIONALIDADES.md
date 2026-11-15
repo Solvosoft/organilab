@@ -874,16 +874,16 @@ Los datos maestros que la etiqueta imprime: la empresa que figura como responsab
 | Tesista modulo desechos | sí | `auth_and_perms/management/roles.py:600` |
 | Solo Lectura | sí | `auth_and_perms/management/roles.py:658` |
 | Técnico de Laboratorio | sí | `auth_and_perms/management/roles.py:723` |
-| SGA | sí | `auth_and_perms/management/roles.py:855` |
-| Regente | sí | `auth_and_perms/management/roles.py:942` |
-| Administrativo superior | sí | `auth_and_perms/management/roles.py:1029` |
-| Administrativo de centro de trabajo | sí | `auth_and_perms/management/roles.py:1538` |
-| Auditor IPER | sí | `auth_and_perms/management/roles.py:1704` |
-| Administrador IPER | sí | `auth_and_perms/management/roles.py:1719` |
-| Administrador ambiental | sí | `auth_and_perms/management/roles.py:1745` |
-| Encargado de registro ambiental | sí | `auth_and_perms/management/roles.py:1779` |
-| Analista ambiental | sí | `auth_and_perms/management/roles.py:1798` |
-| Administración de Organización | sí | `auth_and_perms/management/roles.py:1814` |
+| SGA | sí | `auth_and_perms/management/roles.py:857` |
+| Regente | sí | `auth_and_perms/management/roles.py:944` |
+| Administrativo superior | sí | `auth_and_perms/management/roles.py:1031` |
+| Administrativo de centro de trabajo | sí | `auth_and_perms/management/roles.py:1540` |
+| Auditor IPER | sí | `auth_and_perms/management/roles.py:1706` |
+| Administrador IPER | sí | `auth_and_perms/management/roles.py:1721` |
+| Administrador ambiental | sí | `auth_and_perms/management/roles.py:1747` |
+| Encargado de registro ambiental | sí | `auth_and_perms/management/roles.py:1781` |
+| Analista ambiental | sí | `auth_and_perms/management/roles.py:1800` |
+| Administración de Organización | sí | `auth_and_perms/management/roles.py:1816` |
 
 Los pseudo-roles no conceden permisos y se listan aparte:
 
