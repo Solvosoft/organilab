@@ -37,6 +37,10 @@
 								class="btn btn-outline-primary">{% trans 'Equipment type' %}</a>
 				{% endif %}
 
+				{% if perms.laboratory.view_shelfobject %}
+					<a href="{% url 'laboratory:equipment_units' org_pk=org_pk lab_pk=lab_pk %}"
+								class="btn btn-outline-primary"><i class="fa fa-list"></i> {% trans 'Laboratory equipment' %}</a>
+				{% endif %}
 				{% if perms.laboratory.add_shelfobject and perms.laboratory.add_object %}
 					<a href="{% url 'laboratory:equipment_import' org_pk=org_pk lab_pk=lab_pk %}"
 								class="btn btn-outline-success"><i class="fa fa-upload"></i> {% trans 'Import equipment' %}</a>

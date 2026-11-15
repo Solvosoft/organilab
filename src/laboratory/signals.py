@@ -146,3 +146,39 @@ def send_email_to_ptech_limitobjs(shelf_object, enqueued=True):
             user=None,
             upfile=None,
         )
+
+
+@receiver(pre_save, sender=ShelfObjectEquipmentCharacteristics)
+def equipment_status_change(sender, instance, **kwargs):
+    """Historial de estado del equipo (ISO/IEC 17025 6.4.9) y baja sin perder la historia (8.4).
+
+    Cada cambio de estado queda en la línea de tiempo. Dar de baja marca además la
+    unidad como descartada y pone la fecha de baja si no se indicó.
+    """
+    if instance.pk is None:
+        return
+    previous = (
+        ShelfObjectEquipmentCharacteristics.objects.filter(pk=instance.pk)
+        .values_list("equipment_status", flat=True)
+        .first()
+    )
+    if previous is None or previous == instance.equipment_status:
+        return
+    labels = dict(ShelfObjectEquipmentCharacteristics.EQUIPMENT_STATUS)
+    ShelfObjectObservation.objects.create(
+        action_taken=_("Status change"),
+        description="%s → %s" % (labels.get(previous, previous), labels.get(instance.equipment_status, "")),
+        shelf_object_id=instance.shelfobject_id,
+    )
+    if instance.equipment_status == ShelfObjectEquipmentCharacteristics.DECOMMISSIONED:
+        if instance.decommission_date is None:
+            import datetime
+
+            instance.decommission_date = datetime.date.today()
+            update_fields = kwargs.get("update_fields")
+            if update_fields is not None and "decommission_date" not in update_fields:
+                # save(update_fields=...) no guardaría la fecha recién puesta.
+                ShelfObjectEquipmentCharacteristics.objects.filter(pk=instance.pk).update(
+                    decommission_date=instance.decommission_date
+                )
+        ShelfObject.objects.filter(pk=instance.shelfobject_id, marked_as_discard=False).update(marked_as_discard=True)

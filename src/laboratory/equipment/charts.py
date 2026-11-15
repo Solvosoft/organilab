@@ -22,6 +22,9 @@ OK_COLOR = "rgb(2, 128, 144)"
 ALERT_COLOR = "rgb(216, 15, 53)"
 LIMIT_COLOR = "rgb(229, 158, 64)"
 CENTER_COLOR = "rgb(90, 90, 90)"
+#: registros que trae la carta sin filtro de fechas, y tope con filtro
+DEFAULT_WINDOW = 100
+MAX_WINDOW = 2000
 
 
 class ControlChartPermission(permissions.BasePermission):
@@ -49,10 +52,29 @@ class ControlChartBase:
             pk=pk, shelfobject__in_where_laboratory_id=request.query_params.get("laboratory"),
         )
         organization_can_change_laboratory(self.point.shelfobject.in_where_laboratory, organization, raise_exec=True)
-        self.records = list(
-            ControlMeasurement.objects.filter(point=self.point).select_related("limits").order_by("measured_on", "pk")
-        )
+        self.records = self.get_records(request)
         return Response(self.serializer_class(self.get_graph_data()).data)
+
+    def get_records(self, request):
+        """Los registros del rango ``from``/``to``; sin rango, los últimos ``DEFAULT_WINDOW``.
+
+        Una carta con lectura diaria junta miles de puntos en pocos años: no se
+        mandan todos al navegador.
+        """
+        from laboratory.equipment.control import ControlError, parse_date
+
+        queryset = ControlMeasurement.objects.filter(point=self.point).select_related("limits")
+        limits = {}
+        for param, lookup in (("from", "measured_on__gte"), ("to", "measured_on__lte")):
+            value = request.query_params.get(param)
+            if value:
+                try:
+                    limits[lookup] = parse_date(value)
+                except ControlError:
+                    raise Http404("Invalid date")
+        if limits:
+            return list(queryset.filter(**limits).order_by("measured_on", "pk")[:MAX_WINDOW])
+        return list(queryset.order_by("-measured_on", "-pk")[:DEFAULT_WINDOW])[::-1]
 
     def get_labels(self):
         return [record.measured_on.strftime("%d/%m/%Y") for record in self.records]

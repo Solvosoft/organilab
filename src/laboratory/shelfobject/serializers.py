@@ -2520,6 +2520,17 @@ class ValidateShelfObjectLogSerializer(
     ValidateShelfobjectEditSerializer, serializers.ModelSerializer
 ):
 
+    def validate(self, data):
+        data = super().validate(data)
+        # ISO/IEC 17025 6.4.9: un equipo fuera de servicio o dado de baja no se usa.
+        characteristics = ShelfObjectEquipmentCharacteristics.objects.filter(shelfobject=data["shelfobject"]).first()
+        blocked = (ShelfObjectEquipmentCharacteristics.OUT_OF_SERVICE, ShelfObjectEquipmentCharacteristics.DECOMMISSIONED)
+        if self.instance is None and characteristics is not None and characteristics.equipment_status in blocked:
+            raise serializers.ValidationError({"description": _(
+                "The equipment is %(status)s: its use cannot be registered."
+            ) % {"status": characteristics.get_equipment_status_display().lower()}})
+        return data
+
     class Meta:
         model = ShelfObjectLog
         fields = "__all__"

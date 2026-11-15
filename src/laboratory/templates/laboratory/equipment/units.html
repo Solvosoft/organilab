@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+{% block title %}{% trans 'Laboratory equipment' %}{% endblock %}
+{% block content %}
+<h1 class="text-center">{% trans 'Laboratory equipment' %}</h1>
+<p class="text-center text-muted">{% trans 'Every equipment of the laboratory with its status, its calibration and its next scheduled activity. Search by internal code, name, serial number, asset number or location.' %}</p>
+<div class="row mb-2">
+	<div class="col-md-3">
+		<label for="equipment_status_filter" class="form-label">{% trans 'Equipment status' %}</label>
+		<select id="equipment_status_filter" class="form-select">
+			<option value="">{% trans 'All' %}</option>
+			{% for code, text in statuses %}<option value="{{ code }}">{{ text }}</option>{% endfor %}
+		</select>
+	</div>
+	<div class="col-md-9 text-end align-self-end">
+		<a href="{% url 'laboratory:equipment_program_export' org_pk=org_pk lab_pk=lab_pk %}" class="btn btn-outline-info">
+			<i class="fa fa-file-excel-o"></i> {% trans 'Equipment program (PT-05)' %}</a>
+	</div>
+</div>
+<table class="table table-striped w-100 table-responsive" id="equipment_units_table"></table>
+{% endblock %}
+{% block js %}
+{{ block.super }}
+<script>
+	const status_css = {in_service: "bg-success", out_of_service: "bg-danger", decommissioned: "bg-secondary",
+		in_maintenance: "bg-warning text-dark", in_calibration: "bg-warning text-dark"};
+	const due_css = {valid: "bg-success", due_soon: "bg-warning text-dark", unscheduled: "bg-warning text-dark",
+		expired: "bg-danger", non_conforming: "bg-danger", not_required: "bg-light text-dark"};
+	const badge = (css, text) => `<span class="badge ${css || 'bg-secondary'}">${text}</span>`;
+	const units_table = createDataTable("#equipment_units_table", "{{ list_url }}", {
+		responsive: true, paging: true, ordering: false,
+		columns: [
+			{data: "internal_code", name: "internal_code", title: "{% trans 'Internal code' %}", type: "string", visible: true,
+			 render: (code, type, row) => `<a href="${row.url}">${code || "{% trans 'No code' %}"}</a>`},
+			{data: "name", name: "name", title: "{% trans 'Name' %}", type: "string", visible: true},
+			{data: "brand", name: "brand", title: "{% trans 'Brand and model' %}", type: "string", visible: true},
+			{data: "serial_number", name: "serial_number", title: "{% trans 'Serial number' %}", type: "string", visible: true},
+			{data: "physical_location", name: "physical_location", title: "{% trans 'Location' %}", type: "string", visible: true},
+			{data: "equipment_status", name: "equipment_status", title: "{% trans 'Status' %}", type: "string", visible: true,
+			 render: data => badge(status_css[data.code], data.text)},
+			{data: "calibration", name: "calibration", title: "{% trans 'Calibration' %}", type: "string", visible: true,
+			 render: data => badge(due_css[data.code], data.text) + (data.date ? " " + data.date : "")},
+			{data: "next_activity", name: "next_activity", title: "{% trans 'Next activity' %}", type: "string", visible: true,
+			 render: data => data.text ? badge(due_css[data.code], data.text) : ""},
+		],
+		layout: {topStart: 'pageLength', topEnd: 'search', bottomStart: 'info', bottomEnd: 'paging'},
+		ajax: {
+			url: "{{ list_url }}", type: 'GET',
+			data: function (dataTableParams, settings) {
+				const params = formatDataTableParams(dataTableParams, settings);
+				params.equipment_status = document.getElementById("equipment_status_filter").value;
+				return params;
+			}
+		}
+	}, addfilter = false);
+	document.getElementById("equipment_status_filter").addEventListener("change", () => units_table.ajax.reload());
+</script>
+{% endblock %}

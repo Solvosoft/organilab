@@ -237,3 +237,44 @@ Organilab sube a **djgentelella >= 0.7.0** (publicada en PyPI). Organilab no usa
 - **Prueba con los datos reales del LB-127** (P1 5 g, P2 25 g y P3 100 g; 20 a 22 registros por punto):
   - P1: LC 4.99571 g, R̄ 0.00818 g y LCS de rangos 0.0173 g.
   - Varios registros reales tienen rango 0.02 g, por encima de ese LCS. Hay que comentarlo con el laboratorio junto con el D4 de su Excel (2.225 frente a 2.114 de la tabla).
+
+## 9. Correcciones tras la revisión del branch (15-nov-2026)
+
+La revisión del commit de las tres fases contra el correo del laboratorio y sus Excel dejó estos cambios. Las pruebas están en `laboratory/tests/test_equipment_review.py`.
+
+### Problemas corregidos
+
+- **Reglas de alerta por defecto:** el primer programa de actividades o punto de control de una organización crea su regla (`ensure_default_rule` en `equipment/alerts.py`). La tarea diaria la crea para los programas que ya existían. Una regla desactivada no se recrea.
+- **Corrección por registro:** `ControlMeasurement.correction` guarda la corrección del punto al registrar. Cambiar el certificado del patrón aplica solo a los registros nuevos.
+- **Alertas de las cartas:**
+  - recalcular o fijar límites ya no avisa por registros históricos;
+  - un registro que queda dentro (por nuevos límites o por corregir una lectura) cierra su alerta;
+  - borrar un registro también la cierra.
+- **Rango móvil (I‑MR):** mover o borrar un registro recalcula a sus vecinos.
+- **Línea de tiempo:** verificaciones, fallas, calibraciones, mantenimientos y registros de control tienen descripción propia (antes «… object (3)»).
+
+### Mejoras
+
+- **Límites fijos:** el laboratorio puede fijar los seis límites a mano con «aplicar desde» (`ControlLimits.manual`); quedan en el historial junto a los calculados.
+- **Método con registros:** no se le puede cambiar el tipo de carta ni `n`; tampoco se edita el método de una organización ancestra.
+- **Cartas con muchos registros:** sin período muestran los últimos 100; con período, los de esas fechas.
+- **Programa sin fecha:** estado «Sin fecha» (antes «Al día») y la API exige la fecha de inicio si el equipo no tiene registros de esa actividad.
+- **Calibración no conforme:** la etiqueta ya no dice «vigente».
+- **Estado del equipo:**
+  - cada cambio queda en la línea de tiempo;
+  - la baja marca la unidad como descartada y pone la fecha;
+  - borrar la falla que bloqueaba el equipo lo devuelve al servicio;
+  - no se registra uso en la bitácora de un equipo fuera de servicio o dado de baja (6.4.9).
+- **Importación:** «Sujeto a confirmación» queda sin conformidad (antes «No conforme») y la revisión avisa si el código ya existe en otro laboratorio de la organización.
+- **Nombre del equipo:** alertas, programa exportado y listado usan el nombre, sin el código de catálogo (salía «None Balanza granataria»).
+
+### Pantallas nuevas
+
+- **Equipos del laboratorio** (`equipment_units`): código interno, estado, calibración y próxima actividad; búsqueda por código, nombre, serie, placa o ubicación y filtro por estado.
+- **Control del día:** en la pestaña «Cartas de control», una fecha y las lecturas de todos los puntos activos en un solo envío.
+
+### Sigue pendiente
+
+- `authorized_users` es informativo: no restringe quién registra uso.
+- El código interno no tiene restricción en la base de datos; lo validan el formulario y la importación.
+- Con el laboratorio: D4 = 2,225 frente a 2,114; LB-123 con dos equipos; LB-107 con «Volumen» en la columna Serie; LB-124 «Sujeto a confirmación»; y si usan la lectura diaria (I‑MR), los subgrupos de 5 (X̄‑R) o ambas.

@@ -1,8 +1,9 @@
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-15 15:39-0600\n"
+"POT-Creation-Date: 2026-11-15 16:56-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -311,8 +312,8 @@ msgstr ""
 
 #, python-format
 msgid ""
-"The laboratory does not have enough of this object to be able to reserve it. "
-"<br>%(list)s"
+"The laboratory does not have enough of this object to be able to reserve it."
+" <br>%(list)s"
 msgstr ""
 
 #, python-format
@@ -329,8 +330,8 @@ msgstr ""
 
 #, python-format
 msgid ""
-"The measurement point %(point)s registered %(value)s %(unit)s in %(period)s, "
-"above the limit of %(limit)s."
+"The measurement point %(point)s registered %(value)s %(unit)s in %(period)s,"
+" above the limit of %(limit)s."
 msgstr ""
 
 #, python-format
@@ -367,8 +368,8 @@ msgid "There is already a measurement point with this code for this resource."
 msgstr ""
 
 msgid ""
-"There is already a measurement point with this code for this resource in the "
-"trash; restore it instead of creating a new one."
+"There is already a measurement point with this code for this resource in the"
+" trash; restore it instead of creating a new one."
 msgstr ""
 
 msgid "The period end must be after the period start."
@@ -795,14 +796,16 @@ msgid "List Roles: show user's roles"
 msgstr ""
 
 msgid ""
-"Incognito mode: browse the system as this user without modifying your session"
+"Incognito mode: browse the system as this user without modifying your "
+"session"
 msgstr ""
 
 msgid ""
 "Inherit: propagate the user's profile and roles to all child organizations"
 msgstr ""
 
-msgid "Remove: remove user from organization, can also disable platform access"
+msgid ""
+"Remove: remove user from organization, can also disable platform access"
 msgstr ""
 
 msgid "User not found, Sorry try to use add user button on organization list"
@@ -849,7 +852,8 @@ msgid "Laboratory modification not authorized"
 msgstr ""
 
 #, python-format
-msgid "Linked the user %(user)r to %(objtype)s %(obj)r in organization %(org)r"
+msgid ""
+"Linked the user %(user)r to %(objtype)s %(obj)r in organization %(org)r"
 msgstr ""
 
 #, python-format
@@ -1231,8 +1235,8 @@ msgid ""
 msgstr ""
 
 msgid ""
-"Once added, you can search for the profile in the organization tab to relate "
-"user to organization"
+"Once added, you can search for the profile in the organization tab to relate"
+" user to organization"
 msgstr ""
 
 msgid "Find user"
@@ -1251,8 +1255,8 @@ msgid "Laboratory Relations"
 msgstr ""
 
 msgid ""
-"Manage laboratories linked to this organization. Unlinking a laboratory will "
-"also remove user permissions for that laboratory in this organization."
+"Manage laboratories linked to this organization. Unlinking a laboratory will"
+" also remove user permissions for that laboratory in this organization."
 msgstr ""
 
 msgid "Unlink Laboratory"
@@ -1410,7 +1414,8 @@ msgstr ""
 msgid "Laboratories where you are affiliated"
 msgstr ""
 
-msgid "Your password may not closely resemble your other personal information."
+msgid ""
+"Your password may not closely resemble your other personal information."
 msgstr ""
 
 msgid "Your password must contain at least 8 characters."
@@ -1439,8 +1444,8 @@ msgstr ""
 
 msgid ""
 "To the created user, an email will be sent with instructions on how to "
-"change their password. Please contact them to check their email. Some emails "
-"might go to the SPAM folder, so please also check the SPAM mailbox."
+"change their password. Please contact them to check their email. Some emails"
+" might go to the SPAM folder, so please also check the SPAM mailbox."
 msgstr ""
 
 msgid "The email is used as username."
@@ -1448,12 +1453,9 @@ msgstr ""
 
 msgid ""
 "The user is created with the default role of Student, so they will be\n"
-"\t\t\t\t\t\t\tready to be added to the desired laboratory. You can add an "
-"administrative role by adding the user to the\n"
-"\t\t\t\t\t\t\torganization in the organization tab. In both cases, the user "
-"should be assigned roles in each laboratory.\n"
-"\t\t\t\t\t\t\tRemember, you can use the user creation functionality via QR "
-"code provided in the laboratory administration to\n"
+"\t\t\t\t\t\t\tready to be added to the desired laboratory. You can add an administrative role by adding the user to the\n"
+"\t\t\t\t\t\t\torganization in the organization tab. In both cases, the user should be assigned roles in each laboratory.\n"
+"\t\t\t\t\t\t\tRemember, you can use the user creation functionality via QR code provided in the laboratory administration to\n"
 "\t\t\t\t\t\t\tsimplify the role assignment for a large number of users."
 msgstr ""
 
@@ -1461,8 +1463,8 @@ msgid "User Profile Explanations"
 msgstr ""
 
 msgid ""
-"Administrator: Manages organizations, users, permissions, laboratories, risk "
-"zones, and reports at the system level."
+"Administrator: Manages organizations, users, permissions, laboratories, risk"
+" zones, and reports at the system level."
 msgstr ""
 
 msgid ""
@@ -1841,8 +1843,8 @@ msgid "The transfer in was approved successfully."
 msgstr ""
 
 msgid ""
-"This item cannot be deleted because it has active reservations. Please close "
-"all reservations first."
+"This item cannot be deleted because it has active reservations. Please close"
+" all reservations first."
 msgstr ""
 
 #, python-format
@@ -2200,6 +2202,12 @@ msgstr ""
 msgid "%(activity)s of %(equipment)s is due on %(date)s."
 msgstr ""
 
+msgid "Equipment activities due"
+msgstr ""
+
+msgid "Equipment control charts out of control"
+msgstr ""
+
 msgid "Program created"
 msgstr ""
 
@@ -2263,6 +2271,9 @@ msgstr ""
 msgid "Control record created"
 msgstr ""
 
+msgid "Enter the readings of at least one control point of this equipment."
+msgstr ""
+
 msgid "Control record updated"
 msgstr ""
 
@@ -2311,6 +2322,12 @@ msgstr ""
 
 msgid ""
 "The reference period does not have enough records to calculate the limits."
+msgstr ""
+
+msgid "The center line must be between the lower and the upper limit."
+msgstr ""
+
+msgid "The range center line must be between its lower and upper limit."
 msgstr ""
 
 msgid "outside the control limits"
@@ -2364,6 +2381,46 @@ msgid "Reference period to"
 msgstr ""
 
 msgid "Notes"
+msgstr ""
+
+msgid "Lower control limit"
+msgstr ""
+
+msgid "Center line"
+msgstr ""
+
+msgid "Upper control limit"
+msgstr ""
+
+msgid "Range lower limit"
+msgstr ""
+
+msgid "Range center line"
+msgstr ""
+
+msgid "Range upper limit"
+msgstr ""
+
+msgid "Apply from"
+msgstr ""
+
+msgid ""
+"Records from this date are evaluated with these limits. Empty: from today"
+msgstr ""
+
+msgid "From"
+msgstr ""
+
+msgid "To"
+msgstr ""
+
+msgid "Date"
+msgstr ""
+
+msgid "Responsible"
+msgstr ""
+
+msgid "Observation"
 msgstr ""
 
 msgid "Equipment inventory (one header row)"
@@ -2441,7 +2498,8 @@ msgid "The next calibration must be after the calibration date."
 msgstr ""
 
 msgid ""
-"The spreadsheet does not register an executed maintenance for this equipment."
+"The spreadsheet does not register an executed maintenance for this "
+"equipment."
 msgstr ""
 
 msgid "Marked as withdrawn in the imported spreadsheet."
@@ -2470,6 +2528,11 @@ msgstr ""
 msgid "Equipment life record"
 msgstr ""
 
+msgid ""
+"The equipment has no records of this activity yet: enter the date of the "
+"first one."
+msgstr ""
+
 msgid "Inactive"
 msgstr ""
 
@@ -2484,16 +2547,33 @@ msgstr ""
 msgid "Expired"
 msgstr ""
 
+msgid "No date"
+msgstr ""
+
 msgid "The return to service cannot be before the failure."
 msgstr ""
 
 msgid "A means and ranges chart needs between 2 and 10 readings per record."
 msgstr ""
 
+msgid ""
+"This method already has control records: create a new method instead of "
+"changing the chart type or the readings per record."
+msgstr ""
+
 msgid "Enter the readings."
 msgstr ""
 
 msgid "The end of the period must be after its start."
+msgstr ""
+
+msgid "Not required"
+msgstr ""
+
+msgid "Valid"
+msgstr ""
+
+msgid "Non-conforming"
 msgstr ""
 
 msgid "Regent"
@@ -2716,7 +2796,8 @@ msgid "The unit not exist in the database"
 msgstr ""
 
 msgid ""
-"The quantity cannot be greater than the quantity available for the container."
+"The quantity cannot be greater than the quantity available for the "
+"container."
 msgstr ""
 
 msgid "Load archive"
@@ -3131,9 +3212,6 @@ msgstr ""
 msgid "Validator"
 msgstr ""
 
-msgid "Observation"
-msgstr ""
-
 msgid "Preventive"
 msgstr ""
 
@@ -3167,9 +3245,6 @@ msgstr ""
 msgid "Conforming"
 msgstr ""
 
-msgid "Non-conforming"
-msgstr ""
-
 msgid "Calibration laboratory"
 msgstr ""
 
@@ -3197,6 +3272,9 @@ msgstr ""
 msgid "If empty, it is calculated from the calibration program"
 msgstr ""
 
+msgid "Calibration"
+msgstr ""
+
 msgid "Initial date"
 msgstr ""
 
@@ -3216,9 +3294,6 @@ msgid "Place"
 msgstr ""
 
 msgid "Contract"
-msgstr ""
-
-msgid "Calibration"
 msgstr ""
 
 msgid "Intermediate check"
@@ -3257,9 +3332,6 @@ msgstr ""
 msgid "Days of notice before the due date"
 msgstr ""
 
-msgid "Responsible"
-msgstr ""
-
 msgid "Is active"
 msgstr ""
 
@@ -3296,7 +3368,8 @@ msgid "Equipment taken out of service"
 msgstr ""
 
 msgid ""
-"While it is not returned to service the equipment is marked as out of service"
+"While it is not returned to service the equipment is marked as out of "
+"service"
 msgstr ""
 
 msgid "Repair performed"
@@ -3382,7 +3455,8 @@ msgstr ""
 
 msgid ""
 "Subtracted from each mean, e.g. the indication error of the reference "
-"standard"
+"standard. A change applies to new records only: each record keeps the "
+"correction it was registered with"
 msgstr ""
 
 msgid "Acceptance tolerance (±)"
@@ -3398,25 +3472,14 @@ msgstr ""
 msgid "Control points"
 msgstr ""
 
+msgid "Fixed limits"
+msgstr ""
+
+msgid ""
+"Entered by the laboratory instead of calculated from a reference period"
+msgstr ""
+
 msgid "Records in the reference period"
-msgstr ""
-
-msgid "Center line"
-msgstr ""
-
-msgid "Upper control limit"
-msgstr ""
-
-msgid "Lower control limit"
-msgstr ""
-
-msgid "Range center line"
-msgstr ""
-
-msgid "Range upper limit"
-msgstr ""
-
-msgid "Range lower limit"
 msgstr ""
 
 msgid "Constants used"
@@ -3428,10 +3491,10 @@ msgstr ""
 msgid "Control limits"
 msgstr ""
 
-msgid "Date"
+msgid "Mean"
 msgstr ""
 
-msgid "Mean"
+msgid "Correction of the control point when the record was registered"
 msgstr ""
 
 msgid "Limits applied"
@@ -3535,7 +3598,8 @@ msgid ""
 "that might be affected in the event of an emergency."
 msgstr ""
 
-msgid "Rivers, streams, springs and aquifers that are affected in an emergency"
+msgid ""
+"Rivers, streams, springs and aquifers that are affected in an emergency"
 msgstr ""
 
 msgid "Faculty or dispatch"
@@ -3711,13 +3775,14 @@ msgid "Mark as discard"
 msgstr ""
 
 msgid ""
-"This select only shows shelves with same measurement unit than current object"
+"This select only shows shelves with same measurement unit than current "
+"object"
 msgstr ""
 
 msgid ""
 "This select only shows shelves with some of the following features: <br>1) "
-"Infinity quantity capacity and not defined measurement unit. <br>2) Infinity "
-"quantity capacity and same measurement unit than selected shelf object. "
+"Infinity quantity capacity and not defined measurement unit. <br>2) Infinity"
+" quantity capacity and same measurement unit than selected shelf object. "
 "<br>3) Same measurement unit than selected shelf object and available "
 "capacity in the shelf."
 msgstr ""
@@ -3791,7 +3856,8 @@ msgstr ""
 msgid "Reservation does not belong to this laboratory."
 msgstr ""
 
-msgid "Only box shelf object reservations can be returned through this action."
+msgid ""
+"Only box shelf object reservations can be returned through this action."
 msgstr ""
 
 msgid "Only borrowed reservations can be returned."
@@ -3902,8 +3968,8 @@ msgid ""
 msgstr ""
 
 msgid ""
-"The source container cannot be moved since the entire quantity available for "
-"the source object was not transferred in."
+"The source container cannot be moved since the entire quantity available for"
+" the source object was not transferred in."
 msgstr ""
 
 msgid "The shelfobject is not valid"
@@ -3913,6 +3979,10 @@ msgid "The shelfobject do not belong to the laboratory"
 msgstr ""
 
 msgid "The shelfobject do not belong to the organization"
+msgstr ""
+
+#, python-format
+msgid "The equipment is %(status)s: its use cannot be registered."
 msgstr ""
 
 msgid "Initial date cannot be greater than final date."
@@ -4025,7 +4095,8 @@ msgstr ""
 msgid "Object is not allowed in the shelf."
 msgstr ""
 
-msgid "Measurement unit cannot be different than the shelf's measurement unit."
+msgid ""
+"Measurement unit cannot be different than the shelf's measurement unit."
 msgstr ""
 
 #, python-format
@@ -4066,6 +4137,9 @@ msgid "Moved shelfobject '%(name)s' to shelf '%(shelf)s'"
 msgstr ""
 
 msgid "Location change"
+msgstr ""
+
+msgid "Status change"
 msgstr ""
 
 #, python-format
@@ -4117,8 +4191,8 @@ msgid "Measurement unit:"
 msgstr ""
 
 msgid ""
-"Please refill this product or contact the people that reserved it to balance "
-"the current quantity."
+"Please refill this product or contact the people that reserved it to balance"
+" the current quantity."
 msgstr ""
 
 msgid "If you don't want to recieve notifications of this object, please use"
@@ -4303,7 +4377,25 @@ msgstr ""
 msgid "Calculate limits"
 msgstr ""
 
+msgid "Set fixed limits"
+msgstr ""
+
 msgid "Calculate and apply"
+msgstr ""
+
+msgid ""
+"Use fixed limits when the laboratory defines them itself, e.g. from its "
+"procedure or from the tolerance of the equipment."
+msgstr ""
+
+msgid "Apply fixed limits"
+msgstr ""
+
+msgid "Show period"
+msgstr ""
+
+#, python-format
+msgid "Without a period the charts show the last %(count)s records."
 msgstr ""
 
 msgid "Limits history"
@@ -4348,6 +4440,10 @@ msgstr ""
 msgid "Already used by «%(name)s»: its sheet will be updated."
 msgstr ""
 
+#, python-format
+msgid "This code already belongs to an equipment of «%(name)s»."
+msgstr ""
+
 msgid "Spreadsheet"
 msgstr ""
 
@@ -4381,6 +4477,9 @@ msgstr ""
 msgid "Equipment List"
 msgstr ""
 
+msgid "Laboratory equipment"
+msgstr ""
+
 msgid "Equipment program (PT-05)"
 msgstr ""
 
@@ -4391,6 +4490,24 @@ msgid "Update equipment"
 msgstr ""
 
 msgid "Equipment Detail"
+msgstr ""
+
+msgid ""
+"Every equipment of the laboratory with its status, its calibration and its "
+"next scheduled activity. Search by internal code, name, serial number, asset"
+" number or location."
+msgstr ""
+
+msgid "All"
+msgstr ""
+
+msgid "No code"
+msgstr ""
+
+msgid "Brand and model"
+msgstr ""
+
+msgid "Next activity"
 msgstr ""
 
 msgid "Equipment Type List"
@@ -4831,8 +4948,8 @@ msgid "Regency Report"
 msgstr ""
 
 msgid ""
-"Regency system for risk management in warehouses and laboratories that store "
-"chemical reactives and products."
+"Regency system for risk management in warehouses and laboratories that store"
+" chemical reactives and products."
 msgstr ""
 
 msgid "Chemical inventory report"
@@ -5004,6 +5121,12 @@ msgstr ""
 msgid "Calibration expired on"
 msgstr ""
 
+msgid "Last calibration non-conforming"
+msgstr ""
+
+msgid "Calibration program without date"
+msgstr ""
+
 msgid "next"
 msgstr ""
 
@@ -5020,8 +5143,19 @@ msgid "Guarantees"
 msgstr ""
 
 msgid ""
-"Control points of the equipment (e.g. the masses checked on a balance). Open "
-"the chart of each point to register its controls."
+"Control points of the equipment (e.g. the masses checked on a balance). Open"
+" the chart of each point to register its controls."
+msgstr ""
+
+msgid "Register the control of the day"
+msgstr ""
+
+msgid ""
+"Readings of each control point, separated by a semicolon or a space. Leave "
+"empty the points that were not checked."
+msgstr ""
+
+msgid "Save controls"
 msgstr ""
 
 msgid "Create maintenance"
@@ -5305,8 +5439,8 @@ msgid "A valid number is required."
 msgstr ""
 
 msgid ""
-"Date has wrong format. Use one of these formats instead: DD/MM/YYYY, YYYY-MM-"
-"DD, DD/MM/YY."
+"Date has wrong format. Use one of these formats instead: DD/MM/YYYY, YYYY-"
+"MM-DD, DD/MM/YY."
 msgstr ""
 
 msgid "Final date can't be equal to initial date"
@@ -5577,7 +5711,8 @@ msgid "The quantity is much larger than the shelf limit %(limit)s"
 msgstr ""
 
 #, python-format
-msgid "The measurent unit is different of there shelf has %(measurement_unit)s"
+msgid ""
+"The measurent unit is different of there shelf has %(measurement_unit)s"
 msgstr ""
 
 #, python-format
@@ -5714,8 +5849,8 @@ msgid "Pending task managers"
 msgstr ""
 
 msgid ""
-"You have been assigned a task because you have a change in a laboratory that "
-"you are responsible in the Organilab system."
+"You have been assigned a task because you have a change in a laboratory that"
+" you are responsible in the Organilab system."
 msgstr ""
 
 msgid ""
@@ -6123,8 +6258,8 @@ msgstr ""
 msgid ""
 "It is a software that offers a comprehensive solution for the management of "
 "laboratories in an automated manner.  It includes data security, inventory "
-"management, traceability of chemicals and analysis equipment, and management "
-"of safety and health in the laboratory."
+"management, traceability of chemicals and analysis equipment, and management"
+" of safety and health in the laboratory."
 msgstr ""
 
 msgid ""
@@ -6519,9 +6654,6 @@ msgid "Report Title"
 msgstr ""
 
 msgid "On screen"
-msgstr ""
-
-msgid "All"
 msgstr ""
 
 msgid "Object type"
@@ -6979,13 +7111,13 @@ msgid "Assign different H-codes to the reactive substances."
 msgstr ""
 
 msgid ""
-"No compatibility pairs generated. Each zone needs at least 2 different H-"
-"codes within the same zone."
+"No compatibility pairs generated. Each zone needs at least 2 different "
+"H-codes within the same zone."
 msgstr ""
 
 msgid ""
-"Ensure at least one risk zone contains substances with 2 or more different H-"
-"codes."
+"Ensure at least one risk zone contains substances with 2 or more different "
+"H-codes."
 msgstr ""
 
 #, python-format
@@ -7245,12 +7377,6 @@ msgid "Hazard classification"
 msgstr ""
 
 msgid "Risk level"
-msgstr ""
-
-msgid "From"
-msgstr ""
-
-msgid "To"
 msgstr ""
 
 msgid "Assessment date"
@@ -7620,8 +7746,8 @@ msgid ""
 "Se deben hacer esfuerzos para reducir el riesgo. Establezca mejoras en un "
 "plazo determinado."
 msgstr ""
-"Efforts should be made to reduce the risk. Set improvements within a defined "
-"timeframe."
+"Efforts should be made to reduce the risk. Set improvements within a defined"
+" timeframe."
 
 msgid ""
 "No debe comenzarse el trabajo hasta reducir el riesgo. Se requiere acción "
@@ -7799,8 +7925,9 @@ msgid "Recomendaciones"
 msgstr "Recommendations"
 
 msgid ""
-"Recomendaciones que describan en detalle las medidas que se vayan a llevar a "
-"cabo para reducir el riesgo de que accidentes similares vuelvan a producirse."
+"Recomendaciones que describan en detalle las medidas que se vayan a llevar a"
+" cabo para reducir el riesgo de que accidentes similares vuelvan a "
+"producirse."
 msgstr ""
 "Recommendations describing in detail the measures to be taken to reduce the "
 "risk of similar accidents happening again."
@@ -7809,8 +7936,8 @@ msgid ""
 "En caso de intoxicación adjuntar copia de la notificación realizada al "
 "Centro Nacional de Control de Intoxicaciones (CNCI)"
 msgstr ""
-"In case of poisoning, attach a copy of the notification sent to the National "
-"Poison Control Center (CNCI)"
+"In case of poisoning, attach a copy of the notification sent to the National"
+" Poison Control Center (CNCI)"
 
 msgid "Chemical"
 msgstr ""
@@ -9018,8 +9145,8 @@ msgid "The safety data sheet could not be uploaded."
 msgstr ""
 
 msgid ""
-"Reading the sheet is taking too long. Reload the page in a moment to see the "
-"result."
+"Reading the sheet is taking too long. Reload the page in a moment to see the"
+" result."
 msgstr ""
 
 msgid "Information about the Substance"
@@ -9123,7 +9250,8 @@ msgid "Product Identifiers"
 msgstr ""
 
 msgid ""
-"Relevant identified uses of the substance or mixture and uses advised against"
+"Relevant identified uses of the substance or mixture and uses advised "
+"against"
 msgstr ""
 
 msgid "Details of the supplier of the safety data sheet"

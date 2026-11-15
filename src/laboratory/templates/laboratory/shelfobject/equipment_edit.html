@@ -48,6 +48,10 @@
                 <span class="badge fs-6 bg-warning text-dark">{% trans 'Calibration due on' %} {{ next_calibration|date:"d/m/Y" }}</span>
                 {% elif calibration_status == 'expired' %}
                 <span class="badge fs-6 bg-danger">{% trans 'Calibration expired on' %} {{ next_calibration|date:"d/m/Y" }}</span>
+                {% elif calibration_status == 'non_conforming' %}
+                <span class="badge fs-6 bg-danger">{% trans 'Last calibration non-conforming' %}</span>
+                {% elif calibration_status == 'unscheduled' %}
+                <span class="badge fs-6 bg-warning text-dark">{% trans 'Calibration program without date' %}</span>
                 {% endif %}
                 {% if equipment_characteristics.internal_code %}
                 <span class="badge fs-6 bg-info text-dark">{{ equipment_characteristics.internal_code }}</span>
@@ -60,8 +64,8 @@
             {% if equipment_plans %}
             <ul class="list-unstyled small mb-0">
                 {% for item in equipment_plans %}
-                <li><i class="fa fa-circle {% if item.status == 'valid' %}text-success{% elif item.status == 'due_soon' %}text-warning{% else %}text-danger{% endif %}"></i>
-                    {{ item.plan }}: {% trans 'next' %} {{ item.next_due|date:"d/m/Y"|default:"-" }}</li>
+                <li><i class="fa fa-circle {% if item.status == 'valid' %}text-success{% elif item.status == 'due_soon' or item.status == 'unscheduled' %}text-warning{% else %}text-danger{% endif %}"></i>
+                    {{ item.plan }}: {% if item.status == 'unscheduled' %}{% trans 'No date' %}{% else %}{% trans 'next' %} {{ item.next_due|date:"d/m/Y"|default:"-" }}{% endif %}</li>
                 {% endfor %}
             </ul>
             {% endif %}
@@ -117,6 +121,28 @@
   <div class="tab-pane fade" id="pane-control" role="tabpanel">
     <p class="text-muted mb-2">{% trans 'Control points of the equipment (e.g. the masses checked on a balance). Open the chart of each point to register its controls.' %}
       <a href="{% url 'laboratory:equipment_control_methods' org_pk lab_pk %}" target="_blank">{% trans 'Control methods' %}</a></p>
+    {% if day_control_points and perms.laboratory.add_controlmeasurement %}
+    <button class="btn btn-sm btn-success mb-2" data-bs-toggle="collapse" data-bs-target="#day_control_box">
+      <i class="fa fa-plus"></i> {% trans 'Register the control of the day' %}</button>
+    <div class="collapse mb-3" id="day_control_box"><div class="card card-body">
+      <form id="day_control_form">
+        {{ day_control_form.as_horizontal }}
+        <p class="text-muted mb-1">{% trans 'Readings of each control point, separated by a semicolon or a space. Leave empty the points that were not checked.' %}</p>
+        {% for point in day_control_points %}
+        <div class="row mb-2">
+          <label class="col-sm-3 col-form-label" for="day_control_point_{{ point.pk }}">{{ point }}
+            <small class="text-muted d-block">{{ point.method }} · n = {{ point.method.subgroup_size }}</small></label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control day-control-reading" id="day_control_point_{{ point.pk }}" data-point="{{ point.pk }}" autocomplete="off">
+            <small class="text-danger" id="day_control_error_{{ point.pk }}"></small>
+          </div>
+        </div>
+        {% endfor %}
+      </form>
+      <div class="text-danger" id="day_control_errors"></div>
+      <div><button class="btn btn-success" id="day_control_submit" data-url="{{ day_control_url }}">{% trans 'Save controls' %}</button></div>
+    </div></div>
+    {% endif %}
     <table class="table table-striped w-100 table-responsive" id="control_table"></table>
   </div>
   <div class="tab-pane fade" id="pane-log" role="tabpanel">

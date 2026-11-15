@@ -53,7 +53,7 @@ class ProximaFechaTest(EquipoBase):
     def test_sin_registros_ni_inicio_no_vence(self):
         plan = self.plan()
         self.assertIsNone(plan.next_due())
-        self.assertEqual(plan.due_status(HOY), Plan.VALID)
+        self.assertEqual(plan.due_status(HOY), Plan.UNSCHEDULED)
 
     def test_calibracion_suma_el_intervalo_en_meses(self):
         plan = self.plan()

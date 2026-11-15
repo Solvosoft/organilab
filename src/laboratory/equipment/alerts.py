@@ -70,7 +70,7 @@ def plan_responsibles(plan):
 def equipment_name(shelfobject):
     characteristics = getattr(shelfobject, "shelfobjectequipmentcharacteristics", None)
     code = characteristics.internal_code if characteristics is not None else ""
-    return " ".join(part for part in (code, str(shelfobject.object)) if part)
+    return " ".join(part for part in (code, shelfobject.object.name) if part)
 
 
 def plan_link(plan, organization):
@@ -134,3 +134,62 @@ def resolve_activity_alerts(record, user=None):
         if last is not None and last._meta.model is record._meta.model and last.pk == record.pk:
             closed += resolve_alert(plan, resolution=record, user=user)
     return closed
+
+
+# --- Reglas por defecto ----------------------------------------------------------------
+
+def default_rules():
+    """``{proceso: datos de la regla}`` que se crea sola la primera vez que se usa."""
+    from laboratory.equipment import control
+    from presentation.alerts import TRIGGER_DUE
+
+    return {
+        PROCESS: {
+            "name": _("Equipment activities due"),
+            "trigger": TRIGGER_DUE,
+            "threshold": {"days_before": 30, "overdue_repeat_days": 7},
+        },
+        control.PROCESS: {
+            "name": _("Equipment control charts out of control"),
+            "trigger": control.TRIGGER_OUT_OF_CONTROL,
+            "threshold": {},
+        },
+    }
+
+
+def ensure_default_rule(process, organization, user=None):
+    """Crea la regla del proceso si ni la organización ni sus ancestros tienen una.
+
+    Sin regla nadie recibe los avisos, y pedir que alguien la configure antes de
+    registrar el primer programa hacía que las alertas no salieran nunca. Una regla
+    desactivada cuenta: quien la apagó no la quiere de vuelta. Sin ``user`` la regla
+    avisa por correo pero no crea tareas pendientes (necesitan un creador).
+    """
+    from presentation.models import AlertRule
+
+    if organization is None:
+        return None
+    if AlertRule.objects.filter(process=process, organization__in=organization.ancestors(include_self=True)).exists():
+        return None
+    return AlertRule.objects.create(
+        organization=organization, process=process, created_by=user,
+        notify_responsible=True, create_task=True, **default_rules()[process],
+    )
+
+
+def ensure_rules_for_existing_plans():
+    """Reglas por defecto para las organizaciones que ya tenían programas sin regla."""
+    from laboratory.models import EquipmentActivityPlan
+
+    created = []
+    plans = (
+        EquipmentActivityPlan.objects.filter(is_active=True, shelfobject__in_where_laboratory__isnull=False)
+        .select_related("shelfobject__in_where_laboratory__organization", "created_by")
+        .order_by("shelfobject__in_where_laboratory__organization_id", "pk")
+        .distinct("shelfobject__in_where_laboratory__organization_id")
+    )
+    for plan in plans:
+        rule = ensure_default_rule(PROCESS, plan.shelfobject.in_where_laboratory.organization, plan.created_by)
+        if rule is not None:
+            created.append(rule)
+    return created

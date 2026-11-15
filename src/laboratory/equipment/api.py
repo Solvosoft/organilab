@@ -188,6 +188,11 @@ class ControlMethodViewSet(EquipmentRecordViewSet):
         self.log(instance, ADDITION, list(serializer.validated_data.keys()))
 
     def perform_update(self, serializer):
+        from rest_framework.exceptions import ValidationError
+
+        # Los métodos de una organización ancestra se usan, pero no se editan desde aquí.
+        if serializer.instance.organization_id != int(self.kwargs["org_pk"]):
+            raise ValidationError({"name": [_("The method belongs to another organization.")]})
         instance = serializer.save()
         self.log(instance, CHANGE, list(serializer.validated_data.keys()))
 
@@ -209,6 +214,8 @@ class ControlPointViewSet(EquipmentRecordViewSet):
     perms = {
         **equipment_record_perms(model_name),
         "recalculate_limits": ["laboratory.change_controlpoint", "laboratory.view_controlpoint"],
+        "set_limits": ["laboratory.change_controlpoint", "laboratory.view_controlpoint"],
+        "register_day": ["laboratory.add_controlmeasurement", "laboratory.view_controlmeasurement"],
     }
     queryset = ControlPoint.objects.select_related("method")
     serializer_class = {
@@ -220,6 +227,23 @@ class ControlPointViewSet(EquipmentRecordViewSet):
     search_fields = ["name", "reference_standard"]
     ordering = ("nominal_value", "name")
     observation_texts = (_("Control point created"), _("Control point updated"), _("Control point deleted"))
+
+    def log(self, instance, flag, changed_data):
+        if isinstance(instance, ControlMeasurement):  # los registros del control del día
+            return utils.organilab_logentry(
+                self.request.user, instance, flag, "controlmeasurement", changed_data=changed_data,
+                change_message="%s: %s" % (_("Control record created"), instance), relobj=self.kwargs.get("lab_pk"),
+            )
+        return super().log(instance, flag, changed_data)
+
+    def observe(self, instance, index):
+        if isinstance(instance, ControlMeasurement):
+            ShelfObjectObservation.objects.create(
+                description=str(instance), action_taken=str(_("Control record created"))[:50],
+                shelf_object_id=instance.point.shelfobject_id, created_by=self.request.user,
+            )
+            return
+        super().observe(instance, index)
 
     @action(detail=True, methods=["post"])
     def recalculate_limits(self, request, *args, **kwargs):
@@ -235,6 +259,68 @@ class ControlPointViewSet(EquipmentRecordViewSet):
             )
         except ControlError as error:
             return Response({"baseline_from": [str(error)]}, status=status.HTTP_400_BAD_REQUEST)
+        self.log(point, CHANGE, ["limits"])
+        return Response({name: str(value) for name, value in limits.as_dict().items()})
+
+    @action(detail=False, methods=["post"])
+    def register_day(self, request, *args, **kwargs):
+        """El control del día: un registro por cada punto activo con lecturas, en una transacción."""
+        from django.db import transaction
+
+        from laboratory.equipment.control import ControlError, save_measurement
+
+        serializer = eqs.DayControlSerializer(data=request.data, context=self.get_serializer_context())
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
+        points = {str(point.pk): point for point in self.filter_queryset(self.get_queryset()).filter(is_active=True)}
+        readings = {key: value for key, value in data["readings"].items() if value.strip()}
+        unknown = set(readings) - set(points)
+        if unknown or not readings:
+            message = _("Enter the readings of at least one control point of this equipment.")
+            return Response({"readings": [str(message)]}, status=status.HTTP_400_BAD_REQUEST)
+        errors, created = {}, []
+        with transaction.atomic():
+            for key, text in readings.items():
+                point = points[key]
+                measurement = ControlMeasurement(
+                    point=point, organization=point.organization, measured_on=data["measured_on"],
+                    values=eqs.ReadingsField().to_internal_value(text), responsible=data.get("responsible"),
+                    observation=data["observation"],
+                )
+                try:
+                    created.append(save_measurement(measurement, request.user))
+                except ControlError as error:
+                    errors[key] = [str(error)]
+            if errors:
+                transaction.set_rollback(True)
+        if errors:
+            return Response({"readings": errors}, status=status.HTTP_400_BAD_REQUEST)
+        for measurement in created:
+            self.observe(measurement, 0)
+            self.log(measurement, ADDITION, ["values"])
+        return Response({
+            "created": len(created),
+            "out": [str(m.point) for m in created if m.out_of_control or m.out_of_acceptance],
+        }, status=status.HTTP_201_CREATED)
+
+    def shelfobject_id_of(self, instance):
+        return instance.point.shelfobject_id if isinstance(instance, ControlMeasurement) else instance.shelfobject_id
+
+    @action(detail=True, methods=["post"])
+    def set_limits(self, request, *args, **kwargs):
+        """Límites fijos del laboratorio, sin período de referencia."""
+        from laboratory.equipment.control import ControlError, set_fixed_limits
+
+        point = self.get_object()
+        serializer = eqs.FixedLimitsSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = dict(serializer.validated_data)
+        try:
+            limits = set_fixed_limits(
+                point, data, apply_from=data.get("apply_from"), user=request.user, notes=data["notes"],
+            )
+        except ControlError as error:
+            return Response({"center": [str(error)]}, status=status.HTTP_400_BAD_REQUEST)
         self.log(point, CHANGE, ["limits"])
         return Response({name: str(value) for name, value in limits.as_dict().items()})
 
@@ -296,6 +382,42 @@ class ControlMeasurementViewSet(EquipmentRecordViewSet):
         self.log(instance, CHANGE, list(serializer.validated_data.keys()))
 
     def perform_destroy(self, instance):
+        from laboratory.equipment.control import delete_measurement
+
         self.observe(instance, 2)
         self.log(instance, DELETION, [])
-        instance.delete()
+        delete_measurement(instance, self.request.user)
+
+
+class EquipmentUnitViewSet(EquipmentRecordViewSet):
+    """Equipos del laboratorio con su estado, calibración y próxima actividad (solo lectura)."""
+
+    perms = {"list": ["laboratory.view_shelfobject"]}
+    http_method_names = ["get", "head", "options"]
+    serializer_class = {"list": eqs.datatable(eqs.EquipmentUnitRowSerializer)}
+    search_fields = [
+        "object__name", "shelfobjectequipmentcharacteristics__internal_code",
+        "shelfobjectequipmentcharacteristics__serial_number", "shelfobjectequipmentcharacteristics__asset_number",
+        "shelfobjectequipmentcharacteristics__brand", "shelfobjectequipmentcharacteristics__physical_location",
+    ]
+    ordering_fields = ["shelfobjectequipmentcharacteristics__internal_code", "object__name"]
+    ordering = ("shelfobjectequipmentcharacteristics__internal_code", "pk")
+
+    def get_queryset(self):
+        from laboratory.models import Object, ShelfObject
+
+        return (
+            ShelfObject.objects.filter(in_where_laboratory_id=self.kwargs["lab_pk"], object__type=Object.EQUIPMENT)
+            .select_related("object", "shelfobjectequipmentcharacteristics")
+            .prefetch_related("equipmentactivityplan_set")
+        )
+
+    def filter_queryset(self, queryset):
+        queryset = super(AuthAllPermBaseObjectManagementShelfObjectBase, self).filter_queryset(queryset)
+        status_code = self.request.query_params.get("equipment_status")
+        if status_code:
+            queryset = queryset.filter(shelfobjectequipmentcharacteristics__equipment_status=status_code)
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        return super(AuthAllPermBaseObjectManagementShelfObjectBase, self).list(request, *args, **kwargs)

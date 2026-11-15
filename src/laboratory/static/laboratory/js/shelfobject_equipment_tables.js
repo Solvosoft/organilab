@@ -17,7 +17,8 @@ const render_document = (data) => {
 }
 const render_due_status = (data) => {
     if(!data){ return ""; }
-    const css = {valid: "bg-success", due_soon: "bg-warning text-dark", expired: "bg-danger", inactive: "bg-secondary"};
+    const css = {valid: "bg-success", due_soon: "bg-warning text-dark", expired: "bg-danger", inactive: "bg-secondary",
+                 unscheduled: "bg-warning text-dark"};
     return `<span class="badge ${css[data.code] || 'bg-secondary'}">${data.text}</span>`;
 }
 const render_bool = (data) => data ? gettext("Yes") : gettext("No");
@@ -375,5 +376,46 @@ for (const [name, table] of Object.entries(iso_tables)) {
 document.querySelectorAll('#equipment_tabs button[data-bs-toggle="tab"]').forEach(function(tab){
     tab.addEventListener('shown.bs.tab', function(){
         $.fn.dataTable.tables({visible: true, api: true}).columns.adjust();
+    });
+});
+
+
+// Control del día: una fecha y las lecturas de todos los puntos del equipo en un solo envío.
+document.getElementById("day_control_submit")?.addEventListener("click", function () {
+    const form = document.getElementById("day_control_form");
+    const field = name => form.querySelector(`[name="day_control-${name}"]`);
+    const readings = {};
+    form.querySelectorAll(".day-control-reading").forEach(input => {
+        readings[input.dataset.point] = input.value;
+        document.getElementById("day_control_error_" + input.dataset.point).innerText = "";
+    });
+    const errors = document.getElementById("day_control_errors");
+    errors.innerText = "";
+    fetch(this.dataset.url, {
+        method: "POST",
+        headers: {'X-CSRFToken': getCookie('csrftoken'), 'Content-Type': "application/json"},
+        body: JSON.stringify({
+            measured_on: field("measured_on").value, responsible: field("responsible").value || null,
+            observation: field("observation").value, readings: readings,
+        }),
+    }).then(response => response.json().then(body => ({ok: response.ok, body})))
+      .then(({ok, body}) => {
+        if (ok) {
+            if (body.out.length) {
+                alert(gettext("Out of control or acceptance") + ": " + body.out.join(", "));
+            }
+            window.location.hash = "pane-control";
+            window.location.reload();
+            return;
+        }
+        Object.entries(body).forEach(([name, value]) => {
+            if (name === "readings" && !Array.isArray(value)) {
+                Object.entries(value).forEach(([point, messages]) => {
+                    document.getElementById("day_control_error_" + point).innerText = [messages].flat().join(" ");
+                });
+            } else {
+                errors.innerText += " " + [value].flat().join(" ");
+            }
+        });
     });
 });

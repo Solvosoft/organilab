@@ -64,11 +64,20 @@ def mark_conflicts(formset, laboratory):
             shelfobject__in_where_laboratory=laboratory
         ).exclude(internal_code="").values_list("internal_code", "shelfobject__object__name")
     }
+    elsewhere = {
+        code.lower(): lab_name
+        for code, lab_name in ShelfObjectEquipmentCharacteristics.objects.filter(
+            shelfobject__in_where_laboratory__organization=laboratory.organization
+        ).exclude(shelfobject__in_where_laboratory=laboratory).exclude(internal_code="")
+        .values_list("internal_code", "shelfobject__in_where_laboratory__name")
+    }
     for form in formset:
         code = str(form["internal_code"].value() or "").strip().lower()
         name = str(form["name"].value() or "")
         current = existing.get(code)
         form.existing_name = current if current and normalize_label(current) != normalize_label(name) else ""
+        # El código es único en la organización: en otro laboratorio la fila crearía un duplicado.
+        form.other_laboratory = "" if current else elsewhere.get(code, "")
 
 
 @login_required

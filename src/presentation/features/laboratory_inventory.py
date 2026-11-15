@@ -461,6 +461,16 @@ FEATURES = (
                 source="src/laboratory/equipment/import_views.py, src/laboratory/equipment/importer.py",
             ),
             Step(
+                id="listado",
+                name="Ver los equipos del laboratorio con su estado, calibración y próxima actividad",
+                actors=CONSULTA,
+                routes=("laboratory:equipment_units",),
+                permissions=("laboratory.view_shelfobject",),
+                transition="búsqueda por código interno, serie, placa o ubicación → ficha del equipo",
+                source="src/laboratory/equipment/unit_views.py equipment_units, "
+                       "src/laboratory/equipment/api.py EquipmentUnitViewSet",
+            ),
+            Step(
                 id="reportes",
                 name="Exportar el programa anual (PT-05) y la hoja de vida del equipo",
                 actors=CONSULTA,

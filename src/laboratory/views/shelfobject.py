@@ -9,6 +9,7 @@ Created on 26/12/2016
 from laboratory.equipment.forms import (
     ActivityPlanForm,
     ControlPointForm,
+    DayControlForm,
     EquipmentDocumentForm,
     FailureForm,
     VerificationForm,
@@ -811,6 +812,13 @@ def view_equipment_shelfobject_detail(request, org_pk, lab_pk, pk):
         context["update_%s_form" % name] = form_class(prefix="update_%s" % name, **scope)
     context["create_control_form"] = ControlPointForm(prefix="create_control", **scope)
     context["update_control_form"] = ControlPointForm(prefix="update_control", **scope)
+    # Control del día: una fecha y las lecturas de todos los puntos activos del equipo.
+    context["day_control_form"] = DayControlForm(prefix="day_control", **scope)
+    context["day_control_points"] = shelfobject.controlpoint_set.filter(is_active=True).select_related("method")
+    context["day_control_url"] = reverse(
+        "laboratory:api-equipment-control-point-register-day",
+        kwargs={"org_pk": org_pk, "lab_pk": lab_pk, "shelfobject": pk},
+    )
     context.update(equipment_status_context(shelfobject))
     return render(
         request, "laboratory/shelfobject/equipment_edit.html", context=context

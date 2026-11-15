@@ -43,15 +43,29 @@ def previous_measurement(point, measured_on, exclude_pk=None):
     return ControlMeasurement.objects.filter(earlier, point=point).order_by("-measured_on", "-pk").first()
 
 
+def following_measurement(point, measured_on, pk):
+    """El registro siguiente en la serie, ordenada por ``(fecha, pk)``."""
+    from django.db.models import Q
+
+    later = Q(measured_on__gt=measured_on) | Q(measured_on=measured_on, pk__gt=pk)
+    return ControlMeasurement.objects.filter(later, point=point).exclude(pk=pk).order_by("measured_on", "pk").first()
+
+
 def compute(measurement):
-    """Llena media, rango, media corregida y la evaluación de ``measurement`` (sin guardar)."""
+    """Llena media, rango, media corregida y la evaluación de ``measurement`` (sin guardar).
+
+    La corrección se toma del punto al registrar y queda en el registro: cuando el
+    patrón cambia de certificado, los registros anteriores conservan la suya.
+    """
     point = measurement.point
     n = point.method.subgroup_size
     values = measurement.values or []
     if len(values) != n:
         raise ControlError(_("This control point needs %(n)s readings per record.") % {"n": n})
+    if measurement.correction is None:
+        measurement.correction = point.correction
     try:
-        average, value_range, corrected = spc.subgroup_stats(values, point.correction)
+        average, value_range, corrected = spc.subgroup_stats(values, measurement.correction)
     except Exception:
         raise ControlError(_("Every reading must be a number."))
     measurement.values = [str(spc.to_decimal(value)) for value in values]
@@ -70,27 +84,83 @@ def compute(measurement):
     return measurement
 
 
+def is_out(measurement):
+    return measurement.out_of_control or measurement.out_of_acceptance
+
+
+def recompute(measurement):
+    """Recalcula un registro vecino (rango móvil) y cierra su alerta si quedó dentro."""
+    if measurement is None:
+        return
+    compute(measurement)
+    measurement.save()
+    if not is_out(measurement):
+        resolve_measurement_alerts(measurement)
+
+
 @transaction.atomic
 def save_measurement(measurement, user=None):
-    """Calcula, guarda y avisa; en I‑MR recalcula el rango móvil del registro siguiente."""
+    """Calcula, guarda y avisa.
+
+    En I‑MR recalcula el rango móvil del registro siguiente, en la posición nueva y, si
+    la fecha cambió, también en la que el registro dejó.
+    """
+    point = measurement.point
+    old_date = None
+    if measurement.pk:
+        old_date = ControlMeasurement.objects.filter(pk=measurement.pk).values_list("measured_on", flat=True).first()
     compute(measurement)
     if measurement.organization_id is None:
-        measurement.organization = measurement.point.organization
+        measurement.organization = point.organization
     if user is not None and measurement.created_by_id is None:
         measurement.created_by = user
     measurement.save()
-    if chart_type(measurement.point) == spc.I_MR:
-        following = (
-            ControlMeasurement.objects.filter(point=measurement.point, measured_on__gte=measurement.measured_on)
-            .exclude(pk=measurement.pk).order_by("measured_on", "pk").first()
-        )
-        if following is not None:
-            compute(following)
-            following.save()
-    notify(measurement)
-    if measurement.corrective_action:
+    if chart_type(point) == spc.I_MR:
+        neighbors = {}
+        for date in {measurement.measured_on, old_date or measurement.measured_on}:
+            neighbor = following_measurement(point, date, measurement.pk)
+            if neighbor is not None:
+                neighbors[neighbor.pk] = neighbor
+        for neighbor in neighbors.values():
+            recompute(neighbor)
+    if is_out(measurement) and not measurement.corrective_action:
+        notify(measurement)
+    else:
+        # Quedó dentro (p. ej. se corrigió una lectura) o ya tiene la acción tomada.
         resolve_measurement_alerts(measurement, user)
     return measurement
+
+
+@transaction.atomic
+def delete_measurement(measurement, user=None):
+    """Borra el registro: cierra su alerta y, en I‑MR, recalcula el rango móvil del siguiente."""
+    point = measurement.point
+    neighbor = None
+    if chart_type(point) == spc.I_MR:
+        neighbor = following_measurement(point, measurement.measured_on, measurement.pk)
+    resolve_measurement_alerts(measurement, user)
+    measurement.delete()
+    recompute(neighbor)
+
+
+def apply_limits(point, limits, since, user=None):
+    """Deja ``limits`` como vigentes y reevalúa los registros desde ``since``.
+
+    No avisa por los registros históricos que queden fuera (se ven en la carta y en la
+    tabla); a los que quedaron dentro les cierra la alerta, con los límites como evidencia.
+    """
+    from presentation.alerts import resolve_alert
+
+    ControlLimits.objects.filter(point=point, is_current=True).exclude(pk=limits.pk).update(is_current=False)
+    records = ControlMeasurement.objects.filter(point=point)
+    if since is not None:
+        records = records.filter(measured_on__gte=since)
+    for record in records.order_by("measured_on", "pk"):
+        compute(record)
+        record.save()
+        if not is_out(record):
+            resolve_alert(record, resolution=limits, user=user)
+    return limits
 
 
 @transaction.atomic
@@ -107,18 +177,36 @@ def recalculate_limits(point, baseline_from, baseline_to, user=None, notes=""):
         )
     except ValueError:
         raise ControlError(_("The reference period does not have enough records to calculate the limits."))
-    ControlLimits.objects.filter(point=point, is_current=True).update(is_current=False)
     limits = ControlLimits.objects.create(
         point=point, organization=point.organization, created_by=user,
         baseline_from=baseline_from, baseline_to=baseline_to, subgroups=len(records),
         constants={name: str(value) for name, value in constants.items()}, correction=point.correction,
         notes=notes, **{name: spc.rounded(value, 8) for name, value in values.items()},
     )
-    for record in ControlMeasurement.objects.filter(point=point, measured_on__gte=baseline_from).order_by("measured_on", "pk"):
-        compute(record)
-        record.save()
-        notify(record)
-    return limits
+    return apply_limits(point, limits, baseline_from, user)
+
+
+LIMIT_NAMES = ("center", "ucl", "lcl", "range_center", "range_ucl", "range_lcl")
+
+
+@transaction.atomic
+def set_fixed_limits(point, values, apply_from=None, user=None, notes=""):
+    """Límites fijos que define el laboratorio, sin período de referencia.
+
+    ``values``: los seis límites. Se aplican a los registros desde ``apply_from`` (los
+    anteriores conservan los que tenían) y a los que se registren después.
+    """
+    values = {name: spc.to_decimal(values[name]) for name in LIMIT_NAMES}
+    if not values["lcl"] <= values["center"] <= values["ucl"]:
+        raise ControlError(_("The center line must be between the lower and the upper limit."))
+    if not values["range_lcl"] <= values["range_center"] <= values["range_ucl"]:
+        raise ControlError(_("The range center line must be between its lower and upper limit."))
+    limits = ControlLimits.objects.create(
+        point=point, organization=point.organization, created_by=user, manual=True,
+        constants={}, correction=point.correction, notes=notes,
+        **{name: spc.rounded(value, 8) for name, value in values.items()},
+    )
+    return apply_limits(point, limits, apply_from or datetime.date.today(), user)
 
 
 # --- Alertas -------------------------------------------------------------------------
@@ -148,7 +236,7 @@ def measurement_message(measurement):
 
 def notify(measurement):
     """Dispara las reglas del proceso de la organización si el registro quedó fuera."""
-    if not (measurement.out_of_control or measurement.out_of_acceptance) or measurement.corrective_action:
+    if not is_out(measurement) or measurement.corrective_action:
         return []
     from presentation.alerts import fire_alert
     from presentation.models import AlertRule

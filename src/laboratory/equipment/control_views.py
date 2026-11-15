@@ -3,7 +3,14 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 
-from laboratory.equipment.forms import ControlMeasurementForm, ControlMethodForm, RecalculateLimitsForm
+from laboratory.equipment.forms import (
+    ChartRangeForm,
+    ControlMeasurementForm,
+    ControlMethodForm,
+    FixedLimitsForm,
+    RecalculateLimitsForm,
+)
+from laboratory.equipment.charts import DEFAULT_WINDOW
 from laboratory.equipment.import_views import scope
 from laboratory.models import ControlPoint
 
@@ -35,6 +42,12 @@ def equipment_control_point(request, org_pk, lab_pk, pk, point):
     form_scope = {"org_pk": org_pk, "lab_pk": lab_pk, "shelfobject": pk}
     measurement_kwargs = {"org_pk": org_pk, "lab_pk": lab_pk, "shelfobject": pk, "point": point.pk}
     chart_query = "?organization=%s&laboratory=%s" % (org_pk, lab_pk)
+    # Sin rango la carta trae los últimos registros; con rango, los de esas fechas.
+    range_form = ChartRangeForm(request.GET or None, prefix="chart")
+    if range_form.is_bound and range_form.is_valid():
+        for param, name in (("from", "date_from"), ("to", "date_to")):
+            if range_form.cleaned_data.get(name):
+                chart_query += "&%s=%s" % (param, range_form.cleaned_data[name].isoformat())
     context = {
         "org_pk": org_pk, "lab_pk": lab_pk, "laboratory": lab_pk, "pk": pk,
         "point": point,
@@ -43,6 +56,9 @@ def equipment_control_point(request, org_pk, lab_pk, pk, point):
         "create_form": ControlMeasurementForm(prefix="create_measurement", **form_scope),
         "update_form": ControlMeasurementForm(prefix="update_measurement", **form_scope),
         "limits_form": RecalculateLimitsForm(prefix="limits"),
+        "fixed_limits_form": FixedLimitsForm(prefix="fixed"),
+        "range_form": range_form,
+        "chart_window": DEFAULT_WINDOW,
         "list_url": reverse("laboratory:api-equipment-control-measurement-list", kwargs=measurement_kwargs),
         "detail_url": reverse("laboratory:api-equipment-control-measurement-detail", kwargs={**measurement_kwargs, "pk": 0}),
         "means_chart": reverse("equipmentcontrolmeanschart-detail", kwargs={"pk": point.pk}) + chart_query,

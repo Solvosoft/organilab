@@ -10,22 +10,22 @@ el resto se cubre con pruebas de cliente o unitarias.
 
 | Categoría | Rutas |
 |---|---:|
-| `pagina` | 195 |
+| `pagina` | 196 |
 | `parcial` | 4 |
-| `api` | 861 |
+| `api` | 875 |
 | `autocomplete` | 6 |
 | `ajax` | 10 |
 | `json` | 45 |
 | `descarga` | 21 |
 | `accion` | 29 |
 | `infra` | 715 |
-| **total** | **1886** |
+| **total** | **1901** |
 
-Páginas: 195, de las cuales **51 sin ninguna prueba**.
+Páginas: 196, de las cuales **51 sin ninguna prueba**.
 
 ## Rutas por app
 
-Se omiten las categorías `api` e `infra` (1576 rutas de routers DRF y de
+Se omiten las categorías `api` e `infra` (1590 rutas de routers DRF y de
 la administración de Django): están en `inventario_urls.csv`.
 
 ### academic — 9 páginas, 0 sin prueba
@@ -126,7 +126,7 @@ la administración de Django): están en `inventario_urls.csv`.
 | `api-notificationtable-list` | `/tableapi/^notificationtableview/$` | autocomplete | `djgentelella.notification.base.NotificationViewSet` | — | — | — | — |
 | `api-notificationtable-list` | `/tableapi/^notificationtableview\.(?P<format>[a-z0-9]+)/?$` | autocomplete | `djgentelella.notification.base.NotificationViewSet` | — | format | — | — |
 
-### laboratory — 70 páginas, 12 sin prueba
+### laboratory — 71 páginas, 12 sin prueba
 
 | Nombre | Patrón | Categoría | Vista | Plantilla | kwargs | Selenium | Pruebas |
 |---|---|---|---|---|---|:-:|:-:|
@@ -183,6 +183,7 @@ la administración de Django): están en `inventario_urls.csv`.
 | `equipment_import_review` | `/lab/<int:org_pk>/<int:lab_pk>/equipment/import/<uuid:key>/` | pagina | `laboratory.equipment.import_views.equipment_import_review` | `laboratory/equipment/import_review.html` | org_pk, lab_pk, key | — | sí |
 | `equipment_list` | `/lab/<int:org_pk>/<int:lab_pk>/equipment/` | pagina | `laboratory.views.objects.view_equipment_list` | `laboratory/equipment/list.html` | org_pk, lab_pk | sí | sí |
 | `equipment_shelfobject_detail` | `/lab/<int:org_pk>/<int:lab_pk>/shelfobject/<int:pk>/edit/` | pagina | `laboratory.views.shelfobject.view_equipment_shelfobject_detail` | `laboratory/shelfobject/equipment_edit.html` | org_pk, lab_pk, pk | — | sí |
+| `equipment_units` | `/lab/<int:org_pk>/<int:lab_pk>/equipment/units/` | pagina | `laboratory.equipment.unit_views.equipment_units` | `laboratory/equipment/units.html` | org_pk, lab_pk | — | sí |
 | `equipmenttype_list` | `/lab/<int:org_pk>/<int:lab_pk>/equipment/equipmenttype/` | pagina | `laboratory.views.catalogs.view_equipmenttype_list` | `laboratory/equipmenttype/list.html` | org_pk, lab_pk | — | — |
 | `furniture_create` | `/lab/<int:org_pk>/<int:lab_pk>/furniture/create/<int:labroom>/` | pagina | `laboratory.views.furniture.FurnitureCreateView` | `laboratory/furniture_form.html` | org_pk, lab_pk, labroom | — | sí |
 | `furniture_delete` | `/lab/<int:org_pk>/<int:lab_pk>/furniture/delete/<int:pk>/` | pagina | `laboratory.views.furniture.FurnitureDelete` | `laboratory/furniture_confirm_delete.html` | org_pk, lab_pk, pk | — | sí |

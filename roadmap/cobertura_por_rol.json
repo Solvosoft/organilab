@@ -192,7 +192,8 @@
     "INV-09/importar": "ejercitado",
     "INV-09/reportes": "ejercitado",
     "INV-11/metodos": "ejercitado",
-    "INV-11/registrar": "ejercitado"
+    "INV-11/registrar": "ejercitado",
+    "INV-09/listado": "ejercitado"
   },
   "peticiones_observadas": 5049,
   "roles_ejercitados": {

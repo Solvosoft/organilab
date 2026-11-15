@@ -25,6 +25,10 @@
 						<small class="text-warning d-block"><i class="fa fa-exclamation-triangle"></i>
 						{% blocktrans with name=form.existing_name %}Already used by «{{ name }}»: its sheet will be updated.{% endblocktrans %}</small>
 					{% endif %}
+					{% if field.name == "internal_code" and form.other_laboratory %}
+						<small class="text-danger d-block"><i class="fa fa-exclamation-triangle"></i>
+						{% blocktrans with name=form.other_laboratory %}This code already belongs to an equipment of «{{ name }}».{% endblocktrans %}</small>
+					{% endif %}
 					{% if field.name == "custodian" and form.responsible.value %}
 						<small class="text-muted d-block">{% trans 'Spreadsheet' %}: {{ form.responsible.value }}</small>
 					{% endif %}

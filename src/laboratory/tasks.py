@@ -500,6 +500,8 @@ def update_sds_and_extract_data(
 @app.task
 def check_equipment_due_activities():
     """Evalúa las reglas de alerta de calibraciones, verificaciones y mantenimientos por vencer."""
+    from laboratory.equipment.alerts import ensure_rules_for_existing_plans
     from presentation.alerts import run_alert_rules
 
+    ensure_rules_for_existing_plans()
     return run_alert_rules("laboratory.equipment_due")

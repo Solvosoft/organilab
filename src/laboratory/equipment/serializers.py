@@ -109,6 +109,21 @@ class ActivityPlanWriteSerializer(EquipmentRecordWriteSerializer):
             "interval_unit", "start_date", "reminder_days_before", "responsible", "is_active", "notes",
         ]
 
+    def validate(self, data):
+        data = super().validate(data)
+        if data.get("start_date") or not data.get("is_active", True):
+            return data
+        # Sin registros ni fecha de inicio no hay próxima fecha: el programa nunca avisaría.
+        plan = EquipmentActivityPlan(
+            pk=getattr(self.instance, "pk", None), shelfobject=data["shelfobject"],
+            activity_kind=data["activity_kind"],
+        )
+        if plan.last_record() is None:
+            raise serializers.ValidationError({"start_date": _(
+                "The equipment has no records of this activity yet: enter the date of the first one."
+            )})
+        return data
+
 
 class ActivityPlanRowSerializer(RecordListSerializer):
     perms_model = "equipmentactivityplan"
@@ -138,6 +153,7 @@ class ActivityPlanRowSerializer(RecordListSerializer):
             EquipmentActivityPlan.VALID: _("Up to date"),
             EquipmentActivityPlan.DUE_SOON: _("Due soon"),
             EquipmentActivityPlan.EXPIRED: _("Expired"),
+            EquipmentActivityPlan.UNSCHEDULED: _("No date"),
         }
         return {"code": status, "text": str(texts[status])}
 
@@ -312,6 +328,14 @@ class ControlMethodWriteSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 {"subgroup_size": _("A means and ranges chart needs between 2 and 10 readings per record.")}
             )
+        if self.instance is not None and (chart != self.instance.chart_type or (
+                chart == ControlMethod.XBAR_R and n != self.instance.subgroup_size)):
+            # Los registros guardan sus n lecturas: otro n u otra carta los dejaría sin poder recalcularse.
+            if ControlMeasurement.objects.filter(point__method=self.instance).exists():
+                raise serializers.ValidationError({"subgroup_size": _(
+                    "This method already has control records: create a new method instead of changing "
+                    "the chart type or the readings per record."
+                )})
         return data
 
     class Meta:
@@ -442,6 +466,7 @@ class ControlMeasurementRowSerializer(RecordListSerializer):
     mean = serializers.SerializerMethodField()
     range = serializers.SerializerMethodField()
     corrected_mean = serializers.SerializerMethodField()
+    correction = serializers.SerializerMethodField()
 
     def number(self, obj, value):
         """Con los decimales del método de control (sin ceros de relleno de la base)."""
@@ -458,6 +483,9 @@ class ControlMeasurementRowSerializer(RecordListSerializer):
     def get_corrected_mean(self, obj):
         return self.number(obj, obj.corrected_mean)
 
+    def get_correction(self, obj):
+        return "" if obj.correction is None else format(obj.correction.normalize(), "f")
+
     def get_responsible(self, obj):
         return full_name(obj.responsible)
 
@@ -467,7 +495,7 @@ class ControlMeasurementRowSerializer(RecordListSerializer):
     class Meta:
         model = ControlMeasurement
 
-        fields = ["id", "measured_on", "values", "mean", "range", "corrected_mean", "out_of_control",
+        fields = ["id", "measured_on", "values", "mean", "range", "correction", "corrected_mean", "out_of_control",
                   "out_of_acceptance", "responsible", "observation", "deviation", "corrective_action", "actions"]
 
 
@@ -490,3 +518,79 @@ class RecalculateLimitsSerializer(serializers.Serializer):
         if data["baseline_from"] > data["baseline_to"]:
             raise serializers.ValidationError({"baseline_to": _("The end of the period must be after its start.")})
         return data
+
+
+class FixedLimitsSerializer(serializers.Serializer):
+    lcl = serializers.DecimalField(max_digits=16, decimal_places=8)
+    center = serializers.DecimalField(max_digits=16, decimal_places=8)
+    ucl = serializers.DecimalField(max_digits=16, decimal_places=8)
+    range_lcl = serializers.DecimalField(max_digits=16, decimal_places=8)
+    range_center = serializers.DecimalField(max_digits=16, decimal_places=8)
+    range_ucl = serializers.DecimalField(max_digits=16, decimal_places=8)
+    apply_from = record_date(required=False)
+    notes = serializers.CharField(required=False, allow_blank=True, default="")
+
+
+# --- Listado de equipos del laboratorio ------------------------------------------------
+
+CALIBRATION_TEXTS = {
+    "not_required": _("Not required"),
+    "valid": _("Valid"),
+    "due_soon": _("Due soon"),
+    "expired": _("Expired"),
+    "non_conforming": _("Non-conforming"),
+    "unscheduled": _("No date"),
+}
+
+
+class EquipmentUnitRowSerializer(serializers.Serializer):
+    """Una unidad de equipo con su estado y sus próximas fechas (6.4.8)."""
+
+    def to_representation(self, shelfobject):
+        from django.urls import reverse
+
+        from laboratory.models import ShelfObjectEquipmentCharacteristics as Characteristics
+
+        view = self.context["view"]
+        ch = getattr(shelfobject, "shelfobjectequipmentcharacteristics", None)
+        calibration, next_calibration = ch.calibration_status() if ch else ("not_required", None)
+        upcoming = [
+            (plan.next_due(), plan) for plan in shelfobject.equipmentactivityplan_set.all() if plan.is_active
+        ]
+        upcoming = sorted((item for item in upcoming if item[0] is not None), key=lambda item: item[0])
+        next_activity = {"text": "", "code": ""}
+        if upcoming:
+            due, plan = upcoming[0]
+            next_activity = {"text": "%s: %s" % (plan, due.strftime("%d/%m/%Y")), "code": plan.due_status()}
+        status = ch.equipment_status if ch else Characteristics.IN_SERVICE
+        return {
+            "id": shelfobject.pk,
+            "internal_code": ch.internal_code if ch else "",
+            "name": shelfobject.object.name,
+            "brand": " ".join(part for part in (ch.brand, ch.model) if part) if ch else "",
+            "serial_number": ch.serial_number if ch else "",
+            "physical_location": ch.physical_location if ch else "",
+            "equipment_status": {"code": status, "text": str(dict(Characteristics.EQUIPMENT_STATUS)[status])},
+            "calibration": {
+                "code": calibration, "text": str(CALIBRATION_TEXTS[calibration]),
+                "date": next_calibration.strftime("%d/%m/%Y") if next_calibration else "",
+            },
+            "next_activity": next_activity,
+            "url": reverse("laboratory:equipment_shelfobject_detail", kwargs={
+                "org_pk": view.kwargs["org_pk"], "lab_pk": view.kwargs["lab_pk"], "pk": shelfobject.pk,
+            }),
+        }
+
+
+class DayControlSerializer(serializers.Serializer):
+    """El control del día de un equipo: una fecha y las lecturas de cada punto."""
+
+    measured_on = record_date()
+    responsible = serializers.PrimaryKeyRelatedField(queryset=Profile.objects.none(), required=False, allow_null=True)
+    observation = serializers.CharField(required=False, allow_blank=True, default="")
+    readings = serializers.DictField(child=serializers.CharField(allow_blank=True))
+
+    def get_fields(self):
+        fields = super().get_fields()
+        fields["responsible"].queryset = org_profiles(self.context["org_pk"])
+        return fields

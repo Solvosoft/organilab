@@ -117,7 +117,7 @@ def program_row(shelfobject, year):
     row = [
         str(ch.magnitude) if ch and ch.magnitude else "",
         ch.internal_code if ch else shelfobject.shelfobject_code or "",
-        str(shelfobject.object),
+        shelfobject.object.name,
         ch.physical_location if ch else "",
         STATUS_TEXT.get(ch.equipment_status, "") if ch else "",
         ch.brand if ch else "",

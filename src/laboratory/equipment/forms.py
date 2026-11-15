@@ -260,3 +260,36 @@ class RecalculateLimitsForm(GTForm, forms.Form):
     baseline_from = forms.DateField(label=_("Reference period from"), widget=genwidgets.DateInput)
     baseline_to = forms.DateField(label=_("Reference period to"), widget=genwidgets.DateInput)
     notes = forms.CharField(required=False, label=_("Notes"), widget=genwidgets.Textarea)
+
+
+class FixedLimitsForm(GTForm, forms.Form):
+    """Límites fijos que define el laboratorio (sin período de referencia)."""
+
+    lcl = forms.DecimalField(label=_("Lower control limit"), widget=genwidgets.NumberInput)
+    center = forms.DecimalField(label=_("Center line"), widget=genwidgets.NumberInput)
+    ucl = forms.DecimalField(label=_("Upper control limit"), widget=genwidgets.NumberInput)
+    range_lcl = forms.DecimalField(label=_("Range lower limit"), widget=genwidgets.NumberInput)
+    range_center = forms.DecimalField(label=_("Range center line"), widget=genwidgets.NumberInput)
+    range_ucl = forms.DecimalField(label=_("Range upper limit"), widget=genwidgets.NumberInput)
+    apply_from = forms.DateField(
+        required=False, label=_("Apply from"), widget=genwidgets.DateInput,
+        help_text=_("Records from this date are evaluated with these limits. Empty: from today"),
+    )
+    notes = forms.CharField(required=False, label=_("Notes"), widget=genwidgets.Textarea)
+
+
+class ChartRangeForm(GTForm, forms.Form):
+    """Rango de fechas de la carta (GET). Vacío: los últimos registros."""
+
+    date_from = forms.DateField(required=False, label=_("From"), widget=genwidgets.DateInput)
+    date_to = forms.DateField(required=False, label=_("To"), widget=genwidgets.DateInput)
+
+
+class DayControlForm(EquipmentScopedFormMixin, GTForm, forms.Form):
+    """Datos comunes del control del día; las lecturas van en un campo por punto."""
+
+    measured_on = forms.DateField(label=_("Date"), widget=genwidgets.DateInput)
+    responsible = forms.ModelChoiceField(
+        queryset=Profile.objects.none(), required=False, label=_("Responsible"), widget=genwidgets.Select
+    )
+    observation = forms.CharField(required=False, label=_("Observation"), widget=genwidgets.Textarea)

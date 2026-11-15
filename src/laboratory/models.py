@@ -11,7 +11,7 @@ from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.db.models import Sum, Q, Max, Min, JSONField
 from django.db.models.expressions import F
-from django.utils.text import slugify
+from django.utils.text import Truncator, slugify
 from django.utils.translation import gettext_lazy as _
 from djgentelella.fields.maps import GTPointField
 from djgentelella.models import DeletedWithTrash
@@ -27,6 +27,10 @@ from sga.models import Pictogram
 from . import catalog
 from .models_utils import upload_files
 import calendar
+
+
+def date_text(value):
+    return value.strftime("%d/%m/%Y") if value else ""
 
 
 class BaseCreationObj(models.Model):
@@ -777,12 +781,17 @@ class ShelfObjectEquipmentCharacteristics(AbstractOrganizationRef):
     def calibration_status(self, today=None):
         """``(estado, próxima fecha)`` de la calibración, para la etiqueta visual (6.4.8).
 
-        Estados: ``not_required`` (sin programa de calibración), ``valid``,
-        ``due_soon`` (dentro de los días de aviso del programa) y ``expired``.
+        Estados: ``not_required`` (sin programa de calibración), ``non_conforming`` (la
+        última calibración no fue conforme: la fecha no la hace vigente), ``unscheduled``
+        (programa sin fecha), ``valid``, ``due_soon`` (dentro de los días de aviso del
+        programa) y ``expired``.
         """
         plan = self.calibration_plan()
         if plan is None:
             return "not_required", None
+        last = self.last_calibration()
+        if last is not None and last.conformity == ShelfObjectCalibrate.NON_CONFORMING:
+            return "non_conforming", plan.next_due()
         return plan.due_status(today), plan.next_due()
 
 
@@ -846,6 +855,9 @@ class ShelfObjectMaintenance(AbstractOrganizationRef):
         verbose_name=_("Details of any damage, malfunction, modification or repair"),
     )
 
+    def __str__(self):
+        return "%s %s" % (self.get_maintenance_type_display(), date_text(self.maintenance_date))
+
 
 class ShelfObjectLog(AbstractOrganizationRef):
     shelfobject = models.ForeignKey(
@@ -904,6 +916,9 @@ class ShelfObjectCalibrate(AbstractOrganizationRef):
         null=True, blank=True, verbose_name=_("Next calibration"),
         help_text=_("If empty, it is calculated from the calibration program"),
     )
+
+    def __str__(self):
+        return "%s %s" % (_("Calibration"), date_text(self.calibration_date))
 
 
 class ShelfObjectTraining(AbstractOrganizationRef):
@@ -970,6 +985,8 @@ class EquipmentActivityPlan(AbstractOrganizationRef):
     VALID = "valid"
     DUE_SOON = "due_soon"
     EXPIRED = "expired"
+    #: sin registros ni fecha de inicio: no hay próxima fecha y el programa no puede avisar
+    UNSCHEDULED = "unscheduled"
 
     shelfobject = models.ForeignKey("laboratory.ShelfObject", on_delete=models.CASCADE)
     activity_kind = models.CharField(
@@ -1019,10 +1036,11 @@ class EquipmentActivityPlan(AbstractOrganizationRef):
             return so.shelfobjectcalibrate_set.all(), "calibration_date"
         if self.activity_kind == self.VERIFICATION:
             qs = so.shelfobjectverification_set.all()
-            linked = qs.filter(plan=self)
+            linked = qs.filter(plan=self) if self.pk else qs.none()
             return (linked if linked.exists() else qs), "verification_date"
         maintenances = so.shelfobjectmaintenance_set.all()
-        linked = maintenances.filter(plan=self)
+        # Un programa sin guardar (al validar el alta) todavía no tiene registros enlazados.
+        linked = maintenances.filter(plan=self) if self.pk else maintenances.none()
         if linked.exists() or self.activity_kind == self.OTHER:
             return linked, "maintenance_date"
         if self.activity_kind == self.CLEANING:
@@ -1054,7 +1072,7 @@ class EquipmentActivityPlan(AbstractOrganizationRef):
 
         due = self.next_due()
         if due is None:
-            return self.VALID
+            return self.UNSCHEDULED
         today = today or datetime.date.today()
         if due < today:
             return self.EXPIRED
@@ -1096,6 +1114,9 @@ class ShelfObjectVerification(AbstractOrganizationRef):
         verbose_name = _("Intermediate check")
         verbose_name_plural = _("Intermediate checks")
 
+    def __str__(self):
+        return "%s %s" % (self.verification_type or self._meta.verbose_name, date_text(self.verification_date))
+
 
 class ShelfObjectFailure(AbstractOrganizationRef):
     """Falla, reparación y vuelta al servicio (ISO/IEC 17025 6.4.9 y 7.10)."""
@@ -1134,9 +1155,28 @@ class ShelfObjectFailure(AbstractOrganizationRef):
         verbose_name = _("Failure and repair")
         verbose_name_plural = _("Failures and repairs")
 
+    def __str__(self):
+        return "%s: %s" % (date_text(self.failure_date), Truncator(self.description).chars(80))
+
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         self.apply_to_equipment_status()
+
+    def delete(self, *args, **kwargs):
+        """Borrar la falla que bloqueaba el equipo lo devuelve al servicio (si no hay otra abierta)."""
+        shelfobject_id, was_open = self.shelfobject_id, self.blocked and self.return_to_service_date is None
+        result = super().delete(*args, **kwargs)
+        if was_open:
+            characteristics = ShelfObjectEquipmentCharacteristics.objects.filter(
+                shelfobject_id=shelfobject_id, equipment_status=ShelfObjectEquipmentCharacteristics.OUT_OF_SERVICE
+            ).only("pk", "equipment_status", "shelfobject_id").first()
+            other_open = ShelfObjectFailure.objects.filter(
+                shelfobject_id=shelfobject_id, blocked=True, return_to_service_date__isnull=True
+            )
+            if characteristics is not None and not other_open.exists():
+                characteristics.equipment_status = ShelfObjectEquipmentCharacteristics.IN_SERVICE
+                characteristics.save(update_fields=["equipment_status"])
+        return result
 
     def apply_to_equipment_status(self):
         """Bloquea el equipo mientras la falla no tenga fecha de vuelta al servicio (6.4.9)."""
@@ -1145,7 +1185,7 @@ class ShelfObjectFailure(AbstractOrganizationRef):
         # Siempre desde la base: la relación cacheada puede traer un estado viejo.
         characteristics = ShelfObjectEquipmentCharacteristics.objects.filter(
             shelfobject_id=self.shelfobject_id
-        ).only("pk", "equipment_status").first()
+        ).only("pk", "equipment_status", "shelfobject_id").first()
         if characteristics is None:
             return
         status = characteristics.equipment_status
@@ -1159,9 +1199,9 @@ class ShelfObjectFailure(AbstractOrganizationRef):
         else:
             return
         if new_status != status:
-            ShelfObjectEquipmentCharacteristics.objects.filter(pk=characteristics.pk).update(
-                equipment_status=new_status
-            )
+            # save() y no update(): el cambio de estado queda en la línea de tiempo (señal).
+            characteristics.equipment_status = new_status
+            characteristics.save(update_fields=["equipment_status"])
 
 
 class EquipmentDocument(AbstractOrganizationRef):
@@ -1265,7 +1305,8 @@ class ControlPoint(AbstractOrganizationRef):
     )
     correction = models.DecimalField(
         max_digits=14, decimal_places=6, default=0, verbose_name=_("Correction"),
-        help_text=_("Subtracted from each mean, e.g. the indication error of the reference standard"),
+        help_text=_("Subtracted from each mean, e.g. the indication error of the reference standard. "
+                    "A change applies to new records only: each record keeps the correction it was registered with"),
     )
     tolerance = models.DecimalField(
         max_digits=14, decimal_places=6, null=True, blank=True, verbose_name=_("Acceptance tolerance (±)"),
@@ -1289,9 +1330,13 @@ class ControlLimits(AbstractOrganizationRef):
     """Límites calculados con un período de referencia; se guarda cada recálculo."""
 
     point = models.ForeignKey(ControlPoint, on_delete=models.CASCADE)
-    baseline_from = models.DateField(verbose_name=_("Reference period from"))
-    baseline_to = models.DateField(verbose_name=_("Reference period to"))
-    subgroups = models.PositiveIntegerField(verbose_name=_("Records in the reference period"))
+    manual = models.BooleanField(
+        default=False, verbose_name=_("Fixed limits"),
+        help_text=_("Entered by the laboratory instead of calculated from a reference period"),
+    )
+    baseline_from = models.DateField(null=True, blank=True, verbose_name=_("Reference period from"))
+    baseline_to = models.DateField(null=True, blank=True, verbose_name=_("Reference period to"))
+    subgroups = models.PositiveIntegerField(default=0, verbose_name=_("Records in the reference period"))
     center = models.DecimalField(max_digits=16, decimal_places=8, verbose_name=_("Center line"))
     ucl = models.DecimalField(max_digits=16, decimal_places=8, verbose_name=_("Upper control limit"))
     lcl = models.DecimalField(max_digits=16, decimal_places=8, verbose_name=_("Lower control limit"))
@@ -1307,6 +1352,11 @@ class ControlLimits(AbstractOrganizationRef):
         verbose_name = _("Control limits")
         verbose_name_plural = _("Control limits")
         ordering = ["-creation_date"]
+
+    def __str__(self):
+        return "%s: %s / %s / %s" % (
+            self.point, *(format(value.normalize(), "f") for value in (self.lcl, self.center, self.ucl))
+        )
 
     def as_dict(self):
         return {name: getattr(self, name) for name in
@@ -1326,6 +1376,10 @@ class ControlMeasurement(AbstractOrganizationRef):
     observation = models.TextField(blank=True, default="", verbose_name=_("Observation"))
     mean = models.DecimalField(max_digits=16, decimal_places=8, verbose_name=_("Mean"))
     range = models.DecimalField(max_digits=16, decimal_places=8, null=True, blank=True, verbose_name=_("Range"))
+    correction = models.DecimalField(
+        max_digits=14, decimal_places=6, null=True, blank=True, verbose_name=_("Correction"),
+        help_text=_("Correction of the control point when the record was registered"),
+    )
     corrected_mean = models.DecimalField(max_digits=16, decimal_places=8, verbose_name=_("Corrected mean"))
     limits = models.ForeignKey(
         ControlLimits, null=True, blank=True, on_delete=models.SET_NULL, verbose_name=_("Limits applied")
@@ -1342,6 +1396,9 @@ class ControlMeasurement(AbstractOrganizationRef):
         verbose_name = _("Control record")
         verbose_name_plural = _("Control records")
         ordering = ["point", "measured_on", "pk"]
+
+    def __str__(self):
+        return "%s %s: %s" % (self.point, date_text(self.measured_on), ", ".join(self.values or []))
 
 
 class BaseUnitValues(models.Model):

@@ -9,12 +9,14 @@ from laboratory.equipment.import_views import (
     equipment_import_template,
 )
 from laboratory.equipment.control_views import equipment_control_methods, equipment_control_point
+from laboratory.equipment.unit_views import equipment_units
 from laboratory.equipment.api import (
     ControlMeasurementViewSet,
     ControlMethodViewSet,
     ControlPointViewSet,
     EquipmentActivityPlanViewSet,
     EquipmentDocumentViewSet,
+    EquipmentUnitViewSet,
     ShelfObjectFailureViewSet,
     ShelfObjectVerificationViewSet,
 )
@@ -652,6 +654,8 @@ equipment_control_measurement_router.register(
 )
 equipment_control_method_router = DefaultRouter()
 equipment_control_method_router.register("methods", ControlMethodViewSet, basename="api-equipment-control-method")
+equipment_unit_router = DefaultRouter()
+equipment_unit_router.register("units", EquipmentUnitViewSet, basename="api-equipment-unit")
 
 equipment_shelfobject_url = [
     path("", view_equipment_shelfobject_detail, name="equipment_shelfobject_detail"),
@@ -798,6 +802,8 @@ urlpatterns += organization_urls + [
     ),
     path("lab/<int:org_pk>/<int:lab_pk>/equipment/import/", include(equipment_import_urls)),
     path("lab/<int:org_pk>/<int:lab_pk>/equipment/control_methods/", include(equipment_control_urls)),
+    path("lab/<int:org_pk>/<int:lab_pk>/equipment/units/", equipment_units, name="equipment_units"),
+    path("equipment/units/api/<int:org_pk>/<int:lab_pk>/", include(equipment_unit_router.urls)),
     path("equipment/api/<int:org_pk>/<int:lab_pk>/", include(objectrouter.urls)),
     path("<int:org_pk>/<int:lab_pk>/processes/", include(lab_process_router.urls)),
     path(

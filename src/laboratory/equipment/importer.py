@@ -297,7 +297,8 @@ def read_program(ws):
             "next_calibration_date": parse_date(values.get("next_calibration_date")),
             "calibration_conformity": (
                 "conforming" if result == "conforme"
-                else "non_conforming" if result in ("no conforme", "sujeto a confirmacion") else ""
+                # «Sujeto a confirmación» no es un resultado: queda sin conformidad y con su texto.
+                else "non_conforming" if result == "no conforme" else ""
             ),
             "calibration_result": clean(values.get("calibration_result")),
             "maintenance": maintenance,

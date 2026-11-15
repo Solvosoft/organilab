@@ -17,13 +17,15 @@
 		<div class="card"><div class="card-body p-2">
 			<h6>{% trans 'Current limits' %}</h6>
 			{% if limits %}
-			<small>{% trans 'Reference period' %}: {{ limits.baseline_from|date:"d/m/Y" }} – {{ limits.baseline_to|date:"d/m/Y" }} ({{ limits.subgroups }})</small>
+			{% if limits.manual %}<small>{% trans 'Fixed limits' %}</small>
+			{% else %}<small>{% trans 'Reference period' %}: {{ limits.baseline_from|date:"d/m/Y" }} – {{ limits.baseline_to|date:"d/m/Y" }} ({{ limits.subgroups }})</small>{% endif %}
 			<table class="table table-sm mb-1"><tr><th></th><th>{% trans 'LCL' %}</th><th>{% trans 'CL' %}</th><th>{% trans 'UCL' %}</th></tr>
 				<tr><th>X</th><td>{{ limits.lcl|floatformat:"-6" }}</td><td>{{ limits.center|floatformat:"-6" }}</td><td>{{ limits.ucl|floatformat:"-6" }}</td></tr>
 				<tr><th>R</th><td>{{ limits.range_lcl|floatformat:"-6" }}</td><td>{{ limits.range_center|floatformat:"-6" }}</td><td>{{ limits.range_ucl|floatformat:"-6" }}</td></tr></table>
 			{% else %}<p class="text-warning mb-1">{% trans 'There are no limits yet: register the reference period and calculate them.' %}</p>{% endif %}
 			{% if perms.laboratory.change_controlpoint %}
 			<button class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#limits_form_box">{% trans 'Calculate limits' %}</button>
+			<button class="btn btn-sm btn-outline-secondary" data-bs-toggle="collapse" data-bs-target="#fixed_limits_form_box">{% trans 'Set fixed limits' %}</button>
 			{% endif %}
 		</div></div>
 	</div>
@@ -33,6 +35,19 @@
 	<div class="text-danger" id="limits_errors"></div>
 	<button class="btn btn-success" id="limits_submit">{% trans 'Calculate and apply' %}</button>
 </div></div>
+<div class="collapse mb-3" id="fixed_limits_form_box"><div class="card card-body">
+	<p class="text-muted">{% trans 'Use fixed limits when the laboratory defines them itself, e.g. from its procedure or from the tolerance of the equipment.' %}</p>
+	<form id="fixed_limits_form">{{ fixed_limits_form.as_horizontal }}</form>
+	<div class="text-danger" id="fixed_limits_errors"></div>
+	<button class="btn btn-success" id="fixed_limits_submit">{% trans 'Apply fixed limits' %}</button>
+</div></div>
+
+<form method="get" class="row g-2 align-items-end mb-2" id="chart_range_form">
+	<div class="col-auto">{{ range_form.date_from.label_tag }} {{ range_form.date_from }}</div>
+	<div class="col-auto">{{ range_form.date_to.label_tag }} {{ range_form.date_to }}</div>
+	<div class="col-auto"><button class="btn btn-outline-primary">{% trans 'Show period' %}</button></div>
+	<div class="col-auto text-muted"><small>{% blocktrans with count=chart_window %}Without a period the charts show the last {{ count }} records.{% endblocktrans %}</small></div>
+</form>
 
 <div class="row">
 	<div class="col-lg-6">{% include 'gentelella/widgets/chartjs.html' with graph_url=means_chart %}</div>
@@ -47,7 +62,7 @@
 <table class="table table-sm">
 	<tr><th>{% trans 'Date' %}</th><th>{% trans 'Reference period' %}</th><th>{% trans 'LCL' %}</th><th>{% trans 'CL' %}</th><th>{% trans 'UCL' %}</th><th>{% trans 'Notes' %}</th></tr>
 	{% for item in limits_history %}
-	<tr{% if item.is_current %} class="table-success"{% endif %}><td>{{ item.creation_date|date:"d/m/Y" }}</td><td>{{ item.baseline_from|date:"d/m/Y" }} – {{ item.baseline_to|date:"d/m/Y" }}</td>
+	<tr{% if item.is_current %} class="table-success"{% endif %}><td>{{ item.creation_date|date:"d/m/Y" }}</td><td>{% if item.manual %}{% trans 'Fixed limits' %}{% else %}{{ item.baseline_from|date:"d/m/Y" }} – {{ item.baseline_to|date:"d/m/Y" }}{% endif %}</td>
 		<td>{{ item.lcl|floatformat:"-6" }}</td><td>{{ item.center|floatformat:"-6" }}</td><td>{{ item.ucl|floatformat:"-6" }}</td><td>{{ item.notes }}</td></tr>
 	{% endfor %}
 </table>
@@ -83,6 +98,7 @@
 			{data: "values", name: "values", title: gettext("Readings"), type: "readonly", visible: true},
 			{data: "mean", name: "mean", title: gettext("Mean"), type: "readonly", visible: true},
 			{data: "range", name: "range", title: gettext("Range"), type: "readonly", visible: true},
+			{data: "correction", name: "correction", title: gettext("Correction"), type: "readonly", visible: true},
 			{data: "corrected_mean", name: "corrected_mean", title: gettext("Corrected mean"), type: "readonly", visible: true},
 			{data: "out_of_control", name: "out_of_control", title: gettext("Out of control"), type: "readonly", visible: true, render: yesno},
 			{data: "out_of_acceptance", name: "out_of_acceptance", title: gettext("Out of acceptance criterion"), type: "readonly", visible: true, render: yesno},
@@ -101,21 +117,24 @@
 	});
 	measurements.init();
 
-	document.getElementById("limits_submit")?.addEventListener("click", function () {
-		const form = document.getElementById("limits_form");
-		const data = {
-			baseline_from: form.querySelector('[name="limits-baseline_from"]').value,
-			baseline_to: form.querySelector('[name="limits-baseline_to"]').value,
-			notes: form.querySelector('[name="limits-notes"]').value,
-		};
-		fetch("{% url 'laboratory:api-equipment-control-point-recalculate-limits' org_pk lab_pk pk point.pk %}", {
-			method: "POST", body: JSON.stringify(data),
-			headers: {'X-CSRFToken': getCookie('csrftoken'), 'Content-Type': "application/json"},
-		}).then(response => response.json().then(body => ({ok: response.ok, body})))
-		  .then(({ok, body}) => {
-			if (ok) { window.location.reload(); return; }
-			document.getElementById("limits_errors").innerText = Object.values(body).flat().join(" ");
+	// Los dos formularios de límites mandan sus campos (sin el prefijo) y recargan la carta.
+	function limits_form(prefix, url) {
+		document.getElementById(prefix + "_submit")?.addEventListener("click", function () {
+			const data = {};
+			const fields = document.getElementById(prefix + "_form").querySelectorAll("[name]");
+			fields.forEach(field => { data[field.name.split("-").slice(1).join("-")] = field.value; });
+			fetch(url, {
+				method: "POST", body: JSON.stringify(data),
+				headers: {'X-CSRFToken': getCookie('csrftoken'), 'Content-Type': "application/json"},
+			}).then(response => response.json().then(body => ({ok: response.ok, body})))
+			  .then(({ok, body}) => {
+				if (ok) { window.location.reload(); return; }
+				document.getElementById(prefix + "_errors").innerText = Object.entries(body)
+					.map(([name, errors]) => name + ": " + [errors].flat().join(" ")).join(" · ");
+			});
 		});
-	});
+	}
+	limits_form("limits", "{% url 'laboratory:api-equipment-control-point-recalculate-limits' org_pk lab_pk pk point.pk %}");
+	limits_form("fixed_limits", "{% url 'laboratory:api-equipment-control-point-set-limits' org_pk lab_pk pk point.pk %}");
 </script>
 {% endblock %}
