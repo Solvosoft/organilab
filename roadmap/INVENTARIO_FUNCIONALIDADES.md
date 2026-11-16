@@ -903,22 +903,22 @@ Los datos maestros que la etiqueta imprime: la empresa que figura como responsab
 | Depositante de residuos | sí | `auth_and_perms/management/roles.py:33` |
 | Creador de laboratorio | sí | `auth_and_perms/management/roles.py:133` |
 | Administrador de Laboratorio | sí | `auth_and_perms/management/roles.py:187` |
-| Lectura y agregado de sustancias | sí | `auth_and_perms/management/roles.py:404` |
-| Asistente de laboratorio | sí | `auth_and_perms/management/roles.py:494` |
-| Profesor | sí | `auth_and_perms/management/roles.py:658` |
-| Tesista modulo desechos | sí | `auth_and_perms/management/roles.py:712` |
-| Solo Lectura | sí | `auth_and_perms/management/roles.py:770` |
-| Técnico de Laboratorio | sí | `auth_and_perms/management/roles.py:844` |
-| SGA | sí | `auth_and_perms/management/roles.py:1007` |
-| Regente | sí | `auth_and_perms/management/roles.py:1094` |
-| Administrativo superior | sí | `auth_and_perms/management/roles.py:1190` |
-| Administrativo de centro de trabajo | sí | `auth_and_perms/management/roles.py:1729` |
-| Auditor IPER | sí | `auth_and_perms/management/roles.py:1918` |
-| Administrador IPER | sí | `auth_and_perms/management/roles.py:1933` |
-| Administrador ambiental | sí | `auth_and_perms/management/roles.py:1959` |
-| Encargado de registro ambiental | sí | `auth_and_perms/management/roles.py:1993` |
-| Analista ambiental | sí | `auth_and_perms/management/roles.py:2012` |
-| Administración de Organización | sí | `auth_and_perms/management/roles.py:2028` |
+| Lectura y agregado de sustancias | sí | `auth_and_perms/management/roles.py:405` |
+| Asistente de laboratorio | sí | `auth_and_perms/management/roles.py:495` |
+| Profesor | sí | `auth_and_perms/management/roles.py:659` |
+| Tesista modulo desechos | sí | `auth_and_perms/management/roles.py:713` |
+| Solo Lectura | sí | `auth_and_perms/management/roles.py:771` |
+| Técnico de Laboratorio | sí | `auth_and_perms/management/roles.py:845` |
+| SGA | sí | `auth_and_perms/management/roles.py:1008` |
+| Regente | sí | `auth_and_perms/management/roles.py:1095` |
+| Administrativo superior | sí | `auth_and_perms/management/roles.py:1191` |
+| Administrativo de centro de trabajo | sí | `auth_and_perms/management/roles.py:1730` |
+| Auditor IPER | sí | `auth_and_perms/management/roles.py:1919` |
+| Administrador IPER | sí | `auth_and_perms/management/roles.py:1934` |
+| Administrador ambiental | sí | `auth_and_perms/management/roles.py:1960` |
+| Encargado de registro ambiental | sí | `auth_and_perms/management/roles.py:1994` |
+| Analista ambiental | sí | `auth_and_perms/management/roles.py:2013` |
+| Administración de Organización | sí | `auth_and_perms/management/roles.py:2029` |
 
 Los pseudo-roles no conceden permisos y se listan aparte:
 

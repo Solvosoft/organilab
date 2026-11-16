@@ -289,6 +289,7 @@ ROLE_DEFINITIONS = {
             "laboratory.add_shelfobjectcalibrate",
             "laboratory.add_shelfobjectguarantee",
             "laboratory.add_shelfobjectlog",
+            "laboratory.add_shelfobjectmaintenance",
             "laboratory.add_shelfobjectobservation",
             "laboratory.add_shelfobjecttraining",
             "laboratory.add_tranferobject",
