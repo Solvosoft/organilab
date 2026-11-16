@@ -563,6 +563,20 @@ FIRMADOR_VALIDA_URL = FIRMADOR_DOMAIN + "/valida/"
 FIRMADOR_SIGN_URL = FIRMADOR_DOMAIN + "/firma/firme"
 FIRMADOR_SIGN_COMPLETE = FIRMADOR_DOMAIN + "/firma/completa"
 FIRMADOR_DELETE_FILE_URL = FIRMADOR_DOMAIN + "/firma/delete"
+
+
+def _read_maybe_file(value):
+    """`file:///ruta` -> contenido del archivo (un secreto montado)."""
+    if value and value.startswith("file://"):
+        with open(value.removeprefix("file://"), encoding="utf-8") as fh:
+            return fh.read().strip()
+    return value
+
+
+# Token Bearer de esta instancia contra firmador-api (djgentelella >= 0.6.3 lo
+# envía en cada llamada como `Authorization: Bearer <token>`). Acepta el token
+# directo o `file:///ruta`. Vacío = sin cabecera, para un firmador sin API_TOKEN.
+FIRMADOR_TOKEN = _read_maybe_file(os.getenv("FIRMADOR_TOKEN", ""))
 REGISTER_DEFAULT_USER_API = False
 
 TINYMCE_UPLOAD_PATH = "editorupload/"
