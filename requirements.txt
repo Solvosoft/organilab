@@ -14,7 +14,7 @@ django-reservation==0.2.10
 # siguen importando location_field.models.plain y Django las carga todas
 # para construir el grafo de migraciones, incluso en una BD nueva.
 django-location-field==2.7.3
-djangorestframework==3.16.1
+djangorestframework==3.18.2
 openpyxl==3.1.5
 Pillow>=12.0.0
 psycopg[c]>=3.3.2
