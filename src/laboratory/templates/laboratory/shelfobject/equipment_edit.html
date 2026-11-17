@@ -120,7 +120,7 @@
   </div>
   <div class="tab-pane fade" id="pane-control" role="tabpanel">
     <p class="text-muted mb-2">{% trans 'Control points of the equipment (e.g. the masses checked on a balance). Open the chart of each point to register its controls.' %}
-      <a href="{% url 'laboratory:equipment_control_methods' org_pk lab_pk %}" target="_blank">{% trans 'Control methods' %}</a></p>
+      <a class="btn btn-secondary" href="{% url 'laboratory:equipment_control_methods' org_pk lab_pk %}" target="_blank">{% trans 'Control methods' %}</a></p>
     {% if day_control_points and perms.laboratory.add_controlmeasurement %}
     <button class="btn btn-sm btn-success mb-2" data-bs-toggle="collapse" data-bs-target="#day_control_box">
       <i class="fa fa-plus"></i> {% trans 'Register the control of the day' %}</button>
@@ -158,93 +158,93 @@
 
 {% url "laboratory:api-shelfobject-maintenance-list" org_pk lab_pk pk as create_maintenance_url %}
 {% trans 'Create maintenance' as create_maintenance_tittle %}
-{% include 'gentelella/blocks/modal_template.html' with form=create_maintenance_form id="create_maintenance_modal" title=create_maintenance_tittle form_id="create_maintenance_form" url=create_maintenance_url %}
+{% include 'gentelella/blocks/modal_template.html' with principal_class="modal-lg" form=create_maintenance_form id="create_maintenance_modal" title=create_maintenance_tittle form_id="create_maintenance_form" url=create_maintenance_url %}
 
 {% url "laboratory:api-shelfobject-maintenance-detail" org_pk lab_pk pk 0 as detail_maintenance_url %}
 {% trans 'Edit maintenance' as update_maintenance_tittle %}
-{% include 'gentelella/blocks/modal_template.html' with form=update_maintenance_form id="update_maintenance_modal" title=update_maintenance_tittle form_id="update_maintenance_form" url=detail_maintenance_url %}
+{% include 'gentelella/blocks/modal_template.html' with principal_class="modal-lg" form=update_maintenance_form id="update_maintenance_modal" title=update_maintenance_tittle form_id="update_maintenance_form" url=detail_maintenance_url %}
 
 {% include 'gentelella/blocks/modal_template_delete.html' with form=delete_form id="delete_maintenance_modal" form_id="delete_maintenance_form" url=detail_maintenance_url %}
 
 {% url "laboratory:api-shelfobject-log-list" org_pk lab_pk pk as add_log_url %}
 {% trans 'Create log' as create_log_tittle %}
-{% include 'gentelella/blocks/modal_template.html' with form=create_log_form id="create_log_modal" title=create_log_tittle form_id="create_log_form" url=add_log_url %}
+{% include 'gentelella/blocks/modal_template.html' with principal_class="modal-lg" form=create_log_form id="create_log_modal" title=create_log_tittle form_id="create_log_form" url=add_log_url %}
 
 {% url "laboratory:api-shelfobject-log-detail" org_pk lab_pk pk 0 as detail_log_url %}
 {% trans 'Edit log' as update_log_tittle %}
-{% include 'gentelella/blocks/modal_template.html' with form=create_log_form id="update_log_modal" title=update_log_tittle form_id="update_log_form" url=detail_log_url %}
+{% include 'gentelella/blocks/modal_template.html' with principal_class="modal-lg" form=create_log_form id="update_log_modal" title=update_log_tittle form_id="update_log_form" url=detail_log_url %}
 
 {% include 'gentelella/blocks/modal_template_delete.html' with form=delete_form id="delete_log_modal" form_id="delete_log_form" url=detail_log_url %}
 
 {% url "laboratory:api-shelfobject-calibrate-list" org_pk lab_pk pk as add_calibrate_url %}
 {% trans 'Create calibration' as create_calibrate_tittle %}
-{% include 'gentelella/blocks/modal_template.html' with form=create_calibrate_form id="create_calibrate_modal" title=create_calibrate_tittle form_id="create_calibrate_form" url=add_calibrate_url %}
+{% include 'gentelella/blocks/modal_template.html' with principal_class="modal-lg" form=create_calibrate_form id="create_calibrate_modal" title=create_calibrate_tittle form_id="create_calibrate_form" url=add_calibrate_url %}
 
 {% url "laboratory:api-shelfobject-calibrate-detail" org_pk lab_pk pk 0 as detail_calibrate_url %}
 {% trans 'Edit calibration' as update_calibrate_tittle %}
-{% include 'gentelella/blocks/modal_template.html' with form=update_calibrate_form id="update_calibrate_modal" title=update_calibrate_tittle form_id="update_calibrate_form" url=detail_calibrate_url %}
+{% include 'gentelella/blocks/modal_template.html' with principal_class="modal-lg" form=update_calibrate_form id="update_calibrate_modal" title=update_calibrate_tittle form_id="update_calibrate_form" url=detail_calibrate_url %}
 
 {% include 'gentelella/blocks/modal_template_delete.html' with form=delete_form id="delete_calibrate_modal" form_id="delete_calibrate_form" url=detail_calibrate_url %}
 
 {% url "laboratory:api-shelfobject-guarantee-list" org_pk lab_pk pk as add_guarantee_url %}
 {% trans 'Create guarantee' as create_guarantee_tittle %}
-{% include 'gentelella/blocks/modal_template.html' with form=guarantee_form id="create_guarantee_modal" title=create_guarantee_tittle form_id="create_guarantee_form" url=add_guarantee_url %}
+{% include 'gentelella/blocks/modal_template.html' with principal_class="modal-lg" form=guarantee_form id="create_guarantee_modal" title=create_guarantee_tittle form_id="create_guarantee_form" url=add_guarantee_url %}
 
 {% url "laboratory:api-shelfobject-guarantee-detail" org_pk lab_pk pk 0 as detail_guarantee_url %}
 {% trans 'Edit guarantee' as update_guarantee_tittle %}
-{% include 'gentelella/blocks/modal_template.html' with form=guarantee_form id="update_guarantee_modal" title=update_guarantee_tittle form_id="update_guarantee_form" url=detail_guarantee_url %}
+{% include 'gentelella/blocks/modal_template.html' with principal_class="modal-lg" form=guarantee_form id="update_guarantee_modal" title=update_guarantee_tittle form_id="update_guarantee_form" url=detail_guarantee_url %}
 
 {% include 'gentelella/blocks/modal_template_delete.html' with form=delete_form id="delete_guarantee_modal" form_id="delete_guarantee_form" url=detail_guarantee_url %}
 
 
 {% url "laboratory:api-shelfobject-training-list" org_pk lab_pk pk as add_training_url %}
 {% trans 'Create training' as create_training_tittle %}
-{% include 'gentelella/blocks/modal_template.html' with form=training_form id="create_training_modal" title=create_training_tittle form_id="create_training_form" url=add_training_url %}
+{% include 'gentelella/blocks/modal_template.html' with principal_class="modal-lg" form=training_form id="create_training_modal" title=create_training_tittle form_id="create_training_form" url=add_training_url %}
 
 {% url "laboratory:api-shelfobject-training-detail" org_pk lab_pk pk 0 as detail_training_url %}
 {% trans 'Edit training' as update_training_tittle %}
-{% include 'gentelella/blocks/modal_template.html' with form=update_training_form id="update_training_modal" title=update_training_tittle form_id="update_training_form" url=detail_training_url %}
+{% include 'gentelella/blocks/modal_template.html' with principal_class="modal-lg" form=update_training_form id="update_training_modal" title=update_training_tittle form_id="update_training_form" url=detail_training_url %}
 
 {% include 'gentelella/blocks/modal_template_delete.html' with form=delete_form id="delete_training_modal" form_id="delete_training_form" url=detail_training_url %}
 
 {% url "laboratory:api-equipment-plan-list" org_pk lab_pk pk as create_plan_url %}
 {% trans 'Create program' as create_plan_title %}
-{% include 'gentelella/blocks/modal_template.html' with form=create_plan_form id="create_plan_modal" title=create_plan_title form_id="create_plan_form" url=create_plan_url %}
+{% include 'gentelella/blocks/modal_template.html' with principal_class="modal-lg" form=create_plan_form id="create_plan_modal" title=create_plan_title form_id="create_plan_form" url=create_plan_url %}
 {% url "laboratory:api-equipment-plan-detail" org_pk lab_pk pk 0 as detail_plan_url %}
 {% trans 'Edit program' as update_plan_title %}
-{% include 'gentelella/blocks/modal_template.html' with form=update_plan_form id="update_plan_modal" title=update_plan_title form_id="update_plan_form" url=detail_plan_url %}
+{% include 'gentelella/blocks/modal_template.html' with principal_class="modal-lg" form=update_plan_form id="update_plan_modal" title=update_plan_title form_id="update_plan_form" url=detail_plan_url %}
 {% include 'gentelella/blocks/modal_template_delete.html' with form=delete_form id="delete_plan_modal" form_id="delete_plan_form" url=detail_plan_url %}
 
 {% url "laboratory:api-equipment-verification-list" org_pk lab_pk pk as create_verification_url %}
 {% trans 'Create intermediate check' as create_verification_title %}
-{% include 'gentelella/blocks/modal_template.html' with form=create_verification_form id="create_verification_modal" title=create_verification_title form_id="create_verification_form" url=create_verification_url %}
+{% include 'gentelella/blocks/modal_template.html' with principal_class="modal-lg" form=create_verification_form id="create_verification_modal" title=create_verification_title form_id="create_verification_form" url=create_verification_url %}
 {% url "laboratory:api-equipment-verification-detail" org_pk lab_pk pk 0 as detail_verification_url %}
 {% trans 'Edit intermediate check' as update_verification_title %}
-{% include 'gentelella/blocks/modal_template.html' with form=update_verification_form id="update_verification_modal" title=update_verification_title form_id="update_verification_form" url=detail_verification_url %}
+{% include 'gentelella/blocks/modal_template.html' with principal_class="modal-lg" form=update_verification_form id="update_verification_modal" title=update_verification_title form_id="update_verification_form" url=detail_verification_url %}
 {% include 'gentelella/blocks/modal_template_delete.html' with form=delete_form id="delete_verification_modal" form_id="delete_verification_form" url=detail_verification_url %}
 
 {% url "laboratory:api-equipment-failure-list" org_pk lab_pk pk as create_failure_url %}
 {% trans 'Register failure' as create_failure_title %}
-{% include 'gentelella/blocks/modal_template.html' with form=create_failure_form id="create_failure_modal" title=create_failure_title form_id="create_failure_form" url=create_failure_url %}
+{% include 'gentelella/blocks/modal_template.html' with principal_class="modal-lg" form=create_failure_form id="create_failure_modal" title=create_failure_title form_id="create_failure_form" url=create_failure_url %}
 {% url "laboratory:api-equipment-failure-detail" org_pk lab_pk pk 0 as detail_failure_url %}
 {% trans 'Edit failure' as update_failure_title %}
-{% include 'gentelella/blocks/modal_template.html' with form=update_failure_form id="update_failure_modal" title=update_failure_title form_id="update_failure_form" url=detail_failure_url %}
+{% include 'gentelella/blocks/modal_template.html' with principal_class="modal-lg" form=update_failure_form id="update_failure_modal" title=update_failure_title form_id="update_failure_form" url=detail_failure_url %}
 {% include 'gentelella/blocks/modal_template_delete.html' with form=delete_form id="delete_failure_modal" form_id="delete_failure_form" url=detail_failure_url %}
 
 {% url "laboratory:api-equipment-document-list" org_pk lab_pk pk as create_document_url %}
 {% trans 'Add document' as create_document_title %}
-{% include 'gentelella/blocks/modal_template.html' with form=create_document_form id="create_document_modal" title=create_document_title form_id="create_document_form" url=create_document_url %}
+{% include 'gentelella/blocks/modal_template.html' with principal_class="modal-lg" form=create_document_form id="create_document_modal" title=create_document_title form_id="create_document_form" url=create_document_url %}
 {% url "laboratory:api-equipment-document-detail" org_pk lab_pk pk 0 as detail_document_url %}
 {% trans 'Edit document' as update_document_title %}
-{% include 'gentelella/blocks/modal_template.html' with form=update_document_form id="update_document_modal" title=update_document_title form_id="update_document_form" url=detail_document_url %}
+{% include 'gentelella/blocks/modal_template.html' with principal_class="modal-lg" form=update_document_form id="update_document_modal" title=update_document_title form_id="update_document_form" url=detail_document_url %}
 {% include 'gentelella/blocks/modal_template_delete.html' with form=delete_form id="delete_document_modal" form_id="delete_document_form" url=detail_document_url %}
 
 {% url "laboratory:api-equipment-control-point-list" org_pk lab_pk pk as create_control_url %}
 {% trans 'Create control point' as create_control_title %}
-{% include 'gentelella/blocks/modal_template.html' with form=create_control_form id="create_control_modal" title=create_control_title form_id="create_control_form" url=create_control_url %}
+{% include 'gentelella/blocks/modal_template.html' with principal_class="modal-lg" form=create_control_form id="create_control_modal" title=create_control_title form_id="create_control_form" url=create_control_url %}
 {% url "laboratory:api-equipment-control-point-detail" org_pk lab_pk pk 0 as detail_control_url %}
 {% trans 'Edit control point' as update_control_title %}
-{% include 'gentelella/blocks/modal_template.html' with form=update_control_form id="update_control_modal" title=update_control_title form_id="update_control_form" url=detail_control_url %}
+{% include 'gentelella/blocks/modal_template.html' with principal_class="modal-lg" form=update_control_form id="update_control_modal" title=update_control_title form_id="update_control_form" url=detail_control_url %}
 {% include 'gentelella/blocks/modal_template_delete.html' with form=delete_form id="delete_control_modal" form_id="delete_control_form" url=detail_control_url %}
 
 {% endblock %}
