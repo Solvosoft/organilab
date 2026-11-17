@@ -47,17 +47,17 @@ def active_plans(organization):
             )
         )
         .select_related(
-            "responsible__user", "shelfobject__object", "shelfobject__in_where_laboratory__responsible",
+            "shelfobject__object", "shelfobject__in_where_laboratory__responsible",
             "shelfobject__shelfobjectequipmentcharacteristics__custodian__user",
         )
+        .prefetch_related("responsible__user")
     )
 
 
 def plan_responsibles(plan):
-    """Responsable del programa, custodio del equipo y responsable del laboratorio."""
+    """Responsables del programa, custodio del equipo y responsable del laboratorio."""
     users = []
-    if plan.responsible_id:
-        users.append(plan.responsible.user)
+    users.extend(profile.user for profile in plan.responsible.all())
     characteristics = getattr(plan.shelfobject, "shelfobjectequipmentcharacteristics", None)
     if characteristics is not None and characteristics.custodian_id:
         users.append(characteristics.custodian.user)

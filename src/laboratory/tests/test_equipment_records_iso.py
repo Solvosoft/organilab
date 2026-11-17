@@ -44,7 +44,7 @@ class ProgramaApiTest(RegistroIsoBase):
             "interval_unit": EquipmentActivityPlan.MONTHS,
             "start_date": "10/04/2027",
             "reminder_days_before": 30,
-            "responsible": self.profile.pk,
+            "responsible": [self.profile.pk],
             "is_active": True,
         }
         data.update(extra)
@@ -85,7 +85,7 @@ class ProgramaApiTest(RegistroIsoBase):
 
     def test_responsable_de_otra_organizacion_se_rechaza(self):
         ajeno, _org = self.crear_usuario_ajeno()
-        response = self.post(self.url(), self.datos(responsible=ajeno.profile.pk))
+        response = self.post(self.url(), self.datos(responsible=[ajeno.profile.pk]))
         self.assertEqual(response.status_code, 400)
         self.assertIn("responsible", response.json())
 

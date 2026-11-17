@@ -62,7 +62,7 @@
 <table>
 	<tr><th>{% trans 'Activity' %}</th><th>{% trans 'Interval' %}</th><th>{% trans 'Last done' %}</th><th>{% trans 'Next due' %}</th><th>{% trans 'Responsible' %}</th></tr>
 	{% for plan in plans %}
-	<tr><td>{{ plan }}</td><td>{{ plan.interval_value }} {{ plan.get_interval_unit_display|lower }}</td><td>{{ plan.last_done|date:"d/m/Y" }}</td><td>{{ plan.next_due|date:"d/m/Y" }}</td><td>{{ plan.responsible.user.get_full_name|default:"" }}</td></tr>
+	<tr><td>{{ plan }}</td><td>{{ plan.interval_value }} {{ plan.get_interval_unit_display|lower }}</td><td>{{ plan.last_done|date:"d/m/Y" }}</td><td>{{ plan.next_due|date:"d/m/Y" }}</td><td>{% for profile in plan.responsible.all %}{{ profile.user.get_full_name|default:profile.user.username }}{% if not forloop.last %}, {% endif %}{% endfor %}</td></tr>
 	{% empty %}<tr><td colspan="5" class="muted">{% trans 'No records' %}</td></tr>{% endfor %}
 </table>
 

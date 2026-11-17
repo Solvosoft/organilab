@@ -49,7 +49,10 @@ class EquipmentRecordWriteSerializer(ValidateShelfobjectEditSerializer, serializ
         fields = super().get_fields()
         org_pk = self.context["org_pk"]
         for name in self.profile_fields:
-            fields[name].queryset = org_profiles(org_pk)
+            field = fields[name]
+            # En un ManyToMany el queryset que valida es el del campo hijo.
+            target = field.child_relation if isinstance(field, serializers.ManyRelatedField) else field
+            target.queryset = org_profiles(org_pk)
         if "provider" in fields:
             fields["provider"].queryset = Provider.objects.for_laboratory(org_pk, self.context["lab_pk"])
         if "plan" in fields:
@@ -158,7 +161,7 @@ class ActivityPlanRowSerializer(RecordListSerializer):
         return {"code": status, "text": str(texts[status])}
 
     def get_responsible(self, obj):
-        return full_name(obj.responsible)
+        return ", ".join(full_name(profile) for profile in obj.responsible.all())
 
     class Meta:
         model = EquipmentActivityPlan
@@ -182,12 +185,15 @@ class VerificationWriteSerializer(EquipmentRecordWriteSerializer):
     profile_fields = ("responsible",)
     verification_date = record_date()
     document = ChunkedFileField(required=False, allow_empty_file=True, allow_null=True)
+    perform_maintenance = serializers.BooleanField(required=False)
+    maintenance_type = serializers.ChoiceField(choices=ShelfObjectVerification.MAINTENANCE_TYPES, required=False)
 
     class Meta:
         model = ShelfObjectVerification
         fields = [
             "id", "shelfobject", "organization", "plan", "verification_date", "verification_type",
             "result", "acceptance_criterion", "conformity", "responsible", "document", "observation",
+            "perform_maintenance", "maintenance_type"
         ]
 
 

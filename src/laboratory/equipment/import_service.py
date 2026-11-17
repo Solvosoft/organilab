@@ -168,10 +168,11 @@ class EquipmentImporter:
         plan, created = EquipmentActivityPlan.objects.get_or_create(
             shelfobject=characteristics.shelfobject,
             activity_kind=kind,
-            defaults={"organization": self.organization, "created_by": self.user,
-                      "responsible_id": characteristics.custodian_id, **defaults},
+            defaults={"organization": self.organization, "created_by": self.user, **defaults},
         )
         if created:
+            if characteristics.custodian_id:
+                plan.responsible.add(characteristics.custodian_id)
             self.summary["plans"] += 1
         return plan
 

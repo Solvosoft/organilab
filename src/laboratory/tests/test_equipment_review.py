@@ -71,9 +71,10 @@ class ReglaPorDefectoTest(RegistrosEquipoBase):
         self.assertEqual(alerts.ensure_rules_for_existing_plans(), [])
 
     def test_la_regla_por_defecto_dispara(self):
-        Plan.objects.create(shelfobject=self.equipo, activity_kind=Plan.CALIBRATION, interval_value=12,
-                            start_date=datetime.date(2026, 1, 1), organization=self.org, created_by=self.user,
-                            responsible=self.profile)
+        plan = Plan.objects.create(shelfobject=self.equipo, activity_kind=Plan.CALIBRATION, interval_value=12,
+                                   start_date=datetime.date(2026, 1, 1), organization=self.org,
+                                   created_by=self.user)
+        plan.responsible.set([self.profile])
         regla = AlertRule.objects.get(process=alerts.PROCESS)
         eventos = alerts.evaluate_rule(regla, today=datetime.date(2026, 2, 1))
         self.assertEqual(len(eventos), 1)
@@ -335,7 +336,7 @@ class ProgramaSinFechaTest(RegistrosEquipoBase):
 
     def datos(self, **extra):
         return self.base_data(activity_kind=Plan.CALIBRATION, interval_value=12, interval_unit="months",
-                              reminder_days_before=30, is_active=True, **extra)
+                              reminder_days_before=30, is_active=True, responsible=[self.profile.pk], **extra)
 
     def test_sin_registros_exige_la_fecha_de_inicio(self):
         response = self.post(self.ruta(self.basename), self.datos())

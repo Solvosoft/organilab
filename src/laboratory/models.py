@@ -942,6 +942,7 @@ class ShelfObjectTraining(AbstractOrganizationRef):
     place = models.CharField(
         max_length=100, null=True, blank=True, verbose_name=_("Place")
     )
+    taught_by = models.CharField(blank=True, null=True, max_length=100, verbose_name=_("Taught by"))
 
 
 class ShelfObjectGuarantee(AbstractOrganizationRef):
@@ -974,7 +975,7 @@ class EquipmentActivityPlan(AbstractOrganizationRef):
     ACTIVITY_KINDS = (
         (CALIBRATION, _("Calibration")),
         (VERIFICATION, _("Intermediate check")),
-        (PREVENTIVE_MAINTENANCE, _("Preventive maintenance")),
+        (PREVENTIVE_MAINTENANCE, _("Maintenance")),
         (CLEANING, _("Cleaning")),
         (OTHER, _("Other")),
     )
@@ -1007,8 +1008,8 @@ class EquipmentActivityPlan(AbstractOrganizationRef):
     reminder_days_before = models.PositiveIntegerField(
         default=30, verbose_name=_("Days of notice before the due date")
     )
-    responsible = models.ForeignKey(
-        "auth_and_perms.Profile", null=True, blank=True, on_delete=models.SET_NULL,
+    responsible = models.ManyToManyField(
+        "auth_and_perms.Profile",
         related_name="equipment_activity_plans", verbose_name=_("Responsible"),
     )
     is_active = models.BooleanField(default=True, verbose_name=_("Is active"))
@@ -1109,7 +1110,20 @@ class ShelfObjectVerification(AbstractOrganizationRef):
         upload_to=upload_files, null=True, blank=True, verbose_name=_("Attached record")
     )
     observation = models.TextField(blank=True, default="", verbose_name=_("Observation"))
-
+    perform_maintenance = models.BooleanField(default=False, verbose_name=_("Perform Maintenance"))
+    PREVENTIVE = "preventive"
+    CORRECTIVE = "corrective"
+    CLEANING = "cleaning"
+    MAINTENANCE_TYPES = (
+        ("", _("-----------")),
+        (PREVENTIVE, _("Preventive")),
+        (CORRECTIVE, _("Corrective")),
+        (CLEANING, _("Cleaning")),
+    )
+    maintenance_type = models.CharField(
+        max_length=20, choices=MAINTENANCE_TYPES, default="",
+        verbose_name=_("Maintenance type"),
+    )
     class Meta:
         verbose_name = _("Intermediate check")
         verbose_name_plural = _("Intermediate checks")

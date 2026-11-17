@@ -95,7 +95,7 @@ class EquipmentRecordViewSet(AuthAllPermBaseObjectManagementShelfObjectBase):
 class EquipmentActivityPlanViewSet(EquipmentRecordViewSet):
     model_name = "equipmentactivityplan"
     perms = equipment_record_perms(model_name)
-    queryset = EquipmentActivityPlan.objects.select_related("responsible__user")
+    queryset = EquipmentActivityPlan.objects.prefetch_related("responsible__user")
     serializer_class = {
         "list": eqs.datatable(eqs.ActivityPlanRowSerializer),
         "create": eqs.ActivityPlanWriteSerializer,

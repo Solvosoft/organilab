@@ -1331,6 +1331,7 @@ class ShelfObjectTrainingForm(GTForm, forms.ModelForm):
 
         widgets = {
             "training_initial_date": genwidgets.DateInput,
+            "taught_by": genwidgets.TextInput,
             "training_final_date": genwidgets.DateInput,
             "number_of_hours": genwidgets.NumberInput,
             "intern_people_receive_training": genwidgets.SelectMultiple,
@@ -1340,6 +1341,7 @@ class ShelfObjectTrainingForm(GTForm, forms.ModelForm):
             "organization": genwidgets.HiddenInput,
             "created_by": genwidgets.HiddenInput,
             "shelfobject": genwidgets.HiddenInput,
+
         }
 
 

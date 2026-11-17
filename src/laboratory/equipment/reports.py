@@ -189,7 +189,7 @@ def life_record_context(shelfobject):
     return {
         "object": shelfobject,
         "ch": characteristics,
-        "plans": shelfobject.equipmentactivityplan_set.select_related("responsible__user"),
+        "plans": shelfobject.equipmentactivityplan_set.prefetch_related("responsible__user"),
         "calibrations": shelfobject.shelfobjectcalibrate_set.select_related("provider").order_by("-calibration_date"),
         "verifications": shelfobject.shelfobjectverification_set.select_related("responsible__user").order_by("-verification_date"),
         "maintenances": shelfobject.shelfobjectmaintenance_set.select_related("provider_of_maintenance")

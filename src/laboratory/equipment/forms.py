@@ -64,7 +64,7 @@ class ActivityPlanForm(EquipmentScopedFormMixin, GTForm, forms.ModelForm):
             "interval_unit": genwidgets.Select,
             "start_date": genwidgets.DateInput,
             "reminder_days_before": genwidgets.NumberInput,
-            "responsible": genwidgets.Select,
+            "responsible": genwidgets.SelectMultiple,
             "is_active": genwidgets.YesNoInput,
             "notes": genwidgets.Textarea,
         }
@@ -75,7 +75,7 @@ class VerificationForm(EquipmentScopedFormMixin, GTForm, forms.ModelForm):
         model = ShelfObjectVerification
         fields = [
             "plan", "verification_date", "verification_type", "result", "acceptance_criterion",
-            "conformity", "responsible", "document", "observation",
+            "conformity", "responsible", "document", "observation","perform_maintenance","maintenance_type"
         ]
         widgets = {
             "plan": genwidgets.Select,
@@ -87,6 +87,8 @@ class VerificationForm(EquipmentScopedFormMixin, GTForm, forms.ModelForm):
             "responsible": genwidgets.Select,
             "document": FileChunkedUpload,
             "observation": genwidgets.Textarea,
+            "perform_maintenance": genwidgets.YesNoInput,
+            "maintenance_type": genwidgets.Select
         }
 
 

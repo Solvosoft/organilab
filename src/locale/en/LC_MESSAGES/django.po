@@ -9542,3 +9542,6 @@ msgstr ""
 
 msgid "Created new substance"
 msgstr ""
+
+msgid "Taught by"
+msgstr "Realizada por"
